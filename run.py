@@ -18,6 +18,7 @@ import configparser
 import logging
 import traceback
 import sys
+import os
 from collections import Counter
 
 # read config for token
@@ -57,8 +58,6 @@ for extension in addons:
         bot.load_extension(extension)
     except Exception as e:
         print('The addon failed to load! {}\n{}: {}'.format(extension, type(e).__name__, e))
-
-bot.time = datetime.datetime.utcnow()
 
 # Execute
 bot.run(config['Main']['token'])

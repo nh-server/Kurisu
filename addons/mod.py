@@ -3,7 +3,6 @@ import discord
 from discord.ext import commands
 from sys import argv
 
-
 class Mod:
     """
     Staff commands.
@@ -49,6 +48,34 @@ class Mod:
                 msg += "\n✏️ __Reason__: " + reason
             await self.bot.send_message(discord.utils.get(server.channels, name="server-logs"), msg)
             await self.bot.send_message(discord.utils.get(server.channels, name="mod-logs"), msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.kick <user> [reason]`." if reason == "" else ""))
+        except discord.errors.Forbidden:
+            await self.bot.say("💢 I don't have permission to do this.")
+
+    @commands.has_permissions(ban_members=True)
+    @commands.command(pass_context=True, name="mute")
+    async def mute(self, ctx, user):
+        """Mutes a user so they can't speak. Staff only."""
+        try:
+            member = ctx.message.mentions[0]
+            server = ctx.message.author.server
+            await self.bot.add_roles(member, discord.utils.get(server.roles, name="Muted"))
+            await self.bot.say("{0} can no longer speak.".format(member.mention))
+            msg = "🔇 **Muted**: {0} muted {1} | {2}#{3}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator)
+            await self.bot.send_message(discord.utils.get(server.channels, name="mod-logs"), msg)
+        except discord.errors.Forbidden:
+            await self.bot.say("💢 I don't have permission to do this.")
+
+    @commands.has_permissions(ban_members=True)
+    @commands.command(pass_context=True, name="unmute")
+    async def unmute(self, ctx, user):
+        """Unmutes a user so they can speak. Staff only."""
+        try:
+            member = ctx.message.mentions[0]
+            server = ctx.message.author.server
+            await self.bot.remove_roles(member, discord.utils.get(server.roles, name="Muted"))
+            await self.bot.say("{0} can now speak again.".format(member.mention))
+            msg = "🔈 **Unmuted**: {0} unmuted {1} | {2}#{3}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator)
+            await self.bot.send_message(discord.utils.get(server.channels, name="mod-logs"), msg)
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 

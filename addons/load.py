@@ -17,6 +17,8 @@ class Load:
     async def load(self, *, module : str):
         """Loads an addon."""
         try:
+            if module[0:7] != "addons.":
+                module = "addons." + module
             self.bot.load_extension(module)
         except Exception as e:
             await self.bot.say('💢 Failed!\n```\n{}: {}\n```'.format(type(e).__name__, e))
@@ -28,6 +30,8 @@ class Load:
     async def unload(self, *, module : str):
         """Unloads an addon."""
         try:
+            if module[0:7] != "addons.":
+                module = "addons." + module
             if module == "addons.load":
                 await self.bot.say("❌ I don't think you want to unload that!")
             else:
@@ -42,6 +46,8 @@ class Load:
     async def _reload(self, *, module : str):
         """Reloads an addon."""
         try:
+            if module[0:7] != "addons.":
+                module = "addons." + module
             self.bot.unload_extension(module)
             self.bot.load_extension(module)
         except Exception as e:
@@ -52,7 +58,7 @@ class Load:
     @commands.command(hidden=True)
     async def addonlist(self):
        """lists addons."""
-       await self.bot.say("assistance\nblah\nctrerr\nlogs\nmemes\nmod\nnoembed\nprobation\nrules")
+       await self.bot.say("assistance\nauto_noembed\nauto_probation\nblah\nctrerr\nload\nlockdown\nlogs\nmemes\nmod\nrules")
 
 def setup(bot):
     bot.add_cog(Load(bot))
