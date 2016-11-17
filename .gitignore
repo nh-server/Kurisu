@@ -1,0 +1,6 @@
+*.ini
+*.sh
+*.log
+._*
+.DS_Store
+__pycache__
