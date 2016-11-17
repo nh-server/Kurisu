@@ -13,8 +13,8 @@ class Assistance:
     print('Addon "Assistance" has been loaded.')
 
     @commands.command(pass_context=True, name="staffreq")
-    async def staffreq(self, ctx):
-        """Request staff. Helpers and Staff only."""
+    async def staffreq(self, ctx, *, msg_request=""):
+        """Request staff, with optional additional text. Helpers and Staff only."""
         helpers_role = discord.utils.get(ctx.message.server.roles, name="Helpers")
         staff_role = discord.utils.get(ctx.message.server.roles, name="Staff")
         author = ctx.message.author
@@ -24,6 +24,9 @@ class Assistance:
             return
         # await self.bot.say("Request sent.")
         msg = "❗️ **Assistance requested**: {0} by {1} | {2}#{3} @here".format(ctx.message.channel.mention, author.mention, author.name, ctx.message.author.discriminator)
+        if msg_request != "":
+            # much \n
+            msg += "\n✏️ __Additional text__: " + msg_request
         await self.bot.send_message(discord.utils.get(ctx.message.server.channels, name="mods"), msg)
         await self.bot.delete_message(ctx.message)
 
@@ -52,7 +55,7 @@ class Assistance:
     @commands.command()
     async def ntrstream(self):
         """Links to ntr streaming guide"""
-        await self.bot.say("Guide: <http://bit.ly/2fMiKzi> \n 3 Common fixes: \n - Are you connected to the internet? \n - Is your antivirus program blocking the program? \n - Does your NTR menu say NTR CFW 3.4 Preview2? ")
+        await self.bot.say("Guide: <http://bit.ly/2fMiKzi>\n3 Common fixes:\n- Are you connected to the internet?\n- Is your antivirus program blocking the program?\n- Does your NTR menu say NTR CFW 3.4 Preview2? ")
 
     @commands.command()
     async def update(self):
@@ -62,7 +65,7 @@ class Assistance:
     @commands.command()
     async def otpless(self):
         """OTPLess notice"""
-        await self.bot.say("If your OTPless install succeeds (you don't brick) after you forcefully shutdown, and you never see the screens coming back up saying it was successful and asking you to shutdown, please report this here on GitHub or GBATemp.")
+        await self.bot.say("```\nIf your OTPless install succeeds (you don't brick) after you forcefully shutdown, and you never see the screens coming back up saying it was successful and asking you to shutdown, please report this here on GitHub or GBATemp.\n```")
 
     @commands.command()
     async def fw11x(self):
@@ -109,7 +112,7 @@ class Assistance:
 
     @commands.command(pass_context=True, name="ez2")
     async def ez2(self, ctx, model: str, major: int, minor: int, revision: int, nver: int, region: str, ):
-        """Gives you the direct link to your version's page. \n Example: !ez2 Old 11 0 0 33 E"""
+        """Gives you the direct link to your version's page.\nExample: !ez2 Old 11 0 0 33 E"""
         await self.bot.say("https://ez3ds.xyz/checkfw?model={0}&major={1}&minor={2}&revision={3}&nver={4}&region={5}".format(model, major, minor, revision, nver, region))
 
 def setup(bot):
