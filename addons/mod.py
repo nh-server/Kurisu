@@ -79,6 +79,34 @@ class Mod:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
+    @commands.has_permissions(manage_nicknames=True)
+    @commands.command(pass_context=True, name="noembed")
+    async def noembed(self, ctx, user):
+        """Removes embed permissions from a user. Staff only."""
+        try:
+            member = ctx.message.mentions[0]
+            server = ctx.message.author.server
+            await self.bot.add_roles(member, discord.utils.get(server.roles, name="No-Embed"))
+            await self.bot.say("{0} can no longer embed links or attach files.".format(member.mention))
+            msg = "🚫 **Removed Embed**: {0} removed embed from {1} | {2}#{3}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator)
+            await self.bot.send_message(discord.utils.get(server.channels, name="mod-logs"), msg)
+        except discord.errors.Forbidden:
+            await self.bot.say("💢 I don't have permission to do this.")
+
+    @commands.has_permissions(manage_nicknames=True)
+    @commands.command(pass_context=True, name="embed")
+    async def embed(self, ctx, user):
+        """Restore embed permissios for a user. Staff only."""
+        try:
+            member = ctx.message.mentions[0]
+            server = ctx.message.author.server
+            await self.bot.remove_roles(member, discord.utils.get(server.roles, name="No-Embed"))
+            await self.bot.say("{0} can now embed links and attach files again.".format(member.mention))
+            msg = "⭕️ **Restored Embed**: {0} restored embed to {1} | {2}#{3}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator)
+            await self.bot.send_message(discord.utils.get(server.channels, name="mod-logs"), msg)
+        except discord.errors.Forbidden:
+            await self.bot.say("💢 I don't have permission to do this.")
+
     @commands.has_permissions(ban_members=True)
     @commands.command(pass_context=True)
     async def playing(self, ctx, *gamename):
