@@ -24,6 +24,8 @@ class Mod:
        """Clears a given number of messages. Staff only."""
        try:
            await self.bot.purge_from(ctx.message.channel, limit=limit)
+           msg = "🗑 **Cleared**: {0} cleared {1} messages in {2}".format(ctx.message.author.mention, limit, ctx.message.channel.mention)
+           await self.bot.send_message(discord.utils.get(ctx.message.server.channels, name="mod-logs"), msg)
        except discord.errors.Forbidden:
            await self.bot.say("💢 I don't have permission to do this.")
 
