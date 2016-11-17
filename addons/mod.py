@@ -51,7 +51,7 @@ class Mod:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
-    @commands.has_permissions(ban_members=True)
+    @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True, name="mute")
     async def mute(self, ctx, user):
         """Mutes a user so they can't speak. Staff only."""
@@ -65,7 +65,7 @@ class Mod:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
-    @commands.has_permissions(ban_members=True)
+    @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True, name="unmute")
     async def unmute(self, ctx, user):
         """Unmutes a user so they can speak. Staff only."""
