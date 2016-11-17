@@ -29,6 +29,7 @@ class Assistance:
             msg += "\n✏️ __Additional text__: " + msg_request
         await self.bot.send_message(discord.utils.get(ctx.message.server.channels, name="mods"), msg)
         await self.bot.delete_message(ctx.message)
+        await self.bot.send_message(author, "✅ Online staff has been notified of your request in {0}.".format(ctx.message.channel.mention))
 
     @commands.command()
     async def guide(self):
