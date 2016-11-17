@@ -30,7 +30,7 @@ class Mod:
 
     @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True, name="kick")
-    async def kick_member(self, ctx, _, *, reason=""):
+    async def kick_member(self, ctx, user, *, reason=""):
         """Kicks a user from the server. Staff only."""
         try:
             member = ctx.message.mentions[0]
