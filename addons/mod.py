@@ -28,12 +28,27 @@ class Mod:
        except discord.errors.Forbidden:
            await self.bot.say("💢 I don't have permission to do this.")
 
-    @commands.has_permissions(kick_members=True)
+    @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True, name="kick")
-    async def kick_member(self, ctx, kicked_for, *, reason: str):
+    async def kick_member(self, ctx, _, *, reason=""):
         """Kicks a user from the server. Staff only."""
         try:
-            await self.bot.kick(ctx.message.mentions[0])
+            member = ctx.message.mentions[0]
+            server = ctx.message.author.server
+            msg = "You were kicked from {0}.".format(server.name)
+            if reason != "":
+                # much \n
+                msg += " The given reason is: " + reason
+            msg += "\n\nYou are able to rejoin the server, but please read the rules in #welcome before participating again."
+            await self.bot.send_message(member, msg)
+            await self.bot.kick(member)
+            await self.bot.say("{0} is now gone. 👌".format(member))
+            msg = "👢 **Kick**: {0} kicked {1} | {2}#{3}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator)
+            if reason != "":
+                # much \n
+                msg += "\n✏️ __Reason__: " + reason
+            await self.bot.send_message(discord.utils.get(server.channels, name="server-logs"), msg)
+            await self.bot.send_message(discord.utils.get(server.channels, name="mod-logs"), msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.kick <user> [reason]`." if reason == "" else ""))
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
