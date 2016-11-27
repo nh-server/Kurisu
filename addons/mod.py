@@ -109,6 +109,48 @@ class Mod:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
+    @commands.command(pass_context=True, name="takehelp")
+    async def takehelp(self, ctx, user):
+        """Remove access to help-and-questions. Staff and Helpers only."""
+        helpers_role = discord.utils.get(ctx.message.server.roles, name="Helpers")
+        staff_role = discord.utils.get(ctx.message.server.roles, name="Staff")
+        author = ctx.message.author
+        if (helpers_role not in author.roles) and (staff_role not in author.roles):
+            msg = "{0} You cannot used this command.".format(author.mention)
+            await self.bot.say(msg)
+            return
+        try:
+            member = ctx.message.mentions[0]
+            server = ctx.message.author.server
+            await self.bot.add_roles(member, discord.utils.get(server.roles, name="No Help"))
+            await self.bot.say("{0} can no longer give or get help.".format(member.mention))
+            msg = "🚫 **Help access removed**: {0} removed access to h&q from {1} | {2}#{3}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator)
+            await self.bot.send_message(discord.utils.get(server.channels, name="mod-logs"), msg)
+            await self.bot.send_message(discord.utils.get(server.channels, name="helpers"), msg)
+        except discord.errors.Forbidden:
+            await self.bot.say("💢 I don't have permission to do this.")
+
+    @commands.command(pass_context=True, name="givehelp")
+    async def give(self, ctx, user):
+        """Restore access to help-and-questions. Staff and Helpers only."""
+        helpers_role = discord.utils.get(ctx.message.server.roles, name="Helpers")
+        staff_role = discord.utils.get(ctx.message.server.roles, name="Staff")
+        author = ctx.message.author
+        if (helpers_role not in author.roles) and (staff_role not in author.roles):
+            msg = "{0} You cannot used this command.".format(author.mention)
+            await self.bot.say(msg)
+            return
+        try:
+            member = ctx.message.mentions[0]
+            server = ctx.message.author.server
+            await self.bot.remove_roles(member, discord.utils.get(server.roles, name="No Help"))
+            await self.bot.say("{0} can give or get help again.".format(member.mention))
+            msg = "⭕️ **Help access restored**: {0} restored access to h&q from {1} | {2}#{3}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator)
+            await self.bot.send_message(discord.utils.get(server.channels, name="mod-logs"), msg)
+            await self.bot.send_message(discord.utils.get(server.channels, name="helpers"), msg)
+        except discord.errors.Forbidden:
+            await self.bot.say("💢 I don't have permission to do this.")
+
     @commands.has_permissions(ban_members=True)
     @commands.command(pass_context=True)
     async def playing(self, ctx, *gamename):
