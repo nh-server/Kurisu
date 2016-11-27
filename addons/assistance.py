@@ -12,7 +12,7 @@ class Assistance:
         self.bot = bot
     print('Addon "Assistance" has been loaded.')
 
-    @commands.command(pass_context=True, name="staffreq")
+    @commands.command(pass_context=True, name="sr", hidden=True)
     async def staffreq(self, ctx, *, msg_request=""):
         """Request staff, with optional additional text. Helpers and Staff only."""
         helpers_role = discord.utils.get(ctx.message.server.roles, name="Helpers")
@@ -34,7 +34,7 @@ class Assistance:
     @commands.command()
     async def guide(self):
         """Links to Plailect's guide."""
-        await self.bot.say("The recommended guide for setting up a hacked 3DS is here: https://plailect.github.io/Guide/")
+        await self.bot.say("The recommended guide for setting up a hacked 3DS is here: https://3ds.guide/")
 
     @commands.command()
     async def ez(self):
@@ -77,7 +77,7 @@ class Assistance:
     @commands.command()
     async def gwhs(self):
         """Links to gateway health and safety inject troubleshooting"""
-        await self.bot.say("https://plailect.github.io/Guide/troubleshooting#gw_fbi")
+        await self.bot.say("https://3ds.guide/troubleshooting#gw_fbi")
 
     # hardmodder pastebin list
     @commands.command()
@@ -104,7 +104,7 @@ class Assistance:
     @commands.command()
     async def ctr92(self):
         """Links to ctrtransfer guide"""
-        await self.bot.say("https://plailect.github.io/Guide/9.2.0-ctrtransfer")
+        await self.bot.say("https://3ds.guide/9.2.0-ctrtransfer")
 
     @commands.command()
     async def s4guide(self):
