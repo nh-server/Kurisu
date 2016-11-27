@@ -8,7 +8,7 @@ class CTRErr:
     """
     def __init__(self, bot):
         self.bot = bot
-    print('Addon "CTRErr" has been loaded.')
+        print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     summaries = {
         0: 'Success',

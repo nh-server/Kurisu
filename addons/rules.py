@@ -3,14 +3,13 @@ import discord
 from discord.ext import commands
 from sys import argv
 
-
 class Rules:
     """
     Read da rules.
     """
     def __init__(self, bot):
         self.bot = bot
-    print('Addon "Rules" has been loaded.')
+        print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     @commands.command()
     async def pkmn(self, *gamename):

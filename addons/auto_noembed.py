@@ -11,7 +11,7 @@ class AutoNoEmbed:
     """
     def __init__(self, bot):
         self.bot = bot
-    print('Addon "AutoNoEmbed" has been loaded.')
+        print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     async def on_member_join(self, member):
         server = member.server

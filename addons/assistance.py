@@ -3,14 +3,13 @@ import discord
 from discord.ext import commands
 from sys import argv
 
-
 class Assistance:
     """
     Commands that will mostly be used in #help-and-questions.
     """
     def __init__(self, bot):
         self.bot = bot
-    print('Addon "Assistance" has been loaded.')
+        print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     @commands.command(pass_context=True, name="sr", hidden=True)
     async def staffreq(self, ctx, *, msg_request=""):

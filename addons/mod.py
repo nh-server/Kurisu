@@ -9,7 +9,7 @@ class Mod:
     """
     def __init__(self, bot):
         self.bot = bot
-    print('Addon "Mod" has been loaded.')
+        print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     @commands.has_permissions(administrator=True)
     @commands.command()

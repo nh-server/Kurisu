@@ -9,7 +9,7 @@ class Lockdown:
     """
     def __init__(self, bot):
         self.bot = bot
-    print('Addon "Lockdown" has been loaded.')
+        print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     @commands.has_permissions(manage_messages=True)
     @commands.command(pass_context=True, name="lockdown")

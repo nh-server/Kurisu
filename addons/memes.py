@@ -8,11 +8,11 @@ class Memes:
     """
     def __init__(self, bot):
         self.bot = bot
-    print('Addon "Memes" has been loaded.')
+        print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     def check_channel(self, ctx, msg):
         if ctx.message.channel.name[0:5] == "help-" or ctx.message.channel.name == "friend-codes":
-            return ctx.message.author.mention + " Please do not use meme commands in the help or friend-codes channels."
+            return ctx.message.author.mention + " Meme commands are disabled in this channel."
         else:
             return msg
 

@@ -9,7 +9,7 @@ class Load:
     """
     def __init__(self, bot):
         self.bot = bot
-    print('Addon "Load" has been loaded.')
+        print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     # Load test
     @commands.has_permissions(ban_members=True)
