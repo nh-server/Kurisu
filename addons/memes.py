@@ -61,6 +61,11 @@ class Memes:
     async def permabrocked(self, ctx):
         """Memes."""
         await self.bot.say(self.check_channel(ctx, "http://i.imgur.com/ARsOh3p.jpg"))
+		
+		@commands.command(pass_context=True)
+    async def hazel(self, ctx):
+        """Memes."""
+        await self.bot.say(self.check_channel(ctx, "http://i.imgur.com/vpu8bX3.png"))
 
     @commands.command(pass_context=True)
     async def clap(self, ctx):
