@@ -82,7 +82,7 @@ class Assistance:
     @commands.command()
     async def hmodders(self):
         """Links to approved hardmodder list"""
-        await self.bot.say("Don't want to hardmod yourself? Ask one of the installers on the server! <http://pastebin.com/NG7WVavA>")
+        await self.bot.say("Don't want to hardmod yourself? Ask one of the installers on the server! <https://pastebin.com/chh0hHPk>")
 
     @commands.command()
     async def builds(self):
@@ -97,7 +97,7 @@ class Assistance:
     @commands.command()
     async def fwlist(self):
         """Links to a list of documented serial numbers w/ versions they shipped with."""
-        await self.bot.say("A serial/firmware comparison can be found here: https://www.reddit.com/r/3dshacks/comments/5ahzdf/new_3dsxl2ds_firmware_by_serial_november_2016/")
+        await self.bot.say("A serial/firmware comparison can be found here: https://www.reddit.com/r/3dshacks/comments/5fv3xa/new_3dsxl2ds_firmware_by_serial_december_2016/")
 
     # Links to 9.2 ctrtransfer guide
     @commands.command()

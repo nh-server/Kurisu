@@ -5,7 +5,7 @@ from sys import argv
 
 log = logging.getLogger('discord')
 
-class Announce:
+class Blah:
     """
     Custom addon to make announcements.
     """

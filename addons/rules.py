@@ -12,9 +12,14 @@ class Rules:
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     @commands.command()
-    async def pkmn(self, *gamename):
-        """States some stuff about pokemon sun and moon"""
-        await self.bot.say("As the only way to play Pokémon Sun/Moon right now is via piracy, **we will not help you with the installation**.\nThis includes setting the game up for play on citra and other emulators.")
+    async def unban(self):
+        """States some stuff about no assistance with bans"""
+        await self.bot.say("Please refrain from asking for or giving assistance with unbanning consoles which have been banned from online services. \n Reminder: sharing files that allow other users to evade Nintendo issued bans is a bannable offense. Please refrain from this behavior.")
+
+    @commands.command()
+    async def pirate(self):
+        """Hey! You can't steal another trainer's Pokémon!"""
+        await self.bot.say("Please refrain from asking for or giving assistance with installing or using illegitimately obtained software.")
 
     @commands.command(hidden=True)
     async def nick(self):
