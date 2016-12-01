@@ -32,4 +32,4 @@ class Blah:
         await self.bot.send_message(dest, inp)
 
 def setup(bot):
-    bot.add_cog(Announce(bot))
+    bot.add_cog(Blah(bot))

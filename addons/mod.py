@@ -17,6 +17,16 @@ class Mod:
         await self.bot.say("👋 Bye bye!")
         await self.bot.close()
 
+    @commands.has_permissions(administrator=True)
+    @commands.command(pass_context=True, hidden=True)
+    async def userinfo(self, ctx, user):
+        """Gets user info. Owners only."""
+        u = ctx.message.mentions[0]
+        role = u.top_role.name
+        if role == "@everyone":
+            role = "@ everyone"
+        await self.bot.say("name = {}\nid = {}\ndiscriminator = {}\navatar = {}\nbot = {}\navatar_url = {}\ndefault_avatar = {}\ndefault_avatar_url = <{}>\ncreated_at = {}\ndisplay_name = {}\njoined_at = {}\nstatus = {}\ngame = {}\ncolour = {}\ntop_role = {}\n".format(u.name, u.id, u.discriminator, u.avatar, u.bot, u.avatar_url, u.default_avatar, u.default_avatar_url, u.created_at, u.display_name, u.joined_at, u.status, u.game, u.colour, role))
+
     @commands.has_permissions(manage_messages=True)
     @commands.command(pass_context=True, name="clear")
     async def purge(self, ctx, limit: int):

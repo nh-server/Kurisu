@@ -203,7 +203,7 @@ class CTRErr:
             return '{}'.format(k)
 
     @commands.command(pass_context=True, name="err")
-    async def ez2(self, ctx, err: str):
+    async def err(self, ctx, err: str):
         """Parses CTR error codes. 0x prefix is not required. \n Example: .err 0xD960D02B"""
         err = err.strip()
         if err.startswith("0x"):

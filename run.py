@@ -30,10 +30,10 @@ bot = commands.Bot(command_prefix=prefix, description=description, pm_help=None)
 
 @bot.event
 async def on_ready():
-    print('Starting...')
-    print(bot.user.name)
-    print(bot.user.id)
-    print('------')
+    # this bot should only ever be in one server anyway
+    for server in bot.servers:
+        await bot.send_message(discord.utils.get(server.channels, name="mods"), "{} has started!".format(bot.user.name))
+        break
 
 # outputs all messages to a log file
 logger = logging.getLogger('discord')
@@ -51,6 +51,7 @@ addons = [
     'addons.logs',
     'addons.load',
     'addons.ctrerr',
+    'addons.ninerr',
 ]
 
 for extension in addons:
