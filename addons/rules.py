@@ -84,7 +84,7 @@ class Rules:
     @commands.command(hidden=True)
     async def r11(self):
        """Quotes rule 11."""
-       await self.bot.say("```11. Illegitimate copies and other copyright violations will not be tolerated. This includes:\n- Sharing full game data, such as .3DS/CCI or CIA files, Sharing 'ticket' files, Sharing encryption keys, linking to any site with the purpose of hosting or providing the above.\n\n- Users may choose to admit to piracy if they so wish, however discretion is advised due to legality issues. Please be aware, we have 4,000+ members, and we do not know who is who. If you choose to admit to something, it's your problem, not ours.\n\n- While assistance is heavily discouraged, we ask that those who choose to aid users with piracy anyways keep it in direct messages, rather than on the server.```")
+       await self.bot.say("```11. Illegitimate copies and other copyright violations will not be tolerated. This includes:\n- Sharing full game data, such as .3DS/CCI or CIA files, Sharing 'ticket' files, Sharing titlekeys, linking to any site with the purpose of hosting or providing the former (general encryption keys not associated with piracy are not affected by this).\n- All discussion of piracy is strictly forbidden in help channels. This includes but is not limited to: asking for and giving assistance with piracy, admission of piracy, etc.```")
 
     @commands.command(hidden=True)
     async def r12(self):
