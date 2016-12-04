@@ -1,4 +1,5 @@
 import discord
+import re
 from discord.ext import commands
 from sys import argv
 
@@ -26,6 +27,49 @@ class Mod:
         if role == "@everyone":
             role = "@ everyone"
         await self.bot.say("name = {}\nid = {}\ndiscriminator = {}\navatar = {}\nbot = {}\navatar_url = {}\ndefault_avatar = {}\ndefault_avatar_url = <{}>\ncreated_at = {}\ndisplay_name = {}\njoined_at = {}\nstatus = {}\ngame = {}\ncolour = {}\ntop_role = {}\n".format(u.name, u.id, u.discriminator, u.avatar, u.bot, u.avatar_url, u.default_avatar, u.default_avatar_url, u.created_at, u.display_name, u.joined_at, u.status, u.game, u.colour, role))
+
+    @commands.has_permissions(administrator=True)
+    @commands.command(pass_context=True, hidden=True)
+    async def matchuser(self, ctx, *, rgx: str):
+        """Match users by regex."""
+        server = ctx.message.server
+        author = ctx.message.author
+        msg = "```\nmembers:\n"
+        for m in server.members:
+            if bool(re.search(rgx, m.name, re.IGNORECASE)):
+                msg += "{} - {}#{}\n".format(m.id, m.name, m.discriminator)
+        msg += "```"
+        await self.bot.send_message(author, msg)
+
+    @commands.has_permissions(administrator=True)
+    @commands.command(pass_context=True, hidden=True)
+    async def multiban(self, ctx, *, members: str):
+        """Multi-ban users."""
+        server = ctx.message.server
+        author = ctx.message.author
+        msg = "```\nbanned:\n"
+        for m in ctx.message.mentions:
+            msg += "{} - {}#{}\n".format(m.id, m.name, m.discriminator)
+            await self.bot.ban(m, 7)
+        msg += "```"
+        await self.bot.send_message(author, msg)
+
+    @commands.has_permissions(administrator=True)
+    @commands.command(pass_context=True, hidden=True)
+    async def multibanre(self, ctx, *, rgx: str):
+        """Multi-ban users by regex."""
+        server = ctx.message.server
+        author = ctx.message.author
+        msg = "```\nbanned:\n"
+        toban = []  # because "dictionary changed size during iteration"
+        for m in server.members:
+            if bool(re.search(rgx, m.name, re.IGNORECASE)):
+                msg += "{} - {}#{}\n".format(m.id, m.name, m.discriminator)
+                toban.append(m)
+        for m in toban:
+            await self.bot.ban(m)
+        msg += "```"
+        await print(self.bot.send_message(author, msg))
 
     @commands.has_permissions(manage_messages=True)
     @commands.command(pass_context=True, name="clear")
