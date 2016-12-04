@@ -55,7 +55,7 @@ class Assistance:
     @commands.command()
     async def ntrstream(self):
         """Links to ntr streaming guide"""
-        await self.bot.say("Guide: <http://bit.ly/2fMiKzi>\n3 Common fixes:\n- Are you connected to the internet?\n- Is your antivirus program blocking the program?\n- Does your NTR menu say NTR CFW 3.4 Preview2? ")
+        await self.bot.say("Guide: <http://bit.ly/2fMiKzi>\n4 Common fixes:\n- Are you connected to the internet?\n- Is your antivirus program blocking the program?\n- Make sure you are not putting the port (:####) into the IP box of Nitro Stream.\n- Does your NTR menu say NTR CFW 3.4 Preview2? ")
 
     @commands.command()
     async def update(self):
