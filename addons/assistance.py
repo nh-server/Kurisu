@@ -114,6 +114,11 @@ class Assistance:
     async def ez2(self, ctx, model: str, major: int, minor: int, revision: int, nver: int, region: str, ):
         """Gives you the direct link to your version's page.\nExample: !ez2 Old 11 0 0 33 E"""
         await self.bot.say("https://ez3ds.xyz/checkfw?model={0}&major={1}&minor={2}&revision={3}&nver={4}&region={5}".format(model, major, minor, revision, nver, region))
+        
+    @commands.command()
+    async def lid(self):
+        """Warns not to close the lid"""
+        await self.bot.say("Do not **EVER** close the N3DS lid when on 2.1, otherwise, you **WILL BRICK**.")
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
