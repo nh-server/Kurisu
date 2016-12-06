@@ -215,15 +215,14 @@ class CTRErr:
         level = (rc >> 27) & 0x1F
 
         # garbage
-        result  = ('```\nModule:\n')
-        result += ('  ' + self.get_name(self.modules, mod))
-        result += ('\nDescription:\n')
-        result += ('  ' + self.get_name(self.descriptions, desc))
-        result += ('\nSummary:\n')
-        result += ('  ' + self.get_name(self.summaries, summ))
-        result += ('\nLevel:\n')
-        result += ('  ' + self.get_name(self.levels, level))
-        result += ('\n```')
+        result  = '\n__**Module**__: '
+        result += self.get_name(self.modules, mod)
+        result += '\n__**Description**__: '
+        result += self.get_name(self.descriptions, desc)
+        result += '\n__**Summary**__: '
+        result += self.get_name(self.summaries, summ)
+        result += '\n__**Level**__: '
+        result += self.get_name(self.levels, level)
         await self.bot.say(result)
 
 def setup(bot):
