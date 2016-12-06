@@ -14,7 +14,7 @@ class Memes:
         if ctx.message.channel.name[0:5] == "help-" or ctx.message.channel.name == "friend-codes":
             return ctx.message.author.mention + " Meme commands are disabled in this channel."
         else:
-            return msg
+            return ctx.message.author.display_name + ": " + msg
 
     # 3dshacks memes
     @commands.command(pass_context=True)
@@ -61,18 +61,18 @@ class Memes:
     async def permabrocked(self, ctx):
         """Memes."""
         await self.bot.say(self.check_channel(ctx, "http://i.imgur.com/ARsOh3p.jpg"))
-		
-	
+
+
     @commands.command(pass_context=True)
     async def clap(self, ctx):
         """Memes."""
         await self.bot.say(self.check_channel(ctx, "http://i.imgur.com/UYbIZYs.gifv"))
-		
+
     @commands.command(pass_context=True)
     async def hazel(self, ctx):
         """Memes."""
         await self.bot.say(self.check_channel(ctx, "http://i.imgur.com/vpu8bX3.png"))
-	
+
     @commands.command(pass_context=True)
     async def pbanj(self, ctx):
         """Memes."""
