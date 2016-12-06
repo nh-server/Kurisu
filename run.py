@@ -5,7 +5,7 @@
 # https://github.com/916253/Kurisu
 
 description = """
-A bot being slowly written to replace Saber as Saber is no longer actively developed.
+Kurisu, the bot for the 3DS Hacking Discord! Slowly replacing Saber as it is is no longer actively developed.
 """
 
 # import dependencies
@@ -43,7 +43,7 @@ async def on_ready():
 # outputs errors to a log file, clears every run to save space
 logger = logging.getLogger('discord')
 logger.setLevel(logging.ERROR)
-handler = logging.FileHandler(filename='numberbot_output.log', encoding='utf-8', mode='w')
+handler = logging.FileHandler(filename='kurisu_output.log', encoding='utf-8', mode='w')
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
@@ -63,8 +63,8 @@ for extension in addons:
     try:
         bot.load_extension(extension)
     except Exception as e:
-        print('The addon failed to load! {}\n{}: {}'.format(extension, type(e).__name__, e))
+        print('{} failed to load.\n{}: {}'.format(extension, type(e).__name__, e))
 
 # Execute
-print('Bot directory:', dir_path)
+print('Bot directory: ', dir_path)
 bot.run(config['Main']['token'])
