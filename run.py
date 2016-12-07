@@ -37,7 +37,7 @@ bot = commands.Bot(command_prefix=prefix, description=description, pm_help=None)
 async def on_ready():
     # this bot should only ever be in one server anyway
     for server in bot.servers:
-        await bot.send_message(discord.utils.get(server.channels, name="mods"), "{} has started!".format(bot.user.name))
+        await bot.send_message(discord.utils.get(server.channels, name="helpers"), "{} has started!".format(bot.user.name))
         break
 
 # outputs errors to a log file, clears every run to save space
