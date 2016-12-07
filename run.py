@@ -57,6 +57,7 @@ addons = [
     'addons.load',
     'addons.ctrerr',
     'addons.ninerr',
+    'addons.blah',
 ]
 
 for extension in addons:
