@@ -123,7 +123,7 @@ class Assistance:
     @commands.command()
     async def downgrade(self):
         """Downgrade help"""
-        await self.bot.say("Downgrade methods on 11.0 or above\nDSiWare Downgrade: <https://3ds.guide/dsiware-downgrade>\nHardmod: <http://pastebin.com/chh0hHPk> or <https://gbatemp.net/threads/tutorial-noob-friendly-nand-dumping-2ds-3ds-3ds-xl-n3ds-n3ds-xl.414498/>\nDowngrade Methods on 10.7 or below:\nFollor Plailect's guide here: <https://3ds.guide/get-started>")
+        await self.bot.say("Downgrade methods on 11.0 or above\nDSiWare Downgrade: <https://3ds.guide/dsiware-downgrade>\nHardmod: <http://pastebin.com/chh0hHPk> or <https://gbatemp.net/threads/tutorial-noob-friendly-nand-dumping-2ds-3ds-3ds-xl-n3ds-n3ds-xl.414498/>\nDowngrade Methods on 10.7 or below:\nFollow Plailect's guide here: <https://3ds.guide/get-started>")
         
 def setup(bot):
     bot.add_cog(Assistance(bot))
