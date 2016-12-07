@@ -83,6 +83,11 @@ class Memes:
         await self.bot.say(self.check_channel(ctx, "http://i.imgur.com/UYbIZYs.gifv"))
 
     @commands.command(pass_context=True)
+    async def ayyy(self, ctx):
+        """Memes."""
+        await self.bot.say(self.check_channel(ctx, "http://i.imgur.com/NjMxnB5.gif"))
+    
+    @commands.command(pass_context=True)
     async def hazel(self, ctx):
         """Memes."""
         await self.bot.say(self.check_channel(ctx, "http://i.imgur.com/vpu8bX3.png"))
