@@ -19,7 +19,7 @@ class Mod:
         await self.bot.say("👋 Bye bye!")
         await self.bot.close()
 
-    @commands.has_permissions(administrator=True)
+    @commands.has_permissions(manage_server=True)
     @commands.command(hidden=True)
     async def pull(self, *gamename):
         """Pull new changes from GitHub and restart."""
