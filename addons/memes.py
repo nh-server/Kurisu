@@ -36,6 +36,11 @@ class Memes:
     async def inori(self, ctx):
         """Memes."""
         await self.bot.say(self.check_channel(ctx, "https://i.imgur.com/WLncIsi.gif"))
+        
+    @commands.command(pass_context=True)
+    async def inori2(self, ctx):
+        """Memes."""
+        await self.bot.say(self.check_channel(ctx, "http://i.imgur.com/V0uu99A.jpg"))
 
     @commands.command(pass_context=True)
     async def kina(self, ctx):
@@ -61,6 +66,11 @@ class Memes:
     async def permabrocked(self, ctx):
         """Memes."""
         await self.bot.say(self.check_channel(ctx, "http://i.imgur.com/ARsOh3p.jpg"))
+        
+     @commands.command(pass_context=True)
+    async def knp(self, ctx):
+        """Memes."""
+        await self.bot.say(self.check_channel(ctx, "http://i.imgur.com/EsJ191C.png"))
 
 
     @commands.command(pass_context=True)
