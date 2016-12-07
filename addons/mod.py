@@ -219,7 +219,25 @@ class Mod:
     async def playing(self, ctx, *gamename):
         """Sets playing message. Staff only."""
         try:
-            await self.bot.change_status(game=discord.Game(name='{0}'.format(" ".join(gamename))))
+            await self.bot.change_presence(game=discord.Game(name='{0}'.format(" ".join(gamename))))
+        except discord.errors.Forbidden:
+            await self.bot.say("💢 I don't have permission to do this.")
+
+    @commands.has_permissions(ban_members=True)
+    @commands.command(pass_context=True)
+    async def status(self, ctx, status):
+        """Sets status. Staff only."""
+        try:
+            if status == "online":
+                await self.bot.change_presence(status=discord.Status.online)
+            elif status == "offline":
+                await self.bot.change_presence(status=discord.Status.offline)
+            elif status == "idle":
+                await self.bot.change_presence(status=discord.Status.idle)
+            elif status == "dnd":
+                await self.bot.change_presence(status=discord.Status.dnd)
+            elif status == "invisible":
+                await self.bot.change_presence(status=discord.Status.invisible)
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
