@@ -30,6 +30,9 @@ class NinErr:
     @commands.command(pass_context=True, name="ninerr")
     async def ninerr(self, ctx, err: str):
         """Parses Nintendo 3DS error codes."""
+        if len(err) != 8 or err[3] != "-":
+            await self.bot.say("Wrong format. Error codes use the format `XXX-YYYY`.")
+            return
         result = "**{}**\n".format(err)
         if err not in self.errcodes:
             result += "I don't know this one! Try this page: <http://www.nintendo.com/consumer/wfc/en_na/ds/results.jsp?error_code={}&system=3DS&locale=en_US>".format(err)
