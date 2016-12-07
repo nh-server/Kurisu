@@ -1,6 +1,7 @@
 import discord
 import re
 from discord.ext import commands
+from subprocess import call
 from sys import argv
 
 class Mod:
@@ -16,6 +17,15 @@ class Mod:
     async def quit(self, *gamename):
         """Stops the bot."""
         await self.bot.say("👋 Bye bye!")
+        await self.bot.close()
+
+    @commands.has_permissions(administrator=True)
+    @commands.command(hidden=True)
+    async def pull(self, *gamename):
+        """Pull new changes from GitHub and restart."""
+        await self.bot.say("Pulling changes...")
+        call(['git', 'pull'])
+        await self.bot.say("👋 Restarting bot!")
         await self.bot.close()
 
     @commands.has_permissions(administrator=True)
