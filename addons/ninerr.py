@@ -19,9 +19,9 @@ class NinErr:
         '022-2631': 'Nintendo Network ID deleted, or not usable on the current system. If you used System Transfer, the Nintendo Network ID will only work on the target system.',
         '022-2634': 'Nintendo Network ID is not correctly linked on the system. This can be a result of formatting the SysNAND using System Settings to unlink it from the EmuNAND.\n\n<steps on how to fix>\n\nTinyFormat is recommended for unlinking in the future.',
         '022-2812': 'System is banned by Nintendo. You cannot ask how to fix this issue here.',
-        '007-2404': 'An error occurred while attempting to connect to the Nintendo eShop. Make sure you are running the latest firmware, since this error will appear if you are trying to access the eShop on older versions.',
+        '007-2404': 'An error occurred while attempting to connect to the Nintendo eShop. \nMake sure you are running the latest firmware, since this error will appear if you are trying to access the eShop on older versions.',
         '007-2100': 'The Nintendo eShop is currently unavailable. Please try again later.',
-        '005-5964': 'Your Nintendo Network ID has been banned from accessing the eShop. If you think this was unwarranted, you will have to contact Nintendo Support to have it reversed.',
+        '005-5964': 'Your Nintendo Network ID has been banned from accessing the eShop. \nIf you think this was unwarranted, you will have to contact Nintendo Support to have it reversed.',
         
     }
 
