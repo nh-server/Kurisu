@@ -42,7 +42,7 @@ class Lockdown:
             overwrites.send_messages = False
             await self.bot.edit_channel_permissions(ctx.message.channel, everyone_role, overwrites)
             await self.bot.say("🔒 Channel locked.")
-            msg = "🔒 **Lockdown**: {0} by {1} | {2}#{3}".format(ctx.message.channel.mention, ctx.message.author.mention, ctx.message.author.name, ctx.message.author.discriminator)
+            msg = "🔒 **Soft-lock**: {0} by {1} | {2}#{3}".format(ctx.message.channel.mention, ctx.message.author.mention, ctx.message.author.name, ctx.message.author.discriminator)
             await self.bot.send_message(discord.utils.get(ctx.message.server.channels, name="mod-logs"), msg)
        except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
