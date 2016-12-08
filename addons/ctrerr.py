@@ -202,7 +202,7 @@ class CTRErr:
         else:
             return '{}'.format(k)
 
-    @commands.command(pass_context=True, name="err")
+    @commands.command(pass_context=True)
     async def err(self, ctx, err: str):
         """Parses CTR error codes. 0x prefix is not required. \n Example: .err 0xD960D02B"""
         err = err.strip()
@@ -224,6 +224,26 @@ class CTRErr:
         result += '\n__**Level**__: '
         result += self.get_name(self.levels, level)
         await self.bot.say(result)
+
+    @commands.command(pass_context=True)
+    async def err2(self, ctx, err: str):
+        """Parses CTR error codes, with a fancy embed (TEST). 0x prefix is not required. \n Example: .err 0xD960D02B"""
+        err = err.strip()
+        if err.startswith("0x"):
+            err = err[2:]
+        rc = int(err, 16)
+        desc  = rc & 0x3FF
+        mod   = (rc >> 10) & 0xFF
+        summ  = (rc >> 21) & 0x3F
+        level = (rc >> 27) & 0x1F
+
+        # garbage
+        embed = discord.Embed(title="0x{:X}".format(rc))
+        embed.add_field(name="Module", value=self.get_name(self.modules, mod), inline=False)
+        embed.add_field(name="Description", value=self.get_name(self.modules, desc), inline=False)
+        embed.add_field(name="Summary", value=self.get_name(self.modules, summ), inline=False)
+        embed.add_field(name="Level", value=self.get_name(self.modules, level), inline=False)
+        await self.bot.say("", embed=embed)
 
 def setup(bot):
     bot.add_cog(CTRErr(bot))
