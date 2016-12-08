@@ -30,6 +30,11 @@ os.chdir(dir_path)
 config = configparser.ConfigParser()
 config.read("config.ini")
 
+# create warns.json if it doesn't exist
+if not os.path.isfile("warns.json"):
+    with open("warns.json", "w") as f:
+        f.write("{}")
+
 prefix = ['.']
 bot = commands.Bot(command_prefix=prefix, description=description, pm_help=None)
 
@@ -53,6 +58,7 @@ addons = [
     'addons.rules',
     'addons.assistance',
     'addons.mod',
+    'addons.mod_warn',
     'addons.logs',
     'addons.load',
     'addons.ctrerr',
