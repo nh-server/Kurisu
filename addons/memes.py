@@ -85,16 +85,16 @@ class Memes:
         """Memes."""
         await self.bot.say(self._check_channel(ctx, "http://i.imgur.com/EsJ191C.png"))
 
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, hidden=True)
     async def xarec(self, ctx):
         """Memes."""
         await self.bot.say(self._check_channel(ctx, "https://i.imgur.com/wRVuidH.gif"))
-        
-    @commands.command(pass_context=True)
+
+    @commands.command(pass_context=True, hidden=True)
     async def mitchy(self, ctx):
         """Memes."""
-        await self.bot.say(self._check_channel(ctx, "https://i.imgur.com/nTVZTwt.gif"))    
-    
+        await self.bot.say(self._check_channel(ctx, "https://i.imgur.com/nTVZTwt.gif"))
+
     @commands.command(pass_context=True, hidden=True)
     async def clap(self, ctx):
         """Memes."""
