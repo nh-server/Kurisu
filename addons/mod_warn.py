@@ -43,7 +43,7 @@ class ModWarn:
         if reason != "":
             # much \n
             msg += " The given reason is: " + reason
-        msg += "\n\nPlease read the rules in #welcome. This is warn #{}.".format(len(warns[member.id]["warns"]))
+        msg += "\n\nPlease read the rules in #welcome-and-rules. This is warn #{}.".format(len(warns[member.id]["warns"]))
         await self.bot.send_message(member, msg)
         await self.bot.say("{} warned.".format(member))
         msg = "⚠️ **Warned**: {} warned {} (warn #{}) | {}#{}".format(issuer.mention, member.mention, len(warns[member.id]["warns"]), member.name, member.discriminator)
