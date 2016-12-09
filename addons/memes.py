@@ -103,7 +103,7 @@ class Memes:
     @commands.command(pass_context=True, hidden=True)
     async def ayyy(self, ctx):
         """Memes."""
-        await self._meme(ctx, "http://i.imgur.com/NjMxnB5.gif")
+        await self._meme(ctx, "http://i.imgur.com/bgvuHAd.png")
 
     @commands.command(pass_context=True, hidden=True)
     async def hazel(self, ctx):
