@@ -28,8 +28,8 @@ class Rules:
 
     @commands.command()
     async def rules(self):
-       """Displays rule command list."""
-       await self.bot.say("``` .r1\n.r2\n.r3\n.r4\n.r5\n.r6\n.r7\n.r8\n.r9\n.r10\n.r11\n.r12\n.r13\n.r14\n.nick```")
+       """Links to 3dshacks.ml."""
+       await self.bot.say("Please check <#196618637950451712> or <http://3dshacks.ml> for a full list of rules")
 
     @commands.command(hidden=True)
     async def r1(self):
