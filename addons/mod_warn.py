@@ -31,7 +31,7 @@ class ModWarn:
             warns[member.id] = {"warns": {}}
         warns[member.id]["name"] = member.name + "#" + member.discriminator
         # 2015-12-28 05:37:55.743000
-        timestamp = time.strftime("%Y-%m-%d %H:%M:%S.%f", time.localtime())
+        timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         warns[member.id]["warns"][len(warns[member.id]["warns"]) + 1] = {"issuer_id": issuer.id, "issuer_name": issuer.name, "reason": reason, "timestamp": timestamp}
         with open("warns.json", "w") as f:
             json.dump(warns, f)
