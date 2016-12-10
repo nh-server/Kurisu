@@ -14,7 +14,7 @@ class Rules:
     @commands.command()
     async def consoleban(self):
         """States some stuff about no assistance with bans"""
-        await self.bot.say("Please refrain from asking for or giving assistance with unbanning consoles which have been banned from online services.\nReminder: sharing files that allow other users to evade Nintendo issued bans is a bannable offense. Please refrain from this behavior.")
+        await self.bot.say("Please refrain from asking for or giving assistance with unbanning consoles which have been banned from online services.\nReminder: sharing files that allow other users to evade Nintendo issued bans is a bannable offense.")
 
     @commands.command()
     async def pirate(self):
