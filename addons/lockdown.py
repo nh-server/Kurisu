@@ -50,7 +50,7 @@ class Lockdown:
     @commands.has_permissions(manage_messages=True)
     @commands.command(pass_context=True, name="unlock")
     async def unlock(self, ctx):
-       """Unock message sending in the channel. Staff only."""
+       """Unlock message sending in the channel. Staff only."""
        try:
             everyone_role = discord.utils.get(ctx.message.server.roles, name="@everyone")
             overwrites = ctx.message.channel.overwrites_for(everyone_role)
