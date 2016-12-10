@@ -21,6 +21,10 @@ class ModWarn:
         member = ctx.message.mentions[0]
         issuer = ctx.message.author
         server = ctx.message.author.server
+        staff_role = discord.utils.get(ctx.message.server.roles, name="Staff")
+        if staff_role in member.roles:
+            await self.bot.say("You can't warn another staffer with this command!")
+            return
         with open("warns.json", "r") as f:
             warns = json.load(f)
         if member.id not in warns:
@@ -37,10 +41,21 @@ class ModWarn:
             # much \n
             msg += " The given reason is: " + reason
         msg += "\n\nPlease read the rules in #welcome-and-rules. This is warn #{}.".format(len(warns[member.id]["warns"]))
+        warn_count = len(warns[member.id]["warns"])
+        if warn_count == 2:
+            msg += " __The next warn will automatically kick.__"
+        if warn_count == 3:
+            msg += "\n\nYou were kicked because of this warning. You can join again, but one more warn will result in a ban."
         try:
             await self.bot.send_message(member, msg)
         except discord.errors.Forbidden:
             pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
+        if warn_count == 3:
+            self.bot.autokickbans.append("wk:"+member.id)
+            await self.bot.kick(member)
+        if warn_count == 4:
+            self.bot.autokickbans.append("wb:"+member.id)
+            await self.bot.ban(member)
         await self.bot.say("{} warned.".format(member))
         msg = "⚠️ **Warned**: {} warned {} (warn #{}) | {}#{}".format(issuer.mention, member.mention, len(warns[member.id]["warns"]), member.name, member.discriminator)
         if reason != "":

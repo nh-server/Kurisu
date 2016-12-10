@@ -15,31 +15,39 @@ class Logs:
 
     async def on_member_join(self, member):
         server = member.server
-        msg = "✅ **Join**: {0} | {1}#{2}\n🗓 __Creation__: {3}".format(
+        msg = "✅ **Join**: {} | {}#{}\n🗓 __Creation__: {}".format(
             member.mention, member.name, member.discriminator, member.created_at
         )
         await self.bot.send_message(discord.utils.get(server.channels, name="server-logs"), msg)
 
     async def on_member_remove(self, member):
         server = member.server
-        msg = "⬅️ **Leave**: {0} | {1}#{2}".format(member.mention, member.name, member.discriminator)
+        msg = "{}: {} | {}#{}".format("👢 **Auto-kick**" if "wk:"+member.id in self.bot.autokickbans else "⬅️ **Leave**", member.mention, member.name, member.discriminator)
         await self.bot.send_message(discord.utils.get(server.channels, name="server-logs"), msg)
+        print("wk:"+member.id in self.bot.autokickbans)
+        if "wk:"+member.id in self.bot.autokickbans:
+            self.bot.autokickbans.remove("wk:"+member.id)
+            await self.bot.send_message(discord.utils.get(server.channels, name="mod-logs"), msg)
 
     async def on_member_ban(self, member):
         server = member.server
-        msg = "⛔ **Ban**: {0} | {1}#{2}".format(member.mention, member.name, member.discriminator)
+        msg = "⛔ **{}**: {} | {}#{}".format("Auto-ban" if "wb:"+member.id in self.bot.autokickbans else "Ban", member.mention, member.name, member.discriminator)
         await self.bot.send_message(discord.utils.get(server.channels, name="server-logs"), msg)
-        await self.bot.send_message(discord.utils.get(server.channels, name="mod-logs"), msg + "\nThe responsible staff member should add an explanation below.")
+        if "wb:"+member.id in self.bot.autokickbans:
+            self.bot.autokickbans.remove("wb:"+member.id)
+        else:
+            "\nThe responsible staff member should add an explanation below."
+        await self.bot.send_message(discord.utils.get(server.channels, name="mod-logs"), msg)
 
     async def on_member_unban(self, server, user):
-        msg = "⚠️ **Unban**: {0} | {1}#{2}".format(user.mention, user.name, user.discriminator)
+        msg = "⚠️ **Unban**: {} | {}#{}".format(user.mention, user.name, user.discriminator)
         await self.bot.send_message(discord.utils.get(server.channels, name="mod-logs"), msg)
 
     async def on_member_update(self, member_before, member_after):
         do_log = False  # only nickname and roles should be logged
         dest = "mod-logs"
         server = member_after.server
-        msg = "ℹ️ **Member update**: {0} | {1}#{2}".format(member_after.mention, member_after.name, member_after.discriminator)
+        msg = "ℹ️ **Member update**: {} | {}#{}".format(member_after.mention, member_after.name, member_after.discriminator)
         if member_before.roles != member_after.roles:
             do_log = True
             # role removal
@@ -69,7 +77,7 @@ class Logs:
         if member_before.name != member_after.name:
             do_log = True
             dest = "server-logs"
-            msg += "\n📝 __Username change__: {0} → {1}".format(member_before.name, member_after.name)
+            msg += "\n📝 __Username change__: {} → {}".format(member_before.name, member_after.name)
         if member_before.nick != member_after.nick:
             do_log = True
             if member_before.nick == None:
