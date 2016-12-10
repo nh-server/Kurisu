@@ -38,7 +38,7 @@ if not os.path.isfile("warns.json"):
 prefix = ['.']
 bot = commands.Bot(command_prefix=prefix, description=description, pm_help=None)
 
-bot.autokickbans = []  # changes messages in mod-/server-logs
+bot.kickbans = []  # changes messages in mod-/server-logs
 
 @bot.event
 async def on_ready():

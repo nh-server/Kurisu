@@ -105,6 +105,7 @@ class Mod:
                 msg += " The given reason is: " + reason
             msg += "\n\nYou are able to rejoin the server, but please read the rules in #welcome-and-rules before participating again."
             await self.bot.send_message(member, msg)
+            self.bot.kickbans.append("uk:"+member.id)
             await self.bot.kick(member)
             await self.bot.say("{0} is now gone. 👌".format(member))
             msg = "👢 **Kick**: {0} kicked {1} | {2}#{3}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator)
