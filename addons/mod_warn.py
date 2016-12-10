@@ -4,7 +4,6 @@ import time
 from discord.ext import commands
 from sys import argv
 
-# TODO: list warnings
 # TODO: clear warnings
 
 class ModWarn:
@@ -14,12 +13,6 @@ class ModWarn:
     def __init__(self, bot):
         self.bot = bot
         print('Addon "{}" loaded'.format(self.__class__.__name__))
-
-    @commands.command(hidden=True, pass_context=True)
-    async def wtest(self, ctx, usr):
-        print(ctx.message.mentions)
-        mention = ctx.message.mentions[0]
-        await self.bot.say(mention.id + " " + mention.name)
 
     @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True)
@@ -35,7 +28,7 @@ class ModWarn:
         warns[member.id]["name"] = member.name + "#" + member.discriminator
         # 2015-12-28 05:37:55.743000
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S.%f", time.localtime())
-        warns[member.id]["warns"][len(warns[member.id]["warns"])] = {"issuer_id": issuer.id, "reason": reason, "timestamp": timestamp}
+        warns[member.id]["warns"][len(warns[member.id]["warns"]) + 1] = {"issuer_id": issuer.id, "issuer_name": issuer.name, "reason": reason, "timestamp": timestamp}
         with open("warns.json", "w") as f:
             json.dump(warns, f)
         #await self.bot.say(json.dumps(warns))
@@ -44,13 +37,41 @@ class ModWarn:
             # much \n
             msg += " The given reason is: " + reason
         msg += "\n\nPlease read the rules in #welcome-and-rules. This is warn #{}.".format(len(warns[member.id]["warns"]))
-        await self.bot.send_message(member, msg)
+        try:
+            await self.bot.send_message(member, msg)
+        except discord.errors.Forbidden:
+            pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
         await self.bot.say("{} warned.".format(member))
         msg = "⚠️ **Warned**: {} warned {} (warn #{}) | {}#{}".format(issuer.mention, member.mention, len(warns[member.id]["warns"]), member.name, member.discriminator)
         if reason != "":
             # much \n
             msg += "\n✏️ __Reason__: " + reason
         await self.bot.send_message(discord.utils.get(server.channels, name="mod-logs"), msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.warn <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
+
+    @commands.has_permissions(manage_nicknames=True)
+    @commands.command(pass_context=True)
+    async def listwarns(self, ctx, user):
+        """List warns for a user. Staff only."""
+        member = ctx.message.mentions[0]
+        #embed = discord.Embed(title="Warns for {}#{}".format(member.display_name, member.discriminator), color=discord.Color.dark_red())
+        embed = discord.Embed(color=discord.Color.dark_red())
+        embed.set_author(name="Warns for {}#{}".format(member.display_name, member.discriminator), icon_url=member.avatar_url)
+        with open("warns.json", "r") as f:
+            warns = json.load(f)
+        # crappy workaround given how dicts are not ordered
+        try:
+            warn_count = len(warns[member.id]["warns"])
+            if warn_count == 0:
+                embed.description = "There are none!"
+                embed.color = discord.Color.green()
+            else:
+                for key in range(warn_count):
+                    warn = warns[member.id]["warns"][str(key + 1)]
+                    embed.add_field(name="{}: {}".format(key + 1, warn["timestamp"]), value="Issuer: {}\nReason: {}".format(warn["issuer_name"], warn["reason"]))
+        except KeyError:  # if the user is not in the file
+            embed.description = "There are none!"
+            embed.color = discord.Color.green()
+        await self.bot.say("", embed=embed)
 
 def setup(bot):
     bot.add_cog(ModWarn(bot))
