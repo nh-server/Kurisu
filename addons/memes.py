@@ -12,7 +12,12 @@ class Memes:
 
     async def _meme(self, ctx, msg):
         if ctx.message.channel.name[0:5] == "help-" or ctx.message.channel.name == "friend-codes":
-            await self.bot.say(ctx.message.author.mention + " Meme commands are disabled in this channel.")
+            author = ctx.message.author
+            await self.bot.delete_message(ctx.message)
+            try:
+                await self.bot.send_message(author, "Meme commands are disabled in the help-and-questions and friend-code channels.")
+            except discord.errors.Forbidden:
+                await self.bot.say(author.mention + " Meme commands are disabled in the help-and-questions and friend-code channels.")
         else:
             await self.bot.say(ctx.message.author.display_name + ": " + msg)
 
