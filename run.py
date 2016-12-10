@@ -56,17 +56,18 @@ logger.addHandler(handler)
 
 # loads extensions
 addons = [
-    'addons.memes',
-    'addons.rules',
     'addons.assistance',
-    'addons.mod',
-    'addons.mod_warn',
-    'addons.logs',
-    'addons.load',
-    'addons.ctrerr',
-    'addons.ninerr',
     'addons.blah',
+    'addons.ctrerr',
+    'addons.extras',
+    'addons.load',
     'addons.lockdown',
+    'addons.logs',
+    'addons.memes',
+    'addons.mod_warn',
+    'addons.mod',
+    'addons.ninerr',
+    'addons.rules',
 ]
 
 for extension in addons:
