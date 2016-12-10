@@ -104,7 +104,10 @@ class Mod:
                 # much \n
                 msg += " The given reason is: " + reason
             msg += "\n\nYou are able to rejoin the server, but please read the rules in #welcome-and-rules before participating again."
-            await self.bot.send_message(member, msg)
+            try:
+                await self.bot.send_message(member, msg)
+            except discord.errors.Forbidden:
+                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
             self.bot.kickbans.append("uk:"+member.id)
             await self.bot.kick(member)
             await self.bot.say("{0} is now gone. 👌".format(member))
@@ -113,7 +116,7 @@ class Mod:
                 # much \n
                 msg += "\n✏️ __Reason__: " + reason
             await self.bot.send_message(discord.utils.get(server.channels, name="server-logs"), msg)
-            await self.bot.send_message(discord.utils.get(server.channels, name="mod-logs"), msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.kick <user> [reason]`." if reason == "" else ""))
+            await self.bot.send_message(discord.utils.get(server.channels, name="mod-logs"), msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.kick <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
