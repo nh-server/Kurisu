@@ -25,6 +25,12 @@ class Blah:
         channel = ctx.message.channel_mentions[0]
         await self.bot.send_message(channel, inp)
 
+    @commands.has_permissions(ban_members=True)
+    @commands.command(hidden=True, pass_context=True)
+    async def sendtyping(self, ctx, channel_destination: str):
+        channel = ctx.message.channel_mentions[0]
+        await self.bot.send_typing(channel)
+
     @commands.has_permissions(administrator=True)
     @commands.command(hidden=True, pass_context=True)
     async def dm(self, ctx, channel_destination: str, *, inp):
