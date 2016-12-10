@@ -51,10 +51,10 @@ class ModWarn:
         except discord.errors.Forbidden:
             pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
         if warn_count == 3:
-            self.bot.autokickbans.append("wk:"+member.id)
+            self.bot.actions.append("wk:"+member.id)
             await self.bot.kick(member)
         if warn_count == 4:
-            self.bot.autokickbans.append("wb:"+member.id)
+            self.bot.actions.append("wb:"+member.id)
             await self.bot.ban(member)
         await self.bot.say("{} warned.".format(member))
         msg = "⚠️ **Warned**: {} warned {} (warn #{}) | {}#{}".format(issuer.mention, member.mention, len(warns[member.id]["warns"]), member.name, member.discriminator)

@@ -5,7 +5,7 @@
 # https://github.com/916253/Kurisu
 
 description = """
-Kurisu, the bot for the 3DS Hacking Discord! Slowly replacing Saber as it is is no longer actively developed.
+Kurisu, the bot for the 3DS Hacking Discord! Slowly replacing Saber as it is no longer actively developed.
 """
 
 # import dependencies
@@ -40,10 +40,15 @@ if not os.path.isfile("restrictions.json"):
     with open("restrictions.json", "w") as f:
         f.write("{}")
 
+# create staff.json if it doesn't exist
+if not os.path.isfile("staff.json"):
+    with open("staff.json", "w") as f:
+        f.write("{}")
+
 prefix = ['.']
 bot = commands.Bot(command_prefix=prefix, description=description, pm_help=None)
 
-bot.kickbans = []  # changes messages in mod-/server-logs
+bot.actions = []  # changes messages in mod-/server-logs
 
 @bot.event
 async def on_ready():
@@ -69,6 +74,7 @@ addons = [
     'addons.lockdown',
     'addons.logs',
     'addons.memes',
+    'addons.mod_staff',
     'addons.mod_warn',
     'addons.mod',
     'addons.ninerr',
