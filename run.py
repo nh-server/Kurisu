@@ -5,7 +5,7 @@
 # https://github.com/916253/Kurisu
 
 description = """
-Kurisu, the bot for the 3DS Hacking Discord! Slowly replacing Saber as it is is no longer actively developed.
+Kurisu, the bot for the 3DS Hacking Discord! Slowly replacing Saber as it is no longer actively developed.
 """
 
 # import dependencies
