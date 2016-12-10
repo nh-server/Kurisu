@@ -35,6 +35,11 @@ if not os.path.isfile("warns.json"):
     with open("warns.json", "w") as f:
         f.write("{}")
 
+# create restrictions.json if it doesn't exist
+if not os.path.isfile("restrictions.json"):
+    with open("restrictions.json", "w") as f:
+        f.write("{}")
+
 prefix = ['.']
 bot = commands.Bot(command_prefix=prefix, description=description, pm_help=None)
 

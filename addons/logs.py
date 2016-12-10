@@ -1,5 +1,6 @@
 import logging
 import discord
+import json
 from discord.ext import commands
 from sys import argv
 
@@ -19,6 +20,13 @@ class Logs:
             member.mention, member.name, member.discriminator, member.created_at
         )
         await self.bot.send_message(discord.utils.get(server.channels, name="server-logs"), msg)
+        with open("restrictions.json", "r") as f:
+            rsts = json.load(f)
+        if member.id in rsts:
+            roles = []
+            for rst in rsts[member.id]:
+                roles.append(discord.utils.get(server.roles, name=rst))
+            await self.bot.add_roles(member, *roles)
 
     async def on_member_remove(self, member):
         if "uk:"+member.id in self.bot.kickbans:
@@ -26,7 +34,6 @@ class Logs:
         server = member.server
         msg = "{}: {} | {}#{}".format("👢 **Auto-kick**" if "wk:"+member.id in self.bot.kickbans else "⬅️ **Leave**", member.mention, member.name, member.discriminator)
         await self.bot.send_message(discord.utils.get(server.channels, name="server-logs"), msg)
-        print("wk:"+member.id in self.bot.kickbans)
         if "wk:"+member.id in self.bot.kickbans:
             self.bot.kickbans.remove("wk:"+member.id)
             await self.bot.send_message(discord.utils.get(server.channels, name="mod-logs"), msg)
