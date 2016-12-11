@@ -29,21 +29,21 @@ class Logs:
             await self.bot.add_roles(member, *roles)
 
     async def on_member_remove(self, member):
-        if "uk:"+member.id in self.bot.kickbans:
+        if "uk:"+member.id in self.bot.actions:
             return
         server = member.server
-        msg = "{}: {} | {}#{}".format("👢 **Auto-kick**" if "wk:"+member.id in self.bot.kickbans else "⬅️ **Leave**", member.mention, member.name, member.discriminator)
+        msg = "{}: {} | {}#{}".format("👢 **Auto-kick**" if "wk:"+member.id in self.bot.actions else "⬅️ **Leave**", member.mention, member.name, member.discriminator)
         await self.bot.send_message(discord.utils.get(server.channels, name="server-logs"), msg)
-        if "wk:"+member.id in self.bot.kickbans:
-            self.bot.kickbans.remove("wk:"+member.id)
+        if "wk:"+member.id in self.bot.actions:
+            self.bot.actions.remove("wk:"+member.id)
             await self.bot.send_message(discord.utils.get(server.channels, name="mod-logs"), msg)
 
     async def on_member_ban(self, member):
         server = member.server
-        msg = "⛔ **{}**: {} | {}#{}".format("Auto-ban" if "wb:"+member.id in self.bot.kickbans else "Ban", member.mention, member.name, member.discriminator)
+        msg = "⛔ **{}**: {} | {}#{}".format("Auto-ban" if "wb:"+member.id in self.bot.actions else "Ban", member.mention, member.name, member.discriminator)
         await self.bot.send_message(discord.utils.get(server.channels, name="server-logs"), msg)
-        if "wb:"+member.id in self.bot.kickbans:
-            self.bot.kickbans.remove("wb:"+member.id)
+        if "wb:"+member.id in self.bot.actions:
+            self.bot.actions.remove("wb:"+member.id)
         else:
             "\nThe responsible staff member should add an explanation below."
         await self.bot.send_message(discord.utils.get(server.channels, name="mod-logs"), msg)

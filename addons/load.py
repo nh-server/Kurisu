@@ -20,10 +20,9 @@ class Load:
             if module[0:7] != "addons.":
                 module = "addons." + module
             self.bot.load_extension(module)
+            await self.bot.say('✅ Extension unloaded.')
         except Exception as e:
             await self.bot.say('💢 Failed!\n```\n{}: {}\n```'.format(type(e).__name__, e))
-        else:
-            await self.bot.say('✅ Extension loaded.')
 
     @commands.has_permissions(ban_members=True)
     @commands.command(hidden=True)
@@ -36,10 +35,9 @@ class Load:
                 await self.bot.say("❌ I don't think you want to unload that!")
             else:
                 self.bot.unload_extension(module)
+                await self.bot.say('✅ Extension unloaded.')
         except Exception as e:
             await self.bot.say('💢 Failed!\n```\n{}: {}\n```'.format(type(e).__name__, e))
-        else:
-            await self.bot.say('✅ Extension unloaded.')
 
     @commands.has_permissions(ban_members=True)
     @commands.command(name='reload', hidden=True)
@@ -50,15 +48,9 @@ class Load:
                 module = "addons." + module
             self.bot.unload_extension(module)
             self.bot.load_extension(module)
+            await self.bot.say('✅ Extension unloaded.')
         except Exception as e:
             await self.bot.say('💢 Failed!\n```\n{}: {}\n```'.format(type(e).__name__, e))
-        else:
-            await self.bot.say('✅ Extension reloaded.')
-
-    @commands.command(hidden=True)
-    async def addonlist(self):
-       """lists addons."""
-       await self.bot.say("assistance\nauto_noembed\nauto_probation\nblah\nctrerr\nload\nlockdown\nlogs\nmemes\nmod\nrules")
 
 def setup(bot):
     bot.add_cog(Load(bot))
