@@ -45,7 +45,7 @@ if not os.path.isfile("staff.json"):
     with open("staff.json", "w") as f:
         f.write("{}")
 
-prefix = ['.']
+prefix = ['!', '.']
 bot = commands.Bot(command_prefix=prefix, description=description, pm_help=None)
 
 bot.actions = []  # changes messages in mod-/server-logs
