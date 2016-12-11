@@ -4,8 +4,6 @@ import time
 from discord.ext import commands
 from sys import argv
 
-# TODO: clear warnings
-
 class ModWarn:
     """
     Warn commands.
@@ -30,12 +28,10 @@ class ModWarn:
         if member.id not in warns:
             warns[member.id] = {"warns": {}}
         warns[member.id]["name"] = member.name + "#" + member.discriminator
-        # 2015-12-28 05:37:55.743000
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         warns[member.id]["warns"][len(warns[member.id]["warns"]) + 1] = {"issuer_id": issuer.id, "issuer_name": issuer.name, "reason": reason, "timestamp": timestamp}
         with open("warns.json", "w") as f:
             json.dump(warns, f)
-        #await self.bot.say(json.dumps(warns))
         msg = "You were warned on {}.".format(server.name)
         if reason != "":
             # much \n
@@ -56,7 +52,7 @@ class ModWarn:
         if warn_count == 4:
             self.bot.actions.append("wb:"+member.id)
             await self.bot.ban(member)
-        await self.bot.say("{} warned.".format(member))
+        await self.bot.say("{} warned.".format(member.mention))
         msg = "⚠️ **Warned**: {} warned {} (warn #{}) | {}#{}".format(issuer.mention, member.mention, len(warns[member.id]["warns"]), member.name, member.discriminator)
         if reason != "":
             # much \n
@@ -68,7 +64,6 @@ class ModWarn:
     async def listwarns(self, ctx, user):
         """List warns for a user. Staff only."""
         member = ctx.message.mentions[0]
-        #embed = discord.Embed(title="Warns for {}#{}".format(member.display_name, member.discriminator), color=discord.Color.dark_red())
         embed = discord.Embed(color=discord.Color.dark_red())
         embed.set_author(name="Warns for {}#{}".format(member.display_name, member.discriminator), icon_url=member.avatar_url)
         with open("warns.json", "r") as f:
@@ -87,6 +82,27 @@ class ModWarn:
             embed.description = "There are none!"
             embed.color = discord.Color.green()
         await self.bot.say("", embed=embed)
+
+    @commands.has_permissions(manage_nicknames=True)
+    @commands.command(pass_context=True)
+    async def clearwarns(self, ctx, user):
+        """Clear all warns for a user. Staff only."""
+        member = ctx.message.mentions[0]
+        with open("warns.json", "r") as f:
+            warns = json.load(f)
+        if member.id not in warns:
+            await self.bot.say("{} has no warns!".format(member.mention))
+            return
+        warn_count = len(warns[member.id]["warns"])
+        if warn_count == 0:
+            await self.bot.say("{} has no warns!".format(member.mention))
+            return
+        warns[member.id] = {"warns": {}}
+        with open("warns.json", "w") as f:
+            json.dump(warns, f)
+        await self.bot.say("{} no longer has any warns!".format(member.mention))
+        msg = "🗑 **Cleared warns**: {} cleared {} warns from {} | {}#{}".format(ctx.message.author.mention, warn_count, member.mention, member.name, member.discriminator)
+        await self.bot.send_message(discord.utils.get(ctx.message.server.channels, name="mod-logs"), msg)
 
 def setup(bot):
     bot.add_cog(ModWarn(bot))
