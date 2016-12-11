@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 from sys import argv
-bsejkvmkl
+
 class KickBan:
     """
     Kicking and banning users.
