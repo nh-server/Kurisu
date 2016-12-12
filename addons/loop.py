@@ -27,6 +27,7 @@ class Loop:
         await self.bot.wait_until_ready()
         while self.is_active:
             try:
+                pass
                 #for user_id, times in self.bot.timedbans.items():
                 #    pass
             except Exception as e:
