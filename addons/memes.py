@@ -97,11 +97,6 @@ class Memes:
         await self._meme(ctx, "https://i.imgur.com/wRVuidH.gif")
 
     @commands.command(pass_context=True, hidden=True)
-    async def mitchy(self, ctx):
-        """Memes."""
-        await self._meme(ctx, "https://i.imgur.com/nTVZTwt.gif")
-
-    @commands.command(pass_context=True, hidden=True)
     async def clap(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/UYbIZYs.gifv")
