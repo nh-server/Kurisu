@@ -44,7 +44,7 @@ class Memes:
     @commands.command(pass_context=True, hidden=True)
     async def xor(self, ctx):
         """Memes."""
-        await self._meme(ctx, "http://i.imgur.com/nLKATP6.png")
+        await self.bot.send_message(ctx.message.author, "This command has been replaced with the emote :xor:.")
 
     @commands.command(pass_context=True, hidden=True)
     async def megumi(self, ctx):
