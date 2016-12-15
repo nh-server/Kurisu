@@ -119,7 +119,7 @@ class Memes:
     @commands.command(pass_context=True, hidden=True)
     async def pbanj(self, ctx):
         """Memes."""
-        await self._meme(ctx, "http://i.imgur.com/c6P7KY5.png")
+        await self.bot.send_message(ctx.message.author, "This command has been replaced with the emote :pbanj:.")
 
     # Cute commands :3
     @commands.command(pass_context=True, hidden=True)
