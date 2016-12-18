@@ -20,7 +20,7 @@ class Load:
             if module[0:7] != "addons.":
                 module = "addons." + module
             self.bot.load_extension(module)
-            await self.bot.say('✅ Extension unloaded.')
+            await self.bot.say('✅ Extension loaded.')
         except Exception as e:
             await self.bot.say('💢 Failed!\n```\n{}: {}\n```'.format(type(e).__name__, e))
 
@@ -48,7 +48,7 @@ class Load:
                 module = "addons." + module
             self.bot.unload_extension(module)
             self.bot.load_extension(module)
-            await self.bot.say('✅ Extension unloaded.')
+            await self.bot.say('✅ Extension reloaded.')
         except Exception as e:
             await self.bot.say('💢 Failed!\n```\n{}: {}\n```'.format(type(e).__name__, e))
 
