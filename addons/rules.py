@@ -100,5 +100,11 @@ class Rules:
        """Displays rule 14."""
        await self.bot.say("```14. Links to other Discord servers are allowed, on the following conditions:\n- You must receive written consent from a staff member.\n- The linked server must not directly violate any of this server's rules.\n- You may not spam advertisement to the server, post the link once and be done.```")
 
+    @commands.command(hidden=True)
+    async def r15(self):
+       """Displays rule 15."""
+       await self.bot.say("```15. Keep Voice/Music commands to #voice-and-music and #bot-cmds.  Do not use them in other channels. Keep music and voice discussion to #voice-and-music. Failure to abide by these rules could result in you having voice channel permissions revoked.```")
+        
+        
 def setup(bot):
     bot.add_cog(Rules(bot))
