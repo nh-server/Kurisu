@@ -55,9 +55,8 @@ class Assistance:
         """Outputs XMLs for 3DS 9.6-crypto titles, for use with *hax 2.7+"""
         embed = discord.Embed(title="*hax 2.7 mmap XML repository for 9.6-crypto titles", color=discord.Color.green())
         embed.set_author(name="ihaveamac", url="https://github.com/ihaveamac", icon_url="https://avatars0.githubusercontent.com/u/590576?v=3&s=40")
-        embed.description = "This enables 9.6+ digital titles to be used under *hax 2.7+, for tools such as save managers."
+        embed.description = "This is no longer necessary. Use *hax 2.8."
         embed.url = "https://github.com/ihaveamac/9.6-dbgen-xmls"
-        embed.add_field(name="Automatic downloader", value="[@Ryuzaki-MrL](https://github.com/Ryuzaki-MrL) has a tool called [**Custom mmap XML Downloader**](https://gbatemp.net/threads/release-custom-mmap-xml-downloader.438878/), to make the setup process easy.")
         await self.bot.say("", embed=embed)
 
     # dsp dumper command
