@@ -44,6 +44,11 @@ if not os.path.isfile("restrictions.json"):
 if not os.path.isfile("staff.json"):
     with open("staff.json", "w") as f:
         f.write("{}")
+        
+# create helpers.json if it doesn't exist
+if not os.path.isfile("helpers.json"):
+    with open("helpers.json", "w") as f:
+        f.write("{}")
 
 # create timebans.json if it doesn't exist
 if not os.path.isfile("timebans.json"):
@@ -87,6 +92,7 @@ addons = [
     'addons.logs',
     'addons.loop',
     'addons.memes',
+    'addons.helper_list',
     'addons.mod_staff',
     'addons.mod_warn',
     'addons.mod',
