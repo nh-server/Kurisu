@@ -40,18 +40,15 @@ class ModWarn:
         warn_count = len(warns[member.id]["warns"])
         if warn_count == 2:
             msg += " __The next warn will automatically kick.__"
-        if warn_count == 3:
-            msg += "\n\nYou were kicked because of this warning. You can join again, but one more warn will result in a ban."
+        if warn_count > 2:
+            msg += "\n\nYou were kicked because of this warning."
         try:
             await self.bot.send_message(member, msg)
         except discord.errors.Forbidden:
             pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
-        if warn_count == 3:
+        if warn_count > 2:
             self.bot.actions.append("wk:"+member.id)
             await self.bot.kick(member)
-        if warn_count == 4:
-            self.bot.actions.append("wb:"+member.id)
-            await self.bot.ban(member)
         await self.bot.say("{} warned.".format(member.mention))
         msg = "⚠️ **Warned**: {} warned {} (warn #{}) | {}#{}".format(issuer.mention, member.mention, len(warns[member.id]["warns"]), member.name, member.discriminator)
         if reason != "":
