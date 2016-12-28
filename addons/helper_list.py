@@ -30,9 +30,9 @@ class Helper_list:
             json.dump(helpers, f)
         # replace roles, so to not leave previous ones on by accident
         if position == "On-Duty":  # this role requires the use of sudo
-            await self.bot.replace_roles(member, helpers_role)
+            await self.bot.add_roles(member, helpers_role)
         else:
-            await self.bot.replace_roles(member, helpers_role, discord.utils.get(ctx.message.server.roles, name=position))
+            await self.bot.add_roles(member, helpers_role, discord.utils.get(ctx.message.server.roles, name=position))
         await self.bot.say("{} is now a helper. Welcome to the party room!".format(member.mention, position))
 
     @commands.has_permissions(administrator=True)
@@ -48,7 +48,7 @@ class Helper_list:
         helpers.pop(member.id, None)
         with open("helpers.json", "w") as f:
             json.dump(helpers, f)
-        await self.bot.replace_roles(member)
+        await self.bot.remove_roles(member, helpers_role)
         await self.bot.say("{} is no longer a helper. Stop by some time!".format(member.mention))
         
 #Usage of the helper highlighted role
