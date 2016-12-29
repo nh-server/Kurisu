@@ -1,4 +1,5 @@
 import discord
+import re
 from discord import Color
 from discord.ext import commands
 from sys import argv
@@ -37,8 +38,8 @@ class NinErr:
     @commands.command(pass_context=True, name="ninerr")
     async def ninerr(self, ctx, err: str):
         """Parses Nintendo 3DS error codes."""
-        if len(err) != 8 or err[3] != "-":
-            await self.bot.say("Wrong format. Error codes use the format `XXX-YYYY`.")
+        if re.match('[0-9][0-9][0-9]\-[0-9][0-9][0-9][0-9]', err[0:8]) == None:
+            await self.bot.say("Wrong format. Error codes use the format `###-####`.")
             return
         embed = discord.Embed(title=err)
         embed.url = "http://www.nintendo.com/consumer/wfc/en_na/ds/results.jsp?error_code={}&system=3DS&locale=en_US".format(err)
