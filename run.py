@@ -104,6 +104,7 @@ addons = [
     'addons.assistance',
     'addons.blah',
     'addons.ctrerr',
+    'addons.events',
     'addons.extras',
     'addons.kickban',
     'addons.load',
