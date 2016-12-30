@@ -3,7 +3,7 @@ import re
 from discord.ext import commands
 from sys import argv
 
-class Logs:
+class Events:
     """
     Logs join and leave messages, bans and unbans, and member changes.
     """
@@ -19,4 +19,4 @@ class Logs:
             await self.bot.send_message(self.bot.mods_channel, "✉️ **Invite posted**: {} posted an invite link in {}".format(message.author.mention, message.channel.mention))
 
 def setup(bot):
-    bot.add_cog(Logs(bot))
+    bot.add_cog(Events(bot))
