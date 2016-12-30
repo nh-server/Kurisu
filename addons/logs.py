@@ -15,47 +15,43 @@ class Logs:
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     async def on_member_join(self, member):
-        server = member.server
         msg = "✅ **Join**: {} | {}#{}\n🗓 __Creation__: {}".format(
             member.mention, member.name, member.discriminator, member.created_at
         )
-        await self.bot.send_message(discord.utils.get(server.channels, name="server-logs"), msg)
+        await self.bot.send_message(self.bot.serverlogs_channel, msg)
         with open("restrictions.json", "r") as f:
             rsts = json.load(f)
         if member.id in rsts:
             roles = []
             for rst in rsts[member.id]:
-                roles.append(discord.utils.get(server.roles, name=rst))
+                roles.append(discord.utils.get(self.bot.server.roles, name=rst))
             await self.bot.add_roles(member, *roles)
 
     async def on_member_remove(self, member):
         if "uk:"+member.id in self.bot.actions:
             return
-        server = member.server
         msg = "{}: {} | {}#{}".format("👢 **Auto-kick**" if "wk:"+member.id in self.bot.actions else "⬅️ **Leave**", member.mention, member.name, member.discriminator)
-        await self.bot.send_message(discord.utils.get(server.channels, name="server-logs"), msg)
+        await self.bot.send_message(self.bot.serverlogs_channel, msg)
         if "wk:"+member.id in self.bot.actions:
             self.bot.actions.remove("wk:"+member.id)
-            await self.bot.send_message(discord.utils.get(server.channels, name="mod-logs"), msg)
+            await self.bot.send_message(self.bot.modlogs_channel, msg)
 
     async def on_member_ban(self, member):
-        server = member.server
         msg = "⛔ **{}**: {} | {}#{}".format("Auto-ban" if "wb:"+member.id in self.bot.actions else "Ban", member.mention, member.name, member.discriminator)
-        await self.bot.send_message(discord.utils.get(server.channels, name="server-logs"), msg)
+        await self.bot.send_message(self.bot.serverlogs_channel, msg)
         if "wb:"+member.id in self.bot.actions:
             self.bot.actions.remove("wb:"+member.id)
         else:
-            "\nThe responsible staff member should add an explanation below."
-        await self.bot.send_message(discord.utils.get(server.channels, name="mod-logs"), msg)
+            msg += "\nThe responsible staff member should add an explanation below."
+        await self.bot.send_message(self.bot.modlogs_channel, msg)
 
     async def on_member_unban(self, server, user):
         msg = "⚠️ **Unban**: {} | {}#{}".format(user.mention, user.name, user.discriminator)
-        await self.bot.send_message(discord.utils.get(server.channels, name="mod-logs"), msg)
+        await self.bot.send_message(self.bot.modlogs_channel, msg)
 
     async def on_member_update(self, member_before, member_after):
         do_log = False  # only nickname and roles should be logged
-        dest = "mod-logs"
-        server = member_after.server
+        dest = self.bot.modlogs_channel
         msg = "ℹ️ **Member update**: {} | {}#{}".format(member_after.mention, member_after.name, member_after.discriminator)
         if member_before.roles != member_after.roles:
             do_log = True
@@ -85,7 +81,7 @@ class Logs:
                         msg += ", "
         if member_before.name != member_after.name:
             do_log = True
-            dest = "server-logs"
+            dest = self.bot.serverlogs_channel
             msg += "\n📝 __Username change__: {} → {}".format(member_before.name, member_after.name)
         if member_before.nick != member_after.nick:
             do_log = True
@@ -97,7 +93,7 @@ class Logs:
                 msg += "\n🏷 __Nickname change__"
             msg += ": {0} → {1}".format(member_before.nick, member_after.nick)
         if do_log:
-            await self.bot.send_message(discord.utils.get(server.channels, name=dest), msg)
+            await self.bot.send_message(dest, msg)
 
 def setup(bot):
     bot.add_cog(Logs(bot))

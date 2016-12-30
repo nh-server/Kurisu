@@ -11,14 +11,13 @@ class Memes:
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     async def _meme(self, ctx, msg):
-        memeless_role = discord.utils.get(ctx.message.server.roles, name="No-Memes")
         author = ctx.message.author
-        if ctx.message.channel.name[0:5] == "help-" or ctx.message.channel.name == "friend-codes" or (memeless_role in author.roles):
+        if ctx.message.channel.name[0:5] == "help-" or ctx.message.channel.name == "friend-codes" or (self.bot.nomemes_role in author.roles):
             await self.bot.delete_message(ctx.message)
             try:
                 await self.bot.send_message(author, "Meme commands are disabled in this channel, or your priviledges have been revoked.")
             except discord.errors.Forbidden:
-                await self.bot.say(author.mention + "Meme commands are disabled in this channel, or your priviledges have been revoked.")
+                await self.bot.say(author.mention + " Meme commands are disabled in this channel, or your priviledges have been revoked.")
         else:
             await self.bot.say(ctx.message.author.display_name + ": " + msg)
 

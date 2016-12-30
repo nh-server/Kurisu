@@ -16,8 +16,7 @@ class Blah:
     @commands.has_permissions(ban_members=True)
     @commands.command(hidden=True, pass_context=True)
     async def announce(self, ctx, *, inp):
-        channel = discord.utils.get(ctx.message.server.channels, name="announcements")
-        await self.bot.send_message(channel, inp)
+        await self.bot.send_message(self.bot.announcements_channel, inp)
 
     @commands.has_permissions(ban_members=True)
     @commands.command(hidden=True, pass_context=True)

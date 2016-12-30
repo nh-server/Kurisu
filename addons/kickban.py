@@ -16,8 +16,7 @@ class KickBan:
         """Kicks a user from the server. Staff only."""
         try:
             member = ctx.message.mentions[0]
-            server = ctx.message.author.server
-            msg = "You were kicked from {0}.".format(server.name)
+            msg = "You were kicked from {0}.".format(self.bot.server.name)
             if reason != "":
                 # much \n
                 msg += " The given reason is: " + reason
@@ -33,8 +32,8 @@ class KickBan:
             if reason != "":
                 # much \n
                 msg += "\n✏️ __Reason__: " + reason
-            await self.bot.send_message(discord.utils.get(server.channels, name="server-logs"), msg)
-            await self.bot.send_message(discord.utils.get(server.channels, name="mod-logs"), msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.kick <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
+            await self.bot.send_message(self.bot.serverlogs_channel, msg)
+            await self.bot.send_message(self.bot.modlogs_channel, msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.kick <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 

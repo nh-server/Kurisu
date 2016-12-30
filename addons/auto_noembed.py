@@ -14,9 +14,7 @@ class AutoNoEmbed:
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     async def on_member_join(self, member):
-        server = member.server
-        role = discord.utils.get(server.roles, name="No-Embed")
-        await self.bot.add_roles(member, role)
+        await self.bot.add_roles(member, self.bot.noembed_role)
 
 def setup(bot):
     bot.add_cog(AutoNoEmbed(bot))

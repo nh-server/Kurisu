@@ -13,7 +13,7 @@ class Load:
 
     # Load test
     @commands.has_permissions(ban_members=True)
-    @commands.command()
+    @commands.command(hidden=True)
     async def load(self, *, module : str):
         """Loads an addon."""
         try:

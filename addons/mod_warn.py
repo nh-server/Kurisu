@@ -19,8 +19,7 @@ class ModWarn:
         member = ctx.message.mentions[0]
         issuer = ctx.message.author
         server = ctx.message.author.server
-        staff_role = discord.utils.get(ctx.message.server.roles, name="Staff")
-        if staff_role in member.roles:
+        if self.bot.staff_role in member.roles:
             await self.bot.say("You can't warn another staffer with this command!")
             return
         with open("warns.json", "r") as f:
@@ -57,7 +56,7 @@ class ModWarn:
         if reason != "":
             # much \n
             msg += "\n✏️ __Reason__: " + reason
-        await self.bot.send_message(discord.utils.get(server.channels, name="mod-logs"), msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.warn <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
+        await self.bot.send_message(self.bot.modlogs_channel, msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.warn <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
 
     @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True)
@@ -102,7 +101,7 @@ class ModWarn:
             json.dump(warns, f)
         await self.bot.say("{} no longer has any warns!".format(member.mention))
         msg = "🗑 **Cleared warns**: {} cleared {} warns from {} | {}#{}".format(ctx.message.author.mention, warn_count, member.mention, member.name, member.discriminator)
-        await self.bot.send_message(discord.utils.get(ctx.message.server.channels, name="mod-logs"), msg)
+        await self.bot.send_message(self.bot.modlogs_channel, msg)
 
 def setup(bot):
     bot.add_cog(ModWarn(bot))

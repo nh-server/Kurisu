@@ -44,7 +44,7 @@ if not os.path.isfile("restrictions.json"):
 if not os.path.isfile("staff.json"):
     with open("staff.json", "w") as f:
         f.write("{}")
-        
+
 # create helpers.json if it doesn't exist
 if not os.path.isfile("helpers.json"):
     with open("helpers.json", "w") as f:
@@ -65,12 +65,31 @@ async def on_ready():
     # this bot should only ever be in one server anyway
     for server in bot.servers:
         bot.server = server
+        # channels
+        bot.announcements_channel = discord.utils.get(server.channels, name="announcements")
+        bot.helpers_channel = discord.utils.get(server.channels, name="helpers")
+        bot.mods_channel = discord.utils.get(server.channels, name="mods")
+        bot.modlogs_channel = discord.utils.get(server.channels, name="mod-logs")
+        bot.serverlogs_channel = discord.utils.get(server.channels, name="server-logs")
+        # roles
+        bot.staff_role = discord.utils.get(server.roles, name="Staff")
+        bot.halfop_role = discord.utils.get(server.roles, name="HalfOP")
+        bot.op_role = discord.utils.get(server.roles, name="OP")
+        bot.superop_role = discord.utils.get(server.roles, name="SuperOP")
+        bot.helpers_role = discord.utils.get(server.roles, name="Helpers")
+        bot.onduty_role = discord.utils.get(server.roles, name="On-Duty")
+        bot.probation_role = discord.utils.get(server.roles, name="Probation")
+        bot.muted_role = discord.utils.get(server.roles, name="Muted")
+        bot.nomemes_role = discord.utils.get(server.roles, name="No-Memes")
+        bot.nohelp_role = discord.utils.get(server.roles, name="No-Help")
+        bot.noembed_role = discord.utils.get(server.roles, name="No-Embed")
+        bot.everyone_role = discord.utils.get(server.roles, name="@everyone")
         msg = "{} has started!".format(bot.user.name)
         if len(failed_addons) != 0:
             msg += "\n\nSome addons failed to load:\n"
             for f in failed_addons:
                 msg += "\n{}: `{}: {}`".format(*f)
-        await bot.send_message(discord.utils.get(server.channels, name="helpers"), msg)
+        await bot.send_message(bot.helpers_channel, msg)
         break
 
 # outputs errors to a log file, clears every run to save space

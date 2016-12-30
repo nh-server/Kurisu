@@ -18,10 +18,8 @@ class Assistance:
     @commands.command(pass_context=True, name="sr", hidden=True)
     async def staffreq(self, ctx, *, msg_request=""):
         """Request staff, with optional additional text. Helpers and Staff only."""
-        helpers_role = discord.utils.get(ctx.message.server.roles, name="Helpers")
-        staff_role = discord.utils.get(ctx.message.server.roles, name="Staff")
         author = ctx.message.author
-        if (helpers_role not in author.roles) and (staff_role not in author.roles):
+        if (self.bot.helpers_role not in author.roles) and (self.bot.staff_role not in author.roles):
             msg = "{0} You cannot used this command at this time. Please ask individual staff members if you need help.".format(author.mention)
             await self.bot.say(msg)
             return
@@ -30,7 +28,7 @@ class Assistance:
         if msg_request != "":
             # much \n
             msg += "\n✏️ __Additional text__: " + msg_request
-        await self.bot.send_message(discord.utils.get(ctx.message.server.channels, name="mods"), msg)
+        await self.bot.send_message(self.bot.mods_channel, msg)
         await self.bot.delete_message(ctx.message)
         await self.bot.send_message(author, "✅ Online staff has been notified of your request in {0}.".format(ctx.message.channel.mention))
 
