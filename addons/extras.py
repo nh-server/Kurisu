@@ -20,5 +20,10 @@ class Extras:
         embed.description = "Kurisu, the 3DS Hacking Discord bot!"
         await self.bot.say("", embed=embed)
 
+    @commands.command()
+    async def membercount(self):
+        """Prints the member count of the server."""
+        await self.bot.say("{} has {} members!".format(self.bot.server.name, self.bot.server.member_count))
+
 def setup(bot):
     bot.add_cog(Extras(bot))
