@@ -28,7 +28,7 @@ class Lockdown:
        except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
-    @commands.has_permissions(manage_messages=True)
+    @commands.has_permissions(administrator=True)
     @commands.command(pass_context=True, name="slockdown")
     async def slockdown(self, ctx):
        """Lock message sending in the channel for everyone. Owners only."""
