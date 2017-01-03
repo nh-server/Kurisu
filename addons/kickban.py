@@ -37,5 +37,50 @@ class KickBan:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
+    @commands.has_permissions(ban_members=True)
+    @commands.command(pass_context=True, name="ban")
+    async def ban_member(self, ctx, user, *, reason=""):
+        """Bans a user from the server. OP+ only."""
+        try:
+            member = ctx.message.mentions[0]
+            msg = "You were banned from {0}.".format(self.bot.server.name)
+            if reason != "":
+                # much \n
+                msg += " The given reason is: " + reason
+            msg += "\n\nThis ban does not expire."
+            try:
+                await self.bot.send_message(member, msg)
+            except discord.errors.Forbidden:
+                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
+            self.bot.actions.append("ub:"+member.id)
+            await self.bot.ban(member)
+            await self.bot.say("{0} is now b&. 👍".format(member))
+            msg = "⛔ **Ban**: {0} banned {1} | {2}#{3}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator)
+            if reason != "":
+                # much \n
+                msg += "\n✏️ __Reason__: " + reason
+            await self.bot.send_message(self.bot.serverlogs_channel, msg)
+            await self.bot.send_message(self.bot.modlogs_channel, msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.ban <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
+        except discord.errors.Forbidden:
+            await self.bot.say("💢 I don't have permission to do this.")
+
+    @commands.has_permissions(ban_members=True)
+    @commands.command(pass_context=True, name="silentban", hidden=True)
+    async def silentban_member(self, ctx, user, *, reason=""):
+        """Bans a user from the server, without a notification. OP+ only."""
+        try:
+            member = ctx.message.mentions[0]
+            self.bot.actions.append("ub:"+member.id)
+            await self.bot.ban(member)
+            await self.bot.say("{0} is now b&. 👍".format(member))
+            msg = "⛔ **Silent ban**: {0} banned {1} | {2}#{3}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator)
+            if reason != "":
+                # much \n
+                msg += "\n✏️ __Reason__: " + reason
+            await self.bot.send_message(self.bot.serverlogs_channel, msg)
+            await self.bot.send_message(self.bot.modlogs_channel, msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.silentban <user> [reason]`." if reason == "" else ""))
+        except discord.errors.Forbidden:
+            await self.bot.say("💢 I don't have permission to do this.")
+
 def setup(bot):
     bot.add_cog(KickBan(bot))

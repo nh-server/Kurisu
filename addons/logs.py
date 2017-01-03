@@ -29,6 +29,7 @@ class Logs:
 
     async def on_member_remove(self, member):
         if "uk:"+member.id in self.bot.actions:
+            self.bot.actions.remove("uk:"+member.id)
             return
         msg = "{}: {} | {}#{}".format("👢 **Auto-kick**" if "wk:"+member.id in self.bot.actions else "⬅️ **Leave**", member.mention, member.name, member.discriminator)
         await self.bot.send_message(self.bot.serverlogs_channel, msg)
@@ -37,6 +38,9 @@ class Logs:
             await self.bot.send_message(self.bot.modlogs_channel, msg)
 
     async def on_member_ban(self, member):
+        if "ub:"+member.id in self.bot.actions:
+            self.bot.actions.remove("ub:"+member.id)
+            return
         msg = "⛔ **{}**: {} | {}#{}".format("Auto-ban" if "wb:"+member.id in self.bot.actions else "Ban", member.mention, member.name, member.discriminator)
         await self.bot.send_message(self.bot.serverlogs_channel, msg)
         if "wb:"+member.id in self.bot.actions:
