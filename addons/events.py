@@ -12,7 +12,7 @@ class Events:
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     async def scan_message(self, message):
-        if message.author == self.bot.server.me or self.bot.staff_role in message.author.roles:  # don't process messages by the bot or staff
+        if message.author == self.bot.server.me or self.bot.staff_role in message.author.roles or message.channel == self.bot.helpers_channel:  # don't process messages by the bot or staff or in the helpers channel
             return
         is_help_channel = message.channel.name[0:5] == "help-"
         msg = message.content.lower()
