@@ -18,7 +18,6 @@ class Logs:
         msg = "✅ **Join**: {} | {}#{}\n🗓 __Creation__: {}".format(
             member.mention, member.name, member.discriminator, member.created_at
         )
-        await self.bot.send_message(self.bot.serverlogs_channel, msg)
         with open("restrictions.json", "r") as f:
             rsts = json.load(f)
         if member.id in rsts:
@@ -26,6 +25,22 @@ class Logs:
             for rst in rsts[member.id]:
                 roles.append(discord.utils.get(self.bot.server.roles, name=rst))
             await self.bot.add_roles(member, *roles)
+        with open("warns.json", "r") as f:
+            warns = json.load(f)
+        # crappy workaround given how dicts are not ordered
+        try:
+            warn_count = len(warns[member.id]["warns"])
+            if warn_count == 0:
+                await self.bot.send_message(self.bot.serverlogs_channel, msg)
+            else:
+                embed = discord.Embed(color=discord.Color.dark_red())
+                embed.set_author(name="Warns for {}#{}".format(member.display_name, member.discriminator), icon_url=member.avatar_url)
+                for key in range(warn_count):
+                    warn = warns[member.id]["warns"][str(key + 1)]
+                    embed.add_field(name="{}: {}".format(key + 1, warn["timestamp"]), value="Issuer: {}\nReason: {}".format(warn["issuer_name"], warn["reason"]))
+                await self.bot.send_message(self.bot.serverlogs_channel, msg, embed=embed)
+        except KeyError:  # if the user is not in the file
+            await self.bot.send_message(self.bot.serverlogs_channel, msg)
 
     async def on_member_remove(self, member):
         if "uk:"+member.id in self.bot.actions:
