@@ -21,7 +21,7 @@ class Events:
         contains_fs_repo_url = re.match('(.*)notabug\.org\/(.*)\/freeshop(.*)', msg, re.IGNORECASE)
         contains_piracy_site_mention = any(x in msg for x in ('3dsiso', '3dschaos'))
         contains_piracy_url_mention = any(x in msg for x in ('3ds.titlekeys', 'wiiu.titlekeys', 'titlekeys.com'))
-        contains_piracy_tool_mention = any(x in msg for x in ('freeshop', 'ciangel', 'tikdevil', 'tikshop'))
+        contains_piracy_tool_mention = any(x in msg for x in ('freeshop', 'fr3eshop', 'fr33shop', 'fre3shop', 'ciangel', 'tikdevil', 'tikshop'))
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site'))
         if contains_invite_link:
             await self.bot.send_message(self.bot.mods_channel, "✉️ **Invite posted**: {} posted an invite link in {} @here".format(message.author.mention, message.channel.mention))
