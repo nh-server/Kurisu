@@ -22,7 +22,7 @@ class NinErr:
         '007-2404': ['An error occurred while attempting to connect to the Nintendo eShop.\nMake sure you are running the latest firmware, since this error will appear if you are trying to access the eShop on older versions.', Color.orange()],
         '007-2923': ['The Nintendo Servers are currently down for maintenance. Please try again later.', Color.gold()],
         '007-3102': ['Cannot find title on Nintendo eShop. Probably pulled.', Color.red()],
-        '009-6106': ['"AM error in NIM."\nThe actual cause of this error is unknown.', Color.red()]
+        '009-6106': ['"AM error in NIM."\nThe actual cause of this error is unknown.', Color.red()],
         '011-3021': ['Cannot find title on Nintendo eShop. Probably incorrect region, or never existed.', Color.red()],
         '011-3136': ['Nintendo eShop is currently unavailable. Try again later.', Color.gold()],
         '022-2501': ['Attempting to use a Nintendo Network ID on one system when it is linked on another. This can be the result of using System Transfer, then restoring the source system\'s NAND and attempting to use services that require a Nintendo Network ID.\n\nIn a System Transfer, all Nintendo Network ID accounts associated with the system are transferred over, whether they are currently linked or not.', Color.orange()],
