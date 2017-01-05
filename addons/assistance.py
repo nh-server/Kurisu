@@ -10,7 +10,7 @@ class Assistance:
         self.bot = bot
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
-    async def simple_embed(self, text, title="", color=None):
+    async def simple_embed(self, text, title="", color=discord.Color.default()):
         embed = discord.Embed(title=title, color=color)
         embed.description = text
         await self.bot.say("", embed=embed)
