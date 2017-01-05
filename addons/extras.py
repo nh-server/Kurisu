@@ -26,6 +26,12 @@ class Extras:
         """Prints the member count of the server."""
         await self.bot.say("{} has {} members!".format(self.bot.server.name, self.bot.server.member_count))
 
+    @commands.command(manage_nicknames=True)
+    async def estprune(self, days=30):
+        """Estimate count of members that would be pruned based on the amount of days. Staff only."""
+        count = await self.bot.estimate_pruned_members(server=self.bot.server, days=days)
+        await self.bot.say("{} members would be kicked from {}!".format(count, self.bot.server.name))
+
     @commands.has_permissions(administrator=True)
     @commands.command(pass_context=True, hidden=True)
     async def dumpchannel(self, ctx, channel_name, limit=100):
