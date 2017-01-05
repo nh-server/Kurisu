@@ -18,7 +18,6 @@ class KickBan:
             member = ctx.message.mentions[0]
             msg = "You were kicked from {0}.".format(self.bot.server.name)
             if reason != "":
-                # much \n
                 msg += " The given reason is: " + reason
             msg += "\n\nYou are able to rejoin the server, but please read the rules in #welcome-and-rules before participating again."
             try:
@@ -30,7 +29,6 @@ class KickBan:
             await self.bot.say("{0} is now gone. 👌".format(member))
             msg = "👢 **Kick**: {0} kicked {1} | {2}#{3}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator)
             if reason != "":
-                # much \n
                 msg += "\n✏️ __Reason__: " + reason
             await self.bot.send_message(self.bot.serverlogs_channel, msg)
             await self.bot.send_message(self.bot.modlogs_channel, msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.kick <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
@@ -45,7 +43,6 @@ class KickBan:
             member = ctx.message.mentions[0]
             msg = "You were banned from {0}.".format(self.bot.server.name)
             if reason != "":
-                # much \n
                 msg += " The given reason is: " + reason
             msg += "\n\nThis ban does not expire."
             try:
@@ -57,7 +54,6 @@ class KickBan:
             await self.bot.say("{0} is now b&. 👍".format(member))
             msg = "⛔ **Ban**: {0} banned {1} | {2}#{3}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator)
             if reason != "":
-                # much \n
                 msg += "\n✏️ __Reason__: " + reason
             await self.bot.send_message(self.bot.serverlogs_channel, msg)
             await self.bot.send_message(self.bot.modlogs_channel, msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.ban <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
@@ -75,7 +71,6 @@ class KickBan:
             await self.bot.say("{0} is now b&. 👍".format(member))
             msg = "⛔ **Silent ban**: {0} banned {1} | {2}#{3}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator)
             if reason != "":
-                # much \n
                 msg += "\n✏️ __Reason__: " + reason
             await self.bot.send_message(self.bot.serverlogs_channel, msg)
             await self.bot.send_message(self.bot.modlogs_channel, msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.silentban <user> [reason]`." if reason == "" else ""))
