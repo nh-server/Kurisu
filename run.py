@@ -66,6 +66,7 @@ async def on_ready():
     for server in bot.servers:
         bot.server = server
         # channels
+        bot.welcome_channel = discord.utils.get(server.channels, name="welcome-and-rules")
         bot.announcements_channel = discord.utils.get(server.channels, name="announcements")
         bot.helpers_channel = discord.utils.get(server.channels, name="helpers")
         bot.mods_channel = discord.utils.get(server.channels, name="mods")
