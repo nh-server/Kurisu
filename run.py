@@ -20,7 +20,6 @@ import logging
 import traceback
 import sys
 import os
-from collections import Counter
 
 # sets working directory to bot's folder
 dir_path = os.path.dirname(os.path.realpath(__file__))
