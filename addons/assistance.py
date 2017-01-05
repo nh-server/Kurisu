@@ -10,8 +10,8 @@ class Assistance:
         self.bot = bot
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
-    async def simple_embed(self, text, title=""):
-        embed = discord.Embed(title=title)
+    async def simple_embed(self, text, title="", color=None):
+        embed = discord.Embed(title=title, color=color)
         embed.description = text
         await self.bot.say("", embed=embed)
 
@@ -82,16 +82,6 @@ class Assistance:
         """Explains how to safely prepare for an update if you have arm9loaderhax installed"""
         await self.simple_embed("If you have arm9loaderhax and Luma3DS installed after following Plailect's guide, run Luma Updater to make sure it is on the latest Luma3DS normal version and then you can proceed to update your 3DS through system settings. \nNTR CFW works on the latest version; use this version of BootNTR: \n<https://github.com/astronautlevel2/BootNTR/releases>")
 
-    @commands.command()
-    async def otpless(self):
-        """OTPLess notice"""
-        await self.simple_embed("If your OTPless install succeeds (you don't brick) after you forcefully shutdown, and you never see the screens coming back up saying it was successful and asking you to shutdown, please report this here on [GitHub](https://github.com/AuroraWright/SafeA9LHInstaller/issues) or [GBAtemp](https://gbatemp.net/threads/safea9lhinstaller.419577/).")
-
-    @commands.command()
-    async def fw11x(self):
-        """lists options on 11.x"""
-        await self.simple_embed("For those between 11.0 and 11.2, here are your options for CFW: <https://pastebin.com/Q256JqWL>")
-
     # gateway h&s troubleshooting command
     @commands.command()
     async def gwhs(self):
@@ -144,12 +134,12 @@ class Assistance:
     @commands.command()
     async def lid(self):
         """Warns not to close the lid"""
-        await self.simple_embed("Do not **EVER** close the N3DS lid when on 2.1, otherwise, you **WILL BRICK**.")
+        await self.simple_embed("Do not **EVER** close the N3DS lid when on 2.1, otherwise, you **WILL BRICK**.", color=discord.Color.red())
 
     @commands.command()
     async def downgrade(self):
         """Downgrade help"""
-        await self.simple_embed("Downgrade methods on 11.0 or above\nDSiWare Downgrade: <https://3ds.guide/dsiware-downgrade>\nHardmod: <http://pastebin.com/chh0hHPk> or <https://gbatemp.net/threads/tutorial-noob-friendly-nand-dumping-2ds-3ds-3ds-xl-n3ds-n3ds-xl.414498/>\nDowngrade Methods on 10.7 or below:\nFollow Plailect's guide here: <https://3ds.guide/get-started>")
+        await self.simple_embed("DSiWare Downgrade: <https://3ds.guide/dsiware-downgrade>\nHardmod: <http://pastebin.com/chh0hHPk> or <https://gbatemp.net/threads/tutorial-noob-friendly-nand-dumping-2ds-3ds-3ds-xl-n3ds-n3ds-xl.414498/>\nDowngrade Methods on 10.7 or below:\nFollow Plailect's guide here: <https://3ds.guide/get-started>", title="Downgrade methods on 11.0 or above")
 
     @commands.command()
     async def vguides(self):
