@@ -15,6 +15,7 @@ class Logs:
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     async def on_member_join(self, member):
+        await self.bot.wait_until_ready()
         msg = "✅ **Join**: {} | {}#{}\n🗓 __Creation__: {}".format(
             member.mention, member.name, member.discriminator, member.created_at
         )
@@ -47,6 +48,7 @@ class Logs:
             pass
 
     async def on_member_remove(self, member):
+        await self.bot.wait_until_ready()
         if "uk:"+member.id in self.bot.actions:
             self.bot.actions.remove("uk:"+member.id)
             return
@@ -57,6 +59,7 @@ class Logs:
             await self.bot.send_message(self.bot.modlogs_channel, msg)
 
     async def on_member_ban(self, member):
+        await self.bot.wait_until_ready()
         if "ub:"+member.id in self.bot.actions:
             self.bot.actions.remove("ub:"+member.id)
             return
@@ -69,10 +72,12 @@ class Logs:
         await self.bot.send_message(self.bot.modlogs_channel, msg)
 
     async def on_member_unban(self, server, user):
+        await self.bot.wait_until_ready()
         msg = "⚠️ **Unban**: {} | {}#{}".format(user.mention, user.name, user.discriminator)
         await self.bot.send_message(self.bot.modlogs_channel, msg)
 
     async def on_member_update(self, member_before, member_after):
+        await self.bot.wait_until_ready()
         do_log = False  # only nickname and roles should be logged
         dest = self.bot.modlogs_channel
         msg = "ℹ️ **Member update**: {} | {}#{}".format(member_after.mention, member_after.name, member_after.discriminator)

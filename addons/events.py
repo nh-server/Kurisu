@@ -58,9 +58,11 @@ class Events:
             await self.bot.send_message(self.bot.mods_channel, "**Bad site**: {} mentioned a piracy site indirectly in {} @here{}".format(message.author.mention, message.channel.mention, " (message deleted)" if is_help_channel else ""), embed=embed)
 
     async def on_message(self, message):
+        await self.bot.wait_until_ready()
         await self.scan_message(message)
 
     async def on_message_edit(self, message_before, message_after):
+        await self.bot.wait_until_ready()
         await self.scan_message(message_after)
 
 def setup(bot):
