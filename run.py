@@ -72,6 +72,7 @@ async def on_ready():
         bot.mods_channel = discord.utils.get(server.channels, name="mods")
         bot.modlogs_channel = discord.utils.get(server.channels, name="mod-logs")
         bot.serverlogs_channel = discord.utils.get(server.channels, name="server-logs")
+        bot.messagelogs_channel = discord.utils.get(server.channels, name="message-logs")
         # roles
         bot.staff_role = discord.utils.get(server.roles, name="Staff")
         bot.halfop_role = discord.utils.get(server.roles, name="HalfOP")

@@ -24,7 +24,7 @@ class Events:
         contains_piracy_tool_mention = any(x in msg for x in ('freeshop', 'free shop', 'fr3eshop', 'fr33shop', 'fre3shop', 'ciangel', 'cia angel', 'tikdevil', 'tikshop'))
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site'))
         if contains_invite_link:
-            await self.bot.send_message(self.bot.mods_channel, "✉️ **Invite posted**: {} posted an invite link in {} @here".format(message.author.mention, message.channel.mention))
+            await self.bot.send_message(self.bot.messagelogs_channel, "✉️ **Invite posted**: {} posted an invite link in {}".format(message.author.mention, message.channel.mention))
         embed = discord.Embed()
         embed.description = message.content
         if contains_fs_repo_url != None:
@@ -33,21 +33,21 @@ class Events:
             except discord.errors.NotFound:
                 pass
             await self.bot.send_message(message.author, "Please read #welcome-and-rules. You cannot link to tools used for piracy, therefore your message was automatically deleted.", embed=embed)
-            await self.bot.send_message(self.bot.mods_channel, "**Bad URL**: {} posted a freeShop Repo URL in {} @here (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
+            await self.bot.send_message(self.bot.messagelogs_channel, "**Bad URL**: {} posted a freeShop Repo URL in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
         if contains_piracy_tool_mention:
             try:
                 await self.bot.delete_message(message)
             except discord.errors.NotFound:
                 pass
             await self.bot.send_message(message.author, "Please read #welcome-and-rules. You cannot mention tools used for piracy, therefore your message was automatically deleted.", embed=embed)
-            await self.bot.send_message(self.bot.mods_channel, "**Bad tool**: {} mentioned a piracy tool in {} @here{}".format(message.author.mention, message.channel.mention, " (message deleted)" if is_help_channel else ""), embed=embed)
+            await self.bot.send_message(self.bot.messagelogs_channel, "**Bad tool**: {} mentioned a piracy tool in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
         if contains_piracy_site_mention or contains_piracy_url_mention:
             try:
                 await self.bot.delete_message(message)
             except discord.errors.NotFound:
                 pass
             await self.bot.send_message(message.author, "Please read #welcome-and-rules. You cannot mention sites used for piracy directly, therefore your message was automatically deleted.", embed=embed)
-            await self.bot.send_message(self.bot.mods_channel, "**Bad site**: {} mentioned a piracy site directly in {} @here (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
+            await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned a piracy site directly in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
         elif contains_piracy_site_mention_indirect:
             if is_help_channel:
                 try:
@@ -55,7 +55,7 @@ class Events:
                 except discord.errors.NotFound:
                     pass
                 await self.bot.send_message(message.author, "Please read #welcome-and-rules. You cannot mention sites used for piracy in the help-and-questions channels directly or indirectly, therefore your message was automatically deleted.", embed=embed)
-            await self.bot.send_message(self.bot.mods_channel, "**Bad site**: {} mentioned a piracy site indirectly in {} @here{}".format(message.author.mention, message.channel.mention, " (message deleted)" if is_help_channel else ""), embed=embed)
+            await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned a piracy site indirectly in {}{}".format(message.author.mention, message.channel.mention, " (message deleted)" if is_help_channel else ""), embed=embed)
 
     async def on_message(self, message):
         await self.bot.wait_until_ready()
