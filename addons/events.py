@@ -41,7 +41,7 @@ class Events:
                 except discord.errors.NotFound:
                     pass
                 await self.bot.send_message(message.author, "Please read #welcome-and-rules. You cannot mention tools used for piracy in the help channels, therefore your message was automatically deleted.", embed=embed)
-            await self.bot.send_message(self.bot.mods_channel, "**Bad tool**: {} mentioned a piracy tool in {} @here (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
+            await self.bot.send_message(self.bot.mods_channel, "**Bad tool**: {} mentioned a piracy tool in {} @here{}".format(message.author.mention, message.channel.mention, " (message deleted)" if is_help_channel else ""), embed=embed)
         if contains_piracy_site_mention or contains_piracy_url_mention:
             try:
                 await self.bot.delete_message(message)
