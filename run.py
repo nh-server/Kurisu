@@ -61,6 +61,7 @@ bot.actions = []  # changes messages in mod-/server-logs
 
 @bot.event
 async def on_ready():
+    print("{} has started!".format(bot.user.name))
     # this bot should only ever be in one server anyway
     for server in bot.servers:
         bot.server = server
