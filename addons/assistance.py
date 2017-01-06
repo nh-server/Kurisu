@@ -132,9 +132,9 @@ class Assistance:
         await self.simple_embed("https://ez3ds.xyz/checkfw?model={0}&major={1}&minor={2}&revision={3}&nver={4}&region={5}".format(model, major, minor, revision, nver, region))
 
     @commands.command()
-    async def lid(self):
+    async def brick(self):
         """Warns not to close the lid"""
-        await self.simple_embed("Do not **EVER** close the N3DS lid when on 2.1, otherwise, you **WILL BRICK**.", color=discord.Color.red())
+        await self.simple_embed("Do not **EVER** close the N3DS lid or **UPDATE** ,in any 3ds model, while on 2.1, otherwise, you **WILL BRICK**", color=discord.Color.red())
 
     @commands.command()
     async def downgrade(self):
