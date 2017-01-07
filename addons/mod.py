@@ -49,7 +49,7 @@ class Mod:
         await self.bot.say("👋 Restarting bot!")
         await self.bot.close()
 
-    @commands.has_permissions(administrator=True)
+    @commands.has_permissions(administrator=manage_server)
     @commands.command(pass_context=True, hidden=True)
     async def userinfo(self, ctx, user):
         """Gets user info. Owners only."""
