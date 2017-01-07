@@ -49,10 +49,10 @@ class Mod:
         await self.bot.say("👋 Restarting bot!")
         await self.bot.close()
 
-    @commands.has_permissions(administrator=True)
+    @commands.has_permissions(manage_server=True)
     @commands.command(pass_context=True, hidden=True)
     async def userinfo(self, ctx, user):
-        """Gets user info. Owners only."""
+        """Gets user info. SuperOP+."""
         u = ctx.message.mentions[0]
         role = u.top_role.name
         if role == "@everyone":
