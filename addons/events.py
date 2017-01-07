@@ -11,6 +11,22 @@ class Events:
         self.bot = bot
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
+    piracy_tools = [
+        'freeshop',
+        'free shop',
+        'fr3eshop',
+        'fr33shop',
+        'fre3shop',
+        'ciangel',
+        'cia angel',
+        'tikdevil',
+        'tikshop',
+        'FR335H0P',
+        'fr€€shop',
+        'fr€€sh0p',
+        'fr3e sh0p',
+    ]
+
     async def scan_message(self, message):
         if message.author == self.bot.server.me or self.bot.staff_role in message.author.roles or message.channel == self.bot.helpers_channel:  # don't process messages by the bot or staff or in the helpers channel
             return
@@ -21,7 +37,7 @@ class Events:
         contains_fs_repo_url = re.match('(.*)notabug\.org\/(.*)\/freeshop(.*)', msg, re.IGNORECASE)
         contains_piracy_site_mention = any(x in msg for x in ('3dsiso', '3dschaos'))
         contains_piracy_url_mention = any(x in msg for x in ('3ds.titlekeys', 'wiiu.titlekeys', 'titlekeys.com'))
-        contains_piracy_tool_mention = any(x in msg for x in ('freeshop', 'free shop', 'fr3eshop', 'fr33shop', 'fre3shop', 'ciangel', 'cia angel', 'tikdevil', 'tikshop', 'FR335H0P', 'fr€€shop', 'fr€€sh0p'))
+        contains_piracy_tool_mention = any(x in msg for x in self.piracy_tools)
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site'))
         if contains_invite_link:
             await self.bot.send_message(self.bot.messagelogs_channel, "✉️ **Invite posted**: {} posted an invite link in {}".format(message.author.mention, message.channel.mention))
