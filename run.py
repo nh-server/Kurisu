@@ -70,9 +70,9 @@ print(bot.watching)
 
 @bot.event
 async def on_ready():
-    print("{} has started! {} has {} members!".format(bot.user.name, server.member_count))
     # this bot should only ever be in one server anyway
     for server in bot.servers:
+        print("{} has started! {} has {} members!".format(bot.user.name, server.member_count))
         bot.server = server
         # channels
         bot.welcome_channel = discord.utils.get(server.channels, name="welcome-and-rules")
