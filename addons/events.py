@@ -5,7 +5,7 @@ from sys import argv
 
 class Events:
     """
-    Logs join and leave messages, bans and unbans, and member changes.
+    Special event handling.
     """
     def __init__(self, bot):
         self.bot = bot
@@ -30,6 +30,10 @@ class Events:
     async def scan_message(self, message):
         if message.author == self.bot.server.me or self.bot.staff_role in message.author.roles or message.channel == self.bot.helpers_channel:  # don't process messages by the bot or staff or in the helpers channel
             return
+        embed = discord.Embed()
+        embed.description = message.content
+        if message.author.id in self.bot.watching:
+            await self.bot.send_message(self.bot.messagelogs_channel, "**Watch log**: {} in {}".format(message.author.mention, message.channel.mention), embed=embed)
         is_help_channel = message.channel.name[0:5] == "help-"
         msg = message.content.lower()
         contains_invite_link = "discordapp.com/invite" in msg or "discord.gg" in msg
@@ -39,8 +43,6 @@ class Events:
         contains_piracy_url_mention = any(x in msg for x in ('3ds.titlekeys', 'wiiu.titlekeys', 'titlekeys.com'))
         contains_piracy_tool_mention = any(x in msg for x in self.piracy_tools)
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site'))
-        embed = discord.Embed()
-        embed.description = message.content
         if contains_invite_link:
             await self.bot.send_message(self.bot.messagelogs_channel, "✉️ **Invite posted**: {} posted an invite link in {}\n------------------\n{}".format(message.author.mention, message.channel.mention, message.content))
         if contains_fs_repo_url != None:

@@ -54,10 +54,19 @@ if not os.path.isfile("timebans.json"):
     with open("timebans.json", "w") as f:
         f.write("{}")
 
+# create watch.json if it doesn't exist
+if not os.path.isfile("watch.json"):
+    with open("watch.json", "w") as f:
+        f.write("{}")
+
 prefix = ['!', '.']
 bot = commands.Bot(command_prefix=prefix, description=description, pm_help=None)
 
 bot.actions = []  # changes messages in mod-/server-logs
+with open("watch.json", "r") as f:
+    bot.watching = json.load(f)  # post user messages to messaage-logs
+
+print(bot.watching)
 
 @bot.event
 async def on_ready():
@@ -117,6 +126,7 @@ addons = [
     'addons.helper_list',
     'addons.mod_staff',
     'addons.mod_warn',
+    'addons.mod_watch',
     'addons.mod',
     'addons.ninerr',
     'addons.rules',
