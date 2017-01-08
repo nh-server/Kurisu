@@ -72,7 +72,7 @@ print(bot.watching)
 async def on_ready():
     # this bot should only ever be in one server anyway
     for server in bot.servers:
-        print("{} has started! {} has {} members!".format(bot.user.name, server.member_count))
+        print("{} has started! {} has {} members!".format(bot.user.name, server.name, server.member_count))
         bot.server = server
         # channels
         bot.welcome_channel = discord.utils.get(server.channels, name="welcome-and-rules")
@@ -95,7 +95,7 @@ async def on_ready():
         bot.nohelp_role = discord.utils.get(server.roles, name="No-Help")
         bot.noembed_role = discord.utils.get(server.roles, name="No-Embed")
         bot.everyone_role = discord.utils.get(server.roles, name="@everyone")
-        msg = "{} has started! {} has {} members!".format(bot.user.name, server.member_count)
+        msg = "{} has started! {} has {} members!".format(bot.user.name, server.name, server.member_count)
         if len(failed_addons) != 0:
             msg += "\n\nSome addons failed to load:\n"
             for f in failed_addons:
