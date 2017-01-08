@@ -13,21 +13,27 @@ class Loop:
     """
     def __init__(self, bot):
         self.bot = bot
-        # bot.loop.create_task(self.start_update_loop())
+        bot.loop.create_task(self.start_update_loop())
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     def __unload(self):
         self.is_active = False
 
-    cooldown = 30
+    cooldown = 5
     is_active = True
+
+    last_hour = datetime.datetime.now().hour - 1
 
     async def start_update_loop(self):
         # thanks Luc | ルカリオ#5653
         await self.bot.wait_until_ready()
         while self.is_active:
             try:
-                pass
+                print("loop")
+                timestamp = datetime.datetime.now()
+                if timestamp.minute == 0 and timestamp.hour != self.last_hour:
+                    await self.bot.send_message(self.bot.helpers_channel, "{} has {} members at this hour!".format(self.bot.server.name, self.bot.server.member_count))
+                    self.last_hour = timestamp.hour
                 #for user_id, times in self.bot.timedbans.items():
                 #    pass
             except Exception as e:
