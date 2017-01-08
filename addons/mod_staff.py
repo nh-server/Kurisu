@@ -5,7 +5,7 @@ from sys import argv
 
 class ModStaff:
     """
-    Extra things.
+    Staff management commands.
     """
     def __init__(self, bot):
         self.bot = bot
@@ -21,7 +21,6 @@ class ModStaff:
             await self.bot.say("💢 That's not a valid position.")
             return
         member = ctx.message.mentions[0]
-        server = ctx.message.author.server
         with open("staff.json", "r") as f:
             staff = json.load(f)
         staff[member.id] = position
@@ -31,7 +30,7 @@ class ModStaff:
         if position == "HalfOP":  # this role requires the use of sudo
             await self.bot.replace_roles(member, self.bot.staff_role)
         else:
-            await self.bot.replace_roles(member, self.bot.staff_role, discord.utils.get(ctx.message.server.roles, name=position))
+            await self.bot.replace_roles(member, self.bot.staff_role, discord.utils.get(self.bot.server.roles, name=position))
         await self.bot.say("{} is now on staff as {}. Welcome to the secret party room!".format(member.mention, position))
 
     @commands.has_permissions(administrator=True)
@@ -39,7 +38,6 @@ class ModStaff:
     async def delstaff(self, ctx, user):
         """Remove user from staff. Owners only."""
         member = ctx.message.mentions[0]
-        server = ctx.message.author.server
         await self.bot.say(member.name)
         with open("staff.json", "r") as f:
             staff = json.load(f)
@@ -54,7 +52,6 @@ class ModStaff:
     async def sudo(self, ctx):
         """Gain staff powers temporarily. Only needed by HalfOPs."""
         author = ctx.message.author
-        server = author.server
         with open("staff.json", "r") as f:
             staff = json.load(f)
         if author.id not in staff:
@@ -73,7 +70,6 @@ class ModStaff:
     async def unsudo(self, ctx):
         """Remove temporary staff powers. Only needed by HalfOPs."""
         author = ctx.message.author
-        server = author.server
         with open("staff.json", "r") as f:
             staff = json.load(f)
         if author.id not in staff:
