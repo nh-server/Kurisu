@@ -19,10 +19,10 @@ class Loop:
     def __unload(self):
         self.is_active = False
 
-    cooldown = 5
+    cooldown = 30
     is_active = True
 
-    last_hour = datetime.datetime.now().hour - 1
+    last_hour = datetime.datetime.now().hour
 
     async def start_update_loop(self):
         # thanks Luc | ルカリオ#5653
