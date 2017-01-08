@@ -32,7 +32,7 @@ class Modwatch:
         with open("watch.json", "w") as f:
             json.dump(self.bot.watching, f)
         await self.bot.say("{} is no longer being watched.".format(member.mention))
-        await self.bot.send_message(self.bot.modlogs_channel, "❌ **Watch**: {} removed {} from watch | {}#{}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator))
+        await self.bot.send_message(self.bot.modlogs_channel, "❌ **Unwatch**: {} removed {} from watch | {}#{}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator))
 
 def setup(bot):
     bot.add_cog(Modwatch(bot))
