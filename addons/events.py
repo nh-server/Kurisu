@@ -30,6 +30,21 @@ class Events:
         'fr//shop',
         'fr//sh0p',
         'fre shop',
+        'free$hop',
+        'free $hop',
+        'fr$$hop',
+        'friishop',
+        'frii shop',
+        'fr££shop',
+        'fr££ shop',
+        'fr£€shop',
+        'fr£ shop',
+        'fr£eshop',
+        'fr£e shop',
+        'fre£shop',
+        'fre£ shop',
+        'fr€£shop',
+        
     ]
 
     async def scan_message(self, message):
