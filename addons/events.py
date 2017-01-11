@@ -2,6 +2,7 @@ import discord
 import re
 from discord.ext import commands
 from subprocess import call
+from string import printable
 from sys import argv
 
 class Events:
@@ -22,7 +23,7 @@ class Events:
         'cia angel',
         'tikdevil',
         'tikshop',
-        'FR335H0P',
+        'fr335h0p',
         'fr€€shop',
         'fr€€sh0p',
         'fr3e sh0p',
@@ -39,7 +40,7 @@ class Events:
         if message.author.id in self.bot.watching:
             await self.bot.send_message(self.bot.messagelogs_channel, "**Watch log**: {} in {}".format(message.author.mention, message.channel.mention), embed=embed)
         is_help_channel = message.channel.name[0:5] == "help-"
-        msg = message.content.lower()
+        msg = ''.join(char for char in message.content.lower() if char in printable)
         contains_invite_link = "discordapp.com/invite" in msg or "discord.gg" in msg
         # special check for a certain thing
         contains_fs_repo_url = re.match('(.*)notabug\.org\/(.*)\/freeshop(.*)', msg, re.IGNORECASE)
