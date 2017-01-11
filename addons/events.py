@@ -1,6 +1,7 @@
 import discord
 import re
 from discord.ext import commands
+from subprocess import call
 from sys import argv
 
 class Events:
@@ -79,6 +80,11 @@ class Events:
             await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned a piracy site indirectly in {}{}".format(message.author.mention, message.channel.mention, " (message deleted)" if is_help_channel else ""), embed=embed)
 
     async def on_message(self, message):
+        if message.author.name == "GitHub" and message.author.discriminator == "0000":
+            await self.bot.send_message(self.bot.helpers_channel, "Automatically pulling changes!")
+            call(['git', 'pull'])
+            await self.bot.close()
+            return
         await self.bot.wait_until_ready()
         await self.scan_message(message)
 
