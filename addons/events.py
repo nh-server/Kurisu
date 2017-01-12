@@ -44,6 +44,15 @@ class Events:
         'fre£shop',
         'fre£ shop',
         'fr€£shop',
+        'threeshop',
+        'thr33shop',
+        'thr33 shop',
+        'thr££ shop',
+        'thr££shop',
+        'thr£eshop',
+        'thr33 shop',
+        'thr£e shop',
+        'thr33shop',
         
     ]
 
