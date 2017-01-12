@@ -16,7 +16,6 @@ import datetime, re
 import json, asyncio
 import copy
 import configparser
-import logging
 import traceback
 import sys
 import os
@@ -102,13 +101,6 @@ async def on_ready():
                 msg += "\n{}: `{}: {}`".format(*f)
         await bot.send_message(bot.helpers_channel, msg)
         break
-
-# outputs errors to a log file, clears every run to save space
-logger = logging.getLogger('discord')
-logger.setLevel(logging.ERROR)
-handler = logging.FileHandler(filename='kurisu_output.log', encoding='utf-8', mode='w')
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger.addHandler(handler)
 
 # loads extensions
 addons = [

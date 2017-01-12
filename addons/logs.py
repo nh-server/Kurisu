@@ -1,10 +1,7 @@
-import logging
 import discord
 import json
 from discord.ext import commands
 from sys import argv
-
-log = logging.getLogger('discord')
 
 class Logs:
     """

@@ -1,9 +1,7 @@
-import logging
+
 import discord
 from discord.ext import commands
 from sys import argv
-
-log = logging.getLogger('discord')
 
 class AutoNoEmbed:
     """
