@@ -26,7 +26,8 @@ class Extras:
         """Prints the member count of the server."""
         await self.bot.say("{} has {} members!".format(self.bot.server.name, self.bot.server.member_count))
 
-    @commands.command(manage_nicknames=True)
+    @commands.has_permission(manage_nicknames=True)
+    @commands.command()
     async def estprune(self, days=30):
         """Estimate count of members that would be pruned based on the amount of days. Staff only."""
         count = await self.bot.estimate_pruned_members(server=self.bot.server, days=days)
