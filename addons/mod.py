@@ -112,7 +112,7 @@ class Mod:
 
     @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True, name="mute")
-    async def mute(self, ctx, user, reason=""):
+    async def mute(self, ctx, user, *, reason=""):
         """Mutes a user so they can't speak. Staff only."""
         try:
             member = ctx.message.mentions[0]
@@ -151,7 +151,7 @@ class Mod:
 
     @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True, name="noembed")
-    async def noembed(self, ctx, user, reason=""):
+    async def noembed(self, ctx, user, *, reason=""):
         """Removes embed permissions from a user. Staff only."""
         try:
             member = ctx.message.mentions[0]
@@ -189,7 +189,7 @@ class Mod:
             await self.bot.say("💢 I don't have permission to do this.")
 
     @commands.command(pass_context=True, name="takehelp")
-    async def takehelp(self, ctx, user, reason=""):
+    async def takehelp(self, ctx, user, *, reason=""):
         """Remove access to help-and-questions. Staff and Helpers only."""
         author = ctx.message.author
         if (self.bot.helpers_role not in author.roles) and (self.bot.staff_role not in author.roles):
@@ -239,7 +239,7 @@ class Mod:
 
     @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True, name="probate")
-    async def probate(self, ctx, user, reason=""):
+    async def probate(self, ctx, user, *, reason=""):
         """Probate a user. Staff only."""
         try:
             member = ctx.message.mentions[0]
