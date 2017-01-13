@@ -14,6 +14,9 @@ class NinErr:
 
     errcodes = {
         '002-0102': ['System is banned by Nintendo. You cannot ask how to fix this issue here.', Color.dark_red()],
+        '002-0119': ['System update required (outdated friends-module)', Color.orange()],
+        '002-0120': ['Title update required (outdated title version)', Color.orange()],
+        '002-0121': ['Local friend code SEED has invalid signature.\n\nThis should not happen unless it is modified. The only use case for modifying this file is for system unbanning, so you cannot ask how to fix this issue here.', Color.dark_red()],
         '005-5602': ['Unable to connect to the eShop. This error is most likely the result of an incorrect region setting.\nMake sure your region is correctly set in System Settings. If you encounter this error after region-changing your system, make sure you followed all the steps properly.', Color.orange()],
         '005-5964': ['Your Nintendo Network ID has been banned from accessing the eShop.\nIf you think this was unwarranted, you will have to contact Nintendo Support to have it reversed.', Color.dark_red()],
         '006-0502': ['Could not connect to the server.\n\n• Check the [network status page](http://support.nintendo.com/networkstatus)\n• Move closer to your wireless router\n• Verify DNS settings. If "Auto-Obtain" doesn\'t work, try Google\'s Public DNS (8.8.8.8, 8.8.4.4) and try again.', Color.orange()],
@@ -48,7 +51,7 @@ class NinErr:
         embed = discord.Embed(title=err)
         embed.url = "http://www.nintendo.com/consumer/wfc/en_na/ds/results.jsp?error_code={}&system=3DS&locale=en_US".format(err)
         if err not in self.errcodes:
-            embed.description = "I don't know this one! Click the error code for details on Nintendo Support."
+            embed.description = "I don't know this one! Click the error code for details on Nintendo Support.\nIf you keep getting this issue and Nintendo Support does not help, or know how to fix it, you should report relevant details to @ihaveahax#1684 so it can be added to the bot."
         else:
             embed.description = self.errcodes[err][0]
             embed.color = self.errcodes[err][1]
