@@ -62,6 +62,11 @@ class Memes:
         await self._meme(ctx, "http://i.imgur.com/V0uu99A.jpg")
 
     @commands.command(pass_context=True, hidden=True)
+    async def inori3(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/so8thgu.gifv")
+        
+    @commands.command(pass_context=True, hidden=True)
     async def kina(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/8Mm5ZvB.jpg")
