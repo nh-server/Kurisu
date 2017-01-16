@@ -14,6 +14,7 @@ class NinErr:
 
     errcodes = {
         # Nintendo 3DS
+        '001-0803': 'Could not communicate with authentication server.',
         '002-0102': 'System is banned by Nintendo. You cannot ask how to fix this issue here.',
         '002-0119': 'System update required (outdated friends-module)',
         '002-0120': 'Title update required (outdated title version)',
