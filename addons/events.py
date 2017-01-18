@@ -54,6 +54,7 @@ class Events:
         'thr£e shop',
         'thr33shop',
         'fr33sh0p',
+        'free-shop',
     ]
 
     async def scan_message(self, message):
