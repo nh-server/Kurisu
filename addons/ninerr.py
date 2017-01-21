@@ -55,7 +55,7 @@ class NinErr:
         embed = discord.Embed(title=err + (": Nintendo 3DS" if err[0] == "0" else ": Wii U"))
         embed.url = "http://www.nintendo.com/consumer/wfc/en_na/ds/results.jsp?error_code={}&system={}&locale=en_US".format(err, "3DS" if err[0] == "0" else "Wiiu")
         if err not in self.errcodes:
-            embed.description = "I don't know this one! Click the error code for details on Nintendo Support.\nIf you keep getting this issue and Nintendo Support does not help, or know how to fix it, you should report relevant details to @ihaveahax#1684 so it can be added to the bot."
+            embed.description = "I don't know this one! Click the error code for details on Nintendo Support.\n\nIf you keep getting this issue and Nintendo Support does not help, or know how to fix it, you should report relevant details to <@78465448093417472> so it can be added to the bot."
         else:
             embed.description = self.errcodes[err]
             embed.color = (Color.dark_red() if err[0] == "0" else Color.blue())
