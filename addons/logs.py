@@ -40,7 +40,7 @@ class Logs:
         except KeyError:  # if the user is not in the file
             await self.bot.send_message(self.bot.serverlogs_channel, msg)
         try:
-            await self.bot.send_message(member, "Hello {0}, welcome to the {1} Discord Server!\n\nPlease review all of the rules in {2} before asking for help or chatting. In particular, we do not allow assistance relating to piracy.\n\nYou can find a list of staff and helpers in {2}.\n\nThanks for stopping by and have a good time!".format(member.name, self.bot.server.name, self.bot.welcome_channel.mention))
+            await self.bot.send_message(member, "Hello {0}, welcome to the {1} Discord Server!\n\nPlease review all of the rules in {2} before asking for help or chatting. In particular, we do not allow assistance relating to piracy.\n\nYou can find a list of staff and helpers in {2}.\n\nDo you simply need a place to start hacking your 3DS system? Check out **<https://3ds.guide>**!\n\nThanks for stopping by and have a good time!".format(member.name, self.bot.server.name, self.bot.welcome_channel.mention))
         except discord.errors.Forbidden:
             pass
 
