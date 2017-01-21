@@ -22,7 +22,7 @@ class NinErr:
         '005-5602': 'Unable to connect to the eShop. This error is most likely the result of an incorrect region setting.\nMake sure your region is correctly set in System Settings. If you encounter this error after region-changing your system, make sure you followed all the steps properly.',
         '005-5964': 'Your Nintendo Network ID has been banned from accessing the eShop.\nIf you think this was unwarranted, you will have to contact Nintendo Support to have it reversed.',
         '006-0102': 'Unexpected error. Could probably happen trying to play an out-of-region title online?',
-        '006-0332': 'Disconnected from game error.',
+        '006-0332': 'Disconnected from the game server.',
         '006-0502': 'Could not connect to the server.\n\n• Check the [network status page](http://support.nintendo.com/networkstatus)\n• Move closer to your wireless router\n• Verify DNS settings. If "Auto-Obtain" doesn\'t work, try Google\'s Public DNS (8.8.8.8, 8.8.4.4) and try again.',
         '006-0612': 'Failed to join the session.',
         '007-2001': 'Usually the result after region-changing the system. New 3DS cannot fix this issue right now.',
