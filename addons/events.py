@@ -82,21 +82,21 @@ class Events:
                 await self.bot.delete_message(message)
             except discord.errors.NotFound:
                 pass
-            await self.bot.send_message(message.author, "Please read #welcome-and-rules. You cannot link to tools used for piracy, therefore your message was automatically deleted.", embed=embed)
+            await self.bot.send_message(message.author, "Please read {}. You cannot link to tools used for piracy, therefore your message was automatically deleted.".format(self.bot.welcome_channel.mention), embed=embed)
             await self.bot.send_message(self.bot.messagelogs_channel, "**Bad URL**: {} posted a freeShop Repo URL in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
         if contains_piracy_tool_mention:
             try:
                 await self.bot.delete_message(message)
             except discord.errors.NotFound:
                 pass
-            await self.bot.send_message(message.author, "Please read #welcome-and-rules. You cannot mention tools used for piracy, therefore your message was automatically deleted.", embed=embed)
+            await self.bot.send_message(message.author, "Please read {}. You cannot mention tools used for piracy, therefore your message was automatically deleted.".format(self.bot.welcome_channel.mention), embed=embed)
             await self.bot.send_message(self.bot.messagelogs_channel, "**Bad tool**: {} mentioned a piracy tool in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
         if contains_piracy_site_mention or contains_piracy_url_mention:
             try:
                 await self.bot.delete_message(message)
             except discord.errors.NotFound:
                 pass
-            await self.bot.send_message(message.author, "Please read #welcome-and-rules. You cannot mention sites used for piracy directly, therefore your message was automatically deleted.", embed=embed)
+            await self.bot.send_message(message.author, "Please read {}. You cannot mention sites used for piracy directly, therefore your message was automatically deleted.".format(self.bot.welcome_channel.mention), embed=embed)
             await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned a piracy site directly in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
         elif contains_piracy_site_mention_indirect:
             if is_help_channel:
@@ -104,7 +104,7 @@ class Events:
                     await self.bot.delete_message(message)
                 except discord.errors.NotFound:
                     pass
-                await self.bot.send_message(message.author, "Please read #welcome-and-rules. You cannot mention sites used for piracy in the help-and-questions channels directly or indirectly, therefore your message was automatically deleted.", embed=embed)
+                await self.bot.send_message(message.author, "Please read {}. You cannot mention sites used for piracy in the help-and-questions channels directly or indirectly, therefore your message was automatically deleted.".format(self.bot.welcome_channel.mention), embed=embed)
             await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned a piracy site indirectly in {}{}".format(message.author.mention, message.channel.mention, " (message deleted)" if is_help_channel else ""), embed=embed)
 
     async def on_message(self, message):
