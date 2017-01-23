@@ -121,6 +121,11 @@ class Memes:
         """Memes."""
         await self.bot.delete_message(ctx.message)
         await self.bot.send_message(ctx.message.author, "This command has been replaced with the emote :pbanj:.")
+        
+    @commands.command(pass_context=True, hidden=True)
+    async def thumbsup(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/hki1IIs.gifv")
 
     # Cute commands :3
     @commands.command(pass_context=True, hidden=True)
