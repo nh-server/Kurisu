@@ -16,7 +16,7 @@ class Extras:
         """About Kurisu"""
         embed = discord.Embed(title="Kurisu", color=discord.Color.green())
         embed.set_author(name="916253 and ihaveahax")
-        embed.set_thumbnail(url="http://static.zerochan.net/Makise.Kurisu.full.1998946.jpg")
+        embed.set_thumbnail(url="http://i.imgur.com/hjVY4Et.jpg")
         embed.url = "https://github.com/916253/Kurisu"
         embed.description = "Kurisu, the 3DS Hacking Discord bot!"
         await self.bot.say("", embed=embed)
@@ -30,8 +30,9 @@ class Extras:
     @commands.command()
     async def estprune(self, days=30):
         """Estimate count of members that would be pruned based on the amount of days. Staff only."""
+        msg = await self.bot.say("Estimating!".format(self.bot.server.name))
         count = await self.bot.estimate_pruned_members(server=self.bot.server, days=days)
-        await self.bot.say("{} members would be kicked from {}!".format(count, self.bot.server.name))
+        await self.bot.edit_message(msg, "{} members inactive for {} would be kicked from {}!".format(count, days, self.bot.server.name))
 
     @commands.has_permissions(administrator=True)
     @commands.command(pass_context=True, hidden=True)
