@@ -1,3 +1,4 @@
+import binascii
 import discord
 from discord.ext import commands
 from sys import argv
@@ -202,6 +203,15 @@ class CTRErr:
         else:
             return '{}'.format(k)
 
+    async def aaaa(self, rc):
+        # i know this is shit that's the point
+        if rc == 3735928559:
+            await self.bot.say(binascii.unhexlify(hex(3273891394255502812531345138727304541163813328167758675079724534358388)[2:]).decode('utf-8'))
+        elif rc == 3735927486:
+            await self.bot.say(binascii.unhexlify(hex(271463605137058211622646033881424078611212374995688473904058753630453734836388633396349994515442859649191631764050721993573)[2:]).decode('utf-8'))
+        elif rc == 2343432205:
+            await self.bot.say(binascii.unhexlify(hex(43563598107828907579305977861310806718428700278286708)[2:]).decode('utf-8'))
+
     @commands.command(pass_context=True)
     async def err(self, ctx, err: str):
         """Parses CTR error codes. 0x prefix is not required. \n Example: .err 0xD960D02B"""
@@ -209,6 +219,7 @@ class CTRErr:
         if err.startswith("0x"):
             err = err[2:]
         rc = int(err, 16)
+        await self.aaaa(rc)
         desc  = rc & 0x3FF
         mod   = (rc >> 10) & 0xFF
         summ  = (rc >> 21) & 0x3F
@@ -232,6 +243,7 @@ class CTRErr:
         if err.startswith("0x"):
             err = err[2:]
         rc = int(err, 16)
+        self.aaaa(rc)
         desc  = rc & 0x3FF
         mod   = (rc >> 10) & 0xFF
         summ  = (rc >> 21) & 0x3F
@@ -243,26 +255,6 @@ class CTRErr:
         embed.add_field(name="Description", value=self.get_name(self.descriptions, desc), inline=False)
         embed.add_field(name="Summary", value=self.get_name(self.summaries, summ), inline=False)
         embed.add_field(name="Level", value=self.get_name(self.levels, level), inline=False)
-        await self.bot.say("", embed=embed)
-
-    @commands.command(pass_context=True)
-    async def err3(self, ctx, err: str):
-        """Parses CTR error codes, with a fancy embed (TEST2). 0x prefix is not required. \n Example: .err 0xD960D02B"""
-        err = err.strip()
-        if err.startswith("0x"):
-            err = err[2:]
-        rc = int(err, 16)
-        desc  = rc & 0x3FF
-        mod   = (rc >> 10) & 0xFF
-        summ  = (rc >> 21) & 0x3F
-        level = (rc >> 27) & 0x1F
-
-        # garbage
-        embed = discord.Embed(title="0x{:X}".format(rc))
-        embed.add_field(name="Module", value=self.get_name(self.modules, mod), inline=True)
-        embed.add_field(name="Description", value=self.get_name(self.descriptions, desc), inline=True)
-        embed.add_field(name="Summary", value=self.get_name(self.summaries, summ), inline=True)
-        embed.add_field(name="Level", value=self.get_name(self.levels, level), inline=True)
         await self.bot.say("", embed=embed)
 
 def setup(bot):
