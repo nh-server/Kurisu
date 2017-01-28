@@ -71,7 +71,7 @@ class Events:
             await self.bot.send_message(self.bot.messagelogs_channel, "**Watch log**: {} in {}".format(message.author.mention, message.channel.mention), embed=embed)
         is_help_channel = message.channel.name[0:5] == "help-"
         msg = ''.join(char for char in message.content.lower() if char in printable)
-        contains_invite_link = "discordapp.com/invite" in msg or "discord.gg" in msg
+        contains_invite_link = "discordapp.com/invite" in msg or "discord.gg" in msg or "join.skype.com" in msg
         # special check for a certain thing
         contains_fs_repo_url = re.match('(.*)notabug\.org\/(.*)\/freeshop(.*)', msg, re.IGNORECASE)
         contains_piracy_site_mention = any(x in msg for x in ('3dsiso', '3dschaos'))
