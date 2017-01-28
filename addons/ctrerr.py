@@ -163,6 +163,7 @@ class CTRErr:
         141: 'Gamecard not inserted? (fs)',
         190: 'Failed to write file. Partition is full.',
         230: 'Invalid open-flags / permissions? (fs)',
+        250: 'FAT operation denied (fs?)',
         271: 'Invalid configuration (mvd).',
         391: 'NCCH hash-check failed? (fs)',
         392: 'RSA/AES-MAC verification failed? (fs)',
