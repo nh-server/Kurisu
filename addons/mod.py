@@ -99,7 +99,7 @@ class Mod:
         msg += "```"
         await print(self.bot.send_message(author, msg))
 
-    @commands.has_permissions(manage_messages=True)
+    @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True, name="clear")
     async def purge(self, ctx, limit: int):
        """Clears a given number of messages. Staff only."""
