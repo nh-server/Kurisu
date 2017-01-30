@@ -55,7 +55,8 @@ class Events:
     charstocheck = re.sub('[ -]', '', printable)
 
     # I hate naming variables sometimes
-    anti_spam_dict = {}
+    user_antispam = {}
+    channel_antispam = {}
 
     async def add_restriction(self, member, rst):
         with open("restrictions.json", "r") as f:
@@ -114,14 +115,13 @@ class Events:
                     pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
             await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned a piracy site indirectly in {}{}".format(message.author.mention, message.channel.mention, " (message deleted)" if is_help_channel else ""), embed=embed)
 
-    async def spam_check(self, message):
-        if message.author.id not in self.anti_spam_dict:
-            self.anti_spam_dict[message.author.id] = []
-        self.anti_spam_dict[message.author.id].append(message)
-        if len(self.anti_spam_dict[message.author.id]) == 6:  # it can trigger it multiple times if I use >. it can't skip to a number so this should work
+    async def user_spam_check(self, message):
+        if message.author.id not in self.user_antispam:
+            self.user_antispam[message.author.id] = []
+        self.user_antispam[message.author.id].append(message)
+        if len(self.user_antispam[message.author.id]) == 6:  # it can trigger it multiple times if I use >. it can't skip to a number so this should work
             await self.bot.add_roles(message.author, self.bot.muted_role)
             await self.add_restriction(message.author, "Muted")
-            print("{} is spamming".format(message.author))
             msg_user = "You were automatically muted for sending too many messages in a short period of time!\n\nIf you believe this was done in error, send a direct message to one of the staff in {}.".format(self.bot.welcome_channel.mention)
             try:
                 await self.bot.send_message(message.author, msg_user)
@@ -130,18 +130,44 @@ class Events:
             msg = "🔇 **Auto-muted**: {} muted for spamming | {}#{}".format(message.author.mention, message.author.name, message.author.discriminator)
             await self.bot.send_message(self.bot.modlogs_channel, msg)
             await self.bot.send_message(self.bot.mods_channel, msg)
-            msgs_to_delete = self.anti_spam_dict[message.author.id][:]  # clone list so nothing is removed while going through it
+            msgs_to_delete = self.user_antispam[message.author.id][:]  # clone list so nothing is removed while going through it
             for msg in msgs_to_delete:
                 try:
                     await self.bot.delete_message(msg)
                 except discord.errors.NotFound:
                     pass  # don't fail if the message doesn't exist
-
         await asyncio.sleep(3)
-        self.anti_spam_dict[message.author.id].remove(message)
+        self.user_antispam[message.author.id].remove(message)
         try:
-            if len(self.anti_spam_dict[message.author.id]) == 0:
-                self.anti_spam_dict.pop(message.author.id)
+            if len(self.user_antispam[message.author.id]) == 0:
+                self.user_antispam.pop(message.author.id)
+        except KeyError:
+            pass  # if the array doesn't exist, don't raise an error
+
+    async def channel_spam_check(self, message):
+        if message.channel.id not in self.channel_antispam:
+            self.channel_antispam[message.channel.id] = []
+        self.channel_antispam[message.channel.id].append(message)
+        if len(self.channel_antispam[message.channel.id]) == 6:  # it can trigger it multiple times if I use >. it can't skip to a number so this should work
+            overwrites_everyone = message.channel.overwrites_for(self.bot.everyone_role)
+            overwrites_everyone.send_messages = False
+            await self.bot.edit_channel_permissions(message.channel, self.bot.everyone_role, overwrites_everyone)
+            msg_channel = "This channel has been automatically locked for spam. Please wait while staff review the situation."
+            await self.bot.send_message(message.channel, msg_channel)
+            msg = "🔒 **Auto-locked**: {} locked for spam".format(message.channel.mention)
+            await self.bot.send_message(self.bot.modlogs_channel, msg)
+            await self.bot.send_message(self.bot.mods_channel, msg + " @here")
+            msgs_to_delete = self.channel_antispam[message.channel.id][:]  # clone list so nothing is removed while going through it
+            for msg in msgs_to_delete:
+                try:
+                    await self.bot.delete_message(msg)
+                except discord.errors.NotFound:
+                    pass  # don't fail if the message doesn't exist
+        await asyncio.sleep(5)
+        self.channel_antispam[message.channel.id].remove(message)
+        try:
+            if len(self.channel_antispam[message.channel.id]) == 0:
+                self.channel_antispam.pop(message.channel.id)
         except KeyError:
             pass  # if the array doesn't exist, don't raise an error
 
@@ -154,7 +180,8 @@ class Events:
         await self.bot.wait_until_ready()
         if message.author == self.bot.server.me or self.bot.staff_role in message.author.roles or message.channel == self.bot.helpers_channel:  # don't process messages by the bot or staff or in the helpers channel
             return
-        await self.spam_check(message)
+        #await self.user_spam_check(message)
+        await self.channel_spam_check(message)
         await self.scan_message(message)
 
     async def on_message_edit(self, message_before, message_after):
