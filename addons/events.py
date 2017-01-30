@@ -127,7 +127,7 @@ class Events:
                 await self.bot.send_message(message.author, msg_user)
             except discord.errors.Forbidden:
                 pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
-            msg = "🔇 **Auto-muted**: {} muted for spamming | {}#{}".format(message.author.mention, message.author.name, message.author.discriminator)
+            msg = "🔇 **Auto-muted**: {} muted for spamming | {}#{}\n🗓 __Creation__: {}\n🏷 __User ID__: {}".format(message.author.mention, message.author.name, message.author.discriminator, message.author.created_at, message.author.id)
             await self.bot.send_message(self.bot.modlogs_channel, msg)
             await self.bot.send_message(self.bot.mods_channel, msg)
             msgs_to_delete = self.user_antispam[message.author.id][:]  # clone list so nothing is removed while going through it
@@ -148,7 +148,7 @@ class Events:
         if message.channel.id not in self.channel_antispam:
             self.channel_antispam[message.channel.id] = []
         self.channel_antispam[message.channel.id].append(message)
-        if len(self.channel_antispam[message.channel.id]) == 6:  # it can trigger it multiple times if I use >. it can't skip to a number so this should work
+        if len(self.channel_antispam[message.channel.id]) == 25:  # it can trigger it multiple times if I use >. it can't skip to a number so this should work
             overwrites_everyone = message.channel.overwrites_for(self.bot.everyone_role)
             overwrites_everyone.send_messages = False
             await self.bot.edit_channel_permissions(message.channel, self.bot.everyone_role, overwrites_everyone)
@@ -180,7 +180,7 @@ class Events:
         await self.bot.wait_until_ready()
         if message.author == self.bot.server.me or self.bot.staff_role in message.author.roles or message.channel == self.bot.helpers_channel:  # don't process messages by the bot or staff or in the helpers channel
             return
-        #await self.user_spam_check(message)
+        await self.user_spam_check(message)
         await self.channel_spam_check(message)
         await self.scan_message(message)
 
