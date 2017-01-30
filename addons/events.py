@@ -52,8 +52,6 @@ class Events:
         'reeshop',
     ]
 
-    charstocheck = re.sub('[ -]', '', printable)
-
     # I hate naming variables sometimes
     user_antispam = {}
     channel_antispam = {}
@@ -74,12 +72,12 @@ class Events:
         if message.author.id in self.bot.watching:
             await self.bot.send_message(self.bot.messagelogs_channel, "**Watch log**: {} in {}".format(message.author.mention, message.channel.mention), embed=embed)
         is_help_channel = message.channel.name[0:5] == "help-"
-        msg = ''.join(char for char in message.content.lower() if char in self.charstocheck)
+        msg = ''.join(char for char in message.content.lower() if char in printable)
+        msg_no_separators = re.sub('[ -]', '', msg)
         contains_invite_link = "discordapp.com/invite" in msg or "discord.gg" in msg or "join.skype.com" in msg
-        # special check for a certain thing
         contains_piracy_site_mention = any(x in msg for x in ('3dsiso', '3dschaos'))
         contains_piracy_url_mention = any(x in msg for x in ('3ds.titlekeys', 'wiiu.titlekeys', 'titlekeys.com'))
-        contains_piracy_tool_mention = any(x in msg for x in self.piracy_tools)
+        contains_piracy_tool_mention = any(x in msg_no_separators for x in self.piracy_tools)
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site'))
         if contains_invite_link:
             await self.bot.send_message(self.bot.messagelogs_channel, "✉️ **Invite posted**: {} posted an invite link in {}\n------------------\n{}".format(message.author.mention, message.channel.mention, message.content))
@@ -180,9 +178,9 @@ class Events:
         await self.bot.wait_until_ready()
         if message.author == self.bot.server.me or self.bot.staff_role in message.author.roles or message.channel == self.bot.helpers_channel:  # don't process messages by the bot or staff or in the helpers channel
             return
+        await self.scan_message(message)
         await self.user_spam_check(message)
         await self.channel_spam_check(message)
-        await self.scan_message(message)
 
     async def on_message_edit(self, message_before, message_after):
         await self.bot.wait_until_ready()
