@@ -79,7 +79,10 @@ class Mod:
         msg = "```\nbanned:\n"
         for m in ctx.message.mentions:
             msg += "{} - {}#{}\n".format(m.id, m.name, m.discriminator)
-            await self.bot.ban(m, 7)
+            try:
+                await self.bot.ban(m)
+            except discord.error.NotFound:
+                pass
         msg += "```"
         await self.bot.send_message(author, msg)
 
@@ -95,7 +98,10 @@ class Mod:
                 msg += "{} - {}#{}\n".format(m.id, m.name, m.discriminator)
                 toban.append(m)
         for m in toban:
-            await self.bot.ban(m)
+            try:
+                await self.bot.ban(m)
+            except discord.error.NotFound:
+                pass
         msg += "```"
         await print(self.bot.send_message(author, msg))
 
