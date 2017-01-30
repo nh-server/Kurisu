@@ -13,8 +13,8 @@ class Logs:
 
     async def on_member_join(self, member):
         await self.bot.wait_until_ready()
-        msg = "✅ **Join**: {} | {}#{}\n🗓 __Creation__: {}".format(
-            member.mention, member.name, member.discriminator, member.created_at
+        msg = "✅ **Join**: {} | {}#{}\n🗓 __Creation__: {}\n🏷 __User ID__: {}".format(
+            member.mention, member.name, member.discriminator, member.created_at, member.id
         )
         with open("restrictions.json", "r") as f:
             rsts = json.load(f)
@@ -40,7 +40,7 @@ class Logs:
         except KeyError:  # if the user is not in the file
             await self.bot.send_message(self.bot.serverlogs_channel, msg)
         try:
-            await self.bot.send_message(member, "Hello {0}, welcome to the {1} Discord Server!\n\nPlease review all of the rules in {2} before asking for help or chatting. In particular, we do not allow assistance relating to piracy.\n\nYou can find a list of staff and helpers in {2}.\n\nDo you simply need a place to start hacking your 3DS system? Check out **<https://3ds.guide>**!\n\nThanks for stopping by and have a good time!".format(member.name, self.bot.server.name, self.bot.welcome_channel.mention))
+            await self.bot.send_message(member, "Hello {0}, welcome to the {1} server on Discord!\n\nPlease review all of the rules in {2} before asking for help or chatting. In particular, we do not allow assistance relating to piracy.\n\nYou can find a list of staff and helpers in {2}.\n\nDo you simply need a place to start hacking your 3DS system? Check out **<https://3ds.guide>**!\n\nThanks for stopping by and have a good time!".format(member.name, self.bot.server.name, self.bot.welcome_channel.mention))
         except discord.errors.Forbidden:
             pass
 
@@ -49,7 +49,7 @@ class Logs:
         if "uk:"+member.id in self.bot.actions:
             self.bot.actions.remove("uk:"+member.id)
             return
-        msg = "{}: {} | {}#{}".format("👢 **Auto-kick**" if "wk:"+member.id in self.bot.actions else "⬅️ **Leave**", member.mention, member.name, member.discriminator)
+        msg = "{}: {} | {}#{}\n🏷 __User ID__: {}".format("👢 **Auto-kick**" if "wk:"+member.id in self.bot.actions else "⬅️ **Leave**", member.mention, member.name, member.discriminator, member.id)
         await self.bot.send_message(self.bot.serverlogs_channel, msg)
         if "wk:"+member.id in self.bot.actions:
             self.bot.actions.remove("wk:"+member.id)
@@ -60,7 +60,7 @@ class Logs:
         if "ub:"+member.id in self.bot.actions:
             self.bot.actions.remove("ub:"+member.id)
             return
-        msg = "⛔ **{}**: {} | {}#{}".format("Auto-ban" if "wb:"+member.id in self.bot.actions else "Ban", member.mention, member.name, member.discriminator)
+        msg = "⛔ **{}**: {} | {}#{}\n🏷 __User ID__: {}".format("Auto-ban" if "wb:"+member.id in self.bot.actions else "Ban", member.mention, member.name, member.discriminator, member.id)
         await self.bot.send_message(self.bot.serverlogs_channel, msg)
         if "wb:"+member.id in self.bot.actions:
             self.bot.actions.remove("wb:"+member.id)
