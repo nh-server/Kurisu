@@ -132,7 +132,7 @@ class Mod:
             except discord.errors.Forbidden:
                 pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
             await self.bot.say("{} can no longer speak.".format(member.mention))
-            msg = "🔇 **Muted**: {} muted {} | {}#{}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator)
+            msg = "🔇 **Muted**: {} muted {} | {}#{}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
             if reason != "":
                 msg += "\n✏️ __Reason__: " + reason
             else:
@@ -150,7 +150,7 @@ class Mod:
             await self.remove_restriction(member, "Muted")
             await self.bot.remove_roles(member, self.bot.muted_role)
             await self.bot.say("{} can now speak again.".format(member.mention))
-            msg = "🔈 **Unmuted**: {} unmuted {} | {}#{}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator)
+            msg = "🔈 **Unmuted**: {} unmuted {} | {}#{}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
             await self.bot.send_message(self.bot.modlogs_channel, msg)
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
@@ -171,7 +171,7 @@ class Mod:
             except discord.errors.Forbidden:
                 pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
             await self.bot.say("{} can no longer embed links or attach files.".format(member.mention))
-            msg = "🚫 **Removed Embed**: {} removed embed from {} | {}#{}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator)
+            msg = "🚫 **Removed Embed**: {} removed embed from {} | {}#{}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
             if reason != "":
                 msg += "\n✏️ __Reason__: " + reason
             else:
@@ -189,7 +189,7 @@ class Mod:
             await self.remove_restriction(member, "No-Embed")
             await self.bot.remove_roles(member, self.bot.noembed_role)
             await self.bot.say("{} can now embed links and attach files again.".format(member.mention))
-            msg = "⭕️ **Restored Embed**: {} restored embed to {} | {}#{}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator)
+            msg = "⭕️ **Restored Embed**: {} restored embed to {} | {}#{}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
             await self.bot.send_message(self.bot.modlogs_channel, msg)
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
@@ -214,7 +214,7 @@ class Mod:
             except discord.errors.Forbidden:
                 pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
             await self.bot.say("{} can no longer access the help channels.".format(member.mention))
-            msg = "🚫 **Help access removed**: {} removed access to help channels from {} | {}#{}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator)
+            msg = "🚫 **Help access removed**: {} removed access to help channels from {} | {}#{}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
             if reason != "":
                 msg += "\n✏️ __Reason__: " + reason
             else:
@@ -237,7 +237,7 @@ class Mod:
             await self.remove_restriction(member, "No-Help")
             await self.bot.remove_roles(member, self.bot.nohelp_role)
             await self.bot.say("{} can access the help channels again.".format(member.mention))
-            msg = "⭕️ **Help access restored**: {} restored access to help channels to {} | {}#{}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator)
+            msg = "⭕️ **Help access restored**: {} restored access to help channels to {} | {}#{}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
             await self.bot.send_message(self.bot.modlogs_channel, msg)
             await self.bot.send_message(self.bot.helpers_channel, msg)
         except discord.errors.Forbidden:
@@ -259,7 +259,7 @@ class Mod:
             except discord.errors.Forbidden:
                 pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
             await self.bot.say("{} is now in probation.".format(member.mention))
-            msg = "🚫 **Probated**: {} probated {} | {}#{}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator)
+            msg = "🚫 **Probated**: {} probated {} | {}#{}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
             if reason != "":
                 msg += "\n✏️ __Reason__: " + reason
             else:
@@ -277,7 +277,7 @@ class Mod:
             await self.remove_restriction(member, "Probation")
             await self.bot.remove_roles(member, self.bot.probation_role)
             await self.bot.say("{} is out of probation.".format(member.mention))
-            msg = "⭕️ **Un-probated**: {} un-probated {} | {}#{}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator)
+            msg = "⭕️ **Un-probated**: {} un-probated {} | {}#{}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
             await self.bot.send_message(self.bot.modlogs_channel, msg)
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")

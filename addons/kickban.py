@@ -16,7 +16,7 @@ class KickBan:
         """Kicks a user from the server. Staff only."""
         try:
             member = ctx.message.mentions[0]
-            msg = "You were kicked from {0}.".format(self.bot.server.name)
+            msg = "You were kicked from {}.".format(self.bot.server.name)
             if reason != "":
                 msg += " The given reason is: " + reason
             msg += "\n\nYou are able to rejoin the server, but please read the rules in #welcome-and-rules before participating again."
@@ -26,8 +26,8 @@ class KickBan:
                 pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
             self.bot.actions.append("uk:"+member.id)
             await self.bot.kick(member)
-            await self.bot.say("{0} is now gone. 👌".format(member))
-            msg = "👢 **Kick**: {0} kicked {1} | {2}#{3}\n🏷 __User ID__: {}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator, member.id)
+            await self.bot.say("{} is now gone. 👌".format(self.bot.escape_name(member)))
+            msg = "👢 **Kick**: {} kicked {} | {}#{}\n🏷 __User ID__: {}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), member.discriminator, member.id)
             if reason != "":
                 msg += "\n✏️ __Reason__: " + reason
             await self.bot.send_message(self.bot.serverlogs_channel, msg)
@@ -41,7 +41,7 @@ class KickBan:
         """Bans a user from the server. OP+ only."""
         try:
             member = ctx.message.mentions[0]
-            msg = "You were banned from {0}.".format(self.bot.server.name)
+            msg = "You were banned from {}.".format(self.bot.server.name)
             if reason != "":
                 msg += " The given reason is: " + reason
             msg += "\n\nThis ban does not expire."
@@ -51,8 +51,8 @@ class KickBan:
                 pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
             self.bot.actions.append("ub:"+member.id)
             await self.bot.ban(member)
-            await self.bot.say("{0} is now b&. 👍".format(member))
-            msg = "⛔ **Ban**: {0} banned {1} | {2}#{3}\n🏷 __User ID__: {}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator, member.id)
+            await self.bot.say("{} is now b&. 👍".format(self.bot.escape_name(member)))
+            msg = "⛔ **Ban**: {} banned {} | {}#{}\n🏷 __User ID__: {}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), member.discriminator, member.id)
             if reason != "":
                 msg += "\n✏️ __Reason__: " + reason
             await self.bot.send_message(self.bot.serverlogs_channel, msg)
@@ -68,8 +68,8 @@ class KickBan:
             member = ctx.message.mentions[0]
             self.bot.actions.append("ub:"+member.id)
             await self.bot.ban(member)
-            await self.bot.say("{0} is now b&. 👍".format(member))
-            msg = "⛔ **Silent ban**: {0} banned {1} | {2}#{3}\n🏷 __User ID__: {}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator, member.id)
+            await self.bot.say("{} is now b&. 👍".format(self.bot.escape_name(member)))
+            msg = "⛔ **Silent ban**: {} banned {} | {}#{}\n🏷 __User ID__: {}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), member.discriminator, member.id)
             if reason != "":
                 msg += "\n✏️ __Reason__: " + reason
             await self.bot.send_message(self.bot.serverlogs_channel, msg)

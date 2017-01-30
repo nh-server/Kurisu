@@ -19,7 +19,7 @@ class Memes:
             except discord.errors.Forbidden:
                 await self.bot.say(author.mention + " Meme commands are disabled in this channel, or your priviledges have been revoked.")
         else:
-            await self.bot.say(ctx.message.author.display_name + ": " + msg)
+            await self.bot.say(self.bot.escape_name(ctx.message.author.display_name) + ": " + msg)
 
     # list memes
     @commands.command(name="listmemes", pass_context=True)
@@ -65,12 +65,12 @@ class Memes:
     async def inori3(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/so8thgu.gifv")
-        
+
     @commands.command(pass_context=True, hidden=True)
     async def inori4(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/267IXh1.gif")
-        
+
     @commands.command(pass_context=True, hidden=True)
     async def kina(self, ctx):
         """Memes."""
@@ -126,7 +126,7 @@ class Memes:
         """Memes."""
         await self.bot.delete_message(ctx.message)
         await self.bot.send_message(ctx.message.author, "This command has been replaced with the emote :pbanj:.")
-        
+
     @commands.command(pass_context=True, hidden=True)
     async def thumbsup(self, ctx):
         """Memes."""

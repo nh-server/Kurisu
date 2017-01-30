@@ -65,6 +65,16 @@ bot.actions = []  # changes messages in mod-/server-logs
 with open("watch.json", "r") as f:
     bot.watching = json.load(f)  # post user messages to messaage-logs
 
+# http://stackoverflow.com/questions/3411771/multiple-character-replace-with-python
+chars = "\\`*_<>#@:"
+def escape_name(name):
+    name = str(name)
+    for c in chars:
+        if c in name:
+            name = name.replace(c, "\\" + c)
+    return name
+bot.escape_name = escape_name
+
 print(bot.watching)
 
 @bot.event
