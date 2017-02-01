@@ -131,7 +131,20 @@ class Memes:
     async def thumbsup(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/hki1IIs.gifv")
+		
+		@commands.command(pass_context=True, hidden=True)
+    async def bigsmoke(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/vo5l6Fo.jpg[/img
+		ALL YOU HAD TO DO
+WAS FOLLOW THE DAMN GUIDE
+CJ!")
 
+@commands.command(pass_context=True, hidden=True)
+    async def bigorder(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "I’ll have two number 9s, a number 9 large, a number 6 with extra dip, a number 7, two number 45s, one with cheese, and a large soda.")
+		
     # Cute commands :3
     @commands.command(pass_context=True, hidden=True)
     async def headpat(self, ctx):
