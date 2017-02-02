@@ -32,7 +32,7 @@ class Loop:
                 # print("loop")
                 timestamp = datetime.datetime.now()
                 if timestamp.minute == 0 and timestamp.hour != self.last_hour:
-                    await self.bot.send_message(self.bot.helpers_channel, "{} has {} members at this hour!".format(self.bot.server.name, self.bot.server.member_count))
+                    await self.bot.send_message(self.bot.helpers_channel, "{} has {:,} members at this hour!".format(self.bot.server.name, self.bot.server.member_count))
                     self.last_hour = timestamp.hour
                 #for user_id, times in self.bot.timedbans.items():
                 #    pass
