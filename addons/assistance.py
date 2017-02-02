@@ -73,7 +73,7 @@ class Assistance:
     async def ntrstream(self):
         """Links to ntr streaming guide"""
         embed = discord.Embed(title="NTR Streaming Guide", color=discord.Color.blue())
-        embed.url = "https://www.reddit.com/r/3dshacks/comments/4z4sc3/"
+        embed.url = "https://gbatemp.net/threads/tutorial-3ds-screen-recording-without-a-capture-card-ntr-cfw-method.423445/"
         embed.description = "How to use NTR CFW with Nitro Stream to Wirelessly Stream"
         embed.add_field(name="4 common fixes", value="• Are you connected to the Internet?\n• Is your antivirus program blocking the program?\n• Make sure you are not putting the port (:####) into the IP box of Nitro Stream.\n• Does your NTR menu say NTR CFW 3.4 Preview2?")
         await self.bot.say("", embed=embed)
