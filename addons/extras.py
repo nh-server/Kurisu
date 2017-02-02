@@ -48,7 +48,7 @@ class Extras:
     @commands.command(pass_context=True)
     async def prune30(self, ctx, key=""):
         """Prune members that are inactive for 30 days. Staff only."""
-        if self.bot.pruning:
+        if self.bot.pruning > 0:
             await self.bot.say("Pruning is already in progress.")
             return
         if key != self.prune_key:
@@ -57,11 +57,53 @@ class Extras:
             self.prune_key = ''.join(random.sample(string.ascii_letters, 8))
             await self.bot.say("Are you sure you want to prune members inactive for 30 days?\nTo see how many members get kicked, use `.estprune`.\nTo confirm the prune, use the command `.prune30 {}`.".format(self.prune_key))
             return
-        await self.bot.say("Now pruning!")
-        self.bot.pruning = True
+        self.prune_key = ''.join(random.sample(string.ascii_letters, 8))
+        await self.bot.say("Starting pruning!")
         count = await self.bot.prune_members(self.bot.server, days=30)
-        self.bot.pruning = False
-        await self.bot.say("{:,} members were kicked from {}!".format(count, self.bot.server.name))
+        self.bot.pruning = count
+        await self.bot.send_message(self.bot.mods_channel, "{:,} are currently being kicked from {}!".format(count, self.bot.server.name))
+        msg = "👢 **Prune**: {} pruned {:,} members".format(ctx.message.author.mention, count)
+        await self.bot.send_message(self.bot.modlogs_channel, msg)
+
+    @commands.has_permissions(manage_nicknames=True)
+    @commands.command(pass_context=True)
+    async def prune29(self, ctx, key=""):
+        """Prune members that are inactive for 29 days. Staff only. (DEBUG)"""
+        if self.bot.pruning > 0:
+            await self.bot.say("Pruning is already in progress.")
+            return
+        if key != self.prune_key:
+            if key != "":
+                await self.bot.say("That's not the correct key.")
+            self.prune_key = ''.join(random.sample(string.ascii_letters, 8))
+            await self.bot.say("Are you sure you want to prune members inactive for 29 days?\nTo see how many members get kicked, use `.estprune`.\nTo confirm the prune, use the command `.prune29 {}`.".format(self.prune_key))
+            return
+        self.prune_key = ''.join(random.sample(string.ascii_letters, 8))
+        await self.bot.say("Starting pruning!")
+        count = await self.bot.prune_members(self.bot.server, days=29)
+        self.bot.pruning = count
+        await self.bot.send_message(self.bot.mods_channel, "{:,} are currently being kicked from {}!".format(count, self.bot.server.name))
+        msg = "👢 **Prune**: {} pruned {:,} members".format(ctx.message.author.mention, count)
+        await self.bot.send_message(self.bot.modlogs_channel, msg)
+
+    @commands.has_permissions(administrator=True)
+    @commands.command(pass_context=True)
+    async def prune_test(self, ctx, key=""):
+        """Does not actually prune, waits for 1 member to leave."""
+        if self.bot.pruning > 0:
+            await self.bot.say("Pruning is already in progress.")
+            return
+        if key != self.prune_key:
+            if key != "":
+                await self.bot.say("That's not the correct key.")
+            self.prune_key = ''.join(random.sample(string.ascii_letters, 8))
+            await self.bot.say("Are you sure you want to prune members inactive for 30 days?\nTo see how many members get kicked, use `.estprune`.\nTo confirm the prune, use the command `.prune30 {}`.".format(self.prune_key))
+            return
+        self.prune_key = ''.join(random.sample(string.ascii_letters, 8))
+        await self.bot.say("Starting pruning!")
+        count = 1
+        self.bot.pruning = count
+        await self.bot.send_message(self.bot.mods_channel, "{:,} are currently being kicked from {}!".format(count, self.bot.server.name))
         msg = "👢 **Prune**: {} pruned {:,} members".format(ctx.message.author.mention, count)
         await self.bot.send_message(self.bot.modlogs_channel, msg)
 
