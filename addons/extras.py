@@ -1,5 +1,7 @@
 import discord
 import os
+import random
+import string
 from discord.ext import commands
 from sys import argv
 
@@ -10,6 +12,8 @@ class Extras:
     def __init__(self, bot):
         self.bot = bot
         print('Addon "{}" loaded'.format(self.__class__.__name__))
+
+    prune_key = "nokey"
 
     @commands.command()
     async def kurisu(self):
@@ -39,6 +43,41 @@ class Extras:
         msg = await self.bot.say("I'm figuring this out!".format(self.bot.server.name))
         count = await self.bot.estimate_pruned_members(server=self.bot.server, days=days)
         await self.bot.edit_message(msg, "{:,} members inactive for {} day(s) would be kicked from {}!".format(count, days, self.bot.server.name))
+
+    @commands.has_permissions(manage_nicknames=True)
+    @commands.command(pass_context=True)
+    async def prune30(self, ctx, key=""):
+        """Prune members that are inactive for 30 days. Staff only."""
+        if self.bot.pruning:
+            await self.bot.say("Pruning is already in progress.")
+            return
+        if key != self.prune_key:
+            if key != "":
+                await self.bot.say("That's not the correct key.")
+            self.prune_key = ''.join(random.sample(string.ascii_letters, 8))
+            await self.bot.say("Are you sure you want to prune members inactive for 30 days?\nTo see how many members get kicked, use `.estprune`.\nTo confirm the prune, use the command `.prune30 {}`.".format(self.prune_key))
+            return
+        await self.bot.say("Now pruning!")
+        self.bot.pruning = True
+        count = await self.bot.prune_members(self.bot.server, days=30)
+        self.bot.pruning = False
+        await self.bot.say("{:,} members were kicked from {}!".format(count, self.bot.server.name))
+        msg = "👢 **Prune**: {} pruned {:,} members".format(ctx.message.author.mention, count)
+        await self.bot.send_message(self.bot.modlogs_channel, msg)
+
+    @commands.has_permissions(manage_nicknames=True)
+    @commands.command()
+    async def disableleavelogs(self):
+        """DEBUG COMMAND"""
+        self.bot.pruning = True
+        await self.bot.say("disable")
+
+    @commands.has_permissions(manage_nicknames=True)
+    @commands.command()
+    async def enableleavelogs(self):
+        """DEBUG COMMAND"""
+        self.bot.pruning = False
+        await self.bot.say("enable")
 
     @commands.has_permissions(administrator=True)
     @commands.command(pass_context=True, hidden=True)

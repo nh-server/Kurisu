@@ -49,6 +49,8 @@ class Logs:
         if "uk:"+member.id in self.bot.actions:
             self.bot.actions.remove("uk:"+member.id)
             return
+        if self.bot.pruning and "wk:"+member.id not in self.bot.actions:
+            return
         msg = "{}: {} | {}#{}\n🏷 __User ID__: {}".format("👢 **Auto-kick**" if "wk:"+member.id in self.bot.actions else "⬅️ **Leave**", member.mention, self.bot.escape_name(member.name), member.discriminator, member.id)
         await self.bot.send_message(self.bot.serverlogs_channel, msg)
         if "wk:"+member.id in self.bot.actions:

@@ -75,6 +75,8 @@ def escape_name(name):
     return name
 bot.escape_name = escape_name
 
+bot.pruning = False  # used to disable leave logs if pruning, maybe.
+
 @bot.event
 async def on_ready():
     # this bot should only ever be in one server anyway
