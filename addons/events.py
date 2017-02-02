@@ -49,7 +49,6 @@ class Events:
         'freshop',
         'fresh0p',
         'fr$shop',
-        'reeshop',
     ]
 
     # I hate naming variables sometimes
