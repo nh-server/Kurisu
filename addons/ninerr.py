@@ -35,6 +35,7 @@ class NinErr:
         '009-8401': 'Update data corrupted. Delete and re-install.',
         '011-3021': 'Cannot find title on Nintendo eShop. Probably incorrect region, or never existed.',
         '011-3136': 'Nintendo eShop is currently unavailable. Try again later.',
+        '014-0062': 'Error during System Transfer. Move closer to the wireless router and keep trying.',
         '022-2452': 'Occurs when trying to use Nintendo eShop with UNITINFO patches enabled.',
         '022-2501': 'Attempting to use a Nintendo Network ID on one system when it is linked on another. This can be the result of using System Transfer, then restoring the source system\'s NAND and attempting to use services that require a Nintendo Network ID.\n\nIn a System Transfer, all Nintendo Network ID accounts associated with the system are transferred over, whether they are currently linked or not.',
         '022-2613': 'Incorrect e-mail or password when trying to link an existing Nintendo Network ID. Make sure there are no typos, and the given e-mail is the correct one for the given ID.\nIf you forgot the password, reset it at <https://id.nintendo.net/account/forgotten-password>',
