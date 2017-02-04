@@ -91,5 +91,20 @@ class Extras:
                 f.write(message.content)
         await self.bot.say("Done!")
 
+    @commands.command(pass_context=True, hidden=True)
+    async def togglechannel(self, ctx, channelname):
+        """Enable or disable access to specific channels."""
+        author = ctx.message.author
+        await self.bot.delete_message(ctx.message)
+        if channelname == "shitposts":
+            if self.bot.shitposts_role in author.roles:
+                await self.bot.remove_roles(author, self.bot.shitposts_role)
+                await self.bot.send_message(author, "Access to #shitposts removed.")
+            else:
+                await self.bot.add_roles(author, self.bot.shitposts_role)
+                await self.bot.send_message(author, "Access to #shitposts granted.")
+        else:
+            await self.bot.send_message(author, "{} is not a valid toggleable channel.".format(channelname))
+
 def setup(bot):
     bot.add_cog(Extras(bot))
