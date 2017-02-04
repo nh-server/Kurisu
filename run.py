@@ -5,7 +5,7 @@
 # https://github.com/916253/Kurisu
 
 description = """
-Kurisu, the bot for the 3DS Hacking Discord! Slowly replacing Saber as it is no longer actively developed.
+Kurisu, the bot for the 3DS Hacking Discord!
 """
 
 # import dependencies
@@ -121,6 +121,7 @@ addons = [
     'addons.ctrerr',
     'addons.events',
     'addons.extras',
+    'addons.friendcode',
     'addons.kickban',
     'addons.load',
     'addons.lockdown',
