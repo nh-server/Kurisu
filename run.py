@@ -72,7 +72,7 @@ def escape_name(name):
     for c in chars:
         if c in name:
             name = name.replace(c, "\\" + c)
-    return name
+    return name.replace("@", "@\u200b")  # prevent mentions
 bot.escape_name = escape_name
 
 bot.pruning = False  # used to disable leave logs if pruning, maybe.
