@@ -22,8 +22,9 @@ class xkcdparse:
                 comicnum = ps.path.replace('/', '')
                 print(comicnum)
                 comic = xkcd.getComic(comicnum)
-                embed = discord.Embed(title="{}: {}".format(comicnum, comic.getTitle()), description="__Alt text__: {}".format(comic.getAltText()))
+                embed = discord.Embed(title="{}: {}".format(comicnum, comic.getTitle()), url=url, color=discord.Color.blue())
                 embed.set_image(url=comic.getImageLink())
+                embed.set_footer(text=comic.getAltText())
                 await self.bot.send_message(message.channel, "", embed=embed)
 
 def setup(bot):
