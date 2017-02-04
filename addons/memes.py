@@ -41,12 +41,6 @@ class Memes:
         await self._meme(ctx, "**ALL HAIL BRITANNIA!**")
 
     @commands.command(pass_context=True, hidden=True)
-    async def xor(self, ctx):
-        """Memes."""
-        await self.bot.delete_message(ctx.message)
-        await self.bot.send_message(ctx.message.author, "This command has been replaced with the emote :xor:.")
-
-    @commands.command(pass_context=True, hidden=True)
     async def megumi(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/GMRp1dj.jpg")
@@ -120,12 +114,6 @@ class Memes:
     async def hazel(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/vpu8bX3.png")
-
-    @commands.command(pass_context=True, hidden=True)
-    async def pbanj(self, ctx):
-        """Memes."""
-        await self.bot.delete_message(ctx.message)
-        await self.bot.send_message(ctx.message.author, "This command has been replaced with the emote :pbanj:.")
 
     @commands.command(pass_context=True, hidden=True)
     async def thumbsup(self, ctx):
