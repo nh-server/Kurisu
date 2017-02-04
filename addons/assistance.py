@@ -98,17 +98,7 @@ class Assistance:
     @commands.command()
     async def builds(self):
         """Links to astronautlevel's luma commit site."""
-        await self.simple_embed("astronautlevel's Luma3DS commit builds can be found here: https://astronautlevel2.github.io/Luma3DS")
-
-    @commands.command()
-    async def logs(self):
-        """Links to panopticon."""
-        await self.simple_embed("Logs unavailable. Consider logging locally using <http://github.com/megumisonoda/panopticon>")
-
-    @commands.command()
-    async def fwlist(self):
-        """Links to a list of documented serial numbers w/ versions they shipped with."""
-        await self.simple_embed("A serial/firmware comparison can be found here: https://www.reddit.com/r/3dshacks/comments/5fv3xa/new_3dsxl2ds_firmware_by_serial_december_2016/")
+        await self.simple_embed("Astronautlevel's Luma3DS commit builds can be found here: https://astronautlevel2.github.io/Luma3DS \n(Warning: most builds here are meant for developers and are untested, use at your own risk!)")
 
     # Links to 9.2 ctrtransfer guide
     @commands.command()
@@ -140,7 +130,7 @@ class Assistance:
     @commands.command()
     async def downgrade(self):
         """Downgrade help"""
-        await self.simple_embed("DSiWare Downgrade: <https://3ds.guide/dsiware-downgrade>\nHardmod: <http://pastebin.com/chh0hHPk> or <https://gbatemp.net/threads/tutorial-noob-friendly-nand-dumping-2ds-3ds-3ds-xl-n3ds-n3ds-xl.414498/>\nDowngrade Methods on 10.7 or below:\nFollow Plailect's guide here: <https://3ds.guide/get-started>", title="Downgrade methods on 11.0 or above")
+        await self.simple_embed("Follow Plailect's guide here: <https://3ds.guide/get-started>", title="Downgrade methods on 11.2 or below:")
 
     @commands.command()
     async def vguides(self):
