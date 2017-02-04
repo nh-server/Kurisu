@@ -84,6 +84,7 @@ class Logs:
         dest = self.bot.modlogs_channel
         if member_before.roles != member_after.roles:
             do_log = True
+            dest = self.bot.serverlogs_channel
             # role removal
             if len(member_before.roles) > len(member_after.roles):
                 msg = "\n👑 __Role removal__: "
