@@ -101,11 +101,6 @@ class Assistance:
         await self.simple_embed("astronautlevel's Luma3DS commit builds can be found here: https://astronautlevel2.github.io/Luma3DS")
 
     @commands.command()
-    async def logs(self):
-        """Links to panopticon."""
-        await self.simple_embed("Logs unavailable. Consider logging locally using <http://github.com/megumisonoda/panopticon>")
-
-    @commands.command()
     async def fwlist(self):
         """Links to a list of documented serial numbers w/ versions they shipped with."""
         await self.simple_embed("A serial/firmware comparison can be found here: https://www.reddit.com/r/3dshacks/comments/5fv3xa/new_3dsxl2ds_firmware_by_serial_december_2016/")
