@@ -134,6 +134,7 @@ addons = [
     'addons.mod',
     'addons.ninerr',
     'addons.rules',
+    'addons.xkcdparse',
 ]
 
 failed_addons = []
