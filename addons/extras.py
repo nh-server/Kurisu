@@ -96,13 +96,13 @@ class Extras:
         """Enable or disable access to specific channels."""
         author = ctx.message.author
         await self.bot.delete_message(ctx.message)
-        if channelname == "shitposts":
-            if self.bot.shitposts_role in author.roles:
-                await self.bot.remove_roles(author, self.bot.shitposts_role)
-                await self.bot.send_message(author, "Access to #shitposts removed.")
+        if channelname == "elsewhere":
+            if self.bot.elsewhere_role in author.roles:
+                await self.bot.remove_roles(author, self.bot.elsewhere_role)
+                await self.bot.send_message(author, "Access to #elsewhere removed.")
             else:
-                await self.bot.add_roles(author, self.bot.shitposts_role)
-                await self.bot.send_message(author, "Access to #shitposts granted.")
+                await self.bot.add_roles(author, self.bot.elsewhere_role)
+                await self.bot.send_message(author, "Access to #elsewhere granted.")
         else:
             await self.bot.send_message(author, "{} is not a valid toggleable channel.".format(channelname))
 
