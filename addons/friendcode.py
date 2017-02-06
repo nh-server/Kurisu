@@ -16,8 +16,9 @@ class FriendCode:
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     def __unload(self):
-        print('Unloading fc.sqlite')
+        print('Committing to fc.sqlite')
         self.conn.commit()
+        print('Unloading fc.sqlite')
         self.conn.close()
 
     # based on https://github.com/megumisonoda/SaberBot/blob/master/lib/saberbot/valid_fc.rb
@@ -41,12 +42,12 @@ class FriendCode:
             await self.bot.say("This friend code is invalid.")
             return
         c = self.conn.cursor()
-        rows = c.execute('SELECT * FROM friend_codes WHERE userid = ?', (ctx.message.author.id,))
+        rows = c.execute('SELECT * FROM friend_codes WHERE userid = ?', (int(ctx.message.author.id),))
         for row in rows:
             # if the user already has one, this prevents adding another
             await self.bot.say("Please delete your current friend code with `.fcdelete` before adding another.")
             return
-        c.execute('INSERT INTO friend_codes VALUES (?,?)', (ctx.message.author.id, fc))
+        c.execute('INSERT INTO friend_codes VALUES (?,?)', (int(ctx.message.author.id), fc))
         await self.bot.say("{} Friend code inserted: {}".format(ctx.message.author.mention, self.fc_to_string(fc)))
 
     @commands.command(pass_context=True)
@@ -54,14 +55,14 @@ class FriendCode:
         """Get other user's friend code. You must have one yourself in the database."""
         c = self.conn.cursor()
         member = ctx.message.mentions[0]
-        rows = c.execute('SELECT * FROM friend_codes WHERE userid = ?', (ctx.message.author.id,))
+        rows = c.execute('SELECT * FROM friend_codes WHERE userid = ?', (int(ctx.message.author.id),))
         for row in rows:
             # assuming there is only one, which there should be
-            rows_m = c.execute('SELECT * FROM friend_codes WHERE userid = ?', (member.id,))
+            rows_m = c.execute('SELECT * FROM friend_codes WHERE userid = ?', (int(member.id),))
             for row_m in rows_m:
                 await self.bot.say("{} friend code is {}".format(member.mention, self.fc_to_string(row_m[1])))
                 try:
-                    await self.bot.send_message(member, "{} has asked for your friend code! Their code is {}.".format(self.bot.escape_name(member), self.fc_to_string(row[1])))
+                    await self.bot.send_message(member, "{} has asked for your friend code! Their code is {}.".format(self.bot.escape_name(ctx.message.author), self.fc_to_string(row[1])))
                 except discord.errors.Forbidden:
                     pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
                 return
@@ -73,7 +74,7 @@ class FriendCode:
     async def fcdelete(self, ctx):
         """Delete your friend code."""
         c = self.conn.cursor()
-        c.execute('DELETE FROM friend_codes WHERE userid = ?', (ctx.message.author.id,))
+        c.execute('DELETE FROM friend_codes WHERE userid = ?', (int(ctx.message.author.id),))
         await self.bot.say("Friend code removed from database.")
 
     @commands.command()
