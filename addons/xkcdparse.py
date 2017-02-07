@@ -13,9 +13,8 @@ class xkcdparse:
         self.bot = bot
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
-    async def embed_xkcd_comic(self, comicnum):
-        comic = xkcd.getComic(comicnum)
-        embed = discord.Embed(title="{}: {}".format(comicnum, comic.getTitle()), url="https://xkcd.com/{}".format(comicnum), color=discord.Color.blue())
+    async def embed_xkcd_comic(self, comic):
+        embed = discord.Embed(title="{}: {}".format(comic.number, comic.getTitle()), url="https://xkcd.com/{}".format(comic.number), color=discord.Color.blue())
         embed.set_image(url=comic.getImageLink())
         embed.set_footer(text=comic.getAltText())
         return embed
@@ -24,9 +23,11 @@ class xkcdparse:
     async def xkcd(self, comicnum):
         """Show xkcd comic by number. Use "latest" to show the latest comic."""
         if comicnum == "latest":
-            await self.bot.say("", embed=await self.embed_xkcd_comic(xkcd.getLatestComicNum()))
+            await self.bot.say("", embed=await self.embed_xkcd_comic(xkcd.getLatestComic()))
+        elif comicnum == "random":
+            await self.bot.say("", embed=await self.embed_xkcd_comic(xkcd.getRandomComic()))
         else:
-            await self.bot.say("", embed=await self.embed_xkcd_comic(comicnum))
+            await self.bot.say("", embed=await self.embed_xkcd_comic(xkcd.getComic(comicnum)))
 
     async def on_message(self, message):
         # http://stackoverflow.com/questions/839994/extracting-a-url-in-python
@@ -35,7 +36,7 @@ class xkcdparse:
             ps = urlparse(url)
             if ps.netloc == "xkcd.com" or ps.netloc == "www.xkcd.com":
                 comicnum = ps.path.replace('/', '')
-                await self.bot.send_message(message.channel, embed=await self.embed_xkcd_comic(comicnum))
+                await self.bot.send_message(message.channel, embed=await self.embed_xkcd_comic(xkcd.getComic(comicnum)))
 
 def setup(bot):
     bot.add_cog(xkcdparse(bot))
