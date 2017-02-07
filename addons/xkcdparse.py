@@ -21,7 +21,7 @@ class xkcdparse:
 
     @commands.command()
     async def xkcd(self, comicnum):
-        """Show xkcd comic by number. Use "latest" to show the latest comic."""
+        """Show xkcd comic by number. Use "latest" to show the latest comic, or "random" to show a random comic."""
         if comicnum == "latest":
             await self.bot.say("", embed=await self.embed_xkcd_comic(xkcd.getLatestComic()))
         elif comicnum == "random":
