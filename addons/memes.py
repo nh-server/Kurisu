@@ -130,6 +130,11 @@ class Memes:
         """Memes."""
         await self._meme(ctx, "I’ll have two number 9s, a number 9 large, a number 6 with extra dip, a number 7, two number 45s, one with cheese, and a large soda.")
 
+    @commands.command(pass_context=True, hidden=True)
+    async def yarr(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://youtu.be/4w3fATm526o\nDo what you want, 'cause a pirate is free, YOU ARE A PIRATE!")
+        
     # Cute commands :3
     @commands.command(pass_context=True, hidden=True)
     async def headpat(self, ctx):
