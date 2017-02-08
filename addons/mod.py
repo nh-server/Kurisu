@@ -103,7 +103,7 @@ class Mod:
             except discord.error.NotFound:
                 pass
         msg += "```"
-        await print(self.bot.send_message(author, msg))
+        await self.bot.send_message(author, msg)
 
     @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True, name="clear")

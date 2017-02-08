@@ -49,7 +49,6 @@ class Events:
         'freshop',
         'fresh0p',
         'fr$shop',
-        'reeshop',
     ]
 
     # I hate naming variables sometimes
@@ -184,7 +183,7 @@ class Events:
 
     async def on_message_edit(self, message_before, message_after):
         await self.bot.wait_until_ready()
-        if message.author == self.bot.server.me or self.bot.staff_role in message.author.roles or message.channel == self.bot.helpers_channel:  # don't process messages by the bot or staff or in the helpers channel
+        if message_after.author == self.bot.server.me or self.bot.staff_role in message_after.author.roles or message_after.channel == self.bot.helpers_channel:  # don't process messages by the bot or staff or in the helpers channel
             return
         await self.scan_message(message_after)
 

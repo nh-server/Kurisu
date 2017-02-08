@@ -5,7 +5,7 @@
 # https://github.com/916253/Kurisu
 
 description = """
-Kurisu, the bot for the 3DS Hacking Discord! Slowly replacing Saber as it is no longer actively developed.
+Kurisu, the bot for the 3DS Hacking Discord!
 """
 
 # import dependencies
@@ -66,22 +66,22 @@ with open("watch.json", "r") as f:
     bot.watching = json.load(f)  # post user messages to messaage-logs
 
 # http://stackoverflow.com/questions/3411771/multiple-character-replace-with-python
-chars = "\\`*_<>#@:"
+chars = "\\`*_<>#@:~"
 def escape_name(name):
     name = str(name)
     for c in chars:
         if c in name:
             name = name.replace(c, "\\" + c)
-    return name
+    return name.replace("@", "@\u200b")  # prevent mentions
 bot.escape_name = escape_name
 
-print(bot.watching)
+bot.pruning = False  # used to disable leave logs if pruning, maybe.
 
 @bot.event
 async def on_ready():
     # this bot should only ever be in one server anyway
     for server in bot.servers:
-        print("{} has started! {} has {} members!".format(bot.user.name, server.name, server.member_count))
+        print("{} has started! {} has {:,} members!".format(bot.user.name, server.name, server.member_count))
         bot.server = server
         # channels
         bot.welcome_channel = discord.utils.get(server.channels, name="welcome-and-rules")
@@ -105,8 +105,9 @@ async def on_ready():
         bot.nomemes_role = discord.utils.get(server.roles, name="No-Memes")
         bot.nohelp_role = discord.utils.get(server.roles, name="No-Help")
         bot.noembed_role = discord.utils.get(server.roles, name="No-Embed")
+        bot.elsewhere_role = discord.utils.get(server.roles, name="#elsewhere")
         bot.everyone_role = discord.utils.get(server.roles, name="@everyone")
-        msg = "{} has started! {} has {} members!".format(bot.user.name, server.name, server.member_count)
+        msg = "{} has started! {} has {:,} members!".format(bot.user.name, server.name, server.member_count)
         if len(failed_addons) != 0:
             msg += "\n\nSome addons failed to load:\n"
             for f in failed_addons:
@@ -121,6 +122,7 @@ addons = [
     'addons.ctrerr',
     'addons.events',
     'addons.extras',
+    'addons.friendcode',
     'addons.kickban',
     'addons.load',
     'addons.lockdown',
@@ -134,6 +136,7 @@ addons = [
     'addons.mod',
     'addons.ninerr',
     'addons.rules',
+    'addons.xkcdparse',
 ]
 
 failed_addons = []

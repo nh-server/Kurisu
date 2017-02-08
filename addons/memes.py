@@ -12,7 +12,7 @@ class Memes:
 
     async def _meme(self, ctx, msg):
         author = ctx.message.author
-        if ctx.message.channel.name[0:5] == "help-" or (self.bot.nomemes_role in author.roles):
+        if ctx.message.channel.name[0:5] == "help-" or "assistance" in ctx.message.channel.name or (self.bot.nomemes_role in author.roles):
             await self.bot.delete_message(ctx.message)
             try:
                 await self.bot.send_message(author, "Meme commands are disabled in this channel, or your priviledges have been revoked.")
@@ -39,12 +39,6 @@ class Memes:
     async def s_99(self, ctx):
         """Memes."""
         await self._meme(ctx, "**ALL HAIL BRITANNIA!**")
-
-    @commands.command(pass_context=True, hidden=True)
-    async def xor(self, ctx):
-        """Memes."""
-        await self.bot.delete_message(ctx.message)
-        await self.bot.send_message(ctx.message.author, "This command has been replaced with the emote :xor:.")
 
     @commands.command(pass_context=True, hidden=True)
     async def megumi(self, ctx):
@@ -122,12 +116,6 @@ class Memes:
         await self._meme(ctx, "http://i.imgur.com/vpu8bX3.png")
 
     @commands.command(pass_context=True, hidden=True)
-    async def pbanj(self, ctx):
-        """Memes."""
-        await self.bot.delete_message(ctx.message)
-        await self.bot.send_message(ctx.message.author, "This command has been replaced with the emote :pbanj:.")
-
-    @commands.command(pass_context=True, hidden=True)
     async def thumbsup(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/hki1IIs.gifv")
@@ -141,12 +129,7 @@ class Memes:
     async def bigorder(self, ctx):
         """Memes."""
         await self._meme(ctx, "I’ll have two number 9s, a number 9 large, a number 6 with extra dip, a number 7, two number 45s, one with cheese, and a large soda.")
-	
-	 @commands.command(pass_context=True, hidden=True)
-    async def brickloops(self, ctx):
-        """Memes."""
-        await self._meme(ctx, "http://i.imgur.com/iPtbIQI.png")
-		
+
     # Cute commands :3
     @commands.command(pass_context=True, hidden=True)
     async def headpat(self, ctx):

@@ -27,8 +27,8 @@ class Rules:
 
     @commands.command()
     async def rules(self):
-       """Links to 3dshacks.ml."""
-       await self.bot.say("Please check {} or <http://3dshacks.ml> for a full list of rules".format(self.bot.welcome_channel.mention))
+       """Links to rules website."""
+       await self.bot.say("Please check {} or <http://ninty.cf/w/> for a full list of rules".format(self.bot.welcome_channel.mention))
 
     @commands.command(hidden=True)
     async def r1(self):

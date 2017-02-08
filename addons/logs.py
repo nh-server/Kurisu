@@ -49,6 +49,11 @@ class Logs:
         if "uk:"+member.id in self.bot.actions:
             self.bot.actions.remove("uk:"+member.id)
             return
+        if self.bot.pruning != 0 and "wk:"+member.id not in self.bot.actions:
+            self.bot.pruning -= 1
+            if self.bot.pruning == 0:
+                await self.bot.send_message(self.bot.mods_channel, "Pruning finished!")
+            return
         msg = "{}: {} | {}#{}\n🏷 __User ID__: {}".format("👢 **Auto-kick**" if "wk:"+member.id in self.bot.actions else "⬅️ **Leave**", member.mention, self.bot.escape_name(member.name), member.discriminator, member.id)
         await self.bot.send_message(self.bot.serverlogs_channel, msg)
         if "wk:"+member.id in self.bot.actions:
@@ -79,6 +84,7 @@ class Logs:
         dest = self.bot.modlogs_channel
         if member_before.roles != member_after.roles:
             do_log = True
+            dest = self.bot.serverlogs_channel
             # role removal
             if len(member_before.roles) > len(member_after.roles):
                 msg = "\n👑 __Role removal__: "
