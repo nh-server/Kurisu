@@ -50,7 +50,7 @@ class Assistance:
         embed = discord.Embed(title="Soundhax", color=discord.Color.blue())
         embed.set_author(name="Ned Williamson", url="http://soundhax.com/")
         embed.set_thumbnail(url="http://soundhax.com/img/LogoGraphics.png")
-        embed.url = "Soundhax"
+        embed.url = "http://soundhax.com"
         embed.description = "Free 3DS Primary Entrypoint <= 11.2"
         await self.bot.say("", embed=embed)        
 
