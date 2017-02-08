@@ -43,13 +43,13 @@ class Assistance:
         embed.description = "A complete guide to 3DS custom firmware, from stock to arm9loaderhax."
         await self.bot.say("", embed=embed)
     
-    #Embed to Soundhax Download
+    #Embed to Soundhax Download Website
     @commands.command()
     async def soundhax(self):
         """Links to Soundhax Website"""
         embed = discord.Embed(title="Soundhax", color=discord.Color.blue())
         embed.set_author(name="Ned Williamson", url="http://soundhax.com/")
-        embed.set_thumbnail(url="http://soundhax.com/img/LogoGraphics.png")
+        embed.set_thumbnail(url="http://i.imgur.com/lYf0jan.png")
         embed.url = "http://soundhax.com"
         embed.description = "Free 3DS Primary Entrypoint <= 11.2"
         await self.bot.say("", embed=embed)        
