@@ -41,17 +41,17 @@ class Memes:
         await self._meme(ctx, "**ALL HAIL BRITANNIA!**")
         
     @commands.command(pass_context=True, hidden=True)
-    async def Adrian1(self, ctx):
+    async def adrian1(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/j0Dkv2Z.png")
     
     @commands.command(pass_context=True, hidden=True)
-    async def Adrian2(self, ctx):
+    async def adrian2(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/2SBC1Qo.jpg")
     
     @commands.command(pass_context=True, hidden=True)
-    async def Adrian3(self, ctx):
+    async def adrian3(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/EsDWK9U.png")
     
