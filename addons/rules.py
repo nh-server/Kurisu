@@ -43,12 +43,12 @@ class Rules:
     @commands.command(hidden=True)
     async def r3(self):
        """Displays rule three."""
-       await self.bot.say("```3. Support questions are to be asked in #help-and-questions exclusively.```")
+       await self.bot.say("```3. Support questions are to be asked in the assistance channels exclusively.```")
 
     @commands.command(hidden=True)
     async def r4(self):
        """Displays rule four."""
-       await self.bot.say("```4. When answering questions in #help-and-questions, remain helpful. Derailing support is impermissible. Remarks that are not helpful will be removed on sight. Continued derailing will constitute further action.```")
+       await self.bot.say("```4. When asking **or** answering questions in the assistance channels, remain helpful. Derailing support is impermissible. Remarks that are not helpful will be removed on sight. Continued derailing will constitute further action.```")
 
     @commands.command(hidden=True)
     async def r5(self):
