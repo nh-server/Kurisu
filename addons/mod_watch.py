@@ -19,7 +19,9 @@ class Modwatch:
         with open("watch.json", "w") as f:
             json.dump(self.bot.watching, f)
         await self.bot.say("{} is being watched.".format(member.mention))
-        await self.bot.send_message(self.bot.modlogs_channel, "👀 **Watch**: {} put {} on watch | {}#{}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator))
+        msg = "👀 **Watch**: {} put {} on watch | {}#{}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator)
+        await self.bot.send_message(self.bot.modlogs_channel, msg)
+        await self.bot.send_message(self.bot.messagelogs_channel, msg)
 
     @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True)
@@ -32,7 +34,9 @@ class Modwatch:
         with open("watch.json", "w") as f:
             json.dump(self.bot.watching, f)
         await self.bot.say("{} is no longer being watched.".format(member.mention))
-        await self.bot.send_message(self.bot.modlogs_channel, "❌ **Unwatch**: {} removed {} from watch | {}#{}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator))
+        msg = "❌ **Unwatch**: {} removed {} from watch | {}#{}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator)
+        await self.bot.send_message(self.bot.modlogs_channel, msg)
+        await self.bot.send_message(self.bot.messagelogs_channel, msg)
 
 def setup(bot):
     bot.add_cog(Modwatch(bot))
