@@ -77,8 +77,29 @@ bot.escape_name = escape_name
 
 bot.pruning = False  # used to disable leave logs if pruning, maybe.
 
+# mostly taken from https://github.com/Rapptz/discord.py/blob/async/discord/ext/commands/bot.py
+@bot.event
+async def on_command_error(error, ctx):
+    print("\n\nctx")
+    print(dir(ctx))
+    print("\n\nctx.command")
+    print(dir(ctx.command))
+
+    if isinstance(error, discord.ext.commands.errors.CheckFailure):
+        await bot.send_message(ctx.message.channel, "{} You don't have permission to use this command.".format(ctx.message.author.mention))
+    elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+        formatter = commands.formatter.HelpFormatter()
+        await bot.send_message(ctx.message.channel, "{} You are missing required arguments.\n{}".format(ctx.message.author.mention, formatter.format_help_for(ctx, ctx.command)[0]))
+    else:
+        print('Ignoring exception in command {}'.format(ctx.command), file=sys.stderr)
+        traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
+
+bot.all_ready = False
+
 @bot.event
 async def on_ready():
+    if bot.all_ready:
+        return
     # this bot should only ever be in one server anyway
     for server in bot.servers:
         print("{} has started! {} has {:,} members!".format(bot.user.name, server.name, server.member_count))
@@ -130,6 +151,7 @@ async def on_ready():
             for f in failed_addons:
                 msg += "\n{}: `{}: {}`".format(*f)
         await bot.send_message(bot.helpers_channel, msg)
+        bot.all_ready = True
         break
 
 # loads extensions
