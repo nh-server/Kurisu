@@ -175,6 +175,16 @@ class Memes:
     async def headpat(self, ctx):
         """Cute"""
         await self._meme(ctx, "http://i.imgur.com/7V6gIIW.jpg")
+        
+    @commands.command(pass_context=True, hidden=True)
+    async def rawr(self, ctx):
+        """Cute"""
+        await self._meme(ctx, "http://i.imgur.com/Bqw4OwQ.png")
+        
+    @commands.command(pass_context=True, hidden=True)
+    async def baka(self, ctx):
+        """Cute"""
+        await self._meme(ctx, "http://i.imgur.com/OyjCHNe.png")
 
 # Load the extension
 def setup(bot):
