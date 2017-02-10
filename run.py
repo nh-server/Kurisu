@@ -83,6 +83,7 @@ async def on_ready():
     for server in bot.servers:
         print("{} has started! {} has {:,} members!".format(bot.user.name, server.name, server.member_count))
         bot.server = server
+
         # channels
         bot.welcome_channel = discord.utils.get(server.channels, name="welcome-and-rules")
         bot.announcements_channel = discord.utils.get(server.channels, name="announcements")
@@ -91,13 +92,16 @@ async def on_ready():
         bot.modlogs_channel = discord.utils.get(server.channels, name="mod-logs")
         bot.serverlogs_channel = discord.utils.get(server.channels, name="server-logs")
         bot.messagelogs_channel = discord.utils.get(server.channels, name="message-logs")
+
         # roles
         bot.staff_role = discord.utils.get(server.roles, name="Staff")
         bot.halfop_role = discord.utils.get(server.roles, name="HalfOP")
         bot.op_role = discord.utils.get(server.roles, name="OP")
         bot.superop_role = discord.utils.get(server.roles, name="SuperOP")
+        bot.owner_role = discord.utils.get(server.roles, name="Owner")
         bot.helpers_role = discord.utils.get(server.roles, name="Helpers")
-        bot.onduty_role = discord.utils.get(server.roles, name="On-Duty")
+        bot.onduty3ds_role = discord.utils.get(server.roles, name="On-Duty 3DS")
+        bot.ondutywiiu_role = discord.utils.get(server.roles, name="On-Duty Wii U")
         bot.verified_role = discord.utils.get(server.roles, name="Verified")
         bot.trusted_role = discord.utils.get(server.roles, name="Trusted")
         bot.probation_role = discord.utils.get(server.roles, name="Probation")
@@ -106,7 +110,20 @@ async def on_ready():
         bot.nohelp_role = discord.utils.get(server.roles, name="No-Help")
         bot.noembed_role = discord.utils.get(server.roles, name="No-Embed")
         bot.elsewhere_role = discord.utils.get(server.roles, name="#elsewhere")
-        bot.everyone_role = discord.utils.get(server.roles, name="@everyone")
+        bot.everyone_role = server.default_role
+
+        bot.staff_ranks = {
+            "HalfOP": bot.halfop_role,
+            "OP": bot.op_role,
+            "SuperOP": bot.superop_role,
+            "Owner": bot.owner_role,
+        }
+
+        bot.helper_roles = {
+            "3DS": bot.onduty3ds_role,
+            "WiiU": bot.ondutywiiu_role,
+        }
+
         msg = "{} has started! {} has {:,} members!".format(bot.user.name, server.name, server.member_count)
         if len(failed_addons) != 0:
             msg += "\n\nSome addons failed to load:\n"
