@@ -59,7 +59,12 @@ class Memes:
     async def megumi(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/GMRp1dj.jpg")
-
+    
+    @commands.command(pass_context=True, hidden=True)
+    async def inoriquest(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/1RmiyVf.png")
+    
     @commands.command(pass_context=True, hidden=True)
     async def inori(self, ctx):
         """Memes."""
