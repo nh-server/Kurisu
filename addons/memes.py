@@ -170,17 +170,23 @@ class Memes:
         """Memes."""
         await self._meme(ctx, "I’ll have two number 9s, a number 9 large, a number 6 with extra dip, a number 7, two number 45s, one with cheese, and a large soda.")
 
-    @commands.command(pass_context=True, hidden=True)
-    async def led(self, ctx):
-        """Memes."""
-        await self._meme(ctx, "http://i.imgur.com/FYsxaUZ.jpg")
-        
     # Cute commands :3
     @commands.command(pass_context=True, hidden=True)
     async def headpat(self, ctx):
         """Cute"""
         await self._meme(ctx, "http://i.imgur.com/7V6gIIW.jpg")
 
+    # Nichi memes
+    @commands.command(pass_context=True, hidden=True)
+    async def led(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/FYsxaUZ.jpg")
+        
+    @commands.command(pass_context=True, hidden=True)
+    async def snickers(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/Ek0uDUn.jpg")
+        
 # Load the extension
 def setup(bot):
     bot.add_cog(Memes(bot))
