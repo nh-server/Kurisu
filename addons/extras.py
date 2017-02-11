@@ -30,6 +30,12 @@ class Extras:
         """Prints the member count of the server."""
         await self.bot.say("{} has {:,} members!".format(self.bot.server.name, self.bot.server.member_count))
 
+    @commands.has_permissions(ban_members=True)
+    @commands.command(hidden=True)
+    async def embedtext(self, *, text):
+        """Embed content."""
+        await self.bot.say(embed=discord.Embed(description=text))
+
     @commands.has_permissions(manage_nicknames=True)
     @commands.command()
     async def estprune(self, days=30):
