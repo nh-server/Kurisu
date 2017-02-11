@@ -16,6 +16,17 @@ class Logs:
         msg = "✅ **Join**: {} | {}#{}\n🗓 __Creation__: {}\n🏷 __User ID__: {}".format(
             member.mention, self.bot.escape_name(member.name), member.discriminator, member.created_at, member.id
         )
+        with open("softbans.json", "r") as f:
+            softbans = json.load(f)
+        if member.id in softbans:
+            await self.bot.send_message(member, "This account has not been permitted to participate in {}. The reason is: {}".format(self.bot.server.name, softbans[member.id]["reason"]))
+            self.bot.actions.append("sbk:"+member.id)
+            await self.bot.kick(member)
+            msg = "🚨 **Attempted join**: {} is soft-banned by <@{}> | {}#{}".format(member.mention, softbans[member.id]["issuer_id"], self.bot.escape_name(member.name), member.discriminator)
+            embed = discord.Embed(color=discord.Color.red())
+            embed.description = softbans[member.id]["reason"]
+            await self.bot.send_message(self.bot.serverlogs_channel, msg, embed=embed)
+            return
         with open("restrictions.json", "r") as f:
             rsts = json.load(f)
         if member.id in rsts:
@@ -48,6 +59,9 @@ class Logs:
         await self.bot.wait_until_ready()
         if "uk:"+member.id in self.bot.actions:
             self.bot.actions.remove("uk:"+member.id)
+            return
+        if "sbk:"+member.id in self.bot.actions:
+            self.bot.actions.remove("sbk:"+member.id)
             return
         if self.bot.pruning != 0 and "wk:"+member.id not in self.bot.actions:
             self.bot.pruning -= 1

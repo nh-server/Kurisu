@@ -16,7 +16,11 @@ class ModWarn:
     @commands.command(pass_context=True)
     async def warn(self, ctx, user, *, reason=""):
         """Warn a user. Staff only."""
-        member = ctx.message.mentions[0]
+        try:
+            member = ctx.message.mentions[0]
+        except IndexError:
+            await self.bot.say("Please mention a user.")
+            return
         issuer = ctx.message.author
         if self.bot.staff_role in member.roles:
             await self.bot.say("You can't warn another staffer with this command!")
@@ -65,7 +69,11 @@ class ModWarn:
     @commands.command(pass_context=True)
     async def listwarns(self, ctx, user):
         """List warns for a user. Staff only."""
-        member = ctx.message.mentions[0]
+        try:
+            member = ctx.message.mentions[0]
+        except IndexError:
+            await self.bot.say("Please mention a user.")
+            return
         embed = discord.Embed(color=discord.Color.dark_red())
         embed.set_author(name="Warns for {}#{}".format(member.display_name, member.discriminator), icon_url=member.avatar_url)
         with open("warns.json", "r") as f:
@@ -113,7 +121,11 @@ class ModWarn:
     @commands.command(pass_context=True)
     async def clearwarns(self, ctx, user):
         """Clear all warns for a user. Staff only."""
-        member = ctx.message.mentions[0]
+        try:
+            member = ctx.message.mentions[0]
+        except IndexError:
+            await self.bot.say("Please mention a user.")
+            return
         with open("warns.json", "r") as f:
             warns = json.load(f)
         if member.id not in warns:

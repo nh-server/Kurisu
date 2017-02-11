@@ -14,7 +14,11 @@ class Modwatch:
     @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True)
     async def watch(self, ctx, user):
-        member = ctx.message.mentions[0]
+        try:
+            member = ctx.message.mentions[0]
+        except IndexError:
+            await self.bot.say("Please mention a user.")
+            return
         self.bot.watching[member.id] = "{}#{}".format(member.name, member.discriminator)
         with open("watch.json", "w") as f:
             json.dump(self.bot.watching, f)
@@ -26,7 +30,11 @@ class Modwatch:
     @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True)
     async def unwatch(self, ctx, user):
-        member = ctx.message.mentions[0]
+        try:
+            member = ctx.message.mentions[0]
+        except IndexError:
+            await self.bot.say("Please mention a user.")
+            return
         if member.id not in self.bot.watching:
             await self.bot.say("This user was not being watched.")
             return

@@ -53,6 +53,11 @@ if not os.path.isfile("timebans.json"):
     with open("timebans.json", "w") as f:
         f.write("{}")
 
+# create softbans.json if it doesn't exist
+if not os.path.isfile("softbans.json"):
+    with open("softbans.json", "w") as f:
+        f.write("{}")
+
 # create watch.json if it doesn't exist
 if not os.path.isfile("watch.json"):
     with open("watch.json", "w") as f:
@@ -80,17 +85,15 @@ bot.pruning = False  # used to disable leave logs if pruning, maybe.
 # mostly taken from https://github.com/Rapptz/discord.py/blob/async/discord/ext/commands/bot.py
 @bot.event
 async def on_command_error(error, ctx):
-    print("\n\nctx")
-    print(dir(ctx))
-    print("\n\nctx.command")
-    print(dir(ctx.command))
-
+    if isinstance(error, discord.ext.commands.errors.CommandNotFound):
+        pass  # ...don't need to know if commands don't exist
     if isinstance(error, discord.ext.commands.errors.CheckFailure):
         await bot.send_message(ctx.message.channel, "{} You don't have permission to use this command.".format(ctx.message.author.mention))
     elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
         formatter = commands.formatter.HelpFormatter()
         await bot.send_message(ctx.message.channel, "{} You are missing required arguments.\n{}".format(ctx.message.author.mention, formatter.format_help_for(ctx, ctx.command)[0]))
     else:
+        await bot.send_message(ctx.message.channel, "An error occured while processing the `{}` command.".format(ctx.command.name))
         print('Ignoring exception in command {}'.format(ctx.command), file=sys.stderr)
         traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
@@ -152,6 +155,20 @@ async def on_ready():
                 msg += "\n{}: `{}: {}`".format(*f)
         await bot.send_message(bot.helpers_channel, msg)
         bot.all_ready = True
+
+        # softban check
+        with open("softbans.json", "r") as f:
+            softbans = json.load(f)
+        for member in server.members:
+            if member.id in softbans:
+                await bot.send_message(member, "This account has not been permitted to participate in {}. The reason is: {}".format(bot.server.name, softbans[member.id]["reason"]))
+                bot.actions.append("sbk:"+member.id)
+                await bot.kick(member)
+                msg = "🚨 **Attempted join**: {} is soft-banned by <@{}> | {}#{}".format(member.mention, softbans[member.id]["issuer_id"], bot.escape_name(member.name), member.discriminator)
+                embed = discord.Embed(color=discord.Color.red())
+                embed.description = softbans[member.id]["reason"]
+                await bot.send_message(bot.serverlogs_channel, msg, embed=embed)
+                return
         break
 
 # loads extensions
