@@ -56,13 +56,13 @@ class Events:
     channel_antispam = {}
 
     async def add_restriction(self, member, rst):
-        with open("restrictions.json", "r") as f:
+        with open("data/restrictions.json", "r") as f:
             rsts = json.load(f)
         if member.id not in rsts:
             rsts[member.id] = []
         if rst not in rsts[member.id]:
             rsts[member.id].append(rst)
-        with open("restrictions.json", "w") as f:
+        with open("data/restrictions.json", "w") as f:
             json.dump(rsts, f)
 
     async def scan_message(self, message):

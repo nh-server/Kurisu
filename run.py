@@ -28,46 +28,47 @@ os.chdir(dir_path)
 config = configparser.ConfigParser()
 config.read("config.ini")
 
+os.makedirs("data", exist_ok=True)
 # create warns.json if it doesn't exist
-if not os.path.isfile("warns.json"):
-    with open("warns.json", "w") as f:
+if not os.path.isfile("data/warns.json"):
+    with open("data/warns.json", "w") as f:
         f.write("{}")
 
 # create restrictions.json if it doesn't exist
-if not os.path.isfile("restrictions.json"):
-    with open("restrictions.json", "w") as f:
+if not os.path.isfile("data/restrictions.json"):
+    with open("data/restrictions.json", "w") as f:
         f.write("{}")
 
 # create staff.json if it doesn't exist
-if not os.path.isfile("staff.json"):
-    with open("staff.json", "w") as f:
+if not os.path.isfile("data/staff.json"):
+    with open("data/staff.json", "w") as f:
         f.write("{}")
 
 # create helpers.json if it doesn't exist
-if not os.path.isfile("helpers.json"):
-    with open("helpers.json", "w") as f:
+if not os.path.isfile("data/helpers.json"):
+    with open("data/helpers.json", "w") as f:
         f.write("{}")
 
 # create timebans.json if it doesn't exist
-if not os.path.isfile("timebans.json"):
-    with open("timebans.json", "w") as f:
+if not os.path.isfile("data/timebans.json"):
+    with open("data/timebans.json", "w") as f:
         f.write("{}")
 
 # create softbans.json if it doesn't exist
-if not os.path.isfile("softbans.json"):
-    with open("softbans.json", "w") as f:
+if not os.path.isfile("data/softbans.json"):
+    with open("data/softbans.json", "w") as f:
         f.write("{}")
 
 # create watch.json if it doesn't exist
-if not os.path.isfile("watch.json"):
-    with open("watch.json", "w") as f:
+if not os.path.isfile("data/watch.json"):
+    with open("data/watch.json", "w") as f:
         f.write("{}")
 
 prefix = ['!', '.']
 bot = commands.Bot(command_prefix=prefix, description=description, pm_help=None)
 
 bot.actions = []  # changes messages in mod-/server-logs
-with open("watch.json", "r") as f:
+with open("data/watch.json", "r") as f:
     bot.watching = json.load(f)  # post user messages to messaage-logs
 
 # http://stackoverflow.com/questions/3411771/multiple-character-replace-with-python
@@ -157,7 +158,7 @@ async def on_ready():
         bot.all_ready = True
 
         # softban check
-        with open("softbans.json", "r") as f:
+        with open("data/softbans.json", "r") as f:
             softbans = json.load(f)
         for member in server.members:
             if member.id in softbans:

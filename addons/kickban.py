@@ -102,13 +102,13 @@ class KickBan:
                 await self.bot.say("Please mention a user.")
                 return
             issuer = ctx.message.author
-            with open("softbans.json", "r") as f:
+            with open("data/softbans.json", "r") as f:
                 softbans = json.load(f)
             if member.id not in softbans:
                 softbans[member.id] = {}
             timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
             softbans[member.id] = {"name": "{}#{}".format(member.name, member.discriminator), "issuer_id": issuer.id, "issuer_name": issuer.name, "reason": reason, "timestamp": timestamp}
-            with open("softbans.json", "w") as f:
+            with open("data/softbans.json", "w") as f:
                 json.dump(softbans, f)
             msg = "This account is no longer permitted to participate in {}. The reason is: {}".format(self.bot.server.name, softbans[member.id]["reason"])
             await self.bot.send_message(member, msg)
@@ -125,7 +125,7 @@ class KickBan:
     async def softbanid_member(self, ctx, user_id, *, reason):
         """Soft-ban a user based on ID. OP+ only.\n\nThis "bans" the user without actually doing a ban on Discord. The bot will instead kick the user every time they join. Discord bans are account- and IP-based."""
         issuer = ctx.message.author
-        with open("softbans.json", "r") as f:
+        with open("data/softbans.json", "r") as f:
             softbans = json.load(f)
         name = "???"
         if user_id not in softbans:
@@ -134,7 +134,7 @@ class KickBan:
             name = softbans[user_id]["name"]
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         softbans[user_id] = {"name": name, "issuer_id": issuer.id, "issuer_name": issuer.name, "reason": reason, "timestamp": timestamp}
-        with open("softbans.json", "w") as f:
+        with open("data/softbans.json", "w") as f:
             json.dump(softbans, f)
         await self.bot.say("ID {} is now b&. 👍".format(user_id))
         msg = "⛔ **Soft-ban**: {} soft-banned ID {}\n✏️ __Reason__: {}".format(ctx.message.author.mention, user_id, reason)
@@ -146,14 +146,14 @@ class KickBan:
     async def unsoftban_member(self, ctx, user_id):
         issuer = ctx.message.author
         """Un-soft-ban a user based on ID. OP+ only."""
-        with open("softbans.json", "r") as f:
+        with open("data/softbans.json", "r") as f:
             softbans = json.load(f)
         if user_id not in softbans:
             await self.bot.say("{} is not soft-banned!".format(user_id))
             return
         name = softbans[user_id]["name"]
         softbans.pop(user_id)
-        with open("softbans.json", "w") as f:
+        with open("data/softbans.json", "w") as f:
             json.dump(softbans, f)
         await self.bot.say("{} has been unbanned!".format(self.bot.escape_name(name) if name != "???" else user_id))
         msg = "⚠️ **Un-soft-ban**: {} un-soft-banned {}".format(issuer.mention, self.bot.escape_name(name) if name != "???" else "ID {}".format(user_id))
@@ -163,7 +163,7 @@ class KickBan:
     @commands.command()
     async def listsoftbans(self, user_id=""):
         """List soft bans. Shows all if an ID is not specified."""
-        with open("softbans.json", "r") as f:
+        with open("data/softbans.json", "r") as f:
             softbans = json.load(f)
         embed = discord.Embed(color=discord.Color.dark_red())
         if user_id == "":

@@ -16,7 +16,7 @@ class Logs:
         msg = "✅ **Join**: {} | {}#{}\n🗓 __Creation__: {}\n🏷 __User ID__: {}".format(
             member.mention, self.bot.escape_name(member.name), member.discriminator, member.created_at, member.id
         )
-        with open("softbans.json", "r") as f:
+        with open("data/softbans.json", "r") as f:
             softbans = json.load(f)
         if member.id in softbans:
             await self.bot.send_message(member, "This account has not been permitted to participate in {}. The reason is: {}".format(self.bot.server.name, softbans[member.id]["reason"]))
@@ -27,14 +27,14 @@ class Logs:
             embed.description = softbans[member.id]["reason"]
             await self.bot.send_message(self.bot.serverlogs_channel, msg, embed=embed)
             return
-        with open("restrictions.json", "r") as f:
+        with open("data/restrictions.json", "r") as f:
             rsts = json.load(f)
         if member.id in rsts:
             roles = []
             for rst in rsts[member.id]:
                 roles.append(discord.utils.get(self.bot.server.roles, name=rst))
             await self.bot.add_roles(member, *roles)
-        with open("warns.json", "r") as f:
+        with open("data/warns.json", "r") as f:
             warns = json.load(f)
         # crappy workaround given how dicts are not ordered
         try:

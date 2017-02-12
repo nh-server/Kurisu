@@ -19,10 +19,10 @@ class Helper_list:
             await self.bot.say("💢 That's not a valid position. You can use __{}__".format("__, __".join(self.bot.helper_roles.keys())))
             return
         member = ctx.message.mentions[0]
-        with open("helpers.json", "r") as f:
+        with open("data/helpers.json", "r") as f:
             helpers = json.load(f)
         helpers[member.id] = position
-        with open("helpers.json", "w") as f:
+        with open("data/helpers.json", "w") as f:
             json.dump(helpers, f)
         await self.bot.add_roles(member, self.bot.helpers_role)
         await self.bot.say("{} is now a helper. Welcome to the party room!".format(member.mention, position))
@@ -34,10 +34,10 @@ class Helper_list:
         member = ctx.message.mentions[0]
         server = ctx.message.author.server
         await self.bot.say(member.name)
-        with open("helpers.json", "r") as f:
+        with open("data/helpers.json", "r") as f:
             helpers = json.load(f)
         helpers.pop(member.id, None)
-        with open("helpers.json", "w") as f:
+        with open("data/helpers.json", "w") as f:
             json.dump(helpers, f)
         await self.bot.remove_roles(member, self.bot.helpers_role, *self.bot.helper_roles.values())
         await self.bot.say("{} is no longer a helper. Stop by some time!".format(member.mention))
@@ -47,7 +47,7 @@ class Helper_list:
         """Gain highlighted helping role. Only needed by Helpers."""
         author = ctx.message.author
         server = author.server
-        with open("helpers.json", "r") as f:
+        with open("data/helpers.json", "r") as f:
             helpers = json.load(f)
         if author.id not in helpers:
             await self.bot.say("You are not listed as a helper, and can't use this.")
@@ -62,7 +62,7 @@ class Helper_list:
         """Remove highlighted helping role. Only needed by Helpers."""
         author = ctx.message.author
         server = author.server
-        with open("helpers.json", "r") as f:
+        with open("data/helpers.json", "r") as f:
             helpers = json.load(f)
         if author.id not in helpers:
             await self.bot.say("You are not listed as a helper, and can't use this.")

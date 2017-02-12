@@ -20,7 +20,7 @@ class Modwatch:
             await self.bot.say("Please mention a user.")
             return
         self.bot.watching[member.id] = "{}#{}".format(member.name, member.discriminator)
-        with open("watch.json", "w") as f:
+        with open("data/watch.json", "w") as f:
             json.dump(self.bot.watching, f)
         await self.bot.say("{} is being watched.".format(member.mention))
         msg = "👀 **Watch**: {} put {} on watch | {}#{}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator)
@@ -39,7 +39,7 @@ class Modwatch:
             await self.bot.say("This user was not being watched.")
             return
         self.bot.watching.pop(member.id)
-        with open("watch.json", "w") as f:
+        with open("data/watch.json", "w") as f:
             json.dump(self.bot.watching, f)
         await self.bot.say("{} is no longer being watched.".format(member.mention))
         msg = "❌ **Unwatch**: {} removed {} from watch | {}#{}".format(ctx.message.author.mention, member.mention, member.name, member.discriminator)
