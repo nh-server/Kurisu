@@ -124,10 +124,13 @@ class Events:
                 await self.bot.send_message(message.author, msg_user)
             except discord.errors.Forbidden:
                 pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
-            msg = "🔇 **Auto-muted**: {} muted for spamming | {}#{}\n🗓 __Creation__: {}\n🏷 __User ID__: {}".format(message.author.mention, message.author.name, message.author.discriminator, message.author.created_at, message.author.id)
-            await self.bot.send_message(self.bot.modlogs_channel, msg)
-            await self.bot.send_message(self.bot.mods_channel, msg)
+            log_msg = "🔇 **Auto-muted**: {} muted for spamming | {}#{}\n🗓 __Creation__: {}\n🏷 __User ID__: {}".format(message.author.mention, message.author.name, message.author.discriminator, message.author.created_at, message.author.id)
+            embed = discord.Embed(title="Deleted messages", color=discord.Color.gold())
             msgs_to_delete = self.user_antispam[message.author.id][:]  # clone list so nothing is removed while going through it
+            for msg in msgs_to_delete:
+                embed.add_field(name="#"+msg.channel.name, value=msg.content)
+            await self.bot.send_message(self.bot.modlogs_channel, log_msg, embed=embed)
+            await self.bot.send_message(self.bot.mods_channel, log_msg + "\nSee {} for a list of deleted messages.".format(self.bot.modlogs_channel.mention))
             for msg in msgs_to_delete:
                 try:
                     await self.bot.delete_message(msg)
@@ -150,10 +153,14 @@ class Events:
             overwrites_everyone.send_messages = False
             await self.bot.edit_channel_permissions(message.channel, self.bot.everyone_role, overwrites_everyone)
             msg_channel = "This channel has been automatically locked for spam. Please wait while staff review the situation."
+            embed = discord.Embed(title="Deleted messages", color=discord.Color.gold())
+            msgs_to_delete = self.user_antispam[message.author.id][:]  # clone list so nothing is removed while going through it
+            for msg in msgs_to_delete:
+                embed.add_field(name="@"+self.bot.escape_name(msg.author), value=msg.content)
             await self.bot.send_message(message.channel, msg_channel)
-            msg = "🔒 **Auto-locked**: {} locked for spam".format(message.channel.mention)
-            await self.bot.send_message(self.bot.modlogs_channel, msg)
-            await self.bot.send_message(self.bot.mods_channel, msg + " @here")
+            log_msg = "🔒 **Auto-locked**: {} locked for spam".format(message.channel.mention)
+            await self.bot.send_message(self.bot.modlogs_channel, log_msg, embed=embed)
+            await self.bot.send_message(self.bot.mods_channel, log_msg + " @here\nSee {} for a list of deleted messages.".format(self.bot.modlogs_channel.mention))
             msgs_to_delete = self.channel_antispam[message.channel.id][:]  # clone list so nothing is removed while going through it
             for msg in msgs_to_delete:
                 try:
@@ -169,6 +176,8 @@ class Events:
             pass  # if the array doesn't exist, don't raise an error
 
     async def on_message(self, message):
+        if message.channel.is_private:
+            return
         if message.author.name == "GitHub" and message.author.discriminator == "0000":
             await self.bot.send_message(self.bot.helpers_channel, "Automatically pulling changes!")
             call(['git', 'pull'])
