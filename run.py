@@ -12,13 +12,14 @@ Kurisu, the bot for the 3DS Hacking Discord!
 import os
 from discord.ext import commands
 import discord
-import datetime, re
+import datetime
 import json, asyncio
 import copy
 import configparser
 import traceback
 import sys
 import os
+import re
 
 # sets working directory to bot's folder
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -99,6 +100,11 @@ async def on_command_error(error, ctx):
         traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
 bot.all_ready = False
+bot._is_all_ready = asyncio.Event(loop=bot.loop)
+async def wait_until_all_ready():
+    """Wait until the entire bot is ready."""
+    await bot._is_all_ready.wait()
+bot.wait_until_all_ready = wait_until_all_ready
 
 @bot.event
 async def on_ready():
@@ -149,13 +155,32 @@ async def on_ready():
             "WiiU": bot.ondutywiiu_role,
         }
 
+        # load timebans
+        with open("data/timebans.json", "r") as f:
+            timebans = json.load(f)
+        bot.timebans = {}
+        timebans_i = copy.copy(timebans)
+        for user_id, timestamp in timebans_i.items():
+            found = False
+            for user in await bot.get_bans(server):
+                if user.id == user_id:
+                    bot.timebans[user_id] = [user, datetime.datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S"), False]  # last variable is "notified", for <=30 minute notifications
+                    found = True
+                    break
+            if not found:
+                timebans.pop(user_id) # somehow not in the banned list anymore so let's just remove it
+        with open("data/timebans.json", "w") as f:
+            json.dump(timebans, f)
+
+        bot.all_ready = True
+        bot._is_all_ready.set()
+
         msg = "{} has started! {} has {:,} members!".format(bot.user.name, server.name, server.member_count)
         if len(failed_addons) != 0:
             msg += "\n\nSome addons failed to load:\n"
             for f in failed_addons:
                 msg += "\n{}: `{}: {}`".format(*f)
         await bot.send_message(bot.helpers_channel, msg)
-        bot.all_ready = True
 
         # softban check
         with open("data/softbans.json", "r") as f:
@@ -170,6 +195,7 @@ async def on_ready():
                 embed.description = softbans[member.id]["reason"]
                 await bot.send_message(bot.serverlogs_channel, msg, embed=embed)
                 return
+
         break
 
 # loads extensions

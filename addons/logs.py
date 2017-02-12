@@ -12,7 +12,7 @@ class Logs:
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     async def on_member_join(self, member):
-        await self.bot.wait_until_ready()
+        await self.bot.wait_until_all_ready()
         msg = "✅ **Join**: {} | {}#{}\n🗓 __Creation__: {}\n🏷 __User ID__: {}".format(
             member.mention, self.bot.escape_name(member.name), member.discriminator, member.created_at, member.id
         )
@@ -56,7 +56,7 @@ class Logs:
             pass
 
     async def on_member_remove(self, member):
-        await self.bot.wait_until_ready()
+        await self.bot.wait_until_all_ready()
         if "uk:"+member.id in self.bot.actions:
             self.bot.actions.remove("uk:"+member.id)
             return
@@ -75,7 +75,7 @@ class Logs:
             await self.bot.send_message(self.bot.modlogs_channel, msg)
 
     async def on_member_ban(self, member):
-        await self.bot.wait_until_ready()
+        await self.bot.wait_until_all_ready()
         if "ub:"+member.id in self.bot.actions:
             self.bot.actions.remove("ub:"+member.id)
             return
@@ -88,12 +88,24 @@ class Logs:
         await self.bot.send_message(self.bot.modlogs_channel, msg)
 
     async def on_member_unban(self, server, user):
-        await self.bot.wait_until_ready()
-        msg = "⚠️ **Unban**: {} | {}#{}".format(user.mention, user.name, user.discriminator)
+        await self.bot.wait_until_all_ready()
+        if "tbr:"+user.id in self.bot.actions:
+            self.bot.actions.remove("tbr:"+user.id)
+            return
+        msg = "⚠️ **Unban**: {} | {}#{}".format(user.mention, self.bot.escape_name(user.name), user.discriminator)
+        if user.id in self.bot.timebans:
+            msg += "\nTimeban removed."
+            self.bot.timebans.pop(user.id)
+            with open("data/timebans.json", "r") as f:
+                timebans = json.load(f)
+            if user.id in timebans:
+                timebans.pop(user.id)
+                with open("data/timebans.json", "w") as f:
+                    json.dump(timebans, f)
         await self.bot.send_message(self.bot.modlogs_channel, msg)
 
     async def on_member_update(self, member_before, member_after):
-        await self.bot.wait_until_ready()
+        await self.bot.wait_until_all_ready()
         do_log = False  # only nickname and roles should be logged
         dest = self.bot.modlogs_channel
         if member_before.roles != member_after.roles:
