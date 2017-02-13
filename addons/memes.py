@@ -186,7 +186,6 @@ class Memes:
         """Cute"""
         await self._meme(ctx, "http://i.imgur.com/OyjCHNe.png")
 
-    # Nichi memes
     @commands.command(pass_context=True, hidden=True)
     async def led(self, ctx):
         """Memes."""
@@ -196,6 +195,11 @@ class Memes:
     async def snickers(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/Ek0uDUn.jpg")
+        
+    @commands.command(pass_context=True, hidden=True)
+    async def mugi(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/4X4d5PT.gif")
         
 # Load the extension
 def setup(bot):
