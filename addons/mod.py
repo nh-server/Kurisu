@@ -14,23 +14,23 @@ class Mod:
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     async def add_restriction(self, member, rst):
-        with open("restrictions.json", "r") as f:
+        with open("data/restrictions.json", "r") as f:
             rsts = json.load(f)
         if member.id not in rsts:
             rsts[member.id] = []
         if rst not in rsts[member.id]:
             rsts[member.id].append(rst)
-        with open("restrictions.json", "w") as f:
+        with open("data/restrictions.json", "w") as f:
             json.dump(rsts, f)
 
     async def remove_restriction(self, member, rst):
-        with open("restrictions.json", "r") as f:
+        with open("data/restrictions.json", "r") as f:
             rsts = json.load(f)
         if member.id not in rsts:
             rsts[member.id] = []
         if rst in rsts[member.id]:
             rsts[member.id].remove(rst)
-        with open("restrictions.json", "w") as f:
+        with open("data/restrictions.json", "w") as f:
             json.dump(rsts, f)
 
     @commands.has_permissions(administrator=True)

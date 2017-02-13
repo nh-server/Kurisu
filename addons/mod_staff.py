@@ -11,26 +11,25 @@ class ModStaff:
         self.bot = bot
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
-    roles = ["HalfOP", "OP", "SuperOP", "Owner"]
-
     @commands.has_permissions(administrator=True)
     @commands.command(pass_context=True)
     async def addstaff(self, ctx, user, position):
         """Add user as staff. Owners only."""
-        if position not in self.roles:
-            await self.bot.say("💢 That's not a valid position.")
+        if position not in self.bot.staff_ranks:
+            await self.bot.say("💢 That's not a valid position. You can use __{}__".format("__, __".join(self.bot.staff_ranks.keys())))
             return
         member = ctx.message.mentions[0]
-        with open("staff.json", "r") as f:
+        with open("data/staff.json", "r") as f:
             staff = json.load(f)
         staff[member.id] = position
-        with open("staff.json", "w") as f:
+        with open("data/staff.json", "w") as f:
             json.dump(staff, f)
-        # replace roles, so to not leave previous ones on by accident
+        # remove leftover staff roles
+        await self.bot.remove_roles(member, *self.bot.staff_ranks.values())
         if position == "HalfOP":  # this role requires the use of sudo
-            await self.bot.replace_roles(member, self.bot.staff_role)
+            await self.bot.add_roles(member, self.bot.staff_role)
         else:
-            await self.bot.replace_roles(member, self.bot.staff_role, discord.utils.get(self.bot.server.roles, name=position))
+            await self.bot.add_roles(member, self.bot.staff_role, self.bot.staff_ranks[position])
         await self.bot.say("{} is now on staff as {}. Welcome to the secret party room!".format(member.mention, position))
 
     @commands.has_permissions(administrator=True)
@@ -39,12 +38,12 @@ class ModStaff:
         """Remove user from staff. Owners only."""
         member = ctx.message.mentions[0]
         await self.bot.say(member.name)
-        with open("staff.json", "r") as f:
+        with open("data/staff.json", "r") as f:
             staff = json.load(f)
         staff.pop(member.id, None)
-        with open("staff.json", "w") as f:
+        with open("data/staff.json", "w") as f:
             json.dump(staff, f)
-        await self.bot.replace_roles(member)
+        await self.bot.remove_roles(member, self.bot.staff_role, *self.bot.staff_ranks.values())
         await self.bot.say("{} is no longer staff. Stop by some time!".format(member.mention))
 
     @commands.has_permissions(manage_nicknames=True)
@@ -52,7 +51,7 @@ class ModStaff:
     async def sudo(self, ctx):
         """Gain staff powers temporarily. Only needed by HalfOPs."""
         author = ctx.message.author
-        with open("staff.json", "r") as f:
+        with open("data/staff.json", "r") as f:
             staff = json.load(f)
         if author.id not in staff:
             await self.bot.say("You are not listed as staff, and can't use this. (this message should not appear)")
@@ -70,7 +69,7 @@ class ModStaff:
     async def unsudo(self, ctx):
         """Remove temporary staff powers. Only needed by HalfOPs."""
         author = ctx.message.author
-        with open("staff.json", "r") as f:
+        with open("data/staff.json", "r") as f:
             staff = json.load(f)
         if author.id not in staff:
             await self.bot.say("You are not listed as staff, and can't use this. (this message should not appear)")

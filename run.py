@@ -12,13 +12,14 @@ Kurisu, the bot for the 3DS Hacking Discord!
 import os
 from discord.ext import commands
 import discord
-import datetime, re
+import datetime
 import json, asyncio
 import copy
 import configparser
 import traceback
 import sys
 import os
+import re
 
 # sets working directory to bot's folder
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -28,45 +29,51 @@ os.chdir(dir_path)
 config = configparser.ConfigParser()
 config.read("config.ini")
 
+os.makedirs("data", exist_ok=True)
 # create warns.json if it doesn't exist
-if not os.path.isfile("warns.json"):
-    with open("warns.json", "w") as f:
+if not os.path.isfile("data/warns.json"):
+    with open("data/warns.json", "w") as f:
         f.write("{}")
 
 # create restrictions.json if it doesn't exist
-if not os.path.isfile("restrictions.json"):
-    with open("restrictions.json", "w") as f:
+if not os.path.isfile("data/restrictions.json"):
+    with open("data/restrictions.json", "w") as f:
         f.write("{}")
 
 # create staff.json if it doesn't exist
-if not os.path.isfile("staff.json"):
-    with open("staff.json", "w") as f:
+if not os.path.isfile("data/staff.json"):
+    with open("data/staff.json", "w") as f:
         f.write("{}")
 
 # create helpers.json if it doesn't exist
-if not os.path.isfile("helpers.json"):
-    with open("helpers.json", "w") as f:
+if not os.path.isfile("data/helpers.json"):
+    with open("data/helpers.json", "w") as f:
         f.write("{}")
 
 # create timebans.json if it doesn't exist
-if not os.path.isfile("timebans.json"):
-    with open("timebans.json", "w") as f:
+if not os.path.isfile("data/timebans.json"):
+    with open("data/timebans.json", "w") as f:
+        f.write("{}")
+
+# create softbans.json if it doesn't exist
+if not os.path.isfile("data/softbans.json"):
+    with open("data/softbans.json", "w") as f:
         f.write("{}")
 
 # create watch.json if it doesn't exist
-if not os.path.isfile("watch.json"):
-    with open("watch.json", "w") as f:
+if not os.path.isfile("data/watch.json"):
+    with open("data/watch.json", "w") as f:
         f.write("{}")
 
 prefix = ['!', '.']
 bot = commands.Bot(command_prefix=prefix, description=description, pm_help=None)
 
 bot.actions = []  # changes messages in mod-/server-logs
-with open("watch.json", "r") as f:
+with open("data/watch.json", "r") as f:
     bot.watching = json.load(f)  # post user messages to messaage-logs
 
 # http://stackoverflow.com/questions/3411771/multiple-character-replace-with-python
-chars = "\\`*_<>#@:"
+chars = "\\`*_<>#@:~"
 def escape_name(name):
     name = str(name)
     for c in chars:
@@ -77,12 +84,37 @@ bot.escape_name = escape_name
 
 bot.pruning = False  # used to disable leave logs if pruning, maybe.
 
+# mostly taken from https://github.com/Rapptz/discord.py/blob/async/discord/ext/commands/bot.py
+@bot.event
+async def on_command_error(error, ctx):
+    if isinstance(error, discord.ext.commands.errors.CommandNotFound):
+        pass  # ...don't need to know if commands don't exist
+    if isinstance(error, discord.ext.commands.errors.CheckFailure):
+        await bot.send_message(ctx.message.channel, "{} You don't have permission to use this command.".format(ctx.message.author.mention))
+    elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+        formatter = commands.formatter.HelpFormatter()
+        await bot.send_message(ctx.message.channel, "{} You are missing required arguments.\n{}".format(ctx.message.author.mention, formatter.format_help_for(ctx, ctx.command)[0]))
+    else:
+        await bot.send_message(ctx.message.channel, "An error occured while processing the `{}` command.".format(ctx.command.name))
+        print('Ignoring exception in command {}'.format(ctx.command), file=sys.stderr)
+        traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
+
+bot.all_ready = False
+bot._is_all_ready = asyncio.Event(loop=bot.loop)
+async def wait_until_all_ready():
+    """Wait until the entire bot is ready."""
+    await bot._is_all_ready.wait()
+bot.wait_until_all_ready = wait_until_all_ready
+
 @bot.event
 async def on_ready():
+    if bot.all_ready:
+        return
     # this bot should only ever be in one server anyway
     for server in bot.servers:
         print("{} has started! {} has {:,} members!".format(bot.user.name, server.name, server.member_count))
         bot.server = server
+
         # channels
         bot.welcome_channel = discord.utils.get(server.channels, name="welcome-and-rules")
         bot.announcements_channel = discord.utils.get(server.channels, name="announcements")
@@ -91,13 +123,16 @@ async def on_ready():
         bot.modlogs_channel = discord.utils.get(server.channels, name="mod-logs")
         bot.serverlogs_channel = discord.utils.get(server.channels, name="server-logs")
         bot.messagelogs_channel = discord.utils.get(server.channels, name="message-logs")
+
         # roles
         bot.staff_role = discord.utils.get(server.roles, name="Staff")
         bot.halfop_role = discord.utils.get(server.roles, name="HalfOP")
         bot.op_role = discord.utils.get(server.roles, name="OP")
         bot.superop_role = discord.utils.get(server.roles, name="SuperOP")
+        bot.owner_role = discord.utils.get(server.roles, name="Owner")
         bot.helpers_role = discord.utils.get(server.roles, name="Helpers")
-        bot.onduty_role = discord.utils.get(server.roles, name="On-Duty")
+        bot.onduty3ds_role = discord.utils.get(server.roles, name="On-Duty 3DS")
+        bot.ondutywiiu_role = discord.utils.get(server.roles, name="On-Duty Wii U")
         bot.verified_role = discord.utils.get(server.roles, name="Verified")
         bot.trusted_role = discord.utils.get(server.roles, name="Trusted")
         bot.probation_role = discord.utils.get(server.roles, name="Probation")
@@ -106,13 +141,61 @@ async def on_ready():
         bot.nohelp_role = discord.utils.get(server.roles, name="No-Help")
         bot.noembed_role = discord.utils.get(server.roles, name="No-Embed")
         bot.elsewhere_role = discord.utils.get(server.roles, name="#elsewhere")
-        bot.everyone_role = discord.utils.get(server.roles, name="@everyone")
+        bot.everyone_role = server.default_role
+
+        bot.staff_ranks = {
+            "HalfOP": bot.halfop_role,
+            "OP": bot.op_role,
+            "SuperOP": bot.superop_role,
+            "Owner": bot.owner_role,
+        }
+
+        bot.helper_roles = {
+            "3DS": bot.onduty3ds_role,
+            "WiiU": bot.ondutywiiu_role,
+        }
+
+        # load timebans
+        with open("data/timebans.json", "r") as f:
+            timebans = json.load(f)
+        bot.timebans = {}
+        timebans_i = copy.copy(timebans)
+        for user_id, timestamp in timebans_i.items():
+            found = False
+            for user in await bot.get_bans(server):
+                if user.id == user_id:
+                    bot.timebans[user_id] = [user, datetime.datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S"), False]  # last variable is "notified", for <=30 minute notifications
+                    found = True
+                    break
+            if not found:
+                timebans.pop(user_id) # somehow not in the banned list anymore so let's just remove it
+        with open("data/timebans.json", "w") as f:
+            json.dump(timebans, f)
+
+        bot.all_ready = True
+        bot._is_all_ready.set()
+
         msg = "{} has started! {} has {:,} members!".format(bot.user.name, server.name, server.member_count)
         if len(failed_addons) != 0:
             msg += "\n\nSome addons failed to load:\n"
             for f in failed_addons:
                 msg += "\n{}: `{}: {}`".format(*f)
         await bot.send_message(bot.helpers_channel, msg)
+
+        # softban check
+        with open("data/softbans.json", "r") as f:
+            softbans = json.load(f)
+        for member in server.members:
+            if member.id in softbans:
+                await bot.send_message(member, "This account has not been permitted to participate in {}. The reason is: {}".format(bot.server.name, softbans[member.id]["reason"]))
+                bot.actions.append("sbk:"+member.id)
+                await bot.kick(member)
+                msg = "🚨 **Attempted join**: {} is soft-banned by <@{}> | {}#{}".format(member.mention, softbans[member.id]["issuer_id"], bot.escape_name(member.name), member.discriminator)
+                embed = discord.Embed(color=discord.Color.red())
+                embed.description = softbans[member.id]["reason"]
+                await bot.send_message(bot.serverlogs_channel, msg, embed=embed)
+                return
+
         break
 
 # loads extensions

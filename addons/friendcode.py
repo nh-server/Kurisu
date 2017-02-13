@@ -12,7 +12,7 @@ class FriendCode:
     def __init__(self, bot):
         self.bot = bot
         print('Loading fc.sqlite')
-        self.conn = sqlite3.connect('fc.sqlite')
+        self.conn = sqlite3.connect('data/fc.sqlite')
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     def __unload(self):
