@@ -27,7 +27,7 @@ class bf:
 
     # based on https://github.com/pocmo/Python-Brainfuck/blob/master/brainfuck.py
     @commands.command()
-    async def bf(self, code):
+    async def bf(self, *, code):
         """Interpret something that messes with your brain."""
         code     = self.cleanup(list(code))
         bracemap = self.buildbracemap(code)
