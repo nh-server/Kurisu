@@ -202,6 +202,7 @@ async def on_ready():
 addons = [
     'addons.assistance',
     'addons.blah',
+    'addons.bf',
     'addons.ctrerr',
     'addons.events',
     'addons.extras',
