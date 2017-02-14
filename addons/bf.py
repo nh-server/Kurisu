@@ -11,10 +11,10 @@ class bf:
         self.bot = bot
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
-    def cleanup(self, code):
+    async def cleanup(self, code):
         return "".join(x for x in code if x in ['.', ',', '[', ']', '<', '>', '+', '-'])
 
-    def buildbracemap(self, code):
+    async def buildbracemap(self, code):
         temp_bracestack, bracemap = [], {}
 
         for position, command in enumerate(code):
@@ -26,17 +26,18 @@ class bf:
         return bracemap
 
     # based on https://github.com/pocmo/Python-Brainfuck/blob/master/brainfuck.py
-    @commands.command()
-    async def bf(self, *, code):
+    @commands.command(pass_context=True)
+    async def bf(self, ctx, *, code):
         """Interpret something that messes with your brain."""
-        code     = self.cleanup(list(code))
-        bracemap = self.buildbracemap(code)
+        code     = await self.cleanup(list(code))
+        bracemap = await self.buildbracemap(code)
 
         cells, codeptr, cellptr = [0], 0, 0
 
         output = ""
 
-        while codeptr < len(code):
+        loops = 0  # lazy way at limiting execution
+        while codeptr < len(code) and loops < 50000:
             command = code[codeptr]
 
             if command == ">":
@@ -58,8 +59,11 @@ class bf:
             if command == ",": cells[cellptr] = ord(getch.getch())
 
             codeptr += 1
+            loops += 1
 
-        await self.bot.say(output)
+        await self.bot.say("{}: {}".format(self.bot.escape_name(ctx.message.author.name), output))
+        if loops == 50000:
+            await self.bot.say("note: capped at 50,000 loops")
 
 def setup(bot):
     bot.add_cog(bf(bot))
