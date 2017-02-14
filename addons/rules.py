@@ -83,7 +83,7 @@ class Rules:
     @commands.command(hidden=True)
     async def r11(self):
        """Quotes rule 11."""
-       await self.bot.say("```Illegitimate copies and other copyright violations will not be tolerated. This includes:\n- Sharing full game data, such as .3DS/CCI or CIA files, Sharing 'ticket' files, Sharing titlekeys, linking to any site with the purpose of hosting or providing the former (general encryption keys not associated with piracy are not affected by this).\n- Sharing software designed for copyright violations or sharing copyrighted material is not allowed.\n- Discussing the aforementioned software is allowed.\n- Naming software used to obtain copyrighted material illegitimately is strictly prohibited.\n- Attempting to bypass these rules via any method on this server is strictly prohibited.\n- No piracy discussion in help channels at all. No exceptions.```")
+       await self.bot.say("```Illegitimate copies and other copyright violations will not be tolerated. This includes:\n- Sharing full game data, such as .3DS/CCI/CIA/WUD/WUP (.app) files, Sharing 'ticket' files, Sharing titlekeys, linking to any site with the purpose of hosting or providing the former (general encryption keys not associated with piracy are not affected by this).\n- Sharing software designed for copyright violations or sharing copyrighted material is not allowed.\n- Discussing the aforementioned software is allowed.\n- Naming software used to obtain copyrighted material illegitimately is strictly prohibited.\n- Attempting to bypass these rules via any method on this server is strictly prohibited.\n- No piracy discussion in help channels at all. No exceptions.```")
 
     @commands.command(hidden=True)
     async def r12(self):
@@ -104,6 +104,11 @@ class Rules:
     async def r15(self):
        """Displays rule 15."""
        await self.bot.say("```15. Keep Voice/Music commands to #voice-and-music and #bot-cmds.  Do not use them in other channels. Keep music and voice discussion to #voice-and-music. Failure to abide by these rules could result in you having voice channel permissions revoked.```")
+
+    @commands.command(hidden=True)
+    async def r16(self):
+       """Displays rule 16."""
+       await self.bot.say("```16. Users are only permitted to hold one account on the server at any given time. \nIf you change your main account, please remove your original account from the server. \nAdditionally, evasion of punishment by use of an alt, whether as minute as no-embed, or as extensive as a ban on the other account, is itself ban worthy.```")
 
 def setup(bot):
     bot.add_cog(Rules(bot))
