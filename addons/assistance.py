@@ -156,5 +156,45 @@ class Assistance:
         embed.add_field(name="Recommended", value="The recommended thing to do is to use [Plailect's written complete guide for arm9loaderhax](https://3ds.guide). It is the most up to date one and is recommended for everyone.")
         await self.bot.say("", embed=embed)
 
+    @commands.command()
+    async def ip(self):
+        """How to check your IP"""
+        await self.simple_embed("1. FBI\n2. Remote Install\n3. Recieve URLs over the network", title="Check your 3DSs IP")
+
+    @commands.command()
+    async def ip2(self):
+        """Homebrew way to know your IP"""
+        await self.simple_embed("1. Open Homebrew Launcher\n2. Press Y", title="Check your 3DSs IP")
+
+    @commands.command()
+    async def nonandbackup(self):
+        """Help when you missed the nand backup"""
+        await self.simple_embed("1. When reached the section IV(4) from Installing arm9loaderahx replace the sections IV(4) & V(5) with https://3ds.guide/9.2.0-ctrtransfer.", title="If you missed the NAND Backup:")
+
+    @commands.command()
+    async def hbl113(self):
+        """Get homebrew launcher working on 11.3"""
+        await self.simple_embed("If you are on a CFW New 3DS you should disable the 'Clock + L2' on the Luma config(select on boot).")
+
+    @commands.command()
+    async def readguide(self):
+        """Read the guide please"""
+        await self.simple_embed("Asking something that is on the guide will make everyone lose time, so please read and re-read the guide steps 2 or 3 times before coming here.", title="Please read the guide")
+
+    @commands.command()
+    async def bigsd(self):
+        """SD bigger than 32GB"""
+        await self.simple_embed("If you want to change your sd card to one bigger than 32GB then you'll have to Format it to Fat32.\nYou can do this with the tool of your preference.\nFormatter examples:\n- [guiformat](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm)\n- gparted(for Linux users)", title="Big SD cards")
+
+    @commands.command()
+    async def notbricked(self):
+        """Missing arm9loaderahx.bin"""
+        await self.simple_embed("If your Power led turns on and off after you installed a9lh you are not bricked you are just missing a file called arm9loaderhax.bin in the root of your sd card.\nTo fix this you should:\n1.Check you inserted the sd card in your console\n2.Place/replace the file, downloading it from https://github.com/AuroraWright/Luma3DS/releases\nChecking your SD for errors or corruption:\n\tWindows: https://3ds.guide/h2testw-(windows)\n\tLinux: https://3ds.guide/f3-(linux)\n\tMac: https://3ds.guide/f3x-(mac)", title="No. You are not bricked")
+
+    @commands.command()
+    async def emureco(self):
+        """Recommendation about EmuNAND"""
+        await self.simple_embed("If you want to set up an EmuNAND the first thing to know is that you probably don't need it, if you don't know what an EmuNAND is you dont need one.", title="EmuNAND Recommendation")
+
 def setup(bot):
     bot.add_cog(Assistance(bot))
