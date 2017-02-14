@@ -174,6 +174,7 @@ class Assistance:
     @commands.command()
     async def hbl113(self):
         """Get homebrew launcher working on 11.3"""
+        await self.simple_embed("If you are on a CFW New 3DS you should disable the 'Clock + L2' on the Luma config(select on boot).\nPress X while starting the Homebrew Loader to update the payload\nIf you have done that you probaly need to update the [cia](https://github.com/yellows8/hblauncher_loader/releases)\nIf you are doing soundhax you need to replace the [otherapp.bin](http://smealum.github.io/3ds/#otherapp) from the root of your SD Card.")
 
     @commands.command()
     async def readguide(self):
