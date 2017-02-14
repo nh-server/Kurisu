@@ -105,5 +105,10 @@ class Rules:
        """Displays rule 15."""
        await self.bot.say("```15. Keep Voice/Music commands to #voice-and-music and #bot-cmds.  Do not use them in other channels. Keep music and voice discussion to #voice-and-music. Failure to abide by these rules could result in you having voice channel permissions revoked.```")
 
+    @commands.command(hidden=True)
+    async def r16(self):
+       """Displays rule 16."""
+       await self.bot.say("```16. Users are only permitted to hold one account on the server at any given time. \nIf you change your main account, please remove your original account from the server. \nAdditionally, evasion of punishment by use of an alt, whether as minute as no-embed, or as extensive as a ban on the other account, is itsself ban worthy.```")
+
 def setup(bot):
     bot.add_cog(Rules(bot))
