@@ -24,7 +24,7 @@ class Extras:
         embed.set_author(name="916253 and ihaveahax")
         embed.set_thumbnail(url="http://i.imgur.com/hjVY4Et.jpg")
         embed.url = "https://github.com/916253/Kurisu"
-        embed.description = "Kurisu, the 3DS Hacking Discord bot!"
+        embed.description = "Kurisu, the Nintendo Homebrew Discord bot!"
         await self.bot.say("", embed=embed)
 
     @commands.command()
