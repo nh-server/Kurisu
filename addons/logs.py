@@ -11,6 +11,19 @@ class Logs:
         self.bot = bot
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
+    welcome_msg = """
+Hello {0}, welcome to the {1} server on Discord!
+
+Please review all of the rules in {2} before asking for help or chatting. In particular, we do not allow assistance relating to piracy.
+
+You can find a list of staff and helpers in {2}.
+
+Do you simply need a place to start hacking your 3DS system? Check out **<https://3ds.guide>**!
+Do you simply need a place to start hacking your Wii U system? Check out **<https://github.com/FlimFlam69/WiiUTutorial/wiki>**!
+
+Thanks for stopping by and have a good time!
+"""  # ughhhhhhhh
+
     async def on_member_join(self, member):
         await self.bot.wait_until_all_ready()
         msg = "✅ **Join**: {} | {}#{}\n🗓 __Creation__: {}\n🏷 __User ID__: {}".format(
@@ -51,7 +64,7 @@ class Logs:
         except KeyError:  # if the user is not in the file
             await self.bot.send_message(self.bot.serverlogs_channel, msg)
         try:
-            await self.bot.send_message(member, "Hello {0}, welcome to the {1} server on Discord!\n\nPlease review all of the rules in {2} before asking for help or chatting. In particular, we do not allow assistance relating to piracy.\n\nYou can find a list of staff and helpers in {2}.\n\nDo you simply need a place to start hacking your 3DS system? Check out **<https://3ds.guide>**!\n\nThanks for stopping by and have a good time!".format(self.bot.escape_name(member.name), self.bot.server.name, self.bot.welcome_channel.mention))
+            await self.bot.send_message(member, self.welcome_msg.format(self.bot.escape_name(member.name), self.bot.server.name, self.bot.welcome_channel.mention))
         except discord.errors.Forbidden:
             pass
 
