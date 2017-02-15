@@ -178,12 +178,12 @@ class Assistance:
     @commands.command()
     async def nonandbackup(self):
         """Help when you missed the nand backup"""
-        await self.simple_embed("1. When reached the section IV(4) from Installing arm9loaderahx replace the sections IV(4) & V(5) with https://3ds.guide/9.2.0-ctrtransfer.", title="If you missed the NAND Backup:")
+        await self.simple_embed("1. When reached the section IV(4) from Installing arm9loaderahx replace the sections IV(4) & V(5) with a [9.2 ctrtransfer](https://3ds.guide/9.2.0-ctrtransfer).", title="If you missed the NAND Backup:")
 
     @commands.command()
     async def hbl113(self):
         """Get homebrew launcher working on 11.3"""
-        await self.simple_embed("If you are on a CFW New 3DS you should disable the 'Clock + L2' on the Luma config(select on boot).")
+        await self.simple_embed("If you are on a CFW New 3DS you should disable the 'Clock + L2' on the Luma config(select on boot).\nPress X while starting the Homebrew Loader to update the payload\nIf you have done that you probaly need to update the [cia](https://github.com/yellows8/hblauncher_loader/releases)\nIf you are doing soundhax you need to replace the [otherapp.bin](http://smealum.github.io/3ds/#otherapp) from the root of your SD Card.")
 
     @commands.command()
     async def readguide(self):
@@ -198,7 +198,7 @@ class Assistance:
     @commands.command()
     async def notbricked(self):
         """Missing arm9loaderahx.bin"""
-        await self.simple_embed("If your Power led turns on and off after you installed a9lh you are not bricked you are just missing a file called arm9loaderhax.bin in the root of your sd card.\nTo fix this you should:\n1.Check you inserted the sd card in your console\n2.Place/replace the file, downloading it from https://github.com/AuroraWright/Luma3DS/releases\nChecking your SD for errors or corruption:\n\tWindows: https://3ds.guide/h2testw-(windows)\n\tLinux: https://3ds.guide/f3-(linux)\n\tMac: https://3ds.guide/f3x-(mac)", title="No. You are not bricked")
+        await self.simple_embed("If your Power led turns on and off after you installed a9lh you are not bricked you are just missing a file called arm9loaderhax.bin in the root of your sd card.\nTo fix this you should:\n1.Check you inserted the sd card in your console\n2.Place/replace the file, downloading it from [Luma3ds](https://github.com/AuroraWright/Luma3DS/releases)\nChecking your SD for errors or corruption:\n\t[Windows](https://3ds.guide/h2testw-(windows))\n\t[Linux](https://3ds.guide/f3-(linux))\n\t[Mac](https://3ds.guide/f3x-(mac))", title="No. You are not bricked")
 
     @commands.command()
     async def emureco(self):
