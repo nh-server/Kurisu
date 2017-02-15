@@ -33,16 +33,25 @@ class Assistance:
         await self.bot.send_message(self.bot.mods_channel, msg, embed=(embed if msg_request != "" else None))
         await self.bot.send_message(author, "✅ Online staff has been notified of your request in {0}.".format(ctx.message.channel.mention), embed=(embed if msg_request != "" else None))
 
-    @commands.command()
-    async def guide(self):
-        """Links to Plailect's guide."""
-        embed = discord.Embed(title="Guide", color=discord.Color.green())
-        embed.set_author(name="Plailect", url="https://3ds.guide/")
-        embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
-        embed.url = "https://3ds.guide/"
-        embed.description = "A complete guide to 3DS custom firmware, from stock to arm9loaderhax."
-        await self.bot.say("", embed=embed)
-    
+    @commands.command(pass_context=True)
+    async def guide(self, ctx, *, console="auto"):
+        """Links to Plailect's or FlimFlam69's guide."""
+        console == console.lower()
+        if console == "3ds" or (console == "auto" and "wiiu" not in ctx.message.channel.name):
+            embed = discord.Embed(title="Guide", color=discord.Color(0xCE181E))
+            embed.set_author(name="Plailect", url="https://3ds.guide/")
+            embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
+            embed.url = "https://3ds.guide/"
+            embed.description = "A complete guide to 3DS custom firmware, from stock to arm9loaderhax."
+            await self.bot.say("", embed=embed)
+        if (console == "wiiu" or console == "wii u") or (console == "auto" and "3ds" not in ctx.message.channel.name):
+            embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
+            embed.set_author(name="FlimFlam69", url="https://github.com/FlimFlam69/WiiUTutorial/wiki")
+            embed.set_thumbnail(url="http://i.imgur.com/86Hm0kM.png")
+            embed.url = "https://github.com/FlimFlam69/WiiUTutorial/wiki"
+            embed.description = "FlimFlam69's 5.5.1 IOSU + Kernel Exploit Guide"
+            await self.bot.say("", embed=embed)
+
     #Embed to Soundhax Download Website
     @commands.command()
     async def soundhax(self):
@@ -52,7 +61,7 @@ class Assistance:
         embed.set_thumbnail(url="http://i.imgur.com/lYf0jan.png")
         embed.url = "http://soundhax.com"
         embed.description = "Free 3DS Primary Entrypoint <= 11.2"
-        await self.bot.say("", embed=embed)        
+        await self.bot.say("", embed=embed)
 
     @commands.command()
     async def ez(self):
@@ -142,12 +151,12 @@ class Assistance:
     async def downgrade(self):
         """Downgrade help"""
         await self.simple_embed("Follow Plailect's guide here: <https://3ds.guide/get-started>", title="Downgrade methods on 11.2 or below:")
-    
+
     @commands.command()
     async def inoriquest(self):
         """Tells user to be descriptive"""
         await self.simple_embed("> Reminder: if you would like someone to help you, please be as descriptive as possible, of your situation, things you have done, as little as they may seem, aswell as assisting materials. Asking to ask wont expedite your process, and may delay assistance.")
-    
+
     @commands.command()
     async def vguides(self):
         """Information about video guides relating to custom firmware"""

@@ -63,7 +63,7 @@ class NinErr:
             embed.description = "I don't know this one! Click the error code for details on Nintendo Support.\n\nIf you keep getting this issue and Nintendo Support does not help, or know how to fix it, you should report relevant details to <@78465448093417472> so it can be added to the bot."
         else:
             embed.description = self.errcodes[err]
-            embed.color = (Color.dark_red() if err[0] == "0" else Color.blue())
+            embed.color = (Color(0xCE181E) if err[0] == "0" else Color(0x009AC7))
         await self.bot.say("", embed=embed)
 
 def setup(bot):
