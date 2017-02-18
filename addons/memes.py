@@ -190,6 +190,11 @@ class Memes:
         await self._meme(ctx, "http://i.imgur.com/djhHX0n.gifv")
 
     @commands.command(pass_context=True, hidden=True)
+    async def sudoku(self, ctx):
+        """Cute"""
+        await self._meme(ctx, "http://i.imgur.com/VHlIZRC.png") 
+        
+    @commands.command(pass_context=True, hidden=True)
     async def rawr(self, ctx):
         """Cute"""
         await self._meme(ctx, "http://i.imgur.com/Bqw4OwQ.png")
