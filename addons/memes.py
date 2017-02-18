@@ -52,6 +52,11 @@ class Memes:
     async def adrian3(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/EsDWK9U.png")
+        
+    @commands.command(pass_context=True, hidden=True)
+    async def dubyadud(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/xesCnmM.jpg")
 
     @commands.command(pass_context=True, hidden=True)
     async def megumi(self, ctx):
