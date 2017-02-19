@@ -205,5 +205,10 @@ class Assistance:
         """Recommendation about EmuNAND"""
         await self.simple_embed("If you want to set up an EmuNAND the first thing to know is that you probably don't need it; if you don't know what an EmuNAND is, you don't need one.", title="EmuNAND Recommendation")
 
+    @commands.command()
+    async def failedupdate(self):
+        """Notice about failed update on Wii U"""
+        await self.simple_embed("A failed update in Download Management does not mean there is an update and the system is trying to download it. This means your blocking method (DNS etc.) is working and the system can't check for an update.", color=discord.Color(0x009AC7))
+
 def setup(bot):
     bot.add_cog(Assistance(bot))
