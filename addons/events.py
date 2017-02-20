@@ -113,7 +113,6 @@ class Events:
             await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned a piracy site indirectly in {}{}".format(message.author.mention, message.channel.mention, " (message deleted)" if is_help_channel else ""), embed=embed)
 
     async def keyword_search(self, message):
-        print("keyword search")
         if "wiiu" in message.channel.name and "download" in message.content and "update" in message.content and "manag" in message.content:  # intentional typo in manage
             embed = discord.Embed(description="A failed update in Download Management does not mean there is an update and the system is trying to download it. This means your blocking method (DNS etc.) is working and the system can't check for an update.", color=discord.Color(0x009AC7))
             await self.bot.send_message(message.channel, message.author.mention, embed=embed)
