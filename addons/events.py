@@ -80,7 +80,7 @@ class Events:
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site'))
         # lazy attachment check, i've got to find a better way of doing this
         for f in message.attachments:
-            if f["filename"][-4:] == ".exe" or f["filename"][-4:] == ".scr":
+            if f["filename"][-4:] == ".exe" or f["filename"][-4:] == ".scr" or f["filename"][-4:] == ".com":
                 embed2 = discord.Embed(description="Size: {}\nDownload: [{}]({})".format(f["size"], f["filename"], f["url"]))
                 await self.bot.send_message(self.bot.modlogs_channel, "📎 **Attachment**: {} uploaded to {}".format(message.author.mention, message.channel.mention), embed=embed2)
         if contains_invite_link:
