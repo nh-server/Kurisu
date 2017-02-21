@@ -107,7 +107,7 @@ class Assistance:
     @commands.command()
     async def gwhs(self):
         """Links to gateway health and safety inject troubleshooting"""
-        await self.simple_embed("https://3ds.guide/troubleshooting#gw_fbi")
+        await self.bot.say("https://3ds.guide/troubleshooting#gw_fbi")
 
     # hardmodder pastebin list
     @commands.command()
@@ -209,6 +209,11 @@ class Assistance:
     async def failedupdate(self):
         """Notice about failed update on Wii U"""
         await self.simple_embed("A failed update in Download Management does not mean there is an update and the system is trying to download it. This means your blocking method (DNS etc.) is working and the system can't check for an update.", color=discord.Color(0x009AC7))
+
+    @commands.command()
+    async def netinfo(self):
+        """Network Maintenance Information / Operational Status"""
+        await self.bot.say("https://www.nintendo.co.jp/netinfo/en_US/index.html")
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
