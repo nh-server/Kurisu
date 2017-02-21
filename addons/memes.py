@@ -218,6 +218,11 @@ class Memes:
     async def mugi(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/lw80tT0.gif")
+        
+    @commands.command(pass_context=True, hidden=True)
+    async def rollsafe(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/n0xi1gZ.png") 
 
 # Load the extension
 def setup(bot):
