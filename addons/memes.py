@@ -224,6 +224,11 @@ class Memes:
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/n0xi1gZ.png") 
 
+    @commands.command(pass_context=True, hidden=True)
+    async def lisp(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/RQeZErU.png")
+
 # Load the extension
 def setup(bot):
     bot.add_cog(Memes(bot))
