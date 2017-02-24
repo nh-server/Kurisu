@@ -102,6 +102,11 @@ class Memes:
     async def shotsfired(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/zf2XrNk.gifv")
+        
+    @commands.command(pass_context=True, hidden=True)
+    async def rusure(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/dqh3fNi.png")
 
     @commands.command(pass_context=True, hidden=True)
     async def r34(self, ctx):
