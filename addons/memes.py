@@ -12,7 +12,7 @@ class Memes:
 
     async def _meme(self, ctx, msg):
         author = ctx.message.author
-        if ctx.message.channel.name[0:5] == "help-" or "assistance" in ctx.message.channel.name or (self.bot.nomemes_role in author.roles):
+        if ctx.message.channel.name[0:5] == "help-" or "assistance" in ctx.message.channel.name or (self.bot.nomemes_role or self.bot.noembed_role in author.roles):
             await self.bot.delete_message(ctx.message)
             try:
                 await self.bot.send_message(author, "Meme commands are disabled in this channel, or your priviledges have been revoked.")
