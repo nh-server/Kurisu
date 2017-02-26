@@ -218,7 +218,7 @@ class Assistance:
     @commands.command()
     async def ctrmount(self):
         """Failed to mount CTRNAND error"""
-        await self.bot.say("While following the guide, after installing Arm9LoaderHax, if you get an error that says "Failed to mount CTRNAND", just continue on with the guide.")
+        await self.bot.simple_embed("While following the guide, after installing arm9loaderhax, if you get an error that says \"Failed to mount CTRNAND\", just continue on with the guide.")
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
