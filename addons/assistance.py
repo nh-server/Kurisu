@@ -194,6 +194,11 @@ class Assistance:
     async def bigsd(self):
         """SD bigger than 32GB"""
         await self.simple_embed("If you want to change your SD card to one bigger than 32GB then you'll have to format it to FAT32.\nYou can do this with the tool of your preference.\nFormatter examples:\n- [guiformat](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm)\n- gparted(for Linux users)", title="Big SD cards")
+		
+    @commands.command()
+    async def sderrors(self):
+        """Sd Error Guide"""
+        await self.simple_embed("Guide For Checking SD Card For Errors\n- [H2testw Guide - Windows](https://3ds.guide/h2testw-(windows\))\n- [F3 Guide - Linux](https://3ds.guide/f3-(linux\))\n- [F3X Guide - Mac](https://3ds.guide/f3x-(mac\))", title="SD Card Errors")		
 
     @commands.command()
     async def notbricked(self):
