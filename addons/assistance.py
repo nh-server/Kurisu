@@ -224,6 +224,15 @@ class Assistance:
     async def ctrmount(self):
         """Failed to mount CTRNAND error"""
         await self.simple_embed("While following the guide, after installing arm9loaderhax, if you get an error that says \"Failed to mount CTRNAND\", just continue on with the guide.")
-
+	
+	@commands.command()
+    async def twl(self):
+	    """Information on how to fix a broken TWL Partition"""
+		embed = discord.Embed(title="Fix TWL", color=discord.Color(0xA2BAE0))
+		embed.set_author(name="Plailect", url="https://3ds.guide/troubleshooting#twl_broken")
+		embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
+		embed.url = "https://3ds.guide/troubleshooting#twl_broken"
+		embed.description = "Intructions on how to fix a broken TWL after doing the guide"
+		await self.bot.say("", embed=embed)
 def setup(bot):
     bot.add_cog(Assistance(bot))
