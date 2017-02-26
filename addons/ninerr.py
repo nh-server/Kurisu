@@ -47,6 +47,10 @@ class NinErr:
         '022-2812': 'System is banned by Nintendo. You cannot ask how to fix this issue here.',
         '090-0212': 'Game is banned from Pokémon Global Link. This is most likely as a result of using altered or illegal save data.',
         # Wii U
+        '160-0102': 'Error in SLC/MLC or USB.',
+        '160-0103': '"The system memory is corrupted (MLC)."',
+        '160-0104': '"The system memory is corrupted (SLC)."',
+        '160-0105': 'USB storage corrupted?',
         '199-9999': 'Usually occurs when trying to run an unsigned title without signature patches, or something unknown(?) is corrupted.',
     }
 
@@ -63,7 +67,7 @@ class NinErr:
             embed.description = "I don't know this one! Click the error code for details on Nintendo Support.\n\nIf you keep getting this issue and Nintendo Support does not help, or know how to fix it, you should report relevant details to <@78465448093417472> so it can be added to the bot."
         else:
             embed.description = self.errcodes[err]
-            embed.color = (Color.dark_red() if err[0] == "0" else Color.blue())
+            embed.color = (Color(0xCE181E) if err[0] == "0" else Color(0x009AC7))
         await self.bot.say("", embed=embed)
 
 def setup(bot):

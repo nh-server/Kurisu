@@ -33,16 +33,25 @@ class Assistance:
         await self.bot.send_message(self.bot.mods_channel, msg, embed=(embed if msg_request != "" else None))
         await self.bot.send_message(author, "✅ Online staff has been notified of your request in {0}.".format(ctx.message.channel.mention), embed=(embed if msg_request != "" else None))
 
-    @commands.command()
-    async def guide(self):
-        """Links to Plailect's guide."""
-        embed = discord.Embed(title="Guide", color=discord.Color.green())
-        embed.set_author(name="Plailect", url="https://3ds.guide/")
-        embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
-        embed.url = "https://3ds.guide/"
-        embed.description = "A complete guide to 3DS custom firmware, from stock to arm9loaderhax."
-        await self.bot.say("", embed=embed)
-    
+    @commands.command(pass_context=True)
+    async def guide(self, ctx, *, console="auto"):
+        """Links to Plailect's or FlimFlam69's guide."""
+        console == console.lower()
+        if console == "3ds" or (console == "auto" and "wiiu" not in ctx.message.channel.name):
+            embed = discord.Embed(title="Guide", color=discord.Color(0xCE181E))
+            embed.set_author(name="Plailect", url="https://3ds.guide/")
+            embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
+            embed.url = "https://3ds.guide/"
+            embed.description = "A complete guide to 3DS custom firmware, from stock to arm9loaderhax."
+            await self.bot.say("", embed=embed)
+        if (console == "wiiu" or console == "wii u") or (console == "auto" and "3ds" not in ctx.message.channel.name):
+            embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
+            embed.set_author(name="FlimFlam69", url="https://github.com/FlimFlam69/WiiUTutorial/wiki")
+            embed.set_thumbnail(url="http://i.imgur.com/86Hm0kM.png")
+            embed.url = "https://github.com/FlimFlam69/WiiUTutorial/wiki"
+            embed.description = "FlimFlam69's 5.5.1 IOSU + Kernel Exploit Guide"
+            await self.bot.say("", embed=embed)
+
     #Embed to Soundhax Download Website
     @commands.command()
     async def soundhax(self):
@@ -52,7 +61,7 @@ class Assistance:
         embed.set_thumbnail(url="http://i.imgur.com/lYf0jan.png")
         embed.url = "http://soundhax.com"
         embed.description = "Free 3DS Primary Entrypoint <= 11.2"
-        await self.bot.say("", embed=embed)        
+        await self.bot.say("", embed=embed)
 
     @commands.command()
     async def ez(self):
@@ -92,13 +101,13 @@ class Assistance:
     @commands.command()
     async def update(self):
         """Explains how to safely prepare for an update if you have arm9loaderhax installed"""
-        await self.simple_embed("If you have arm9loaderhax and Luma3DS installed after following Plailect's guide, run Luma Updater to make sure it is on the latest Luma3DS normal version and then you can proceed to update your 3DS through system settings. \nNTR CFW works on the latest version; use this version of BootNTR: \n<https://github.com/astronautlevel2/BootNTR/releases>")
+        await self.simple_embed("If you have arm9loaderhax and Luma3DS installed after following Plailect's guide, run Luma Updater to make sure it is on the latest Luma3DS normal version and then you can proceed to update your 3DS through system settings. \nNTR CFW works on the latest version; use this version of BootNTR: \n<https://github.com/Nanquitas/BootNTR/releases>")
 
     # gateway h&s troubleshooting command
     @commands.command()
     async def gwhs(self):
         """Links to gateway health and safety inject troubleshooting"""
-        await self.simple_embed("https://3ds.guide/troubleshooting#gw_fbi")
+        await self.bot.say("https://3ds.guide/troubleshooting#gw_fbi")
 
     # hardmodder pastebin list
     @commands.command()
@@ -142,12 +151,12 @@ class Assistance:
     async def downgrade(self):
         """Downgrade help"""
         await self.simple_embed("Follow Plailect's guide here: <https://3ds.guide/get-started>", title="Downgrade methods on 11.2 or below:")
-    
+
     @commands.command()
     async def inoriquest(self):
         """Tells user to be descriptive"""
         await self.simple_embed("> Reminder: if you would like someone to help you, please be as descriptive as possible, of your situation, things you have done, as little as they may seem, aswell as assisting materials. Asking to ask wont expedite your process, and may delay assistance.")
-    
+
     @commands.command()
     async def vguides(self):
         """Information about video guides relating to custom firmware"""
@@ -155,6 +164,56 @@ class Assistance:
         embed.description = "\"Video guides\" for custom firmware and arm9loaderhax are not recommended for use. Their contents generally become outdated very quickly for them to be of any use, and they are harder to update unlike a written guide.\n\nWhen this happens, video guides become more complicated than current methods, having users do certain tasks which may not be required anymore.\n\nThere is also a risk of the uploader spreading misinformation or including potentially harmful files, sometimes unintentionally. Using other people's files to install arm9loaderhax can cause serious issues and even brick your system."
         embed.add_field(name="Recommended", value="The recommended thing to do is to use [Plailect's written complete guide for arm9loaderhax](https://3ds.guide). It is the most up to date one and is recommended for everyone.")
         await self.bot.say("", embed=embed)
+
+    @commands.command()
+    async def ip(self):
+        """How to check your IP"""
+        await self.simple_embed("1. FBI\n2. Remote Install\n3. Recieve URLs over the network", title="Check your 3DSs IP")
+
+    @commands.command()
+    async def ip2(self):
+        """Homebrew way to know your IP"""
+        await self.simple_embed("1. Open Homebrew Launcher\n2. Press Y", title="Check your 3DSs IP")
+
+    @commands.command()
+    async def nonandbackup(self):
+        """Help when you missed the nand backup"""
+        await self.simple_embed("1. When reached the section IV(4) from Installing arm9loaderahx replace the sections IV(4) & V(5) with https://3ds.guide/9.2.0-ctrtransfer.", title="If you missed the NAND Backup:")
+
+    @commands.command()
+    async def hbl113(self):
+        """Get homebrew launcher working on 11.3"""
+        await self.simple_embed("If you are on a CFW New 3DS you should disable the 'Clock + L2' on the Luma config(select on boot).")
+
+    @commands.command()
+    async def readguide(self):
+        """Read the guide please"""
+        await self.simple_embed("Asking something that is on the guide will make everyone lose time, so please read and re-read the guide steps 2 or 3 times before coming here.", title="Please read the guide")
+
+    @commands.command()
+    async def bigsd(self):
+        """SD bigger than 32GB"""
+        await self.simple_embed("If you want to change your SD card to one bigger than 32GB then you'll have to format it to FAT32.\nYou can do this with the tool of your preference.\nFormatter examples:\n- [guiformat](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm)\n- gparted(for Linux users)", title="Big SD cards")
+
+    @commands.command()
+    async def notbricked(self):
+        """Missing arm9loaderhax.bin"""
+        await self.simple_embed("If your power LED turns on and off after you installed a9lh, you are not bricked and are just missing a file called arm9loaderhax.bin in the root of your SD card.\nTo fix this you should:\n1.Check you inserted the SD card in your console\n2.Place/replace the file, downloading it from https://github.com/AuroraWright/Luma3DS/releases\nChecking your SD for errors or corruption:\n\tWindows: https://3ds.guide/h2testw-(windows)\n\tLinux: https://3ds.guide/f3-(linux)\n\tMac: https://3ds.guide/f3x-(mac)", title="No. You are not bricked")
+
+    @commands.command()
+    async def emureco(self):
+        """Recommendation about EmuNAND"""
+        await self.simple_embed("If you want to set up an EmuNAND the first thing to know is that you probably don't need it; if you don't know what an EmuNAND is, you don't need one.", title="EmuNAND Recommendation")
+
+    @commands.command()
+    async def failedupdate(self):
+        """Notice about failed update on Wii U"""
+        await self.simple_embed("A failed update in Download Management does not mean there is an update and the system is trying to download it. This means your blocking method (DNS etc.) is working and the system can't check for an update.", color=discord.Color(0x009AC7))
+
+    @commands.command()
+    async def netinfo(self):
+        """Network Maintenance Information / Operational Status"""
+        await self.bot.say("https://www.nintendo.co.jp/netinfo/en_US/index.html")
 
 def setup(bot):
     bot.add_cog(Assistance(bot))

@@ -52,6 +52,11 @@ class Memes:
     async def adrian3(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/EsDWK9U.png")
+        
+    @commands.command(pass_context=True, hidden=True)
+    async def dubyadud(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/xesCnmM.jpg")
 
     @commands.command(pass_context=True, hidden=True)
     async def megumi(self, ctx):
@@ -84,6 +89,11 @@ class Memes:
         await self._meme(ctx, "http://i.imgur.com/lKcsiBP.png")
 
     @commands.command(pass_context=True, hidden=True)
+    async def inori6(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/SIJzpau.gifv")
+    
+    @commands.command(pass_context=True, hidden=True)
     async def kina(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/8Mm5ZvB.jpg")
@@ -92,6 +102,11 @@ class Memes:
     async def shotsfired(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/zf2XrNk.gifv")
+        
+    @commands.command(pass_context=True, hidden=True)
+    async def rusure(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/dqh3fNi.png")
 
     @commands.command(pass_context=True, hidden=True)
     async def r34(self, ctx):
@@ -175,6 +190,16 @@ class Memes:
         await self._meme(ctx, "http://i.imgur.com/7V6gIIW.jpg")
 
     @commands.command(pass_context=True, hidden=True)
+    async def headpat2(self, ctx):
+        """Cute"""
+        await self._meme(ctx, "http://i.imgur.com/djhHX0n.gifv")
+
+    @commands.command(pass_context=True, hidden=True)
+    async def sudoku(self, ctx):
+        """Cute"""
+        await self._meme(ctx, "http://i.imgur.com/VHlIZRC.png") 
+        
+    @commands.command(pass_context=True, hidden=True)
     async def rawr(self, ctx):
         """Cute"""
         await self._meme(ctx, "http://i.imgur.com/Bqw4OwQ.png")
@@ -184,7 +209,6 @@ class Memes:
         """Cute"""
         await self._meme(ctx, "http://i.imgur.com/OyjCHNe.png")
 
-    # Nichi memes
     @commands.command(pass_context=True, hidden=True)
     async def led(self, ctx):
         """Memes."""
@@ -194,6 +218,21 @@ class Memes:
     async def snickers(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/Ek0uDUn.jpg")
+        
+    @commands.command(pass_context=True, hidden=True)
+    async def mugi(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/lw80tT0.gif")
+        
+    @commands.command(pass_context=True, hidden=True)
+    async def rollsafe(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/n0xi1gZ.png") 
+
+    @commands.command(pass_context=True, hidden=True)
+    async def lisp(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/RQeZErU.png")
 
 # Load the extension
 def setup(bot):
