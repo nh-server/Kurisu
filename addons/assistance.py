@@ -228,7 +228,7 @@ class Assistance:
     @commands.command()
     async def twl(self):
         """Information on how to fix a broken TWL Partition"""
-        embed = discord.Embed(title="Fix broken TWL", color=discord.Color.(0xA2BAE0))
+        embed = discord.Embed(title="Fix broken TWL", color=discord.Color(0xA2BAE0))
         embed.set_author(name="Plailect", url="https://3ds.guide/troubleshooting#twl_broken")
         embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
         embed.url = "https://3ds.guide/troubleshooting#twl_broken"
