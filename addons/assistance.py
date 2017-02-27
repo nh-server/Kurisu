@@ -224,6 +224,7 @@ class Assistance:
     async def ctrmount(self):
         """Failed to mount CTRNAND error"""
         await self.simple_embed("While following the guide, after installing arm9loaderhax, if you get an error that says \"Failed to mount CTRNAND\", just continue on with the guide.")
+	
     @commands.command()
     async def twl(self):
         """Information on how to fix a broken TWL Partition"""
