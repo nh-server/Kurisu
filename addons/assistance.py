@@ -88,16 +88,7 @@ class Assistance:
         embed.set_thumbnail(url="https://raw.githubusercontent.com/Cruel/DspDump/master/icon.png")
         embed.url = "https://github.com/Cruel/DspDump/releases/latest"
         await self.bot.say("", embed=embed)
-
-    @commands.command()
-    async def ntrstream(self):
-        """Links to ntr streaming guide"""
-        embed = discord.Embed(title="NTR Streaming Guide", color=discord.Color.blue())
-        embed.url = "https://gbatemp.net/threads/tutorial-3ds-screen-recording-without-a-capture-card-ntr-cfw-method.423445/"
-        embed.description = "How to use NTR CFW with Nitro Stream to Wirelessly Stream"
-        embed.add_field(name="4 common fixes", value="• Are you connected to the Internet?\n• Is your antivirus program blocking the program?\n• Make sure you are not putting the port (:####) into the IP box of Nitro Stream.\n• Does your NTR menu say NTR CFW 3.4 Preview2?")
-        await self.bot.say("", embed=embed)
-
+	
     @commands.command()
     async def update(self):
         """Explains how to safely prepare for an update if you have arm9loaderhax installed"""
@@ -194,12 +185,19 @@ class Assistance:
     async def bigsd(self):
         """SD bigger than 32GB"""
         await self.simple_embed("If you want to change your SD card to one bigger than 32GB then you'll have to format it to FAT32.\nYou can do this with the tool of your preference.\nFormatter examples:\n- [guiformat - Windows](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm)\n- [gparted - Linux](http://gparted.org/download.php)", title="Big SD cards")
-		
+		##Kirito -Start-
     @commands.command()
     async def sderrors(self):
         """Sd Error Guide"""
-        await self.simple_embed("Guide For Checking SD Card For Errors\n- [H2testw Guide - Windows](https://3ds.guide/h2testw-(windows\))\n- [F3 Guide - Linux](https://3ds.guide/f3-(linux\))\n- [F3X Guide - Mac](https://3ds.guide/f3x-(mac\))", title="SD Card Errors")		
-
+        await self.simple_embed("Guide For Checking SDCard For Errors\n- [H2TestW Guide - Windows](https://3ds.guide/h2testw-(windows\))\n- [F3 Guide - Linux](https://3ds.guide/f3-(linux\))\n- [F3X Guide - Mac](https://3ds.guide/f3x-(mac\))", title="Sd Card Errors")		
+	#old .ntrstream command had incorrect info
+    @commands.command()
+    async def ntrstream(self):
+        """N3DS NTR Streaming Guide"""
+        embed = discord.Embed(title="NTR CFW Streaming Guide", color=discord.Color.orange())
+        embed.description = "(New Nintendo 3DS only) \n \n _1_ - Download the latest BootNTRSelector.cia from [BOOTNTRSelector](https://gbatemp.net/threads/release-bootntr-selector.432911/) (Use QR code if you wish)\n \n _2_ - download Kit-Kat From [Kit-Kat](https://gbatemp.net/threads/release-kit-kat-the-ultimate-3ds-toolkit-pc-client.453015/) (Put kit-kat.exe on desktop or wherever you choose) \n \n _3_ - Open BootNTR Selector And Follow On Screen Instructions (Use Default). Once It Has Asked You To Reboot Open BootNTR Selector and tap Use Default Then 3.4 Once That Has Happened Boot Out Of The App And Press X+Y If NTR CFW pops up on bottom screen your all set now to hop back onto the computer \n \n _4_ - Open Kit-Kat.exe And It Should automatically detect your Nintendo 3ds Local IP. goto settings and select Quality = 80. Priority Factor = 2. Quality Of Service Value = 101. Screen Priority = 1. (Other Options Are Your Personal Preference) Then Press Connect You Should See Your 3ds screen pop up or NTRviewer.exe needs admin permissions just click yes and you 3ds will pop up in a window \n \n _5_ - Record! or Stream! use whatever recording/streaming software you wish "	
+        await self.bot.say("", embed=embed)
+	    ##Kirito -End-
     @commands.command()
     async def notbricked(self):
         """Missing arm9loaderhax.bin"""
