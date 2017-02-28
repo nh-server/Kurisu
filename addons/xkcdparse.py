@@ -14,6 +14,7 @@ class xkcdparse:
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     word_responses = {
+        "pointers": 138,
         "sudo": 149,
         "sandwich": 149,
         "compiling": 303,
