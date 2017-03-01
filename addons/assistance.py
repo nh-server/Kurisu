@@ -144,8 +144,8 @@ class Assistance:
 
     @commands.command()
     async def brick(self):
-        """Warns not to close the lid"""
-        await self.simple_embed("**NEVER** shut the N3DS lid, **UPDATE** or **FORMAT** while on 2.1. The last two apply regardless of system model. Doing any of these things will cause serious system instability or outright brick your system.", color=discord.Color.red())
+        """Warns about 2.1 dangers"""
+        await self.simple_embed("While on 2.1, **NEVER** shut the N3DS lid, update any model, format a 2DS or attempt to play a game on a cartridge. Doing any of these things *will* brick your system.", color=discord.Color.red())
 
     @commands.command()
     async def downgrade(self):
