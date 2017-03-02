@@ -60,7 +60,7 @@ class Assistance:
         embed.set_author(name="Ned Williamson", url="http://soundhax.com/")
         embed.set_thumbnail(url="http://i.imgur.com/lYf0jan.png")
         embed.url = "http://soundhax.com"
-        embed.description = "Free 3DS Primary Entrypoint <= 11.2"
+        embed.description = "Free 3DS Primary Entrypoint >= 11.3"
         await self.bot.say("", embed=embed)
 
     @commands.command()
