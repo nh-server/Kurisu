@@ -184,11 +184,11 @@ class Assistance:
     async def bigsd(self):
         """SD bigger than 32GB"""
         await self.simple_embed("If you want to change your SD card to one bigger than 32GB then you'll have to format it to FAT32.\nYou can do this with the tool of your preference.\nFormatter examples:\n- [guiformat - Windows](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm)\n- [gparted - Linux](http://gparted.org/download.php)", title="Big SD cards")
-		
+
     @commands.command()
     async def sderrors(self):
         """Sd Error Guide"""
-        await self.simple_embed("Guide For Checking SD Card For Errors\n- [H2testw Guide - Windows](https://3ds.guide/h2testw-(windows\))\n- [F3 Guide - Linux](https://3ds.guide/f3-(linux\))\n- [F3X Guide - Mac](https://3ds.guide/f3x-(mac\))", title="SD Card Errors")		
+        await self.simple_embed("Guide For Checking SD Card For Errors\n- [H2testw Guide - Windows](https://3ds.guide/h2testw-(windows\))\n- [F3 Guide - Linux](https://3ds.guide/f3-(linux\))\n- [F3X Guide - Mac](https://3ds.guide/f3x-(mac\))", title="SD Card Errors")
 
     @commands.command()
     async def notbricked(self):
@@ -209,7 +209,7 @@ class Assistance:
     async def netinfo(self):
         """Network Maintenance Information / Operational Status"""
         await self.bot.say("https://www.nintendo.co.jp/netinfo/en_US/index.html")
-        
+
     @commands.command()
     async def ctrmount(self):
         """Failed to mount CTRNAND error"""
@@ -218,8 +218,8 @@ class Assistance:
     @commands.command()
     async def emptysd(self):
         """What to do if you delete all your SD card contents"""
-	await self.simple_embed("If you have lost the contents of your SD card with CFW, repeat sections I, III, V and VI of [Installing arm9loaderhax](https://3ds.guide/installing-arm9loaderhax). You can skip copying arm9loaderhax.bin and configuring Luma with the SD card out.", color=discord.Color.red())
-	
+        await self.simple_embed("If you have lost the contents of your SD card with CFW, repeat sections I, III, V and VI of [Installing arm9loaderhax](https://3ds.guide/installing-arm9loaderhax). You can skip copying arm9loaderhax.bin and configuring Luma with the SD card out.", color=discord.Color.red())
+
     @commands.command()
     async def twl(self):
         """Information on how to fix a broken TWL Partition"""
