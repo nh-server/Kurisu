@@ -181,6 +181,14 @@ class Assistance:
         await self.simple_embed("1. When reached the section IV(4) from Installing arm9loaderahx replace the sections IV(4) & V(5) with https://3ds.guide/9.2.0-ctrtransfer.", title="If you missed the NAND Backup:")
 
     @commands.command()
+    async def stock113(self):
+        """Advisory for consoles on stock 11.3 firmware"""
+        embed = discord.Embed(title="Running stock (unmodified) 11.3 firmware?", color=discord.Color.dark_orange())
+        embed.description = "If your 3DS is running stock 11.3 firmware, you **will not be able** to do any of the following:\n• Downgrade (even with a hardmod)\n• Install A9LH/CFW\n• Install CIAs\n• Use NTR"
+        embed.add_field(name="What you can do", value="You will only be able to access the homebrew launcher and use homebrew apps through soundhax.")
+        await self.bot.say("", embed=embed)
+
+    @commands.command()
     async def hbl113(self):
         """Get homebrew launcher working on 11.3"""
         await self.simple_embed("If you are on a CFW New 3DS you should disable the 'Clock + L2' on the Luma config(select on boot).")
@@ -194,11 +202,11 @@ class Assistance:
     async def bigsd(self):
         """SD bigger than 32GB"""
         await self.simple_embed("If you want to change your SD card to one bigger than 32GB then you'll have to format it to FAT32.\nYou can do this with the tool of your preference.\nFormatter examples:\n- [guiformat - Windows](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm)\n- [gparted - Linux](http://gparted.org/download.php)", title="Big SD cards")
-		
+
     @commands.command()
     async def sderrors(self):
         """Sd Error Guide"""
-        await self.simple_embed("Guide For Checking SD Card For Errors\n- [H2testw Guide - Windows](https://3ds.guide/h2testw-(windows\))\n- [F3 Guide - Linux](https://3ds.guide/f3-(linux\))\n- [F3X Guide - Mac](https://3ds.guide/f3x-(mac\))", title="SD Card Errors")		
+        await self.simple_embed("Guide For Checking SD Card For Errors\n- [H2testw Guide - Windows](https://3ds.guide/h2testw-(windows\))\n- [F3 Guide - Linux](https://3ds.guide/f3-(linux\))\n- [F3X Guide - Mac](https://3ds.guide/f3x-(mac\))", title="SD Card Errors")
 
     @commands.command()
     async def notbricked(self):
@@ -219,12 +227,12 @@ class Assistance:
     async def netinfo(self):
         """Network Maintenance Information / Operational Status"""
         await self.bot.say("https://www.nintendo.co.jp/netinfo/en_US/index.html")
-        
+
     @commands.command()
     async def ctrmount(self):
         """Failed to mount CTRNAND error"""
         await self.simple_embed("While following the guide, after installing arm9loaderhax, if you get an error that says \"Failed to mount CTRNAND\", just continue on with the guide.")
-	
+
     @commands.command()
     async def twl(self):
         """Information on how to fix a broken TWL Partition"""
