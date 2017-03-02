@@ -128,9 +128,9 @@ class Assistance:
         await self.bot.say("", embed=embed)
 
     @commands.command()
-    async def s4guide(self):
-        """Links to a guide for Sm4sh 3ds mods."""
-        await self.simple_embed("A guide to setting up mods for smash on your 3ds can be found here: https://github.com/KotuMF/Smash-3DS-Modding-Guide/wiki")
+    async def s4sel(self):
+        """Links to a tool for Smash 4 mods"""
+        await self.simple_embed("To install mods for Smash, [Smash Selector](https://gbatemp.net/threads/release-smash-selector.431245/) is reccomended. Instructions for use can be found on the page.")
 
     @commands.command()
     async def brick(self):
