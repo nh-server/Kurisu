@@ -49,6 +49,15 @@ class Events:
         'freshop',
         'fresh0p',
         'fr$shop',
+        'downloadedbotw',
+        'botwdownload',
+        'downloadbotw',
+        'freesho',
+        'freeshoandp',
+        'freeshothenp',
+        'freeeshop',
+        'utikdownloadhelper',
+        'wiiuusbhelper',
     ]
 
     # I hate naming variables sometimes
@@ -74,7 +83,7 @@ class Events:
         msg = ''.join(char for char in message.content.lower() if char in printable)
         msg_no_separators = re.sub('[ -]', '', msg)
         contains_invite_link = "discordapp.com/invite" in msg or "discord.gg" in msg or "join.skype.com" in msg
-        contains_piracy_site_mention = any(x in msg for x in ('3dsiso', '3dschaos'))
+        contains_piracy_site_mention = any(x in msg for x in ('3dsiso', '3dschaos', 'wiiuiso'))
         contains_piracy_url_mention = any(x in msg for x in ('3ds.titlekeys', 'wiiu.titlekeys', 'titlekeys.com'))
         contains_piracy_tool_mention = any(x in msg_no_separators for x in self.piracy_tools)
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site'))

@@ -193,7 +193,12 @@ class Assistance:
     @commands.command()
     async def bigsd(self):
         """SD bigger than 32GB"""
-        await self.simple_embed("If you want to change your SD card to one bigger than 32GB then you'll have to format it to FAT32.\nYou can do this with the tool of your preference.\nFormatter examples:\n- [guiformat](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm)\n- gparted(for Linux users)", title="Big SD cards")
+        await self.simple_embed("If you want to change your SD card to one bigger than 32GB then you'll have to format it to FAT32.\nYou can do this with the tool of your preference.\nFormatter examples:\n- [guiformat - Windows](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm)\n- [gparted - Linux](http://gparted.org/download.php)", title="Big SD cards")
+		
+    @commands.command()
+    async def sderrors(self):
+        """Sd Error Guide"""
+        await self.simple_embed("Guide For Checking SD Card For Errors\n- [H2testw Guide - Windows](https://3ds.guide/h2testw-(windows\))\n- [F3 Guide - Linux](https://3ds.guide/f3-(linux\))\n- [F3X Guide - Mac](https://3ds.guide/f3x-(mac\))", title="SD Card Errors")		
 
     @commands.command()
     async def notbricked(self):
@@ -214,6 +219,21 @@ class Assistance:
     async def netinfo(self):
         """Network Maintenance Information / Operational Status"""
         await self.bot.say("https://www.nintendo.co.jp/netinfo/en_US/index.html")
+        
+    @commands.command()
+    async def ctrmount(self):
+        """Failed to mount CTRNAND error"""
+        await self.simple_embed("While following the guide, after installing arm9loaderhax, if you get an error that says \"Failed to mount CTRNAND\", just continue on with the guide.")
+	
+    @commands.command()
+    async def twl(self):
+        """Information on how to fix a broken TWL Partition"""
+        embed = discord.Embed(title="Fix broken TWL", color=discord.Color(0xA2BAE0))
+        embed.set_author(name="Plailect", url="https://3ds.guide/troubleshooting#twl_broken")
+        embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
+        embed.url = "https://3ds.guide/troubleshooting#twl_broken"
+        embed.description = "Intructions on how to fix a broken TWL after doing the guide"
+        await self.bot.say("", embed=embed)
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
