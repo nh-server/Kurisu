@@ -53,7 +53,6 @@ class Events:
         'botwdownload',
         'downloadbotw',
         'freesho',
-        'freesh',
         'freeshoandp',
         'freeshothenp',
         'freeeshop',
