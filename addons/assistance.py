@@ -171,6 +171,14 @@ class Assistance:
         await self.simple_embed("1. When reached the section IV(4) from Installing arm9loaderahx replace the sections IV(4) & V(5) with https://3ds.guide/9.2.0-ctrtransfer.", title="If you missed the NAND Backup:")
 
     @commands.command()
+    async def stock113(self):
+        """Advisory for consoles on stock 11.3 firmware"""
+        embed = discord.Embed(title="Running stock (unmodified) 11.3 firmware?", color=discord.Color.dark_orange())
+        embed.description = "If your 3DS is running stock 11.3 firmware, you **will not be able** to do any of the following:\n• Downgrade (even with a hardmod)\n• Install A9LH/CFW\n• Install CIAs\n• Use NTR"
+        embed.add_field(name="What you can do", value="You will only be able to access the homebrew launcher and use homebrew apps through soundhax.")
+        await self.bot.say("", embed=embed)
+
+    @commands.command()
     async def hbl113(self):
         """Get homebrew launcher working on 11.3"""
         await self.simple_embed("If you are on a CFW New 3DS you should disable the 'Clock + L2' on the Luma config(select on boot).")
