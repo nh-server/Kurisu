@@ -95,7 +95,8 @@ async def on_command_error(error, ctx):
         formatter = commands.formatter.HelpFormatter()
         await bot.send_message(ctx.message.channel, "{} You are missing required arguments.\n{}".format(ctx.message.author.mention, formatter.format_help_for(ctx, ctx.command)[0]))
     else:
-        await bot.send_message(ctx.message.channel, "An error occured while processing the `{}` command.".format(ctx.command.name))
+        if ctx.command:
+            await bot.send_message(ctx.message.channel, "An error occured while processing the `{}` command.".format(ctx.command.name))
         print('Ignoring exception in command {}'.format(ctx.command), file=sys.stderr)
         traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
 
@@ -203,7 +204,7 @@ addons = [
     'addons.assistance',
     'addons.blah',
     #'addons.bf',
-    'addons.ctrerr',
+    'addons.err',
     'addons.events',
     'addons.extras',
     'addons.friendcode',
@@ -218,7 +219,6 @@ addons = [
     'addons.mod_warn',
     'addons.mod_watch',
     'addons.mod',
-    'addons.ninerr',
     'addons.rules',
     'addons.xkcdparse',
 ]
