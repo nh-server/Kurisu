@@ -63,11 +63,6 @@ class Assistance:
         embed.description = "Free 3DS Primary Entrypoint <= 11.2"
         await self.bot.say("", embed=embed)
 
-    @commands.command()
-    async def ez(self):
-        """Links to ez3ds."""
-        await self.simple_embed("Start here to discover how to hack your 3DS: https://ez3ds.xyz")
-
     # 9.6 xml command
     @commands.command()
     async def xmls(self):
@@ -137,15 +132,10 @@ class Assistance:
         """Links to a guide for Sm4sh 3ds mods."""
         await self.simple_embed("A guide to setting up mods for smash on your 3ds can be found here: https://github.com/KotuMF/Smash-3DS-Modding-Guide/wiki")
 
-    @commands.command(pass_context=True, name="ez2")
-    async def ez2(self, ctx, model: str, major: int, minor: int, revision: int, nver: int, region: str, ):
-        """Gives you the direct link to your version's page.\nExample: !ez2 Old 11 0 0 33 E"""
-        await self.simple_embed("https://ez3ds.xyz/checkfw?model={0}&major={1}&minor={2}&revision={3}&nver={4}&region={5}".format(model, major, minor, revision, nver, region))
-
     @commands.command()
     async def brick(self):
-        """Warns not to close the lid"""
-        await self.simple_embed("**NEVER** shut the N3DS lid, **UPDATE** or **FORMAT** while on 2.1. The last two apply regardless of system model. Doing any of these things will cause serious system instability or outright brick your system.", color=discord.Color.red())
+        """Warns about 2.1 dangers"""
+        await self.simple_embed("While on 2.1, **NEVER** shut the N3DS lid, update any model, format a 2DS or attempt to play a game on a cartridge. Doing any of these things *will* brick your system.", color=discord.Color.red())
 
     @commands.command()
     async def downgrade(self):
@@ -232,6 +222,11 @@ class Assistance:
     async def ctrmount(self):
         """Failed to mount CTRNAND error"""
         await self.simple_embed("While following the guide, after installing arm9loaderhax, if you get an error that says \"Failed to mount CTRNAND\", just continue on with the guide.")
+
+    @commands.command()
+    async def emptysd(self):
+        """What to do if you delete all your SD card contents"""
+        await self.simple_embed("If you have lost the contents of your SD card with CFW, repeat sections I, III, V and VI of [Installing arm9loaderhax](https://3ds.guide/installing-arm9loaderhax). You can skip copying arm9loaderhax.bin and configuring Luma with the SD card out.", color=discord.Color.red())
 
     @commands.command()
     async def twl(self):
