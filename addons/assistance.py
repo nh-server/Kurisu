@@ -181,7 +181,7 @@ class Assistance:
     @commands.command()
     async def hbl113(self):
         """Get homebrew launcher working on 11.3"""
-        await self.simple_embed("If you are on a CFW New 3DS you should disable the 'Clock + L2' on the Luma config(select on boot).")
+        await self.simple_embed("If you are encountering errors while trying to access the homebrew launcher on a New 3DS with Luma3DS installed, you should disable the 'Clock + L2' option in the Luma3DS configuration menu (accessed by holding select while booting).")
 
     @commands.command()
     async def readguide(self):
