@@ -233,6 +233,11 @@ class Memes:
     async def lisp(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/RQeZErU.png")
+        
+    @commands.command(pass_context=True, hidden=True)
+    async def dev(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "You seem to be in #dev.")
 
 # Load the extension
 def setup(bot):
