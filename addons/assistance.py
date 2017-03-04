@@ -166,9 +166,9 @@ class Assistance:
         await self.simple_embed("1. Open Homebrew Launcher\n2. Press Y", title="Check your 3DSs IP")
 
     @commands.command()
-    async def nonandbackup(self):
-        """Help when you missed the nand backup"""
-        await self.simple_embed("1. When reached the section IV(4) from Installing arm9loaderahx replace the sections IV(4) & V(5) with https://3ds.guide/9.2.0-ctrtransfer.", title="If you missed the NAND Backup:")
+    async def nobak(self):
+        """Help if you have no NAND backup"""
+        await self.simple_embed("Perform a [9.2.0 ctrtransfer](https://3ds.guide/9.2.0-ctrtransfer.html). Once completed, continue with section VI of [Installing arm9loaderhax](https://3ds.guide/installing-arm9loaderhax).", title="If you have no NAND backup:")
 
     @commands.command()
     async def stock113(self):
