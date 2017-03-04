@@ -236,8 +236,8 @@ class Memes:
         
     @commands.command(pass_context=True, hidden=True)
     async def dev(self, ctx):
-        """Memes."""
-        await self._meme(ctx, "You seem to be in #dev.")
+        """Reminds user where they are."""
+        await self.bot.say("You seem to be in <#196635781798952960>.")
 
 # Load the extension
 def setup(bot):
