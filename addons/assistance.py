@@ -238,9 +238,9 @@ class Assistance:
         embed.description = "Intructions on how to fix a broken TWL after doing the guide"
         await self.bot.say("", embed=embed)
         
-        @commands.command()
+     @commands.command()
     async def redscr(self):
-        """How to check your IP"""
+        """Help with homebrew red screen"""
         await self.simple_embed("A red screen indicates that there is no boot.3dsx on root.\nIf you have a starter folder on root, place the contents of the starter folder on root.\nIf not, redownload the Homebrew Starter Kit and place the contents of the starter folder inside the .zip on root.", title="If you get a red screen trying to open the Homebrew Launcher")
 
 def setup(bot):
