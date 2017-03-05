@@ -239,6 +239,16 @@ class Memes:
         """Reminds user where they are."""
         await self.bot.say("You seem to be in <#196635781798952960>.")
 
+    @commands.command(pass_context=True, hidden=True)
+    async def mugi(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/4X4d5PT.gif")
+        
+    @commands.command(pass_context=True, hidden=True)
+    async def mugitendo(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/lw80tT0.gif")
+
 # Load the extension
 def setup(bot):
     bot.add_cog(Memes(bot))
