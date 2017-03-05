@@ -128,6 +128,11 @@ class Assistance:
         await self.bot.say("", embed=embed)
 
     @commands.command()
+    async def sdpayload(self):
+        """Information about required files for SafeA9LHInstaller"""
+        await self.bot.say("https://cdn.discordapp.com/attachments/196635695958196224/276441036581240832/Cant_you_believe_this_man_he_did_it_again.png")
+
+    @commands.command()
     async def s4sel(self):
         """Links to a tool for Smash 4 mods"""
         await self.simple_embed("To install mods for Smash, [Smash Selector](https://gbatemp.net/threads/release-smash-selector.431245/) is reccomended. Instructions for use can be found on the page.")
