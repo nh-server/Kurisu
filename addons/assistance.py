@@ -138,11 +138,6 @@ class Assistance:
         await self.simple_embed("While on 2.1, **NEVER** shut the N3DS lid, update any model, format a 2DS or attempt to play a game on a cartridge. Doing any of these things *will* brick your system.", color=discord.Color.red())
 
     @commands.command()
-    async def downgrade(self):
-        """Downgrade help"""
-        await self.simple_embed("Follow Plailect's guide here: <https://3ds.guide/get-started>", title="Downgrade methods on 11.2 or below:")
-
-    @commands.command()
     async def inoriquest(self):
         """Tells user to be descriptive"""
         await self.simple_embed("> Reminder: if you would like someone to help you, please be as descriptive as possible, of your situation, things you have done, as little as they may seem, aswell as assisting materials. Asking to ask wont expedite your process, and may delay assistance.")
