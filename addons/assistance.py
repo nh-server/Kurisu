@@ -130,7 +130,7 @@ class Assistance:
     @commands.command()
     async def sdpayload(self):
         """Information about required files for SafeA9LHInstaller"""
-        await self.bot.say("https://cdn.discordapp.com/attachments/196635695958196224/276441036581240832/Cant_you_believe_this_man_he_did_it_again.png")
+        await self.bot.say("http://i.imgur.com/im9474T.png")
 
     @commands.command()
     async def s4sel(self):
