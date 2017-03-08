@@ -239,7 +239,7 @@ class Assistance:
         await self.bot.say("", embed=embed)
         
     @commands.command()
-    async def redscr(self):
+    async def redhbl(self):
         """Help with homebrew red screen"""
         await self.simple_embed("A red screen indicates that there is no boot.3dsx on root.\nIf you have a starter folder on root, place the contents of the starter folder on root.\nIf not, redownload the [Homebrew Starter Kit](https://smealum.github.io/ninjhax2/starter.zip) and place the contents of the starter folder inside the .zip on root.", title="If you get a red screen trying to open the Homebrew Launcher")
 
