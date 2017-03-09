@@ -108,7 +108,7 @@ class Assistance:
     @commands.command()
     async def hmodders(self):
         """Links to approved hardmodder list"""
-        await self.simple_embed("Don't want to hardmod yourself? Ask one of the installers on the server! <https://pastebin.com/chh0hHPk>")
+        await self.simple_embed("Don't want to hardmod yourself? Ask one of the installers on the server! <http://pastebin.com/wNr42PtH>")
 
     @commands.command()
     async def builds(self):
