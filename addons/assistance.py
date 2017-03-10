@@ -237,11 +237,16 @@ class Assistance:
         embed.url = "https://3ds.guide/troubleshooting#twl_broken"
         embed.description = "Intructions on how to fix a broken TWL after doing the guide"
         await self.bot.say("", embed=embed)
-        
+
     @commands.command()
     async def redscr(self):
         """Help with homebrew red screen"""
         await self.simple_embed("A red screen indicates that there is no boot.3dsx on root.\nIf you have a starter folder on root, place the contents of the starter folder on root.\nIf not, redownload the Homebrew Starter Kit and place the contents of the starter folder inside the .zip on root.", title="If you get a red screen trying to open the Homebrew Launcher")
+
+    @commands.command()
+    async def homext(self):
+        """Deleting home menu extdata"""
+        await self.simple_embed("1. Navigate to the following folder on your SD card: `/Nintendo 3DS/(32 Character ID)/(32 Character ID)/extdata/00000000/`\n2. Delete the corresponding folder for your region:\n  USA: `0000008f`\n   EUR: `00000098`\n   JPN: `00000082`\n   KOR: `000000A9`", title="How to clear Home Menu extdata")
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
