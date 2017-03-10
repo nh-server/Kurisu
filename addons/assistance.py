@@ -201,7 +201,7 @@ class Assistance:
     @commands.command()
     async def notbricked(self):
         """Missing arm9loaderhax.bin"""
-        await self.simple_embed("If your power LED turns on and off after you installed a9lh, you are not bricked and are just missing a file called arm9loaderhax.bin in the root of your SD card.\nTo fix this you should:\n1.Check you inserted the SD card in your console\n2.Place/replace the file, downloading it from https://github.com/AuroraWright/Luma3DS/releases\nChecking your SD for errors or corruption:\n\tWindows: https://3ds.guide/h2testw-(windows)\n\tLinux: https://3ds.guide/f3-(linux)\n\tMac: https://3ds.guide/f3x-(mac)", title="No. You are not bricked")
+        await self.simple_embed("If your power LED turns on and off after you installed a9lh, you are not bricked and are just missing a file called arm9loaderhax.bin in the root of your SD card.\nTo fix this you should:\n1.Check you inserted the SD card in your console\n2.Place/replace the file, downloading it from https://github.com/AuroraWright/Luma3DS/releases\nChecking your SD for errors or corruption:\n\tWindows: https://3ds.guide/h2testw-(windows)#\n\tLinux: https://3ds.guide/f3-(linux)#\n\tMac: https://3ds.guide/f3x-(mac)#", title="No. You are not bricked")
 
     @commands.command()
     async def emureco(self):
