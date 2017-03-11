@@ -61,7 +61,7 @@ class Events:
         'attackhelicopter',
         'gender',
         'faggot',
-        'retarted',
+        'retarded',
         'cunt',
     ]
 
