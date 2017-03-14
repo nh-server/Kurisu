@@ -46,10 +46,10 @@ class Assistance:
             await self.bot.say("", embed=embed)
         if (console == "wiiu" or console == "wii u") or (console == "auto" and "3ds" not in ctx.message.channel.name):
             embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
-            embed.set_author(name="FlimFlam69", url="https://github.com/FlimFlam69/WiiUTutorial/wiki")
+            embed.set_author(name="FlimFlam69 & Plailect", url="https://wiiu.guide/")
             embed.set_thumbnail(url="http://i.imgur.com/86Hm0kM.png")
-            embed.url = "https://github.com/FlimFlam69/WiiUTutorial/wiki"
-            embed.description = "FlimFlam69's 5.5.1 IOSU + Kernel Exploit Guide"
+            embed.url = "https://wiiu.guide/"
+            embed.description = "FlimFlam69 and Plailect's Wii U custom firmware + coldboothax guide"
             await self.bot.say("", embed=embed)
 
     #Embed to Soundhax Download Website
