@@ -47,7 +47,7 @@ class Assistance:
         if (console == "wiiu" or console == "wii u") or (console == "auto" and "3ds" not in ctx.message.channel.name):
             embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
             embed.set_author(name="FlimFlam69 & Plailect", url="https://wiiu.guide/")
-            embed.set_thumbnail(url="http://i.imgur.com/MjWp4Cv.png")
+            embed.set_thumbnail(url="http://i.imgur.com/CpF12I4.png")
             embed.url = "https://wiiu.guide/"
             embed.description = "FlimFlam69 and Plailect's Wii U custom firmware + coldboothax guide"
             await self.bot.say("", embed=embed)
