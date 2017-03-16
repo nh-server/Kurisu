@@ -53,6 +53,8 @@ class Events:
         'freeshoandp',
         'freeshothenp',
         'freeeshop',
+        'makiedition',
+        'makiversion',
         'utikdownloadhelper',
         'wiiuusbhelper',
     ]
