@@ -226,7 +226,8 @@ class Assistance:
     @commands.command()
     async def emptysd(self):
         """What to do if you delete all your SD card contents"""
-        await self.simple_embed("If you have lost the contents of your SD card with CFW, repeat sections I, III, V and VI of [Installing arm9loaderhax](https://3ds.guide/installing-arm9loaderhax). You can skip copying arm9loaderhax.bin and configuring Luma with the SD card out.", color=discord.Color.red())
+        await self.simple_embed("If you have lost the contents of your SD card with CFW, repeat sections I, III, V and VI of [Installing arm9loaderhax](https://3ds.guide/installing-arm9loaderhax).(self):
+erhax.bin and configuring Luma with the SD card out.", color=discord.Color.red())
 
     @commands.command()
     async def twl(self):
@@ -244,8 +245,7 @@ class Assistance:
         await self.simple_embed("A red screen indicates that there is no boot.3dsx on root.\nIf you have a starter folder on root, place the contents of the starter folder on root.\nIf not, redownload the [Homebrew Starter Kit](https://smealum.github.io/ninjhax2/starter.zip) and place the contents of the starter folder inside the .zip on root.", title="If you get a red screen trying to open the Homebrew Launcher")
 
     @commands.command()
-    async def homext(self):
-        """Deleting home menu extdata"""
+    async def homext        """Deleting home menu extdata"""
         await self.simple_embed("1. Navigate to the following folder on your SD card: `/Nintendo 3DS/(32 Character ID)/(32 Character ID)/extdata/00000000/`\n2. Delete the corresponding folder for your region:\n  USA: `0000008f`\n   EUR: `00000098`\n   JPN: `00000082`\n   KOR: `000000A9`", title="How to clear Home Menu extdata")
 
 def setup(bot):
