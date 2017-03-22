@@ -248,5 +248,25 @@ class Assistance:
         """Deleting home menu extdata"""
         await self.simple_embed("1. Navigate to the following folder on your SD card: `/Nintendo 3DS/(32 Character ID)/(32 Character ID)/extdata/00000000/`\n2. Delete the corresponding folder for your region:\n  USA: `0000008f`\n   EUR: `00000098`\n   JPN: `00000082`\n   KOR: `000000A9`", title="How to clear Home Menu extdata")
 
+    @commands.command(pass_context=True)
+    async def files(self, ctx, *, console="auto"):
+        """Automatic CFW file downloader"""
+        console == console.lower()
+        if console == "3ds" or (console == "auto" and "wiiu" not in ctx.message.channel.name):
+            embed = discord.Embed(title="3DS setup files", color=discord.Color(0x009AC7))
+            embed.set_author(name="Rikumax25", url="https://3sdsetup.co.nf/")
+            embed.set_thumbnail(url="https://en.gravatar.com/userimage/113752576/94ec32a2bffb4c216432f2235a365c9b.jpg")
+            embed.url = "https://3sdsetup.co.nf/"
+            embed.description = "Automatic CFW file downloader for 3DS."
+            await self.bot.say("", embed=embed)
+        if (console == "wiiu" or console == "wii u") or (console == "auto" and "3ds" not in ctx.message.channel.name):
+            embed = discord.Embed(title="Wii U setup files", color=discord.Color(0x009AC7))
+            embed.set_author(name="Rikumax25", url="https://wiiusetup.co.nf/")
+            embed.set_thumbnail(url="https://en.gravatar.com/userimage/113752576/94ec32a2bffb4c216432f2235a365c9b.jpg")
+            embed.url = "https://wiiusetup.co.nf/"
+            embed.description = "Automatic CFW file downloader for Wii U."
+            await self.bot.say("", embed=embed)
+
+        
 def setup(bot):
     bot.add_cog(Assistance(bot))
