@@ -62,7 +62,7 @@ class Events:
     drama_alert = [
         'attackhelicopter',
         'gender',
-        'faggot',
+        'fag',
         'retarded',
         'cunt',
     ]
