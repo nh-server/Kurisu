@@ -57,6 +57,7 @@ class Events:
         'makiversion',
         'utikdownloadhelper',
         'wiiuusbhelper',
+        'funkii',
     ]
 
     drama_alert = [
