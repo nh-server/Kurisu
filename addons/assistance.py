@@ -250,7 +250,7 @@ class Assistance:
 
     @commands.command()
     async def dump(self):
-        ""How to dump/build CIAs using GodMode0""
+        ""How to dump/build CIAs using GodMode9""
         await self.bot.say("https://pastebin.com/sx8HYULr")
         
 def setup(bot):
