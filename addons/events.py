@@ -56,8 +56,6 @@ class Events:
         'utikdownloadhelper',
         'wiiuusbhelper',
         'funkii',
-        'funkiiui',
-        'funkiiu',
     ]
 
     # I hate naming variables sometimes
