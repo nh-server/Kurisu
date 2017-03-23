@@ -226,7 +226,7 @@ class Assistance:
     @commands.command()
     async def emptysd(self):
         """What to do if you delete all your SD card contents"""
-        await self.simple_embed("If you have lost the contents of your SD card with CFW, repeat sections I, III, V and VI of [Installing arm9loaderhax](https://3ds.guide/installing-arm9loaderhax). You can skip copying arm9loaderhax.bin and configuring Luma with the SD card out.", color=discord.Color.red())
+        await self.simple_embed("If you have lost the contents of your SD card with CFW, repeat sections I, III, V and VI of [Installing arm9loaderhax](https://3ds.guide/installing-arm9loaderhax).", color=discord.Color.red())
 
     @commands.command()
     async def twl(self):
