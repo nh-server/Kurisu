@@ -57,6 +57,7 @@ class Events:
         'makiversion',
         'utikdownloadhelper',
         'wiiuusbhelper',
+        'w11uusbh3lper'
         'funkii',
     ]
 
