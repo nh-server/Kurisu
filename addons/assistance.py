@@ -52,7 +52,7 @@ class Assistance:
             embed.description = "FlimFlam69 and Plailect's Wii U custom firmware + coldboothax guide"
             await self.bot.say("", embed=embed)
             
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, aliases=['file', 'sdsetup', '3sdsetup', 'wiiusetup', 'sdcard'])
     async def files(self, ctx, *, console="auto"):
         """Links to Rikumax25's Hassle Free Downloaders."""
         console == console.lower()
