@@ -59,6 +59,8 @@ class Events:
         'wiiuusbhelper',
         'w11uusbh3lper'
         'funkii',
+        'funk11',
+        'W11UUSBH3lper',
     ]
 
     drama_alert = [
