@@ -158,12 +158,10 @@ class Assistance:
     @commands.command()
     async def ip(self):
         """How to check your IP"""
-        await self.simple_embed("1. FBI\n2. Remote Install\n3. Recieve URLs over the network", title="Check your 3DSs IP")
-
-    @commands.command()
-    async def ip2(self):
-        """Homebrew way to know your IP"""
-        await self.simple_embed("1. Open Homebrew Launcher\n2. Press Y", title="Check your 3DSs IP")
+        embed = discord.Embed(title="Check your 3DSs IP (CFW)", color=discord.Color.dark_orange())
+        embed.description = "1. FBI\n2. Remote Install\n3. Recieve URLs over the network"
+        embed.add_field(name="Check your 3DSs IP (Homebrew)", value="1. Open Homebrew Launcher\n2. Press Y")
+        await self.bot.say("", embed=embed)
 
     @commands.command()
     async def nobak(self):
