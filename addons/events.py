@@ -58,6 +58,8 @@ class Events:
         'utikdownloadhelper',
         'wiiuusbhelper',
         'funkii',
+        'funk11',
+        'W11UUSBH3lper',
     ]
 
     drama_alert = [
