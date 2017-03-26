@@ -19,7 +19,7 @@ Please review all of the rules in {2} before asking for help or chatting. In par
 You can find a list of staff and helpers in {2}.
 
 Do you simply need a place to start hacking your 3DS system? Check out **<https://3ds.guide>**!
-Do you simply need a place to start hacking your Wii U system? Check out **<https://github.com/FlimFlam69/WiiUTutorial/wiki>**!
+Do you simply need a place to start hacking your Wii U system? Check out **<https://wiiu.guide/>**!
 
 Thanks for stopping by and have a good time!
 """  # ughhhhhhhh
