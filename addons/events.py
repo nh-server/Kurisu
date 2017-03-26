@@ -60,6 +60,7 @@ class Events:
         'w11uusbh3lper'
         'funkii',
         'funk11',
+        'freeshp',
     ]
 
     drama_alert = [
