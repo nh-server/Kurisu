@@ -51,6 +51,26 @@ class Assistance:
             embed.url = "https://wiiu.guide/"
             embed.description = "FlimFlam69 and Plailect's Wii U custom firmware + coldboothax guide"
             await self.bot.say("", embed=embed)
+            
+    @commands.command(pass_context=True, aliases=['file', 'sdsetup', '3sdsetup', 'wiiusetup', 'sdcard'])
+    async def files(self, ctx, *, console="auto"):
+        """Links to Rikumax25's Hassle Free Downloaders."""
+        console == console.lower()
+        if console == "3ds" or (console == "auto" and "wiiu" not in ctx.message.channel.name):
+            embed = discord.Embed(title="3DS Setup Files", color=discord.Color(0xCE181E))
+            embed.set_author(name="Rikumax25", url="http://3sdsetup.co.nf/")
+            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/260343755993907200/294359373977878529/dragonside7.png")
+            embed.url = "http://3sdsetup.co.nf/"
+            embed.description = "Automatic CFW file downloader for 3DS"
+            await self.bot.say("", embed=embed)
+        if (console == "wiiu" or console == "wii u") or (console == "auto" and "3ds" not in ctx.message.channel.name):
+            embed = discord.Embed(title="Wii U Setup Files", color=discord.Color(0x009AC7))
+            embed.set_author(name="Rikumax25", url="http://wiiusetup.co.nf/")
+            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/260343755993907200/294356367614017537/dragonside4.png")
+            embed.url = "http://wiiusetup.co.nf/"
+            embed.description = "Automatic CFW file downloader for Wii U"
+            await self.bot.say("", embed=embed)
+          
 
     #Embed to Soundhax Download Website
     @commands.command()
