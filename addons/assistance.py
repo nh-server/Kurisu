@@ -51,7 +51,7 @@ class Assistance:
             embed.url = "https://wiiu.guide/"
             embed.description = "FlimFlam69 and Plailect's Wii U custom firmware + coldboothax guide"
             await self.bot.say("", embed=embed)
-            
+
     @commands.command(pass_context=True, aliases=['file', 'sdsetup', '3sdsetup', 'wiiusetup', 'sdcard'])
     async def files(self, ctx, *, console="auto"):
         """Links to Rikumax25's Hassle Free Downloaders."""
@@ -70,7 +70,7 @@ class Assistance:
             embed.url = "http://wiiusetup.tk/"
             embed.description = "Automatic CFW file downloader for Wii U"
             await self.bot.say("", embed=embed)
-          
+
 
     #Embed to Soundhax Download Website
     @commands.command()
@@ -268,8 +268,8 @@ class Assistance:
 
     @commands.command()
     async def dump(self):
-        ""How to dump/build CIAs using GodMode9""
+        """How to dump/build CIAs using GodMode9"""
         await self.bot.say("https://pastebin.com/sx8HYULr")
-        
+
 def setup(bot):
     bot.add_cog(Assistance(bot))
