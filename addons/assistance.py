@@ -266,5 +266,10 @@ class Assistance:
         """Deleting home menu extdata"""
         await self.simple_embed("1. Navigate to the following folder on your SD card: `/Nintendo 3DS/(32 Character ID)/(32 Character ID)/extdata/00000000/`\n2. Delete the corresponding folder for your region:\n  USA: `0000008f`\n   EUR: `00000098`\n   JPN: `00000082`\n   KOR: `000000A9`", title="How to clear Home Menu extdata")
 
+    @commands.command()
+    async def dump(self):
+        ""How to dump/build CIAs using GodMode9""
+        await self.bot.say("https://pastebin.com/sx8HYULr")
+        
 def setup(bot):
     bot.add_cog(Assistance(bot))
