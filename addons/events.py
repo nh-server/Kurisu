@@ -63,6 +63,7 @@ class Events:
         'freeshp',
         'frees.hop',
         'fr*eEshop',
+        'frappeshop',
     ]
 
     drama_alert = [
