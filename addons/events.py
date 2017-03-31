@@ -55,6 +55,7 @@ class Events:
         'freeeshop',
         'makiedition',
         'makiversion',
+        'makifbi',
         'utikdownloadhelper',
         'wiiuusbhelper',
         'w11uusbh3lper'
