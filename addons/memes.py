@@ -238,6 +238,11 @@ class Memes:
     async def dev(self, ctx):
         """Reminds user where they are."""
         await self.bot.say("You seem to be in <#196635781798952960>.")
+        
+           @commands.command(pass_context=True, hidden=True)
+    async def themez(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "https://3dsthem.es/11760 https://3dsthem.es/11801 https://splash.3dsthem.es/11783/nThese are must have themes for your 3ds.")
 
 # Load the extension
 def setup(bot):
