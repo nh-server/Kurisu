@@ -63,6 +63,10 @@ class Events:
         'funk11',
         'freeshp',
         'frees.hop',
+        'fr*eEshop',
+        'frappeshop',
+        'frickshop',
+        'usb heler',
     ]
 
     drama_alert = [
