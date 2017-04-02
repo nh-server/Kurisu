@@ -73,6 +73,7 @@ class Events:
         'cunt',
         'tranny',
         'nigger',
+        'incest',
     ]
 
     # I hate naming variables sometimes
