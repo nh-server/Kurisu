@@ -55,6 +55,7 @@ class Events:
         'freeeshop',
         'makiedition',
         'makiversion',
+        'makifbi',
         'utikdownloadhelper',
         'wiiuusbhelper',
         'w11uusbh3lper'
@@ -70,6 +71,8 @@ class Events:
         'faggot',
         'retarded',
         'cunt',
+        'tranny',
+        'nigger',
     ]
 
     # I hate naming variables sometimes
