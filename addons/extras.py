@@ -113,16 +113,6 @@ class Extras:
         self.bot.pruning = False
         await self.bot.say("enable")
 
-    @commands.command(pass_context=True)
-    async def rtest(self, ctx):
-        """Reaction response test"""
-        message = await self.bot.say(ctx.message.author.mention + " Respond with \N{CROSS MARK} or \N{HEAVY LARGE CIRCLE}")
-        await self.bot.add_reaction(message, '\N{CROSS MARK}')
-        await self.bot.add_reaction(message, '\N{HEAVY LARGE CIRCLE}')
-        res = await self.bot.wait_for_reaction(('\N{CROSS MARK}', '\N{HEAVY LARGE CIRCLE}'), message=message, user=ctx.message.author)
-        await self.bot.clear_reactions(message)
-        await self.bot.say('{0.user} reacted with {0.reaction.emoji}!'.format(res))
-
     @commands.has_permissions(administrator=True)
     @commands.command(pass_context=True, hidden=True)
     async def dumpchannel(self, ctx, channel_name, limit=100):
