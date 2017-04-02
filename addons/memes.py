@@ -52,7 +52,7 @@ class Memes:
     async def adrian3(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/EsDWK9U.png")
-        
+
     @commands.command(pass_context=True, hidden=True)
     async def dubyadud(self, ctx):
         """Memes."""
@@ -92,7 +92,7 @@ class Memes:
     async def inori6(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/SIJzpau.gifv")
-    
+
     @commands.command(pass_context=True, hidden=True)
     async def kina(self, ctx):
         """Memes."""
@@ -102,7 +102,7 @@ class Memes:
     async def shotsfired(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/zf2XrNk.gifv")
-        
+
     @commands.command(pass_context=True, hidden=True)
     async def rusure(self, ctx):
         """Memes."""
@@ -197,8 +197,8 @@ class Memes:
     @commands.command(pass_context=True, hidden=True)
     async def sudoku(self, ctx):
         """Cute"""
-        await self._meme(ctx, "http://i.imgur.com/VHlIZRC.png") 
-        
+        await self._meme(ctx, "http://i.imgur.com/VHlIZRC.png")
+
     @commands.command(pass_context=True, hidden=True)
     async def rawr(self, ctx):
         """Cute"""
@@ -218,29 +218,29 @@ class Memes:
     async def snickers(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/Ek0uDUn.jpg")
-        
+
     @commands.command(pass_context=True, hidden=True)
     async def mugi(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/lw80tT0.gif")
-        
+
     @commands.command(pass_context=True, hidden=True)
     async def rollsafe(self, ctx):
         """Memes."""
-        await self._meme(ctx, "http://i.imgur.com/n0xi1gZ.png") 
+        await self._meme(ctx, "http://i.imgur.com/n0xi1gZ.png")
 
     @commands.command(pass_context=True, hidden=True)
     async def lisp(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/RQeZErU.png")
-        
+
     @commands.command(pass_context=True, hidden=True)
     async def dev(self, ctx):
         """Reminds user where they are."""
         await self.bot.say("You seem to be in <#196635781798952960>.")
 
     @commands.command(pass_context=True, hidden=True)
-      async def headrub(self, ctx):
+        async def headrub(self, ctx):
         """Cute"""
         await self._meme(ctx, "http://i.imgur.com/j6xSoKv.jpg")
 
