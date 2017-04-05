@@ -67,6 +67,7 @@ class Events:
         'frappeshop',
         'frickshop',
         'usb heler',
+        'frishop',
     ]
 
     drama_alert = [
