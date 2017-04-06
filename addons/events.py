@@ -69,6 +69,7 @@ class Events:
         'usb heler',
         'frishop',
         'eshopfree',
+        'Frappêshop',
     ]
 
     drama_alert = [
