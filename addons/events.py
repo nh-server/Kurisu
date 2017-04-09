@@ -99,7 +99,7 @@ class Events:
         embed.description = message.content
         if message.author.id in self.bot.watching:
             await self.bot.send_message(self.bot.messagelogs_channel, "**Watch log**: {} in {}".format(message.author.mention, message.channel.mention), embed=embed)
-        is_help_channel = message.channel.name[0:5] == "help-"
+        is_help_channel = "assistance" in message.channel.name
         msg = ''.join(char for char in message.content.lower() if char in printable)
         msg_no_separators = re.sub('[ -]', '', msg)
         contains_invite_link = "discordapp.com/invite" in msg or "discord.gg" in msg or "join.skype.com" in msg
