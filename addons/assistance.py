@@ -281,6 +281,11 @@ class Assistance:
         embed.url = "https://gbatemp.net/search/40920047/?q=injector&t=post&o=date&g=1&c[title_only]=1&c[user][0]=389539"
         embed.description = "The recommended way to play old classics on your 3DS"
         await self.bot.say("", embed=embed)
+        
+        @commands.command()
+    async def chmm2(self):
+        """How to install custom themes with CHMM2"""
+        await self.bot.say("https://3dsthem.es/how.php")
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
