@@ -72,6 +72,7 @@ class Events:
         'Frappêshop',
         'fręëšhøp',
         'feeshop',
+        'fbimod',
     ]
 
     drama_alert = [
