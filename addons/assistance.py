@@ -194,7 +194,8 @@ class Assistance:
         embed = discord.Embed(title="Running stock (unmodified) 11.4 firmware?", color=discord.Color.dark_orange())
         embed.description = "If your 3DS is running stock 11.4 firmware, you **will not be able** to do any of the following:\n• Downgrade (even with a hardmod)\n• Install A9LH/CFW\n• Install CIAs\n• Use NTR"
         await self.bot.say("", embed=embed)
-
+  embed.add_field(name="What you can do", value="You will only be able to access the homebrew launcher and use homebrew apps through soundhax.")
+        
     @commands.command()
     async def hbl113(self):
         """Get homebrew launcher working on 11.3"""
