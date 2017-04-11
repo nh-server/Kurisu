@@ -287,5 +287,10 @@ class Assistance:
         """How to install custom themes with CHMM2"""
         await self.bot.say("https://3dsthem.es/how.php")
 
+        @commands.command()
+    async def fbi3dsx(self):
+        """How to install FBI with A9LH without updating"""
+        await self.bot.say("https://pastebin.com/7DWhaYSU")
+
 def setup(bot):
     bot.add_cog(Assistance(bot))
