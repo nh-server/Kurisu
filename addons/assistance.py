@@ -192,7 +192,7 @@ class Assistance:
     async def stock114(self):
         """Advisory for consoles on stock 11.4 firmware"""
         embed = discord.Embed(title="Running stock (unmodified) 11.4 firmware?", color=discord.Color.dark_orange())
-        embed.description = "If your 3DS is running stock 11.4 firmware, you **will not be able** to do any of the following:\n• Downgrade (even with a hardmod)\n• Install A9LH/CFW\n• Install CIAs\n• Use NTR"
+        embed.description = "If your 3DS is running stock 11.4 firmware, you **will not be able** to do any of the following:\n• Downgrade (even with a hardmod)\n• Install A9LH/CFW\n• Install CIAs\n• Use NTR\n• Use soundhax"
         await self.bot.say("", embed=embed)
 
     @commands.command()
