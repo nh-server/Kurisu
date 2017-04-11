@@ -109,12 +109,13 @@ bot.wait_until_all_ready = wait_until_all_ready
 
 @bot.event
 async def on_ready():
-    if bot.all_ready:
-        return
     # this bot should only ever be in one server anyway
     for server in bot.servers:
-        print("{} has started! {} has {:,} members!".format(bot.user.name, server.name, server.member_count))
         bot.server = server
+        if bot.all_ready:
+            break
+
+        print("{} has started! {} has {:,} members!".format(bot.user.name, server.name, server.member_count))
 
         # channels
         bot.welcome_channel = discord.utils.get(server.channels, name="welcome-and-rules")
