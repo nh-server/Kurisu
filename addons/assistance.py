@@ -76,7 +76,7 @@ class Assistance:
     @commands.command()
     async def soundhax(self):
         """Links to Soundhax Website"""
-        embed = discord.Embed(title="Soundhax", color=discord.Color.blue())
+        embed = discord.Embed(title="Soundhax", color=discord.Color(0x2020e0))
         embed.set_author(name="Ned Williamson", url="http://soundhax.com/")
         embed.set_thumbnail(url="http://i.imgur.com/lYf0jan.png")
         embed.url = "http://soundhax.com"
@@ -87,7 +87,7 @@ class Assistance:
     @commands.command()
     async def xmls(self):
         """Outputs XMLs for 3DS 9.6-crypto titles, for use with *hax 2.7+"""
-        embed = discord.Embed(title="*hax 2.7 mmap XML repository for 9.6-crypto titles", color=discord.Color.green())
+        embed = discord.Embed(title="*hax 2.7 mmap XML repository for 9.6-crypto titles", color=discord.Color(0x20e020))
         embed.set_author(name="ihaveamac", url="https://github.com/ihaveamac", icon_url="https://avatars0.githubusercontent.com/u/590576?v=3&s=40")
         embed.description = "This is no longer necessary. Use *hax 2.8."
         embed.url = "https://github.com/ihaveamac/9.6-dbgen-xmls"
@@ -97,26 +97,28 @@ class Assistance:
     @commands.command()
     async def dsp(self):
         """Links to DspDump."""
-        embed = discord.Embed(title="DspDump", color=discord.Color.green())
+        embed = discord.Embed(title="DspDump", color=discord.Color(0x20e020))
         embed.set_author(name="Cruel", url="https://github.com/Cruel", icon_url="https://avatars0.githubusercontent.com/u/383999?v=3&s=40")
         embed.description = "Dump 3DS's DSP component to SD for homebrew audio."
         embed.set_thumbnail(url="https://raw.githubusercontent.com/Cruel/DspDump/master/icon.png")
         embed.url = "https://github.com/Cruel/DspDump/releases/latest"
         await self.bot.say("", embed=embed)
 
+    # NTR stream guide/troubleshooting command
     @commands.command()
     async def ntrstream(self):
         """Links to ntr streaming guide"""
-        embed = discord.Embed(title="NTR Streaming Guide", color=discord.Color.blue())
+        embed = discord.Embed(title="NTR Streaming Guide", color=discord.Color(0x2020e0))
         embed.url = "https://gbatemp.net/threads/tutorial-3ds-screen-recording-without-a-capture-card-ntr-cfw-method.423445/"
         embed.description = "How to use NTR CFW with Nitro Stream to Wirelessly Stream"
         embed.add_field(name="4 common fixes", value="• Are you connected to the Internet?\n• Is your antivirus program blocking the program?\n• Make sure you are not putting the port (:####) into the IP box of Nitro Stream.\n• Make sure you are on the latest preview for NTR 3.4.")
         await self.bot.say("", embed=embed)
 
+    #3DS update preparation guide
     @commands.command()
     async def update(self):
         """Explains how to safely prepare for an update if you have arm9loaderhax installed"""
-        await self.simple_embed("If you have arm9loaderhax and Luma3DS installed after following Plailect's guide, run Luma Updater to make sure it is on the latest Luma3DS normal version and then you can proceed to update your 3DS through system settings. \nNTR CFW works on the latest version; use this version of BootNTR: \n<https://github.com/Nanquitas/BootNTR/releases>")
+        await self.simple_embed("If you have arm9loaderhax and Luma3DS installed after following Plailect's guide, run Luma Updater to make sure it is on the latest Luma3DS normal version and then you can proceed to update your 3DS through system settings. \nNTR CFW works on version 11.3.0; use this version of BootNTR: \n<https://github.com/Nanquitas/BootNTR/releases>")
 
     # gateway h&s troubleshooting command
     @commands.command()
@@ -130,6 +132,7 @@ class Assistance:
         """Links to approved hardmodder list"""
         await self.simple_embed("Don't want to hardmod yourself? Ask one of the installers on the server! <http://pastebin.com/wNr42PtH>")
 
+    #Astronautlevel's luma commit site
     @commands.command()
     async def builds(self):
         """Links to astronautlevel's luma commit site."""
@@ -140,72 +143,77 @@ class Assistance:
     async def ctr92(self):
         """Links to ctrtransfer guide"""
         #await self.simple_embed("https://3ds.guide/9.2.0-ctrtransfer")
-        embed = discord.Embed(title="Guide - 9.2.0 ctrtransfer", color=discord.Color.orange())
+        embed = discord.Embed(title="Guide - 9.2.0 ctrtransfer", color=discord.Color(0xe08000))
         embed.set_author(name="Plailect", url="https://3ds.guide/")
         embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
         embed.url = "https://3ds.guide/9.2.0-ctrtransfer"
         embed.description = "How to do the 9.2.0-20 ctrtransfer"
         await self.bot.say("", embed=embed)
 
+    #List needed for SafeA9LHInstaller
     @commands.command()
     async def sdpayload(self):
         """Information about required files for SafeA9LHInstaller"""
         await self.bot.say("http://i.imgur.com/im9474T.png")
 
+    #Smash Selector guide
     @commands.command()
     async def s4sel(self):
         """Links to a tool for Smash 4 mods"""
         await self.simple_embed("To install mods for Smash, [Smash Selector](https://gbatemp.net/threads/release-smash-selector.431245/) is reccomended. Instructions for use can be found on the page.")
 
+    #2.1 brick dangers
     @commands.command()
     async def brick(self):
         """Warns about 2.1 dangers"""
         await self.simple_embed("While on 2.1, **NEVER** shut the N3DS lid, update any model, format a 2DS or attempt to play a game on a cartridge. Doing any of these things *will* brick your system.", color=discord.Color.red())
 
+    #Tells user to be descriptive
     @commands.command()
     async def inoriquest(self):
         """Tells user to be descriptive"""
         await self.simple_embed("> Reminder: if you would like someone to help you, please be as descriptive as possible, of your situation, things you have done, as little as they may seem, aswell as assisting materials. Asking to ask wont expedite your process, and may delay assistance.")
 
+    #No video guides command
     @commands.command()
     async def vguides(self):
         """Information about video guides relating to custom firmware"""
-        embed = discord.Embed(title="Why you should not use video guides", color=discord.Color.dark_orange())
+        embed = discord.Embed(title="Why you should not use video guides", color=discord.Color(0x804000))
         embed.description = "\"Video guides\" for custom firmware and arm9loaderhax are not recommended for use. Their contents generally become outdated very quickly for them to be of any use, and they are harder to update unlike a written guide.\n\nWhen this happens, video guides become more complicated than current methods, having users do certain tasks which may not be required anymore.\n\nThere is also a risk of the uploader spreading misinformation or including potentially harmful files, sometimes unintentionally. Using other people's files to install arm9loaderhax can cause serious issues and even brick your system."
         embed.add_field(name="Recommended", value="The recommended thing to do is to use [Plailect's written complete guide for arm9loaderhax](https://3ds.guide). It is the most up to date one and is recommended for everyone.")
         await self.bot.say("", embed=embed)
 
+    #Explains how to check 3DS IP
     @commands.command()
     async def ip(self):
         """How to check your IP"""
-        embed = discord.Embed(title="Check your 3DSs IP (CFW)", color=discord.Color.dark_orange())
+        embed = discord.Embed(title="Check your 3DSs IP (CFW)", color=discord.Color(0x804000))
         embed.description = "1. FBI\n2. Remote Install\n3. Recieve URLs over the network"
         embed.add_field(name="Check your 3DSs IP (Homebrew)", value="1. Open Homebrew Launcher\n2. Press Y")
         await self.bot.say("", embed=embed)
 
+    #No NAND backup help
     @commands.command()
     async def nobak(self):
         """Help if you have no NAND backup"""
         await self.simple_embed("After you finish configuring Luma, perform a [9.2.0 ctrtransfer](https://3ds.guide/9.2.0-ctrtransfer.html). Once completed, continue with section VI of [Installing arm9loaderhax](https://3ds.guide/installing-arm9loaderhax).", title="If you have no NAND backup:")
 
+    #Tells that 11.4 can't use A9LH
     @commands.command()
-    async def stock113(self):
-        """Advisory for consoles on stock 11.3 firmware"""
-        embed = discord.Embed(title="Running stock (unmodified) 11.3 firmware?", color=discord.Color.dark_orange())
-        embed.description = "If your 3DS is running stock 11.3 firmware, you **will not be able** to do any of the following:\n• Downgrade (even with a hardmod)\n• Install A9LH/CFW\n• Install CIAs\n• Use NTR"
-        embed.add_field(name="What you can do", value="You will only be able to access the homebrew launcher and use homebrew apps through soundhax.")
+    async def stock114(self):
+        """Advisory for consoles on stock 11.3+ firmware"""
+        embed = discord.Embed(title="Running stock (unmodified) 11.4 firmware?", color=discord.Color(0x804000))
+        embed.description = "If your 3DS is running stock 11.4 firmware, you **will not** be able to do any of the following:\n• Downgrade (even with a hardmod)\n• Install A9LH/CFW\n• Install CIAs\n• Use NTR"
+        embed.add_field(name="What you can do if you're running 11.4", value="As of now, the only way to modify your system in any way is to run Homebrew through one of the methods on Smealum's GitHub page.")
         await self.bot.say("", embed=embed)
-
-    @commands.command()
-    async def hbl113(self):
-        """Get homebrew launcher working on 11.3"""
-        await self.simple_embed("If you are encountering errors while trying to access the homebrew launcher on a New 3DS with Luma3DS installed, you should disable the 'Clock + L2' option in the Luma3DS configuration menu (accessed by holding select while booting).")
-
+   
+    #Asks to read the guide
     @commands.command()
     async def readguide(self):
         """Read the guide please"""
         await self.simple_embed("Asking something that is on the guide will make everyone lose time, so please read and re-read the guide steps 2 or 3 times before coming here.", title="Please read the guide")
 
+    #How to format 32gb+ SD cards to FAT32
     @commands.command()
     async def bigsd(self):
         """SD bigger than 32GB"""
