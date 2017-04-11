@@ -66,7 +66,7 @@ class Events:
         'fr*eEshop',
         'frappeshop',
         'frickshop',
-        'usb heler',
+        'usbheler',
         'frishop',
         'eshopfree',
         'Frappêshop',
