@@ -116,7 +116,7 @@ class Assistance:
     @commands.command()
     async def update(self):
         """Explains how to safely prepare for an update if you have arm9loaderhax installed"""
-        await self.simple_embed("If you have arm9loaderhax and Luma3DS installed after following Plailect's guide, run Luma Updater to make sure it is on the latest Luma3DS normal version and then you can proceed to update your 3DS through system settings. \nNTR CFW works on the latest version; use this version of BootNTR: \n<https://github.com/Nanquitas/BootNTR/releases>")
+        await self.simple_embed("If you have arm9loaderhax and Luma3DS installed after following Plailect's guide, run Luma Updater to make sure it is on the latest Luma3DS normal version and then you can proceed to update your 3DS through system settings. \nNTR CFW works on the latest version \n Homebrew launcher currently doesnt work on 11.4 for Old 3DS; use this version of BootNTR: \n<https://github.com/Nanquitas/BootNTR/releases>")
 
     # gateway h&s troubleshooting command
     @commands.command()
@@ -192,7 +192,7 @@ class Assistance:
     async def stock114(self):
         """Advisory for consoles on stock 11.4 firmware"""
         embed = discord.Embed(title="Running stock (unmodified) 11.4 firmware?", color=discord.Color.dark_orange())
-        embed.description = "If your 3DS is running stock 11.4 firmware, you **will not be able** to do any of the following:\n• Downgrade (even with a hardmod)\n• Install A9LH/CFW\n• Install CIAs\n• Use NTR\n• Use soundhax"
+        embed.description = "If your 3DS is running stock 11.4 firmware, you **will not be able** to do any of the following:\n• Downgrade (even with a hardmod)\n• Install A9LH/CFW\n• Install CIAs\n• Use NTR\n• Use soundhax\n• Use homebrew launcher (O3DS stock and cfw users)"
         await self.bot.say("", embed=embed)
 
     @commands.command()
