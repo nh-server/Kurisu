@@ -71,6 +71,7 @@ class Events:
         'eshopfree',
         'Frappêshop',
         'fręëšhøp',
+        'feeshop',
     ]
 
     drama_alert = [
