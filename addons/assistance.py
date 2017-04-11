@@ -193,7 +193,7 @@ class Assistance:
         """Advisory for consoles on stock 11.3 and higher firmware"""
         embed = discord.Embed(title="Running stock (unmodified) 11.3 and higher firmware?", color=discord.Color.dark_orange())
         embed.description = "If your 3DS is running stock 11.3 and higher firmware, you **will not be able** to do any of the following:\n• Downgrade (even with a hardmod)\n• Install A9LH/CFW\n• Install CIAs\n• Use NTR"
-        embed.add_field(name="What you can do", value="You will only be able to access the homebrew launcher and use homebrew apps through soundhax.")
+        embed.add_field(name="What you can do", value="You will only be able to access the homebrew launcher and use homebrew apps through soundhax on 11.3.")
         await self.bot.say("", embed=embed)
 
     @commands.command()
