@@ -198,23 +198,17 @@ class Assistance:
         """Help if you have no NAND backup"""
         await self.simple_embed("After you finish configuring Luma, perform a [9.2.0 ctrtransfer](https://3ds.guide/9.2.0-ctrtransfer.html). Once completed, continue with section VI of [Installing arm9loaderhax](https://3ds.guide/installing-arm9loaderhax).", title="If you have no NAND backup:")
 
-    #Tells that 11.3-11.4 (for now) can't use A9LH
+    #Tells that 11.4 can't use A9LH
     @commands.command()
-    async def stock(self):
+    async def stock114(self):
         """Advisory for consoles on stock 11.3+ firmware"""
-        embed = discord.Embed(title="Running stock (unmodified) 11.3+ firmware?", color=discord.Color(0x804000))
-        embed.description = "If your 3DS is running stock 11.3 firmware, you **will not be able** to do any of the following:\n• Downgrade (even with a hardmod)\n• Install A9LH/CFW\n• Install CIAs\n• Use NTR"
-        embed.add_field(name="What you can do if you're running 11.3", value="You will only be able to access the homebrew launcher and use homebrew apps through soundhax.")
-        embed.add_field(name="What you can do if you're running 11.4", value="As of now, it is unfortunately impossible to do anything on stock 11.4 firmware to modify your system.")
+        embed = discord.Embed(title="Running stock (unmodified) 11.4 firmware?", color=discord.Color(0x804000))
+        embed.description = "If your 3DS is running stock 11.4 firmware, you **will not** be able to do any of the following:\n• Downgrade (even with a hardmod)\n• Install A9LH/CFW\n• Install CIAs\n• Use NTR"
+        embed.add_field(name="What you can do if you're running 11.4", value="As of now, the only way to modify your system in any way is to run Homebrew through one of the methods on Smealum's GitHub page.")
         await self.bot.say("", embed=embed)
-
-    #How to get HBL working on CFW 11.3+
+   
+    #Asks to read the guide
     @commands.command()
-    async def hbl113(self):
-        """Get homebrew launcher working on 11.3"""
-        await self.simple_embed("If you are encountering errors while trying to access the homebrew launcher on a New 3DS with Luma3DS installed, you should disable the 'Clock + L2' option in the Luma3DS configuration menu (accessed by holding select while booting).")
-
-    #Asks to read the guide@commands.command()
     async def readguide(self):
         """Read the guide please"""
         await self.simple_embed("Asking something that is on the guide will make everyone lose time, so please read and re-read the guide steps 2 or 3 times before coming here.", title="Please read the guide")
