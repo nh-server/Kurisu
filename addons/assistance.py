@@ -189,11 +189,10 @@ class Assistance:
         await self.simple_embed("After you finish configuring Luma, perform a [9.2.0 ctrtransfer](https://3ds.guide/9.2.0-ctrtransfer.html). Once completed, continue with section VI of [Installing arm9loaderhax](https://3ds.guide/installing-arm9loaderhax).", title="If you have no NAND backup:")
 
     @commands.command()
-    async def stock(self):
-        """Advisory for consoles on stock 11.3 and higher firmware"""
-        embed = discord.Embed(title="Running stock (unmodified) 11.3 and higher firmware?", color=discord.Color.dark_orange())
-        embed.description = "If your 3DS is running stock 11.3 and higher firmware, you **will not be able** to do any of the following:\n• Downgrade (even with a hardmod)\n• Install A9LH/CFW\n• Install CIAs\n• Use NTR"
-        embed.add_field(name="What you can do", value="You will only be able to access the homebrew launcher and use homebrew apps through soundhax on 11.3.")
+    async def stock114(self):
+        """Advisory for consoles on stock 11.4 firmware"""
+        embed = discord.Embed(title="Running stock (unmodified) 11.4 firmware?", color=discord.Color.dark_orange())
+        embed.description = "If your 3DS is running stock 11.4 firmware, you **will not be able** to do any of the following:\n• Downgrade (even with a hardmod)\n• Install A9LH/CFW\n• Install CIAs\n• Use NTR"
         await self.bot.say("", embed=embed)
 
     @commands.command()
