@@ -80,7 +80,7 @@ class Assistance:
         embed.set_author(name="Ned Williamson", url="http://soundhax.com/")
         embed.set_thumbnail(url="http://i.imgur.com/lYf0jan.png")
         embed.url = "http://soundhax.com"
-        embed.description = "Free 3DS Primary Entrypoint >= 11.3"
+        embed.description = "Free 3DS Primary Entrypoint <= 11.3"
         await self.bot.say("", embed=embed)
 
     # 9.6 xml command
@@ -116,7 +116,7 @@ class Assistance:
     @commands.command()
     async def update(self):
         """Explains how to safely prepare for an update if you have arm9loaderhax installed"""
-        await self.simple_embed("If you have arm9loaderhax and Luma3DS installed after following Plailect's guide, run Luma Updater to make sure it is on the latest Luma3DS normal version and then you can proceed to update your 3DS through system settings. \nNTR CFW works on the latest version \n Homebrew launcher currently doesnt work on 11.4 for Old 3DS; use this version of BootNTR: \n<https://github.com/Nanquitas/BootNTR/releases>")
+        await self.simple_embed("If you have arm9loaderhax and Luma3DS installed after following Plailect's guide, run Luma Updater to make sure it is on the latest Luma3DS hourly version and then you can proceed to update your 3DS through system settings. \nHomebrew launcher currently doesnt work on 11.4 for Old 3DS so consider not updating to 11.4 if have need of it\nNTR CFW works on the latest version (except for the streaming features)\n; Use this version of BootNTR: \n<https://github.com/Nanquitas/BootNTR/releases>")
 
     # gateway h&s troubleshooting command
     @commands.command()
@@ -196,9 +196,9 @@ class Assistance:
         await self.bot.say("", embed=embed)
 
     @commands.command()
-    async def hbl113(self):
+    async def hbl(self):
         """Get homebrew launcher working on 11.3"""
-        await self.simple_embed("If you are encountering errors while trying to access the homebrew launcher on a New 3DS with Luma3DS installed, you should disable the 'Clock + L2' option in the Luma3DS configuration menu (accessed by holding select while booting).")
+        await self.simple_embed("If you are encountering errors while trying to access the homebrew launcher on a 11.3 New 3DS with Luma3DS installed, you should disable the 'Clock + L2' option in the Luma3DS configuration menu (accessed by holding select while booting).\n Homebrew launcher **cant** be used on a 11.4 O3DS currently**")
 
     @commands.command()
     async def readguide(self):
