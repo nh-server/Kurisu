@@ -66,7 +66,13 @@ class Events:
         'fr*eEshop',
         'frappeshop',
         'frickshop',
-        'usb heler',
+        'usbheler',
+        'frishop',
+        'eshopfree',
+        'Frappêshop',
+        'fręëšhøp',
+        'feeshop',
+        'fbimod',
     ]
 
     drama_alert = [
