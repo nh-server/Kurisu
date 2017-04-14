@@ -273,7 +273,7 @@ class Assistance:
     @commands.command()
     async def pminit(self):
         """Fix for the PM init failed error"""
-        await self.bot.say("If you are recieving a \"PM init failed\" error when attempting to launch safehax and are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safehax/releases/tag/r19)")
+        await self.bot.say("If you are recieving a \"PM init failed\" error when attempting to launch safehax and are not on 11.3, use [safehax r19](https://github.com/TiniVi/safehax/releases/tag/r19) instead of the latest version.")
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
