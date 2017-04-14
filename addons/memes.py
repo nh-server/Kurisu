@@ -15,9 +15,9 @@ class Memes:
         if ctx.message.channel.name[0:5] == "help-" or "assistance" in ctx.message.channel.name or (self.bot.nomemes_role in author.roles):
             await self.bot.delete_message(ctx.message)
             try:
-                await self.bot.send_message(author, "Meme commands are disabled in this channel, or your priviledges have been revoked.")
+                await self.bot.send_message(author, "Meme commands are disabled in this channel, or your privileges have been revoked.")
             except discord.errors.Forbidden:
-                await self.bot.say(author.mention + " Meme commands are disabled in this channel, or your priviledges have been revoked.")
+                await self.bot.say(author.mention + " Meme commands are disabled in this channel, or your privileges have been revoked.")
         else:
             await self.bot.say(self.bot.escape_name(ctx.message.author.display_name) + ": " + msg)
 
