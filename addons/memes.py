@@ -39,19 +39,14 @@ class Memes:
         await self._meme(ctx, "**ALL HAIL BRITANNIA!**")
 
     @commands.command(pass_context=True, hidden=True)
-    async def adrian1(self, ctx):
+    async def screams(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/j0Dkv2Z.png")
 
     @commands.command(pass_context=True, hidden=True)
-    async def adrian2(self, ctx):
+    async def eeh(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/2SBC1Qo.jpg")
-
-    @commands.command(pass_context=True, hidden=True)
-    async def adrian3(self, ctx):
-        """Memes."""
-        await self._meme(ctx, "http://i.imgur.com/EsDWK9U.png")
 
     @commands.command(pass_context=True, hidden=True)
     async def dubyadud(self, ctx):
@@ -67,11 +62,6 @@ class Memes:
     async def inori(self, ctx):
         """Memes."""
         await self._meme(ctx, "https://i.imgur.com/WLncIsi.gif")
-
-    @commands.command(pass_context=True, hidden=True)
-    async def inori2(self, ctx):
-        """Memes."""
-        await self._meme(ctx, "http://i.imgur.com/V0uu99A.jpg")
 
     @commands.command(pass_context=True, hidden=True)
     async def inori3(self, ctx):
@@ -92,11 +82,6 @@ class Memes:
     async def inori6(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/SIJzpau.gifv")
-
-    @commands.command(pass_context=True, hidden=True)
-    async def kina(self, ctx):
-        """Memes."""
-        await self._meme(ctx, "http://i.imgur.com/8Mm5ZvB.jpg")
 
     @commands.command(pass_context=True, hidden=True)
     async def shotsfired(self, ctx):
@@ -146,11 +131,6 @@ class Memes:
     @commands.command(pass_context=True, hidden=True)
     async def xarec(self, ctx):
         """Memes."""
-        await self._meme(ctx, "https://i.imgur.com/wRVuidH.gif")
-
-    @commands.command(pass_context=True, hidden=True)
-    async def xarec2(self, ctx):
-        """Memes."""
         await self._meme(ctx, "http://i.imgur.com/A59RbRT.png")
 
     @commands.command(pass_context=True, hidden=True)
@@ -190,24 +170,9 @@ class Memes:
         await self._meme(ctx, "http://i.imgur.com/VHlIZRC.png")
 
     @commands.command(pass_context=True, hidden=True)
-    async def rawr(self, ctx):
-        """Cute"""
-        await self._meme(ctx, "http://i.imgur.com/Bqw4OwQ.png")
-
-    @commands.command(pass_context=True, hidden=True)
     async def baka(self, ctx):
         """Cute"""
         await self._meme(ctx, "http://i.imgur.com/OyjCHNe.png")
-
-    @commands.command(pass_context=True, hidden=True)
-    async def led(self, ctx):
-        """Memes."""
-        await self._meme(ctx, "http://i.imgur.com/FYsxaUZ.jpg")
-
-    @commands.command(pass_context=True, hidden=True)
-    async def snickers(self, ctx):
-        """Memes."""
-        await self._meme(ctx, "http://i.imgur.com/Ek0uDUn.jpg")
 
     @commands.command(pass_context=True, hidden=True)
     async def mugi(self, ctx):
