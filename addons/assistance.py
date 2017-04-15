@@ -291,6 +291,11 @@ class Assistance:
     async def fbi3dsx(self):
         """How to install FBI with A9LH without updating"""
         await self.bot.say("https://pastebin.com/7DWhaYSU")
+        
+        @commands.command()
+    async def greenscr(self):
+        """Green screen on homebrew launcher on 11.4"""
+        await self.simple_embed("A green screen indicates that the homebrew launcher application needs to be updated for 11.4.)
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
