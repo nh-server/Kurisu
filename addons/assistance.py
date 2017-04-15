@@ -116,7 +116,7 @@ class Assistance:
     @commands.command()
     async def update(self):
         """Explains how to safely prepare for an update if you have arm9loaderhax installed"""
-        await self.simple_embed("If you have arm9loaderhax and Luma3DS installed after following Plailect's guide, run Luma Updater to make sure it is on the latest Luma3DS normal version and then you can proceed to update your 3DS through system settings. \nUse the Pinned Message in <#196635695958196224> for HBL 11.4 on o3ds\nNTR CFW works on the latest version (except for the streaming features)\n; Use this version of BootNTR: \n<https://github.com/Nanquitas/BootNTR/releases>")
+        await self.simple_embed("If you have arm9loaderhax and Luma3DS installed after following Plailect's guide, run Luma Updater to make sure it is on the latest Luma3DS normal version and then you can proceed to update your 3DS through system settings. \nUse the Pinned Message in #3ds-assistance-1 for HBL 11.4 on o3ds\nNTR CFW works on the latest version (except for the streaming features)\n; Use this version of BootNTR: \n<https://github.com/Nanquitas/BootNTR/releases>")
 
     # gateway h&s troubleshooting command
     @commands.command()
