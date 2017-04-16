@@ -268,8 +268,13 @@ class Assistance:
     @commands.command()
     async def dump(self):
         """How to dump/build CIAs using GodMode9"""
-        await self.bot.say("https://pastebin.com/sx8HYULr")
-
+        embed = discord.Embed(title="Godmode9 dump/build Guide", color=discord.Color(0x66FFFF))
+        embed.set_author(name="ih8ih8sn0w", url="https://pastebin.com/sx8HYULr")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/167592699149418496/9a048f7363e6026307efb29a9cdba4cf.jpg")
+        embed.url = "https://pastebin.com/sx8HYULr"
+        embed.description = "How to dump/build CIAs using GodMode9"
+        await self.bot.say("", embed=embed)
+        
     @commands.command()
     async def pminit(self):
         """Fix for the PM init failed error"""
