@@ -174,6 +174,14 @@ class Assistance:
         embed.description = "\"Video guides\" for custom firmware and arm9loaderhax are not recommended for use. Their contents generally become outdated very quickly for them to be of any use, and they are harder to update unlike a written guide.\n\nWhen this happens, video guides become more complicated than current methods, having users do certain tasks which may not be required anymore.\n\nThere is also a risk of the uploader spreading misinformation or including potentially harmful files, sometimes unintentionally. Using other people's files to install arm9loaderhax can cause serious issues and even brick your system."
         embed.add_field(name="Recommended", value="The recommended thing to do is to use [Plailect's written complete guide for arm9loaderhax](https://3ds.guide). It is the most up to date one and is recommended for everyone.")
         await self.bot.say("", embed=embed)
+        
+      @commands.command()
+    async def operationidroid(self):
+        """Information about operationidroid latest video where he encourages his viewers to outright lie to the community"""
+        embed = discord.Embed(title="In case you were following a guide by OPERATIONiDROID", color=discord.Color.dark_orange())
+        embed.description = "During the troubleshooting, you should ensure to tell everything related to the hacking procedure and be honest in case you were following a \"Video guide\" by OPERATIONiDROID"
+        embed.add_field(name="Recommended", value="The recommended thing to do is to use [Plailect's written complete guide for arm9loaderhax](https://3ds.guide). It is the most up to date one and is recommended for everyone.")
+        await self.bot.say("", embed=embed)
 
     @commands.command()
     async def ip(self):
