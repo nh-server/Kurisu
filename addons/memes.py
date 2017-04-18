@@ -198,7 +198,11 @@ class Memes:
     async def blackalabi(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/JzFem4y.png")
-
+    
+    @commands.command(pass_context=True, hidden=True)
+    async def nom(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/p1r53ni.jpg")
 # Load the extension
 def setup(bot):
     bot.add_cog(Memes(bot))
