@@ -49,15 +49,42 @@ class Events:
         'freshop',
         'fresh0p',
         'fr$shop',
-        'downloadedbotw',
-        'botwdownload',
-        'downloadbotw',
         'freesho',
         'freeshoandp',
         'freeshothenp',
         'freeeshop',
+        'makiedition',
+        'makiversion',
+        'makifbi',
         'utikdownloadhelper',
         'wiiuusbhelper',
+        'w11uusbh3lper'
+        'funkii',
+        'funk11',
+        'freeshp',
+        'frees.hop',
+        'fr*eeshop',
+        'frappeshop',
+        'frickshop',
+        'usbheler',
+        'frishop',
+        'eshopfree',
+        'erappêshop',
+        'fręëšhøp',
+        'feeshop',
+        'fbimod',
+        'freakshop',
+    ]
+
+    drama_alert = [
+        'attackhelicopter',
+        'gender',
+        'faggot',
+        'retarded',
+        'cunt',
+        'tranny',
+        'nigger',
+        'incest',
     ]
 
     # I hate naming variables sometimes
@@ -79,14 +106,15 @@ class Events:
         embed.description = message.content
         if message.author.id in self.bot.watching:
             await self.bot.send_message(self.bot.messagelogs_channel, "**Watch log**: {} in {}".format(message.author.mention, message.channel.mention), embed=embed)
-        is_help_channel = message.channel.name[0:5] == "help-"
+        is_help_channel = "assistance" in message.channel.name
         msg = ''.join(char for char in message.content.lower() if char in printable)
         msg_no_separators = re.sub('[ -]', '', msg)
         contains_invite_link = "discordapp.com/invite" in msg or "discord.gg" in msg or "join.skype.com" in msg
-        contains_piracy_site_mention = any(x in msg for x in ('3dsiso', '3dschaos', 'wiiuiso'))
+        contains_piracy_site_mention = any(x in msg for x in ('3dsiso', '3dschaos', 'wiiuiso', 'madloader', 'darkumbra',))
         contains_piracy_url_mention = any(x in msg for x in ('3ds.titlekeys', 'wiiu.titlekeys', 'titlekeys.com'))
         contains_piracy_tool_mention = any(x in msg_no_separators for x in self.piracy_tools)
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site'))
+        contains_drama_alert = any(x in msg_no_separators for x in self.drama_alert)
         # lazy attachment check, i've got to find a better way of doing this
         for f in message.attachments:
             if f["filename"][-4:] == ".exe" or f["filename"][-4:] == ".scr" or f["filename"][-4:] == ".com":
@@ -94,6 +122,9 @@ class Events:
                 await self.bot.send_message(self.bot.modlogs_channel, "📎 **Attachment**: {} uploaded to {}".format(message.author.mention, message.channel.mention), embed=embed2)
         if contains_invite_link:
             await self.bot.send_message(self.bot.messagelogs_channel, "✉️ **Invite posted**: {} posted an invite link in {}\n------------------\n{}".format(message.author.mention, message.channel.mention, message.content))
+        if contains_drama_alert:
+            #await self.bot.send_message(self.bot.messagelogs_channel, "✉️ **Potential drama/heated debate Warning**: {} posted a blacklisted word in {}\n------------------\n{}".format(message.author.mention, message.channel.mention, message.content))
+            await self.bot.send_message(self.bot.messagelogs_channel, "**Potential drama/heated debate Warning**: {} posted a blacklisted word in {}".format(message.author.mention, message.channel.mention), embed=embed)
         if contains_piracy_tool_mention:
             try:
                 await self.bot.delete_message(message)

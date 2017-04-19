@@ -11,7 +11,7 @@ class Lockdown:
         self.bot = bot
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
-    @commands.has_permissions(manage_messages=True)
+    @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True, name="lockdown")
     async def lockdown(self, ctx):
        """Lock message sending in the channel. Staff only."""
@@ -48,7 +48,7 @@ class Lockdown:
        except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
-    @commands.has_permissions(manage_messages=True)
+    @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True, name="softlock")
     async def softlock(self, ctx):
        """Lock message sending in the channel, without the "disciplinary action" note. Staff only."""
@@ -65,7 +65,7 @@ class Lockdown:
        except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
-    @commands.has_permissions(manage_messages=True)
+    @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True, name="unlock")
     async def unlock(self, ctx):
        """Unlock message sending in the channel. Staff only."""

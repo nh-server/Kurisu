@@ -15,9 +15,9 @@ class Memes:
         if ctx.message.channel.name[0:5] == "help-" or "assistance" in ctx.message.channel.name or (self.bot.nomemes_role in author.roles):
             await self.bot.delete_message(ctx.message)
             try:
-                await self.bot.send_message(author, "Meme commands are disabled in this channel, or your priviledges have been revoked.")
+                await self.bot.send_message(author, "Meme commands are disabled in this channel, or your privileges have been revoked.")
             except discord.errors.Forbidden:
-                await self.bot.say(author.mention + " Meme commands are disabled in this channel, or your priviledges have been revoked.")
+                await self.bot.say(author.mention + " Meme commands are disabled in this channel, or your privileges have been revoked.")
         else:
             await self.bot.say(self.bot.escape_name(ctx.message.author.display_name) + ": " + msg)
 
@@ -39,24 +39,19 @@ class Memes:
         await self._meme(ctx, "**ALL HAIL BRITANNIA!**")
 
     @commands.command(pass_context=True, hidden=True)
-    async def adrian1(self, ctx):
+    async def screams(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/j0Dkv2Z.png")
 
     @commands.command(pass_context=True, hidden=True)
-    async def adrian2(self, ctx):
+    async def eeh(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/2SBC1Qo.jpg")
 
     @commands.command(pass_context=True, hidden=True)
-    async def adrian3(self, ctx):
-        """Memes."""
-        await self._meme(ctx, "http://i.imgur.com/EsDWK9U.png")
-        
-    @commands.command(pass_context=True, hidden=True)
     async def dubyadud(self, ctx):
         """Memes."""
-        await self._meme(ctx, "http://i.imgur.com/xesCnmM.jpg")
+        await self._meme(ctx, "http://i.imgur.com/Sohsi8s.png")
 
     @commands.command(pass_context=True, hidden=True)
     async def megumi(self, ctx):
@@ -67,11 +62,6 @@ class Memes:
     async def inori(self, ctx):
         """Memes."""
         await self._meme(ctx, "https://i.imgur.com/WLncIsi.gif")
-
-    @commands.command(pass_context=True, hidden=True)
-    async def inori2(self, ctx):
-        """Memes."""
-        await self._meme(ctx, "http://i.imgur.com/V0uu99A.jpg")
 
     @commands.command(pass_context=True, hidden=True)
     async def inori3(self, ctx):
@@ -92,17 +82,12 @@ class Memes:
     async def inori6(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/SIJzpau.gifv")
-    
-    @commands.command(pass_context=True, hidden=True)
-    async def kina(self, ctx):
-        """Memes."""
-        await self._meme(ctx, "http://i.imgur.com/8Mm5ZvB.jpg")
 
     @commands.command(pass_context=True, hidden=True)
     async def shotsfired(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/zf2XrNk.gifv")
-        
+
     @commands.command(pass_context=True, hidden=True)
     async def rusure(self, ctx):
         """Memes."""
@@ -146,11 +131,6 @@ class Memes:
     @commands.command(pass_context=True, hidden=True)
     async def xarec(self, ctx):
         """Memes."""
-        await self._meme(ctx, "https://i.imgur.com/wRVuidH.gif")
-
-    @commands.command(pass_context=True, hidden=True)
-    async def xarec2(self, ctx):
-        """Memes."""
         await self._meme(ctx, "http://i.imgur.com/A59RbRT.png")
 
     @commands.command(pass_context=True, hidden=True)
@@ -173,16 +153,6 @@ class Memes:
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/hki1IIs.gifv")
 
-    @commands.command(pass_context=True, hidden=True)
-    async def bigsmoke(self, ctx):
-        """Memes."""
-        await self._meme(ctx, "http://i.imgur.com/vo5l6Fo.jpg\nALL YOU HAD TO DO WAS FOLLOW THE DAMN GUIDE CJ!")
-
-    @commands.command(pass_context=True, hidden=True)
-    async def bigorder(self, ctx):
-        """Memes."""
-        await self._meme(ctx, "I’ll have two number 9s, a number 9 large, a number 6 with extra dip, a number 7, two number 45s, one with cheese, and a large soda.")
-
     # Cute commands :3
     @commands.command(pass_context=True, hidden=True)
     async def headpat(self, ctx):
@@ -197,12 +167,7 @@ class Memes:
     @commands.command(pass_context=True, hidden=True)
     async def sudoku(self, ctx):
         """Cute"""
-        await self._meme(ctx, "http://i.imgur.com/VHlIZRC.png") 
-        
-    @commands.command(pass_context=True, hidden=True)
-    async def rawr(self, ctx):
-        """Cute"""
-        await self._meme(ctx, "http://i.imgur.com/Bqw4OwQ.png")
+        await self._meme(ctx, "http://i.imgur.com/VHlIZRC.png")
 
     @commands.command(pass_context=True, hidden=True)
     async def baka(self, ctx):
@@ -210,30 +175,34 @@ class Memes:
         await self._meme(ctx, "http://i.imgur.com/OyjCHNe.png")
 
     @commands.command(pass_context=True, hidden=True)
-    async def led(self, ctx):
-        """Memes."""
-        await self._meme(ctx, "http://i.imgur.com/FYsxaUZ.jpg")
-
-    @commands.command(pass_context=True, hidden=True)
-    async def snickers(self, ctx):
-        """Memes."""
-        await self._meme(ctx, "http://i.imgur.com/Ek0uDUn.jpg")
-        
-    @commands.command(pass_context=True, hidden=True)
     async def mugi(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/lw80tT0.gif")
-        
-    @commands.command(pass_context=True, hidden=True)
-    async def rollsafe(self, ctx):
-        """Memes."""
-        await self._meme(ctx, "http://i.imgur.com/n0xi1gZ.png") 
 
     @commands.command(pass_context=True, hidden=True)
     async def lisp(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/RQeZErU.png")
 
+    @commands.command(pass_context=True, hidden=True)
+    async def dev(self, ctx):
+        """Reminds user where they are."""
+        await self.bot.say("You seem to be in <#196635781798952960>.")
+
+    @commands.command(pass_context=True, hidden=True)
+    async def headrub(self, ctx):
+        """Cute"""
+        await self._meme(ctx, "http://i.imgur.com/j6xSoKv.jpg")
+
+    @commands.command(pass_context=True, hidden=True)
+    async def blackalabi(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/JzFem4y.png")
+    
+    @commands.command(pass_context=True, hidden=True)
+    async def nom(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/p1r53ni.jpg")
 # Load the extension
 def setup(bot):
     bot.add_cog(Memes(bot))
