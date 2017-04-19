@@ -276,12 +276,27 @@ class Assistance:
     @commands.command()
     async def dump(self):
         """How to dump/build CIAs using GodMode9"""
-        await self.bot.say("https://pastebin.com/sx8HYULr")
-
+        embed = discord.Embed(title="Godmode9 dump/build Guide", color=discord.Color(0x66FFFF))
+        embed.set_author(name="ih8ih8sn0w", url="https://pastebin.com/sx8HYULr")
+        embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/167592699149418496/9a048f7363e6026307efb29a9cdba4cf.jpg")
+        embed.url = "https://pastebin.com/sx8HYULr"
+        embed.description = "How to dump/build CIAs using GodMode9"
+        await self.bot.say("", embed=embed)
+        
     @commands.command()
     async def pminit(self):
         """Fix for the PM init failed error"""
         await self.simple_embed("If you are receiving a \"PM init failed\" error when attempting to launch safehax and are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safehax/releases/tag/r19)")
+        
+    @commands.command()
+    async def flashcart(self):
+        """Launcher for old flashcarts"""
+        embed = discord.Embed(title="Launcher for old flashcards (r4,m3,dstt,dsx,etc", color=discord.Color(0x42f462))
+        embed.set_author(name="Apache THunder", url="https://gbatemp.net/threads/r4-stage2-twl-flashcart-launcher-and-perhaps-other-cards-soon%E2%84%A2.416434/")
+        embed.set_thumbnail(url="hhttps://gbatemp.net/data/avatars/m/105/105648.jpg")
+        embed.url = "https://gbatemp.net/threads/r4-stage2-twl-flashcart-launcher-and-perhaps-other-cards-soon%E2%84%A2.416434/"
+        embed.description = "Launcher for old flashcards"
+        await self.bot.say("", embed=embed)
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
