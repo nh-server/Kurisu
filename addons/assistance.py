@@ -206,7 +206,7 @@ class Assistance:
     @commands.command()
     async def hbl(self):
         """Get homebrew launcher working on 11.3"""
-        await self.simple_embed("If you are encountering errors while trying to access the homebrew launcher on a 11.3 New 3DS with Luma3DS installed, you should disable the 'Clock + L2' option in the Luma3DS configuration menu (accessed by holding select while booting).\n Homebrew launcher **cant** be used on a 11.4 O3DS currently**")
+        await self.simple_embed("If you are encountering errors while trying to access the homebrew launcher on a 11.3 New 3DS with Luma3DS installed, you should disable the 'Clock + L2' option in the Luma3DS configuration menu (accessed by holding select while booting).\n Homebrew launcher **cant** be used on a stock 11.4 O3DS currently")
 
     @commands.command()
     async def readguide(self):
@@ -276,7 +276,7 @@ class Assistance:
     @commands.command()
     async def dump(self):
         """How to dump/build CIAs using GodMode9"""
-        embed = discord.Embed(title="Godmode9 dump/build Guide", color=discord.Color(0x66FFFF))
+        embed = discord.Embed(title="GodMode9 dump/build Guide", color=discord.Color(0x66FFFF))
         embed.set_author(name="ih8ih8sn0w", url="https://pastebin.com/sx8HYULr")
         embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/167592699149418496/9a048f7363e6026307efb29a9cdba4cf.jpg")
         embed.url = "https://pastebin.com/sx8HYULr"
