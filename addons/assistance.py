@@ -175,12 +175,12 @@ class Assistance:
         embed.add_field(name="Recommended", value="The recommended thing to do is to use [Plailect's written complete guide for arm9loaderhax](https://3ds.guide). It is the most up to date one and is recommended for everyone.")
         await self.bot.say("", embed=embed)
         
-      @commands.command()
+    @commands.command()
     async def operationidroid(self):
-        """Information about operationidroid latest video where he encourages his viewers to outright lie to the community"""
+        """Information about an operationidroid video in which they encourage viewers to outright lie to the community"""
         embed = discord.Embed(title="In case you were following a guide by OPERATIONiDROID", color=discord.Color.dark_orange())
-        embed.description = "During the troubleshooting, you should ensure to tell everything related to the hacking procedure and be honest in case you were following a \"Video guide\" by OPERATIONiDROID"
-        embed.add_field(name="Recommended", value="The recommended thing to do is to use [Plailect's written complete guide for arm9loaderhax](https://3ds.guide). It is the most up to date one and is recommended for everyone.")
+        embed.description = "During troubleshooting, be sure to explain everything you did, and if you were following a Video Guide, be honest. Lying to the people trying to help you, as Operationidroid suggested their viewers do, will cause nothing but issues and frustration on both ends."
+        embed.add_field(name="Recommended", value="The recommended guide to follow is [Plailect's complete written guide for arm9loaderhax](https://3ds.guide). It is the most up to date guide and is the process everybody assisting is familiar with.")
         await self.bot.say("", embed=embed)
 
     @commands.command()
