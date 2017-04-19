@@ -291,9 +291,9 @@ class Assistance:
     @commands.command()
     async def flashcart(self):
         """Launcher for old flashcarts"""
-        embed = discord.Embed(title="Launcher for old flashcards (r4,m3,dstt,dsx,etc", color=discord.Color(0x42f462))
-        embed.set_author(name="Apache THunder", url="https://gbatemp.net/threads/r4-stage2-twl-flashcart-launcher-and-perhaps-other-cards-soon%E2%84%A2.416434/")
-        embed.set_thumbnail(url="hhttps://gbatemp.net/data/avatars/m/105/105648.jpg")
+        embed = discord.Embed(title="Launcher for old flashcards (r4,m3,dstt,dsx,etc)", color=discord.Color(0x42f462))
+        embed.set_author(name="Apache Thunder", url="https://gbatemp.net/threads/r4-stage2-twl-flashcart-launcher-and-perhaps-other-cards-soon%E2%84%A2.416434/")
+        embed.set_thumbnail(url="https://gbatemp.net/data/avatars/m/105/105648.jpg")
         embed.url = "https://gbatemp.net/threads/r4-stage2-twl-flashcart-launcher-and-perhaps-other-cards-soon%E2%84%A2.416434/"
         embed.description = "Launcher for old flashcards"
         await self.bot.say("", embed=embed)
