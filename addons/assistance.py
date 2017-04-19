@@ -277,6 +277,32 @@ class Assistance:
     async def dump(self):
         """How to dump/build CIAs using GodMode9"""
         await self.bot.say("https://pastebin.com/sx8HYULr")
+          
+    #Embed to 3DS VC Injects Website
+    @commands.command()
+    async def vc(self):
+        """Link to Virtual Console Injects for 3DS"""
+        embed = discord.Embed(title="Virtual Console Injects for 3DS", color=discord.Color.blue())
+        embed.set_author(name="Asdolo", url="https://gbatemp.net/members/asdolo.389539/")
+        embed.set_thumbnail(url="https://i.imgur.com/rHa76XM.png")
+        embed.url = "https://gbatemp.net/search/40920047/?q=injector&t=post&o=date&g=1&c[title_only]=1&c[user][0]=389539"
+        embed.description = "The recommended way to play old classics on your 3DS"
+        await self.bot.say("", embed=embed)
+        
+        @commands.command()
+    async def chmm2(self):
+        """How to install custom themes with CHMM2"""
+        await self.bot.say("https://3dsthem.es/how.php")
+
+        @commands.command()
+    async def fbi3dsx(self):
+        """How to install FBI with A9LH without updating"""
+        await self.bot.say("https://pastebin.com/7DWhaYSU")
+        
+        @commands.command()
+    async def greenscr(self):
+        """Green screen on homebrew launcher on 11.4"""
+        await self.simple_embed("A green screen indicates that the homebrew launcher application needs to be updated for 11.4.)
 
     @commands.command()
     async def pminit(self):
