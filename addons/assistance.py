@@ -311,7 +311,7 @@ class Assistance:
         
     #Embed to Howling's Theme Tool
     @commands.command()
-    async def Howling(self):
+    async def howling(self):
         """Link to Howling's Theme Tool"""
         embed = discord.Embed(title="Cutom Themes CIA for 3DS", color=discord.Color.blue())
         embed.set_author(name="Chelsea Fantasy", url="https://gbatemp.net/members/chelsea_fantasy.347208/")
