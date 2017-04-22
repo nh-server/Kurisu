@@ -309,7 +309,7 @@ class Assistance:
         embed.description = "The recommended way to use custom themes on your 3DS"
         await self.bot.say("", embed=embed)
         
-    #Embed to Howling Theme Tool
+    #Embed to howling Theme Tool
     @commands.command()
     async def Howling(self):
         """Link to Howling's Theme Tool"""
