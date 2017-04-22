@@ -303,7 +303,7 @@ class Assistance:
     async def vc(self):
         """Link to Virtual Console Injects for 3DS"""
         embed = discord.Embed(title="Virtual Console Injects for 3DS", color=discord.Color.blue())
-        embed.set_author(name="Chelsea Fantasy", url="https://gbatemp.net/members/asdolo.389539/")
+        embed.set_author(name="Asdolo", url="https://gbatemp.net/members/asdolo.389539/")
         embed.set_thumbnail(url="https://i.imgur.com/rHa76XM.png")
         embed.url = "https://gbatemp.net/search/40920047/?q=injector&t=post&o=date&g=1&c[title_only]=1&c[user][0]=389539"
         embed.description = "The recommended way to use custom themes on your 3DS"
@@ -314,7 +314,7 @@ class Assistance:
     async def Howling(self):
         """Link to Howling's Theme Tool"""
         embed = discord.Embed(title="Cutom Themes CIA for 3DS", color=discord.Color.blue())
-        embed.set_author(name="Asdolo", url="https://gbatemp.net/members/chelsea_fantasy.347208/")
+        embed.set_author(name="Chelsea Fantasy", url="https://gbatemp.net/members/chelsea_fantasy.347208/")
         embed.set_thumbnail(url="https://i.imgur.com/02CLtFr.jpg")
         embed.url = "https://gbatemp.net/threads/release-howling-theme-tool-create-your-own-cia-theme-packages-with-custom-and-official-themes.401081/"
         embed.description = "The recommended way to use custom themes on CFW"
