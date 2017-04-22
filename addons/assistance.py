@@ -320,12 +320,12 @@ class Assistance:
         embed.description = "The recommended way to use custom themes on CFW"
         await self.bot.say("", embed=embed)
 
-        @commands.command()
+    @commands.command()
     async def fbi3dsx(self):
         """How to install FBI with A9LH without updating"""
         await self.bot.say("https://pastebin.com/7DWhaYSU")
         
-        @commands.command()
+    @commands.command()
     async def greenscr(self):
         """Green screen on homebrew launcher on 11.4"""
         await self.simple_embed("A green screen indicates that the homebrew launcher application needs to be updated for 11.4.)
