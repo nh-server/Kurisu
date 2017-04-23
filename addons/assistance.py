@@ -274,13 +274,13 @@ class Assistance:
         await self.simple_embed("1. Navigate to the following folder on your SD card: `/Nintendo 3DS/(32 Character ID)/(32 Character ID)/extdata/00000000/`\n2. Delete the corresponding folder for your region:\n  USA: `0000008f`\n   EUR: `00000098`\n   JPN: `00000082`\n   KOR: `000000A9`", title="How to clear Home Menu extdata")
 
     @commands.command()
-    async def dump(self):
-        """How to dump/build CIAs using GodMode9"""
-        embed = discord.Embed(title="GodMode9 dump/build Guide", color=discord.Color(0x66FFFF))
-        embed.set_author(name="ih8ih8sn0w", url="https://pastebin.com/sx8HYULr")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/167592699149418496/9a048f7363e6026307efb29a9cdba4cf.jpg")
-        embed.url = "https://pastebin.com/sx8HYULr"
-        embed.description = "How to dump/build CIAs using GodMode9"
+    async def gm9(self):
+        """Links to the guide on GodMode9"""
+        embed = discord.Embed(title="GodMode9 Usage", color=discord.Color(0x66FFFF))
+        embed.set_author(name="Plailect", url="https://3ds.guide/godmode9-usage")
+        embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
+        embed.url = "https://3ds.guide/godmode9-usage"
+        embed.description = "GodMode9 usage guide"
         await self.bot.say("", embed=embed)
         
     @commands.command()
