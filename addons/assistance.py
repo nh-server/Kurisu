@@ -174,6 +174,14 @@ class Assistance:
         embed.description = "\"Video guides\" for custom firmware and arm9loaderhax are not recommended for use. Their contents generally become outdated very quickly for them to be of any use, and they are harder to update unlike a written guide.\n\nWhen this happens, video guides become more complicated than current methods, having users do certain tasks which may not be required anymore.\n\nThere is also a risk of the uploader spreading misinformation or including potentially harmful files, sometimes unintentionally. Using other people's files to install arm9loaderhax can cause serious issues and even brick your system."
         embed.add_field(name="Recommended", value="The recommended thing to do is to use [Plailect's written complete guide for arm9loaderhax](https://3ds.guide). It is the most up to date one and is recommended for everyone.")
         await self.bot.say("", embed=embed)
+        
+    @commands.command()
+    async def operationidroid(self):
+        """Information about an operationidroid video in which they encourage viewers to outright lie to the community"""
+        embed = discord.Embed(title="In case you were following a guide by OPERATIONiDROID", color=discord.Color.dark_orange())
+        embed.description = "During troubleshooting, be sure to explain everything you did, and if you were following a Video Guide, be honest. Lying to the people trying to help you, as Operationidroid suggested their viewers do, will cause nothing but issues and frustration on both ends."
+        embed.add_field(name="Recommended", value="The recommended guide to follow is [Plailect's complete written guide for arm9loaderhax](https://3ds.guide). It is the most up to date guide and is the process everybody assisting is familiar with.")
+        await self.bot.say("", embed=embed)
 
     @commands.command()
     async def ip(self):
@@ -192,13 +200,13 @@ class Assistance:
     async def stock114(self):
         """Advisory for consoles on stock 11.4 firmware"""
         embed = discord.Embed(title="Running stock (unmodified) 11.4 firmware?", color=discord.Color.dark_orange())
-        embed.description = "If your 3DS is running stock 11.4 firmware, you **will not be able** to do any of the following:\n• Downgrade (even with a hardmod)\n• Install A9LH/CFW\n• Install CIAs\n• Use NTR\n• Use soundhax\n• Use homebrew launcher (O3DS stock and cfw users)"
+        embed.description = "If your 3DS is running stock 11.4 firmware, you **will not be able** to do any of the following:\n• Downgrade (even with a hardmod)\n• Install A9LH/CFW\n• Install CIAs\n• Use NTR\n• Use soundhax\n• Use homebrew launcher (O3DS stock)"
         await self.bot.say("", embed=embed)
 
     @commands.command()
     async def hbl(self):
         """Get homebrew launcher working on 11.3"""
-        await self.simple_embed("If you are encountering errors while trying to access the homebrew launcher on a 11.3 New 3DS with Luma3DS installed, you should disable the 'Clock + L2' option in the Luma3DS configuration menu (accessed by holding select while booting).\n Homebrew launcher **cant** be used on a 11.4 O3DS currently**")
+        await self.simple_embed("If you are encountering errors while trying to access the homebrew launcher on a 11.3 New 3DS with Luma3DS installed, you should disable the 'Clock + L2' option in the Luma3DS configuration menu (accessed by holding select while booting).\n Homebrew launcher **cant** be used on a stock 11.4 O3DS currently")
 
     @commands.command()
     async def readguide(self):
@@ -243,7 +251,7 @@ class Assistance:
     @commands.command()
     async def emptysd(self):
         """What to do if you delete all your SD card contents"""
-        await self.simple_embed("If you have lost the contents of your SD card with CFW, repeat sections I, III and V-VIII  of [Installing arm9loaderhax](https://3ds.guide/installing-arm9loaderhax).", color=discord.Color.red())
+        await self.simple_embed("If you have lost the contents of your SD card with CFW, repeat sections I, III and V-VII of [Installing arm9loaderhax](https://3ds.guide/installing-arm9loaderhax).", color=discord.Color.red())
 
     @commands.command()
     async def twl(self):
@@ -266,14 +274,29 @@ class Assistance:
         await self.simple_embed("1. Navigate to the following folder on your SD card: `/Nintendo 3DS/(32 Character ID)/(32 Character ID)/extdata/00000000/`\n2. Delete the corresponding folder for your region:\n  USA: `0000008f`\n   EUR: `00000098`\n   JPN: `00000082`\n   KOR: `000000A9`", title="How to clear Home Menu extdata")
 
     @commands.command()
-    async def dump(self):
-        """How to dump/build CIAs using GodMode9"""
-        await self.bot.say("https://pastebin.com/sx8HYULr")
-
+    async def gm9(self):
+        """Links to the guide on GodMode9"""
+        embed = discord.Embed(title="GodMode9 Usage", color=discord.Color(0x66FFFF))
+        embed.set_author(name="Plailect", url="https://3ds.guide/godmode9-usage")
+        embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
+        embed.url = "https://3ds.guide/godmode9-usage"
+        embed.description = "GodMode9 usage guide"
+        await self.bot.say("", embed=embed)
+        
     @commands.command()
     async def pminit(self):
         """Fix for the PM init failed error"""
         await self.simple_embed("If you are receiving a \"PM init failed\" error when attempting to launch safehax and are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safehax/releases/tag/r19)")
+        
+    @commands.command()
+    async def flashcart(self):
+        """Launcher for old flashcarts"""
+        embed = discord.Embed(title="Launcher for old flashcards (r4,m3,dstt,dsx,etc)", color=discord.Color(0x42f462))
+        embed.set_author(name="Apache Thunder", url="https://gbatemp.net/threads/r4-stage2-twl-flashcart-launcher-and-perhaps-other-cards-soon%E2%84%A2.416434/")
+        embed.set_thumbnail(url="https://gbatemp.net/data/avatars/m/105/105648.jpg")
+        embed.url = "https://gbatemp.net/threads/r4-stage2-twl-flashcart-launcher-and-perhaps-other-cards-soon%E2%84%A2.416434/"
+        embed.description = "Launcher for old flashcards"
+        await self.bot.say("", embed=embed)
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
