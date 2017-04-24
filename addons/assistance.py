@@ -338,7 +338,7 @@ class Assistance:
         embed.set_thumbnail(url="http://i.imgur.com/QEUfyrp.png")
         embed.url = "https://pastebin.com/sx8HYULr"
         embed.description = "How to dump/build CIAs using GodMode9"
-        await self.bot.say("", embed=embed)  
-                                
+        await self.bot.say("", embed=embed)
+
 def setup(bot):
     bot.add_cog(Assistance(bot))
