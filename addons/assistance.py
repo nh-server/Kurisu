@@ -298,8 +298,6 @@ class Assistance:
         embed.description = "Launcher for old flashcards"
         await self.bot.say("", embed=embed)
         
-
-
     #Embed to 3DS VC Injects Website
     @commands.command()
     async def vc(self):
@@ -341,7 +339,6 @@ class Assistance:
         embed.url = "https://pastebin.com/sx8HYULr"
         embed.description = "How to dump/build CIAs using GodMode9"
         await self.bot.say("", embed=embed)  
-
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
