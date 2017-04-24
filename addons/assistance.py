@@ -281,7 +281,7 @@ class Assistance:
         embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
         embed.url = "https://3ds.guide/godmode9-usage"
         embed.description = "GodMode9 usage guide"
-        await self.bot.say("", embed=embed)
+        await self.bot.say("", embed=embed) 
 
     @commands.command()
     async def pminit(self):
