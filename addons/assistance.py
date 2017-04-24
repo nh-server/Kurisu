@@ -297,6 +297,16 @@ class Assistance:
         embed.url = "https://gbatemp.net/threads/r4-stage2-twl-flashcart-launcher-and-perhaps-other-cards-soon%E2%84%A2.416434/"
         embed.description = "Launcher for old flashcards"
         await self.bot.say("", embed=embed)
+        
+    @commands.command()
+    async def dump(self):
+        """How to dump/build CIAs using GodMode9"""
+        embed = discord.Embed(title="GodMode9 dump/build Guide", color=discord.Color(0x66FFFF))
+        embed.set_author(name="ih8ih8sn0w", url="https://pastebin.com/sx8HYULr")
+        embed.set_thumbnail(url="http://i.imgur.com/QEUfyrp.png")
+        embed.url = "https://pastebin.com/sx8HYULr"
+        embed.description = "How to dump/build CIAs using GodMode9"
+        await self.bot.say("", embed=embed)  
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
