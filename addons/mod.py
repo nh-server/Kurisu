@@ -199,7 +199,7 @@ class Mod:
         """Remove access to help-and-questions. Staff and Helpers only."""
         author = ctx.message.author
         if (self.bot.helpers_role not in author.roles) and (self.bot.staff_role not in author.roles):
-            msg = "{} You cannot used this command.".format(author.mention)
+            msg = "{} You cannot use this command.".format(author.mention)
             await self.bot.say(msg)
             return
         try:
@@ -229,7 +229,7 @@ class Mod:
         """Restore access to help-and-questions. Staff and Helpers only."""
         author = ctx.message.author
         if (self.bot.helpers_role not in author.roles) and (self.bot.staff_role not in author.roles):
-            msg = "{} You cannot used this command.".format(author.mention)
+            msg = "{} You cannot use this command.".format(author.mention)
             await self.bot.say(msg)
             return
         try:

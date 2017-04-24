@@ -118,7 +118,7 @@ class Rules:
     @commands.command(hidden=True)
     async def r14(self):
         """Displays rule 14."""
-        await self.simple_embed("Off-topic content goes to <#277529766972620800>. Keep low-quality content like memes out. There is a channel for that, read <#196618637950451712> to find it.", title="Rule 14")
+        await self.simple_embed("Off-topic content goes to <#297886834464260097>. Keep low-quality content like memes out. There is a channel for that, read <#196618637950451712> to find it.", title="Rule 14")
 
     @commands.command(hidden=True)
     async def r15(self):
