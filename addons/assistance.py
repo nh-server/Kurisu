@@ -174,7 +174,7 @@ class Assistance:
         embed.description = "\"Video guides\" for custom firmware and arm9loaderhax are not recommended for use. Their contents generally become outdated very quickly for them to be of any use, and they are harder to update unlike a written guide.\n\nWhen this happens, video guides become more complicated than current methods, having users do certain tasks which may not be required anymore.\n\nThere is also a risk of the uploader spreading misinformation or including potentially harmful files, sometimes unintentionally. Using other people's files to install arm9loaderhax can cause serious issues and even brick your system."
         embed.add_field(name="Recommended", value="The recommended thing to do is to use [Plailect's written complete guide for arm9loaderhax](https://3ds.guide). It is the most up to date one and is recommended for everyone.")
         await self.bot.say("", embed=embed)
-        
+
     @commands.command()
     async def operationidroid(self):
         """Information about an operationidroid video in which they encourage viewers to outright lie to the community"""
@@ -273,7 +273,7 @@ class Assistance:
         """Deleting home menu extdata"""
         await self.simple_embed("1. Navigate to the following folder on your SD card: `/Nintendo 3DS/(32 Character ID)/(32 Character ID)/extdata/00000000/`\n2. Delete the corresponding folder for your region:\n  USA: `0000008f`\n   EUR: `00000098`\n   JPN: `00000082`\n   KOR: `000000A9`", title="How to clear Home Menu extdata")
 
-    @commands.command()
+    @commands.command(aliases=['dump', 'godmode9'])
     async def gm9(self):
         """Links to the guide on GodMode9"""
         embed = discord.Embed(title="GodMode9 Usage", color=discord.Color(0x66FFFF))
@@ -282,12 +282,12 @@ class Assistance:
         embed.url = "https://3ds.guide/godmode9-usage"
         embed.description = "GodMode9 usage guide"
         await self.bot.say("", embed=embed)
-        
+
     @commands.command()
     async def pminit(self):
         """Fix for the PM init failed error"""
         await self.simple_embed("If you are receiving a \"PM init failed\" error when attempting to launch safehax and are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safehax/releases/tag/r19)")
-        
+
     @commands.command()
     async def flashcart(self):
         """Launcher for old flashcarts"""
