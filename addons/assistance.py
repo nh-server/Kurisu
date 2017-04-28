@@ -309,15 +309,15 @@ class Assistance:
         embed.description = "The recommended way to play old classics on your 3DS"
         await self.bot.say("", embed=embed)
         
-    #Embed to Howling's Theme Tool
+    #Embed to Themely guide
     @commands.command()
-    async def howling(self):
-        """Link to Howling's Theme Tool"""
-        embed = discord.Embed(title="Cutom Themes CIA for 3DS", color=discord.Color.blue())
-        embed.set_author(name="Chelsea Fantasy", url="https://gbatemp.net/members/chelsea_fantasy.347208/")
-        embed.set_thumbnail(url="https://i.imgur.com/02CLtFr.jpg")
-        embed.url = "https://gbatemp.net/threads/release-howling-theme-tool-create-your-own-cia-theme-packages-with-custom-and-official-themes.401081/"
-        embed.description = "The recommended way to use custom themes on CFW"
+    async def themely(self):
+        """Link to Themely guide"""
+        embed = discord.Embed(title="Cutom Themes for 3DS", color=discord.Color.purple())
+        embed.set_author(name="erman1337", url="https://3dsthem.es/how.php")
+        embed.set_thumbnail(url="https://i.imgur.com/79pD5y7.png")
+        embed.url = "https://3dsthem.es/how.php"
+        embed.description = "The recommended way to use custom themes"
         await self.bot.say("", embed=embed)
 
     @commands.command()
