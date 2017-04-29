@@ -60,14 +60,14 @@ class Assistance:
             embed = discord.Embed(title="3DS Setup Files", color=discord.Color(0xCE181E))
             embed.set_author(name="Rikumax25", url="http://3sdsetup.net/")
             embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/260343755993907200/294359373977878529/dragonside7.png")
-            embed.url = "http://3sdsetup.tk/"
+            embed.url = "http://3sdsetup.net/"
             embed.description = "Automatic CFW file downloader for 3DS"
             await self.bot.say("", embed=embed)
         if (console == "wiiu" or console == "wii u") or (console == "auto" and "3ds" not in ctx.message.channel.name):
             embed = discord.Embed(title="Wii U Setup Files", color=discord.Color(0x009AC7))
             embed.set_author(name="Rikumax25", url="http://wiiusetup.net/")
             embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/260343755993907200/294356367614017537/dragonside4.png")
-            embed.url = "http://wiiusetup.tk/"
+            embed.url = "http://wiiusetup.net/"
             embed.description = "Automatic CFW file downloader for Wii U"
             await self.bot.say("", embed=embed)
 
