@@ -178,7 +178,7 @@ class Events:
             embed = discord.Embed(title="Deleted messages", color=discord.Color.gold())
             msgs_to_delete = self.user_antispam[message.author.id][:]  # clone list so nothing is removed while going through it
             for msg in msgs_to_delete:
-                embed.add_field(name="#"+msg.channel.name, value=msg.content)
+                embed.add_field(name="#"+msg.channel.name, value="\u200b" + msg.content)  # added zero-width char to prevent an error with an empty string (lazy workaround)
             await self.bot.send_message(self.bot.modlogs_channel, log_msg, embed=embed)
             await self.bot.send_message(self.bot.mods_channel, log_msg + "\nSee {} for a list of deleted messages.".format(self.bot.modlogs_channel.mention))
             for msg in msgs_to_delete:
@@ -206,7 +206,7 @@ class Events:
             embed = discord.Embed(title="Deleted messages", color=discord.Color.gold())
             msgs_to_delete = self.user_antispam[message.author.id][:]  # clone list so nothing is removed while going through it
             for msg in msgs_to_delete:
-                embed.add_field(name="@"+self.bot.escape_name(msg.author), value=msg.content)
+                embed.add_field(name="@"+self.bot.escape_name(msg.author), value="\u200b" + msg.content)  # added zero-width char to prevent an error with an empty string (lazy workaround)
             await self.bot.send_message(message.channel, msg_channel)
             log_msg = "🔒 **Auto-locked**: {} locked for spam".format(message.channel.mention)
             await self.bot.send_message(self.bot.modlogs_channel, log_msg, embed=embed)
