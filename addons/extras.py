@@ -113,6 +113,16 @@ class Extras:
         self.bot.pruning = False
         await self.bot.say("enable")
 
+    @commands.command(name="32c3")
+    async def _32c3(self):
+        """Console Hacking 2015"""
+        await self.bot.say("https://www.youtube.com/watch?v=bZczf57HSag")
+
+    @commands.command(name="33c3")
+    async def _33c3(self):
+        """Nintendo Hacking 2016"""
+        await self.bot.say("https://www.youtube.com/watch?v=8C5cn_Qj0G8")
+
     @commands.has_permissions(administrator=True)
     @commands.command(pass_context=True, hidden=True)
     async def dumpchannel(self, ctx, channel_name, limit=100):
