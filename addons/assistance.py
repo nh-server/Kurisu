@@ -326,11 +326,6 @@ class Assistance:
         await self.bot.say("https://pastebin.com/7DWhaYSU")
         
     @commands.command()
-    async def greenscr(self):
-        """Green screen on homebrew launcher on 11.4"""
-        await self.simple_embed("A green screen indicates that the homebrew launcher application needs to be updated for 11.4.)
-
-    @commands.command()
     async def dump(self):
         """How to dump/build CIAs using GodMode9"""
         embed = discord.Embed(title="GodMode9 dump/build Guide", color=discord.Color(0x66FFFF))
