@@ -112,6 +112,7 @@ class Events:
         contains_invite_link = "discordapp.com/invite" in msg or "discord.gg" in msg or "join.skype.com" in msg
         contains_piracy_site_mention = any(x in msg for x in ('3dsiso', '3dschaos', 'wiiuiso', 'madloader', 'darkumbra',))
         contains_piracy_url_mention = any(x in msg for x in ('3ds.titlekeys', 'wiiu.titlekeys', 'titlekeys.com'))
+        contains_misinformation_url_mention = any(x in msg for x in ('gudie.racklab'))
         contains_piracy_tool_mention = any(x in msg_no_separators for x in self.piracy_tools)
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site'))
         contains_drama_alert = any(x in msg_no_separators for x in self.drama_alert)
@@ -125,6 +126,16 @@ class Events:
         if contains_drama_alert:
             #await self.bot.send_message(self.bot.messagelogs_channel, "✉️ **Potential drama/heated debate Warning**: {} posted a blacklisted word in {}\n------------------\n{}".format(message.author.mention, message.channel.mention, message.content))
             await self.bot.send_message(self.bot.messagelogs_channel, "**Potential drama/heated debate Warning**: {} posted a blacklisted word in {}".format(message.author.mention, message.channel.mention), embed=embed)
+        if contains_misinformation_url_mention:
+            try:
+                await self.bot.delete_message(message)
+            except discord.errors.NotFound:
+                pass
+            try:
+                await self.bot.send_message(message.author, "Please read {}. This site may be misinterpreted as legitimate and cause users harm, therefore your message was automatically deleted.".format(self.bot.welcome_channel.mention), embed=embed)
+            except discord.errors.Forbidden:
+                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
+            await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned a blocked site in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
         if contains_piracy_tool_mention:
             try:
                 await self.bot.delete_message(message)
