@@ -194,7 +194,7 @@ class Assistance:
     @commands.command()
     async def nobak(self):
         """Help if you have no NAND backup"""
-        await self.simple_embed("After you finish configuring Luma, perform a [9.2.0 ctrtransfer](https://3ds.guide/9.2.0-ctrtransfer.html). Once completed, continue with section VI of [Installing arm9loaderhax](https://3ds.guide/installing-arm9loaderhax).", title="If you have no NAND backup:")
+        await self.simple_embed("After you finish configuring Luma3DS, perform a [9.2.0 ctrtransfer](https://3ds.guide/9.2.0-ctrtransfer). Once completed, continue with section VI of [Installing arm9loaderhax](https://3ds.guide/installing-arm9loaderhax).", title="If you have no NAND backup:")
 
     @commands.command()
     async def stock114(self):
@@ -297,7 +297,7 @@ class Assistance:
         embed.url = "https://gbatemp.net/threads/r4-stage2-twl-flashcart-launcher-and-perhaps-other-cards-soon%E2%84%A2.416434/"
         embed.description = "Launcher for old flashcards"
         await self.bot.say("", embed=embed)
-        
+
     @commands.command()
     async def dump(self):
         """How to dump/build CIAs using GodMode9"""
@@ -306,7 +306,7 @@ class Assistance:
         embed.set_thumbnail(url="http://i.imgur.com/QEUfyrp.png")
         embed.url = "https://pastebin.com/sx8HYULr"
         embed.description = "How to dump/build CIAs using GodMode9"
-        await self.bot.say("", embed=embed)  
+        await self.bot.say("", embed=embed)
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
