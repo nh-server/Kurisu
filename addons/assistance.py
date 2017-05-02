@@ -58,16 +58,16 @@ class Assistance:
         console == console.lower()
         if console == "3ds" or (console == "auto" and "wiiu" not in ctx.message.channel.name):
             embed = discord.Embed(title="3DS Setup Files", color=discord.Color(0xCE181E))
-            embed.set_author(name="Rikumax25", url="http://3sdsetup.tk/")
+            embed.set_author(name="Rikumax25", url="http://3sdsetup.net/")
             embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/260343755993907200/294359373977878529/dragonside7.png")
-            embed.url = "http://3sdsetup.tk/"
+            embed.url = "http://3sdsetup.net/"
             embed.description = "Automatic CFW file downloader for 3DS"
             await self.bot.say("", embed=embed)
         if (console == "wiiu" or console == "wii u") or (console == "auto" and "3ds" not in ctx.message.channel.name):
             embed = discord.Embed(title="Wii U Setup Files", color=discord.Color(0x009AC7))
-            embed.set_author(name="Rikumax25", url="http://wiiusetup.tk/")
+            embed.set_author(name="Rikumax25", url="http://wiiusetup.net/")
             embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/260343755993907200/294356367614017537/dragonside4.png")
-            embed.url = "http://wiiusetup.tk/"
+            embed.url = "http://wiiusetup.net/"
             embed.description = "Automatic CFW file downloader for Wii U"
             await self.bot.say("", embed=embed)
 
@@ -116,7 +116,7 @@ class Assistance:
     @commands.command()
     async def update(self):
         """Explains how to safely prepare for an update if you have arm9loaderhax installed"""
-        await self.simple_embed("If you have arm9loaderhax and Luma3DS installed after following Plailect's guide, run Luma Updater to make sure it is on the latest Luma3DS normal version and then you can proceed to update your 3DS through system settings. \nUse the Pinned Message in #3ds-assistance-1 for HBL 11.4 on o3ds\nNTR CFW works on the latest version (except for the streaming features)\n; Use this version of BootNTR: \n<https://github.com/Nanquitas/BootNTR/releases>")
+        await self.simple_embed("If you have arm9loaderhax and Luma3DS installed after following Plailect's guide, run Luma Updater to make sure it is on the latest Luma3DS normal version and then you can proceed to update your 3DS through system settings. \nUse the Pinned Message in #3ds-assistance-1 for HBL 11.4 on o3ds\nNTR CFW works on the latest version (except for the streaming features)\n; Use this version of BootNTR: \n<https://github.com/Nanquitas/BootNTR/releases>\nNote: if there is a homebrew application that is no longer working, it may exist as a CIA that you can download under the TitleDB option in FBI.")
 
     # gateway h&s troubleshooting command
     @commands.command()
@@ -194,7 +194,7 @@ class Assistance:
     @commands.command()
     async def nobak(self):
         """Help if you have no NAND backup"""
-        await self.simple_embed("After you finish configuring Luma, perform a [9.2.0 ctrtransfer](https://3ds.guide/9.2.0-ctrtransfer.html). Once completed, continue with section VI of [Installing arm9loaderhax](https://3ds.guide/installing-arm9loaderhax).", title="If you have no NAND backup:")
+        await self.simple_embed("After you finish configuring Luma3DS, perform a [9.2.0 ctrtransfer](https://3ds.guide/9.2.0-ctrtransfer). Once completed, continue with section VI of [Installing arm9loaderhax](https://3ds.guide/installing-arm9loaderhax).", title="If you have no NAND backup:")
 
     @commands.command()
     async def stock114(self):
@@ -297,7 +297,7 @@ class Assistance:
         embed.url = "https://gbatemp.net/threads/r4-stage2-twl-flashcart-launcher-and-perhaps-other-cards-soon%E2%84%A2.416434/"
         embed.description = "Launcher for old flashcards"
         await self.bot.say("", embed=embed)
-        
+    
     #Embed to 3DS VC Injects Website
     @commands.command()
     async def vc(self):
@@ -324,7 +324,7 @@ class Assistance:
     async def fbi3dsx(self):
         """How to install FBI with A9LH without updating"""
         await self.bot.say("https://pastebin.com/7DWhaYSU")
-        
+
     @commands.command()
     async def dump(self):
         """How to dump/build CIAs using GodMode9"""

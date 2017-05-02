@@ -114,6 +114,7 @@ class Events:
         contains_piracy_url_mention = any(x in msg for x in ('3ds.titlekeys', 'wiiu.titlekeys', 'titlekeys.com'))
         contains_piracy_tool_mention = any(x in msg_no_separators for x in self.piracy_tools)
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site'))
+        contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub'))
         contains_drama_alert = any(x in msg_no_separators for x in self.drama_alert)
         # lazy attachment check, i've got to find a better way of doing this
         for f in message.attachments:
@@ -122,6 +123,16 @@ class Events:
                 await self.bot.send_message(self.bot.modlogs_channel, "📎 **Attachment**: {} uploaded to {}".format(message.author.mention, message.channel.mention), embed=embed2)
         if contains_invite_link:
             await self.bot.send_message(self.bot.messagelogs_channel, "✉️ **Invite posted**: {} posted an invite link in {}\n------------------\n{}".format(message.author.mention, message.channel.mention, message.content))
+        if contains_misinformation_url_mention:
+            try:
+                await self.bot.delete_message(message)
+            except discord.errors.NotFound:
+                pass
+            try:
+                await self.bot.send_message(message.author, "Please read {}. This site may be misinterpreted as legitimate and cause users harm, therefore your message was automatically deleted.".format(self.bot.welcome_channel.mention), embed=embed)
+            except discord.errors.Forbidden:
+                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
+            await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned a blocked site in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
         if contains_drama_alert:
             #await self.bot.send_message(self.bot.messagelogs_channel, "✉️ **Potential drama/heated debate Warning**: {} posted a blacklisted word in {}\n------------------\n{}".format(message.author.mention, message.channel.mention, message.content))
             await self.bot.send_message(self.bot.messagelogs_channel, "**Potential drama/heated debate Warning**: {} posted a blacklisted word in {}".format(message.author.mention, message.channel.mention), embed=embed)
@@ -178,7 +189,7 @@ class Events:
             embed = discord.Embed(title="Deleted messages", color=discord.Color.gold())
             msgs_to_delete = self.user_antispam[message.author.id][:]  # clone list so nothing is removed while going through it
             for msg in msgs_to_delete:
-                embed.add_field(name="#"+msg.channel.name, value=msg.content)
+                embed.add_field(name="#"+msg.channel.name, value="\u200b" + msg.content)  # added zero-width char to prevent an error with an empty string (lazy workaround)
             await self.bot.send_message(self.bot.modlogs_channel, log_msg, embed=embed)
             await self.bot.send_message(self.bot.mods_channel, log_msg + "\nSee {} for a list of deleted messages.".format(self.bot.modlogs_channel.mention))
             for msg in msgs_to_delete:
@@ -206,7 +217,7 @@ class Events:
             embed = discord.Embed(title="Deleted messages", color=discord.Color.gold())
             msgs_to_delete = self.user_antispam[message.author.id][:]  # clone list so nothing is removed while going through it
             for msg in msgs_to_delete:
-                embed.add_field(name="@"+self.bot.escape_name(msg.author), value=msg.content)
+                embed.add_field(name="@"+self.bot.escape_name(msg.author), value="\u200b" + msg.content)  # added zero-width char to prevent an error with an empty string (lazy workaround)
             await self.bot.send_message(message.channel, msg_channel)
             log_msg = "🔒 **Auto-locked**: {} locked for spam".format(message.channel.mention)
             await self.bot.send_message(self.bot.modlogs_channel, log_msg, embed=embed)
