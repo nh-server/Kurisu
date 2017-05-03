@@ -92,16 +92,16 @@ class Assistance:
         embed.description = "This is no longer necessary. Use *hax 2.8."
         embed.url = "https://github.com/ihaveamac/9.6-dbgen-xmls"
         await self.bot.say("", embed=embed)
-
+    
     # dsp dumper command
     @commands.command()
     async def dsp(self):
-        """Links to DspDump."""
-        embed = discord.Embed(title="DspDump", color=discord.Color.green())
-        embed.set_author(name="Cruel", url="https://github.com/Cruel", icon_url="https://avatars0.githubusercontent.com/u/383999?v=3&s=40")
+        """Links to Dsp1."""
+        embed = discord.Embed(title="Dsp1", color=discord.Color.green())
+        embed.set_author(name="zoogie", url="https://github.com/zoogie", icon_url="https://gbatemp.net/data/avatars/l/357/357147.jpg?1426471484")
         embed.description = "Dump 3DS's DSP component to SD for homebrew audio."
         embed.set_thumbnail(url="https://raw.githubusercontent.com/Cruel/DspDump/master/icon.png")
-        embed.url = "https://github.com/Cruel/DspDump/releases/latest"
+        embed.url = "https://github.com/zoogie/DSP1/releases"
         await self.bot.say("", embed=embed)
 
     @commands.command()
