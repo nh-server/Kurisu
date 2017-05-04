@@ -307,6 +307,17 @@ class Assistance:
         embed.url = "https://pastebin.com/sx8HYULr"
         embed.description = "How to dump/build CIAs using GodMode9"
         await self.bot.say("", embed=embed)
+        
+    @commands.command()
+    async def sighax(self):
+        """Information about sighax"""
+        await self.bot.delete_message(ctx.message)
+        embed = discord.Embed(title="Sighax Information", color=discord.Color(0x0000ff))
+        embed.set_author(name="SciresM", url="https://www.reddit.com/r/3dshacks/comments/67f6as/psa_clearing_up_some_misconceptions_about_sighax/")
+        embed.set_thumbnail(url="https://i.imgur.com/11ajkdJ.jpg")
+        embed.url = "https://www.reddit.com/r/3dshacks/comments/67f6as/psa_clearing_up_some_misconceptions_about_sighax/"
+        embed.description = "PSA About Sighax"
+        await self.bot.say("", embed=embed)
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
