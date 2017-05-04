@@ -203,6 +203,11 @@ class Memes:
     async def nom(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/p1r53ni.jpg")
+        
+    @commands.command(pass_context=True, hidden=True)
+    async def ihaveahax(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/IpQC6IF.png")
 # Load the extension
 def setup(bot):
     bot.add_cog(Memes(bot))
