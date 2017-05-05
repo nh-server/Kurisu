@@ -156,8 +156,8 @@ class Memes:
     @commands.command(pass_context=True, hidden=True)
     async def pbanjo(self, ctx):
         """Memes."""
-        await self._meme(ctx, "http://i.imgur.com/tKY7P5R.png")
-        
+        await self._meme(ctx, "http://i.imgur.com/sBJKzuK.png")
+
     # Cute commands :3
     @commands.command(pass_context=True, hidden=True)
     async def headpat(self, ctx):
