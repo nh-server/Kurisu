@@ -318,7 +318,7 @@ class Assistance:
     @commands.command()
     async def themely(self):
         """Link to Themely guide"""
-        embed = discord.Embed(title="Cutom Themes for 3DS", color=discord.Color.purple())
+        embed = discord.Embed(title="Custom Themes for 3DS", color=discord.Color.purple())
         embed.set_author(name="erman1337", url="https://3dsthem.es/how.php")
         embed.set_thumbnail(url="https://i.imgur.com/79pD5y7.png")
         embed.url = "https://3dsthem.es/how.php"
