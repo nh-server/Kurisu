@@ -92,7 +92,7 @@ class Assistance:
         embed.description = "This is no longer necessary. Use *hax 2.8."
         embed.url = "https://github.com/ihaveamac/9.6-dbgen-xmls"
         await self.bot.say("", embed=embed)
-    
+
     # dsp dumper command
     @commands.command()
     async def dsp(self):
@@ -297,7 +297,7 @@ class Assistance:
         embed.url = "https://gbatemp.net/threads/r4-stage2-twl-flashcart-launcher-and-perhaps-other-cards-soon%E2%84%A2.416434/"
         embed.description = "Launcher for old flashcards"
         await self.bot.say("", embed=embed)
-    
+
     #Embed to 3DS VC Injects Website
     @commands.command()
     async def vc(self):
@@ -308,7 +308,7 @@ class Assistance:
         embed.url = "https://gbatemp.net/search/40920047/?q=injector&t=post&o=date&g=1&c[title_only]=1&c[user][0]=389539"
         embed.description = "The recommended way to play old classics on your 3DS"
         await self.bot.say("", embed=embed)
-        
+
     #Embed to Themely guide
     @commands.command()
     async def themely(self):
@@ -334,11 +334,10 @@ class Assistance:
         embed.url = "https://pastebin.com/sx8HYULr"
         embed.description = "How to dump/build CIAs using GodMode9"
         await self.bot.say("", embed=embed)
-        
+
     @commands.command()
     async def sighax(self):
         """Information about sighax"""
-        await self.bot.delete_message(ctx.message)
         embed = discord.Embed(title="Sighax Information", color=discord.Color(0x0000ff))
         embed.set_author(name="SciresM", url="https://www.reddit.com/r/3dshacks/comments/67f6as/psa_clearing_up_some_misconceptions_about_sighax/")
         embed.set_thumbnail(url="https://i.imgur.com/11ajkdJ.jpg")
