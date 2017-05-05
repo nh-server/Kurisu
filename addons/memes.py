@@ -207,7 +207,7 @@ class Memes:
     @commands.command(pass_context=True, hidden=True)
     async def soghax(self, ctx):
         """Memes."""
-        await self._meme(ctx "http://i.imgur.com/oQJy2eN.png")
+        await self._meme(ctx, "http://i.imgur.com/oQJy2eN.png")
 
     @commands.command(pass_context=True, hidden=True)
     async def whatisr(self, ctx):
