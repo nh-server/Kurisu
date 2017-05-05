@@ -178,7 +178,6 @@ class Assistance:
     @commands.command()
     async def vguides2(self):
         """Information about video guides relating to custom firmware"""
-        embed = discord.Embed(title="Why you should not use video guides, a video guide.", color=discord.Color.dark_orange())
         await self.bot.say("https://www.youtube.com/watch?v=miVDKgInzyg")
 
     @commands.command()
