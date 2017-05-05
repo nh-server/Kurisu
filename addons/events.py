@@ -74,6 +74,13 @@ class Events:
         'feeshop',
         'fbimod',
         'freakshop',
+        'refreshoption',
+        'refresh//option',
+        'r-e-f-r-e-s-h-o-p-t-i-o-n',
+        'refresh*option',
+        'ciawings',
+        'ciadevil',
+        'wiuusbhelper',
     ]
 
     drama_alert = [
