@@ -101,11 +101,14 @@ class Events:
         with open("data/restrictions.json", "w") as f:
             json.dump(rsts, f)
 
-    async def scan_message(self, message):
+    async def scan_message(self, message, is_edit=False):
         embed = discord.Embed()
         embed.description = message.content
         if message.author.id in self.bot.watching:
-            await self.bot.send_message(self.bot.messagelogs_channel, "**Watch log**: {} in {}".format(message.author.mention, message.channel.mention), embed=embed)
+            msg = "{} in {}".format(message.author.mention, message.channel.mention)
+            if is_edit:
+                msg += " (edited)"
+            await self.bot.send_message(self.bot.watchlogs_channel, msg, embed=embed)
         is_help_channel = "assistance" in message.channel.name
         msg = ''.join(char for char in message.content.lower() if char in printable)
         msg_no_separators = re.sub('[ -]', '', msg)
@@ -256,7 +259,7 @@ class Events:
         await self.bot.wait_until_all_ready()
         if message_after.author == self.bot.server.me or self.bot.staff_role in message_after.author.roles or message_after.channel == self.bot.helpers_channel:  # don't process messages by the bot or staff or in the helpers channel
             return
-        await self.scan_message(message_after)
+        await self.scan_message(message_after, is_edit=True)
 
 def setup(bot):
     bot.add_cog(Events(bot))

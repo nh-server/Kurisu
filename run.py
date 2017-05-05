@@ -125,6 +125,7 @@ async def on_ready():
         bot.modlogs_channel = discord.utils.get(server.channels, name="mod-logs")
         bot.serverlogs_channel = discord.utils.get(server.channels, name="server-logs")
         bot.messagelogs_channel = discord.utils.get(server.channels, name="message-logs")
+        bot.watchlogs_channel = discord.utils.get(server.channels, name="watch-logs")
 
         # roles
         bot.staff_role = discord.utils.get(server.roles, name="Staff")
