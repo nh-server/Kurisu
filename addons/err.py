@@ -159,6 +159,7 @@ class Err:
         43: 'Database doesn\'t exist/failed to open (AM)',
         44: 'Trying to uninstall system-app (AM)',
         47: 'Invalid command header (OS)',
+        335: '(No permission? Seemed to appear when JKSM was being used without its XML.)',
         101: 'Archive not mounted/mount-point not found (fs)',
         105: 'Request timed out (http)',
         106: 'Invalid signature/CIA? (AM)',
