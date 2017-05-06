@@ -174,6 +174,11 @@ class Assistance:
         embed.description = "\"Video guides\" for custom firmware and arm9loaderhax are not recommended for use. Their contents generally become outdated very quickly for them to be of any use, and they are harder to update unlike a written guide.\n\nWhen this happens, video guides become more complicated than current methods, having users do certain tasks which may not be required anymore.\n\nThere is also a risk of the uploader spreading misinformation or including potentially harmful files, sometimes unintentionally. Using other people's files to install arm9loaderhax can cause serious issues and even brick your system."
         embed.add_field(name="Recommended", value="The recommended thing to do is to use [Plailect's written complete guide for arm9loaderhax](https://3ds.guide). It is the most up to date one and is recommended for everyone.")
         await self.bot.say("", embed=embed)
+        
+    @commands.command()
+    async def vguides2(self):
+        """Information about video guides relating to custom firmware"""
+        await self.bot.say("https://www.youtube.com/watch?v=miVDKgInzyg")
 
     @commands.command()
     async def operationidroid(self):
@@ -313,7 +318,7 @@ class Assistance:
     @commands.command()
     async def themely(self):
         """Link to Themely guide"""
-        embed = discord.Embed(title="Cutom Themes for 3DS", color=discord.Color.purple())
+        embed = discord.Embed(title="Custom Themes for 3DS", color=discord.Color.purple())
         embed.set_author(name="erman1337", url="https://3dsthem.es/how.php")
         embed.set_thumbnail(url="https://i.imgur.com/79pD5y7.png")
         embed.url = "https://3dsthem.es/how.php"
