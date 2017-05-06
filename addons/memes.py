@@ -218,7 +218,12 @@ class Memes:
     async def whatisr(self, ctx):
         """MEMES?"""
         await self._meme(ctx, "http://i.imgur.com/Z8HhfzJ.jpg")
-
+    
+    @commands.command(pass_context=True, hidden=True)
+    async def helpers(self, ctx):
+        """MEMES?"""
+        await self._meme(ctx, "http://i.imgur.com/0v1EgMX.png")
+                
 # Load the extension
 def setup(bot):
     bot.add_cog(Memes(bot))
