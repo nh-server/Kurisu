@@ -223,6 +223,12 @@ class Memes:
     async def helpers(self, ctx):
         """MEMES?"""
         await self._meme(ctx, "http://i.imgur.com/0v1EgMX.png")
+
+    @commands.command(pass_context=True, hidden=True)
+    async def helpers2(self, ctx):
+        """MEMES!"""
+	
+        await self._meme(ctx, "https://cdn.discordapp.com/avatars/90532713722806272/2522ae9b65143f8de05d43f621a11ea0.webp")
                 
 # Load the extension
 def setup(bot):
