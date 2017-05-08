@@ -256,7 +256,7 @@ class Assistance:
     @commands.command()
     async def emptysd(self):
         """What to do if you delete all your SD card contents"""
-        await self.simple_embed("If you have lost the contents of your SD card with CFW, repeat sections I, III and V-VII of [Installing arm9loaderhax](https://3ds.guide/installing-arm9loaderhax).", color=discord.Color.red())
+        await self.simple_embed("If you have lost the contents of your SD card with CFW, repeat sections I, III, V, VI and VII of [Installing arm9loaderhax](https://3ds.guide/installing-arm9loaderhax).", color=discord.Color.red())
 
     @commands.command()
     async def twl(self):
