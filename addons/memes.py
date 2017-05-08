@@ -232,7 +232,7 @@ class Memes:
     @commands.command(pass_context=True, hidden=True, aliases=['sandwich'])
     async def sandwichhax(self, ctx):
         """the most avanced hacking method"""
-        await self._meme(ctx, "http://i.imgur.com/4v5Hz5d.jpg"
+        await self._meme(ctx, "http://i.imgur.com/4v5Hz5d.jpg")
 
 
 # Load the extension
