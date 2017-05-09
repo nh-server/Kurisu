@@ -90,6 +90,14 @@ class Events:
         'incest',
     ]
 
+    ignored_file_extensions = (
+        '.jpg',
+        '.jpeg',
+        '.gif',
+        '.png',
+        '.bmp',
+    )
+
     # I hate naming variables sometimes
     user_antispam = {}
     channel_antispam = {}
@@ -117,14 +125,14 @@ class Events:
         msg_no_separators = re.sub('[ -]', '', msg)
         contains_invite_link = "discordapp.com/invite" in msg or "discord.gg" in msg or "join.skype.com" in msg
         contains_piracy_site_mention = any(x in msg for x in ('3dsiso', '3dschaos', 'wiiuiso', 'madloader', 'darkumbra',))
-        contains_piracy_url_mention = any(x in msg for x in ('3ds.titlekeys', 'wiiu.titlekeys', 'titlekeys.com', '95.183.50.10'))
+        contains_piracy_url_mention = any(x in msg for x in ('3ds.titlekeys', 'wiiu.titlekeys', 'titlekeys.com', '95.183.50.10',))
         contains_piracy_tool_mention = any(x in msg_no_separators for x in self.piracy_tools)
-        contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site'))
-        contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub'))
+        contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site',))
+        contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub',))
         contains_drama_alert = any(x in msg_no_separators for x in self.drama_alert)
         # lazy attachment check, i've got to find a better way of doing this
         for f in message.attachments:
-            if f["filename"][-4:] == ".exe" or f["filename"][-4:] == ".scr" or f["filename"][-4:] == ".com":
+            if not f["filename"].endswith(self.ignored_file_extensions):
                 embed2 = discord.Embed(description="Size: {}\nDownload: [{}]({})".format(f["size"], f["filename"], f["url"]))
                 await self.bot.send_message(self.bot.modlogs_channel, "📎 **Attachment**: {} uploaded to {}".format(message.author.mention, message.channel.mention), embed=embed2)
         if contains_invite_link:
