@@ -105,6 +105,7 @@ class Events:
     # I hate naming variables sometimes
     user_antispam = {}
     channel_antispam = {}
+    help_notice_anti_repeat = []
 
     async def add_restriction(self, member, rst):
         with open("data/restrictions.json", "r") as f:
@@ -138,7 +139,7 @@ class Events:
         contains_drama_alert = any(x in msg_no_separators for x in self.drama_alert)
 
         for f in message.attachments:
-            if not f["filename"].endswith(self.ignored_file_extensions):
+            if not f["filename"].lower().endswith(self.ignored_file_extensions):
                 embed2 = discord.Embed(description="Size: {}\nDownload: [{}]({})".format(f["size"], f["filename"], f["url"]))
                 await self.bot.send_message(self.bot.modlogs_channel, "📎 **Attachment**: {} uploaded to {}".format(message.author.mention, message.channel.mention), embed=embed2)
         if contains_invite_link:
@@ -191,9 +192,24 @@ class Events:
             await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned a piracy site indirectly in {}{}".format(message.author.mention, message.channel.mention, " (message deleted)" if is_help_channel else ""), embed=embed)
 
     async def keyword_search(self, message):
-        if "wiiu" in message.channel.name and "download" in message.content and "update" in message.content and "manag" in message.content:  # intentional typo in manage
+        msg = ''.join(char for char in message.content.lower() if char in printable)
+        if "wiiu" in message.channel.name and "download" in msg and "update" in msg and "manag" in msg:  # intentional typo in manage
             embed = discord.Embed(description="A failed update in Download Management does not mean there is an update and the system is trying to download it. This means your blocking method (DNS etc.) is working and the system can't check for an update.", color=discord.Color(0x009AC7))
             await self.bot.send_message(message.channel, message.author.mention, embed=embed)
+        # search for terms that might indicate a question meant for the help channels
+        help_embed = discord.Embed(description="Hello! If you are looking for help with setting up hacks for your 3DS or Wii U system, please ask your question in one of the assistance channels.\n\nFor 3DS, there is <#196635695958196224> or <#247557068490276864>. Ask in one of them.\n\nFor Wii U, go to <#279783073497874442>.\n\nThank you for stopping by!", color=discord.Color.green())
+        help_embed.set_footer(text="This auto-response is under development. If you did not ask about the above, you don't need to do anything.")
+        if message.author.id not in self.help_notice_anti_repeat:
+            if message.channel.name == "hacking-general":
+                if any(x in msg for x in ('help ', 'me',)):
+                    await self.bot.send_message(message.channel, message.author.mention, embed=help_embed)
+                    await self.bot.send_message(self.bot.mods_channel, "Auto-response test in {}".format(message.channel.mention))
+                    self.help_notice_anti_repeat.append(message.author.id)
+                    await asyncio.sleep(120)
+                    try:
+                        self.help_notice_anti_repeat.remove(message.author.id)
+                    except ValueError:
+                        pass
 
     async def user_spam_check(self, message):
         if message.author.id not in self.user_antispam:
