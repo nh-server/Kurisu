@@ -201,7 +201,7 @@ class Events:
         help_embed.set_footer(text="This auto-response is under development. If you did not ask about the above, you don't need to do anything.")
         if message.author.id not in self.help_notice_anti_repeat:
             if message.channel.name == "hacking-general":
-                if any(x in msg for x in ('help ', 'me',)):
+                if all(x in msg for x in ('help ', 'me',)):
                     await self.bot.send_message(message.channel, message.author.mention, embed=help_embed)
                     await self.bot.send_message(self.bot.mods_channel, "Auto-response test in {}".format(message.channel.mention))
                     self.help_notice_anti_repeat.append(message.author.id)
