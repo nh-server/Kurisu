@@ -210,6 +210,7 @@ class Err:
         '002-0119': 'System update required (outdated friends-module)',
         '002-0120': 'Title update required (outdated title version)',
         '002-0121': 'Local friend code SEED has invalid signature.\n\nThis should not happen unless it is modified. The only use case for modifying this file is for system unbanning, so you cannot ask how to fix this issue here.',
+        '003-2001': 'DNS error. If using a custom DNS server, make sure the settings are correct.',
         '005-4800': 'HTTP Status 500 (Internal Error), unknown cause(?). eShop servers might have issues.',
         '005-5602': 'Unable to connect to the eShop. This error is most likely the result of an incorrect region setting.\nMake sure your region is correctly set in System Settings. If you encounter this error after region-changing your system, make sure you followed all the steps properly.',
         '005-5964': 'Your Nintendo Network ID has been banned from accessing the eShop.\nIf you think this was unwarranted, you will have to contact Nintendo Support to have it reversed.',
