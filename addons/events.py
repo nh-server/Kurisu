@@ -16,7 +16,7 @@ class Events:
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     # don't add spaces or dashes to words
-    piracy_tools = [
+    piracy_tools = (
         'freeshop',
         'fr3eshop',
         'fr33shop',
@@ -46,7 +46,6 @@ class Events:
         'thr£eshop',
         'thr33shop',
         'fr33sh0p',
-        'freshop',
         'fresh0p',
         'fr$shop',
         'freesho',
@@ -77,9 +76,14 @@ class Events:
         'fleashop',
         'ciangle',
         'fieashop',
-    ]
+    )
 
-    drama_alert = [
+    # terms that should cause a notice but not auto-delete
+    piracy_tools_alert = (
+        'freshop',
+    )
+
+    drama_alert = (
         'attackhelicopter',
         'gender',
         'faggot',
@@ -88,7 +92,7 @@ class Events:
         'tranny',
         'nigger',
         'incest',
-    ]
+    )
 
     ignored_file_extensions = (
         '.jpg',
@@ -123,14 +127,16 @@ class Events:
         is_help_channel = "assistance" in message.channel.name
         msg = ''.join(char for char in message.content.lower() if char in printable)
         msg_no_separators = re.sub('[ -]', '', msg)
+
         contains_invite_link = "discordapp.com/invite" in msg or "discord.gg" in msg or "join.skype.com" in msg
         contains_piracy_site_mention = any(x in msg for x in ('3dsiso', '3dschaos', 'wiiuiso', 'madloader', 'darkumbra',))
         contains_piracy_url_mention = any(x in msg for x in ('3ds.titlekeys', 'wiiu.titlekeys', 'titlekeys.com', '95.183.50.10',))
         contains_piracy_tool_mention = any(x in msg_no_separators for x in self.piracy_tools)
+        contains_piracy_tool_alert_mention = any(x in msg_no_separators for x in self.piracy_tools_alert)
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site',))
         contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub',))
         contains_drama_alert = any(x in msg_no_separators for x in self.drama_alert)
-        # lazy attachment check, i've got to find a better way of doing this
+
         for f in message.attachments:
             if not f["filename"].endswith(self.ignored_file_extensions):
                 embed2 = discord.Embed(description="Size: {}\nDownload: [{}]({})".format(f["size"], f["filename"], f["url"]))
@@ -160,6 +166,8 @@ class Events:
             except discord.errors.Forbidden:
                 pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
             await self.bot.send_message(self.bot.messagelogs_channel, "**Bad tool**: {} mentioned a piracy tool in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
+        if contains_piracy_tool_alert_mention:
+            await self.bot.send_message(self.bot.messagelogs_channel, "**Bad tool**: {} likely mentioned a piracy tool in {}".format(message.author.mention, message.channel.mention), embed=embed)
         if contains_piracy_site_mention or contains_piracy_url_mention:
             try:
                 await self.bot.delete_message(message)
