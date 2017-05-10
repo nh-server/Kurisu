@@ -155,7 +155,7 @@ class Assistance:
     @commands.command()
     async def s4sel(self):
         """Links to a tool for Smash 4 mods"""
-        await self.simple_embed("To install mods for Smash, [Smash Selector](https://gbatemp.net/threads/release-smash-selector.431245/) is reccomended. Instructions for use can be found on the page.")
+        await self.simple_embed("To install mods for Smash, [Smash Selector](https://gbatemp.net/threads/release-smash-selector.431245/) is recommended. Instructions for use can be found on the page.")
 
     @commands.command()
     async def brick(self):

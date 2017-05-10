@@ -18,6 +18,7 @@ class Events:
     # don't add spaces or dashes to words
     piracy_tools = (
         'freeshop',
+        'frepshop',
         'fr3eshop',
         'fr33shop',
         'fre3shop',
