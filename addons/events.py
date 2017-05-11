@@ -78,6 +78,7 @@ class Events:
         'ciangle',
         'fieashop',
         'frshp',
+        'free****',
         'free*shop*', #and others like it..
     )
 
