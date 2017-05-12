@@ -244,6 +244,7 @@ class Err:
         '032-1820': 'Browser error that asks whether you want to go on to a potentially dangerous website. Can be bypassed by touching "yes".',
         '090-0212': 'Game is banned from Pokémon Global Link. This is most likely as a result of using altered or illegal save data.',
         # Wii U
+        '160-0101': '"Generic error". Can happen when formatting a system with CBHC.',
         '160-0102': 'Error in SLC/MLC or USB.',
         '160-0103': '"The system memory is corrupted (MLC)."',
         '160-0104': '"The system memory is corrupted (SLC)."',
