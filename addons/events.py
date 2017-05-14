@@ -58,7 +58,8 @@ class Events:
         'makifbi',
         'utikdownloadhelper',
         'wiiuusbhelper',
-        'w11uusbh3lper'
+        'w11uusbh3lper',
+        'wii u usb helper',
         'funkii',
         'funk11',
         'freeshp',
@@ -74,6 +75,10 @@ class Events:
         'feeshop',
         'fbimod',
         'freakshop',
+        'fr3shop',
+        'fr3eshop',
+        'fre3shop',
+        'fr33shop'
     ]
 
     drama_alert = [
