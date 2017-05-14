@@ -147,6 +147,13 @@ class Extras:
             else:
                 await self.bot.add_roles(author, self.bot.elsewhere_role)
                 await self.bot.send_message(author, "Access to #elsewhere granted.")
+        if channelname == "eventchat":
+            if self.bot.eventchat_role in author.roles:
+                await self.bot.remove_roles(author, self.bot.eventchat_role)
+                await self.bot.send_message(author, "Access to #eventchat granted.")
+            else:
+                await self.bot.add_roles(author, self.bot.eventchat_role)
+                await self.bot.send_message(author, "Access to #eventchat granted.")
         else:
             await self.bot.send_message(author, "{} is not a valid toggleable channel.".format(channelname))
 
