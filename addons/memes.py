@@ -226,7 +226,7 @@ class Memes:
 
     @commands.command(pass_context=True, hidden=True)
     async def helpers2(self, ctx):
-        """you are asking for help?"""
+        """MEMES="""
         await self._meme(ctx, "http://i.imgur.com/O0okmlW.png")
 
     @commands.command(pass_context=True, hidden=True, aliases=['sandwich'])
