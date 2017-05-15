@@ -17,6 +17,11 @@ class Extras:
 
     prune_key = "nokey"
 
+    toggablechannels = {
+        "elsewhere" : self.bot.elsewhere_role,
+        "eventchat" : self.bot.eventchat_role
+    } # Make sure the names are lowercase
+
     @commands.command()
     async def kurisu(self):
         """About Kurisu"""
@@ -136,26 +141,20 @@ class Extras:
         await self.bot.say("Done!")
 
     @commands.command(pass_context=True, hidden=True)
-    async def togglechannel(self, ctx, channelname):
+    async def togglechannel(self, ctx, channelname:str):
         """Enable or disable access to specific channels."""
         author = ctx.message.author
         await self.bot.delete_message(ctx.message)
-        if channelname == "elsewhere":
+        if channelname == toggablechannels:
+            role = toggablechannels[channelname]
             if self.bot.elsewhere_role in author.roles:
-                await self.bot.remove_roles(author, self.bot.elsewhere_role)
-                await self.bot.send_message(author, "Access to #elsewhere removed.")
+                await self.bot.remove_roles(author, role)
+                await self.bot.send_message(author, "Access to #{} has been revoked.".format(channelname))
             else:
-                await self.bot.add_roles(author, self.bot.elsewhere_role)
-                await self.bot.send_message(author, "Access to #elsewhere granted.")
-        if channelname == "eventchat":
-            if self.bot.eventchat_role in author.roles:
-                await self.bot.remove_roles(author, self.bot.eventchat_role)
-                await self.bot.send_message(author, "Access to #eventchat granted.")
-            else:
-                await self.bot.add_roles(author, self.bot.eventchat_role)
-                await self.bot.send_message(author, "Access to #eventchat granted.")
+                await self.bot.add_roles(author, tole)
+                await self.bot.send_message(author, "Access to #{} has been granted.".format(channelname))
         else:
-            await self.bot.send_message(author, "{} is not a valid toggleable channel.".format(channelname))
+            await self.bot.send_message(author, "{} is not a toggleable channel.".format(channelname))
 
 def setup(bot):
     bot.add_cog(Extras(bot))
