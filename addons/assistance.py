@@ -155,7 +155,7 @@ class Assistance:
     @commands.command()
     async def s4sel(self):
         """Links to a tool for Smash 4 mods"""
-        await self.simple_embed("To install mods for Smash, [Smash Selector](https://gbatemp.net/threads/release-smash-selector.431245/) is reccomended. Instructions for use can be found on the page.")
+        await self.simple_embed("To install mods for Smash, [Smash Selector](https://gbatemp.net/threads/release-smash-selector.431245/) is recommended. Instructions for use can be found on the page.")
 
     @commands.command()
     async def brick(self):
@@ -257,7 +257,7 @@ class Assistance:
     @commands.command()
     async def emptysd(self):
         """What to do if you delete all your SD card contents"""
-        await self.simple_embed("If you have lost the contents of your SD card with CFW, repeat sections I, III and V-VII of [Installing arm9loaderhax](https://3ds.guide/installing-arm9loaderhax).", color=discord.Color.red())
+        await self.simple_embed("If you have lost the contents of your SD card with CFW, repeat sections I, III, V, VI and VII of [Installing arm9loaderhax](https://3ds.guide/installing-arm9loaderhax).", color=discord.Color.red())
 
     @commands.command()
     async def twl(self):

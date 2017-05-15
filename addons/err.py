@@ -210,6 +210,7 @@ class Err:
         '002-0119': 'System update required (outdated friends-module)',
         '002-0120': 'Title update required (outdated title version)',
         '002-0121': 'Local friend code SEED has invalid signature.\n\nThis should not happen unless it is modified. The only use case for modifying this file is for system unbanning, so you cannot ask how to fix this issue here.',
+        '003-2001': 'DNS error. If using a custom DNS server, make sure the settings are correct.',
         '005-4800': 'HTTP Status 500 (Internal Error), unknown cause(?). eShop servers might have issues.',
         '005-5602': 'Unable to connect to the eShop. This error is most likely the result of an incorrect region setting.\nMake sure your region is correctly set in System Settings. If you encounter this error after region-changing your system, make sure you followed all the steps properly.',
         '005-5964': 'Your Nintendo Network ID has been banned from accessing the eShop.\nIf you think this was unwarranted, you will have to contact Nintendo Support to have it reversed.',
@@ -221,6 +222,7 @@ class Err:
         '007-2001': 'Usually the result after region-changing the system. New 3DS cannot fix this issue right now.',
         '007-2100': 'The connection to the Nintendo eShop timed out.\nThis may be due to an ongoing server maintenance, check <https://support.nintendo.com/networkstatus> to make sure the servers are operating normally. You may also encounter this error if you have a weak internet connection.',
         '007-2404': 'An error occurred while attempting to connect to the Nintendo eShop.\nMake sure you are running the latest firmware, since this error will appear if you are trying to access the eShop on older versions.',
+        '007-2720': 'SSL error?',
         '007-2923': 'The Nintendo Servers are currently down for maintenance. Please try again later.',
         '007-3102': 'Cannot find title on Nintendo eShop. Probably pulled.',
         '009-1000': 'System update required. (friends module?)',
@@ -242,6 +244,7 @@ class Err:
         '032-1820': 'Browser error that asks whether you want to go on to a potentially dangerous website. Can be bypassed by touching "yes".',
         '090-0212': 'Game is banned from Pokémon Global Link. This is most likely as a result of using altered or illegal save data.',
         # Wii U
+        '160-0101': '"Generic error". Can happen when formatting a system with CBHC.',
         '160-0102': 'Error in SLC/MLC or USB.',
         '160-0103': '"The system memory is corrupted (MLC)."',
         '160-0104': '"The system memory is corrupted (SLC)."',
