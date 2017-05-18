@@ -121,11 +121,15 @@ async def on_ready():
         bot.welcome_channel = discord.utils.get(server.channels, name="welcome-and-rules")
         bot.announcements_channel = discord.utils.get(server.channels, name="announcements")
         bot.helpers_channel = discord.utils.get(server.channels, name="helpers")
+        bot.offtopic_channel = discord.utils.get(server.channels, name="off-topic")
+        bot.voiceandmusic_channel = discord.utils.get(server.channels, name="voice-and-music")
+        bot.elsewhere_channel = discord.utils.get(server.channels, name="elsewhere")
         bot.mods_channel = discord.utils.get(server.channels, name="mods")
         bot.modlogs_channel = discord.utils.get(server.channels, name="mod-logs")
         bot.serverlogs_channel = discord.utils.get(server.channels, name="server-logs")
         bot.messagelogs_channel = discord.utils.get(server.channels, name="message-logs")
         bot.watchlogs_channel = discord.utils.get(server.channels, name="watch-logs")
+        bot.botcmds_channel = discord.utils.get(server.channels, name="bot-cmds")
 
         # roles
         bot.staff_role = discord.utils.get(server.roles, name="Staff")
