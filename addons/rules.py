@@ -118,12 +118,12 @@ class Rules:
     @commands.command(hidden=True)
     async def r14(self):
         """Displays rule 14."""
-        await self.simple_embed("Off-topic content goes to <#297886834464260097>. Keep low-quality content like memes out. There is a channel for that, read <#196618637950451712> to find it.", title="Rule 14")
+        await self.simple_embed("Off-topic content goes to {}. Keep low-quality content like memes out. There is a channel for that, read {} to find it.".format(self.bot.offtopic_channel.mention, self.bot.welcome_channel.mention), title="Rule 14")
 
     @commands.command(hidden=True)
     async def r15(self):
         """Displays rule 15."""
-        await self.simple_embed("Voice and music commands and other random/contextless command usage belong in <#239564960781434880> and <#261581918653513729> respectively.", title="Rule 15")
+        await self.simple_embed("Voice and music commands and other random/contextless command usage belong in {} and {} respectively.".format(self.bot.voiceandmusic_channel.mention, self.bot.botcmds_channel.mention), title="Rule 15")
 
     @commands.command(hidden=True)
     async def r16(self):
