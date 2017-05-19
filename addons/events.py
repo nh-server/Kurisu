@@ -58,7 +58,8 @@ class Events:
         'makifbi',
         'utikdownloadhelper',
         'wiiuusbhelper',
-        'w11uusbh3lper'
+        'w11uusbh3lper',
+        'wii u usb helper',
         'funkii',
         'funk11',
         'freeshp',
@@ -76,13 +77,14 @@ class Events:
         'freakshop',
         'fleashop',
         'ciangle',
-        'fieashop',
+        'fieashop'
     )
 
     # terms that should cause a notice but not auto-delete
     piracy_tools_alert = (
-        'freshop',
+        'freshop'
     )
+
 
     drama_alert = (
         'attackhelicopter',
@@ -92,7 +94,9 @@ class Events:
         # 'cunt',
         'tranny',
         'nigger',
+        'neger',
         'incest',
+        'rape'
     )
 
     ignored_file_extensions = (
@@ -102,6 +106,7 @@ class Events:
         '.png',
         '.bmp',
     )
+    
 
     # I hate naming variables sometimes
     user_antispam = {}

@@ -223,7 +223,18 @@ class Memes:
     async def helpers(self, ctx):
         """MEMES?"""
         await self._meme(ctx, "http://i.imgur.com/0v1EgMX.png")
-                
+
+    @commands.command(pass_context=True, hidden=True)
+    async def helpers2(self, ctx):
+        """MEMES="""
+        await self._meme(ctx, "http://i.imgur.com/O0okmlW.png")
+
+    @commands.command(pass_context=True, hidden=True, aliases=['sandwich'])
+    async def sandwichhax(self, ctx):
+        """the most avanced hacking method"""
+        await self._meme(ctx, "http://i.imgur.com/4v5Hz5d.jpg")
+
+
 # Load the extension
 def setup(bot):
     bot.add_cog(Memes(bot))

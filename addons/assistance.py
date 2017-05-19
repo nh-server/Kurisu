@@ -110,13 +110,13 @@ class Assistance:
         embed = discord.Embed(title="NTR Streaming Guide", color=discord.Color.blue())
         embed.url = "https://gbatemp.net/threads/tutorial-3ds-screen-recording-without-a-capture-card-ntr-cfw-method.423445/"
         embed.description = "How to use NTR CFW with Nitro Stream to Wirelessly Stream"
-        embed.add_field(name="4 common fixes", value="• Are you connected to the Internet?\n• Is your antivirus program blocking the program?\n• Make sure you are not putting the port (:####) into the IP box of Nitro Stream.\n• Make sure you are on the latest preview for NTR 3.4.")
+        embed.add_field(name="4 common fixs", value="• Are you connected to the Internet?\n• Is your antivirus program blocking the program?\n• Make sure you are not putting the port (:####) into the IP box of Nitro Stream.\n• Make sure you are on the latest update for NTR.")
         await self.bot.say("", embed=embed)
 
     @commands.command()
     async def update(self):
         """Explains how to safely prepare for an update if you have arm9loaderhax installed"""
-        await self.simple_embed("If you have arm9loaderhax and Luma3DS installed after following Plailect's guide, run Luma Updater to make sure it is on the latest Luma3DS normal version and then you can proceed to update your 3DS through system settings. \nUse the Pinned Message in #3ds-assistance-1 for HBL 11.4 on o3ds\nNTR CFW works on the latest version (except for the streaming features)\n; Use this version of BootNTR: \n<https://github.com/Nanquitas/BootNTR/releases>\nNote: if there is a homebrew application that is no longer working, it may exist as a CIA that you can download under the TitleDB option in FBI.")
+         await self.simple_embed("If you have arm9loaderhax and Luma3DS installed after following Plailect's guide, run Luma Updater to make sure it is on the latest Luma3DS normal version and then you can proceed to update your 3DS through system settings. \nUse the Pinned Message in #3ds-assistance-1 for HBL 11.4 on o3ds\nNTR CFW works on the latest version\n; Use this version of BootNTR: \n<https://github.com/Nanquitas/BootNTR/releases>\nNote: if there is a homebrew application that is no longer working, it may exist as a CIA that you can download under the TitleDB option in FBI.")
 
     # gateway h&s troubleshooting command
     @commands.command()
@@ -174,7 +174,7 @@ class Assistance:
         embed.description = "\"Video guides\" for custom firmware and arm9loaderhax are not recommended for use. Their contents generally become outdated very quickly for them to be of any use, and they are harder to update unlike a written guide.\n\nWhen this happens, video guides become more complicated than current methods, having users do certain tasks which may not be required anymore.\n\nThere is also a risk of the uploader spreading misinformation or including potentially harmful files, sometimes unintentionally. Using other people's files to install arm9loaderhax can cause serious issues and even brick your system."
         embed.add_field(name="Recommended", value="The recommended thing to do is to use [Plailect's written complete guide for arm9loaderhax](https://3ds.guide). It is the most up to date one and is recommended for everyone.")
         await self.bot.say("", embed=embed)
-        
+
     @commands.command()
     async def vguides2(self):
         """Information about video guides relating to custom firmware"""
@@ -223,12 +223,12 @@ class Assistance:
         """SD bigger than 32GB"""
         await self.simple_embed("If you want to change your SD card to one bigger than 32GB then you'll have to format it to FAT32.\nYou can do this with the tool of your preference.\nFormatter examples:\n- [guiformat - Windows](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm)\n- [gparted - Linux](http://gparted.org/download.php)", title="Big SD cards")
 
-    @commands.command()
+    @commands.command(aliases=['sderror'])
     async def sderrors(self):
         """Sd Error Guide"""
         await self.simple_embed("Guide For Checking SD Card For Errors\n- [H2testw Guide - Windows](https://3ds.guide/h2testw-(windows\))\n- [F3 Guide - Linux](https://3ds.guide/f3-(linux\))\n- [F3X Guide - Mac](https://3ds.guide/f3x-(mac\))", title="SD Card Errors")
 
-    @commands.command()
+    @commands.command(aliases='nobrick')
     async def notbricked(self):
         """Missing arm9loaderhax.bin"""
         await self.simple_embed("If your power LED turns on and off after you installed a9lh, you are not bricked and are just missing a file called arm9loaderhax.bin in the root of your SD card.\nTo fix this you should:\n1.Check you inserted the SD card in your console\n2.Place/replace the file, downloading it from https://github.com/AuroraWright/Luma3DS/releases\nChecking your SD for errors or corruption:\n\tWindows: https://3ds.guide/h2testw-(windows)#\n\tLinux: https://3ds.guide/f3-(linux)#\n\tMac: https://3ds.guide/f3x-(mac)#", title="No. You are not bricked")
@@ -246,7 +246,8 @@ class Assistance:
     @commands.command()
     async def netinfo(self):
         """Network Maintenance Information / Operational Status"""
-        await self.bot.say("https://www.nintendo.co.jp/netinfo/en_US/index.html")
+        embed = discord.Embed(description="[Maintance Site](https://www.nintendo.co.jp/netinfo/en_US)") # u"\u2063" is a unicode symbol and results in a 0 lengh character
+        await self.bot.say(embed=embed)
 
     @commands.command()
     async def ctrmount(self):
@@ -267,6 +268,12 @@ class Assistance:
         embed.url = "https://3ds.guide/troubleshooting#twl_broken"
         embed.description = "Intructions on how to fix a broken TWL after doing the guide"
         await self.bot.say("", embed=embed)
+
+    @commands.command()
+    async def twloader(self):
+        """Link to the TWLoader Thread"""
+        embed = discord.Embed(description="[TWLoader Thread](https://gbatemp.net/threads/twloader-ctr-mode-nds-app.448375/)") # u"\u2063" is a unicode symbol and results in a 0 lengh character
+        await self.bot.say(embed=embed)
 
     @commands.command()
     async def redscr(self):
