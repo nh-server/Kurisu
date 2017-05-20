@@ -42,7 +42,7 @@ class Assistance:
             embed.set_author(name="Plailect", url="https://3ds.guide/")
             embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
             embed.url = "https://3ds.guide/"
-            embed.description = "A complete guide to 3DS custom firmware, from stock to arm9loaderhax."
+            embed.description = "A complete guide to 3DS custom firmware, from stock to boot9strap."
             await self.bot.say("", embed=embed)
         if (console == "wiiu" or console == "wii u") or (console == "auto" and "3ds" not in ctx.message.channel.name):
             embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
@@ -115,8 +115,8 @@ class Assistance:
 
     @commands.command()
     async def update(self):
-        """Explains how to safely prepare for an update if you have arm9loaderhax installed"""
-        await self.simple_embed("If you have arm9loaderhax and Luma3DS installed after following Plailect's guide, run Luma Updater to make sure it is on the latest Luma3DS normal version and then you can proceed to update your 3DS through system settings. \nUse the Pinned Message in #3ds-assistance-1 for HBL 11.4 on o3ds\nNTR CFW works on the latest version (except for the streaming features)\n; Use this version of BootNTR: \n<https://github.com/Nanquitas/BootNTR/releases>\nNote: if there is a homebrew application that is no longer working, it may exist as a CIA that you can download under the TitleDB option in FBI.")
+        """Explains how to safely prepare for an update if you have boot9strap installed"""
+        await self.simple_embed("If you have boot9strap and Luma3DS installed after following Plailect's guide, run Luma Updater to make sure it is on the latest Luma3DS normal version and then you can proceed to update your 3DS through system settings. \nUse the Pinned Message in #3ds-assistance-1 for HBL 11.4 on o3ds\nNTR CFW works on the latest version.\n; Use this version of BootNTR: \n<https://github.com/Nanquitas/BootNTR/releases>\nNote: if there is a homebrew application that is no longer working, it may exist as a CIA that you can download under the TitleDB option in FBI.\n\n If you still have arm9loaderhax you can update to boot9strap following [this guide](https://3ds.guide/updating-to-boot9strap)")
 
     # gateway h&s troubleshooting command
     @commands.command()
@@ -148,11 +148,6 @@ class Assistance:
         await self.bot.say("", embed=embed)
 
     @commands.command()
-    async def sdpayload(self):
-        """Information about required files for SafeA9LHInstaller"""
-        await self.bot.say("http://i.imgur.com/im9474T.png")
-
-    @commands.command()
     async def s4sel(self):
         """Links to a tool for Smash 4 mods"""
         await self.simple_embed("To install mods for Smash, [Smash Selector](https://gbatemp.net/threads/release-smash-selector.431245/) is recommended. Instructions for use can be found on the page.")
@@ -171,8 +166,8 @@ class Assistance:
     async def vguides(self):
         """Information about video guides relating to custom firmware"""
         embed = discord.Embed(title="Why you should not use video guides", color=discord.Color.dark_orange())
-        embed.description = "\"Video guides\" for custom firmware and arm9loaderhax are not recommended for use. Their contents generally become outdated very quickly for them to be of any use, and they are harder to update unlike a written guide.\n\nWhen this happens, video guides become more complicated than current methods, having users do certain tasks which may not be required anymore.\n\nThere is also a risk of the uploader spreading misinformation or including potentially harmful files, sometimes unintentionally. Using other people's files to install arm9loaderhax can cause serious issues and even brick your system."
-        embed.add_field(name="Recommended", value="The recommended thing to do is to use [Plailect's written complete guide for arm9loaderhax](https://3ds.guide). It is the most up to date one and is recommended for everyone.")
+        embed.description = "\"Video guides\" for custom firmware and arm9loaderhax/boot9strap are not recommended for use. Their contents generally become outdated very quickly for them to be of any use, and they are harder to update unlike a written guide.\n\nWhen this happens, video guides become more complicated than current methods, having users do certain tasks which may not be required anymore.\n\nThere is also a risk of the uploader spreading misinformation or including potentially harmful files, sometimes unintentionally. Using other people's files to install arm9loaderhax can cause serious issues and even brick your system."
+        embed.add_field(name="Recommended", value="The recommended thing to do is to use [Plailect's written complete guide for boot9strap](https://3ds.guide). It is the most up to date one and is recommended for everyone.")
         await self.bot.say("", embed=embed)
         
     @commands.command()
@@ -185,7 +180,7 @@ class Assistance:
         """Information about an operationidroid video in which they encourage viewers to outright lie to the community"""
         embed = discord.Embed(title="In case you were following a guide by OPERATIONiDROID", color=discord.Color.dark_orange())
         embed.description = "During troubleshooting, be sure to explain everything you did, and if you were following a Video Guide, be honest. Lying to the people trying to help you, as Operationidroid suggested their viewers do, will cause nothing but issues and frustration on both ends."
-        embed.add_field(name="Recommended", value="The recommended guide to follow is [Plailect's complete written guide for arm9loaderhax](https://3ds.guide). It is the most up to date guide and is the process everybody assisting is familiar with.")
+        embed.add_field(name="Recommended", value="The recommended guide to follow is [Plailect's complete written guide for boot9strap](https://3ds.guide). It is the most up to date guide and is the process everybody assisting is familiar with.")
         await self.bot.say("", embed=embed)
 
     @commands.command()
@@ -199,13 +194,13 @@ class Assistance:
     @commands.command()
     async def nobak(self):
         """Help if you have no NAND backup"""
-        await self.simple_embed("After you finish configuring Luma3DS, perform a [9.2.0 ctrtransfer](https://3ds.guide/9.2.0-ctrtransfer). Once completed, continue with section VI of [Installing arm9loaderhax](https://3ds.guide/installing-arm9loaderhax).", title="If you have no NAND backup:")
+        await self.simple_embed("After you finish configuring Luma3DS, perform a [9.2.0 ctrtransfer](https://3ds.guide/9.2.0-ctrtransfer). Then do [finalizing setup section](https://3ds.guide/finalizing-setup)", title="If you have no NAND backup:")
 
     @commands.command()
     async def stock114(self):
         """Advisory for consoles on stock 11.4 firmware"""
         embed = discord.Embed(title="Running stock (unmodified) 11.4 firmware?", color=discord.Color.dark_orange())
-        embed.description = "If your 3DS is running stock 11.4 firmware, you **will not be able** to do any of the following:\n• Downgrade (even with a hardmod)\n• Install A9LH/CFW\n• Install CIAs\n• Use NTR\n• Use soundhax\n• Use homebrew launcher (O3DS stock)"
+        embed.description = "If your 3DS is running stock 11.4 firmware, you will need a [Hardmod b9s installation](https://3ds.guide/installing-boot9strap-(hardmod)) or perform a [dsiware exploit](https://3ds.guide/installing-boot9strap-(dsiware))(requires a hacked 3ds)"
         await self.bot.say("", embed=embed)
 
     @commands.command()
@@ -230,8 +225,8 @@ class Assistance:
 
     @commands.command()
     async def notbricked(self):
-        """Missing arm9loaderhax.bin"""
-        await self.simple_embed("If your power LED turns on and off after you installed a9lh, you are not bricked and are just missing a file called arm9loaderhax.bin in the root of your SD card.\nTo fix this you should:\n1.Check you inserted the SD card in your console\n2.Place/replace the file, downloading it from https://github.com/AuroraWright/Luma3DS/releases\nChecking your SD for errors or corruption:\n\tWindows: https://3ds.guide/h2testw-(windows)#\n\tLinux: https://3ds.guide/f3-(linux)#\n\tMac: https://3ds.guide/f3x-(mac)#", title="No. You are not bricked")
+        """Missing boot.firm"""
+        await self.simple_embed("If your power LED turns on and off after you installed b9s, you are not bricked and are just missing a file called boot.firm in the root of your SD card.\nTo fix this you should:\n1.Check you inserted the SD card in your console\n2.Place/replace the file, downloading it from https://github.com/AuroraWright/Luma3DS/releases\nChecking your SD for errors or corruption:\n\tWindows: https://3ds.guide/h2testw-(windows)#\n\tLinux: https://3ds.guide/f3-(linux)#\n\tMac: https://3ds.guide/f3x-(mac)#", title="No. You are not bricked")
 
     @commands.command()
     async def emureco(self):
@@ -251,12 +246,12 @@ class Assistance:
     @commands.command()
     async def ctrmount(self):
         """Failed to mount CTRNAND error"""
-        await self.simple_embed("While following the guide, after installing arm9loaderhax, if you get an error that says \"Failed to mount CTRNAND\", just continue on with the guide.")
+        await self.simple_embed("While following the guide, after installing boot9strap, if you get an error that says \"Failed to mount CTRNAND\", just continue on with the guide.")
 
     @commands.command()
     async def emptysd(self):
         """What to do if you delete all your SD card contents"""
-        await self.simple_embed("If you have lost the contents of your SD card with CFW, repeat sections I, III, V, VI and VII of [Installing arm9loaderhax](https://3ds.guide/installing-arm9loaderhax).", color=discord.Color.red())
+        await self.simple_embed("If you have lost the contents of your SD card with CFW, repeat the [finalizing setup](https://3ds.guide/finalizing-setup) page.", color=discord.Color.red())
 
     @commands.command()
     async def twl(self):
@@ -287,12 +282,12 @@ class Assistance:
         embed.url = "https://3ds.guide/godmode9-usage"
         embed.description = "GodMode9 usage guide"
         await self.bot.say("", embed=embed)
-
+    
     @commands.command()
     async def pminit(self):
         """Fix for the PM init failed error"""
         await self.simple_embed("If you are receiving a \"PM init failed\" error when attempting to launch safehax and are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safehax/releases/tag/r19)")
-
+    
     @commands.command()
     async def flashcart(self):
         """Launcher for old flashcarts"""
@@ -327,7 +322,7 @@ class Assistance:
 
     @commands.command()
     async def fbi3dsx(self):
-        """How to install FBI with A9LH without updating"""
+        """How to install FBI with B9S without updating"""
         await self.bot.say("https://pastebin.com/7DWhaYSU")
 
     @commands.command()
