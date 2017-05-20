@@ -6,6 +6,7 @@ from discord.ext import commands
 from subprocess import call
 from string import printable
 from sys import argv
+from urllib.parse import urlparse
 
 class Events:
     """
@@ -137,7 +138,7 @@ class Events:
         contains_piracy_tool_alert_mention = any(x in msg_no_separators for x in self.piracy_tools_alert)
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site',))
         contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub', 'strawpoii',))
-        contains_guide_mirror_mention = any(x in msg for x in ('3ds-guide.b4k.co',))
+        # contains_guide_mirror_mention = any(x in msg for x in ('3ds-guide.b4k.co',))
         contains_drama_alert = any(x in msg_no_separators for x in self.drama_alert)
 
         for f in message.attachments:
@@ -156,16 +157,6 @@ class Events:
             except discord.errors.Forbidden:
                 pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
             await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned a blocked site in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
-        if contains_guide_mirror_mention:
-            try:
-                await self.bot.delete_message(message)
-            except discord.errors.NotFound:
-                pass
-            try:
-                await self.bot.send_message(message.author, "Please read {}. Guide mirrors may not be linked to, therefore your message was automatically deleted.\n\nPlease link to <https://3ds.guide> or <https://wiiu.guide> directly instead of mirrors of the sites.".format(self.bot.welcome_channel.mention), embed=embed)
-            except discord.errors.Forbidden:
-                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
-            await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned a blocked guide mirror in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
         if contains_drama_alert:
             #await self.bot.send_message(self.bot.messagelogs_channel, "✉️ **Potential drama/heated debate Warning**: {} posted a blacklisted word in {}\n------------------\n{}".format(message.author.mention, message.channel.mention, message.content))
             await self.bot.send_message(self.bot.messagelogs_channel, "**Potential drama/heated debate Warning**: {} posted a blacklisted word in {}".format(message.author.mention, message.channel.mention), embed=embed)
@@ -202,6 +193,28 @@ class Events:
                 except discord.errors.Forbidden:
                     pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
             await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned a piracy site indirectly in {}{}".format(message.author.mention, message.channel.mention, " (message deleted)" if is_help_channel else ""), embed=embed)
+
+        # check for guide mirrors and post the actual link
+        urls = re.findall(r'(https?://\S+)', msg)
+        to_replace = []
+        for url in urls:
+            ps = urlparse(url)
+            if ps.netloc.startswith('3ds-guide.b4k.co'):
+                to_replace.append(ps._replace(netloc='3ds.guide').geturl())
+        if to_replace:
+            msg_user = "Please read {}. Guide mirrors may not be linked to, therefore your message was automatically deleted.\nPlease link to <https://3ds.guide> or <https://wiiu.guide> directly instead of mirrors of the sites.\n\nThe official equivalents of the links are:".format(self.bot.welcome_channel.mention)
+            for url in to_replace:
+                msg_user += '\n• ' + url
+            try:
+                await self.bot.delete_message(message)
+            except discord.errors.NotFound:
+                pass
+            try:
+                await self.bot.send_message(message.author, msg_user, embed=embed)
+            except discord.errors.Forbidden:
+                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
+            await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned a blocked guide mirror in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
+
 
     async def keyword_search(self, message):
         msg = ''.join(char for char in message.content.lower() if char in printable)
