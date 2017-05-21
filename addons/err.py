@@ -239,6 +239,7 @@ class Err:
         '022-2511': 'System update required (what causes this? noticed while opening Miiverse, probably not friends module)',
         '022-2613': 'Incorrect e-mail or password when trying to link an existing Nintendo Network ID. Make sure there are no typos, and the given e-mail is the correct one for the given ID.\nIf you forgot the password, reset it at <https://id.nintendo.net/account/forgotten-password>',
         '022-2631': 'Nintendo Network ID deleted, or not usable on the current system. If you used System Transfer, the Nintendo Network ID will only work on the target system.',
+        '022-2633': 'Nintendo Network ID temporarily locked due to too many incorrect password attempts. Try again later.',
         '022-2634': 'Nintendo Network ID is not correctly linked on the system. This can be a result of formatting the SysNAND using System Settings to unlink it from the EmuNAND.\n\n<steps on how to fix>\n\nTinyFormat is recommended for unlinking in the future.',
         '022-2812': 'System is banned by Nintendo. You cannot ask how to fix this issue here.',
         '032-1820': 'Browser error that asks whether you want to go on to a potentially dangerous website. Can be bypassed by touching "yes".',
