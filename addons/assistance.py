@@ -344,6 +344,16 @@ class Assistance:
         embed.url = "https://www.reddit.com/r/3dshacks/comments/67f6as/psa_clearing_up_some_misconceptions_about_sighax/"
         embed.description = "PSA About Sighax"
         await self.bot.say("", embed=embed)
+        
+    @commands.command()
+    async def 7zip(self):
+        """Download 7zip"""
+        embed = discord.Embed(title="Download 7zip", color=discord.Color(0x0000ff))
+        embed.set_thumbnail(url="http://i.imgur.com/CbCKx9i.png")
+        embed.url = "http://www.7-zip.org/download.html"
+        embed.description = "To be able to extract .7z files you need 7zip installed, get it here."
+        
+await self.bot.say("", embed=embed)        
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
