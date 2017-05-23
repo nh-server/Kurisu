@@ -352,8 +352,7 @@ class Assistance:
         embed.set_thumbnail(url="http://i.imgur.com/CbCKx9i.png")
         embed.url = "http://www.7-zip.org/download.html"
         embed.description = "To be able to extract .7z files you need 7zip installed, get it here."
-        
-await self.bot.say("", embed=embed)        
+        await self.bot.say("", embed=embed)        
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
