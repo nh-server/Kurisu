@@ -345,8 +345,8 @@ class Assistance:
         embed.description = "PSA About Sighax"
         await self.bot.say("", embed=embed)
         
-    @commands.command()
-    async def 7zip(self):
+    @commands.command(pass_context=True, name="7zip")
+    async def p7zip(self):
         """Download 7zip"""
         embed = discord.Embed(title="Download 7zip", color=discord.Color(0x0000ff))
         embed.set_thumbnail(url="http://i.imgur.com/cX1fuf6.png")
