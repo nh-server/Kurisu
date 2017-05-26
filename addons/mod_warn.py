@@ -12,16 +12,19 @@ class ModWarn:
         self.bot = bot
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
-    @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True)
     async def warn(self, ctx, user, *, reason=""):
         """Warn a user. Staff only."""
+        issuer = ctx.message.author
+        if (self.bot.helpers_role not in author.roles) and (self.bot.staff_role not in author.roles) and (self.bot.verified_role not in author.roles) and (self.bot.trusted_role not in author.roles):
+            msg = "{0} This command is limited to Staff and Helpers.".format(author.mention)
+            await self.bot.say(msg)
+            return
         try:
             member = ctx.message.mentions[0]
         except IndexError:
             await self.bot.say("Please mention a user.")
             return
-        issuer = ctx.message.author
         if self.bot.staff_role in member.roles:
             await self.bot.say("You can't warn another staffer with this command!")
             return
