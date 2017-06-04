@@ -174,8 +174,8 @@ class Extras:
         """Tired of it."""
         member = ctx.message.author
         if member.nick and member.nick[-1] == "🌈":
-            await self.bot.change_nickname(member, member.display_name[0:-1])
             await self.bot.say("Your nickname is now \"{}\"!".format(member.display_name))
+            await self.bot.change_nickname(member, member.display_name[0:-1])
         elif member.name[-1] == "🌈":
             await self.bot.say("Your username is the one with the rainbow!")
         else:
