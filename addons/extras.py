@@ -168,6 +168,24 @@ class Extras:
         else:
             await self.bot.change_nickname(member, member.display_name + " 🌈")
             await self.bot.say("Your nickname is now \"{} 🌈\"!".format(member.display_name))
+            
+
+    @commands.command(pass_context=True)
+    async def norainbow(self, ctx):
+        """For people who were either tricked into rainbow, or don't want it."""
+        #oh come on I know at least 5 people who were tricked into this
+        member = ctx.message.author
+        if member.nick and member.nick[-1] == "🌈"
+            await self.bot.change_nickname(member, member.display_name - " 🌈")
+            await self.bot.say("Your nickname no longer has a rainbow.")
+
+        elif member.name[-1] == "🌈":
+            await self.bot.change_nickname(member, member.display_name - " 🌈")
+            await self.bot.say("Your nickname no longer has a rainbow.")
+
+        else:
+            await self.bot.say("Your nickname doesn't have a rainbow!")
+
 
 def setup(bot):
     bot.add_cog(Extras(bot))
