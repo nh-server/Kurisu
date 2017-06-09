@@ -269,11 +269,14 @@ class Err:
         '2811-5001': ['General connection error.', 'http://en-americas-support.nintendo.com/app/answers/detail/a_id/22392/p/897'],
     }
 
-    def get_name(self, d, k):
+    def get_name(self, d, k, show_unknown=False):
         if k in d:
             return '{} ({})'.format(d[k], k)
         else:
-            return '{}'.format(k)
+            if show_unknown:
+                return '_Unknown {}_ ({})'.format(show_unknown, k)  # crappy method
+            else:
+                return '{}'.format(k)
 
     async def aaaa(self, rc):
         # i know this is shit that's the point
@@ -341,6 +344,27 @@ class Err:
             embed.add_field(name="Description", value=self.get_name(self.descriptions, desc), inline=False)
             embed.add_field(name="Summary", value=self.get_name(self.summaries, summ), inline=False)
             embed.add_field(name="Level", value=self.get_name(self.levels, level), inline=False)
+        await self.bot.say("", embed=embed)
+
+    @commands.command(pass_context=True)
+    async def err2(self, ctx, err: str):
+        err = err.strip()
+        if err.startswith("0x"):
+            err = err[2:]
+        rc = int(err, 16)
+        await self.aaaa(rc)
+        desc = rc & 0x3FF
+        mod = (rc >> 10) & 0xFF
+        summ = (rc >> 21) & 0x3F
+        level = (rc >> 27) & 0x1F
+
+        # garbage
+        embed = discord.Embed(title="0x{:X}".format(rc))
+        value = self.get_name(self.modules, mod, 'module') + '\n'
+        value += self.get_name(self.descriptions, desc, 'description') + '\n'
+        value += self.get_name(self.summaries, summ, 'summary') + '\n'
+        value += self.get_name(self.levels, level, 'level')
+        embed.description = value
         await self.bot.say("", embed=embed)
 
     @commands.command(pass_context=True, hidden=True)
