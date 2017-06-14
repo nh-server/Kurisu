@@ -87,13 +87,19 @@ bot.pruning = False  # used to disable leave logs if pruning, maybe.
 # mostly taken from https://github.com/Rapptz/discord.py/blob/async/discord/ext/commands/bot.py
 @bot.event
 async def on_command_error(error, ctx):
-    if isinstance(error, discord.ext.commands.errors.CommandNotFound):
+    if isinstance(error, commands.errors.CommandNotFound):
         pass  # ...don't need to know if commands don't exist
-    if isinstance(error, discord.ext.commands.errors.CheckFailure):
+    if isinstance(error, commands.errors.CheckFailure):
         await bot.send_message(ctx.message.channel, "{} You don't have permission to use this command.".format(ctx.message.author.mention))
-    elif isinstance(error, discord.ext.commands.errors.MissingRequiredArgument):
+    elif isinstance(error, commands.errors.MissingRequiredArgument):
         formatter = commands.formatter.HelpFormatter()
         await bot.send_message(ctx.message.channel, "{} You are missing required arguments.\n{}".format(ctx.message.author.mention, formatter.format_help_for(ctx, ctx.command)[0]))
+    elif isinstance(error, commands.errors.CommandOnCooldown):
+        try:
+            await bot.delete_message(ctx.message)
+        except discord.errors.NotFound:
+            pass
+        await bot.send_message(ctx.message.channel, "{} This command is on cooldown. Try again in {:.2f}s.".format(ctx.message.author.mention, error.retry_after))
     else:
         if ctx.command:
             await bot.send_message(ctx.message.channel, "An error occured while processing the `{}` command.".format(ctx.command.name))
