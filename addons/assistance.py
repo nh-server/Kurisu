@@ -118,6 +118,16 @@ class Assistance:
         """Explains how to safely prepare for an update if you have boot9strap installed"""
         await self.simple_embed("If you have boot9strap and Luma3DS installed after following Plailect's guide, run Luma Updater to make sure it is on the latest Luma3DS normal version and then you can proceed to update your 3DS through system settings. \nUse the Pinned Message in #3ds-assistance-1 for HBL 11.4 on o3ds\nNTR CFW works on the latest version.\n; Use this version of BootNTR: \n<https://github.com/Nanquitas/BootNTR/releases>\nNote: if there is a homebrew application that is no longer working, it may exist as a CIA that you can download under the TitleDB option in FBI.\n\n If you still have arm9loaderhax you can update to boot9strap following [this guide](https://3ds.guide/updating-to-boot9strap)")
 
+    @commands.command()
+    async def updateb9s(self):
+        """Links to the guide for updating b9s versions"""
+        embed = discord.Embed(title="Updating B9S Guide", color=discord.Color(0xCE181E))
+        embed.set_author(name="Plailect", url="https://3ds.guide/updating-b9s")
+        embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
+        embed.url = "https://3ds.guide/updating-b9s"
+        embed.description = "A guide for updating to new B9S versions."
+        await self.bot.say("", embed=embed)
+        
     # gateway h&s troubleshooting command
     @commands.command()
     async def gwhs(self):
