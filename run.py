@@ -114,6 +114,9 @@ async def on_command_error(error, ctx):
 # mostly taken from https://github.com/Rapptz/discord.py/blob/async/discord/client.py
 @bot.event
 async def on_error(event_method, *args, **kwargs):
+    if isinstance(args[0], commands.errors.CommandNotFound):
+        # for some reason runs despite the above
+        return
     print('Ignoring exception in {}'.format(event_method))
     mods_msg = "Exception occured in {}".format(event_method)
     tb = traceback.format_exc()
@@ -146,6 +149,7 @@ async def on_ready():
         bot.announcements_channel = discord.utils.get(server.channels, name="announcements")
         bot.helpers_channel = discord.utils.get(server.channels, name="helpers")
         bot.offtopic_channel = discord.utils.get(server.channels, name="off-topic")
+        bot.meta_channel = discord.utils.get(server.channels, name="meta")
         bot.voiceandmusic_channel = discord.utils.get(server.channels, name="voice-and-music")
         bot.elsewhere_channel = discord.utils.get(server.channels, name="elsewhere")
         bot.mods_channel = discord.utils.get(server.channels, name="mods")
