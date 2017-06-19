@@ -84,8 +84,6 @@ bot.escape_name = escape_name
 
 bot.pruning = False  # used to disable leave logs if pruning, maybe.
 
-bot.done = False
-
 # mostly taken from https://github.com/Rapptz/discord.py/blob/async/discord/ext/commands/bot.py
 @bot.event
 async def on_command_error(error, ctx):
@@ -112,9 +110,6 @@ async def on_command_error(error, ctx):
         tb = traceback.format_exception(type(error), error, error.__traceback__)
         print(''.join(tb))
         await bot.send_message(bot.mods_channel, mods_msg + '\n```' + ''.join(tb) + '\n```')
-        if not bot.done:
-            bot.done = True
-            invalid()
 
 # mostly taken from https://github.com/Rapptz/discord.py/blob/async/discord/client.py
 @bot.event
