@@ -123,6 +123,10 @@ class Extras:
         """Nintendo Hacking 2016"""
         await self.bot.say("https://www.youtube.com/watch?v=8C5cn_Qj0G8")
 
+    @commands.command()
+    async def de(self):
+        invalid()
+
     @commands.has_permissions(administrator=True)
     @commands.command(pass_context=True, hidden=True)
     async def dumpchannel(self, ctx, channel_name, limit=100):

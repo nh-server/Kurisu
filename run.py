@@ -84,6 +84,8 @@ bot.escape_name = escape_name
 
 bot.pruning = False  # used to disable leave logs if pruning, maybe.
 
+bot.done = False
+
 # mostly taken from https://github.com/Rapptz/discord.py/blob/async/discord/ext/commands/bot.py
 @bot.event
 async def on_command_error(error, ctx):
@@ -99,12 +101,33 @@ async def on_command_error(error, ctx):
             await bot.delete_message(ctx.message)
         except discord.errors.NotFound:
             pass
-        await bot.send_message(ctx.message.channel, "{} This command is on cooldown. Try again in {:.2f}s.".format(ctx.message.author.mention, error.retry_after))
+        message = await bot.send_message(ctx.message.channel, "{} This command was used {:.2f}s ago and is on cooldown. Try again in {:.2f}s.".format(ctx.message.author.mention, error.cooldown.per - error.retry_after, error.retry_after))
+        await asyncio.sleep(10)
+        await bot.delete_message(message)
     else:
-        if ctx.command:
-            await bot.send_message(ctx.message.channel, "An error occured while processing the `{}` command.".format(ctx.command.name))
-        print('Ignoring exception in command {}'.format(ctx.command), file=sys.stderr)
-        traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
+        await bot.send_message(ctx.message.channel, "An error occured while processing the `{}` command.".format(ctx.command.name))
+        print('Ignoring exception in command {0.command} in {0.message.channel}'.format(ctx))
+        mods_msg = "Exception occured in `{0.command}` in {0.message.channel.mention}".format(ctx)
+        # traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
+        tb = traceback.format_exception(type(error), error, error.__traceback__)
+        print(''.join(tb))
+        await bot.send_message(bot.mods_channel, mods_msg + '\n```' + ''.join(tb) + '\n```')
+        if not bot.done:
+            bot.done = True
+            invalid()
+
+# mostly taken from https://github.com/Rapptz/discord.py/blob/async/discord/client.py
+@bot.event
+async def on_error(event_method, *args, **kwargs):
+    print('Ignoring exception in {}'.format(event_method))
+    mods_msg = "Exception occured in {}".format(event_method)
+    tb = traceback.format_exc()
+    print(''.join(tb))
+    mods_msg += mods_msg + '\n```' + ''.join(tb) + '\n```'
+    mods_msg += '\nargs: `{}`\n\nkwargs: `{}`'.format(args, kwargs)
+    await bot.send_message(bot.mods_channel, mods_msg)
+    print(args)
+    print(kwargs)
 
 bot.all_ready = False
 bot._is_all_ready = asyncio.Event(loop=bot.loop)
