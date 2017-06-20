@@ -40,7 +40,7 @@ class Rules:
     @commands.command()
     async def rules(self):
         """Links to rules website."""
-        await self.bot.say("Please check {} or <http://ninty.cf/w/> for a full list of rules".format(self.bot.welcome_channel.mention))
+        await self.bot.say("Please check {} for a full list of rules".format(self.bot.welcome_channel.mention))
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
