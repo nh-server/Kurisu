@@ -109,7 +109,7 @@ async def on_command_error(error, ctx):
         # traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
         tb = traceback.format_exception(type(error), error, error.__traceback__)
         print(''.join(tb))
-        await bot.send_message(bot.mods_channel, mods_msg + '\n```' + ''.join(tb) + '\n```')
+        await bot.send_message(bot.boterr_channel, mods_msg + '\n```' + ''.join(tb) + '\n```')
 
 # mostly taken from https://github.com/Rapptz/discord.py/blob/async/discord/client.py
 @bot.event
@@ -121,9 +121,9 @@ async def on_error(event_method, *args, **kwargs):
     mods_msg = "Exception occured in {}".format(event_method)
     tb = traceback.format_exc()
     print(''.join(tb))
-    mods_msg += mods_msg + '\n```' + ''.join(tb) + '\n```'
+    mods_msg += '\n```' + ''.join(tb) + '\n```'
     mods_msg += '\nargs: `{}`\n\nkwargs: `{}`'.format(args, kwargs)
-    await bot.send_message(bot.mods_channel, mods_msg)
+    await bot.send_message(bot.boterr_channel, mods_msg)
     print(args)
     print(kwargs)
 
@@ -158,6 +158,7 @@ async def on_ready():
         bot.messagelogs_channel = discord.utils.get(server.channels, name="message-logs")
         bot.watchlogs_channel = discord.utils.get(server.channels, name="watch-logs")
         bot.botcmds_channel = discord.utils.get(server.channels, name="bot-cmds")
+        bot.boterr_channel = discord.utils.get(server.channels, name="bot-err")
 
         # roles
         bot.staff_role = discord.utils.get(server.roles, name="Staff")
