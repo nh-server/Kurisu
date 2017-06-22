@@ -224,7 +224,7 @@ class Memes:
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def dev(self, ctx):
         """Reminds user where they are."""
-        await self.bot.say("You seem to be in <#196635781798952960>.")
+        await self.bot.say("You {}seem to be in <#196635781798952960>.".format("do not " if ctx.message.channel.name != "dev" else ""))
 
     @commands.command(pass_context=True, hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
