@@ -37,7 +37,7 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def guide(self, ctx, *, console="auto"):
         """Links to Plailect's or FlimFlam69's guide."""
-        console == console.lower()
+        console = console.lower()
         if console == "3ds" or (console == "auto" and "wiiu" not in ctx.message.channel.name):
             embed = discord.Embed(title="Guide", color=discord.Color(0xCE181E))
             embed.set_author(name="Plailect", url="https://3ds.guide/")
@@ -57,7 +57,7 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def files(self, ctx, *, console="auto"):
         """Links to Rikumax25's Hassle Free Downloaders."""
-        console == console.lower()
+        console = console.lower()
         if console == "3ds" or (console == "auto" and "wiiu" not in ctx.message.channel.name):
             embed = discord.Embed(title="3DS Setup Files", color=discord.Color(0xCE181E))
             embed.set_author(name="Rikumax25", url="http://3sdsetup.net/")
