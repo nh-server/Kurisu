@@ -254,6 +254,7 @@ addons = [
     'addons.mod_staff',
     'addons.mod_warn',
     'addons.mod_watch',
+    'addons.mod',
     'addons.nxerr',
     'addons.rules',
     'addons.xkcdparse',
