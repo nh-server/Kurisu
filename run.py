@@ -205,7 +205,7 @@ async def on_ready():
                     found = True
                     break
             if not found:
-                timebans.pop(user_id) # somehow not in the banned list anymore so let's just remove it
+                timebans.pop(user_id)  # somehow not in the banned list anymore so let's just remove it
         with open("data/timebans.json", "w") as f:
             json.dump(timebans, f)
 
@@ -225,7 +225,7 @@ async def on_ready():
         for member in server.members:
             if member.id in softbans:
                 await bot.send_message(member, "This account has not been permitted to participate in {}. The reason is: {}".format(bot.server.name, softbans[member.id]["reason"]))
-                bot.actions.append("sbk:"+member.id)
+                bot.actions.append("sbk:" + member.id)
                 await bot.kick(member)
                 msg = "🚨 **Attempted join**: {} is soft-banned by <@{}> | {}#{}".format(member.mention, softbans[member.id]["issuer_id"], bot.escape_name(member.name), member.discriminator)
                 embed = discord.Embed(color=discord.Color.red())
@@ -239,7 +239,7 @@ async def on_ready():
 addons = [
     'addons.assistance',
     'addons.blah',
-    #'addons.bf',
+    # 'addons.bf',
     'addons.err',
     'addons.events',
     'addons.extras',
@@ -254,7 +254,7 @@ addons = [
     'addons.mod_staff',
     'addons.mod_warn',
     'addons.mod_watch',
-    'addons.mod',
+    'addons.nxerr',
     'addons.rules',
     'addons.xkcdparse',
 ]
