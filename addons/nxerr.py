@@ -126,6 +126,7 @@ class NXErr:
         0x3D60B: 'IPC Query 1 failed.',
         0x3EA03: 'Invalid handle',
         0x3EE03: 'Invalid memory mirror',
+        0x66932: '"Service is currently unavailable"',
         0x7D202: 'Process does not have RomFs ',
         0x7D402: 'Title-id not found',
         0x13B002: 'Gamecard not inserted',
@@ -141,6 +142,14 @@ class NXErr:
         0x2F5A02: 'Offset outside storage',
         0x313802: 'Operation not supported',
         0x320002: 'Permission denied',
+        0x3CF089: 'Unknown/invalid libcurl error.',
+    }
+
+    known_errcode_ranges = {
+        # NIM
+        137: [
+            [8001, 8096, 'libcurl error 1-96. Some of the libcurl errors in the error-table map to the above unknown-libcurl-error however.'],
+        ]
     }
 
     def get_name(self, d, k):
@@ -173,6 +182,10 @@ class NXErr:
         explanation = ''
         if errcode in self.known_errcodes:
             explanation += self.known_errcodes[errcode] + '\n\n'
+        elif module in self.known_errcode_ranges:
+            for errcode_range in self.known_errcode_ranges[module]:
+                if desc >= errcode_range[0] and desc <= errcode_range[1]:
+                    explanation += errcode_range[2] + '\n\n'
         explanation += 'Module: ' + self.get_name(self.modules, module)
         explanation += '\nDescription: {}'.format(desc)
         embed = discord.Embed(title='0x{:X} / {}'.format(errcode, str_errcode), description=explanation)
