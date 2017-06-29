@@ -68,10 +68,14 @@ class ModWarn:
             msg += "\n✏️ __Reason__: " + reason
         await self.bot.send_message(self.bot.modlogs_channel, msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.warn <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
 
-    @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True)
     async def listwarns(self, ctx, user):
         """List warns for a user. Staff only."""
+        issuer = ctx.message.author
+        if (self.bot.helpers_role not in issuer.roles) and (self.bot.staff_role not in issuer.roles) and (self.bot.verified_role not in issuer.roles) and (self.bot.trusted_role not in issuer.roles):
+            msg = "{0} This command is limited to Staff and Helpers.".format(issuer.mention)
+            await self.bot.say(msg)
+            return
         try:
             member = ctx.message.mentions[0]
         except IndexError:
@@ -96,10 +100,14 @@ class ModWarn:
             embed.color = discord.Color.green()
         await self.bot.say("", embed=embed)
 
-    @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True)
     async def listwarnsid(self, ctx, user_id):
         """List warns for a user based on ID. Staff only."""
+        issuer = ctx.message.author
+        if (self.bot.helpers_role not in issuer.roles) and (self.bot.staff_role not in issuer.roles) and (self.bot.verified_role not in issuer.roles) and (self.bot.trusted_role not in issuer.roles):
+            msg = "{0} This command is limited to Staff and Helpers.".format(issuer.mention)
+            await self.bot.say(msg)
+            return
         embed = discord.Embed(color=discord.Color.dark_red())
         with open("data/warns.json", "r") as f:
             warns = json.load(f)
