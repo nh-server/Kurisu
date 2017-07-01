@@ -162,18 +162,6 @@ class Extras:
             await self.bot.send_message(author, "{} is not a valid toggleable channel.".format(channelname))
 
     @commands.command(pass_context=True)
-    async def rainbow(self, ctx):
-        """Pride month!"""
-        member = ctx.message.author
-        if member.nick and member.nick[-1] == "🌈":
-            await self.bot.say("Your nickname already ends in a rainbow!")
-        elif member.name[-1] == "🌈":
-            await self.bot.say("Your name already ends in a rainbow!")
-        else:
-            await self.bot.say("Your nickname is now \"{} \\🌈\"!".format(member.display_name))
-            await self.bot.change_nickname(member, member.display_name + " 🌈")
-
-    @commands.command(pass_context=True)
     async def norainbow(self, ctx):
         """Tired of it."""
         member = ctx.message.author
