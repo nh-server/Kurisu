@@ -94,7 +94,12 @@ class ModWarn:
             else:
                 for key in range(warn_count):
                     warn = warns[member.id]["warns"][str(key + 1)]
-                    embed.add_field(name="{}: {}".format(key + 1, warn["timestamp"]), value="Issuer: {}\nReason: {}".format(warn["issuer_name"], warn["reason"]))
+                    value = ""
+                    if ctx.message.channel == self.bot.helpers_channel or ctx.message.channel == self.bot.mods_channel:
+                        value += "Issuer: " + warn["issuer_name"] + "\n"
+                    value += "Reason: " + warn["reason"] + " "
+                    # embed.add_field(name="{}: {}".format(key + 1, warn["timestamp"]), value="Issuer: {}\nReason: {}".format(warn["issuer_name"], warn["reason"]))
+                    embed.add_field(name="{}: {}".format(key + 1, warn["timestamp"]), value=value)
         except KeyError:  # if the user is not in the file
             embed.description = "There are none!"
             embed.color = discord.Color.green()
@@ -121,7 +126,12 @@ class ModWarn:
             else:
                 for key in range(warn_count):
                     warn = warns[user_id]["warns"][str(key + 1)]
-                    embed.add_field(name="{}: {}".format(key + 1, warn["timestamp"]), value="Issuer: {}\nReason: {}".format(warn["issuer_name"], warn["reason"]))
+                    value = ""
+                    if ctx.message.channel == self.bot.helpers_channel or ctx.message.channel == self.bot.mods_channel:
+                        value += "Issuer: " + warn["issuer_name"] + "\n"
+                    value += "Reason: " + warn["reason"] + " "
+                    # embed.add_field(name="{}: {}".format(key + 1, warn["timestamp"]), value="Issuer: {}\nReason: {}".format(warn["issuer_name"], warn["reason"]))
+                    embed.add_field(name="{}: {}".format(key + 1, warn["timestamp"]), value=value)
         except KeyError:  # if the user is not in the file
             embed.set_author(name="Warns for {}".format(user_id))
             embed.description = "ID doesn't exist in saved warnings."
