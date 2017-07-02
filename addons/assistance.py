@@ -86,17 +86,6 @@ class Assistance:
         embed.description = "Free 3DS Primary Entrypoint <= 11.3"
         await self.bot.say("", embed=embed)
 
-    # 9.6 xml command
-    @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def xmls(self):
-        """Outputs XMLs for 3DS 9.6-crypto titles, for use with *hax 2.7+"""
-        embed = discord.Embed(title="*hax 2.7 mmap XML repository for 9.6-crypto titles", color=discord.Color.green())
-        embed.set_author(name="ihaveamac", url="https://github.com/ihaveamac", icon_url="https://avatars0.githubusercontent.com/u/590576?v=3&s=40")
-        embed.description = "This is no longer necessary. Use *hax 2.8."
-        embed.url = "https://github.com/ihaveamac/9.6-dbgen-xmls"
-        await self.bot.say("", embed=embed)
-
     # dsp dumper command
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -123,7 +112,7 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def update(self):
         """Explains how to safely prepare for an update if you have boot9strap installed"""
-        await self.simple_embed("If you have boot9strap and Luma3DS installed after following Plailect's guide, run Luma Updater to make sure it is on the latest Luma3DS normal version and then you can proceed to update your 3DS through system settings. \nUse the Pinned Message in #3ds-assistance-1 for HBL 11.4 on o3ds\nNTR CFW works on the latest version.\n; Use this version of BootNTR: \n<https://github.com/Nanquitas/BootNTR/releases>\nNote: if there is a homebrew application that is no longer working, it may exist as a CIA that you can download under the TitleDB option in FBI.\n\n If you still have arm9loaderhax you can update to boot9strap following [this guide](https://3ds.guide/updating-to-boot9strap)")
+        await self.simple_embed("If you have boot9strap and Luma3DS installed after following Plailect's guide, run Luma Updater to make sure it is on the latest Luma3DS normal version and then you can proceed to update your 3DS through system settings. \nNTR CFW works on the latest version.\n; Use this version of BootNTR: \n<https://github.com/Nanquitas/BootNTR/releases>\nNote: if there is a homebrew application that is no longer working, it may exist as a CIA that you can download under the TitleDB option in FBI.\n\n If you still have arm9loaderhax you can update to boot9strap following [this guide](https://3ds.guide/updating-to-boot9strap)")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -136,20 +125,21 @@ class Assistance:
         embed.description = "A guide for updating to new B9S versions."
         await self.bot.say("", embed=embed)
 
-    # gateway h&s troubleshooting command
+    # Gateway h&s troubleshooting command
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def gwhs(self):
         """Links to gateway health and safety inject troubleshooting"""
         await self.bot.say("https://3ds.guide/troubleshooting#gw_fbi")
 
-    # hardmodder pastebin list
+    # Hardmodder pastebin list
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def hmodders(self):
         """Links to approved hardmodder list"""
         await self.simple_embed("Don't want to hardmod yourself? Ask one of the installers on the server! <http://pastebin.com/wNr42PtH>")
 
+    # Link to Astronautlevel's Luma3ds builds site
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def builds(self):
@@ -236,8 +226,8 @@ class Assistance:
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def hbl(self):
-        """Get homebrew launcher working on 11.3"""
-        await self.simple_embed("If you are encountering errors while trying to access the homebrew launcher on a 11.3 New 3DS with Luma3DS installed, you should disable the 'Clock + L2' option in the Luma3DS configuration menu (accessed by holding select while booting).\n Homebrew launcher **cant** be used on a stock 11.4 O3DS currently")
+        """Get homebrew launcher working on 11.4"""
+        await self.simple_embed("Homebrew launcher **cant** be used on a stock 11.4 O3DS currently, for N3DS you will need a entrypoint like ninjhax or freakyhax")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -293,6 +283,7 @@ class Assistance:
         """What to do if you delete all your SD card contents"""
         await self.simple_embed("If you have lost the contents of your SD card with CFW, repeat the [finalizing setup](https://3ds.guide/finalizing-setup) page.", color=discord.Color.red())
 
+    # Embed to broken TWL Troubleshooting
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def twl(self):
@@ -310,6 +301,7 @@ class Assistance:
         """Help with homebrew red screen"""
         await self.simple_embed("A red screen indicates that there is no boot.3dsx on root.\nIf you have a starter folder on root, place the contents of the starter folder on root.\nIf not, redownload the [Homebrew Starter Kit](https://smealum.github.io/ninjhax2/starter.zip) and place the contents of the starter folder inside the .zip on root.", title="If you get a red screen trying to open the Homebrew Launcher")
 
+    # Intructions for deleting home menu Extdata
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def homext(self):
@@ -332,6 +324,7 @@ class Assistance:
         """Fix for the PM init failed error"""
         await self.simple_embed("If you are receiving a \"PM init failed\" error when attempting to launch safehax and are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safehax/releases/tag/r19)")
 
+    # Embed to Apache Thunder's Flashcart Launcher
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def flashcart(self):
@@ -367,12 +360,7 @@ class Assistance:
         embed.description = "The recommended way to use custom themes"
         await self.bot.say("", embed=embed)
 
-    @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def fbi3dsx(self):
-        """How to install FBI with B9S without updating"""
-        await self.bot.say("https://pastebin.com/7DWhaYSU")
-
+    # Embed to ih8ih8sn0w's godmode9 guide
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def dump(self):
@@ -384,6 +372,7 @@ class Assistance:
         embed.description = "How to dump/build CIAs using GodMode9"
         await self.bot.say("", embed=embed)
 
+    # Information about sighax
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def sighax(self):
