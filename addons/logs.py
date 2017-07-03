@@ -32,10 +32,17 @@ Thanks for stopping by and have a good time!
         with open("data/softbans.json", "r") as f:
             softbans = json.load(f)
         if member.id in softbans:
-            await self.bot.send_message(member, "This account has not been permitted to participate in {}. The reason is: {}".format(self.bot.server.name, softbans[member.id]["reason"]))
+            message_sent = False
+            try:
+                await self.bot.send_message(member, "This account has not been permitted to participate in {}. The reason is: {}".format(self.bot.server.name, softbans[member.id]["reason"]))
+                message_sent = True
+            except discord.errors.Forbidden:
+                pass
             self.bot.actions.append("sbk:"+member.id)
             await self.bot.kick(member)
             msg = "🚨 **Attempted join**: {} is soft-banned by <@{}> | {}#{}".format(member.mention, softbans[member.id]["issuer_id"], self.bot.escape_name(member.name), member.discriminator)
+            if not message_sent:
+                msg += "\nThis message did not send to the user."
             embed = discord.Embed(color=discord.Color.red())
             embed.description = softbans[member.id]["reason"]
             await self.bot.send_message(self.bot.serverlogs_channel, msg, embed=embed)
