@@ -175,6 +175,12 @@ class Assistance:
     async def inoriquest(self):
         """Tells user to be descriptive"""
         await self.simple_embed("> Reminder: if you would like someone to help you, please be as descriptive as possible, of your situation, things you have done, as little as they may seem, aswell as assisting materials. Asking to ask wont expedite your process, and may delay assistance.")
+    
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def inoriwarn(self):
+        """Warns users to keep the channels on-topic - Staff & Helper Declaration Only"""
+        await self.simple_embed("> **Please keep the channels clean and on-topic, further derailing will be handled properly.  A staff or helper will be the quickest route to resolution, so find your nearest active member.** IE. List can be found in #welcome-and-rules if you don't know who they are.")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
