@@ -122,6 +122,10 @@ class Memes:
     async def rip(self, ctx):
         """Memes."""
         await self._meme(ctx, "Press F to pay respects.")
+        async for m in self.bot.logs_from(ctx.message.channel, limit=1):
+            message = m
+        await self.bot.add_reaction(message, "🇫")
+
 
     @commands.command(pass_context=True, hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
