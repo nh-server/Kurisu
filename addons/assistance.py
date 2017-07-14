@@ -287,7 +287,7 @@ class Assistance:
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def deltheme(self):
-        """Deleting home menu extdata"""
+        """Deleting home menu theme data"""
         await self.simple_embed("1. Navigate to the following folder on your SD card: `/Nintendo 3DS/(32 Character ID)/(32 Character ID)/extdata/00000000/`\n2. Delete the corresponding folder for your region:\n  USA: `000002cd`\n   EUR: `000002ce`\n   JPN: `000002cc`", title="How to delete Home Menu Theme Data")
         
     @commands.command(aliases=['godmode9'])
