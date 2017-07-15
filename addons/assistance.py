@@ -53,27 +53,6 @@ class Assistance:
             embed.description = "FlimFlam69 and Plailect's Wii U custom firmware + coldboothax guide"
             await self.bot.say("", embed=embed)
 
-    @commands.command(pass_context=True, aliases=['file', 'sdsetup', '3sdsetup', 'wiiusetup', 'sdcard'])
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def files(self, ctx, *, console="auto"):
-        """Links to Rikumax25's Hassle Free Downloaders."""
-        console = console.lower()
-        if console == "3ds" or (console == "auto" and "wiiu" not in ctx.message.channel.name):
-            embed = discord.Embed(title="3DS Setup Files", color=discord.Color(0xCE181E))
-            embed.set_author(name="Rikumax25", url="http://3sdsetup.net/")
-            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/260343755993907200/294359373977878529/dragonside7.png")
-            embed.url = "http://3sdsetup.net/"
-            embed.description = "Automatic CFW file downloader for 3DS"
-            await self.bot.say("", embed=embed)
-        if (console == "wiiu" or console == "wii u") or (console == "auto" and "3ds" not in ctx.message.channel.name):
-            embed = discord.Embed(title="Wii U Setup Files", color=discord.Color(0x009AC7))
-            embed.set_author(name="Rikumax25", url="http://wiiusetup.net/")
-            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/260343755993907200/294356367614017537/dragonside4.png")
-            embed.url = "http://wiiusetup.net/"
-            embed.description = "Automatic CFW file downloader for Wii U"
-            await self.bot.say("", embed=embed)
-
-
     #Embed to Soundhax Download Website
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -199,15 +178,6 @@ class Assistance:
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def operationidroid(self):
-        """Information about an operationidroid video in which they encourage viewers to outright lie to the community"""
-        embed = discord.Embed(title="In case you were following a guide by OPERATIONiDROID", color=discord.Color.dark_orange())
-        embed.description = "During troubleshooting, be sure to explain everything you did, and if you were following a Video Guide, be honest. Lying to the people trying to help you, as Operationidroid suggested their viewers do, will cause nothing but issues and frustration on both ends."
-        embed.add_field(name="Recommended", value="The recommended guide to follow is [Plailect's complete written guide for boot9strap](https://3ds.guide). It is the most up to date guide and is the process everybody assisting is familiar with.")
-        await self.bot.say("", embed=embed)
-
-    @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def ip(self):
         """How to check your IP"""
         embed = discord.Embed(title="Check your 3DSs IP (CFW)", color=discord.Color.dark_orange())
@@ -224,9 +194,9 @@ class Assistance:
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def stock114(self):
-        """Advisory for consoles on stock 11.4 firmware"""
-        embed = discord.Embed(title="Running stock (unmodified) 11.4 firmware?", color=discord.Color.dark_orange())
-        embed.description = "If your 3DS is running stock 11.4 firmware, you will need a [Hardmod boot9strap installation](https://3ds.guide/installing-boot9strap-\(hardmod\)) or perform a [dsiware exploit based boot9strap installlation](https://3ds.guide/installing-boot9strap-\(dsiware\)) (requires a hacked 3ds)"
+        """Advisory for consoles on stock 11.4+ firmware"""
+        embed = discord.Embed(title="Running stock (unmodified) 11.4 (or higher) firmware?", color=discord.Color.dark_orange())
+        embed.description = "If your 3DS is running stock 11.4+ firmware, you will need a [Hardmod boot9strap installation](https://3ds.guide/installing-boot9strap-\(hardmod\)) or perform a [dsiware exploit based boot9strap installlation](https://3ds.guide/installing-boot9strap-\(dsiware\)) (requires a hacked 3ds)"
         await self.bot.say("", embed=embed)
 
     @commands.command()
