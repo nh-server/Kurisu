@@ -376,5 +376,10 @@ class Assistance:
         embed.description = "To be able to extract .7z files you need 7zip installed, get it here."
         await self.bot.say("", embed=embed)
 
+        @commands.command()
+    async def Shax(self):
+        """Can the switch be hacked?"""
+        await self.simple_embed("At the time of writing, no.It will not be hacked for a while so come back in 2 years when something is more likely to have been found. Had it been hacked you probably would have heard of it by now, but for now until you see a switch hacking guide or multiple sources saying something has been found don't ask.", title="Can the Switch be hacked/get homebrew/cfw?")
+        
 def setup(bot):
     bot.add_cog(Assistance(bot))
