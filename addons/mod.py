@@ -51,7 +51,7 @@ class Mod:
 
     @commands.command(pass_context=True, hidden=True)
     async def userinfo(self, ctx, user):
-        """Gets user info. SuperOP+."""
+        """Gets user info. Staff and Helpers only."""
         issuer = ctx.message.author
         if (self.bot.helpers_role not in issuer.roles) and (self.bot.staff_role not in issuer.roles) and (self.bot.verified_role not in issuer.roles) and (self.bot.trusted_role not in issuer.roles):
             msg = "{0} This command is limited to Staff and Helpers.".format(issuer.mention)
