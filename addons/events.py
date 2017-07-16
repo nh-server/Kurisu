@@ -78,6 +78,9 @@ class Events:
         'fleashop',
         'ciangle',
         'fieashop',
+        'frshp',
+        'free****',
+        'free*shop*', #and others like it..
     )
 
     # terms that should cause a notice but not auto-delete
