@@ -205,6 +205,7 @@ class Err:
     # Nintendo Error Codes
     errcodes = {
         # Nintendo 3DS
+        '001-0502': 'Some sort of network error related to friend presence. "Allow Friends to see your online status" might fix this.',
         '001-0803': 'Could not communicate with authentication server.',
         '002-0102': 'System is banned by Nintendo. You cannot ask how to fix this issue here.',
         '002-0119': 'System update required (outdated friends-module)',
