@@ -330,18 +330,6 @@ class Assistance:
         embed.description = "The recommended way to play old classics on your 3DS"
         await self.bot.say("", embed=embed)
 
-    # Embed to Themely guide
-    @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def themely(self):
-        """Link to Themely guide"""
-        embed = discord.Embed(title="Custom Themes for 3DS", color=discord.Color.purple())
-        embed.set_author(name="erman1337", url="https://3dsthem.es/how.php")
-        embed.set_thumbnail(url="https://i.imgur.com/79pD5y7.png")
-        embed.url = "https://3dsthem.es/how.php"
-        embed.description = "The recommended way to use custom themes"
-        await self.bot.say("", embed=embed)
-
     # Embed to ih8ih8sn0w's godmode9 guide
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
