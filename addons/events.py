@@ -79,6 +79,7 @@ class Events:
         'ciangle',
         'fieashop',
         'unbanmii',
+        'switchthem.es',
     )
 
     # terms that should cause a notice but not auto-delete
