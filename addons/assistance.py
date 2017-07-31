@@ -104,7 +104,7 @@ class Assistance:
         embed.description = "A guide for updating to new B9S versions."
         await self.bot.say("", embed=embed)
 
-    @commands.command()
+    @commands.command(aliases=["a9lhtob9s","updatea9lh"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def atob():
         """Links to the guide for updating from a9lh to b9s"""
