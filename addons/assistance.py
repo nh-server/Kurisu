@@ -104,6 +104,17 @@ class Assistance:
         embed.description = "A guide for updating to new B9S versions."
         await self.bot.say("", embed=embed)
 
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def updatea9lh():
+        """Links to the guide for updating from a9lh to b9s"""
+        embed = discord.Embed(title="Upgrading a9lh to b9s", color=discord.Color(0xCE181E))
+        embed.set_author(name="Plailect", url="https://3ds.guide/a9lh-to-b9s")
+        embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
+        embed.url = "https://3ds.guide/a9lh-to-b9s"
+        embed.description = "A guide for upgrading your device from arm9loaderhax to boot9strap."
+        await self.bot.say("", embed=embed)
+
     # Gateway h&s troubleshooting command
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
