@@ -78,7 +78,6 @@ class Events:
         'fleashop',
         'ciangle',
         'fieashop',
-        'unbanmii',
         'switchthem.es',
     )
 
