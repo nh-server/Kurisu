@@ -77,14 +77,14 @@ class Loop:
                                 else:
                                     await self.bot.send_message(self.bot.announcements_channel, '⏬ System updated detected for {}: {}\n<{}>'.format(system, ver, reporturl))
                                     to_write['ver'] = ver
-                                # with open(reportpath, 'w') as f:
-                                #     json.dump(to_write, f)
+                                with open(reportpath, 'w') as f:
+                                    json.dump(to_write, f)
                             elif oldver['reportdate'] == oldver['ver'] and len(ver) != 17:
                                 # lazy method of seeing if an update + vernumber was found before the bot caught the update in the first place
                                 await self.bot.send_message(self.bot.announcements_channel, 'ℹ️ New update version for {}: {} ({})'.format(system, ver, reporturl_date))
                                 to_write['ver'] = ver
-                                # with open(reportpath, 'w') as f:
-                                #     json.dump(to_write, f)
+                                with open(reportpath, 'w') as f:
+                                    json.dump(to_write, f)
 
             except Exception as e:
                 print('Ignoring exception in start_update_loop', file=sys.stderr)
