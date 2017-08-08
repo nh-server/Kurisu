@@ -72,16 +72,16 @@ class Loop:
                             if oldver['reportdate'] != reporturl_date:
                                 # "Reminder to not update until confirmed safe or known broken features are fixed."
                                 if reporturl_date == ver:
-                                    await self.bot.send_message(self.bot.meta_channel, '⏬ System updated detected for {}\n<{}>'.format(system, reporturl))
+                                    await self.bot.send_message(self.bot.announcements_channel, '⏬ System updated detected for {}\n<{}>'.format(system, reporturl))
                                     to_write['ver'] = reporturl_date
                                 else:
-                                    await self.bot.send_message(self.bot.meta_channel, '⏬ System updated detected for {}: {}\n<{}>'.format(system, ver, reporturl))
+                                    await self.bot.send_message(self.bot.announcements_channel, '⏬ System updated detected for {}: {}\n<{}>'.format(system, ver, reporturl))
                                     to_write['ver'] = ver
                                 # with open(reportpath, 'w') as f:
                                 #     json.dump(to_write, f)
                             elif oldver['reportdate'] == oldver['ver'] and len(ver) != 17:
                                 # lazy method of seeing if an update + vernumber was found before the bot caught the update in the first place
-                                await self.bot.send_message(self.bot.meta_channel, 'ℹ️ New update version for {}: {} ({})'.format(system, ver, reporturl_date))
+                                await self.bot.send_message(self.bot.announcements_channel, 'ℹ️ New update version for {}: {} ({})'.format(system, ver, reporturl_date))
                                 to_write['ver'] = ver
                                 # with open(reportpath, 'w') as f:
                                 #     json.dump(to_write, f)
