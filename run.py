@@ -30,6 +30,7 @@ config = configparser.ConfigParser()
 config.read("config.ini")
 
 os.makedirs("data", exist_ok=True)
+os.makedirs("data/ninupdates", exist_ok=True)
 # create warns.json if it doesn't exist
 if not os.path.isfile("data/warns.json"):
     with open("data/warns.json", "w") as f:
