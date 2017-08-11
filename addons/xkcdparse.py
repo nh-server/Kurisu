@@ -30,38 +30,23 @@ class xkcdparse:
         "free speech": 1357,
         "screenshot": 1373,
         "tasks": 1425,
-
+        "real programmers": 378
     }
-
-    async def embed_xkcd_comic(self, comic):
-        embed = discord.Embed(title="{}: {}".format(comic.number, comic.getTitle()), url="https://xkcd.com/{}".format(comic.number), color=discord.Color.blue())
-        embed.set_image(url=comic.getImageLink())
-        embed.set_footer(text=comic.getAltText())
-        return embed
 
     @commands.command()
     async def xkcd(self, *, comic):
         comic = comic.lower()
         """Show xkcd comic by number. Use "latest" to show the latest comic, or "random" to show a random comic."""
         if comic == "latest":
-            await self.bot.say("", embed=await self.embed_xkcd_comic(xkcd.getLatestComic()))
+            await self.bot.say("https://xkcd.com/{}/".format(xkcd.getLatestComic().number))
         elif comic == "random":
-            await self.bot.say("", embed=await self.embed_xkcd_comic(xkcd.getRandomComic()))
+            await self.bot.say("https://xkcd.com/{}/".format(xkcd.getRandomComic().number))
         elif comic.isdigit():
-            await self.bot.say("", embed=await self.embed_xkcd_comic(xkcd.getComic(comic)))
+            await self.bot.say("https://xkcd.com/{}/".format(xkcd.getComic(comic).number))
         elif comic in self.word_responses:
-            await self.bot.say("", embed=await self.embed_xkcd_comic(xkcd.getComic(self.word_responses[comic])))
+            await self.bot.say("https://xkcd.com/{}/".format(xkcd.getComic(self.word_responses[comic]).number))
         else:
             await self.bot.say("I can't find that one!")
-
-    # async def on_message(self, message):
-    #     # http://stackoverflow.com/questions/839994/extracting-a-url-in-python
-    #     urls = re.findall(r'(https?://\S+)', message.content)
-    #     for url in urls:
-    #         ps = urlparse(url)
-    #         if ps.netloc == "xkcd.com" or ps.netloc == "www.xkcd.com":
-    #             comicnum = ps.path.replace('/', '')
-    #             await self.bot.send_message(message.channel, embed=await self.embed_xkcd_comic(xkcd.getComic(comicnum)))
 
 def setup(bot):
     bot.add_cog(xkcdparse(bot))
