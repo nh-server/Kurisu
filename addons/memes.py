@@ -163,7 +163,7 @@ class Memes:
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def ayyy(self, ctx):
         """Memes."""
-        await self._meme(ctx, "http://i.imgur.com/bgvuHAd.png")
+        await self._meme(ctx, "https://i.imgur.com/j0YM1jH.gifv")
 
     @commands.command(pass_context=True, hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)

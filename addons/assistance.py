@@ -191,12 +191,12 @@ class Assistance:
         """Help if you have no NAND backup"""
         await self.simple_embed("After you finish configuring Luma3DS, perform a [9.2.0 ctrtransfer](https://3ds.guide/9.2.0-ctrtransfer). Then do [finalizing setup section](https://3ds.guide/finalizing-setup)", title="If you have no NAND backup:")
 
-    @commands.command()
+    @commands.command(aliases=['stock115'])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def stock114(self):
         """Advisory for consoles on stock 11.4+ firmware"""
         embed = discord.Embed(title="Running stock (unmodified) 11.4 (or higher) firmware?", color=discord.Color.dark_orange())
-        embed.description = "If your 3DS is running stock 11.4+ firmware, you will need a [Hardmod boot9strap installation](https://3ds.guide/installing-boot9strap-\(hardmod\)) or perform a [dsiware exploit based boot9strap installlation](https://3ds.guide/installing-boot9strap-\(dsiware\)) (requires a hacked 3ds)"
+        embed.description = "If your 3DS is running stock 11.4+ firmware, you will need a [Hardmod boot9strap installation](https://3ds.guide/installing-boot9strap-\(hardmod\)),perform a [dsiware exploit based boot9strap installlation](https://3ds.guide/installing-boot9strap-\(dsiware\)) (requires a hacked 3ds) or [a ntrboot compatible flashcard and a hacked 3ds](https://3ds.guide/ntrboot)"
         await self.bot.say("", embed=embed)
 
     @commands.command()
