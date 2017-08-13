@@ -84,7 +84,7 @@ class Assistance:
         embed = discord.Embed(title="NTR Streaming Guide", color=discord.Color.blue())
         embed.url = "https://gbatemp.net/threads/tutorial-3ds-screen-recording-without-a-capture-card-ntr-cfw-method.423445/"
         embed.description = "How to use NTR CFW with Nitro Stream to Wirelessly Stream"
-        embed.add_field(name="4 common fixes", value="• Are you connected to the Internet?\n• Is your antivirus program blocking the program?\n• Make sure you are not putting the port (:####) into the IP box of Nitro Stream.\n• Make sure you are on the latest preview for NTR 3.4.")
+        embed.add_field(name="4 common fixes", value="• Are you connected to the Internet?\n• Is your antivirus program blocking the program?\n• Make sure you are not putting the port (:####) into the IP box of Nitro Stream.\n• Make sure you are on the latest preview for NTR 3.6.")
         await self.bot.say("", embed=embed)
 
     @commands.command()
@@ -203,9 +203,9 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def hbl(self):
         """Get homebrew launcher working on 11.4+ firmware"""
-        await self.simple_embed("If you are looking for homebrew on your stock 11.4+ 3ds, keep in mind Homebrew launcher only works for N3DS and you will need a entrypoint like ninjhax or freakyhax for launching homebrew launcher")
-
-    @commands.command()
+        await self.simple_embed("If you are looking for homebrew on your stock 11.4+ 3ds, keep in mind Homebrew launcher only works for on N3DS and you will need a game with a primary exploit like [Cubic Ninja](https://smealum.github.io/ninjhax2/) or [Freakyforms Deluxe](https://plutooo.github.io/freakyhax/)"
+    
+	@commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def readguide(self):
         """Read the guide please"""
