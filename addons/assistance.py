@@ -203,9 +203,9 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def hbl(self):
         """Get homebrew launcher working on 11.4+ firmware"""
-        await self.simple_embed("If you are looking for homebrew on your stock 11.4+ 3ds, keep in mind Homebrew launcher only works for on N3DS and you will need a game with a primary exploit like [Cubic Ninja](https://smealum.github.io/ninjhax2/) or [Freakyforms Deluxe](https://plutooo.github.io/freakyhax/)"
+        await self.simple_embed("If you are looking for homebrew on your stock 11.4+ 3ds, keep in mind Homebrew launcher only works for on N3DS and you will need a game with a primary exploit like [Cubic Ninja](https://smealum.github.io/ninjhax2/) or [Freakyforms Deluxe](https://plutooo.github.io/freakyhax/)")
     
-	@commands.command()
+    @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def readguide(self):
         """Read the guide please"""
