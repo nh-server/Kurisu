@@ -207,7 +207,7 @@ class Assistance:
     async def stock114(self):
         """Advisory for consoles on stock 11.4+ firmware"""
         embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
-        embed.description = "If your 3DS is running stock 11.4+ firmware, you will need a [hardmod boot9strap installation](https://3ds.guide/installing-boot9strap-\(hardmod\)), a [DSiWare exploit based boot9strap installlation](https://3ds.guide/installing-boot9strap-\(dsiware\)) (requires a hacked 3ds) or [NTRBoot](https://3ds.guide/installing-boot9strap-\(ntrboot\)) (requires a flashcart, and a hacked 3DS/[Datel Powersaves](https://powersaves3ds.maximummemory.com/))"
+        embed.description = "If your 3DS is running stock 11.4+ firmware, you will need a [hardmod boot9strap installation](https://3ds.guide/installing-boot9strap-\(hardmod\)), a [DSiWare exploit based boot9strap installation](https://3ds.guide/installing-boot9strap-\(dsiware\)) (requires a hacked 3ds) or [NTRBoot](https://3ds.guide/installing-boot9strap-\(ntrboot\)) (requires a flashcart, and a hacked 3DS/[Datel Powersaves](https://powersaves3ds.maximummemory.com/))"
         await self.bot.say("", embed=embed)
 
     @commands.command()
