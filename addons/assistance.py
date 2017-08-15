@@ -84,7 +84,7 @@ class Assistance:
         embed = discord.Embed(title="NTR Streaming Guide", color=discord.Color.blue())
         embed.url = "https://gbatemp.net/threads/tutorial-3ds-screen-recording-without-a-capture-card-ntr-cfw-method.423445/"
         embed.description = "How to use NTR CFW with Nitro Stream to Wirelessly Stream"
-        embed.add_field(name="4 common fixes", value="• Are you connected to the Internet?\n• Is your antivirus program blocking the program?\n• Make sure you are not putting the port (:####) into the IP box of Nitro Stream.\n• Make sure you are on the latest preview for NTR 3.4.")
+        embed.add_field(name="4 common fixes", value="• Are you connected to the Internet?\n• Is your antivirus program blocking the program?\n• Make sure you are not putting the port (:####) into the IP box of Nitro Stream.\n• Make sure you are on the latest preview for NTR 3.6.")
         await self.bot.say("", embed=embed)
 
     @commands.command()
@@ -202,20 +202,20 @@ class Assistance:
         """Help if you have no NAND backup"""
         await self.simple_embed("After you finish configuring Luma3DS, perform a [9.2.0 ctrtransfer](https://3ds.guide/9.2.0-ctrtransfer). Then do [finalizing setup section](https://3ds.guide/finalizing-setup)", title="If you have no NAND backup:")
 
-    @commands.command()
+    @commands.command(aliases=['stock115'])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def stock114(self):
         """Advisory for consoles on stock 11.4+ firmware"""
         embed = discord.Embed(title="Running stock (unmodified) 11.4 (or higher) firmware?", color=discord.Color.dark_orange())
-        embed.description = "If your 3DS is running stock 11.4+ firmware, you will need a [Hardmod boot9strap installation](https://3ds.guide/installing-boot9strap-\(hardmod\)) or perform a [dsiware exploit based boot9strap installlation](https://3ds.guide/installing-boot9strap-\(dsiware\)) (requires a hacked 3ds)"
+        embed.description = "If your 3DS is running stock 11.4+ firmware, you will need a [Hardmod boot9strap installation](https://3ds.guide/installing-boot9strap-\(hardmod\)),perform a [dsiware exploit based boot9strap installlation](https://3ds.guide/installing-boot9strap-\(dsiware\)) (requires a hacked 3ds) or [a ntrboot compatible flashcard and a hacked 3ds](https://3ds.guide/ntrboot)"
         await self.bot.say("", embed=embed)
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def hbl(self):
         """Get homebrew launcher working on 11.4+ firmware"""
-        await self.simple_embed("If you are looking for homebrew on your stock 11.4+ 3ds, keep in mind Homebrew launcher only works for N3DS and you will need a entrypoint like ninjhax or freakyhax for launching homebrew launcher")
-
+        await self.simple_embed("If you are looking for homebrew on your stock 11.4+ 3ds, keep in mind Homebrew launcher only works for on N3DS and you will need a game with a primary exploit like [Cubic Ninja](https://smealum.github.io/ninjhax2/) or [Freakyforms Deluxe](https://plutooo.github.io/freakyhax/)")
+    
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def readguide(self):
