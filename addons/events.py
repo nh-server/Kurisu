@@ -78,7 +78,6 @@ class Events:
         'fleashop',
         'ciangle',
         'fieashop',
-        'switchthem.es',
     )
 
     # terms that should cause a notice but not auto-delete
@@ -145,7 +144,7 @@ class Events:
         contains_piracy_tool_mention = any(x in msg_no_separators for x in self.piracy_tools)
         contains_piracy_tool_alert_mention = any(x in msg_no_separators for x in self.piracy_tools_alert)
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site',))
-        contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub', 'strawpoii', 'hackinformer.com',))
+        contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub', 'strawpoii', 'hackinformer.com', 'switchthem.es', 'dsiguide.me'))
         contains_unbanning_stuff = any(x in msg_no_separators for x in self.unbanning_stuff)
 
         # contains_guide_mirror_mention = any(x in msg for x in ('3ds-guide.b4k.co',))
