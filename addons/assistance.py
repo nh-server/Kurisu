@@ -165,7 +165,7 @@ class Assistance:
     async def inoriquest(self):
         """Tells user to be descriptive"""
         await self.simple_embed("> Reminder: if you would like someone to help you, please be as descriptive as possible, of your situation, things you have done, as little as they may seem, aswell as assisting materials. Asking to ask wont expedite your process, and may delay assistance.")
-    
+
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def inoriwarn(self):
@@ -207,7 +207,7 @@ class Assistance:
     async def stock114(self):
         """Advisory for consoles on stock 11.4+ firmware"""
         embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
-        embed.description = "If your 3DS is running stock 11.4+ firmware, you will need a [hardmod boot9strap installation](https://3ds.guide/installing-boot9strap-\(hardmod\)), a [DSiWare exploit based boot9strap installation](https://3ds.guide/installing-boot9strap-\(dsiware\)) (requires a hacked 3ds) or [NTRBoot](https://3ds.guide/installing-boot9strap-\(ntrboot\)) (requires a flashcart, and a hacked 3DS/[Datel Powersaves](https://powersaves3ds.maximummemory.com/))"
+        embed.description = "If your 3DS is running stock 11.4+ firmware, you will need a [hardmod boot9strap installation](https://3ds.guide/installing-boot9strap-\(hardmod\)), a [DSiWare exploit based boot9strap installation](https://3ds.guide/installing-boot9strap-\(dsiware\)) (requires a hacked 3ds), [NTRBoot](https://3ds.guide/installing-boot9strap-\(ntrboot\)) (requires a flashcart, and a hacked 3DS/[Datel Powersaves](https://powersaves3ds.maximummemory.com/)), or a [DS/DS Lite](https://3ds.guide/flashing-ntrboot-\(nds\) (does not work with DSi!)"
         await self.bot.say("", embed=embed)
 
     @commands.command()
@@ -294,13 +294,13 @@ class Assistance:
     async def homext(self):
         """Deleting home menu extdata"""
         await self.simple_embed("1. Navigate to the following folder on your SD card: `/Nintendo 3DS/(32 Character ID)/(32 Character ID)/extdata/00000000/`\n2. Delete the corresponding folder for your region:\n  USA: `0000008f`\n   EUR: `00000098`\n   JPN: `00000082`\n   KOR: `000000A9`", title="How to clear Home Menu extdata")
-    
+
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def deltheme(self):
         """Deleting home menu theme data"""
         await self.simple_embed("1. Navigate to the following folder on your SD card: `/Nintendo 3DS/(32 Character ID)/(32 Character ID)/extdata/00000000/`\n2. Delete the corresponding folder for your region:\n  USA: `000002cd`\n   EUR: `000002ce`\n   JPN: `000002cc`", title="How to delete Home Menu Theme Data")
-        
+
     @commands.command(aliases=['godmode9'])
     async def gm9(self):
         """Links to the guide on GodMode9"""
