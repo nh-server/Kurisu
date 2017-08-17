@@ -297,19 +297,19 @@ class Events:
             await self.bot.edit_channel_permissions(message.channel, self.bot.everyone_role, overwrites_everyone)
             msg_channel = "This channel has been automatically locked for spam. Please wait while staff review the situation."
             embed = discord.Embed(title="Deleted messages", color=discord.Color.gold())
-            msgs_to_delete = self.user_antispam[message.author.id][:]  # clone list so nothing is removed while going through it
-            for msg in msgs_to_delete:
-                embed.add_field(name="@"+self.bot.escape_name(msg.author), value="\u200b" + msg.content)  # added zero-width char to prevent an error with an empty string (lazy workaround)
-            await self.bot.send_message(message.channel, msg_channel)
+            # msgs_to_delete = self.user_antispam[message.author.id][:]  # clone list so nothing is removed while going through it
+            # for msg in msgs_to_delete:
+            #     embed.add_field(name="@"+self.bot.escape_name(msg.author), value="\u200b" + msg.content)  # added zero-width char to prevent an error with an empty string (lazy workaround)
+            # await self.bot.send_message(message.channel, msg_channel)
             log_msg = "🔒 **Auto-locked**: {} locked for spam".format(message.channel.mention)
             await self.bot.send_message(self.bot.modlogs_channel, log_msg, embed=embed)
             await self.bot.send_message(self.bot.mods_channel, log_msg + " @here\nSee {} for a list of deleted messages.".format(self.bot.modlogs_channel.mention))
             msgs_to_delete = self.channel_antispam[message.channel.id][:]  # clone list so nothing is removed while going through it
-            for msg in msgs_to_delete:
-                try:
-                    await self.bot.delete_message(msg)
-                except discord.errors.NotFound:
-                    pass  # don't fail if the message doesn't exist
+            # for msg in msgs_to_delete:
+            #     try:
+            #         await self.bot.delete_message(msg)
+            #     except discord.errors.NotFound:
+            #         pass  # don't fail if the message doesn't exist
         await asyncio.sleep(5)
         self.channel_antispam[message.channel.id].remove(message)
         try:
