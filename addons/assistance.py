@@ -106,7 +106,7 @@ class Assistance:
 
     @commands.command(aliases=["a9lhtob9s","updatea9lh"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def atob():
+    async def atob(self):
         """Links to the guide for updating from a9lh to b9s"""
         embed = discord.Embed(title="Upgrading a9lh to b9s", color=discord.Color(0xCE181E))
         embed.set_author(name="Plailect", url="https://3ds.guide/a9lh-to-b9s")
