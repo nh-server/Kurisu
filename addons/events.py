@@ -237,9 +237,9 @@ class Events:
 
     async def keyword_search(self, message):
         msg = ''.join(char for char in message.content.lower() if char in printable)
-        if "wiiu" in message.channel.name and "download" in msg and "update" in msg and "manag" in msg:  # intentional typo in manage
-            embed = discord.Embed(description="A failed update in Download Management does not mean there is an update and the system is trying to download it. This means your blocking method (DNS etc.) is working and the system can't check for an update.", color=discord.Color(0x009AC7))
-            await self.bot.send_message(message.channel, message.author.mention, embed=embed)
+        # if "wiiu" in message.channel.name and "download" in msg and "update" in msg and "manag" in msg:  # intentional typo in manage
+        #     embed = discord.Embed(description="A failed update in Download Management does not mean there is an update and the system is trying to download it. This means your blocking method (DNS etc.) is working and the system can't check for an update.", color=discord.Color(0x009AC7))
+        #     await self.bot.send_message(message.channel, message.author.mention, embed=embed)
         # search for terms that might indicate a question meant for the help channels
         help_embed = discord.Embed(description="Hello! If you are looking for help with setting up hacks for your 3DS or Wii U system, please ask your question in one of the assistance channels.\n\nFor 3DS, there is <#196635695958196224> or <#247557068490276864>. Ask in one of them.\n\nFor Wii U, go to <#279783073497874442>.\n\nThank you for stopping by!", color=discord.Color.green())
         help_embed.set_footer(text="This auto-response is under development. If you did not ask about the above, you don't need to do anything.")
