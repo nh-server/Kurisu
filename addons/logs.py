@@ -21,7 +21,7 @@ You can find a list of staff and helpers in {2}.
 Do you simply need a place to start hacking your 3DS system? Check out **<https://3ds.guide>**!
 Do you simply need a place to start hacking your Wii U system? Check out **<https://wiiu.guide/>**!
 
-**By participating in this server, you acknowledge that user data (including messages, user IDs, user tags) will be collected and logged for moderation purposes. If you disagree with this collection, please leave the server immediately.**
+By participating in this server, you acknowledge that user data (including messages, user IDs, user tags) will be collected and logged for moderation purposes. If you disagree with this collection, please leave the server immediately.
 
 Thanks for stopping by and have a good time!
 """  # ughhhhhhhh
