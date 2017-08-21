@@ -214,7 +214,7 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def hbl(self):
         """Get homebrew launcher working on 11.4+ firmware"""
-        await self.simple_embed("If you are looking for homebrew on your stock 11.4+ 3ds, keep in mind Homebrew launcher only works for N3DS and you will need a entrypoint like ninjhax or freakyhax for launching homebrew launcher")
+        await self.simple_embed("If you are looking for homebrew on your stock 11.4+ 3DS, keep in mind that the Homebrew launcher does **not** work on an O3DS, since there is no payload yet. If you have a N3DS, you will need to set up an entrypoint like [ninjhax](https://smealum.github.io/ninjhax2/) (requires Cubic Ninja) or [freakyhax](https://plutooo.github.io/freakyhax/) (requires Freaky Forms Deluxe). Secondary exploits like oot3dhax also work, but require homebrew access to set them up.")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
