@@ -321,11 +321,12 @@ class Events:
     async def on_message(self, message):
         if message.channel.is_private:
             return
-        if message.author.name == "GitHub" and message.author.discriminator == "0000" and message.channel.name == "helpers":
-            await self.bot.send_message(self.bot.helpers_channel, "Automatically pulling changes!")
-            call(['git', 'pull'])
-            await self.bot.close()
-            return
+        if message.author.name == "GitHub" and message.author.discriminator == "0000":
+            if message.embeds[0]['title'].startswith('[Kurisu:master]'):
+                await self.bot.send_message(self.bot.helpers_channel, "Automatically pulling changes!")
+                call(['git', 'pull'])
+                await self.bot.close()
+                return
         if message.channel.name.endswith('nofilter'):
             return
         await self.bot.wait_until_all_ready()
