@@ -202,12 +202,12 @@ class Assistance:
         """Help if you have no NAND backup"""
         await self.simple_embed("After you finish configuring Luma3DS, perform a [9.2.0 ctrtransfer](https://3ds.guide/9.2.0-ctrtransfer). Then do [finalizing setup section](https://3ds.guide/finalizing-setup)", title="If you have no NAND backup:")
 
-    @commands.command()
+    @commands.command(aliases=["stock115","stock"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def stock114(self):
         """Advisory for consoles on stock 11.4+ firmware"""
         embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
-        embed.description = "If your 3DS is running stock 11.4+ firmware, you will need a [hardmod boot9strap installation](https://3ds.guide/installing-boot9strap-\(hardmod\)), a [DSiWare exploit based boot9strap installation](https://3ds.guide/installing-boot9strap-\(dsiware\)) (requires a hacked 3ds), or [NTRBoot](https://3ds.guide/installing-boot9strap-\(ntrboot\)) (requires a compatible flashcart and either a hacked 3DS; a [Datel Powersaves](https://3ds.guide/flashing-ntrboot-\(powersaves\)); or a [DS/DS Lite](https://3ds.guide/flashing-ntrboot-\(nds\)))"
+        embed.description = "If your 3DS is running stock 11.4+ firmware, you will need a [hardmod based boot9strap installation](https://3ds.guide/installing-boot9strap-\(hardmod\)), a [DSiWare exploit based boot9strap installation](https://3ds.guide/installing-boot9strap-\(dsiware\)) (requires a hacked 3ds), or a [NTRboot compatible flashcart](https://3ds.guide/installing-boot9strap-\(ntrboot\)) (may require a hacked 3ds or DS(i) console depending on the flashcart)"
         await self.bot.say("", embed=embed)
 
     @commands.command()
