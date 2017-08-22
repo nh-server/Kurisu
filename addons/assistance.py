@@ -214,7 +214,7 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def hbl(self):
         """Get homebrew launcher working on 11.4+ firmware"""
-        await self.simple_embed("If you are looking for homebrew on your stock 11.4+ 3ds, keep in mind Homebrew launcher only works for N3DS and you will need a entrypoint like ninjhax or freakyhax for launching homebrew launcher")
+        await self.simple_embed("If you are looking for homebrew on your stock 11.4+ 3ds, you will need an entrypoint (like ninjhax or freakyhax) for launching homebrew launcher")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
