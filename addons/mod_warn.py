@@ -139,7 +139,7 @@ class ModWarn:
             embed.color = discord.Color.green()
         await self.bot.say("", embed=embed)
 
-    @commands.has_permissions(manage_nicknames=True)
+    @commands.has_permissions(manage_server=True)
     @commands.command(pass_context=True)
     async def copywarns_id2id(self, ctx, user_id1, user_id2):
         """Copy warns from one user ID to another. Overwrites all warns of the target user ID. Staff only."""
