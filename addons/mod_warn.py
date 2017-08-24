@@ -3,6 +3,7 @@ import json
 import time
 from discord.ext import commands
 from sys import argv
+import pprint
 
 class ModWarn:
     """
@@ -137,6 +138,43 @@ class ModWarn:
             embed.description = "ID doesn't exist in saved warnings."
             embed.color = discord.Color.green()
         await self.bot.say("", embed=embed)
+
+    @commands.has_permissions(manage_nicknames=True)
+    @commands.command(pass_context=True)
+    async def copywarns_id2id(self, ctx, user_id1, user_id2):
+        """Copy warns from one user ID to another. Overwrites all warns of the target user ID. Staff only."""
+        with open("data/warns.json", "r") as f:
+            warns = json.load(f)
+        if user_id1 not in warns:
+            await self.bot.say("{} doesn't exist in saved warnings.".format(user_id1))
+            return
+        warn_count = len(warns[user_id1]["warns"])
+        if warn_count == 0:
+            await self.bot.say("{} has no warns!".format(warns[user_id1]["name"]))
+            return
+        warns1 = warns[user_id1]
+        if user_id2 not in warns:
+            warns[user_id2] = {}
+        warns2 = warns[user_id2]
+        if "name" not in warns2:
+            orig_name = ""
+            warns2["name"] = "(copied from {})".format(warns1["name"])
+        else:
+            orig_name = warns2["name"]
+            warns2["name"] = "{} (copied from {})".format(warns2["name"], warns1["name"])
+        warns2["warns"] = warns1["warns"]
+        await self.bot.say("warns1```py\n{}\n```".format(pprint.pformat(warns1)))
+        await self.bot.say("warns2```py\n{}\n```".format(pprint.pformat(warns2)))
+        await self.bot.say("warns_json```py\n{}\n```".format(pprint.pformat(warns)))
+        with open("data/warns.json", "w") as f:
+            json.dump(warns, f)
+        await self.bot.say("{} warns were copied from {} to {}!".format(warn_count, user_id1, user_id2))
+        msg = "📎 **Copied warns**: {} copied {} warns from {} ({}) to ".format(ctx.message.author.mention, warn_count, warns1["name"], user_id1)
+        if orig_name:
+            msg += "{} ({})".format(warns2["name"], user_id2)
+        else:
+            msg += user_id2
+        await self.bot.send_message(self.bot.modlogs_channel, msg)
 
     @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True)
