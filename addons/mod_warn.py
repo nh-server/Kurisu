@@ -163,9 +163,6 @@ class ModWarn:
             orig_name = warns2["name"]
             warns2["name"] = "{} (copied from {})".format(warns2["name"], warns1["name"])
         warns2["warns"] = warns1["warns"]
-        await self.bot.say("warns1```py\n{}\n```".format(pprint.pformat(warns1)))
-        await self.bot.say("warns2```py\n{}\n```".format(pprint.pformat(warns2)))
-        await self.bot.say("warns_json```py\n{}\n```".format(pprint.pformat(warns)))
         with open("data/warns.json", "w") as f:
             json.dump(warns, f)
         await self.bot.say("{} warns were copied from {} to {}!".format(warn_count, user_id1, user_id2))
