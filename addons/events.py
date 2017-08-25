@@ -83,6 +83,7 @@ class Events:
     # terms that should cause a notice but not auto-delete
     piracy_tools_alert = (
         'freshop',
+        'notabug',
     )
 
     drama_alert = (
