@@ -83,7 +83,7 @@ class ModWarn:
             await self.bot.say("Please mention a user.")
             return
         embed = discord.Embed(color=discord.Color.dark_red())
-        embed.set_author(name="Warns for {}#{}".format(member.display_name, member.discriminator), icon_url=member.avatar_url)
+        embed.set_author(name="Warns for {}#{}".format(member.name, member.discriminator), icon_url=member.avatar_url)
         with open("data/warns.json", "r") as f:
             warns = json.load(f)
         # crappy workaround given how dicts are not ordered
