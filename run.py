@@ -31,10 +31,22 @@ config.read("config.ini")
 
 os.makedirs("data", exist_ok=True)
 os.makedirs("data/ninupdates", exist_ok=True)
-# create warns.json if it doesn't exist
-if not os.path.isfile("data/warns.json"):
-    with open("data/warns.json", "w") as f:
-        f.write("{}")
+# create warnsv2.json if it doesn't exist, and convert warns.json if needed
+if not os.path.isfile("data/warnsv2.json"):
+    if os.path.isfile("data/warns.json"):
+        print("Converting warns.json to warnsv2 format")
+        with open("data/warns.json", "r") as f:
+            warns = json.load(f)
+        warnsv2 = {}
+        for user_id, info in warns.items():
+            warnsv2[user_id] = {"name": info["name"], "warns": []}
+            for w_idx in range(len(info["warns"])):
+                warnsv2[user_id]["warns"].append(info["warns"][str(w_idx + 1)])
+        with open("data/warnsv2.json", "w") as f:
+            json.dump(warnsv2, f)
+    else:
+        with open("data/warnsv2.json", "w") as f:
+            f.write("{}")
 
 # create restrictions.json if it doesn't exist
 if not os.path.isfile("data/restrictions.json"):

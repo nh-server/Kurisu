@@ -56,19 +56,17 @@ Thanks for stopping by and have a good time!
             for rst in rsts[member.id]:
                 roles.append(discord.utils.get(self.bot.server.roles, name=rst))
             await self.bot.add_roles(member, *roles)
-        with open("data/warns.json", "r") as f:
+        with open("data/warnsv2.json", "r") as f:
             warns = json.load(f)
         # crappy workaround given how dicts are not ordered
         try:
-            warn_count = len(warns[member.id]["warns"])
-            if warn_count == 0:
+            if len(warns[member.id]["warns"]) == 0:
                 await self.bot.send_message(self.bot.serverlogs_channel, msg)
             else:
                 embed = discord.Embed(color=discord.Color.dark_red())
                 embed.set_author(name="Warns for {}#{}".format(self.bot.escape_name(member.name), member.discriminator), icon_url=member.avatar_url)
-                for key in range(warn_count):
-                    warn = warns[member.id]["warns"][str(key + 1)]
-                    embed.add_field(name="{}: {}".format(key + 1, warn["timestamp"]), value="Issuer: {}\nReason: {}".format(warn["issuer_name"], warn["reason"]))
+                for idx, warn in enumerate(warns[member.id]["warns"]):
+                    embed.add_field(name="{}: {}".format(idx + 1, warn["timestamp"]), value="Issuer: {}\nReason: {}".format(warn["issuer_name"], warn["reason"]))
                 await self.bot.send_message(self.bot.serverlogs_channel, msg, embed=embed)
         except KeyError:  # if the user is not in the file
             await self.bot.send_message(self.bot.serverlogs_channel, msg)
