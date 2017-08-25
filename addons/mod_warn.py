@@ -72,7 +72,7 @@ class ModWarn:
     async def listwarns(self, ctx, user):
         """List warns for a user. Staff and Helpers only."""
         issuer = ctx.message.author
-        if (self.bot.helpers_role not in issuer.roles) and (self.bot.staff_role not in issuer.roles) and (self.bot.verified_role not in issuer.roles) and (self.bot.trusted_role not in issuer.roles):
+        if (self.bot.helpers_role not in issuer.roles) and (self.bot.staff_role not in issuer.roles):
             msg = "{0} This command is limited to Staff and Helpers.".format(issuer.mention)
             await self.bot.say(msg)
             return
@@ -107,7 +107,7 @@ class ModWarn:
     async def listwarnsid(self, ctx, user_id):
         """List warns for a user based on ID. Staff and Helpers only."""
         issuer = ctx.message.author
-        if (self.bot.helpers_role not in issuer.roles) and (self.bot.staff_role not in issuer.roles) and (self.bot.verified_role not in issuer.roles) and (self.bot.trusted_role not in issuer.roles):
+        if (self.bot.helpers_role not in issuer.roles) and (self.bot.staff_role not in issuer.roles):
             msg = "{0} This command is limited to Staff and Helpers.".format(issuer.mention)
             await self.bot.say(msg)
             return

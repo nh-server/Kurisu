@@ -58,7 +58,6 @@ Thanks for stopping by and have a good time!
             await self.bot.add_roles(member, *roles)
         with open("data/warnsv2.json", "r") as f:
             warns = json.load(f)
-        # crappy workaround given how dicts are not ordered
         try:
             if len(warns[member.id]["warns"]) == 0:
                 await self.bot.send_message(self.bot.serverlogs_channel, msg)
