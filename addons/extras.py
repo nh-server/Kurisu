@@ -90,12 +90,12 @@ class Extras:
             return
         msg = await self.bot.say("I'm figuring this out!".format(self.bot.server.name))
         count = await self.bot.estimate_pruned_members(server=self.bot.server, days=days)
-        if days = 1:
+        if days == 1:
             await self.bot.edit_message(msg, "{:,} members were active today in {}!".format(self.bot.server.member_count-count, self.bot.server.name))
         else:
             await self.bot.edit_message(msg, "{:,} members were active in the past {} days in {}!".format(self.bot.server.member_count-count, days, self.bot.server.name))
 
-        
+
     @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True)
     async def prune30(self, ctx, key=""):
