@@ -49,6 +49,7 @@ class FriendCode:
             return
         c.execute('INSERT INTO friend_codes VALUES (?,?)', (int(ctx.message.author.id), fc))
         await self.bot.say("{} Friend code inserted: {}".format(ctx.message.author.mention, self.fc_to_string(fc)))
+        self.conn.commit()
 
     @commands.command(pass_context=True)
     async def fcquery(self, ctx, user):
@@ -76,6 +77,7 @@ class FriendCode:
         c = self.conn.cursor()
         c.execute('DELETE FROM friend_codes WHERE userid = ?', (int(ctx.message.author.id),))
         await self.bot.say("Friend code removed from database.")
+        self.conn.commit()
 
     @commands.command()
     async def fctest(self, fc):
