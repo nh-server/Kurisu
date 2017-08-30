@@ -24,7 +24,7 @@ class FriendCode:
     # based on https://github.com/megumisonoda/SaberBot/blob/master/lib/saberbot/valid_fc.rb
     def verify_fc(self, fc):
         fc = int(fc.replace('-', ''))
-        if fc > 0x7FFFFFFFFF or fc < 0x0100000000:
+        if fc > 0x7FFFFFFFFF:
             return None
         principal_id = fc & 0xFFFFFFFF
         checksum = (fc & 0xFF00000000) >> 32
