@@ -252,6 +252,12 @@ class Memes:
 
     @commands.command(pass_context=True, hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def weebs(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/sPjRKUB.png")
+
+    @commands.command(pass_context=True, hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def whatisr(self, ctx):
         """MEMES?"""
         await self._meme(ctx, "http://i.imgur.com/Z8HhfzJ.jpg")
