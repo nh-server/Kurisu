@@ -136,16 +136,16 @@ class Assistance:
         """Links to astronautlevel's luma commit site."""
         await self.simple_embed("Astronautlevel's Luma3DS commit builds can be found here: https://astronautlevel2.github.io/Luma3DS \n(Warning: most builds here are meant for developers and are untested, use at your own risk!)")
 
-    # Links to 9.2 ctrtransfer guide
+    # Links to ctrtransfer guide
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def ctr92(self):
+    async def ctr(self):
         """Links to ctrtransfer guide"""
-        embed = discord.Embed(title="Guide - 9.2.0 ctrtransfer", color=discord.Color.orange())
+        embed = discord.Embed(title="Guide - ctrtransfer", color=discord.Color.orange())
         embed.set_author(name="Plailect", url="https://3ds.guide/")
         embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
-        embed.url = "https://3ds.guide/9.2.0-ctrtransfer"
-        embed.description = "How to do the 9.2.0-20 ctrtransfer"
+        embed.url = "https://3ds.guide/ctrtransfer"
+        embed.description = "How to do the 11.5.0-38 ctrtransfer"
         await self.bot.say("", embed=embed)
 
     @commands.command()
