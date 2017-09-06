@@ -229,7 +229,7 @@ class Err:
         '009-1000': 'System update required. (friends module?)',
         '009-2913': 'HTTP error',
         '009-4998': '"Local content is newer."\nThe actual cause of this error is unknown.',
-        '009-6106': '"AM error in NIM."\nThe actual cause of this error is unknown.',
+        '009-6106': '"AM error in NIM."\nProbably a bad ticket.',
         '009-8401': 'Update data corrupted. Delete and re-install.',
         '011-3021': 'Cannot find title on Nintendo eShop. Probably incorrect region, or never existed.',
         '011-3136': 'Nintendo eShop is currently unavailable. Try again later.',
