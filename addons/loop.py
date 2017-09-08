@@ -55,8 +55,8 @@ class Loop:
 
                 if (timestamp.minute - 1) % 5 == 0 and timestamp.second == 0:
                     # ugly but it works
-                    # ninupdates_feed = feedparser.parse('https://yls8.mtheall.com/ninupdates/feed.php')
-                    ninupdates_feed = feedparser.parse('./feed.rss')
+                    ninupdates_feed = feedparser.parse('https://yls8.mtheall.com/ninupdates/feed.php')
+                    # ninupdates_feed = feedparser.parse('./feed.rss')
                     reported_systems = []
                     for entry in ninupdates_feed['entries']:
                         system, ver = entry['title'].split()
