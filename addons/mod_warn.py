@@ -60,7 +60,7 @@ class ModWarn:
             await self.bot.kick(member)
         if warn_count >= 5:  # just in case
             self.bot.actions.append("wb:"+member.id)
-            await self.bot.ban(member)
+            await self.bot.ban(member, 0)
         await self.bot.say("{} warned. User has {} warning(s)".format(member.mention, len(warns[member.id]["warns"])))
         msg = "⚠️ **Warned**: {} warned {} (warn #{}) | {}#{}".format(issuer.mention, member.mention, len(warns[member.id]["warns"]), member.name, member.discriminator)
         if reason != "":
