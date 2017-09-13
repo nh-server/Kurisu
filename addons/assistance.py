@@ -262,7 +262,7 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def emptysd(self):
         """What to do if you delete all your SD card contents"""
-        await self.simple_embed("If you have lost the contents of your SD card with CFW, repeat the [finalizing setup](https://3ds.guide/finalizing-setup) page.", color=discord.Color.red())
+        await self.simple_embed("If you have lost the contents of your SD card with CFW, download the latest release of [OCS](https://github.com/Pirater12/ocs/releases/latest) then repeat the [finalizing setup](https://3ds.guide/finalizing-setup) page.", color=discord.Color.red())
 
     # Embed to broken TWL Troubleshooting
     @commands.command()
