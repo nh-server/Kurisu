@@ -166,6 +166,7 @@ class Err:
         120: 'Title/object not found? (fs)',
         141: 'Gamecard not inserted? (fs)',
         190: 'Failed to write file. Partition is full.',
+        228: '(Occurred when NDS card was inserted and attempting to use AM_GetTitleCount on MEDIATYPE_GAME_CARD.) (srv)'
         230: 'Invalid open-flags / permissions? (fs)',
         250: 'FAT operation denied (fs?)',
         271: 'Invalid configuration (mvd).',
