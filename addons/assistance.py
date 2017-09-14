@@ -196,12 +196,6 @@ class Assistance:
         embed.add_field(name="Check your 3DSs IP (Homebrew)", value="1. Open Homebrew Launcher\n2. Press Y")
         await self.bot.say("", embed=embed)
 
-    @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def nobak(self):
-        """Help if you have no NAND backup"""
-        await self.simple_embed("After you finish configuring Luma3DS, perform a [9.2.0 ctrtransfer](https://3ds.guide/9.2.0-ctrtransfer). Then do [finalizing setup section](https://3ds.guide/finalizing-setup)", title="If you have no NAND backup:")
-
     @commands.command(aliases=["stock115","stock"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def stock114(self):
@@ -214,7 +208,7 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def hbl(self):
         """Get homebrew launcher working on 11.4+ firmware"""
-        await self.simple_embed("If you are looking for homebrew on your stock 11.4+ 3DS, you will need an entrypoint (like ninjhax, freakyhax, rpwng, etc) for launching homebrew launcher")
+        await self.simple_embed("If you are looking for homebrew on your stock 11.4+ 3DS, you will need an entrypoint (like ninjhax, freakyhax, etc) for launching homebrew launcher")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -268,7 +262,7 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def emptysd(self):
         """What to do if you delete all your SD card contents"""
-        await self.simple_embed("If you have lost the contents of your SD card with CFW, download homebrew launcher executable [here](https://smealum.github.io/ninjhax2/boot.3dsx)(place it in SD root) and repeat the [finalizing setup](https://3ds.guide/finalizing-setup) page.", color=discord.Color.red())
+        await self.simple_embed("If you have lost the contents of your SD card with CFW, download the latest release of [OCS](https://github.com/Pirater12/ocs/releases/latest) then repeat the [finalizing setup](https://3ds.guide/finalizing-setup) page.", color=discord.Color.red())
 
     # Embed to broken TWL Troubleshooting
     @commands.command()
