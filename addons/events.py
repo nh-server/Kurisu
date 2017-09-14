@@ -78,6 +78,7 @@ class Events:
         'fleashop',
         'ciangle',
         'fieashop',
+        'fefosheep',
     )
 
     # terms that should cause a notice but not auto-delete
