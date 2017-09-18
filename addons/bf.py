@@ -61,7 +61,7 @@ class bf:
             codeptr += 1
             loops += 1
 
-            output = output.replace("@everyone", "@\u200be")
+            output = output.replace("@", "@\u200b")
         await self.bot.say("{}: {}".format(self.bot.escape_name(ctx.message.author.name), output))
         if loops == 50000:
             await self.bot.say("note: capped at 50,000 loops")
