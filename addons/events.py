@@ -335,7 +335,7 @@ class Events:
         if message.author == self.bot.server.me or self.bot.staff_role in message.author.roles or message.channel == self.bot.helpers_channel:  # don't process messages by the bot or staff or in the helpers channel
             return
         await self.scan_message(message)
-        await self.keyword_search(message)
+        # await self.keyword_search(message)
         self.bot.loop.create_task(self.user_spam_check(message))
         self.bot.loop.create_task(self.channel_spam_check(message))
 
