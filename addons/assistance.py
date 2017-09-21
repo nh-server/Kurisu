@@ -201,7 +201,7 @@ class Assistance:
     async def stock114(self):
         """Advisory for consoles on stock 11.4+ firmware"""
         embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
-        embed.description = "If your 3DS is running stock 11.4+ firmware, you will need a [hardmod based boot9strap installation](https://3ds.guide/installing-boot9strap-\(hardmod\)), a [DSiWare exploit based boot9strap installation](https://3ds.guide/installing-boot9strap-\(dsiware\)) (requires a hacked 3ds), or a [NTRboot compatible flashcart](https://3ds.guide/installing-boot9strap-\(ntrboot\)) (may require a hacked 3ds or DS(i) console depending on the flashcart)"
+        embed.description = "Possible options:\n- [NTRBoot](https://3ds.guide/ntrboot) which needs a compatible flashcard and maybe an additional hacked 3ds or DS(i) console depending on the flashcart\n- [DSiWare](https://3ds.guide/installing-boot9strap-\(dsiware\)) which requires a hacked 3ds\n- [Hardmod](https://3ds.guide/installing-boot9strap-\(hardmod\)) which requires soldering **Not for beginners!**"
         await self.bot.say("", embed=embed)
 
     @commands.command()
@@ -262,7 +262,7 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def emptysd(self):
         """What to do if you delete all your SD card contents"""
-        await self.simple_embed("If you have lost the contents of your SD card with CFW, download the latest release of [OCS](https://github.com/Pirater12/ocs/releases/latest) then repeat the [finalizing setup](https://3ds.guide/finalizing-setup) page.", color=discord.Color.red())
+        await self.simple_embed("If you have lost the contents of your SD card with CFW, download homebrew launcher executable [here](https://smealum.github.io/ninjhax2/boot.3dsx)(place it in SD root) and repeat the [finalizing setup](https://3ds.guide/finalizing-setup) page.", color=discord.Color.red())
 
     # Embed to broken TWL Troubleshooting
     @commands.command()
