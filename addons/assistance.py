@@ -201,7 +201,7 @@ class Assistance:
     async def stock114(self):
         """Advisory for consoles on stock 11.4+ firmware"""
         embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
-        embed.description = "Possible options:\n- [NTRBoot](https://3ds.guide/ntrboot) which needs a compatible flashcard and maybe an additional hacked 3DS or DS(i) console depending on the flashcart\n- [DSiWare](https://3ds.guide/installing-boot9strap-\(dsiware\)) which requires a hacked 3ds\n- [Hardmod](https://3ds.guide/installing-boot9strap-\(hardmod\)) which requires soldering **Not for beginners!**\n **Downgrading is impossible1 on 11.4+!**"
+        embed.description = "Possible options:\n- [NTRBoot](https://3ds.guide/ntrboot) which needs a compatible flashcard and maybe an additional hacked 3DS or DS(i) console depending on the flashcart\n- [DSiWare](https://3ds.guide/installing-boot9strap-\(dsiware\)) which requires a hacked 3DS\n- [Hardmod](https://3ds.guide/installing-boot9strap-\(hardmod\)) which requires soldering **Not for beginners!**\n **Downgrading is impossible1 on 11.4+!**"
         await self.bot.say("", embed=embed)
 
     @commands.command()
