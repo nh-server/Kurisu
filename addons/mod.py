@@ -170,6 +170,7 @@ class Mod:
             msg_user = "You lost embed and upload permissions!"
             if reason != "":
                 msg_user += " The given reason is: " + reason
+            msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
             try:
                 await self.bot.send_message(member, msg_user)
             except discord.errors.Forbidden:
@@ -213,6 +214,7 @@ class Mod:
             msg_user = "You lost access to help channels!"
             if reason != "":
                 msg_user += " The given reason is: " + reason
+            msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
             try:
                 await self.bot.send_message(member, msg_user)
             except discord.errors.Forbidden:
