@@ -51,6 +51,8 @@ Thanks for stopping by and have a good time!
             return
         with open("data/restrictions.json", "r") as f:
             rsts = json.load(f)
+        if member.id in self.bot.timemutes:
+            self.bot.add_roles(member, self.bot.muted_role)
         if member.id in rsts:
             roles = []
             for rst in rsts[member.id]:

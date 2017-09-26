@@ -27,7 +27,8 @@ class Loop:
 
     last_hour = datetime.datetime.now().hour
 
-    warning_time_period = datetime.timedelta(minutes=30)
+    warning_time_period_ban = datetime.timedelta(minutes=30)
+    warning_time_period_mute = datetime.timedelta(minutes=10)
 
     async def start_update_loop(self):
         # thanks Luc#5653
@@ -36,6 +37,7 @@ class Loop:
             try:
                 timestamp = datetime.datetime.now()
                 timebans = copy.copy(self.bot.timebans)
+                timemutes = copy.copy(self.bot.timemutes)
                 for ban in timebans.items():
                     if timestamp > ban[1][1]:
                         self.bot.actions.append("tbr:" + ban[0])
@@ -44,10 +46,32 @@ class Loop:
                         await self.bot.send_message(self.bot.modlogs_channel, msg)
                         self.bot.timebans.pop(ban[0])
                     elif not ban[1][2]:
-                        warning_time = ban[1][1] - self.warning_time_period
+                        warning_time = ban[1][1] - self.warning_time_period_ban
                         if timestamp > warning_time:
                             ban[1][2] = True
                             await self.bot.send_message(self.bot.mods_channel, "**Note**: {} will be unbanned in {} minutes.".format(self.bot.escape_name(ban[1][0]), ((ban[1][1] - timestamp).seconds // 60) + 1))
+
+                for mute in timemutes.items():
+                    if timestamp > mute[1][0]:
+                        msg = "🔈 **Mute expired**: <@{}>".format(mute[0])
+                        await self.bot.send_message(self.bot.modlogs_channel, msg)
+                        self.bot.timemutes.pop(mute[0])
+                        member = discord.utils.get(self.bot.server.members, id=mute[0])
+                        if member:
+                            await self.bot.remove_roles(member, self.bot.muted_role)
+                        with open("data/timemutes.json", "r") as f:
+                            timemutes_j = json.load(f)
+                        try:
+                            timemutes_j.pop(mute[0])
+                            with open("data/timemutes.json", "w") as f:
+                                json.dump(timemutes_j, f)
+                        except KeyError:
+                            pass
+                    elif not mute[1][1]:
+                        warning_time = mute[1][0] - self.warning_time_period_mute
+                        if timestamp > warning_time:
+                            mute[1][1] = True
+                            await self.bot.send_message(self.bot.mods_channel, "**Note**: <@{}> will be unmuted in {} minutes.".format(mute[0], ((mute[1][0] - timestamp).seconds // 60) + 1))
 
                 if timestamp.minute == 0 and timestamp.hour != self.last_hour:
                     await self.bot.send_message(self.bot.helpers_channel, "{} has {:,} members at this hour!".format(self.bot.server.name, self.bot.server.member_count))

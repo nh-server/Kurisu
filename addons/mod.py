@@ -1,6 +1,8 @@
+import datetime
 import discord
 import json
 import re
+import time
 from discord.ext import commands
 from subprocess import call
 from sys import argv
@@ -112,13 +114,13 @@ class Mod:
     @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True, name="clear")
     async def purge(self, ctx, limit: int):
-       """Clears a given number of messages. Staff only."""
-       try:
-           await self.bot.purge_from(ctx.message.channel, limit=limit)
-           msg = "🗑 **Cleared**: {} cleared {} messages in {}".format(ctx.message.author.mention, limit, ctx.message.channel.mention)
-           await self.bot.send_message(self.bot.modlogs_channel, msg)
-       except discord.errors.Forbidden:
-           await self.bot.say("💢 I don't have permission to do this.")
+        """Clears a given number of messages. Staff only."""
+        try:
+            await self.bot.purge_from(ctx.message.channel, limit=limit)
+            msg = "🗑 **Cleared**: {} cleared {} messages in {}".format(ctx.message.author.mention, limit, ctx.message.channel.mention)
+            await self.bot.send_message(self.bot.modlogs_channel, msg)
+        except discord.errors.Forbidden:
+            await self.bot.say("💢 I don't have permission to do this.")
 
     @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True, name="mute")
@@ -146,6 +148,64 @@ class Mod:
             await self.bot.say("💢 I don't have permission to do this.")
 
     @commands.has_permissions(manage_nicknames=True)
+    @commands.command(pass_context=True, name="timemute")
+    async def timemute(self, ctx, user, length, *, reason=""):
+        """Mutes a user for a limited period of time so they can't speak. Staff only.\n\nLength format: #d#h#m#s"""
+        try:
+            member = ctx.message.mentions[0]
+            await self.add_restriction(member, "Muted")
+            await self.bot.add_roles(member, self.bot.muted_role)
+            issuer = ctx.message.author
+            # thanks Luc#5653
+            units = {
+                "d": 86400,
+                "h": 3600,
+                "m": 60,
+                "s": 1
+            }
+            seconds = 0
+            match = re.findall("([0-9]+[smhd])", length)  # Thanks to 3dshax server's former bot
+            if match is None:
+                return None
+            for item in match:
+                seconds += int(item[:-1]) * units[item[-1]]
+            timestamp = datetime.datetime.now()
+            delta = datetime.timedelta(seconds=seconds)
+            unmute_time = timestamp + delta
+            unmute_time_string = unmute_time.strftime("%Y-%m-%d %H:%M:%S")
+            with open("data/timemutes.json", "r") as f:
+                timemutes = json.load(f)
+            timemutes[member.id] = unmute_time_string
+            self.bot.timemutes[member.id] = [unmute_time, False]  # last variable is "notified", for <=10 minute notifications
+            with open("data/timemutes.json", "w") as f:
+                json.dump(timemutes, f)
+            msg_user = "You were muted!"
+            if reason != "":
+                msg_user += " The given reason is: " + reason
+            msg_user += "\n\nThis mute expires {} {}.".format(unmute_time_string, time.tzname[0])
+            try:
+                await self.bot.send_message(member, msg_user)
+            except discord.errors.Forbidden:
+                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
+            await self.bot.say("{} can no longer speak.".format(member.mention))
+            msg = "🔇 **Timed mute**: {} muted {} until {} | {}#{}".format(issuer.mention, member.mention, unmute_time_string, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
+            if reason != "":
+                msg += "\n✏️ __Reason__: " + reason
+            else:
+                msg += "\nPlease add an explanation below. In the future, it is recommended to use `.timemute <user> <length> [reason]` as the reason is automatically sent to the user."
+            await self.bot.send_message(self.bot.modlogs_channel, msg)
+            # change to permanent mute
+            if member.id in self.bot.timemutes:
+                self.bot.timemutes.pop(member.id)
+                with open("data/timemutes.json", "r") as f:
+                    timemutes = json.load(f)
+                timemutes.pop(member.id)
+                with open("data/timemutes.json", "w") as f:
+                    json.dump(timemutes, f)
+        except discord.errors.Forbidden:
+            await self.bot.say("💢 I don't have permission to do this.")
+
+    @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True, name="unmute")
     async def unmute(self, ctx, user):
         """Unmutes a user so they can speak. Staff only."""
@@ -156,6 +216,13 @@ class Mod:
             await self.bot.say("{} can now speak again.".format(member.mention))
             msg = "🔈 **Unmuted**: {} unmuted {} | {}#{}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
             await self.bot.send_message(self.bot.modlogs_channel, msg)
+            if member.id in self.bot.timemutes:
+                self.bot.timemutes.pop(member.id)
+                with open("data/timemutes.json", "r") as f:
+                    timemutes = json.load(f)
+                timemutes.pop(member.id)
+                with open("data/timemutes.json", "w") as f:
+                    json.dump(timemutes, f)
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
