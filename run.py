@@ -53,6 +53,11 @@ if not os.path.isfile("data/restrictions.json"):
     with open("data/restrictions.json", "w") as f:
         f.write("{}")
 
+# create timemutes.json if it doesn't exist
+if not os.path.isfile("data/timemutes.json"):
+    with open("data/timemutes.json", "w") as f:
+        f.write("{}")
+
 # create staff.json if it doesn't exist
 if not os.path.isfile("data/staff.json"):
     with open("data/staff.json", "w") as f:
@@ -221,6 +226,14 @@ async def on_ready():
                 timebans.pop(user_id)  # somehow not in the banned list anymore so let's just remove it
         with open("data/timebans.json", "w") as f:
             json.dump(timebans, f)
+
+        # load timemute
+        with open("data/timemutes.json", "r") as f:
+            timemutes = json.load(f)
+        bot.timemutes = {}
+        timemutes_i = copy.copy(timemutes)
+        for user_id, timestamp in timemutes_i.items():
+            bot.timemutes[user_id] = [datetime.datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S"), False]  # last variable is "notified", for <=10 minute notifications
 
         bot.all_ready = True
         bot._is_all_ready.set()
