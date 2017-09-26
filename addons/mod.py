@@ -144,6 +144,14 @@ class Mod:
             else:
                 msg += "\nPlease add an explanation below. In the future, it is recommended to use `.mute <user> [reason]` as the reason is automatically sent to the user."
             await self.bot.send_message(self.bot.modlogs_channel, msg)
+            # change to permanent mute
+            if member.id in self.bot.timemutes:
+                self.bot.timemutes.pop(member.id)
+                with open("data/timemutes.json", "r") as f:
+                    timemutes = json.load(f)
+                timemutes.pop(member.id)
+                with open("data/timemutes.json", "w") as f:
+                    json.dump(timemutes, f)
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
@@ -194,14 +202,6 @@ class Mod:
             else:
                 msg += "\nPlease add an explanation below. In the future, it is recommended to use `.timemute <user> <length> [reason]` as the reason is automatically sent to the user."
             await self.bot.send_message(self.bot.modlogs_channel, msg)
-            # change to permanent mute
-            if member.id in self.bot.timemutes:
-                self.bot.timemutes.pop(member.id)
-                with open("data/timemutes.json", "r") as f:
-                    timemutes = json.load(f)
-                timemutes.pop(member.id)
-                with open("data/timemutes.json", "w") as f:
-                    json.dump(timemutes, f)
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
