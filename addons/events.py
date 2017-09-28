@@ -138,7 +138,7 @@ class Events:
             await self.bot.send_message(self.bot.watchlogs_channel, msg, embed=embed)
         is_help_channel = "assistance" in message.channel.name
         msg = ''.join(char for char in message.content.lower() if char in printable)
-        msg_no_separators = re.sub('[ -]', '', msg)
+        msg_no_separators = re.sub('[ -~]', '', msg)
 
         contains_invite_link = "discordapp.com/invite" in msg or "discord.gg" in msg or "join.skype.com" in msg
         contains_piracy_site_mention = any(x in msg for x in ('3dsiso', '3dschaos', 'wiiuiso', 'madloader', 'darkumbra', 'chaosgamez',))
