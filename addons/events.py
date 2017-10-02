@@ -293,7 +293,7 @@ class Events:
         if message.channel.id not in self.channel_antispam:
             self.channel_antispam[message.channel.id] = []
         self.channel_antispam[message.channel.id].append(message)
-        if len(self.channel_antispam[message.channel.id]) == 25:  # it can trigger it multiple times if I use >. it can't skip to a number so this should work
+        if len(self.channel_antispam[message.channel.id]) == 22:  # it can trigger it multiple times if I use >. it can't skip to a number so this should work
             overwrites_everyone = message.channel.overwrites_for(self.bot.everyone_role)
             overwrites_everyone.send_messages = False
             await self.bot.edit_channel_permissions(message.channel, self.bot.everyone_role, overwrites_everyone)
@@ -302,7 +302,7 @@ class Events:
             # msgs_to_delete = self.user_antispam[message.author.id][:]  # clone list so nothing is removed while going through it
             # for msg in msgs_to_delete:
             #     embed.add_field(name="@"+self.bot.escape_name(msg.author), value="\u200b" + msg.content)  # added zero-width char to prevent an error with an empty string (lazy workaround)
-            # await self.bot.send_message(message.channel, msg_channel)
+            await self.bot.send_message(message.channel, msg_channel)
             log_msg = "🔒 **Auto-locked**: {} locked for spam".format(message.channel.mention)
             await self.bot.send_message(self.bot.modlogs_channel, log_msg, embed=embed)
             await self.bot.send_message(self.bot.mods_channel, log_msg + " @here\nSee {} for a list of deleted messages.".format(self.bot.modlogs_channel.mention))
