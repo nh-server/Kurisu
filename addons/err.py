@@ -252,6 +252,7 @@ class Err:
         '102-2813': 'System is banned by Nintendo. You cannot ask how to fix this issue here.',
         '102-2814': 'System is banned by Nintendo. You cannot ask how to fix this issue here.',
         '102-2815': 'System is banned by Nintendo. You cannot ask how to fix this issue here.',
+        '150-1031': 'Disc could not be read. Either the disc is dirty, the lens is dirty, or the disc is unsupported (i.e. not a Wii or Wii U game).',
         '160-0101': '"Generic error". Can happen when formatting a system with CBHC.',
         '160-0102': 'Error in SLC/MLC or USB.',
         '160-0103': '"The system memory is corrupted (MLC)."',
