@@ -18,7 +18,7 @@ class Extras:
     prune_key = "nokey"
 
     @commands.command()
-    async def kurisu(self):
+    async def kurisu(self, aliases=['about']):
         """About Kurisu"""
         embed = discord.Embed(title="Kurisu", color=discord.Color.green())
         embed.set_author(name="916253 and ihaveahax")
