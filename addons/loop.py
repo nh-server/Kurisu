@@ -29,6 +29,7 @@ class Loop:
 
     warning_time_period_ban = datetime.timedelta(minutes=30)
     warning_time_period_mute = datetime.timedelta(minutes=10)
+    warning_time_period_nohelp = datetime.timedelta(minutes=10)
 
     async def start_update_loop(self):
         # thanks Luc#5653
@@ -77,6 +78,7 @@ class Loop:
                     if timestamp > nohelp[1][0]:
                         msg = "🔈 **No-Help Restriction expired**: <@{}>".format(nohelp[0])
                         await self.bot.send_message(self.bot.modlogs_channel, msg)
+                        await self.bot.send_message(self.bot.helpers_channel, msg)
                         self.bot.timenohelp.pop(nohelp[0])
                         member = discord.utils.get(self.bot.server.members, id=nohelp[0])
                         if member:
@@ -93,7 +95,7 @@ class Loop:
                         warning_time = nohelp[1][0] - self.warning_time_period_nohelp
                         if timestamp > warning_time:
                             nohelp[1][1] = True
-                            await self.bot.send_message(self.bot.mods_channel, "**Note**: <@{}> will be unmuted in {} minutes.".format(nohelp[0], ((nohelp[1][0] - timestamp).seconds // 60) + 1))                           
+                            await self.bot.send_message(self.bot.helpers_channel, "**Note**: <@{}> will be unmuted in {} minutes.".format(nohelp[0], ((nohelp[1][0] - timestamp).seconds // 60) + 1))                           
                             
                 if timestamp.minute == 0 and timestamp.hour != self.last_hour:
                     await self.bot.send_message(self.bot.helpers_channel, "{} has {:,} members at this hour!".format(self.bot.server.name, self.bot.server.member_count))
