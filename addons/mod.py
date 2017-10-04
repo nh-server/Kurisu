@@ -378,6 +378,7 @@ class Mod:
             else:
                 msg += "\nPlease add an explanation below. In the future, it is recommended to use `.timetakehelp <user> <length> [reason]` as the reason is automatically sent to the user."
             await self.bot.send_message(self.bot.modlogs_channel, msg)
+            await self.bot.send_message(self.bot.helpers_channel, msg)
         except discord.errors.Forbidden:
             await self.bot.say("?? I don't have permission to do this.")
  
