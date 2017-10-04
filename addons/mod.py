@@ -294,8 +294,8 @@ class Mod:
                 msg += "\nPlease add an explanation below. In the future, it is recommended to use `.takehelp <user> [reason]` as the reason is automatically sent to the user."
             await self.bot.send_message(self.bot.modlogs_channel, msg)
             await self.bot.send_message(self.bot.helpers_channel, msg)
-			#add to .takehelp
-			if member.id in self.bot.timenohelp:
+            #add to .takehelp
+            if member.id in self.bot.timenohelp:
                 self.bot.timenohelp.pop(member.id)
                 with open("data/timenohelp.json", "r") as f:
                     timenohelp = json.load(f)
@@ -321,7 +321,7 @@ class Mod:
             msg = "⭕️ **Help access restored**: {} restored access to help channels to {} | {}#{}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
             await self.bot.send_message(self.bot.modlogs_channel, msg)
             await self.bot.send_message(self.bot.helpers_channel, msg)
-			#add to .givehelp
+            #add to .givehelp
             if member.id in self.bot.timenohelp:
                 self.bot.timenohelp.pop(member.id)
                 with open("data/timenohelp.json", "r") as f:
@@ -332,7 +332,7 @@ class Mod:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
-	@commands.command(pass_context=True, name="timetakehelp")
+    @commands.command(pass_context=True, name="timetakehelp")
     async def timetakehelp(self, ctx, user, length, *, reason=""):
         """Restricts a user from Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         try:
