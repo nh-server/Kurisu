@@ -35,17 +35,30 @@ class Assistance:
 
     @commands.command(pass_context=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def guide(self, ctx, *, console="auto"):
+    async def guide(self, ctx, *, console=""):
         """Links to Plailect's or FlimFlam69's guide."""
         console = console.lower()
-        if console == "3ds" or (console == "auto" and "wiiu" not in ctx.message.channel.name):
+        if (console == "" and "3ds" in ctx.message.channel.name) or console == "3ds":
             embed = discord.Embed(title="Guide", color=discord.Color(0xCE181E))
             embed.set_author(name="Plailect", url="https://3ds.guide/")
             embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
             embed.url = "https://3ds.guide/"
             embed.description = "A complete guide to 3DS custom firmware, from stock to boot9strap."
             await self.bot.say("", embed=embed)
-        if (console == "wiiu" or console == "wii u") or (console == "auto" and "3ds" not in ctx.message.channel.name):
+        elif (console == "" and "wiiu" in ctx.message.channel.name) or (console == "wiiu" or "wii u"):
+            embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
+            embed.set_author(name="FlimFlam69 & Plailect", url="https://wiiu.guide/")
+            embed.set_thumbnail(url="http://i.imgur.com/CpF12I4.png")
+            embed.url = "https://wiiu.guide/"
+            embed.description = "FlimFlam69 and Plailect's Wii U custom firmware + coldboothax guide"
+            await self.bot.say("", embed=embed)
+        else:
+            embed = discord.Embed(title="Guide", color=discord.Color(0xCE181E))
+            embed.set_author(name="Plailect", url="https://3ds.guide/")
+            embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
+            embed.url = "https://3ds.guide/"
+            embed.description = "A complete guide to 3DS custom firmware, from stock to boot9strap."
+            await self.bot.say("", embed=embed)
             embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
             embed.set_author(name="FlimFlam69 & Plailect", url="https://wiiu.guide/")
             embed.set_thumbnail(url="http://i.imgur.com/CpF12I4.png")
