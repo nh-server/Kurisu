@@ -38,14 +38,14 @@ class Assistance:
     async def guide(self, ctx, *, console=""):
         """Links to Plailect's or FlimFlam69's guide."""
         console = console.lower()
-        if (console == "" and "3ds" in ctx.message.channel.name) or console == "3ds":
+        if (console == "" and "3ds" in ctx.message.channel.name) or console.startswith("3ds"):
             embed = discord.Embed(title="Guide", color=discord.Color(0xCE181E))
             embed.set_author(name="Plailect", url="https://3ds.guide/")
             embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
             embed.url = "https://3ds.guide/"
             embed.description = "A complete guide to 3DS custom firmware, from stock to boot9strap."
             await self.bot.say("", embed=embed)
-        elif (console == "" and "wiiu" in ctx.message.channel.name) or (console == "wiiu" or "wii u"):
+        elif (console == "" and "wiiu" in ctx.message.channel.name) or (console.startswith("wiiu") or console.startswith("wii u")):
             embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
             embed.set_author(name="FlimFlam69 & Plailect", url="https://wiiu.guide/")
             embed.set_thumbnail(url="http://i.imgur.com/CpF12I4.png")
