@@ -24,6 +24,8 @@ class KickBan:
             except IndexError:
                 await self.bot.say("Please mention a user.")
                 return
+            if member == ctx.message.author:
+                return await self.bot.say("You can't kick yourself!")
             msg = "You were kicked from {}.".format(self.bot.server.name)
             if reason != "":
                 msg += " The given reason is: " + reason
@@ -53,6 +55,8 @@ class KickBan:
             except IndexError:
                 await self.bot.say("Please mention a user.")
                 return
+            if member == ctx.message.author:
+                return await self.bot.say("You can't ban yourself!")
             msg = "You were banned from {}.".format(self.bot.server.name)
             if reason != "":
                 msg += " The given reason is: " + reason
@@ -82,6 +86,8 @@ class KickBan:
             except IndexError:
                 await self.bot.say("Please mention a user.")
                 return
+            if member == ctx.message.author:
+                return await self.bot.say("You can't ban yourself!")
             self.bot.actions.append("ub:"+member.id)
             await self.bot.ban(member, 0)
             await self.bot.say("{} is now b&. 👍".format(self.bot.escape_name(member)))
@@ -102,6 +108,8 @@ class KickBan:
         except IndexError:
             await self.bot.say("Please mention a user.")
             return
+        if member == ctx.message.author:
+                return await self.bot.say("You can't kick yourself!")
         issuer = ctx.message.author
         # thanks Luc#5653
         units = {
@@ -153,6 +161,8 @@ class KickBan:
             except IndexError:
                 await self.bot.say("Please mention a user.")
                 return
+            if member == ctx.message.author:
+                return await self.bot.say("You can't kick yourself!")
             issuer = ctx.message.author
             with open("data/softbans.json", "r") as f:
                 softbans = json.load(f)
