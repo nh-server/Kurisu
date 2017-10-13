@@ -262,7 +262,7 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def emptysd(self):
         """What to do if you delete all your SD card contents"""
-        await self.simple_embed("If you have lost the contents of your SD card with CFW, download homebrew launcher executable [here](https://smealum.github.io/ninjhax2/boot.3dsx)(place it in SD root) and repeat the [finalizing setup](https://3ds.guide/finalizing-setup) page.", color=discord.Color.red())
+        await self.simple_embed("If you have lost the contents of your SD card with CFW, you will need in SD root:\n-Homebrew launcher executable [here](https://smealum.github.io/ninjhax2/boot.3dsx)(boot.3dsx)\n-Luma3ds latest release [here](https://github.com/AuroraWright/Luma3DS/releases/latest)(boot.firm)\nThen repeat the [finalizing setup](https://3ds.guide/finalizing-setup) page.", color=discord.Color.red())
 
     # Embed to broken TWL Troubleshooting
     @commands.command()
