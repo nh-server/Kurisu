@@ -22,7 +22,7 @@ class Rules:
         """States some stuff about no assistance with bans"""
         await self.bot.say("Please refrain from asking for or giving assistance with unbanning consoles which have been banned from online services.\nReminder: sharing files that allow other users to evade Nintendo issued bans is a bannable offense.")
 
-    @commands.command()
+    @commands.command(aliases=['r11'])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def pirate(self):
         """Hey! You can't steal another trainer's Pokémon!"""
@@ -107,7 +107,7 @@ class Rules:
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def r11(self):
+    async def realr11(self):
         """Displays rule 11."""
         await self.simple_embed("The Piracy rule: Don't...\n"
                                     " • ask how to pirate games\n"
@@ -118,7 +118,7 @@ class Rules:
                                     " • discuss piracy in the assistance channels\n"
                                     " • in general commit copyright violations\n\n"
 
-                                    "If you simply need to tell someone to not ask about piracy, consider `.pirate` instead.", title="Rule 11")
+                                    "If you simply need to tell someone to not ask about piracy, consider `.pirate` instead. `.r11` was changed to match `.pirate` due to its large embed.", title="Rule 11")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
