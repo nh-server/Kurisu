@@ -201,14 +201,14 @@ class Assistance:
     async def stock114(self):
         """Advisory for consoles on stock 11.4+ firmware"""
         embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
-        embed.description = "You have 3 possible options for installing CFW:\n- [NTRBoot](https://3ds.guide/ntrboot) which needs a compatible DS flashcart and maybe an additional hacked 3DS or DS(i) console depending on the flashcart\n- [DSiWare](https://3ds.guide/installing-boot9strap-\(dsiware\)) which requires a hacked 3DS\n- [Hardmod](https://3ds.guide/installing-boot9strap-\(hardmod\)) which requires soldering **Not for beginners!**\n **Downgrading is impossible on 11.4+!**"
+        embed.description = "You have 3 possible options for installing CFW:\n- [NTRBoot](https://3ds.guide/ntrboot) which needs a compatible DS flashcart and maybe an additional hacked 3DS or DS(i) console depending on the flashcart\n- [DSiWare](https://3ds.guide/installing-boot9strap-\(dsiware\)) which involves system transferring from a hacked 3DS to an unhacked 3DS\n- [Hardmod](https://3ds.guide/installing-boot9strap-\(hardmod\)) which requires soldering **Not for beginners!**\n **Downgrading is impossible on 11.4+!**"
         await self.bot.say("", embed=embed)
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def hbl(self):
         """Get homebrew launcher working on 11.4+ firmware"""
-        await self.simple_embed("If you are looking for homebrew on your stock 11.4+ 3DS, you will need an entrypoint (like ninjhax, freakyhax, etc) for launching homebrew launcher")
+        await self.simple_embed("If you are looking to get access to the homebrew launcher on your unhacked 11.4+ 3DS (Not CFW or CIA installation!), then you will need an exploit like ninjhax, stickerhax or oot3dhax. \nPlease note that all of these exploits require prior access to the homebrew launcher to install them. \n\nIf you want access to homebrew on 11.4+, it is recommended that you rather install CFW, as a NTRBoot compatible DS flashcart costs a lot less than a copy of Freakyforms Deluxe, Cubic Ninja or Ocarina of Time 3D.")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -270,9 +270,9 @@ class Assistance:
     async def twl(self):
         """Information on how to fix a broken TWL Partition"""
         embed = discord.Embed(title="Fix broken TWL", color=discord.Color(0xA2BAE0))
-        embed.set_author(name="Plailect", url="https://3ds.guide/troubleshooting#twl_broken")
+        embed.set_author(name="Plailect", url="https://3ds.guide/troubleshooting#dsi--ds-functionality-is-broken-after-completing-the-guide")
         embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
-        embed.url = "https://3ds.guide/troubleshooting#twl_broken"
+        embed.url = "https://3ds.guide/troubleshooting#dsi--ds-functionality-is-broken-after-completing-the-guide"
         embed.description = "Instructions on how to fix a broken TWL after doing the guide"
         await self.bot.say("", embed=embed)
 
