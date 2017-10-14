@@ -208,7 +208,7 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def hbl(self):
         """Get homebrew launcher working on 11.4+ firmware"""
-        await self.simple_embed("If you are looking to get access to the homebrew launcher on your unhacked 11.4+ 3DS (Not CFW or CIA installation!), then you will need an exploit like ninjhax, stickerhax, freakyhax or oot3dhax. \nPlease note that all of these exploits (besides ninjhax, or oothax if you have a powersaves) require prior access to the homebrew launcher to install them. \n\nIf you want access to homebrew on 11.4+, it is recommended that you rather install CFW, as a NTRBoot compatible DS flashcart costs a lot less than a copy of Freakyforms Deluxe, Cubic Ninja, Paper Mario Sticker Star or Ocarina of Time 3D.")
+        await self.simple_embed("If you are looking to get access to the homebrew launcher on your unhacked 11.4+ 3DS (Not CFW or CIA installation!), then you will need an exploit like ninjhax, stickerhax, freakyhax or oot3dhax. \nPlease note that stickerhax and oot3dhax require prior access to the homebrew launcher to install the hack on them (Or you can use a powersaves with oot3d)\n\nIf you want access to homebrew on 11.4+, it is recommended that you rather install CFW, as a NTRBoot compatible DS flashcart costs a lot less than a copy of Freakyforms Deluxe, Cubic Ninja, Paper Mario Sticker Star or Ocarina of Time 3D.")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
