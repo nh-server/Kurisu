@@ -61,6 +61,7 @@ class Events:
         'wiiuusbhelper',
         'w11uusbh3lper'
         'funkii',
+        'funkey',
         'funk11',
         'freeshp',
         'frees.hop',
