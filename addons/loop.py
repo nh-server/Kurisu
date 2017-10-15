@@ -39,6 +39,7 @@ class Loop:
                 timestamp = datetime.datetime.now()
                 timebans = copy.copy(self.bot.timebans)
                 timemutes = copy.copy(self.bot.timemutes)
+                timenohelp = copy.copy(self.bot.timenohelp)
                 for ban in timebans.items():
                     if timestamp > ban[1][1]:
                         self.bot.actions.append("tbr:" + ban[0])
@@ -74,7 +75,7 @@ class Loop:
                             mute[1][1] = True
                             await self.bot.send_message(self.bot.mods_channel, "**Note**: <@{}> will be unmuted in {} minutes.".format(mute[0], ((mute[1][0] - timestamp).seconds // 60) + 1))
 
-                 for nohelp in timenohelp.items():
+                for nohelp in timenohelp.items():
                     if timestamp > nohelp[1][0]:
                         msg = "🔈 **No-Help Restriction expired**: <@{}>".format(nohelp[0])
                         await self.bot.send_message(self.bot.modlogs_channel, msg)
@@ -96,7 +97,7 @@ class Loop:
                         if timestamp > warning_time:
                             nohelp[1][1] = True
                             await self.bot.send_message(self.bot.helpers_channel, "**Note**: <@{}> will be unmuted in {} minutes.".format(nohelp[0], ((nohelp[1][0] - timestamp).seconds // 60) + 1))                           
-                            
+
                 if timestamp.minute == 0 and timestamp.hour != self.last_hour:
                     await self.bot.send_message(self.bot.helpers_channel, "{} has {:,} members at this hour!".format(self.bot.server.name, self.bot.server.member_count))
                     self.last_hour = timestamp.hour
