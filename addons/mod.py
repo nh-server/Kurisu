@@ -363,16 +363,17 @@ class Mod:
             self.bot.timenohelp[member.id] = [unnohelp_time, False]  # last variable is "notified", for <=10 minute notifications
             with open("data/timenohelp.json", "w") as f:
                 json.dump(timenohelp, f)
-            msg_user = "You were temporarily no-helped! If you wish discuss this, please use <#270890866820775946>."
+            msg_user = "You lost access to help channels temporarily!"
             if reason != "":
                 msg_user += " The given reason is: " + reason
+            msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
             msg_user += "\n\nThis restriction expires {} {}.".format(unnohelp_time_string, time.tzname[0])
             try:
                 await self.bot.send_message(member, msg_user)
             except discord.errors.Forbidden:
                 pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
             await self.bot.say("{} can no longer speak in Assistance Channels.".format(member.mention))
-            msg = "?? **Timed No-Help**: {} restricted {} until {} | {}#{}".format(issuer.mention, member.mention, unnohelp_time_string, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
+            msg = "🚫 **Timed No-Help**: {} restricted {} until {} | {}#{}".format(issuer.mention, member.mention, unnohelp_time_string, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
             if reason != "":
                 msg += "\n?? __Reason__: " + reason
             else:
@@ -381,7 +382,7 @@ class Mod:
             await self.bot.send_message(self.bot.helpers_channel, msg)
         except discord.errors.Forbidden:
             await self.bot.say("?? I don't have permission to do this.")
- 
+
 
     @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True, name="probate")
