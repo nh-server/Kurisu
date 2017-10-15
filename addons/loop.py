@@ -96,7 +96,7 @@ class Loop:
                         warning_time = nohelp[1][0] - self.warning_time_period_nohelp
                         if timestamp > warning_time:
                             nohelp[1][1] = True
-                            await self.bot.send_message(self.bot.helpers_channel, "**Note**: <@{}> will be unmuted in {} minutes.".format(nohelp[0], ((nohelp[1][0] - timestamp).seconds // 60) + 1))
+                            await self.bot.send_message(self.bot.helpers_channel, "**Note**: <@{}> no-help restriction will expire in {} minutes.".format(nohelp[0], ((nohelp[1][0] - timestamp).seconds // 60) + 1))
 
                 if timestamp.minute == 0 and timestamp.hour != self.last_hour:
                     await self.bot.send_message(self.bot.helpers_channel, "{} has {:,} members at this hour!".format(self.bot.server.name, self.bot.server.member_count))

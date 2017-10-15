@@ -375,14 +375,13 @@ class Mod:
             await self.bot.say("{} can no longer speak in Assistance Channels.".format(member.mention))
             msg = "🚫 **Timed No-Help**: {} restricted {} until {} | {}#{}".format(issuer.mention, member.mention, unnohelp_time_string, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
             if reason != "":
-                msg += "\n?? __Reason__: " + reason
+                msg += "\n✏️ __Reason__: " + reason
             else:
                 msg += "\nPlease add an explanation below. In the future, it is recommended to use `.timetakehelp <user> <length> [reason]` as the reason is automatically sent to the user."
             await self.bot.send_message(self.bot.modlogs_channel, msg)
             await self.bot.send_message(self.bot.helpers_channel, msg)
         except discord.errors.Forbidden:
             await self.bot.say("?? I don't have permission to do this.")
-
 
     @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True, name="probate")
