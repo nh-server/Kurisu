@@ -164,11 +164,11 @@ class Events:
                 await self.bot.delete_message(message)
             except discord.errors.NotFound:
                 pass
+            await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned a blocked site in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
             try:
                 await self.bot.send_message(message.author, "Please read {}. This site may be misinterpreted as legitimate and cause users harm, therefore your message was automatically deleted.".format(self.bot.welcome_channel.mention), embed=embed)
             except discord.errors.Forbidden:
-                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
-            await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned a blocked site in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
+                await self.bot.send_message(self.bot.messagelogs_channel, "{} did not recieve a direct message".format(message.author.mention))
         if contains_drama_alert:
             #await self.bot.send_message(self.bot.messagelogs_channel, "✉️ **Potential drama/heated debate Warning**: {} posted a blacklisted word in {}\n------------------\n{}".format(message.author.mention, message.channel.mention, message.content))
             await self.bot.send_message(self.bot.messagelogs_channel, "**Potential drama/heated debate Warning**: {} posted a blacklisted word in {}".format(message.author.mention, message.channel.mention), embed=embed)
@@ -177,11 +177,11 @@ class Events:
                 await self.bot.delete_message(message)
             except discord.errors.NotFound:
                 pass
+            await self.bot.send_message(self.bot.messagelogs_channel, "**Bad tool**: {} mentioned a piracy tool in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
             try:
                 await self.bot.send_message(message.author, "Please read {}. You cannot mention tools used for piracy, therefore your message was automatically deleted.".format(self.bot.welcome_channel.mention), embed=embed)
             except discord.errors.Forbidden:
-                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
-            await self.bot.send_message(self.bot.messagelogs_channel, "**Bad tool**: {} mentioned a piracy tool in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
+                await self.bot.send_message(self.bot.messagelogs_channel, "{} did not recieve a direct message".format(message.author.mention))
         if contains_piracy_tool_alert_mention:
             await self.bot.send_message(self.bot.messagelogs_channel, "**Bad tool**: {} likely mentioned a piracy tool in {}".format(message.author.mention, message.channel.mention), embed=embed)
         if contains_piracy_site_mention or contains_piracy_url_mention:
@@ -189,32 +189,32 @@ class Events:
                 await self.bot.delete_message(message)
             except discord.errors.NotFound:
                 pass
+            await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned a piracy site directly in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
             try:
                 await self.bot.send_message(message.author, "Please read {}. You cannot mention sites used for piracy directly, therefore your message was automatically deleted.".format(self.bot.welcome_channel.mention), embed=embed)
             except discord.errors.Forbidden:
-                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
-            await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned a piracy site directly in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
+                await self.bot.send_message(self.bot.messagelogs_channel, "{} did not recieve a direct message".format(message.author.mention))
         elif contains_piracy_site_mention_indirect:
             if is_help_channel:
                 try:
                     await self.bot.delete_message(message)
                 except discord.errors.NotFound:
                     pass
+            await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned a piracy site indirectly in {}{}".format(message.author.mention, message.channel.mention, " (message deleted)" if is_help_channel else ""), embed=embed)
                 try:
                     await self.bot.send_message(message.author, "Please read {}. You cannot mention sites used for piracy in the help-and-questions channels directly or indirectly, therefore your message was automatically deleted.".format(self.bot.welcome_channel.mention), embed=embed)
                 except discord.errors.Forbidden:
-                    pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
-            await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned a piracy site indirectly in {}{}".format(message.author.mention, message.channel.mention, " (message deleted)" if is_help_channel else ""), embed=embed)
+                    await self.bot.send_message(self.bot.messagelogs_channel, "{} did not recieve a direct message".format(message.author.mention))
         if contains_unbanning_stuff:
             try:
                 await self.bot.delete_message(message)
             except discord.errors.NotFound:
                 pass
+            await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned an unbanning site/service/program directly in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
             try:
                 await self.bot.send_message(message.author, "Please read {}. You cannot mention sites, programs or services used for unbanning, therefore your message was automatically deleted.".format(self.bot.welcome_channel.mention), embed=embed)
             except discord.errors.Forbidden:
-                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
-            await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned an unbanning site/service/program directly in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
+                pass  await self.bot.send_message(self.bot.messagelogs_channel, "{} did not recieve a direct message".format(message.author.mention))
 
         # check for guide mirrors and post the actual link
         urls = re.findall(r'(https?://\S+)', msg)
@@ -231,11 +231,11 @@ class Events:
                 await self.bot.delete_message(message)
             except discord.errors.NotFound:
                 pass
+            await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned a blocked guide mirror in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
             try:
                 await self.bot.send_message(message.author, msg_user, embed=embed)
             except discord.errors.Forbidden:
-                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
-            await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned a blocked guide mirror in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
+                await self.bot.send_message(self.bot.messagelogs_channel, "{} did not recieve a direct message".format(message.author.mention))
 
 
     async def keyword_search(self, message):
