@@ -220,7 +220,7 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def bigsd(self):
         """SD bigger than 32GB"""
-        await self.simple_embed("If you want to change your SD card to one bigger than 32GB then you'll have to format it to FAT32.\nYou can do this with the tool of your preference.\nFormatter examples:\n- [guiformat - Windows](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm)\n- [gparted - Linux](http://gparted.org/download.php)", title="Big SD cards")
+        await self.simple_embed("If you want to change your SD card to one bigger than 32GB then you'll have to format it to FAT32.\nYou can do this with the tool of your preference.\nFormatter examples:\n- [guiformat - Windows](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm)\n- [gparted - Linux](http://gparted.org/download.php)\n- [Disk Utility - macOS](https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010) (Always choose \"MS-DOS (FAT)\" regardless of size, not ExFAT.)", title="Big SD cards")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -346,7 +346,7 @@ class Assistance:
         embed.url = "https://pastebin.com/sx8HYULr"
         embed.description = "How to dump/build CIAs using GodMode9"
         await self.bot.say("", embed=embed)
-        
+
     # Embed to ih8ih8sn0w's layeredfs guide
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
