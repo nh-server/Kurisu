@@ -201,14 +201,14 @@ class Assistance:
     async def stock114(self):
         """Advisory for consoles on stock 11.4+ firmware"""
         embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
-        embed.description = "You have 3 possible options for installing CFW:\n- [NTRBoot](https://3ds.guide/ntrboot) which needs a compatible DS flashcart and maybe an additional hacked 3DS or DS(i) console depending on the flashcart\n- [DSiWare](https://3ds.guide/installing-boot9strap-\(dsiware\)) which requires a hacked 3DS\n- [Hardmod](https://3ds.guide/installing-boot9strap-\(hardmod\)) which requires soldering **Not for beginners!**\n **Downgrading is impossible on 11.4+!**"
+        embed.description = "You have 3 possible options for installing CFW:\n- [NTRBoot](https://3ds.guide/ntrboot) which needs a compatible DS flashcart and maybe an additional hacked 3DS or DS(i) console depending on the flashcart\n- [DSiWare](https://3ds.guide/installing-boot9strap-\(dsiware\)) which involves system transferring from a hacked 3DS to an unhacked 3DS\n- [Hardmod](https://3ds.guide/installing-boot9strap-\(hardmod\)) which requires soldering **Not for beginners!**\n **Downgrading is impossible on 11.4+!**"
         await self.bot.say("", embed=embed)
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def hbl(self):
         """Get homebrew launcher working on 11.4+ firmware"""
-        await self.simple_embed("If you are looking for homebrew on your stock 11.4+ 3DS, you will need an entrypoint (like ninjhax, freakyhax, etc) for launching homebrew launcher")
+        await self.simple_embed("If you are looking to get access to the homebrew launcher on your unhacked 11.4+ 3DS (Not CFW or CIA installation!), then you will need an exploit like ninjhax, stickerhax, freakyhax or oot3dhax. \nPlease note that stickerhax and oot3dhax require prior access to the homebrew launcher to install the hack on them (Or you can use a powersaves with oot3d)\n\nIf you want access to homebrew on 11.4+, it is recommended that you rather install CFW, as a NTRBoot compatible DS flashcart costs a lot less than a copy of Freakyforms Deluxe, Cubic Ninja, Paper Mario Sticker Star or Ocarina of Time 3D.")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -220,7 +220,7 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def bigsd(self):
         """SD bigger than 32GB"""
-        await self.simple_embed("If you want to change your SD card to one bigger than 32GB then you'll have to format it to FAT32.\nYou can do this with the tool of your preference.\nFormatter examples:\n- [guiformat - Windows](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm)\n- [gparted - Linux](http://gparted.org/download.php)", title="Big SD cards")
+        await self.simple_embed("If you want to change your SD card to one bigger than 32GB then you'll have to format it to FAT32.\nYou can do this with the tool of your preference.\nFormatter examples:\n- [guiformat - Windows](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm)\n- [gparted - Linux](http://gparted.org/download.php)\n- [Disk Utility - macOS](https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010) (Always choose \"MS-DOS (FAT)\" regardless of size, not ExFAT.)", title="Big SD cards")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -262,7 +262,7 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def emptysd(self):
         """What to do if you delete all your SD card contents"""
-        await self.simple_embed("If you have lost the contents of your SD card with CFW, download homebrew launcher executable [here](https://smealum.github.io/ninjhax2/boot.3dsx)(place it in SD root) and repeat the [finalizing setup](https://3ds.guide/finalizing-setup) page.", color=discord.Color.red())
+        await self.simple_embed("If you have lost the contents of your SD card with CFW, you will need in SD root:\n-Homebrew launcher executable [here](https://smealum.github.io/ninjhax2/boot.3dsx)\n-`boot.firm` from [luma3ds latest release 7z](https://github.com/AuroraWright/Luma3DS/releases/latest)\nThen repeat the [finalizing setup](https://3ds.guide/finalizing-setup) page.", color=discord.Color.red())
 
     # Embed to broken TWL Troubleshooting
     @commands.command()
@@ -270,9 +270,9 @@ class Assistance:
     async def twl(self):
         """Information on how to fix a broken TWL Partition"""
         embed = discord.Embed(title="Fix broken TWL", color=discord.Color(0xA2BAE0))
-        embed.set_author(name="Plailect", url="https://3ds.guide/troubleshooting#twl_broken")
+        embed.set_author(name="Plailect", url="https://3ds.guide/troubleshooting#dsi--ds-functionality-is-broken-after-completing-the-guide")
         embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
-        embed.url = "https://3ds.guide/troubleshooting#twl_broken"
+        embed.url = "https://3ds.guide/troubleshooting#dsi--ds-functionality-is-broken-after-completing-the-guide"
         embed.description = "Instructions on how to fix a broken TWL after doing the guide"
         await self.bot.say("", embed=embed)
 
@@ -346,7 +346,7 @@ class Assistance:
         embed.url = "https://pastebin.com/sx8HYULr"
         embed.description = "How to dump/build CIAs using GodMode9"
         await self.bot.say("", embed=embed)
-        
+
     # Embed to ih8ih8sn0w's layeredfs guide
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
