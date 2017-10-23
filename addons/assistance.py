@@ -15,7 +15,7 @@ class Assistance:
         embed.description = text
         await self.bot.say("", embed=embed)
 
-    @commands.command(pass_context=True, name="sr", hidden=True)
+    @commands.command(pass_context=True, aliases=["sr", "Sr", "sR", "SR"], hidden=True)
     async def staffreq(self, ctx, *, msg_request=""):
         """Request staff, with optional additional text. Helpers, Staff, Verified only."""
         author = ctx.message.author
