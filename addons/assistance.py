@@ -358,7 +358,6 @@ class Assistance:
         embed.url = "https://pastebin.com/QdzBv4Te"
         embed.description = "How to use Luma 8.0+ LayeredFs for ROM Hacking."
         await self.bot.say("", embed=embed)
-
     
     # Embed to Sergey's wireless transfer guide    
     @commands.command()
@@ -371,7 +370,6 @@ class Assistance:
         embed.url = "https://gist.github.com/PixelSergey/ae2c003fc68bfab21ccbb3bfeb6fba46"
         embed.description = "How to transfer files wirelessly between your 3DS and computer"
         await self.bot.say("", embed=embed)
-
 
     # Information about sighax
     @commands.command()
