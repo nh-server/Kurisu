@@ -80,6 +80,10 @@ class Events:
         'ciangle',
         'fieashop',
         'fefosheep',
+        'villian3ds',
+        'vi11ian3ds',
+        'vi1lian3ds',
+        'vil1ian3ds',
     )
 
     # terms that should cause a notice but not auto-delete
