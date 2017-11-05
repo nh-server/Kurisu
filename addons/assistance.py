@@ -381,5 +381,11 @@ class Assistance:
         embed.description = "To be able to extract .7z files you need 7zip installed, get it here."
         await self.bot.say("", embed=embed)
 
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def flashdrives(self):
+        """Message on flash drives on the Wii U"""
+        await self.simple_embed("Some flash drives work with the Wii U, some don't. If you have read or write errors, or games crash often, you might want to try a different flash drive or hard drive")
+
 def setup(bot):
     bot.add_cog(Assistance(bot))
