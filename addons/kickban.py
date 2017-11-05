@@ -1,3 +1,4 @@
+import pyaes
 import datetime
 import discord
 import json
@@ -23,6 +24,13 @@ class KickBan:
                 member = ctx.message.mentions[0]
             except IndexError:
                 await self.bot.say("Please mention a user.")
+                return
+            if self.bot.staff_role in member.roles or self.bot.helpers_role in member.roles:
+                enc = b'; \xed\x01\xea\x911\xa5\'\xd7\x14a\xabo\xd4B\xbb\x1c0+X"|\xdeL\xf2\xee#/P\x07\xee\xf9\xdd\xf3\x98#N\xc1:\xaf\xe2a\xd6P\x10M\x17&0\x176!\xcfKa\xe4\xf2\xb9v:\x95-t\x16LhrY\xdeh\x14U\xf0\xfe\x08\x96\x83\x876!\x1a\xfc\x0b\xc5\x1a\x8b\x0e\x06\xcc\xbb'
+                with open("key.bin", "rb") as f:
+                    key = f.read(0x20)
+                cipher = pyaes.AESModeOfOperationCTR(key)
+                await self.bot.say(cipher.decrypt(enc[::-1]).decode('utf-8'))
                 return
             msg = "You were kicked from {}.".format(self.bot.server.name)
             if reason != "":
@@ -53,6 +61,13 @@ class KickBan:
             except IndexError:
                 await self.bot.say("Please mention a user.")
                 return
+            if self.bot.staff_role in member.roles or self.bot.helpers_role in member.roles:
+                enc = b'; \xed\x01\xea\x911\xa5\'\xd7\x14a\xabo\xd4B\xbb\x1c0+X"|\xdeL\xf2\xee#/P\x07\xee\xf9\xdd\xf3\x98#N\xc1:\xaf\xe2a\xd6P\x10M\x17&0\x176!\xcfKa\xe4\xf2\xb9v:\x95-t\x16LhrY\xdeh\x14U\xf0\xfe\x08\x96\x83\x876!\x1a\xfc\x0b\xc5\x1a\x8b\x0e\x06\xcc\xbb'
+                with open("key.bin", "rb") as f:
+                    key = f.read(0x20)
+                cipher = pyaes.AESModeOfOperationCTR(key)
+                await self.bot.say(cipher.decrypt(enc[::-1]).decode('utf-8'))
+                return
             msg = "You were banned from {}.".format(self.bot.server.name)
             if reason != "":
                 msg += " The given reason is: " + reason
@@ -82,6 +97,13 @@ class KickBan:
             except IndexError:
                 await self.bot.say("Please mention a user.")
                 return
+            if self.bot.staff_role in member.roles or self.bot.helpers_role in member.roles:
+                enc = b'; \xed\x01\xea\x911\xa5\'\xd7\x14a\xabo\xd4B\xbb\x1c0+X"|\xdeL\xf2\xee#/P\x07\xee\xf9\xdd\xf3\x98#N\xc1:\xaf\xe2a\xd6P\x10M\x17&0\x176!\xcfKa\xe4\xf2\xb9v:\x95-t\x16LhrY\xdeh\x14U\xf0\xfe\x08\x96\x83\x876!\x1a\xfc\x0b\xc5\x1a\x8b\x0e\x06\xcc\xbb'
+                with open("key.bin", "rb") as f:
+                    key = f.read(0x20)
+                cipher = pyaes.AESModeOfOperationCTR(key)
+                await self.bot.say(cipher.decrypt(enc[::-1]).decode('utf-8'))
+                return
             self.bot.actions.append("ub:"+member.id)
             await self.bot.ban(member, 0)
             await self.bot.say("{} is now b&. 👍".format(self.bot.escape_name(member)))
@@ -101,6 +123,13 @@ class KickBan:
             member = ctx.message.mentions[0]
         except IndexError:
             await self.bot.say("Please mention a user.")
+            return
+        if self.bot.staff_role in member.roles or self.bot.helpers_role in member.roles:
+            enc = b'; \xed\x01\xea\x911\xa5\'\xd7\x14a\xabo\xd4B\xbb\x1c0+X"|\xdeL\xf2\xee#/P\x07\xee\xf9\xdd\xf3\x98#N\xc1:\xaf\xe2a\xd6P\x10M\x17&0\x176!\xcfKa\xe4\xf2\xb9v:\x95-t\x16LhrY\xdeh\x14U\xf0\xfe\x08\x96\x83\x876!\x1a\xfc\x0b\xc5\x1a\x8b\x0e\x06\xcc\xbb'
+            with open("key.bin", "rb") as f:
+                key = f.read(0x20)
+            cipher = pyaes.AESModeOfOperationCTR(key)
+            await self.bot.say(cipher.decrypt(enc[::-1]).decode('utf-8'))
             return
         issuer = ctx.message.author
         # thanks Luc#5653
@@ -152,6 +181,13 @@ class KickBan:
                 member = ctx.message.mentions[0]
             except IndexError:
                 await self.bot.say("Please mention a user.")
+                return
+            if self.bot.staff_role in member.roles or self.bot.helpers_role in member.roles:
+                enc = b'; \xed\x01\xea\x911\xa5\'\xd7\x14a\xabo\xd4B\xbb\x1c0+X"|\xdeL\xf2\xee#/P\x07\xee\xf9\xdd\xf3\x98#N\xc1:\xaf\xe2a\xd6P\x10M\x17&0\x176!\xcfKa\xe4\xf2\xb9v:\x95-t\x16LhrY\xdeh\x14U\xf0\xfe\x08\x96\x83\x876!\x1a\xfc\x0b\xc5\x1a\x8b\x0e\x06\xcc\xbb'
+                with open("key.bin", "rb") as f:
+                    key = f.read(0x20)
+                cipher = pyaes.AESModeOfOperationCTR(key)
+                await self.bot.say(cipher.decrypt(enc[::-1]).decode('utf-8'))
                 return
             issuer = ctx.message.author
             with open("data/softbans.json", "r") as f:
