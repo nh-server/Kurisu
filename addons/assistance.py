@@ -31,7 +31,10 @@ class Assistance:
             embed = discord.Embed(color=discord.Color.gold())
             embed.description = msg_request
         await self.bot.send_message(self.bot.mods_channel, msg, embed=(embed if msg_request != "" else None))
-        await self.bot.send_message(author, "✅ Online staff has been notified of your request in {0}.".format(ctx.message.channel.mention), embed=(embed if msg_request != "" else None))
+        try:
+            await self.bot.send_message(author, "✅ Online staff has been notified of your request in {0}.".format(ctx.message.channel.mention), embed=(embed if msg_request != "" else None))
+        except discord.errors.Forbidden:
+            pass
 
     @commands.command(pass_context=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
