@@ -213,7 +213,7 @@ class Extras:
             await self.bot.say("Your name already ends in a turkey!")
         else:
             await self.bot.change_nickname(member, member.display_name + " 🦃")
-            await self.bot.say("Your nickname is now \"{} 🦃\"!".format(member.display_name))
+            await self.bot.say("Your nickname is now \"{}\"!".format(member.display_name))
             
     @commands.command(pass_context=True)
     async def noturkey(self, ctx):
