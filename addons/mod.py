@@ -335,6 +335,11 @@ class Mod:
     @commands.command(pass_context=True, name="timetakehelp")
     async def timetakehelp(self, ctx, user, length, *, reason=""):
         """Restricts a user from Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
+        author = ctx.message.author
+        if (self.bot.helpers_role not in author.roles) and (self.bot.staff_role not in author.roles):
+            msg = "{} You cannot use this command.".format(author.mention)
+            await self.bot.say(msg)
+            return
         try:
             member = ctx.message.mentions[0]
             await self.add_restriction(member, "No-Help")
