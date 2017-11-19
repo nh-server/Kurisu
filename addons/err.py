@@ -228,6 +228,7 @@ class Err:
         '007-2720': 'SSL error?',
         '007-2923': 'The Nintendo Servers are currently down for maintenance. Please try again later.',
         '007-3102': 'Cannot find title on Nintendo eShop. Probably pulled.',
+        '007-6054': 'Occurs when ticket database is full (8192 tickets).',
         '009-1000': 'System update required. (friends module?)',
         '009-2913': 'HTTP error',
         '009-4079': 'Could not access SD card. General purpose error.',
