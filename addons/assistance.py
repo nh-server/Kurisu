@@ -326,17 +326,25 @@ class Assistance:
         embed.description = "Launcher for old flashcards"
         await self.bot.say("", embed=embed)
 
-    # Embed to 3DS VC Injects Website
-    @commands.command()
+    @commands.command(pass_context=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def vc(self):
-        """Link to Virtual Console Injects for 3DS"""
-        embed = discord.Embed(title="Virtual Console Injects for 3DS", color=discord.Color.blue())
-        embed.set_author(name="Asdolo", url="https://gbatemp.net/members/asdolo.389539/")
-        embed.set_thumbnail(url="https://i.imgur.com/rHa76XM.png")
-        embed.url = "https://gbatemp.net/search/40920047/?q=injector&t=post&o=date&g=1&c[title_only]=1&c[user][0]=389539"
-        embed.description = "The recommended way to play old classics on your 3DS"
-        await self.bot.say("", embed=embed)
+    async def vc(self, ctx, *, console="auto"):
+        """Link to Virtual Console Injects for 3DS/Wiiu."""
+        console = console.lower()
+        if console == "3ds" or (console == "auto" and "wiiu" not in ctx.message.channel.name):
+            embed = discord.Embed(title="Virtual Console Injects for 3DS", color=discord.Color.blue())
+            embed.set_author(name="Asdolo", url="https://gbatemp.net/members/asdolo.389539/")
+            embed.set_thumbnail(url="https://i.imgur.com/rHa76XM.png")
+            embed.url = "https://gbatemp.net/search/40920047/?q=injector&t=post&o=date&g=1&c[title_only]=1&c[user][0]=389539"
+            embed.description = "The recommended way to play old classics on your 3DS"
+            await self.bot.say("", embed=embed)
+        if (console == "wiiu" or console == "wii u") or (console == "auto" and "3ds" not in ctx.message.channel.name):
+            embed = discord.Embed(title="Virtual Console Injects for Wiiu", color=discord.Color.blue())
+            embed.set_author(name="NicoAICP", url="https://gbatemp.net/members/nicoaicp.404553/")
+            embed.set_thumbnail(url="https://i.imgur.com/OsXqiOv.png")
+            embed.url = "https://gbatemp.net/threads/release-ultimate-vc-injector-for-wiiu.486781/"
+            embed.description = "The recommended way to play old classics on your Wiiu"
+            await self.bot.say("", embed=embed)
 
     # Embed to ih8ih8sn0w's godmode9 guide
     @commands.command()
