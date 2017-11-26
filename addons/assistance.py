@@ -94,7 +94,7 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def update(self):
         """Explains how to safely prepare for an update if you have boot9strap installed"""
-        await self.simple_embed("**Is it safe to update to 11.6? \n\n **Luma3DS >=8.0** \n You can update to 11.6 safely. Run Luma updater to get the latest Luma3DS version \n\n **Luma3DS 7.1** \n Follow the [B9S upgrade guide](https://3ds.guide/updating-b9s) \n\n **Luma3DS <=7.0.5** \n Follow the [a9lh-to-b9s guide](https://3ds.guide/a9lh-to-b9s) \n\n **To find out your Luma3DS version, hold select on bootup and look at the top left corner of the top screen**")
+        await self.simple_embed("**Is it safe to update to 11.6?** \n\n **Luma3DS >=8.0** \n You can update to 11.6 safely. Run Luma updater to get the latest Luma3DS version \n\n **Luma3DS 7.1** \n Follow the [B9S upgrade guide](https://3ds.guide/updating-b9s) \n\n **Luma3DS <=7.0.5** \n Follow the [a9lh-to-b9s guide](https://3ds.guide/a9lh-to-b9s) \n\n **To find out your Luma3DS version, hold select on bootup and look at the top left corner of the top screen**")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
