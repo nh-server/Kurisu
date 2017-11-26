@@ -149,7 +149,7 @@ class ModWarn:
             return
         warns1 = warns[user_id1]
         if user_id2 not in warns:
-            warns[user_id2] = []
+            warns[user_id2] = {}
         warns2 = warns[user_id2]
         if "name" not in warns2:
             orig_name = ""
