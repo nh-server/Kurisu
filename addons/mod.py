@@ -387,6 +387,70 @@ class Mod:
             await self.bot.send_message(self.bot.helpers_channel, msg)
         except discord.errors.Forbidden:
             await self.bot.say("?? I don't have permission to do this.")
+            
+            @commands.command(pass_context=True, name="takemeta")
+    async def takemeta(self, ctx, user, *, reason=""):
+        """Remove access to meta. Staff and Helpers only."""
+        author = ctx.message.author
+        if (self.bot.helpers_role not in author.roles) and (self.bot.staff_role not in author.roles):
+            msg = "{} You cannot use this command.".format(author.mention)
+            await self.bot.say(msg)
+            return
+        try:
+            member = ctx.message.mentions[0]
+            await self.add_restriction(member, "meta-mute")
+            await self.bot.add_roles(member, self.bot.metamute_role)
+            msg_user = "You lost access to meta!"
+            if reason != "":
+                msg_user += " The given reason is: " + reason
+            msg_user += "\n\nIf you feel this was unjustified, you may appeal by DMing <@333857992170536961>."
+            try:
+                await self.bot.send_message(member, msg_user)
+            except discord.errors.Forbidden:
+                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
+            await self.bot.say("{} can no longer access meta.".format(member.mention))
+            msg = "🚫 **Meta access removed**: {} removed access to meta from {} | {}#{}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
+            if reason != "":
+                msg += "\n✏️ __Reason__: " + reason
+            else:
+                msg += "\nPlease add an explanation below. In the future, it is recommended to use `.takemeta <user> [reason]` as the reason is automatically sent to the user."
+            await self.bot.send_message(self.bot.modlogs_channel, msg)
+            #add to .takemeta
+            if member.id in self.bot.timenometa:
+                self.bot.timenometa.pop(member.id)
+                with open("data/timenometa.json", "r") as f:
+                    timenometa = json.load(f)
+                timenometa.pop(member.id)
+                with open("data/timenometa.json", "w") as f:
+                    json.dump(timenometa, f)
+        except discord.errors.Forbidden:
+            await self.bot.say("💢 I don't have permission to do this.")
+
+    @commands.command(pass_context=True, name="givemeta")
+    async def givemeta(self, ctx, user):
+        """Restore access to meta. Staff and Helpers only."""
+        author = ctx.message.author
+        if (self.bot.helpers_role not in author.roles) and (self.bot.staff_role not in author.roles):
+            msg = "{} You cannot use this command.".format(author.mention)
+            await self.bot.say(msg)
+            return
+        try:
+            member = ctx.message.mentions[0]
+            await self.remove_restriction(member, "meta-mute")
+            await self.bot.remove_roles(member, self.bot.metamute_role)
+            await self.bot.say("{} can access meta again.".format(member.mention))
+            msg = "⭕️ **Help access restored**: {} restored access to meta to {} | {}#{}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
+            await self.bot.send_message(self.bot.modlogs_channel, msg)
+            #add to .givemeta
+            if member.id in self.bot.timenometa:
+                self.bot.timenometa.pop(member.id)
+                with open("data/timenometa.json", "r") as f:
+                    timenometa = json.load(f)
+                timenometa.pop(member.id)
+                with open("data/timenometa.json", "w") as f:
+                    json.dump(timenometa, f)
+        except discord.errors.Forbidden:
+            await self.bot.say("💢 I don't have permission to do this.")
 
     @commands.has_permissions(manage_nicknames=True)
     @commands.command(pass_context=True, name="probate")
