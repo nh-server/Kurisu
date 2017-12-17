@@ -23,6 +23,16 @@ class Loop:
     def __unload(self):
         self.is_active = False
 
+    async def remove_restriction_id(self, member_id, rst):
+        with open("data/restrictions.json", "r") as f:
+            rsts = json.load(f)
+        if member_id not in rsts:
+            rsts[member_id] = []
+        if rst in rsts[member_id]:
+            rsts[member_id].remove(rst)
+        with open("data/restrictions.json", "w") as f:
+            json.dump(rsts, f)
+
     is_active = True
 
     last_hour = datetime.datetime.now().hour
@@ -55,6 +65,7 @@ class Loop:
 
                 for mute in timemutes.items():
                     if timestamp > mute[1][0]:
+                        await self.remove_restriction_id(mute[0], "Muted")
                         msg = "🔈 **Mute expired**: <@{}>".format(mute[0])
                         await self.bot.send_message(self.bot.modlogs_channel, msg)
                         self.bot.timemutes.pop(mute[0])
@@ -77,6 +88,7 @@ class Loop:
 
                 for nohelp in timenohelp.items():
                     if timestamp > nohelp[1][0]:
+                        await self.remove_restriction_id(mute[0], "No-Help")
                         msg = "⭕️ **No-Help Restriction expired**: <@{}>".format(nohelp[0])
                         await self.bot.send_message(self.bot.modlogs_channel, msg)
                         await self.bot.send_message(self.bot.helpers_channel, msg)
