@@ -57,7 +57,7 @@ if not os.path.isfile("data/restrictions.json"):
 if not os.path.isfile("data/timemutes.json"):
     with open("data/timemutes.json", "w") as f:
         f.write("{}")
-        
+
 # create timenohelp.json if it doesn't exist
 if not os.path.isfile("data/timenohelp.json"):
     with open("data/timenohelp.json", "w") as f:
@@ -246,8 +246,8 @@ async def on_ready():
         bot.timenohelp = {}
         timenohelp_i = copy.copy(timenohelp)
         for user_id, timestamp in timenohelp_i.items():
-            bot.timenohelp[user_id] = [datetime.datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S"), False]  # last variable is "notified", for <=10 minute notifications            
-            
+            bot.timenohelp[user_id] = [datetime.datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S"), False]  # last variable is "notified", for <=10 minute notifications
+
         bot.all_ready = True
         bot._is_all_ready.set()
 
@@ -290,6 +290,7 @@ addons = [
     'addons.loop',
     'addons.memes',
     'addons.helper_list',
+    'addons.imgconvert',
     'addons.mod_staff',
     'addons.mod_warn',
     'addons.mod_watch',
