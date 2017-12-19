@@ -168,9 +168,7 @@ class Loop:
                     self.last_hour = timestamp.hour
 
                 if timestamp.minute % 30 == 0 and timestamp.second == 0:
-                    print('Updating netinfo...')
-                    await self.update_netinfo()
-                    print('Done updating netinfo')
+                    self.bot.loop.create_task(self.update_netinfo())
 
                 if (timestamp.minute - 1) % 5 == 0 and timestamp.second == 0:
                     # ugly but it works
