@@ -251,12 +251,6 @@ class Assistance:
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def netinfo(self):
-        """Network Maintenance Information / Operational Status"""
-        await self.bot.say("https://www.nintendo.co.jp/netinfo/en_US/index.html")
-
-    @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def ctrmount(self):
         """Failed to mount CTRNAND error"""
         await self.simple_embed("While following the guide, after installing boot9strap, if you get an error that says \"Failed to mount CTRNAND\", just continue on with the guide.")
