@@ -141,7 +141,7 @@ class Loop:
 
                 for nohelp in timenohelp.items():
                     if timestamp > nohelp[1][0]:
-                        await self.remove_restriction_id(mute[0], "No-Help")
+                        await self.remove_restriction_id(nohelp[0], "No-Help")
                         msg = "⭕️ **No-Help Restriction expired**: <@{}>".format(nohelp[0])
                         await self.bot.send_message(self.bot.modlogs_channel, msg)
                         await self.bot.send_message(self.bot.helpers_channel, msg)
