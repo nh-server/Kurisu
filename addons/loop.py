@@ -170,44 +170,6 @@ class Loop:
                 if timestamp.minute % 30 == 0 and timestamp.second == 0:
                     self.bot.loop.create_task(self.update_netinfo())
 
-                if (timestamp.minute - 1) % 5 == 0 and timestamp.second == 0:
-                    # ugly but it works
-                    ninupdates_feed = feedparser.parse('https://yls8.mtheall.com/ninupdates/feed.php')
-                    # ninupdates_feed = feedparser.parse('./feed.rss')
-                    reported_systems = []
-                    for entry in ninupdates_feed['entries']:
-                        system, ver = entry['title'].split()
-                        if system in reported_systems:
-                            continue
-                        reported_systems.append(system)
-                        reporturl = entry['link']
-                        reporturl_date = parse_qs(urlparse(reporturl).query)['date'][0]
-                        reportpath = 'data/ninupdates/{}.json'.format(system)
-                        to_write = {'reportdate': reporturl_date}
-                        if not os.path.isfile(reportpath):
-                            to_write['ver'] = ver
-                            with open(reportpath, 'w') as f:
-                                json.dump(to_write, f)
-                        else:
-                            with open(reportpath, 'r') as f:
-                                oldver = json.load(f)
-                            if oldver['reportdate'] != reporturl_date:
-                                # "Reminder to not update until confirmed safe or known broken features are fixed."
-                                if reporturl_date == ver:
-                                    await self.bot.send_message(self.bot.announcements_channel, '⏬ System updated detected for {}\n<{}>'.format(system, reporturl))
-                                    to_write['ver'] = reporturl_date
-                                else:
-                                    await self.bot.send_message(self.bot.announcements_channel, '⏬ System updated detected for {}: {}\n<{}>'.format(system, ver, reporturl))
-                                    to_write['ver'] = ver
-                                with open(reportpath, 'w') as f:
-                                    json.dump(to_write, f)
-                            elif oldver['reportdate'] == oldver['ver'] and len(ver) != 17:
-                                # lazy method of seeing if an update + vernumber was found before the bot caught the update in the first place
-                                await self.bot.send_message(self.bot.announcements_channel, 'ℹ️ New update version for {}: {} ({})'.format(system, ver, reporturl_date))
-                                to_write['ver'] = ver
-                                with open(reportpath, 'w') as f:
-                                    json.dump(to_write, f)
-
             except Exception as e:
                 print('Ignoring exception in start_update_loop', file=sys.stderr)
                 traceback.print_tb(e.__traceback__)
