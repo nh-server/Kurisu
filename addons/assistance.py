@@ -15,6 +15,13 @@ class Assistance:
         embed.description = text
         await self.bot.say("", embed=embed)
 
+    def check_console(self, message, channel, consoles):
+        # console == "3ds" or (console == "auto" and "wiiu" not in ctx.message.channel.name)
+        # (console == "wiiu" or console == "wii u") or (console == "auto" and "3ds" not in ctx.message.channel.name)
+        message = message.lower()
+        if message.startswith(consoles) or (message.startswith('auto') and not channel.startswith(consoles)):
+            return True
+
     @commands.command(pass_context=True, aliases=["sr", "Sr", "sR", "SR"], hidden=True)
     async def staffreq(self, ctx, *, msg_request=""):
         """Request staff, with optional additional text. Helpers, Staff, Verified only."""
@@ -41,20 +48,22 @@ class Assistance:
     async def guide(self, ctx, *, console="auto"):
         """Links to Plailect's or FlimFlam69's guide."""
         console = console.lower()
-        if console == "3ds" or (console == "auto" and "wiiu" not in ctx.message.channel.name):
+        if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="Guide", color=discord.Color(0xCE181E))
             embed.set_author(name="Plailect", url="https://3ds.guide/")
             embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
             embed.url = "https://3ds.guide/"
             embed.description = "A complete guide to 3DS custom firmware, from stock to boot9strap."
             await self.bot.say("", embed=embed)
-        if (console == "wiiu" or console == "wii u") or (console == "auto" and "3ds" not in ctx.message.channel.name):
+        elif self.check_console(console, ctx.message.channel.name, ('wiiu', 'wii u')):
             embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
             embed.set_author(name="FlimFlam69 & Plailect", url="https://wiiu.guide/")
             embed.set_thumbnail(url="http://i.imgur.com/CpF12I4.png")
             embed.url = "https://wiiu.guide/"
             embed.description = "FlimFlam69 and Plailect's Wii U custom firmware + coldboothax guide"
             await self.bot.say("", embed=embed)
+        else:
+            raise Exception("command was not correct")  # raise exception to prevent cooldown, a better one should be put here
 
     #Embed to Soundhax Download Website
     @commands.command()
@@ -324,21 +333,22 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def vc(self, ctx, *, console="auto"):
         """Link to Virtual Console Injects for 3DS/Wiiu."""
-        console = console.lower()
-        if console == "3ds" or (console == "auto" and "wiiu" not in ctx.message.channel.name):
+        if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="Virtual Console Injects for 3DS", color=discord.Color.blue())
             embed.set_author(name="Asdolo", url="https://gbatemp.net/members/asdolo.389539/")
             embed.set_thumbnail(url="https://i.imgur.com/rHa76XM.png")
             embed.url = "https://gbatemp.net/search/40920047/?q=injector&t=post&o=date&g=1&c[title_only]=1&c[user][0]=389539"
             embed.description = "The recommended way to play old classics on your 3DS"
             await self.bot.say("", embed=embed)
-        if (console == "wiiu" or console == "wii u") or (console == "auto" and "3ds" not in ctx.message.channel.name):
+        elif self.check_console(console, ctx.message.channel.name, ('wiiu', 'wii u')):
             embed = discord.Embed(title="Virtual Console Injects for Wiiu", color=discord.Color.blue())
             embed.set_author(name="NicoAICP", url="https://gbatemp.net/members/nicoaicp.404553/")
             embed.set_thumbnail(url="https://i.imgur.com/OsXqiOv.png")
             embed.url = "https://gbatemp.net/threads/release-ultimate-vc-injector-for-wiiu.486781/"
             embed.description = "The recommended way to play old classics on your Wiiu"
             await self.bot.say("", embed=embed)
+        else:
+            raise Exception("command was not correct")  # raise exception to prevent cooldown, a better one should be put here
 
     # Embed to ih8ih8sn0w's godmode9 guide
     @commands.command()
