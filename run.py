@@ -126,6 +126,7 @@ async def on_command_error(error, ctx):
         await asyncio.sleep(10)
         await bot.delete_message(message)
     else:
+        ctx.command.reset_cooldown(ctx)
         await bot.send_message(ctx.message.channel, "An error occured while processing the `{}` command.".format(ctx.command.name))
         print('Ignoring exception in command {0.command} in {0.message.channel}'.format(ctx))
         mods_msg = "Exception occured in `{0.command}` in {0.message.channel.mention}".format(ctx)
