@@ -8,12 +8,27 @@ class Assistance:
     """
     def __init__(self, bot):
         self.bot = bot
+        self.systems = systems = ("3ds", "wiiu", "wii u")
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     async def simple_embed(self, text, title="", color=discord.Color.default()):
         embed = discord.Embed(title=title, color=color)
         embed.description = text
         await self.bot.say("", embed=embed)
+
+    def check_console(self, message, channel, consoles):
+        message = message.lower()
+        if not (channel.startswith(self.systems) or message.startswith(self.systems)):
+            message = "auto"
+        print(message)
+        if message.startswith(consoles):
+            return True
+        elif channel.startswith(consoles) and not message.startswith(self.systems):
+            return True
+        elif message.startswith(self.systems):
+            return False
+        elif message.startswith('auto'):
+            return True
 
     @commands.command(pass_context=True, aliases=["sr", "Sr", "sR", "SR"], hidden=True)
     async def staffreq(self, ctx, *, msg_request=""):
@@ -38,17 +53,16 @@ class Assistance:
 
     @commands.command(pass_context=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def guide(self, ctx, *, console="auto"):
+    async def guide(self, ctx, *, console=""):
         """Links to Plailect's or FlimFlam69's guide."""
-        console = console.lower()
-        if console == "3ds" or (console == "auto" and "wiiu" not in ctx.message.channel.name):
+        if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="Guide", color=discord.Color(0xCE181E))
             embed.set_author(name="Plailect", url="https://3ds.guide/")
             embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
             embed.url = "https://3ds.guide/"
             embed.description = "A complete guide to 3DS custom firmware, from stock to boot9strap."
             await self.bot.say("", embed=embed)
-        if (console == "wiiu" or console == "wii u") or (console == "auto" and "3ds" not in ctx.message.channel.name):
+        if self.check_console(console, ctx.message.channel.name, ('wiiu', 'wii u')):
             embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
             embed.set_author(name="FlimFlam69 & Plailect", url="https://wiiu.guide/")
             embed.set_thumbnail(url="http://i.imgur.com/CpF12I4.png")
@@ -324,15 +338,14 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def vc(self, ctx, *, console="auto"):
         """Link to Virtual Console Injects for 3DS/Wiiu."""
-        console = console.lower()
-        if console == "3ds" or (console == "auto" and "wiiu" not in ctx.message.channel.name):
+        if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="Virtual Console Injects for 3DS", color=discord.Color.blue())
             embed.set_author(name="Asdolo", url="https://gbatemp.net/members/asdolo.389539/")
             embed.set_thumbnail(url="https://i.imgur.com/rHa76XM.png")
             embed.url = "https://gbatemp.net/search/40920047/?q=injector&t=post&o=date&g=1&c[title_only]=1&c[user][0]=389539"
             embed.description = "The recommended way to play old classics on your 3DS"
             await self.bot.say("", embed=embed)
-        if (console == "wiiu" or console == "wii u") or (console == "auto" and "3ds" not in ctx.message.channel.name):
+        if self.check_console(console, ctx.message.channel.name, ('wiiu', 'wii u')):
             embed = discord.Embed(title="Virtual Console Injects for Wiiu", color=discord.Color.blue())
             embed.set_author(name="NicoAICP", url="https://gbatemp.net/members/nicoaicp.404553/")
             embed.set_thumbnail(url="https://i.imgur.com/OsXqiOv.png")
