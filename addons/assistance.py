@@ -153,7 +153,7 @@ class Assistance:
         await self.simple_embed("Astronautlevel's Luma3DS commit builds can be found here: https://astronautlevel2.github.io/Luma3DS \n(Warning: most builds here are meant for developers and are untested, use at your own risk!)")
 
     # Links to ctrtransfer guide
-    @commands.command()
+    @commands.command(aliases=["ctrtransfer","ctrnandtransfer"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def ctr(self):
         """Links to ctrtransfer guide"""
