@@ -20,7 +20,6 @@ class Assistance:
         message = message.lower()
         if not (channel.startswith(self.systems) or message.startswith(self.systems)):
             message = "auto"
-        print(message)
         if message.startswith(consoles):
             return True
         elif channel.startswith(consoles) and not message.startswith(self.systems):
