@@ -1,4 +1,5 @@
 import discord
+import re
 from discord.ext import commands
 from sys import argv
 
@@ -274,15 +275,33 @@ class Assistance:
         """What to do if you delete all your SD card contents"""
         await self.simple_embed("If you have lost the contents of your SD card with CFW, you will need in SD root:\n-Homebrew launcher executable [here](https://smealum.github.io/ninjhax2/boot.3dsx)\n-`boot.firm` from [luma3ds latest release 7z](https://github.com/AuroraWright/Luma3DS/releases/latest)\nThen repeat the [finalizing setup](https://3ds.guide/finalizing-setup) page.", color=discord.Color.red())
 
-    # Luma downloadlinks
-    @commands.command(pass_context=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def luma(self, lumaversion=""):
-        """Downloadlinks for luma versions"""
-        if lumaversion != "":
-            await self.simple_embed("Luma v{}\nhttps://github.com/AuroraWright/Luma3DS/releases/tag/v{}".format(lumaversion, lumaversion), color=discord.Color.blue())
+    @commands.command()
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def luma(self, *, msg = ""):
+        """Links to Luma3ds. You can input a version number after the command to output a specific version."""
+        if msg == "hourly" or msg == "hourlies":
+            embed = discord.Embed(title="Luma3DS Hourlies", color=65535)
+            embed.description = "You can get the Luma3DS hourlies [here](https://astronautlevel2.github.io/Luma3DS). Please keep in mind these are not always stable, and you use these at your own risk."
+            embed.set_thumbnail(url="https://gbatemp.net/attachments/Luma3DSalt-png.46691/")
+            embed.set_author(name="Aurora Wright")
+            return await self.bot.say("",embed=embed)
         else:
-            await self.simple_embed("Download links for the most common Luma3DS releases: \n[Latest Luma](https://github.com/AuroraWright/Luma3DS/releases/latest)\n[Luma v7.0.5](https://github.com/AuroraWright/Luma3DS/releases/tag/v7.0.5)\n[Luma v7.1](https://github.com/AuroraWright/Luma3DS/releases/tag/v7.1)", color=discord.Color.blue())
+            if msg:
+                pattern = re.compile("\d\.\d\.?\d?")
+                if pattern.match(msg):
+                    embed = discord.Embed(title="Luma3DS v" + msg, color=65535)
+                    embed.description = "You can download Luma3DS v{} from [here](https://github.com/AuroraWright/Luma3DS/releases/tag/v{}).".format(msg, msg)
+                    embed.set_author(name = "Aurora Wright")
+                    embed.set_thumbnail(url="https://gbatemp.net/attachments/Luma3DSalt-png.46691/")
+                    await self.bot.say("", embed=embed)
+                else:
+                    await self.bot.say("Wrong format of version given")
+            else:
+                embed = discord.Embed(title="Luma3DS Download Link", color=65535)
+                embed.description = "You can download Luma3DS below."
+                embed.set_author(name="Aurora Wright")
+                embed.add_field(name="Latest Luma", value="You can always get the absolute latest version of Luma3DS [here](https://github.com/AuroraWright/Luma3DS/releases/latest). Please keep in mind you will need the latest version of B9S to be able to use it.")
+                await self.bot.say("",embed=embed)
 
     # Embed to broken TWL Troubleshooting
     @commands.command()
