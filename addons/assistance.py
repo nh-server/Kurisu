@@ -275,6 +275,7 @@ class Assistance:
         await self.simple_embed("If you have lost the contents of your SD card with CFW, you will need in SD root:\n-Homebrew launcher executable [here](https://smealum.github.io/ninjhax2/boot.3dsx)\n-`boot.firm` from [luma3ds latest release 7z](https://github.com/AuroraWright/Luma3DS/releases/latest)\nThen repeat the [finalizing setup](https://3ds.guide/finalizing-setup) page.", color=discord.Color.red())
 
     # Luma downloadlinks
+    @commands.command
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def luma(self, lumaversion=""):
         """Downloadlinks for luma versions"""
