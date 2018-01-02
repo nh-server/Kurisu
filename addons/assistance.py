@@ -275,7 +275,6 @@ class Assistance:
         await self.simple_embed("If you have lost the contents of your SD card with CFW, you will need in SD root:\n-Homebrew launcher executable [here](https://smealum.github.io/ninjhax2/boot.3dsx)\n-`boot.firm` from [luma3ds latest release 7z](https://github.com/AuroraWright/Luma3DS/releases/latest)\nThen repeat the [finalizing setup](https://3ds.guide/finalizing-setup) page.", color=discord.Color.red())
 
     # Luma downloadlinks
-    @commands.command(pass_context=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def luma(self, lumaversion=""):
         """Downloadlinks for luma versions"""
@@ -345,7 +344,7 @@ class Assistance:
 
     @commands.command(pass_context=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def vc(self, ctx, *, console="auto"):
+    async def vc(self, ctx, *, console=""):
         """Link to Virtual Console Injects for 3DS/Wiiu."""
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="Virtual Console Injects for 3DS", color=discord.Color.blue())
