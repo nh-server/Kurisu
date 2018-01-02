@@ -274,6 +274,16 @@ class Assistance:
         """What to do if you delete all your SD card contents"""
         await self.simple_embed("If you have lost the contents of your SD card with CFW, you will need in SD root:\n-Homebrew launcher executable [here](https://smealum.github.io/ninjhax2/boot.3dsx)\n-`boot.firm` from [luma3ds latest release 7z](https://github.com/AuroraWright/Luma3DS/releases/latest)\nThen repeat the [finalizing setup](https://3ds.guide/finalizing-setup) page.", color=discord.Color.red())
 
+    # Luma downloadlinks
+    @commands.command(pass_context=True)
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def luma(self, lumaversion=""):
+        """Downloadlinks for luma versions"""
+        if lumaversion != "":
+            await self.simple_embed("Luma v{}\nhttps://github.com/AuroraWright/Luma3DS/releases/tag/v{}".format(lumaversion, lumaversion), color=discord.Color.blue())
+        else:
+            await self.simple_embed("Download links for the most common Luma3DS releases: \n[Latest Luma](https://github.com/AuroraWright/Luma3DS/releases/latest)\n[Luma v7.0.5](https://github.com/AuroraWright/Luma3DS/releases/tag/v7.0.5)\n[Luma v7.1](https://github.com/AuroraWright/Luma3DS/releases/tag/v7.1)", color=discord.Color.blue())
+
     # Embed to broken TWL Troubleshooting
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
