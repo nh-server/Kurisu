@@ -204,6 +204,9 @@ async def on_ready():
         bot.eventchat_role = discord.utils.get(server.roles, name="#eventchat")
         bot.everyone_role = server.default_role
 
+        # channels to exempt from most checks
+        bot.whitelisted_channels = (bot.helpers_channel, bot.modlogs_channel, bot.mods_channel, bot.watchlogs_channel, bot.announcements_channel)
+
         bot.staff_ranks = {
             "HalfOP": bot.halfop_role,
             "OP": bot.op_role,

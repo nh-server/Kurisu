@@ -341,7 +341,7 @@ class Events:
         if message.channel.name.endswith('nofilter'):
             return
         await self.bot.wait_until_all_ready()
-        if message.author == self.bot.server.me or self.bot.staff_role in message.author.roles or message.channel == self.bot.helpers_channel:  # don't process messages by the bot or staff or in the helpers channel
+        if message.author == self.bot.server.me or self.bot.staff_role in message.author.roles or message.channel in self.bot.whitelisted_channels:  # don't process messages by the bot or staff or in the helpers channel
             return
         await self.scan_message(message)
         # await self.keyword_search(message)
@@ -353,7 +353,7 @@ class Events:
             if message_after.channel.name.endswith('nofilter'):
                 return
             await self.bot.wait_until_all_ready()
-            if message_after.author == self.bot.server.me or self.bot.staff_role in message_after.author.roles or message_after.channel == self.bot.helpers_channel:  # don't process messages by the bot or staff or in the helpers channel
+            if message_after.author == self.bot.server.me or self.bot.staff_role in message_after.author.roles or message_after.channel in self.bot.whitelisted_channels:  # don't process messages by the bot or staff or in the helpers channel
                 return
             await self.scan_message(message_after, is_edit=True)
         except AttributeError:
