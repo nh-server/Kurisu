@@ -215,19 +215,6 @@ class Extras:
         else:
             await self.bot.say("You don't have a turkey!")
 
-    @commands.command(pass_context=True, hidden=True)
-    async def xmasthing(self, ctx):
-        """It's xmas time."""
-        member = ctx.message.author
-        if member.nick and member.nick[-1] == "🎄":
-            await self.bot.say("Your nickname already ends in an xmas tree!")
-        elif member.name[-1] == "":
-            await self.bot.say("Your name already ends in an xmas tree!")
-        else:
-            new_name = member.display_name + " 🎄"
-            await self.bot.change_nickname(member, new_name)
-            await self.bot.say("Your nickname is now \"{}\"!".format(new_name))
-
     @commands.command(pass_context=True)
     async def noxmasthing(self, ctx):
         """Tired of it."""
