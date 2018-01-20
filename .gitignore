@@ -8,5 +8,6 @@
 .DS_Store
 __pycache__
 data/
+configs/
 .idea/
 legacy/
