@@ -1,22 +1,32 @@
 #!/usr/bin/env python3
 
 import asyncio
-import os
 import logging
+import os
 import subprocess
+import sys
 from configparser import ConfigParser
 from sys import argv
 
 import discord
 from discord.ext import commands
 
+from kurisumodules.util import restrictions
+
 
 class Kurisu2(commands.Bot):
     """Base class for Kurisu2."""
 
-    def __init__(self, command_prefix, logging_level=logging.WARNING, **options):
+    def __init__(self, command_prefix, config_directory, logging_level=logging.WARNING, **options):
         super().__init__(command_prefix, **options)
-        self._failed_extensions = []
+        self._guild = None
+        self._channels = None
+        self._roles = {}
+        self._channels = {}
+        self.config_directory = config_directory
+        self._failed_extensions = {}
+
+        os.makedirs(self.config_directory, exist_ok=True)
 
         self._is_all_ready = asyncio.Event(loop=self.loop)
 
@@ -29,39 +39,86 @@ class Kurisu2(commands.Bot):
         fh = logging.FileHandler('kurisu2.log')
         self.log.addHandler(fh)
 
-        fmt = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        fmt = logging.Formatter('%(asctime)s - %(name)s - %(module)s - %(levelname)s - %(message)s')
         ch.setFormatter(fmt)
         fh.setFormatter(fmt)
 
-        # commands.has_any_role("Owner")(self.command()(self.test))
+        self.restrictions = restrictions.RestrictionsManager(self, 'restrictions.sqlite3')
 
-    def _load_extensions(self):
-        cogs = ()
-        for c in cogs:
-            self.log.info("Loading extension %s", c)
+    def load_extensions(self):
+        blacklisted_cogs = ()
+        # this is not a good way of doing things i think
+        for c in ['kurisumodules.' + x[:-3] for x in os.listdir('kurisumodules') if x.endswith('.py')]:
+            if c in blacklisted_cogs:
+                self.log.info('Not automatically loading %s since it is listed in blacklisted_cogs', c)
+                continue
+            self.log.debug('Loading extension %s', c)
             try:
-                self.load_extension('kurisumodules.' + c)
+                self.load_extension(c)
             except Exception as e:
-                self.log.error("%s failed to load.", c, exc_info=e)
+                self.log.error('%s failed to load.', c, exc_info=e)
+                self._failed_extensions[c] = e
 
-    async def on_command_error(self, ctx: commands.Context, exc: BaseException):
+    async def on_ready(self):
+        self.log.debug(f'Logged in as {self.user}')
+        guilds = self.guilds
+        assert len(guilds) == 1
+        self._guild = guilds[0]
+
+    async def get_main_guild(self) -> discord.Guild:
+        if not self._is_all_ready:
+            await self.wait_until_all_ready()
+        return self._guild
+
+    async def on_command_error(self, ctx: commands.Context, exc: commands.CommandInvokeError):
         author: discord.Member = ctx.author
-        command: commands.Command = ctx.command
-        self.log.debug('Exception in %s: %s: %s', command.name, type(exc).__name__, exc)
+        command: commands.Command = ctx.command or '<unknown cmd>'
+
+        try:
+            original = exc.original
+        except AttributeError:
+            # just in case it's not CommandInvokeError for whatever reason
+            original = exc
+
         if isinstance(exc, commands.CommandNotFound):
             return
+
         elif isinstance(exc, commands.NoPrivateMessage):
             await ctx.send(f'`{command.name}` cannot be used in direct messages.')
+
         elif isinstance(exc, commands.MissingPermissions):
-            await ctx.send(f"{author.mention} You don't have permission to use `{command.name}`.")
+            await ctx.send(f"{author.mention} You don't have permission to use `{command}`.")
+
+        elif isinstance(exc, commands.CheckFailure):
+            await ctx.send(f'{author.mention} You cannot use `{command}`.')
+
         elif isinstance(exc, commands.BadArgument):
             formatter = commands.HelpFormatter()
             help_text: str = (await formatter.format_help_for(ctx, command))[0]
             await ctx.send(f'{author.mention} A bad argument was given: `{exc}`\n{help_text}')
+
         elif isinstance(exc, commands.MissingRequiredArgument):
             formatter = commands.HelpFormatter()
             help_text: str = (await formatter.format_help_for(ctx, command))[0]
             await ctx.send(f'{author.mention} You are missing required arguments.\n{help_text}')
+
+        elif isinstance(exc, commands.CommandInvokeError):
+            self.log.debug('Exception in %s: %s: %s', command, type(exc).__name__, exc, exc_info=original)
+            await ctx.send(f'{author.mention} `{command}` raised an exception during usage')
+
+        else:
+            self.log.debug('Unexpected exception in %s: %s: %s', command, type(exc).__name__, exc, exc_info=original)
+            if not isinstance(command, str):
+                command.reset_cooldown(ctx)
+            await ctx.send(f'{author.mention} Unexpected exception occurred while using the command `{command}`')
+
+    async def on_error(self, event_method, *args, **kwargs):
+        self.log.error('Exception occurred in %s', event_method, exc_info=sys.exc_info())
+
+    async def close(self):
+        self.log.info('Kurisu is shutting down')
+        self.restrictions.close()
+        await super().close()
 
     async def is_all_ready(self):
         """Checks if the bot is finished setting up."""
@@ -71,12 +128,8 @@ class Kurisu2(commands.Bot):
         """Wait until the bot is finished setting up."""
         await self._is_all_ready.wait()
 
-    async def on_ready(self):
-        self.log.debug('Bot is setting up')
-        # TODO: setup
 
-
-def main(*, debug=False, change_directory=False):
+def main(*, config_directory='configs', debug=False, change_directory=False):
     """Main script to run the bot."""
     if change_directory:
         # set current directory to the bot location
@@ -84,7 +137,8 @@ def main(*, debug=False, change_directory=False):
         os.chdir(dir_path)
 
     bot = Kurisu2(('.', '!'), logging_level=logging.DEBUG if debug else logging.INFO,
-                     description="Kurisu2, the bot for Nintendo Homebrew!", pm_help=None)
+                  config_directory=config_directory, description="Kurisu2, the bot for Nintendo Homebrew!",
+                  pm_help=None)
 
     # attempt to get current git information
     # noinspection PyBroadException
@@ -100,11 +154,18 @@ def main(*, debug=False, change_directory=False):
     config.read('config.ini')
     token: str = config['Main']['token']
 
-    bot._load_extensions()
+    bot.load_extensions()
 
-    bot.run(token)
+    bot.log.debug('Running bot')
+    # noinspection PyBroadException
+    try:
+        bot.run(token)
+    except Exception as e:
+        # this should ideally never happen
+        bot.log.critical('Kurisu2 shut down due to a critical error.', exc_info=e)
 
-    bot.log.info('Kurisu2 is shutting down')
+    bot.log.debug('Shutting down logging')
+    logging.shutdown()
 
 
 if __name__ == '__main__':
