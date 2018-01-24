@@ -11,13 +11,13 @@ from sys import argv
 import discord
 from discord.ext import commands
 
-from kurisumodules.util import restrictions
-
 
 class Kurisu2(commands.Bot):
     """Base class for Kurisu2."""
 
     def __init__(self, command_prefix, config_directory, logging_level=logging.WARNING, **options):
+        from kurisumodules.util import restrictions, configuration
+
         super().__init__(command_prefix, **options)
         self._guild = None
         self._channels = None
@@ -25,6 +25,8 @@ class Kurisu2(commands.Bot):
         self._channels = {}
         self.config_directory = config_directory
         self._failed_extensions = {}
+
+        self.exitcode = 0
 
         os.makedirs(self.config_directory, exist_ok=True)
 
@@ -44,6 +46,7 @@ class Kurisu2(commands.Bot):
         fh.setFormatter(fmt)
 
         self.restrictions = restrictions.RestrictionsManager(self, 'restrictions.sqlite3')
+        self.configuration = configuration.ConfigurationManager(self, 'configuration.sqlite3')
 
     def load_extensions(self):
         blacklisted_cogs = ()
@@ -131,24 +134,32 @@ class Kurisu2(commands.Bot):
 
 def main(*, config_directory='configs', debug=False, change_directory=False):
     """Main script to run the bot."""
+    if discord.version_info.major < 2:
+        print(f'discord.py is not at least 1.0.0x. (current version: {discord.__version__})')
+        return 2
+
     if change_directory:
         # set current directory to the bot location
         dir_path = os.path.dirname(os.path.realpath(__file__))
         os.chdir(dir_path)
 
-    bot = Kurisu2(('.', '!'), logging_level=logging.DEBUG if debug else logging.INFO,
-                  config_directory=config_directory, description="Kurisu2, the bot for Nintendo Homebrew!",
-                  pm_help=None)
+    bot = Kurisu2(('.', '!'), config_directory, logging_level=logging.DEBUG if debug else logging.INFO,
+                  description="Kurisu2, the bot for Nintendo Homebrew!", pm_help=None)
 
     # attempt to get current git information
-    # noinspection PyBroadException
     try:
         commit = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode('ascii')[:-1]
-    except Exception as e:
+    except subprocess.CalledProcessError as e:
         bot.log.info('Checking for git commit failed: %s: %s', type(e).__name__, e)
         commit = "<unknown>"
 
-    bot.log.info('Starting Kurisu2 on commit %s', commit)
+    try:
+        branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).decode()[:-1]
+    except subprocess.CalledProcessError as e:
+        bot.log.info('Checking for git branch failed: %s: %s', type(e).__name__, e)
+        branch = "<unknown>"
+
+    bot.log.info('Starting Kurisu2 on commit %s on branch %s', commit, branch)
 
     config = ConfigParser()
     config.read('config.ini')
@@ -165,8 +176,9 @@ def main(*, config_directory='configs', debug=False, change_directory=False):
         bot.log.critical('Kurisu2 shut down due to a critical error.', exc_info=e)
 
     bot.log.debug('Shutting down logging')
-    logging.shutdown()
+
+    return bot.exitcode
 
 
 if __name__ == '__main__':
-    main(debug='d' in argv, change_directory=True)
+    sys.exit(main(debug='d' in argv, change_directory=True))

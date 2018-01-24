@@ -1,5 +1,6 @@
 from contextlib import contextmanager
 from sqlite3 import Connection  # for type hinting
+from typing import Generator
 
 
 @contextmanager
