@@ -231,6 +231,8 @@ class Events:
             ps = urlparse(url)
             if ps.netloc.startswith('3ds-guide.b4k.co'):
                 to_replace.append(ps._replace(netloc='3ds.guide').geturl())
+            elif ps.netloc.startswith('hax.b4k.co') and ps.path.startswith('/3ds/guide'):
+                to_replace.append(ps._replace(netloc='3ds.guide', path=ps.query[2:], query='').geturl())
         if to_replace:
             msg_user = "Please read {}. Guide mirrors may not be linked to, therefore your message was automatically deleted.\nPlease link to <https://3ds.guide> or <https://wiiu.guide> directly instead of mirrors of the sites.\n\nThe official equivalents of the links are:".format(self.bot.welcome_channel.mention)
             for url in to_replace:
