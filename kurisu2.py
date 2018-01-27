@@ -7,24 +7,38 @@ import subprocess
 import sys
 from configparser import ConfigParser
 from sys import argv
+from typing import Dict
 
 import discord
 from discord.ext import commands
+
+channel_names = {
+    # TODO: add more channel names
+    # destination for startup message
+    'startup-message': 'helpers',
+    # staff channel
+    'staff': 'mods',
+    # moderator logs
+    'moderator-logs': 'mod-logs',
+    # server logs
+    'server-logs': 'server-logs',
+}
 
 
 class Kurisu2(commands.Bot):
     """Base class for Kurisu2."""
 
-    def __init__(self, command_prefix, config_directory, logging_level=logging.WARNING, **options):
-        from kurisumodules.util import restrictions, configuration
+    _guild: discord.Guild = None
 
+    def __init__(self, command_prefix, config_directory, logging_level=logging.WARNING, **options):
+        from kurisumodules.util import RestrictionsManager, ConfigurationManager, WarnsManager
         super().__init__(command_prefix, **options)
-        self._guild = None
-        self._channels = None
-        self._roles = {}
-        self._channels = {}
+
+        self._roles: Dict[str, discord.Role] = {}
+        self._channels: Dict[str, discord.TextChannel] = {}
+        self._failed_extensions: Dict[str, Exception] = {}
+
         self.config_directory = config_directory
-        self._failed_extensions = {}
 
         self.exitcode = 0
 
@@ -32,6 +46,8 @@ class Kurisu2(commands.Bot):
 
         self._is_all_ready = asyncio.Event(loop=self.loop)
 
+        # TODO: actually use logging properly, somehow. if I can figure it out.
+        # judging from https://www.python.org/dev/peps/pep-0282/ I shouldn't have to pass around a log object.
         self.log = logging.getLogger('Kurisu2')
         self.log.setLevel(logging_level)
 
@@ -45,8 +61,9 @@ class Kurisu2(commands.Bot):
         ch.setFormatter(fmt)
         fh.setFormatter(fmt)
 
-        self.restrictions = restrictions.RestrictionsManager(self, 'restrictions.sqlite3')
-        self.configuration = configuration.ConfigurationManager(self, 'configuration.sqlite3')
+        self.restrictions = RestrictionsManager(self, 'restrictions.sqlite3')
+        self.configuration = ConfigurationManager(self, 'configuration.sqlite3')
+        self.warns = WarnsManager(self, 'warns.sqlite3')
 
     def load_extensions(self):
         blacklisted_cogs = ()
@@ -63,10 +80,25 @@ class Kurisu2(commands.Bot):
                 self._failed_extensions[c] = e
 
     async def on_ready(self):
-        self.log.debug(f'Logged in as {self.user}')
+        self.log.debug('Logged in as %s', self.user)
         guilds = self.guilds
         assert len(guilds) == 1
         self._guild = guilds[0]
+
+        # TODO: replace this test code
+        self._channels['helpers'] = discord.utils.get(self._guild.channels, name='helpers')
+
+        startup_message = f'{self.user.name} has started! {self._guild} has {self._guild.member_count:,} members!'
+        embed = None
+        if self._failed_extensions:
+            startup_message += ' <@78465448093417472>'  # mentions ihaveahax (me) if something fails
+            embed = discord.Embed(title='Extensions failed to load')
+            for c, e in self._failed_extensions.items():
+                embed.add_field(name=c, value=f'{type(e).__module__}.{type(e).__qualname__}: {e}')
+
+        await self._channels[channel_names['startup-message']].send(startup_message, embed=embed)
+
+        self._is_all_ready.set()
 
     async def get_main_guild(self) -> discord.Guild:
         if not self._is_all_ready:
@@ -118,9 +150,15 @@ class Kurisu2(commands.Bot):
     async def on_error(self, event_method, *args, **kwargs):
         self.log.error('Exception occurred in %s', event_method, exc_info=sys.exc_info())
 
+    def add_cog(self, cog):
+        super().add_cog(cog)
+        self.log.debug('Initialized %s.%s', type(cog).__module__, type(cog).__name__)
+
     async def close(self):
         self.log.info('Kurisu is shutting down')
         self.restrictions.close()
+        self.configuration.close()
+        self.warns.close()
         await super().close()
 
     async def is_all_ready(self):
@@ -134,7 +172,7 @@ class Kurisu2(commands.Bot):
 
 def main(*, config_directory='configs', debug=False, change_directory=False):
     """Main script to run the bot."""
-    if discord.version_info.major < 2:
+    if discord.version_info.major < 1:
         print(f'discord.py is not at least 1.0.0x. (current version: {discord.__version__})')
         return 2
 
@@ -174,8 +212,6 @@ def main(*, config_directory='configs', debug=False, change_directory=False):
     except Exception as e:
         # this should ideally never happen
         bot.log.critical('Kurisu2 shut down due to a critical error.', exc_info=e)
-
-    bot.log.debug('Shutting down logging')
 
     return bot.exitcode
 

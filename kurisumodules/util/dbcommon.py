@@ -1,9 +1,6 @@
 import os.path
 import sqlite3
-
-from typing import Iterable, Tuple
-
-import sys
+from typing import Iterable, Tuple, Generator
 
 import kurisu2
 from .tools import connwrap
@@ -11,6 +8,18 @@ from .tools import connwrap
 
 class DatabaseManagerException(Exception):
     """General exception class for DatabaseManager classes."""
+
+
+class ColumnValueFormatter:
+    def __init__(self, columns: Iterable, values: Iterable):
+        self.columns = tuple(columns)
+        self.values = tuple(values)
+
+    def __repr__(self):
+        return f'ColumnValueFormatter({self.columns}, {self.values})'
+
+    def __str__(self):
+        return ", ".join(f"({x!r}, {y!r})" for x, y in zip(self.columns, self.values))
 
 
 class DatabaseManager:
@@ -22,10 +31,14 @@ class DatabaseManager:
     def __init__(self, table: str, bot: kurisu2.Kurisu2, database_path: str):
         self.bot = bot
         self.log = bot.log
+        self.log.debug('Initializing %s', type(self).__name__)
         self.dbpath = os.path.join(bot.config_directory, database_path)
         self.table = table
         self.log.debug('Loading sqlite3 database: %s', self.dbpath)
         self.conn = sqlite3.connect(self.dbpath)
+
+    # maybe add an __init_subclass__ here?
+    # https://docs.python.org/3/reference/datamodel.html#customizing-class-creation
 
     def _create_tables(self, columns: Iterable[Tuple[str, str]]):
         """Create the table, if it does not already exist."""
@@ -43,16 +56,22 @@ class DatabaseManager:
 
     # TODO: make _select/_insert/_delete take columns as keyword arguments
 
-    def _format_vars(self, length: int) -> str:
-        return ' AND '.join(f'`{c}` = ?' for c in self._columns[length:])
+    def _format_vars(self, *keys) -> str:
+        assert all(k in self._columns for k in keys)
+        if len(keys) == 0:
+            return ''
+        return 'WHERE ' + ' AND '.join(f'`{c}` = :{c}' for c in keys)
 
-    def _select(self, *values) -> list:
-        # TODO: _select
+    def _select(self, **values) -> Generator[Tuple, None, None]:
         assert not self._db_closed
         assert self._columns
         assert values
+        c: sqlite3.Connection
+        with connwrap(self.conn) as c:
+            query = f'SELECT * FROM {self.table} {self._format_vars(*values.keys())}'
+            yield from c.execute(query, values)
 
-    def _insert(self, *values, allow_duplicates=False) -> bool:
+    def _insert(self, *, allow_duplicates=False, **values) -> bool:
         """Insert a row into the table."""
         assert not self._db_closed
         assert self._columns
@@ -60,25 +79,23 @@ class DatabaseManager:
         c: sqlite3.Connection
         with connwrap(self.conn) as c:
             if not allow_duplicates:
-                query = f'SELECT * FROM {self.table} WHERE {self._format_vars(len(values))}'
+                query = f'SELECT * FROM {self.table} {self._format_vars(*values.keys())}'
                 res = c.execute(query, values)
                 if res.fetchone() is not None:
                     return False
 
-    def _delete(self, *values) -> bool:
+    def _delete(self, **values) -> bool:
         """Delete a row from the table."""
         assert not self._db_closed
         assert self._columns
         assert values
         c: sqlite3.Connection
         with connwrap(self.conn) as c:
-            query = f'DELETE FROM {self.table} WHERE {self._format_vars(len(values))}'
+            query = f'DELETE FROM {self.table} {self._format_vars(*values.keys())}'
             # TODO: catch some exception here, probably
             # (DELETE shouldn't raise unless something has gone horribly wrong)
             res = c.execute(query, values)
-            # TODO: probably make the arguments in this log call get taken from a custom class
-            # (since logging doesn't format the string unless it actually gets printed)
-            self.log.debug('Executed DELETE query with parameters %r', [*zip(self._columns, values)])
+            self.log.debug('Executed DELETE query with parameters %s', ColumnValueFormatter(self._columns, values))
             return bool(res.rowcount)
 
     def close(self):
