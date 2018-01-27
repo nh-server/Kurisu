@@ -2,15 +2,13 @@ import discord
 from discord.ext import commands
 
 from kurisu2 import Kurisu2  # for type hinting
+from .util import ExtensionBase
 
 
-class Extras:
+class Extras(ExtensionBase):
     """Extra commands and features."""
-    def __init__(self, bot: Kurisu2):
-        self.bot = bot
-        self.log = bot.log
 
-    @commands.command(aliases=('about',))
+    @commands.command(aliases=('kurisu2', 'about'))
     async def kurisu(self, ctx: commands.Context):
         """About Kurisu."""
         embed = discord.Embed(title='Kurisu2', color=discord.Color.green(), url='https://github.com/ihaveamac/Kurisu',
