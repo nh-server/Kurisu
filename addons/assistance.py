@@ -57,15 +57,15 @@ class Assistance:
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="Guide", color=discord.Color(0xCE181E))
             embed.set_author(name="Plailect", url="https://3ds.guide/")
-            embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
-            embed.url = "https://3ds.guide/"
+            embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
+            embed.url = "https://3ds.hacks.guide/"
             embed.description = "A complete guide to 3DS custom firmware, from stock to boot9strap."
             await self.bot.say("", embed=embed)
         if self.check_console(console, ctx.message.channel.name, ('wiiu', 'wii u')):
             embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
             embed.set_author(name="FlimFlam69 & Plailect", url="https://wiiu.guide/")
             embed.set_thumbnail(url="http://i.imgur.com/CpF12I4.png")
-            embed.url = "https://wiiu.guide/"
+            embed.url = "https://wiiu.hacks.guide/"
             embed.description = "FlimFlam69 and Plailect's Wii U custom firmware + coldboothax guide"
             await self.bot.say("", embed=embed)
 
@@ -115,8 +115,8 @@ class Assistance:
         """Links to the guide for updating b9s versions"""
         embed = discord.Embed(title="Updating B9S Guide", color=discord.Color(0xCE181E))
         embed.set_author(name="Plailect", url="https://3ds.guide/updating-b9s")
-        embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
-        embed.url = "https://3ds.guide/updating-b9s"
+        embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
+        embed.url = "https://3ds.hacks.guide/updating-b9s"
         embed.description = "A guide for updating to new B9S versions."
         await self.bot.say("", embed=embed)
 
@@ -126,8 +126,8 @@ class Assistance:
         """Links to the guide for updating from a9lh to b9s"""
         embed = discord.Embed(title="Upgrading a9lh to b9s", color=discord.Color(0xCE181E))
         embed.set_author(name="Plailect", url="https://3ds.guide/a9lh-to-b9s")
-        embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
-        embed.url = "https://3ds.guide/a9lh-to-b9s"
+        embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
+        embed.url = "https://3ds.hacks.guide/a9lh-to-b9s"
         embed.description = "A guide for upgrading your device from arm9loaderhax to boot9strap."
         await self.bot.say("", embed=embed)
 
@@ -136,7 +136,7 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def gwhs(self):
         """Links to gateway health and safety inject troubleshooting"""
-        await self.bot.say("https://3ds.guide/troubleshooting#gw_fbi")
+        await self.bot.say("https://3ds.hacks.guide/troubleshooting#gw_fbi")
 
     # Hardmodder pastebin list
     @commands.command()
@@ -158,9 +158,9 @@ class Assistance:
     async def ctr(self):
         """Links to ctrtransfer guide"""
         embed = discord.Embed(title="Guide - ctrtransfer", color=discord.Color.orange())
-        embed.set_author(name="Plailect", url="https://3ds.guide/")
-        embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
-        embed.url = "https://3ds.guide/ctrtransfer"
+        embed.set_author(name="Plailect", url="https://3ds.hacks.guide/")
+        embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
+        embed.url = "https://3ds.hacks.guide/ctrtransfer"
         embed.description = "How to do the 11.5.0-38 ctrtransfer"
         await self.bot.say("", embed=embed)
 
@@ -194,7 +194,7 @@ class Assistance:
         """Information about video guides relating to custom firmware"""
         embed = discord.Embed(title="Why you should not use video guides", color=discord.Color.dark_orange())
         embed.description = "\"Video guides\" for custom firmware and arm9loaderhax/boot9strap are not recommended for use. Their contents generally become outdated very quickly for them to be of any use, and they are harder to update unlike a written guide.\n\nWhen this happens, video guides become more complicated than current methods, having users do certain tasks which may not be required anymore.\n\nThere is also a risk of the uploader spreading misinformation or including potentially harmful files, sometimes unintentionally. Using other people's files to install arm9loaderhax can cause serious issues and even brick your system."
-        embed.add_field(name="Recommended", value="The recommended thing to do is to use [Plailect's written complete guide for boot9strap](https://3ds.guide). It is the most up to date one and is recommended for everyone.")
+        embed.add_field(name="Recommended", value="The recommended thing to do is to use [Plailect's written complete guide for boot9strap](https://3ds.hacks.guide). It is the most up to date one and is recommended for everyone.")
         await self.bot.say("", embed=embed)
 
     @commands.command()
@@ -217,7 +217,7 @@ class Assistance:
     async def stock114(self):
         """Advisory for consoles on stock 11.4+ firmware"""
         embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
-        embed.description = "You have 3 possible options for installing CFW:\n- [NTRBoot](https://3ds.guide/ntrboot) which needs a compatible DS flashcart and maybe an additional hacked 3DS or DS(i) console depending on the flashcart\n- [DSiWare](https://3ds.guide/installing-boot9strap-\(dsiware\)) which involves system transferring from a hacked 3DS to an unhacked 3DS\n- [Hardmod](https://3ds.guide/installing-boot9strap-\(hardmod\)) which requires soldering **Not for beginners!**\n **Downgrading is impossible on 11.4+!**"
+        embed.description = "You have 3 possible options for installing CFW:\n- [NTRBoot](https://3ds.hacks.guide/ntrboot) which needs a compatible DS flashcart and maybe an additional hacked 3DS or DS(i) console depending on the flashcart\n- [DSiWare](https://3ds.hacks.guide/installing-boot9strap-\(dsiware\)) which involves system transferring from a hacked 3DS to an unhacked 3DS\n- [Hardmod](https://3ds.hacks.guide/installing-boot9strap-\(hardmod\)) which requires soldering **Not for beginners!**\n **Downgrading is impossible on 11.4+!**"
         await self.bot.say("", embed=embed)
 
     @commands.command()
@@ -242,13 +242,13 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def sderrors(self):
         """Sd Error Guide"""
-        await self.simple_embed("Guide For Checking SD Card For Errors\n- [H2testw Guide - Windows](https://3ds.guide/h2testw-(windows\))\n- [F3 Guide - Linux](https://3ds.guide/f3-(linux\))\n- [F3X Guide - Mac](https://3ds.guide/f3x-(mac\))", title="SD Card Errors")
+        await self.simple_embed("Guide For Checking SD Card For Errors\n- [H2testw Guide - Windows](https://3ds.hacks.guide/h2testw-(windows\))\n- [F3 Guide - Linux](https://3ds.hacks.guide/f3-(linux\))\n- [F3X Guide - Mac](https://3ds.hacks.guide/f3x-(mac\))", title="SD Card Errors")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def notbricked(self):
         """Missing boot.firm"""
-        await self.simple_embed("If your power LED turns on and off after you installed b9s, you are not bricked and are just missing a file called boot.firm in the root of your SD card.\nTo fix this you should:\n1.Check you inserted the SD card in your console\n2.Place/replace the file, downloading it from https://github.com/AuroraWright/Luma3DS/releases\nChecking your SD for errors or corruption:\n\tWindows: https://3ds.guide/h2testw-(windows)#\n\tLinux: https://3ds.guide/f3-(linux)#\n\tMac: https://3ds.guide/f3x-(mac)#", title="No. You are not bricked")
+        await self.simple_embed("If your power LED turns on and off after you installed b9s, you are not bricked and are just missing a file called boot.firm in the root of your SD card.\nTo fix this you should:\n1.Check you inserted the SD card in your console\n2.Place/replace the file, downloading it from https://github.com/AuroraWright/Luma3DS/releases\nChecking your SD for errors or corruption:\n\tWindows: https://3ds.hacks.guide/h2testw-(windows)#\n\tLinux: https://3ds.hacks.guide/f3-(linux)#\n\tMac: https://3ds.hacks.guide/f3x-(mac)#", title="No. You are not bricked")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -272,7 +272,7 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def emptysd(self):
         """What to do if you delete all your SD card contents"""
-        await self.simple_embed("If you have lost the contents of your SD card with CFW, you will need in SD root:\n-Homebrew launcher executable [here](https://smealum.github.io/ninjhax2/boot.3dsx)\n-`boot.firm` from [luma3ds latest release 7z](https://github.com/AuroraWright/Luma3DS/releases/latest)\nThen repeat the [finalizing setup](https://3ds.guide/finalizing-setup) page.", color=discord.Color.red())
+        await self.simple_embed("If you have lost the contents of your SD card with CFW, you will need in SD root:\n-Homebrew launcher executable [here](https://smealum.github.io/ninjhax2/boot.3dsx)\n-`boot.firm` from [luma3ds latest release 7z](https://github.com/AuroraWright/Luma3DS/releases/latest)\nThen repeat the [finalizing setup](https://3ds.hacks.guide/finalizing-setup) page.", color=discord.Color.red())
 
     # Luma downloadlinks
     @commands.command()
@@ -290,9 +290,9 @@ class Assistance:
     async def twl(self):
         """Information on how to fix a broken TWL Partition"""
         embed = discord.Embed(title="Fix broken TWL", color=discord.Color(0xA2BAE0))
-        embed.set_author(name="Plailect", url="https://3ds.guide/troubleshooting#dsi--ds-functionality-is-broken-after-completing-the-guide")
-        embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
-        embed.url = "https://3ds.guide/troubleshooting#dsi--ds-functionality-is-broken-after-completing-the-guide"
+        embed.set_author(name="Plailect", url="https://3ds.hacks.guide/troubleshooting#dsi--ds-functionality-is-broken-after-completing-the-guide")
+        embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
+        embed.url = "https://3ds.hacks.guide/troubleshooting#dsi--ds-functionality-is-broken-after-completing-the-guide"
         embed.description = "Instructions on how to fix a broken TWL after doing the guide"
         await self.bot.say("", embed=embed)
 
@@ -319,9 +319,9 @@ class Assistance:
     async def gm9(self):
         """Links to the guide on GodMode9"""
         embed = discord.Embed(title="GodMode9 Usage", color=discord.Color(0x66FFFF))
-        embed.set_author(name="Plailect", url="https://3ds.guide/godmode9-usage")
-        embed.set_thumbnail(url="https://3ds.guide/images/bio-photo.png")
-        embed.url = "https://3ds.guide/godmode9-usage"
+        embed.set_author(name="Plailect", url="https://3ds.hacks.guide/godmode9-usage")
+        embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
+        embed.url = "https://3ds.hacks.guide/godmode9-usage"
         embed.description = "GodMode9 usage guide"
         await self.bot.say("", embed=embed)
 
