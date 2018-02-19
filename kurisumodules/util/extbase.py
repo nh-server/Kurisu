@@ -5,6 +5,6 @@ class ExtensionBase:
     """Base class for Kurisu2 extensions."""
 
     def __init__(self, bot: Kurisu2):
-        """Initialized the extension."""
+        """Initialize the extension."""
         self.bot = bot
         self.log = bot.log

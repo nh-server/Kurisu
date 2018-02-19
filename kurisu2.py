@@ -6,6 +6,7 @@ import os
 import subprocess
 import sys
 from configparser import ConfigParser
+from datetime import datetime
 from sys import argv
 from typing import Dict
 
@@ -54,7 +55,7 @@ class Kurisu2(commands.Bot):
         ch = logging.StreamHandler()
         self.log.addHandler(ch)
 
-        fh = logging.FileHandler('kurisu2.log')
+        fh = logging.FileHandler(f'kurisu2-{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.log')
         self.log.addHandler(fh)
 
         fmt = logging.Formatter('%(asctime)s - %(name)s - %(module)s - %(levelname)s - %(message)s')
@@ -64,6 +65,8 @@ class Kurisu2(commands.Bot):
         self.restrictions = RestrictionsManager(self, 'restrictions.sqlite3')
         self.configuration = ConfigurationManager(self, 'configuration.sqlite3')
         self.warns = WarnsManager(self, 'warns.sqlite3')
+
+        self.log.debug('Kurisu2 class initialized')
 
     def load_extensions(self):
         blacklisted_cogs = ()
@@ -86,7 +89,9 @@ class Kurisu2(commands.Bot):
         self._guild = guilds[0]
 
         # TODO: replace this test code
-        self._channels['helpers'] = discord.utils.get(self._guild.channels, name='helpers')
+        for n in {*channel_names.values()}:
+            self._channels[n] = discord.utils.get(self._guild.channels, name=n)
+            self.log.debug('Result of searching for channel %s: %r', n, self._channels[n])
 
         startup_message = f'{self.user.name} has started! {self._guild} has {self._guild.member_count:,} members!'
         embed = None
@@ -105,6 +110,11 @@ class Kurisu2(commands.Bot):
             await self.wait_until_all_ready()
         return self._guild
 
+    async def get_channel_by_name(self, name: str) -> discord.TextChannel:
+        if not self._is_all_ready:
+            await self.wait_until_all_ready()
+        return self._channels[name]
+
     async def on_command_error(self, ctx: commands.Context, exc: commands.CommandInvokeError):
         author: discord.Member = ctx.author
         command: commands.Command = ctx.command or '<unknown cmd>'
@@ -119,7 +129,7 @@ class Kurisu2(commands.Bot):
             return
 
         elif isinstance(exc, commands.NoPrivateMessage):
-            await ctx.send(f'`{command.name}` cannot be used in direct messages.')
+            await ctx.send(f'`{command}` cannot be used in direct messages.')
 
         elif isinstance(exc, commands.MissingPermissions):
             await ctx.send(f"{author.mention} You don't have permission to use `{command}`.")
@@ -175,6 +185,9 @@ def main(*, config_directory='configs', debug=False, change_directory=False):
     if discord.version_info.major < 1:
         print(f'discord.py is not at least 1.0.0x. (current version: {discord.__version__})')
         return 2
+
+    if not sys.hexversion > 0x030604:  # 3.6.4
+        print
 
     if change_directory:
         # set current directory to the bot location

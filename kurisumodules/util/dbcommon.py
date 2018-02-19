@@ -1,6 +1,6 @@
 import os.path
 import sqlite3
-from typing import Iterable, Tuple, Generator
+from typing import Iterable, Tuple, Generator, KeysView
 
 import kurisu2
 from .tools import connwrap
@@ -54,13 +54,21 @@ class DatabaseManager:
         else:
             self.log.info('%s table created in %s', self.table, self.dbpath)
 
-    # TODO: make _select/_insert/_delete take columns as keyword arguments
-
-    def _format_vars(self, *keys) -> str:
+    def _format_select_vars(self, keys: KeysView[str]) -> str:
         assert all(k in self._columns for k in keys)
         if len(keys) == 0:
             return ''
         return 'WHERE ' + ' AND '.join(f'`{c}` = :{c}' for c in keys)
+
+    def _format_insert_vars(self, keys: KeysView[str]) -> str:
+        assert keys
+        assert all(k in self._columns for k in keys)
+        return ', '.join(f':{c}' for c in keys)
+
+    def _format_cols(self, keys: KeysView[str]) -> str:
+        assert keys
+        assert all(k in self._columns for k in keys)
+        return ', '.join(f'`{c}`' for c in keys)
 
     def _select(self, **values) -> Generator[Tuple, None, None]:
         assert not self._db_closed
@@ -68,10 +76,10 @@ class DatabaseManager:
         assert values
         c: sqlite3.Connection
         with connwrap(self.conn) as c:
-            query = f'SELECT * FROM {self.table} {self._format_vars(*values.keys())}'
+            query = f'SELECT * FROM {self.table} {self._format_select_vars(values.keys())}'
             yield from c.execute(query, values)
 
-    def _insert(self, *, allow_duplicates=False, **values) -> bool:
+    def _insert(self, *, allow_duplicates: bool = False, **values) -> bool:
         """Insert a row into the table."""
         assert not self._db_closed
         assert self._columns
@@ -79,10 +87,15 @@ class DatabaseManager:
         c: sqlite3.Connection
         with connwrap(self.conn) as c:
             if not allow_duplicates:
-                query = f'SELECT * FROM {self.table} {self._format_vars(*values.keys())}'
+                query = f'SELECT * FROM {self.table} {self._format_select_vars(values.keys())}'
                 res = c.execute(query, values)
                 if res.fetchone() is not None:
                     return False
+            query = (f'INSERT INTO {self.table} ({self._format_cols(values.keys())}) '
+                     f'VALUES ({self._format_insert_vars(values.keys())})')
+            # TODO: catch an exception here, but what?
+            c.execute(query, values)
+            return True
 
     def _delete(self, **values) -> bool:
         """Delete a row from the table."""
@@ -91,7 +104,7 @@ class DatabaseManager:
         assert values
         c: sqlite3.Connection
         with connwrap(self.conn) as c:
-            query = f'DELETE FROM {self.table} {self._format_vars(*values.keys())}'
+            query = f'DELETE FROM {self.table} {self._format_select_vars(*values.keys())}'
             # TODO: catch some exception here, probably
             # (DELETE shouldn't raise unless something has gone horribly wrong)
             res = c.execute(query, values)
