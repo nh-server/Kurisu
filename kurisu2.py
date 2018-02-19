@@ -187,7 +187,7 @@ def main(*, config_directory='configs', debug=False, change_directory=False):
         return 2
 
     if not sys.hexversion > 0x030604:  # 3.6.4
-        print
+        print('Kurisu2 requires 3.6.4 or later.')
 
     if change_directory:
         # set current directory to the bot location
