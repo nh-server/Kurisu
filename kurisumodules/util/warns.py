@@ -11,7 +11,7 @@ class WarnsManager(DatabaseManager):
 
     def __init__(self, bot: Kurisu2, database_path: str):
         super().__init__('warns', bot, database_path)
-        self._create_tables((('snowflake', 'blob'), ('user_id', 'integer'), ('reason', 'text')))
+        self._create_tables(snowflake='blob', user_id='integer', reason='text')
 
     # TODO: WarnsManager
 

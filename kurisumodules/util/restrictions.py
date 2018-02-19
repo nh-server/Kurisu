@@ -9,7 +9,7 @@ class RestrictionsManager(DatabaseManager):
 
     def __init__(self, bot: Kurisu2, database_path: str):
         super().__init__('restrictions', bot, database_path)
-        self._create_tables((('user_id', 'integer'), ('restriction', 'text')))
+        self._create_tables(user_id='integer', restriction='text')
 
     def add_restriction(self, user_id: int, restriction: str) -> bool:
         """Add a restriction to the user id."""
@@ -23,7 +23,7 @@ class RestrictionsManager(DatabaseManager):
     def remove_restriction(self, snowflake: int) -> bool:
         """Remove a restriction from the user id."""
         assert isinstance(snowflake, int)
-        res = self._delete(snowflake)
+        res = self._delete(snowflake=snowflake)
         if res:
             self.log.info('Removed restriction from user id %d: %s', user_id, restriction)
         return res

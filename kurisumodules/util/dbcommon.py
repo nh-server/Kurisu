@@ -40,13 +40,13 @@ class DatabaseManager:
     # maybe add an __init_subclass__ here?
     # https://docs.python.org/3/reference/datamodel.html#customizing-class-creation
 
-    def _create_tables(self, columns: Iterable[Tuple[str, str]]):
+    def _create_tables(self, **columns: str):
         """Create the table, if it does not already exist."""
-        self._columns = [c for c, _ in columns]
+        self._columns = list(columns.keys())
         try:
             c: sqlite3.Cursor
             with connwrap(self.conn) as c:
-                cols = ', '.join(f'`{c}` {v}' for c, v in columns)
+                cols = ', '.join(f'`{c}` {v}' for c, v in columns.items())
                 c.execute(f'CREATE TABLE {self.table} ({cols})')
         except sqlite3.OperationalError:
             # table likely exists

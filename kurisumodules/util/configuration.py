@@ -9,6 +9,6 @@ class ConfigurationManager(DatabaseManager):
 
     def __init__(self, bot: Kurisu2, database_path: str):
         super().__init__('configuration', bot, database_path)
-        self._create_tables((('key', 'text'), ('value', 'text')))
+        self._create_tables(key='text', value='text')
 
     # TODO: ConfigurationManager
