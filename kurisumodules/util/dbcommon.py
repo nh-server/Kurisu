@@ -1,6 +1,6 @@
 import os.path
 import sqlite3
-from typing import Iterable, Tuple, Generator, KeysView
+from typing import Iterable, Tuple, Generator, KeysView, Dict, List
 
 import kurisu2
 from .tools import connwrap
@@ -26,27 +26,33 @@ class DatabaseManager:
     """Manages sqlite3 connections and operations for Kurisu2."""
 
     _db_closed = False
-    _columns = None
+    _columns: List[str] = None
+    _full_columns: Dict[str, str] = None
 
-    def __init__(self, table: str, bot: kurisu2.Kurisu2, database_path: str):
+    def __init__(self, bot: kurisu2.Kurisu2, database_path: str):
         self.bot = bot
         self.log = bot.log
         self.log.debug('Initializing %s', type(self).__name__)
         self.dbpath = os.path.join(bot.config_directory, database_path)
-        self.table = table
         self.log.debug('Loading sqlite3 database: %s', self.dbpath)
         self.conn = sqlite3.connect(self.dbpath)
 
-    # maybe add an __init_subclass__ here?
-    # https://docs.python.org/3/reference/datamodel.html#customizing-class-creation
+        self._create_columns()
 
-    def _create_tables(self, **columns: str):
+    # until PyCharm recognizes __init_subclass__ properly, these inspections must be disabled
+    # noinspection PyMethodOverriding,PyArgumentList
+    def __init_subclass__(cls, table: str, columns: Dict[str, str], **kwargs):
+        super().__init_subclass__(**kwargs)
+        cls.table = table
+        cls._columns = list(columns.keys())
+        cls._full_columns = columns
+
+    def _create_columns(self):
         """Create the table, if it does not already exist."""
-        self._columns = list(columns.keys())
         try:
             c: sqlite3.Cursor
             with connwrap(self.conn) as c:
-                cols = ', '.join(f'`{c}` {v}' for c, v in columns.items())
+                cols = ', '.join(f'`{c}` {v}' for c, v in self._full_columns.items())
                 c.execute(f'CREATE TABLE {self.table} ({cols})')
         except sqlite3.OperationalError:
             # table likely exists
@@ -73,6 +79,7 @@ class DatabaseManager:
     def _select(self, **values) -> Generator[Tuple, None, None]:
         assert not self._db_closed
         assert self._columns
+        assert all(k in self._columns for k in values.keys())
         assert values
         c: sqlite3.Connection
         with connwrap(self.conn) as c:
@@ -83,6 +90,7 @@ class DatabaseManager:
         """Insert a row into the table."""
         assert not self._db_closed
         assert self._columns
+        assert all(k in self._columns for k in values.keys())
         assert values
         c: sqlite3.Connection
         with connwrap(self.conn) as c:
@@ -101,6 +109,7 @@ class DatabaseManager:
         """Delete a row from the table."""
         assert not self._db_closed
         assert self._columns
+        assert all(k in self._columns for k in values.keys())
         assert values
         c: sqlite3.Connection
         with connwrap(self.conn) as c:

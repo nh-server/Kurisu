@@ -1,15 +1,10 @@
 from typing import Generator, Tuple
 
-from kurisu2 import Kurisu2
 from .dbcommon import DatabaseManager
 
 
-class RestrictionsManager(DatabaseManager):
+class RestrictionsManager(DatabaseManager, table='restrictions', columns={'user_id': 'integer', 'restriction': 'text'}):
     """Manages user restrictions."""
-
-    def __init__(self, bot: Kurisu2, database_path: str):
-        super().__init__('restrictions', bot, database_path)
-        self._create_tables(user_id='integer', restriction='text')
 
     def add_restriction(self, user_id: int, restriction: str) -> bool:
         """Add a restriction to the user id."""
@@ -28,7 +23,7 @@ class RestrictionsManager(DatabaseManager):
             self.log.info('Removed restriction from user id %d: %s', user_id, restriction)
         return res
 
-    def get_restrictions(self, user_id: int) -> Generator[Tuple, None, None]:
+    def get_restrictions(self, user_id: int) -> Generator[Tuple[int, str], None, None]:
         """Get restrictions for a user id."""""
         assert isinstance(user_id, int)
         yield from self._select(user_id=user_id)

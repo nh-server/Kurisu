@@ -2,16 +2,12 @@ from datetime import datetime
 
 from discord.utils import time_snowflake
 
-from kurisu2 import Kurisu2
 from .dbcommon import DatabaseManager
 
 
-class WarnsManager(DatabaseManager):
+class WarnsManager(DatabaseManager, table='warns', columns={'snowflake': 'blob', 'user_id': 'integer',
+                                                            'reason': 'text'}):
     """Manages user warnings."""
-
-    def __init__(self, bot: Kurisu2, database_path: str):
-        super().__init__('warns', bot, database_path)
-        self._create_tables(snowflake='blob', user_id='integer', reason='text')
 
     # TODO: WarnsManager
 
