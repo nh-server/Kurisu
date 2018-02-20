@@ -1,7 +1,9 @@
+from functools import lru_cache
+
 import discord
 from discord.ext import commands
 
-from kurisu2 import Kurisu2, role_names
+from kurisu2 import Kurisu2, role_names, private_channels
 from .util import ExtensionBase, ordinal
 
 
@@ -18,10 +20,12 @@ def get_warn_action(count: int) -> str:
 class Warns(ExtensionBase):
     """User warning commands."""
 
+    # TODO: add name= to the commands, and set the function names to something more descriptive
+
     @commands.command()
     async def warn(self, ctx: commands.Context, member: discord.Member, *, reason: str):
-        """Warn a user."""
-        res = self.bot.warns.add_warning(user_id=member.id, reason=reason)
+        """Warn a member."""
+        res = self.bot.warns.add_warning(user_id=member.id, issuer=ctx.author.id, reason=reason)
         if res[0] is True:
             await ctx.send(f'{member.mention} was given their {ordinal(res[1])} warning.')
             action = get_warn_action(res[1])
@@ -39,15 +43,35 @@ class Warns(ExtensionBase):
 
     @commands.command()
     async def listwarns(self, ctx: commands.Context, member: discord.Member = None):
-        await ctx.send(f'member: {member}')
+        """List warns for a member."""
+
+        # better than repeated calls
+        @lru_cache()
+        def get_member(id: int) -> discord.Member:
+            return self.bot.get_user(id)
+
         if member is None:
             member = ctx.author
+        await ctx.send(f'member: {member}')
         if member != ctx.author:
             r: discord.Role
-            if role_names['staff-role'] not in (r.name for r in member.roles):
-                await ctx.send(f"{member.mention} You can only use this command on yourself.")
+            if role_names['staff-role'] not in (r.name for r in ctx.author.roles):
+                await ctx.send(f"{ctx.author.mention} You can only use this command on yourself.")
                 return
-        # TODO: listwarns
+
+        embed = discord.Embed()
+        embed.set_author(name=f'Warns for {member}', icon_url=member.avatar_url)
+        warns = list(self.bot.warns.get_warnings(user_id=member.id))
+        warns.sort(key=lambda x: x.warn_id)
+        for entry in warns:
+            field = [f'Warn ID: {entry.warn_id}']
+            if ctx.channel.name in private_channels:
+                field.append(f'Issuer: <@!{entry.issuer}>')
+            field.append('Reason: ' + entry.reason)
+            embed.add_field(name=entry.date.strftime('%Y-%m-%d %H:%M:%S'), value='\n'.join(field))
+
+        # await ctx.send(f'```py\n{embed.to_dict()}\n```')
+        await ctx.send(embed=embed)
 
 
 def setup(bot: Kurisu2):

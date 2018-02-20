@@ -25,6 +25,8 @@ channel_names = {
     'server-logs': 'server-logs',
 }
 
+private_channels = {'mods', 'helpers'}
+
 role_names = {
     # TODO: add more role names
     # general staff role
