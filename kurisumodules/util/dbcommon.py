@@ -137,5 +137,5 @@ class DatabaseManager:
         # noinspection PyBroadException
         try:
             self.close()
-        except Exception:
+        except:
             pass

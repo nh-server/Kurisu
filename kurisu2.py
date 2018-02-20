@@ -37,7 +37,7 @@ class Kurisu2(commands.Bot):
 
         self._roles: Dict[str, discord.Role] = {}
         self._channels: Dict[str, discord.TextChannel] = {}
-        self._failed_extensions: Dict[str, Exception] = {}
+        self._failed_extensions: Dict[str, BaseException] = {}
 
         self.config_directory = config_directory
 
@@ -49,6 +49,7 @@ class Kurisu2(commands.Bot):
 
         # TODO: actually use logging properly, somehow. if I can figure it out.
         # judging from https://www.python.org/dev/peps/pep-0282/ I shouldn't have to pass around a log object.
+        # actually when I tried do use "logging" directly, it interfered with discord.py. so maybe I'll fix this later
         self.log = logging.getLogger('Kurisu2')
         self.log.setLevel(logging_level)
 
@@ -71,14 +72,14 @@ class Kurisu2(commands.Bot):
     def load_extensions(self):
         blacklisted_cogs = ()
         # this is not a good way of doing things i think
-        for c in ['kurisumodules.' + x[:-3] for x in os.listdir('kurisumodules') if x.endswith('.py')]:
+        for c in ('kurisumodules.' + x.name[:-3] for x in os.scandir('kurisumodules') if x.name.endswith('.py')):
             if c in blacklisted_cogs:
                 self.log.info('Not automatically loading %s since it is listed in blacklisted_cogs', c)
                 continue
             self.log.debug('Loading extension %s', c)
             try:
                 self.load_extension(c)
-            except Exception as e:
+            except BaseException as e:
                 self.log.error('%s failed to load.', c, exc_info=e)
                 self._failed_extensions[c] = e
 
