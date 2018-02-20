@@ -2,10 +2,10 @@ import discord
 from discord.ext import commands
 
 from kurisu2 import Kurisu2  # for type hinting
-from .util import ExtensionBase
+from .util import Extension
 
 
-class Extras(ExtensionBase):
+class Extras(Extension):
     """Extra commands and features."""
 
     @commands.command(aliases=('kurisu2', 'about'))

@@ -1,10 +1,8 @@
-from functools import lru_cache
-
 import discord
 from discord.ext import commands
 
 from kurisu2 import Kurisu2, role_names, private_channels
-from .util import ExtensionBase, ordinal
+from .util import Extension, ordinal
 
 
 # could this be made better?
@@ -17,15 +15,15 @@ def get_warn_action(count: int) -> str:
         return 'ban'
 
 
-class Warns(ExtensionBase):
+class Warns(Extension):
     """User warning commands."""
 
     # TODO: add name= to the commands, and set the function names to something more descriptive
 
-    @commands.command()
-    async def warn(self, ctx: commands.Context, member: discord.Member, *, reason: str):
+    @commands.command(name='warn')
+    async def add_warning(self, ctx: commands.Context, member: discord.Member, *, reason: str):
         """Warn a member."""
-        res = self.bot.warns.add_warning(user_id=member.id, issuer=ctx.author.id, reason=reason)
+        res = self.warns.add_warning(user_id=member.id, issuer=ctx.author.id, reason=reason)
         if res[0] is True:
             await ctx.send(f'{member.mention} was given their {ordinal(res[1])} warning.')
             action = get_warn_action(res[1])
@@ -36,19 +34,14 @@ class Warns(ExtensionBase):
         else:
             await ctx.send('Failed to add a warning! This should never happen!')
 
-    @commands.command()
-    async def delwarn(self, ctx: commands.Context, snowflake: int):
+    @commands.command(name='delwarn')
+    async def delete_warning(self, ctx: commands.Context, snowflake: int):
         """Delete a warn."""
         # TODO: delwarn
 
-    @commands.command()
-    async def listwarns(self, ctx: commands.Context, member: discord.Member = None):
+    @commands.command(name='listwarns')
+    async def list_warnings(self, ctx: commands.Context, member: discord.Member = None):
         """List warns for a member."""
-
-        # better than repeated calls
-        @lru_cache()
-        def get_member(id: int) -> discord.Member:
-            return self.bot.get_user(id)
 
         if member is None:
             member = ctx.author
@@ -61,7 +54,7 @@ class Warns(ExtensionBase):
 
         embed = discord.Embed()
         embed.set_author(name=f'Warns for {member}', icon_url=member.avatar_url)
-        warns = list(self.bot.warns.get_warnings(user_id=member.id))
+        warns = list(self.warns.get_warnings(user_id=member.id))
         warns.sort(key=lambda x: x.warn_id)
         for entry in warns:
             field = [f'Warn ID: {entry.warn_id}']

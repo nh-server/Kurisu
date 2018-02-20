@@ -42,7 +42,6 @@ class DatabaseManager:
     # until PyCharm recognizes __init_subclass__ properly, these inspections must be disabled
     # noinspection PyMethodOverriding,PyArgumentList
     def __init_subclass__(cls, table: str, columns: Dict[str, str], **kwargs):
-        super().__init_subclass__(**kwargs)
         cls.table = table
         cls._columns = list(columns.keys())
         cls._full_columns = columns
