@@ -15,10 +15,10 @@ class RestrictionsManager(DatabaseManager, table='restrictions', columns={'user_
             self.log.info('Added restriction to user id %d: %s', user_id, restriction)
         return res
 
-    def remove_restriction(self, snowflake: int) -> bool:
+    def remove_restriction(self, user_id: int, restriction: str) -> bool:
         """Remove a restriction from the user id."""
-        assert isinstance(snowflake, int)
-        res = self._delete(snowflake=snowflake)
+        assert isinstance(user_id, int)
+        res = self._delete(user_id=user_id, restriction=restriction)
         if res:
             self.log.info('Removed restriction from user id %d: %s', user_id, restriction)
         return res

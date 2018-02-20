@@ -25,6 +25,12 @@ channel_names = {
     'server-logs': 'server-logs',
 }
 
+role_names = {
+    # TODO: add more role names
+    # general staff role
+    'staff-role': 'Staff',
+}
+
 
 class Kurisu2(commands.Bot):
     """Base class for Kurisu2."""
@@ -56,7 +62,8 @@ class Kurisu2(commands.Bot):
         ch = logging.StreamHandler()
         self.log.addHandler(ch)
 
-        fh = logging.FileHandler(f'kurisu2-{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.log')
+        os.makedirs('logs', exist_ok=True)
+        fh = logging.FileHandler(f'logs/kurisu2-{datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.log')
         self.log.addHandler(fh)
 
         fmt = logging.Formatter('%(asctime)s - %(name)s - %(module)s - %(levelname)s - %(message)s')

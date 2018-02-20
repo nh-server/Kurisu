@@ -86,6 +86,17 @@ class DatabaseManager:
             query = f'SELECT * FROM {self.table} {self._format_select_vars(values.keys())}'
             yield from c.execute(query, values)
 
+    def _row_count(self, **values) -> int:
+        assert not self._db_closed
+        assert self._columns
+        assert all(k in self._columns for k in values.keys())
+        assert values
+        c: sqlite3.Connection
+        with connwrap(self.conn) as c:
+            query = f'SELECT COUNT(*) FROM {self.table} {self._format_select_vars(values.keys())}'
+            res = c.execute(query, values)
+            return res.fetchone()[0]
+
     def _insert(self, *, allow_duplicates: bool = False, **values) -> bool:
         """Insert a row into the table."""
         assert not self._db_closed

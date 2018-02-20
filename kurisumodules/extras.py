@@ -27,7 +27,7 @@ class Extras(ExtensionBase):
     @commands.command()
     async def quit(self, ctx: commands.Context):
         """Shuts down the bot."""
-        self.bot.log.info('Shutdown initiated by %s in #%s', ctx.author, ctx.channel)
+        self.log.info('Shutdown initiated by %s in #%s', ctx.author, ctx.channel)
         await ctx.send('\N{WAVING HAND SIGN} Goodbye!')
         await self.bot.close()
 
