@@ -362,29 +362,7 @@ class Assistance:
             embed.description = "The recommended way to play old classics on your Wiiu"
             await self.bot.say("", embed=embed)
 
-    # Embed to ih8ih8sn0w's godmode9 guide
-    @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def dump(self):
-        """How to dump/build CIAs using GodMode9"""
-        embed = discord.Embed(title="GodMode9 dump/build Guide", color=discord.Color(0x66FFFF))
-        embed.set_author(name="ih8ih8sn0w", url="https://pastebin.com/sx8HYULr")
-        embed.set_thumbnail(url="http://i.imgur.com/QEUfyrp.png")
-        embed.url = "https://pastebin.com/sx8HYULr"
-        embed.description = "How to dump/build CIAs using GodMode9"
-        await self.bot.say("", embed=embed)
 
-    # Embed to ih8ih8sn0w's layeredfs guide
-    @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def layeredfs(self):
-        """How to use Luma 8.0+ LayeredFs"""
-        embed = discord.Embed(title="LayeredFs Guide", color=discord.Color(0x66FFFF))
-        embed.set_author(name="ih8ih8sn0w", url="https://pastebin.com/sx8HYULr")
-        embed.set_thumbnail(url="http://i.imgur.com/QEUfyrp.png")
-        embed.url = "https://pastebin.com/QdzBv4Te"
-        embed.description = "How to use Luma 8.0+ LayeredFs for ROM Hacking."
-        await self.bot.say("", embed=embed)
 
     # Information about sighax
     @commands.command()
