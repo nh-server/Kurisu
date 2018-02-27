@@ -362,7 +362,16 @@ class Assistance:
             embed.description = "The recommended way to play old classics on your Wiiu"
             await self.bot.say("", embed=embed)
 
-
+    # Embed to 3ds.guide's godmode9 guide
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def dump(self):
+        """How to dump CIAs using GodMode9"""
+        embed = discord.Embed(title="GodMode9 dump Guide", color=discord.Color(0x66FFFF))
+        embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
+        embed.url = "https://3ds.hacks.guide/godmode9-usage#dumping-a-title"
+        embed.description = "How to dump CIAs using GodMode9"
+        await self.bot.say("", embed=embed)
 
     # Information about sighax
     @commands.command()
