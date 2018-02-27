@@ -362,7 +362,27 @@ class Assistance:
             embed.description = "The recommended way to play old classics on your Wiiu"
             await self.bot.say("", embed=embed)
 
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def dump(self):
+        """Sergey's dump guide"""
+        embed = discord.Embed(title="Godmode9 dumping guide", color=discord.Color(0x42f462))
+        embed.set_author(name="Sergey", url="https://gist.github.com/PixelSergey/73d0a4bc1437dbaa53a1d1ce849fdda1")
+        embed.set_thumbnail(url="https://imgur.com/a/exqTD")
+        embed.url = "https://gist.github.com/PixelSergey/73d0a4bc1437dbaa53a1d1ce849fdda1"
+        embed.description = "Dump, rebuild and extract RomFS from games"
+        await self.bot.say("", embed=embed)
 
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def layeredfs(self):
+        """Sergey's layeredfs guide"""
+        embed = discord.Embed(title="Luma LayeredFS guide", color=discord.Color(0x42f462))
+        embed.set_author(name="Sergey", url="https://gist.github.com/PixelSergey/5dbb4a9b90d290736353fa58e4fcbb42")
+        embed.set_thumbnail(url="https://imgur.com/a/exqTD")
+        embed.url = "https://gist.github.com/PixelSergey/5dbb4a9b90d290736353fa58e4fcbb42"
+        embed.description = "Play patched games with Luma's LayeredFS feature"
+        await self.bot.say("", embed=embed)
 
     # Information about sighax
     @commands.command()
