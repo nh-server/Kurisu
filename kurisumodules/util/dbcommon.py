@@ -83,6 +83,7 @@ class DatabaseManager:
         c: sqlite3.Connection
         with connwrap(self.conn) as c:
             query = f'SELECT * FROM {self.table} {self._format_select_vars(values.keys())}'
+            self.log.debug('Executed SELECT query with parameters %s', ColumnValueFormatter(self._columns, values))
             yield from c.execute(query, values)
 
     def _row_count(self, **values) -> int:
@@ -94,6 +95,7 @@ class DatabaseManager:
         with connwrap(self.conn) as c:
             query = f'SELECT COUNT(*) FROM {self.table} {self._format_select_vars(values.keys())}'
             res = c.execute(query, values)
+            self.log.debug('Executed SELECT COUNT() query with parameters %s', ColumnValueFormatter(self._columns, values))
             return res.fetchone()[0]
 
     def _insert(self, *, allow_duplicates: bool = False, **values) -> bool:
@@ -113,6 +115,7 @@ class DatabaseManager:
                      f'VALUES ({self._format_insert_vars(values.keys())})')
             # TODO: catch an exception here, but what?
             c.execute(query, values)
+            self.log.debug('Executed INSERT query with parameters %s', ColumnValueFormatter(self._columns, values))
             return True
 
     def _delete(self, **values) -> bool:
@@ -123,7 +126,7 @@ class DatabaseManager:
         assert values
         c: sqlite3.Connection
         with connwrap(self.conn) as c:
-            query = f'DELETE FROM {self.table} {self._format_select_vars(*values.keys())}'
+            query = f'DELETE FROM {self.table} {self._format_select_vars(values.keys())}'
             # TODO: catch some exception here, probably
             # (DELETE shouldn't raise unless something has gone horribly wrong)
             res = c.execute(query, values)

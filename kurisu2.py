@@ -5,6 +5,7 @@ import logging
 import os
 import subprocess
 import sys
+import traceback
 from configparser import ConfigParser
 from datetime import datetime
 from sys import argv
@@ -71,6 +72,8 @@ class Kurisu2(commands.Bot):
         fmt = logging.Formatter('%(asctime)s - %(name)s - %(module)s - %(levelname)s - %(message)s')
         ch.setFormatter(fmt)
         fh.setFormatter(fmt)
+
+        self.debug = logging_level is logging.DEBUG
 
         self.restrictions = RestrictionsManager(self, 'restrictions.sqlite3')
         self.configuration = ConfigurationManager(self, 'configuration.sqlite3')
@@ -160,12 +163,16 @@ class Kurisu2(commands.Bot):
         elif isinstance(exc, commands.CommandInvokeError):
             self.log.debug('Exception in %s: %s: %s', command, type(exc).__name__, exc, exc_info=original)
             await ctx.send(f'{author.mention} `{command}` raised an exception during usage')
+            if self.debug:
+                await ctx.send(f'```\n{traceback.format_exception(type(exc), exc, exc.__traceback__)}\n```')
 
         else:
             self.log.debug('Unexpected exception in %s: %s: %s', command, type(exc).__name__, exc, exc_info=original)
             if not isinstance(command, str):
                 command.reset_cooldown(ctx)
             await ctx.send(f'{author.mention} Unexpected exception occurred while using the command `{command}`')
+            if self.debug:
+                await ctx.send(f'```\n{traceback.format_exception(type(exc), exc, exc.__traceback__)}\n```')
 
     async def on_error(self, event_method, *args, **kwargs):
         self.log.error('Exception occurred in %s', event_method, exc_info=sys.exc_info())

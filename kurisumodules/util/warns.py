@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Tuple, Generator, NamedTuple
+from typing import Tuple, Generator, NamedTuple, Optional
 
 from discord.utils import time_snowflake, snowflake_time
 
@@ -28,15 +28,39 @@ class WarnsManager(DatabaseManager, table='warns', columns={'snowflake': 'blob',
         res = self._insert(allow_duplicates=True, snowflake=now.to_bytes(8, 'big'), user_id=user_id.to_bytes(8, 'big'),
                            issuer=issuer.to_bytes(8, 'big'), reason=reason)
         if res:
-            self.log.info('Added warning to user id %d, %r', user_id, reason)
+            self.log.debug('Added warning %d to user id %d, %r', now, user_id, reason)
         count = self._row_count(user_id=user_id.to_bytes(8, 'big'))
         return res, count
 
     def get_warnings(self, user_id: int) -> Generator[WarnEntry, None, None]:
+        """Get warnings for a user id."""
         assert isinstance(user_id, int)
         res = self._select(user_id=user_id)
-        for snowflake, user_id, issuer, reason in self._select(user_id=user_id):
-            yield WarnEntry(user_id=int.from_bytes(user_id), warn_id=int.from_bytes(snowflake, 'big'), date=snowflake_time(snowflake),
-                            issuer=issuer, reason=reason)
+        for snowflake, w_user_id, issuer, reason in self._select(user_id=user_id.to_bytes(8, 'big')):
+            yield WarnEntry(user_id=int.from_bytes(w_user_id, 'big'), warn_id=int.from_bytes(snowflake, 'big'),
+                            date=snowflake_time(int.from_bytes(snowflake, 'big')), issuer=int.from_bytes(issuer, 'big'),
+                            reason=reason)
+
+    def get_warning(self, warn_id: int) -> Optional[WarnEntry]:
+        """Get a specific warning based on warn id."""
+        assert isinstance(warn_id, int)
+        try:
+            res = next(self._select(snowflake=warn_id.to_bytes(8, 'big')))
+        except StopIteration:
+            return None
+        return WarnEntry(user_id=int.from_bytes(res[1], 'big'), warn_id=int.from_bytes(res[0], 'big'),
+                         date=snowflake_time(int.from_bytes(res[0], 'big')), issuer=int.from_bytes(res[2], 'big'),
+                         reason=res[3])
+
+    def delete_warning(self, warn_id: int) -> Tuple[bool, Optional[WarnEntry]]:
+        """Remove a warning based on warn id."""
+        assert isinstance(warn_id, int)
+        res_warning = self.get_warning(warn_id=warn_id)
+        if res_warning is None:
+            return False, None
+        res_delete = self._delete(snowflake=warn_id.to_bytes(8, 'big'))
+        if res_delete:
+            self.log.debug('Removed warning %d', warn_id)
+        return res_delete, res_warning
 
 
