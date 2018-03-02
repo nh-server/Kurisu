@@ -236,7 +236,7 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def bigsd(self):
         """SD bigger than 32GB"""
-        await self.simple_embed("If you want to change your SD card to one bigger than 32GB then you'll have to format it to FAT32.\nYou can do this with the tool of your preference.\nFormatter examples:\n- [guiformat - Windows](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm)\n- [gparted - Linux](http://gparted.org/download.php)\n- [Disk Utility - macOS](https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010) (Always choose \"MS-DOS (FAT)\" regardless of size, not ExFAT.)", title="Big SD cards")
+        await self.simple_embed("If you would like to upgrade to a bigger capacity SD card, all you need to do is simply copy paste the entire contents of the previous SD card onto the new SD card. Make sure that the new SD card is formatted as FAT32, and that it is **completely** empty of any files/folders. \nTo format an SD card that is larger than 32GB to FAT32 you can use a tool of your preference. \nFormatter examples:\n- [guiformat - Windows](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm) \n- [gparted - Linux](http://gparted.org/download.php) \n- [Disk Utility - macOS](https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010) (Always choose \"MS-DOS (FAT)\" regardless of size, not ExFAT.)", title="SD Card Errors")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
