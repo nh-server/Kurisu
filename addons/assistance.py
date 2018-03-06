@@ -296,11 +296,11 @@ class Assistance:
         embed.description = "Instructions on how to fix a broken TWL after doing the guide"
         await self.bot.say("", embed=embed)
 
-    @commands.command()
+    @commands.command(aliases=["redscr"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def redscr(self):
-        """Help with homebrew red screen"""
-        await self.simple_embed("A red screen indicates that there is no boot.3dsx on root.\nIf you have a starter folder on root, place the contents of the starter folder on root.\nIf not, redownload the [Homebrew Starter Kit](https://smealum.github.io/ninjhax2/starter.zip) and place the contents of the starter folder inside the .zip on root.", title="If you get a red screen trying to open the Homebrew Launcher")
+    async def boot3dsx(self):
+        """Download link for 3DS homebrew launcher, boot.3dsx"""
+        await self.simple_embed("The 3DS Homebrew Launcher, [boot.3dsx](https://github.com/fincs/new-hbmenu/releases/download/v2.0.0/boot.3dsx)")
 
     # Intructions for deleting home menu Extdata
     @commands.command()
