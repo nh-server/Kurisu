@@ -88,6 +88,7 @@ class Events:
         'vi11ian3ds',
         'vi1lian3ds',
         'vil1ian3ds',
+        'cdnfx',
     )
 
     # terms that should cause a notice but not auto-delete
