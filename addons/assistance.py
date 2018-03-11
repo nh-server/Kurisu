@@ -362,6 +362,29 @@ class Assistance:
             embed.description = "The recommended way to play old classics on your Wiiu"
             await self.bot.say("", embed=embed)
 
+    # Embed to Chroma Ryu's godmode9 guide
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def dump(self):
+        """How to dump/build CIAs using GodMode9"""
+        embed = discord.Embed(title="GodMode9 dump/build Guide", color=discord.Color(0x66FFFF))
+        embed.set_author(name="Chroma Ryu", url="https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Godmode9-CIA-Dumping-and-Building")
+        embed.set_thumbnail(url="https://i.imgur.com/U8NA9lx.png")
+        embed.url = "https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Godmode9-CIA-Dumping-and-Building"
+        embed.description = "How to dump/build CIAs using GodMode9"
+        await self.bot.say("", embed=embed)
+
+    # Embed to Chroma Ryu's layeredfs guide
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def layeredfs(self):
+        """How to use Luma 8.0+ LayeredFs"""
+        embed = discord.Embed(title="LayeredFs Guide", color=discord.Color(0x66FFFF))
+        embed.set_author(name="Chroma Ryu", url="https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Using-Luma3DS'-layeredfs-(Only-version-8.0-and-higer)")
+        embed.set_thumbnail(url="https://i.imgur.com/U8NA9lx.png")
+        embed.url = "https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Using-Luma3DS'-layeredfs-(Only-version-8.0-and-higer)"
+        embed.description = "How to use Luma 8.0+ LayeredFs for ROM Hacking."
+        await self.bot.say("", embed=embed)            
 
 
     # Information about sighax
