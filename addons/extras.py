@@ -141,6 +141,11 @@ class Extras:
         """Nintendo Hacking 2016"""
         await self.bot.say("https://www.youtube.com/watch?v=8C5cn_Qj0G8")
 
+    @commands.command(name="34c3")
+    async def _34c3(self):
+        """Console Security - Switch"""
+        await self.bot.say("https://www.youtube.com/watch?v=Ec4NgWRE8ik")
+
     @commands.command()
     async def de(self):
         invalid()
