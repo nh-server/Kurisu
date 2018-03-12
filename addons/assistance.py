@@ -56,14 +56,14 @@ class Assistance:
         """Links to Plailect's or FlimFlam69's guide."""
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="Guide", color=discord.Color(0xCE181E))
-            embed.set_author(name="Plailect", url="https://3ds.guide/")
+            embed.set_author(name="Plailect", url="https://3ds.hacks.guide/")
             embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
             embed.url = "https://3ds.hacks.guide/"
             embed.description = "A complete guide to 3DS custom firmware, from stock to boot9strap."
             await self.bot.say("", embed=embed)
         if self.check_console(console, ctx.message.channel.name, ('wiiu', 'wii u')):
             embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
-            embed.set_author(name="FlimFlam69 & Plailect", url="https://wiiu.guide/")
+            embed.set_author(name="FlimFlam69 & Plailect", url="https://wiiu.hacks.guide/")
             embed.set_thumbnail(url="http://i.imgur.com/CpF12I4.png")
             embed.url = "https://wiiu.hacks.guide/"
             embed.description = "FlimFlam69 and Plailect's Wii U custom firmware + coldboothax guide"
@@ -107,14 +107,14 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def update(self):
         """Explains how to safely prepare for an update if you have boot9strap installed"""
-        await self.simple_embed("**Is it safe to update to 11.6?** \n\n **Luma3DS >=8.0** \n You can update to 11.6 safely. Run Luma updater to get the latest Luma3DS version \n\n **Luma3DS 7.1** \n Follow the [B9S upgrade guide](https://3ds.guide/updating-b9s) \n\n **Luma3DS <=7.0.5** \n Follow the [a9lh-to-b9s guide](https://3ds.guide/a9lh-to-b9s) \n\n **To find out your Luma3DS version, hold select on bootup and look at the top left corner of the top screen**")
+        await self.simple_embed("**Is it safe to update to 11.6?** \n\n **Luma3DS >=8.0** \n You can update to 11.6 safely. Run Luma updater to get the latest Luma3DS version \n\n **Luma3DS 7.1** \n Follow the [B9S upgrade guide](https://3ds.hacks.guide/updating-b9s) \n\n **Luma3DS <=7.0.5** \n Follow the [a9lh-to-b9s guide](https://3ds.hacks.guide/a9lh-to-b9s) \n\n **To find out your Luma3DS version, hold select on bootup and look at the top left corner of the top screen**")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def updateb9s(self):
         """Links to the guide for updating b9s versions"""
         embed = discord.Embed(title="Updating B9S Guide", color=discord.Color(0xCE181E))
-        embed.set_author(name="Plailect", url="https://3ds.guide/updating-b9s")
+        embed.set_author(name="Plailect", url="https://3ds.hacks.guide/updating-b9s")
         embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
         embed.url = "https://3ds.hacks.guide/updating-b9s"
         embed.description = "A guide for updating to new B9S versions."
@@ -125,7 +125,7 @@ class Assistance:
     async def atob(self):
         """Links to the guide for updating from a9lh to b9s"""
         embed = discord.Embed(title="Upgrading a9lh to b9s", color=discord.Color(0xCE181E))
-        embed.set_author(name="Plailect", url="https://3ds.guide/a9lh-to-b9s")
+        embed.set_author(name="Plailect", url="https://3ds.hacks.guide/a9lh-to-b9s")
         embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
         embed.url = "https://3ds.hacks.guide/a9lh-to-b9s"
         embed.description = "A guide for upgrading your device from arm9loaderhax to boot9strap."
