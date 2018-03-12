@@ -239,6 +239,7 @@ class Err:
         '011-3021': 'Cannot find title on Nintendo eShop. Probably incorrect region, or never existed.',
         '011-3136': 'Nintendo eShop is currently unavailable. Try again later.',
         '012-1511': 'Certificate warning.',
+        '014-0016': 'Both systems have the same movable.sed key. Format the target and try system transfer again.',
         '014-0062': 'Error during System Transfer. Move closer to the wireless router and keep trying.',
         '022-2452': 'Occurs when trying to use Nintendo eShop with UNITINFO patches enabled.',
         '022-2501': 'Attempting to use a Nintendo Network ID on one system when it is linked on another. This can be the result of using System Transfer, then restoring the source system\'s NAND and attempting to use services that require a Nintendo Network ID.\n\nIn a System Transfer, all Nintendo Network ID accounts associated with the system are transferred over, whether they are currently linked or not.',
