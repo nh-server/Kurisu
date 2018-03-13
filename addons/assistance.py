@@ -415,7 +415,7 @@ class Assistance:
         """Message on flash drives on the Wii U"""
         await self.simple_embed("Some flash drives work with the Wii U, some don't. If you have read or write errors, or games crash often, you might want to try a different flash drive or hard drive")
         
-     @commands.command()(aliases=["nxupdate"]) 
+     @commands.command(aliases=["nxupdate"]) 
      @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel) 
      async def nsupdate(self): 
         """Erase pending updates on Nintendo Switch""" 
