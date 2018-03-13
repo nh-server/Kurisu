@@ -415,9 +415,9 @@ class Assistance:
         """Message on flash drives on the Wii U"""
         await self.simple_embed("Some flash drives work with the Wii U, some don't. If you have read or write errors, or games crash often, you might want to try a different flash drive or hard drive")
         
-     @commands.command(aliases=["nxupdate"]) 
-     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel) 
-     async def nsupdate(self): 
+    @commands.command(aliases=["nxupdate"]) 
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel) 
+    async def nsupdate(self): 
         """Erase pending updates on Nintendo Switch""" 
         await self.simple_embed("When an update is downloaded, but not installed, the console will not display the firmware version in System Settings. \n\n• To fix this, *power the console off* (hold the power button, follow on-screen prompts). ***Hold*** Volume Down and Volume Up, then Power. When you see Maintenance Mode, you may reboot, and check System Settings. \n\n *To block automatic update downloads, enter 173.222.238.217 as your primary and secondary DNS for your home network.* (Hosted by ReSwitched)", title="How to delete pending Switch Updates") 
 
