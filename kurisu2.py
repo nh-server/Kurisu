@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 
-import asyncio
 import logging
 import os
-import subprocess
-import sys
-import traceback
+from asyncio import Event
 from configparser import ConfigParser
 from datetime import datetime
+from subprocess import check_output, CalledProcessError
 from sys import argv
+from sys import exit, exc_info, hexversion
+from traceback import format_exception
 from typing import Dict
 
 import discord
@@ -54,7 +54,7 @@ class Kurisu2(commands.Bot):
 
         os.makedirs(self.config_directory, exist_ok=True)
 
-        self._is_all_ready = asyncio.Event(loop=self.loop)
+        self._is_all_ready = Event(loop=self.loop)
 
         # TODO: actually use logging properly, somehow. if I can figure it out.
         # judging from https://www.python.org/dev/peps/pep-0282/ I shouldn't have to pass around a log object.
@@ -164,7 +164,7 @@ class Kurisu2(commands.Bot):
             self.log.debug('Exception in %s: %s: %s', command, type(exc).__name__, exc, exc_info=original)
             await ctx.send(f'{author.mention} `{command}` raised an exception during usage')
             if self.debug:
-                await ctx.send(f'```\n{traceback.format_exception(type(exc), exc, exc.__traceback__)}\n```')
+                await ctx.send(f'```\n{format_exception(type(exc), exc, exc.__traceback__)}\n```')
 
         else:
             self.log.debug('Unexpected exception in %s: %s: %s', command, type(exc).__name__, exc, exc_info=original)
@@ -172,10 +172,10 @@ class Kurisu2(commands.Bot):
                 command.reset_cooldown(ctx)
             await ctx.send(f'{author.mention} Unexpected exception occurred while using the command `{command}`')
             if self.debug:
-                await ctx.send(f'```\n{traceback.format_exception(type(exc), exc, exc.__traceback__)}\n```')
+                await ctx.send(f'```\n{format_exception(type(exc), exc, exc.__traceback__)}\n```')
 
     async def on_error(self, event_method, *args, **kwargs):
-        self.log.error('Exception occurred in %s', event_method, exc_info=sys.exc_info())
+        self.log.error('Exception occurred in %s', event_method, exc_info=exc_info())
 
     def add_cog(self, cog):
         super().add_cog(cog)
@@ -203,7 +203,7 @@ def main(*, config_directory='configs', debug=False, change_directory=False):
         print(f'discord.py is not at least 1.0.0x. (current version: {discord.__version__})')
         return 2
 
-    if not sys.hexversion >= 0x030604F0:  # 3.6.4
+    if not hexversion >= 0x030604F0:  # 3.6.4
         print('Kurisu2 requires 3.6.4 or later.')
         return 2
 
@@ -217,14 +217,14 @@ def main(*, config_directory='configs', debug=False, change_directory=False):
 
     # attempt to get current git information
     try:
-        commit = subprocess.check_output(['git', 'rev-parse', 'HEAD']).decode('ascii')[:-1]
-    except subprocess.CalledProcessError as e:
+        commit = check_output(['git', 'rev-parse', 'HEAD']).decode('ascii')[:-1]
+    except CalledProcessError as e:
         bot.log.info('Checking for git commit failed: %s: %s', type(e).__name__, e)
         commit = "<unknown>"
 
     try:
-        branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).decode()[:-1]
-    except subprocess.CalledProcessError as e:
+        branch = check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).decode()[:-1]
+    except CalledProcessError as e:
         bot.log.info('Checking for git branch failed: %s: %s', type(e).__name__, e)
         branch = "<unknown>"
 
@@ -248,4 +248,4 @@ def main(*, config_directory='configs', debug=False, change_directory=False):
 
 
 if __name__ == '__main__':
-    sys.exit(main(debug='d' in argv, change_directory=True))
+    exit(main(debug='d' in argv, change_directory=True))

@@ -63,4 +63,10 @@ class WarnsManager(DatabaseManager, table='warns', columns={'snowflake': 'blob',
             self.log.debug('Removed warning %d', warn_id)
         return res_delete, res_warning
 
-
+    def delete_all_warnings(self, user_id: int) -> bool:
+        """Delete all warnings for a user id."""
+        assert isinstance(user_id, int)
+        res = self._delete(user_id=user_id.to_bytes(8, 'big'))
+        if res:
+            self.log.debug('Removed all warnings for %d', user_id)
+        return res

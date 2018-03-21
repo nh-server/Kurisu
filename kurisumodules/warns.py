@@ -37,9 +37,9 @@ class Warns(Extension):
     @commands.command(name='delwarn')
     async def delete_warning(self, ctx: commands.Context, warn_id: int):
         """Delete a warn."""
-        res_delete = self.warns.delete_warning(warn_id=warn_id)
-        if res_delete[0] is True:
-            await ctx.send(f'Warning {warn_id} removed from <@!{res_delete[1].user_id}>.')
+        res = self.warns.delete_warning(warn_id=warn_id)
+        if res[0] is True:
+            await ctx.send(f'Warning {warn_id} removed from <@!{res[1].user_id}>.')
         else:
             await ctx.send(f'No warning with ID {warn_id} was found.')
 
@@ -47,7 +47,6 @@ class Warns(Extension):
     @caller_as_default
     async def list_warnings(self, ctx: commands.Context, member: discord.Member = None):
         """List warns for a member."""
-
         if member != ctx.author:
             r: discord.Role
             if role_names['staff-role'] not in (r.name for r in ctx.author.roles):
@@ -65,6 +64,15 @@ class Warns(Extension):
             embed.add_field(name=entry.date.strftime('%Y-%m-%d %H:%M:%S'), value='\n'.join(field))
 
         await ctx.send(embed=embed)
+
+    @commands.command(name='clearwarns')
+    async def clear_warnings(self, ctx: commands.Context, member: discord.Member):
+        """Remove all warnings from a user."""
+        res = self.warns.delete_all_warnings(member.id)
+        if res:
+            await ctx.send(f'Removed all {res} warnings from {member.mention}.')
+        else:
+            await ctx.send(f'No warnings for {member.mention} were found.')
 
 
 def setup(bot: Kurisu2):

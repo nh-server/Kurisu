@@ -118,7 +118,7 @@ class DatabaseManager:
             self.log.debug('Executed INSERT query with parameters %s', ColumnValueFormatter(self._columns, values))
             return True
 
-    def _delete(self, **values) -> bool:
+    def _delete(self, **values) -> int:
         """Delete a row from the table."""
         assert not self._db_closed
         assert self._columns
@@ -131,7 +131,7 @@ class DatabaseManager:
             # (DELETE shouldn't raise unless something has gone horribly wrong)
             res = c.execute(query, values)
             self.log.debug('Executed DELETE query with parameters %s', ColumnValueFormatter(self._columns, values))
-            return bool(res.rowcount)
+            return res.rowcount
 
     def close(self):
         """Close the connection to the database."""
