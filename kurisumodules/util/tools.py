@@ -3,14 +3,13 @@ from sqlite3 import Connection  # for type hinting
 
 
 @contextmanager
-def connwrap(conn: Connection, *, do_commit=True):
+def connwrap(conn: Connection):
     """Wrap an sqlite3.Connection object to yield a Cursor, then close at the end of the context."""
     # this is probably not necessary
-    cur = conn.cursor()
-    yield cur
-    cur.close()
-    if do_commit:
-        conn.commit()
+    with conn:
+        cur = conn.cursor()
+        yield cur
+        cur.close()
 
 
 # https://stackoverflow.com/questions/9647202/ordinal-numbers-replacement

@@ -3,8 +3,9 @@ from typing import Generator, Tuple
 from .common import DatabaseManager
 
 
-class RestrictionsManager(DatabaseManager, table='restrictions', columns={'user_id': 'integer', 'restriction': 'text'}):
-    """Manages user restrictions."""
+class RestrictionsDatabaseManager(DatabaseManager, table='restrictions', columns={'user_id': 'integer',
+                                                                                  'restriction': 'text'}):
+    """Manages the restrictions database."""
 
     def add_restriction(self, user_id: int, restriction: str) -> bool:
         """Add a restriction to the user id."""

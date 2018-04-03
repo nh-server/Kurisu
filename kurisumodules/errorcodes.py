@@ -30,6 +30,14 @@ class ErrorCodes(Extension):
 
     @commands.command(name='err')
     async def show_error(self, ctx: commands.Context, err: str):
+        """
+        Parses Nintendo and CTR error codes. 0x prefix is not required.
+
+        Example:
+          .err 0xD960D02B
+          .err 022-2634
+          .err 150-1031
+        """
         if re.match(r'[0-1][0-9][0-9]\-[0-9][0-9][0-9][0-9]', err):
             embed = discord.Embed(title=f'{err}: {"Nintendo 3DS" if err[0] == "0" else "Wii U"}')
             embed.url = (ctr_errcode_url if err[0] == "0" else wup_errcode_url).format(err)
@@ -78,15 +86,15 @@ class ErrorCodes(Extension):
                 return
             desc = rc & 0x3FF
             mod = (rc >> 10) & 0xFF
-            summ = (rc >> 21) & 0x3F
+            summary = (rc >> 21) & 0x3F
             level = (rc >> 27) & 0x1F
 
             # garbage
-            embed = discord.Embed(title="0x{:X}".format(rc))
-            embed.add_field(name="Module", value=get_name(ctr.modules, mod), inline=False)
-            embed.add_field(name="Description", value=get_name(ctr.descriptions, desc), inline=False)
-            embed.add_field(name="Summary", value=get_name(ctr.summaries, summ), inline=False)
-            embed.add_field(name="Level", value=get_name(ctr.levels, level), inline=False)
+            embed = discord.Embed(title=f'0x{rc:X}')
+            embed.add_field(name='Module', value=get_name(ctr.modules, mod), inline=False)
+            embed.add_field(name='Description', value=get_name(ctr.descriptions, desc), inline=False)
+            embed.add_field(name='Summary', value=get_name(ctr.summaries, summary), inline=False)
+            embed.add_field(name='Level', value=get_name(ctr.levels, level), inline=False)
         await ctx.send(embed=embed)
 
 

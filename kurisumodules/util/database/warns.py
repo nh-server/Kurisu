@@ -14,11 +14,9 @@ class WarnEntry(NamedTuple):
     reason: str
 
 
-class WarnsManager(DatabaseManager, table='warns', columns={'snowflake': 'blob', 'user_id': 'integer',
-                                                            'issuer': 'text', 'reason': 'text'}):
-    """Manages user warnings."""
-
-    # TODO: WarnsManager
+class WarnsDatabaseManager(DatabaseManager, table='warns', columns={'snowflake': 'blob', 'user_id': 'integer',
+                                                                    'issuer': 'text', 'reason': 'text'}):
+    """Manages the warns database."""
 
     def add_warning(self, user_id: int, issuer: int, reason: str) -> Tuple[bool, int]:
         """Add a warning to the user id."""

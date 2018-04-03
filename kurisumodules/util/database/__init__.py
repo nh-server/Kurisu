@@ -1,7 +1,7 @@
 from .common import DatabaseManager, DatabaseManagerException
-from .configuration import ConfigurationManager
-from .restrictions import RestrictionsManager
-from .warns import WarnsManager, WarnEntry
+from .configuration import ConfigurationDatabaseManager
+from .restrictions import RestrictionsDatabaseManager
+from .warns import WarnsDatabaseManager, WarnEntry
 
-__all__ = ['DatabaseManager', 'DatabaseManagerException', 'ConfigurationManager', 'RestrictionsManager',
-           'WarnsManager', 'WarnEntry']
+__all__ = ['DatabaseManager', 'DatabaseManagerException', 'ConfigurationDatabaseManager', 'RestrictionsDatabaseManager',
+           'WarnsDatabaseManager', 'WarnEntry']

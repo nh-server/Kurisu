@@ -41,7 +41,8 @@ class Kurisu2(commands.Bot):
     _guild: discord.Guild = None
 
     def __init__(self, command_prefix, config_directory, logging_level=logging.WARNING, **options):
-        from kurisumodules.util.database import RestrictionsManager, ConfigurationManager, WarnsManager
+        from kurisumodules.util.database import (RestrictionsDatabaseManager, ConfigurationDatabaseManager,
+                                                 WarnsDatabaseManager)
         super().__init__(command_prefix, **options)
 
         self._roles: Dict[str, discord.Role] = {}
@@ -75,9 +76,9 @@ class Kurisu2(commands.Bot):
 
         self.debug = logging_level is logging.DEBUG
 
-        self.restrictions = RestrictionsManager(self, 'restrictions.sqlite3')
-        self.configuration = ConfigurationManager(self, 'configuration.sqlite3')
-        self.warns = WarnsManager(self, 'warns.sqlite3')
+        self.restrictions = RestrictionsDatabaseManager(self, 'restrictions.sqlite3')
+        self.configuration = ConfigurationDatabaseManager(self, 'configuration.sqlite3')
+        self.warns = WarnsDatabaseManager(self, 'warns.sqlite3')
 
         self.log.debug('Kurisu2 class initialized')
 
