@@ -1,8 +1,13 @@
+from typing import TYPE_CHECKING
+
 import discord
 from discord.ext import commands
 
-from kurisu2 import Kurisu2, role_names, private_channels
-from .util import Extension, caller_as_default, ordinal
+from kurisu2 import role_names, private_channels
+from .util import Extension, MemberOrID, caller_id_as_default, ordinal, escape_name
+
+if TYPE_CHECKING:
+    from kurisu2 import Kurisu2
 
 
 # could this be made better?
@@ -44,17 +49,18 @@ class Warns(Extension):
             await ctx.send(f'No warning with ID {warn_id} was found.')
 
     @commands.command(name='listwarns')
-    @caller_as_default
-    async def list_warnings(self, ctx: commands.Context, member: discord.Member = None):
+    @caller_id_as_default
+    async def list_warnings(self, ctx: commands.Context, member: MemberOrID = None):
         """List warns for a member."""
-        if member != ctx.author:
+        if member[1] != ctx.author:
             r: discord.Role
             if role_names['staff-role'] not in (r.name for r in ctx.author.roles):
-                await ctx.send(f"{ctx.author.mention} You can only use this command on yourself.")
+                await ctx.send(f'{ctx.author.mention} You can only use this command on yourself.')
                 return
 
         embed = discord.Embed()
-        embed.set_author(name=f'Warns for {member}', icon_url=member.avatar_url)
+        embed.set_author(name=f'Warns for {member.display_if_exist}',
+                         icon_url=discord.Embed.Empty if member.member is None else member.member.avatar_url)
         warns = sorted(self.warns.get_warnings(user_id=member.id), key=lambda x: x.warn_id)
         for entry in warns:
             field = [f'Warn ID: {entry.warn_id}']
@@ -66,14 +72,14 @@ class Warns(Extension):
         await ctx.send(embed=embed)
 
     @commands.command(name='clearwarns')
-    async def clear_warnings(self, ctx: commands.Context, member: discord.Member):
+    async def clear_warnings(self, ctx: commands.Context, member: MemberOrID):
         """Remove all warnings from a user."""
         res = self.warns.delete_all_warnings(member.id)
         if res:
-            await ctx.send(f'Removed all {res} warnings from {member.mention}.')
+            await ctx.send(f'Removed all {res} warnings from {escape_name(member.display_if_exist)}.')
         else:
-            await ctx.send(f'No warnings for {member.mention} were found.')
+            await ctx.send(f'No warnings for {escape_name(member.display_if_exist)} were found.')
 
 
-def setup(bot: Kurisu2):
+def setup(bot: 'Kurisu2'):
     bot.add_cog(Warns(bot))

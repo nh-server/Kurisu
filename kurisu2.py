@@ -164,7 +164,7 @@ class Kurisu2(commands.Bot):
             self.log.debug('Exception in %s: %s: %s', command, type(exc).__name__, exc, exc_info=original)
             await ctx.send(f'{author.mention} `{command}` raised an exception during usage')
             if self.debug:
-                await ctx.send(f'```\n{format_exception(type(exc), exc, exc.__traceback__)}\n```')
+                await ctx.send(f'```\n{"".join(format_exception(type(exc), exc, exc.__traceback__))}\n```')
 
         else:
             self.log.debug('Unexpected exception in %s: %s: %s', command, type(exc).__name__, exc, exc_info=original)
@@ -172,7 +172,7 @@ class Kurisu2(commands.Bot):
                 command.reset_cooldown(ctx)
             await ctx.send(f'{author.mention} Unexpected exception occurred while using the command `{command}`')
             if self.debug:
-                await ctx.send(f'```\n{format_exception(type(exc), exc, exc.__traceback__)}\n```')
+                await ctx.send(f'```\n{"".join(format_exception(type(exc), exc, exc.__traceback__))}\n```')
 
     async def on_error(self, event_method, *args, **kwargs):
         self.log.error('Exception occurred in %s', event_method, exc_info=exc_info())
@@ -203,8 +203,8 @@ def main(*, config_directory='configs', debug=False, change_directory=False):
         print(f'discord.py is not at least 1.0.0x. (current version: {discord.__version__})')
         return 2
 
-    if not hexversion >= 0x030604F0:  # 3.6.4
-        print('Kurisu2 requires 3.6.4 or later.')
+    if not hexversion >= 0x030605F0:  # 3.6.4
+        print('Kurisu2 requires 3.6.5 or later.')
         return 2
 
     if change_directory:

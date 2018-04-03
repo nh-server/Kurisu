@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, NamedTuple
 from discord.ext.commands.converter import Converter, MemberConverter
 from discord.ext.commands.errors import BadArgument
 
@@ -8,8 +8,19 @@ if TYPE_CHECKING:
     from discord.ext.commands import Context
 
 
+class OptionalMember(NamedTuple):
+    id: int
+    member: 'Optional[Member]'
+
+    @property
+    def display_if_exist(self) -> str:
+        if self.member is None:
+            return str(self.id)
+        return str(self.member)
+
+
 class MemberOrID(Converter):
-    async def convert(self, ctx: 'Context', argument: str) -> 'Tuple[int, Optional[Member]]':
+    async def convert(self, ctx: 'Context', argument: str) -> 'OptionalMember':
         member: Member = None
         try:
             member = await MemberConverter().convert(ctx, argument)
@@ -20,9 +31,12 @@ class MemberOrID(Converter):
             except ValueError:
                 raise BadArgument(f"Couldn't convert {argument!r} into a Member or int")
 
-        return member_id, member
+        return OptionalMember(member_id, member)
 
     # for the purpose of type hints, don't mind me :eyes:
-    @staticmethod
-    def __getitem__(item: int) -> 'Union[int, Optional[Member]]':
-        pass
+    id: int
+    member: 'Optional[Member]'
+
+    @property
+    def display_if_exist(self) -> str:
+        raise RuntimeError('called wrong display method')
