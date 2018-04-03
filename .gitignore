@@ -7,7 +7,7 @@
 ._*
 .DS_Store
 __pycache__
-data/
+/data/
 configs/
 .idea/
 legacy/

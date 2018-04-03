@@ -7,6 +7,3 @@ technical stuff:
 * mod/server logs base
 * replace connwrap, not necessary as the Connection is already a context manager
 * move warn features to a separate class/file (makes it easier for any cmd to add a warn)
-
-errcodes to add:
-* 028-0102 - banned by nintendo. also affects eshop/anything requiring nnid, apparently

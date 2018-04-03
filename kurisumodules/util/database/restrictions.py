@@ -1,6 +1,6 @@
 from typing import Generator, Tuple
 
-from .dbcommon import DatabaseManager
+from .common import DatabaseManager
 
 
 class RestrictionsManager(DatabaseManager, table='restrictions', columns={'user_id': 'integer', 'restriction': 'text'}):

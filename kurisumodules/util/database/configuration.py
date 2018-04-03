@@ -1,4 +1,4 @@
-from .dbcommon import DatabaseManager
+from .common import DatabaseManager
 
 # I can't really think of a use for this... maybe I'll remove it if nothing happens.
 

@@ -3,7 +3,7 @@ from typing import Tuple, Generator, NamedTuple, Optional
 
 from discord.utils import time_snowflake, snowflake_time
 
-from .dbcommon import DatabaseManager
+from .common import DatabaseManager
 
 
 class WarnEntry(NamedTuple):
