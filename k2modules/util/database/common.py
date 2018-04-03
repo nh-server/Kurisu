@@ -3,7 +3,7 @@ import sqlite3
 from typing import Iterable, Tuple, Generator, KeysView, Dict, List
 
 import kurisu2
-from kurisumodules.util.tools import connwrap
+from k2modules.util.tools import connwrap
 
 
 class DatabaseManagerException(Exception):
