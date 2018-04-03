@@ -41,7 +41,7 @@ class Kurisu2(commands.Bot):
     _guild: discord.Guild = None
 
     def __init__(self, command_prefix, config_directory, logging_level=logging.WARNING, **options):
-        from kurisumodules.util import RestrictionsManager, ConfigurationManager, WarnsManager
+        from kurisumodules.util.database import RestrictionsManager, ConfigurationManager, WarnsManager
         super().__init__(command_prefix, **options)
 
         self._roles: Dict[str, discord.Role] = {}
@@ -84,7 +84,8 @@ class Kurisu2(commands.Bot):
     def load_extensions(self):
         blacklisted_cogs = ()
         # this is not a good way of doing things i think
-        for c in ('kurisumodules.' + x.name[:-3] for x in os.scandir('kurisumodules') if x.name.endswith('.py')):
+        for c in ('kurisumodules.' + x.name[:-3] for x in os.scandir('kurisumodules')
+                  if x.name.endswith('.py') and x.name != '__init__.py'):
             if c in blacklisted_cogs:
                 self.log.info('Not automatically loading %s since it is listed in blacklisted_cogs', c)
                 continue
