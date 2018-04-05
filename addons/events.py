@@ -99,7 +99,6 @@ class Events:
     )
 
     drama_alert = (
-        'bbb',  # "bigbluebox"
         'attackhelicopter',
         'gender',
         'faggot',
