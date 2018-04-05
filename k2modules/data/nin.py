@@ -101,6 +101,7 @@ ctrwup = {
     '160-0103': '"The system memory is corrupted (MLC)."',
     '160-0104': '"The system memory is corrupted (SLC)."',
     '160-0105': 'USB storage corrupted?',
+    '160-2713': 'USB removed or lost power while the console was powered on.',
     '199-9999': 'Usually occurs when trying to run an unsigned title without signature patches, or something unknown('
                 '?) is corrupted.',
 }
