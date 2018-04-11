@@ -180,6 +180,7 @@ async def on_ready():
         bot.modlogs_channel = discord.utils.get(server.channels, name="mod-logs")
         bot.serverlogs_channel = discord.utils.get(server.channels, name="server-logs")
         bot.messagelogs_channel = discord.utils.get(server.channels, name="message-logs")
+        bot.uploadlogs_channel = discord.utils.get(server.channels, name="upload-logs")
         bot.watchlogs_channel = discord.utils.get(server.channels, name="watch-logs")
         bot.botcmds_channel = discord.utils.get(server.channels, name="bot-cmds")
         bot.boterr_channel = discord.utils.get(server.channels, name="bot-err")
