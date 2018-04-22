@@ -220,6 +220,15 @@ class Assistance:
         embed.description = "You have 4 possible options for installing CFW:\n- [NTRBoot](https://3ds.hacks.guide/ntrboot) which requires a compatible NDS flashcart and maybe an additional DS(i) or hacked 3DS console depending on the flashcart\n- [DSiWare](https://3ds.hacks.guide/installing-boot9strap-\(dsiware\)) which involves system transferring from a hacked 3DS to an unhacked 3DS\n- [Seedminer](https://jisagi.github.io/SeedminerGuide/) which requires a dsiware game and an adequately powerful GPU or CPU (or a friend with one)\n- [Hardmod](https://3ds.hacks.guide/installing-boot9strap-\(hardmod\)) which requires soldering **Not for beginners!**\n **Downgrading is impossible on 11.4+!**"
         await self.bot.say("", embed=embed)
 
+    @commands.command(aliases=["fuse-3ds", "fuse"])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def fuse3ds(self):
+        """Link to fuse-3ds tutorial."""
+        embed = discord.Embed(title="Extract/Decrypt games, NAND backups, and SD contents with fuse-3ds", color=discord.Color(0xCE181E))
+        embed.description = "This is a tutorial that shows you how to use fuse-3ds to extract the contents of games, NAND backups, and SD card contents. Windows, macOS, and Linux are supported."
+        embed.url = "https://gbatemp.net/threads/499994/"
+        await self.bot.say("", embed=embed)
+
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def hbl(self):
@@ -384,7 +393,7 @@ class Assistance:
         embed.set_thumbnail(url="https://i.imgur.com/U8NA9lx.png")
         embed.url = "https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Using-Luma3DS'-layeredfs-(Only-version-8.0-and-higer)"
         embed.description = "How to use Luma 8.0+ LayeredFs for ROM Hacking."
-        await self.bot.say("", embed=embed)            
+        await self.bot.say("", embed=embed)
 
 
     # Information about sighax
@@ -414,12 +423,12 @@ class Assistance:
     async def flashdrives(self):
         """Message on flash drives on the Wii U"""
         await self.simple_embed("Some flash drives work with the Wii U, some don't. If you have read or write errors, or games crash often, you might want to try a different flash drive or hard drive")
-        
-    @commands.command(aliases=["nxupdate"]) 
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel) 
-    async def nsupdate(self): 
-        """Erase pending updates on Nintendo Switch""" 
-        await self.simple_embed("When an update is downloaded, but not installed, the console will not display the firmware version in System Settings. \n\n• To fix this, *power the console off* (hold the power button, follow on-screen prompts). ***Hold*** Volume Down and Volume Up, then Power. When you see Maintenance Mode, you may reboot, and check System Settings. \n\n *To block automatic update downloads, enter 173.222.238.217 as your primary and secondary DNS for your home network.* (Hosted by ReSwitched)", title="How to delete pending Switch Updates") 
+
+    @commands.command(aliases=["nxupdate"])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def nsupdate(self):
+        """Erase pending updates on Nintendo Switch"""
+        await self.simple_embed("When an update is downloaded, but not installed, the console will not display the firmware version in System Settings. \n\n• To fix this, *power the console off* (hold the power button, follow on-screen prompts). ***Hold*** Volume Down and Volume Up, then Power. When you see Maintenance Mode, you may reboot, and check System Settings. \n\n *To block automatic update downloads, enter 173.222.238.217 as your primary and secondary DNS for your home network.* (Hosted by ReSwitched)", title="How to delete pending Switch Updates")
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
