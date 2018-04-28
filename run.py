@@ -194,6 +194,7 @@ async def on_ready():
         bot.helpers_role = discord.utils.get(server.roles, name="Helpers")
         bot.onduty3ds_role = discord.utils.get(server.roles, name="On-Duty 3DS")
         bot.ondutywiiu_role = discord.utils.get(server.roles, name="On-Duty Wii U")
+        bot.ondutyswitch_role = discord.utils.get(server.roles, name="On-Duty Switch")
         bot.verified_role = discord.utils.get(server.roles, name="Verified")
         bot.trusted_role = discord.utils.get(server.roles, name="Trusted")
         bot.probation_role = discord.utils.get(server.roles, name="Probation")
@@ -218,6 +219,7 @@ async def on_ready():
         bot.helper_roles = {
             "3DS": bot.onduty3ds_role,
             "WiiU": bot.ondutywiiu_role,
+            "Switch": bot.ondutyswitch_role,
         }
 
         # load timebans
