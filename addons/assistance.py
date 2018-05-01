@@ -364,12 +364,7 @@ class Assistance:
             embed.description = "The recommended way to play old classics on your 3DS"
             await self.bot.say("", embed=embed)
         if self.check_console(console, ctx.message.channel.name, ('wiiu', 'wii u')):
-            embed = discord.Embed(title="Virtual Console Injects for Wiiu", color=discord.Color.blue())
-            embed.set_author(name="NicoAICP", url="https://gbatemp.net/members/nicoaicp.404553/")
-            embed.set_thumbnail(url="https://i.imgur.com/OsXqiOv.png")
-            embed.url = "https://gbatemp.net/threads/release-ultimate-vc-injector-for-wiiu.486781/"
-            embed.description = "The recommended way to play old classics on your Wiiu"
-            await self.bot.say("", embed=embed)
+            await self.simple_embed("[Gamecube/wii injector by Tecmoon](https://gbatemp.net/threads/release-wiivc-injector-script-gc-wii-homebrew-support.483577/)\n[Other consoles by  CatmanFan](https://gbatemp.net/threads/release-injectiine-wii-u-virtual-console-injector.491386/)", color=discord.Color.blue(), title="The recommended way to play old classics on your  WiiU")
 
     # Embed to Chroma Ryu's godmode9 guide
     @commands.command()
