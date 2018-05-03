@@ -231,7 +231,7 @@ class Events:
         for url in urls:
             ps = urlparse(url)
             if ps.netloc.startswith('3ds-guide.b4k.co'):
-                to_replace.append(ps._replace(netloc='3ds.guide').geturl())
+                to_replace.append(ps._replace(netloc='3ds.hacks.guide').geturl())
             elif ps.netloc.startswith('hax.b4k.co') and ps.path.startswith('/3ds/guide'):
                 to_replace.append(ps._replace(netloc='3ds.guide', path=ps.query[2:], query='').geturl())
         if to_replace:
