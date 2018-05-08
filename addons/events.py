@@ -97,16 +97,7 @@ class Events:
         'notabug',
     )
 
-    drama_alert = (
-        'attackhelicopter',
-        'gender',
-        'faggot',
-        # 'retarded',
-        # 'cunt',
-        'tranny',
-        'nigger',
-        'incest',
-    )
+    drama_alert = ()
 
     ignored_file_extensions = (
         '.jpg',
@@ -116,6 +107,7 @@ class Events:
         '.bmp',
         '.tiff',
         '.psd',
+        '.sed',
     )
 
     # unbanning stuff
