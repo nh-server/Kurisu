@@ -8,7 +8,7 @@ class Assistance:
     """
     def __init__(self, bot):
         self.bot = bot
-        self.systems = systems = ("3ds", "wiiu", "wii u")
+        self.systems = systems = ("3ds", "wiiu", "wii u", "switch", "nx")
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     async def simple_embed(self, text, title="", color=discord.Color.default()):
@@ -67,6 +67,13 @@ class Assistance:
             embed.set_thumbnail(url="http://i.imgur.com/CpF12I4.png")
             embed.url = "https://wiiu.hacks.guide/"
             embed.description = "FlimFlam69 and Plailect's Wii U custom firmware + coldboothax guide"
+            await self.bot.say("", embed=embed)
+        if self.check_console(console, ctx.message.channel.name, ('switch', 'nx')):
+            embed = discord.Embed(title="Guide", color=discord.Color(0xCB0004))
+            embed.set_author(name="Plailect", url="https://switch.hacks.guide/")
+            embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
+            embed.url = "https://switch.hacks.guide/"
+            embed.description = "Plailect's Switch 3.0.0 Homebrew guide"
             await self.bot.say("", embed=embed)
 
     #Embed to Soundhax Download Website
@@ -436,7 +443,7 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def nsupdate(self):
         """Erase pending updates on Nintendo Switch"""
-        await self.simple_embed("When an update is downloaded, but not installed, the console will not display the firmware version in System Settings. \n\n• To fix this, *power the console off* (hold the power button, follow on-screen prompts). ***Hold*** Volume Down and Volume Up, then Power. When you see Maintenance Mode, you may reboot, and check System Settings. \n\n *To block automatic update downloads, enter 173.222.238.217 as your primary and secondary DNS for your home network.* (Hosted by ReSwitched)", title="How to delete pending Switch Updates")
+        await self.simple_embed("When an update is downloaded, but not installed, the console will not display the firmware version in System Settings. \n\n• To fix this, *power the console off* (hold the power button, follow on-screen prompts). ***Hold*** Volume Down and Volume Up, then Power. When you see Maintenance Mode, you may reboot, and check System Settings. \n\n *To block automatic update downloads, enter 104.236.106.125 as your primary DNS and 62.210.147.20 as your secondary DNS for your home network.*", title="How to delete pending Switch Updates")
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
