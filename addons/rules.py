@@ -130,7 +130,7 @@ class Rules:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r13(self):
         """Displays rule 13."""
-        await self.simple_embed("Ask a staff member before posting invite links to things like servers on Discord, Skype groups, etc.", title="Rule 13")
+        await self.simple_embed("Ask a staff member before advertising in our server or posting invite links to things like servers on Discord, Skype groups, etc.", title="Rule 13")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
