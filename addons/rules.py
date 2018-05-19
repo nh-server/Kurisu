@@ -26,7 +26,7 @@ class Rules:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def pirate(self):
         """Hey! You can't steal another trainer's Pokémon!"""
-        await self.bot.say("Please refrain from asking for or giving assistance with installing or using illegitimately obtained software.")
+        await self.bot.say("Please refrain from asking for or giving assistance with installing or using illegitimately obtained software: https://cdn.discordapp.com/attachments/270890866820775946/446866999721590804/06fhymr.png")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -130,7 +130,7 @@ class Rules:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r13(self):
         """Displays rule 13."""
-        await self.simple_embed("Ask a staff member before advertising in our server or posting invite links to things like servers on Discord, Skype groups, etc.", title="Rule 13")
+        await self.simple_embed("Ask a staff member before posting invite links to things like servers on Discord, Skype groups, etc.", title="Rule 13")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
