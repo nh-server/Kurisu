@@ -2,17 +2,19 @@
 
 import logging
 import os
+
 from asyncio import Event
 from configparser import ConfigParser
 from datetime import datetime
 from subprocess import check_output, CalledProcessError
-from sys import argv
-from sys import exit, exc_info, hexversion
+from sys import exit, exc_info, hexversion, argv
 from traceback import format_exception
 from typing import Dict
 
 import discord
 from discord.ext import commands
+
+from k2modules.util.database import (RestrictionsDatabaseManager, ConfigurationDatabaseManager, WarnsDatabaseManager)
 
 channel_names = {
     # TODO: add more channel names
@@ -41,8 +43,6 @@ class Kurisu2(commands.Bot):
     _guild: discord.Guild = None
 
     def __init__(self, command_prefix, config_directory, logging_level=logging.WARNING, **options):
-        from k2modules.util.database import (RestrictionsDatabaseManager, ConfigurationDatabaseManager,
-                                             WarnsDatabaseManager)
         super().__init__(command_prefix, **options)
 
         self._roles: Dict[str, discord.Role] = {}
@@ -83,19 +83,18 @@ class Kurisu2(commands.Bot):
         self.log.debug('Kurisu2 class initialized')
 
     def load_extensions(self):
-        blacklisted_cogs = ()
-        # this is not a good way of doing things i think
-        for c in ('k2modules.' + x.name[:-3] for x in os.scandir('k2modules')
-                  if x.name.endswith('.py') and x.name != '__init__.py'):
-            if c in blacklisted_cogs:
-                self.log.info('Not automatically loading %s since it is listed in blacklisted_cogs', c)
+        check = lambda fn: fn.endswith('.py') and not fn.startswith('__') # Go for .py files that aren't "superprivate"
+        blacklisted_cogs = []
+
+        for ext in filter(check, os.listdir('k2modules')):
+            if ext in blacklisted_cogs:
                 continue
-            self.log.debug('Loading extension %s', c)
+
             try:
-                self.load_extension(c)
-            except BaseException as e:
-                self.log.error('%s failed to load.', c, exc_info=e)
-                self._failed_extensions[c] = e
+                self.load_extension(f'k2modules.{ext[:-3]}')
+            except Exception as e:
+                self.log.error(f'{ext} failed to load.', exc_info=e)
+                self._failed_extensions[ext] = e
 
     async def on_ready(self):
         self.log.debug('Logged in as %s', self.user)
@@ -246,8 +245,8 @@ def main(*, config_directory='configs', debug=False, change_directory=False):
         # this should ideally never happen
         bot.log.critical('Kurisu2 shut down due to a critical error.', exc_info=e)
 
-    return bot.exitcode
+    exit(bot.exitcode)
 
 
 if __name__ == '__main__':
-    exit(main(debug='d' in argv, change_directory=True))
+    main(debug=('d' in argv), change_directory=True)
