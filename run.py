@@ -4,22 +4,18 @@
 # license: Apache License 2.0
 # https://github.com/916253/Kurisu
 
-description = """
-Kurisu, the bot for the 3DS Hacking Discord!
-"""
-
 # import dependencies
-import os
-from discord.ext import commands
-import discord
-import datetime
-import json, asyncio
+import asyncio
 import copy
 import configparser
+import datetime
 import traceback
-import sys
+import json
 import os
-import re
+
+import discord
+from discord.ext import commands
+
 
 # sets working directory to bot's folder
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -48,58 +44,34 @@ if not os.path.isfile("data/warnsv2.json"):
         with open("data/warnsv2.json", "w") as f:
             f.write("{}")
 
-# create restrictions.json if it doesn't exist
-if not os.path.isfile("data/restrictions.json"):
-    with open("data/restrictions.json", "w") as f:
-        f.write("{}")
+_filepaths = [
+	"restrictions.json",
+	"timemutes.json",
+	"timenohelp.json",
+	"staff.json",
+	"helpers.json",
+	"timebans.json",
+	"softbans.json",
+	"watch.json"
+]
 
-# create timemutes.json if it doesn't exist
-if not os.path.isfile("data/timemutes.json"):
-    with open("data/timemutes.json", "w") as f:
-        f.write("{}")
+for fp in _filepaths:
+	fp = "data/%s" %(fp)
 
-# create timenohelp.json if it doesn't exist
-if not os.path.isfile("data/timenohelp.json"):
-    with open("data/timenohelp.json", "w") as f:
-        f.write("{}")
+	if not os.path.isfile(fp):
+		with open(fp, "w") as inf:
+			json.dump({}, inf)
 
-# create staff.json if it doesn't exist
-if not os.path.isfile("data/staff.json"):
-    with open("data/staff.json", "w") as f:
-        f.write("{}")
-
-# create helpers.json if it doesn't exist
-if not os.path.isfile("data/helpers.json"):
-    with open("data/helpers.json", "w") as f:
-        f.write("{}")
-
-# create timebans.json if it doesn't exist
-if not os.path.isfile("data/timebans.json"):
-    with open("data/timebans.json", "w") as f:
-        f.write("{}")
-
-# create softbans.json if it doesn't exist
-if not os.path.isfile("data/softbans.json"):
-    with open("data/softbans.json", "w") as f:
-        f.write("{}")
-
-# create watch.json if it doesn't exist
-if not os.path.isfile("data/watch.json"):
-    with open("data/watch.json", "w") as f:
-        f.write("{}")
-
-prefix = ['!', '.']
-bot = commands.Bot(command_prefix=prefix, description=description, pm_help=None)
+bot = commands.Bot(command_prefix=['!', '.'], description="Kurisu, the bot for the 3DS Hacking Discord!", pm_help=None)
 
 bot.actions = []  # changes messages in mod-/server-logs
 with open("data/watch.json", "r") as f:
     bot.watching = json.load(f)  # post user messages to messaage-logs
 
 # http://stackoverflow.com/questions/3411771/multiple-character-replace-with-python
-chars = "\\`*_<>#@:~"
 def escape_name(name):
     name = str(name)
-    for c in chars:
+    for c in "\\`*_<>#@:~":
         if c in name:
             name = name.replace(c, "\\" + c)
     return name.replace("@", "@\u200b")  # prevent mentions
@@ -317,5 +289,6 @@ for extension in addons:
         failed_addons.append([extension, type(e).__name__, e])
 
 # Execute
-print('Bot directory: ', dir_path)
-bot.run(config['Main']['token'])
+if __name__ == "__main__":
+	print('Bot directory: ', dir_path)
+	bot.run(config['Main']['token'])
