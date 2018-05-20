@@ -45,22 +45,22 @@ if not os.path.isfile("data/warnsv2.json"):
             f.write("{}")
 
 _filepaths = [
-	"restrictions.json",
-	"timemutes.json",
-	"timenohelp.json",
-	"staff.json",
-	"helpers.json",
-	"timebans.json",
-	"softbans.json",
-	"watch.json"
+    "restrictions.json",
+    "timemutes.json",
+    "timenohelp.json",
+    "staff.json",
+    "helpers.json",
+    "timebans.json",
+    "softbans.json",
+    "watch.json"
 ]
 
 for fp in _filepaths:
-	fp = "data/%s" %(fp)
+    fp = "data/%s" %(fp)
 
-	if not os.path.isfile(fp):
-		with open(fp, "w") as inf:
-			json.dump({}, inf)
+    if not os.path.isfile(fp):
+        with open(fp, "w") as inf:
+            json.dump({}, inf)
 
 bot = commands.Bot(command_prefix=['!', '.'], description="Kurisu, the bot for the 3DS Hacking Discord!", pm_help=None)
 
@@ -290,5 +290,5 @@ for extension in addons:
 
 # Execute
 if __name__ == "__main__":
-	print('Bot directory: ', dir_path)
-	bot.run(config['Main']['token'])
+    print('Bot directory: ', dir_path)
+    bot.run(config['Main']['token'])
