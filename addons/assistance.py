@@ -373,7 +373,7 @@ class Assistance:
             
         if self.check_console(console, ctx.message.channel.name, ('wiiu', 'wii u')):
             embed1 = discord.Embed(title="Wii and GameCube games for WiiU", color=discord.Color.red())
-            embed1.set_author(name="Tecmoon")
+            embed1.set_author(name="TeconMoon")
             embed1.set_thumbnail(url="https://gbatemp.net/data/avatars/m/300/300039.jpg")
             embed1.url = "https://gbatemp.net/threads/release-wiivc-injector-script-gc-wii-homebrew-support.483577/"
             embed1.description = "The recommended way to play Wii and gamecube games on your WiiU"
