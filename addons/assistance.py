@@ -452,7 +452,7 @@ class Assistance:
         """Guide for triggering RCM on the Switch"""
         embed = discord.Embed(title="RCM Guide", color=discord.Color(0x0e5ab3))
         embed.set_author(name="xGhostBoyx", url="https://xghostboyx.github.io/RCM-Guide/")
-        embed.set_thumbnail(url="https://static-cdn.jtvnw.net/jtv_user_pictures/da29a732d2d52b61-profile_image-300x300.jpeg")
+        embed.set_thumbnail(url="https://i.imgur.com/kvC7Y4p.png")
         embed.url = "https://xghostboyx.github.io/RCM-Guide/"
         embed.description = "Guide for triggering RCM on the Switch"
         await self.bot.say("", embed=embed)
