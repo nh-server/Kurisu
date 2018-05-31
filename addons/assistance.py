@@ -445,5 +445,17 @@ class Assistance:
         """Erase pending updates on Nintendo Switch"""
         await self.simple_embed("When an update is downloaded, but not installed, the console will not display the firmware version in System Settings. \n\n• To fix this, *power the console off* (hold the power button, follow on-screen prompts). ***Hold*** Volume Down and Volume Up, then Power. When you see Maintenance Mode, you may reboot, and check System Settings. \n\n *To block automatic update downloads, enter 104.236.106.125 as your primary DNS and 62.210.147.20 as your secondary DNS for your home network.*", title="How to delete pending Switch Updates")
 
+    # Embed to xGhostBoysx RCM guide
+    @commands.command()
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def rcm(self):
+        """Guide for triggering RCM on the Switch"""
+        embed = discord.Embed(title="RCM Guide", color=discord.Color(0x0e5ab3))
+        embed.set_author(name="xGhostBoyx", url="https://xghostboyx.github.io/RCM-Guide/")
+        embed.set_thumbnail(url="https://static-cdn.jtvnw.net/jtv_user_pictures/da29a732d2d52b61-profile_image-300x300.jpeg")
+        embed.url = "https://xghostboyx.github.io/RCM-Guide/"
+        embed.description = "Guide for triggering RCM on the Switch"
+        await self.bot.say("", embed=embed)
+
 def setup(bot):
     bot.add_cog(Assistance(bot))
