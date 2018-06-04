@@ -260,7 +260,6 @@ class Err:
         '102-2813': 'System is banned by Nintendo. You cannot ask how to fix this issue here.',
         '102-2814': 'System is banned by Nintendo. You cannot ask how to fix this issue here.',
         '102-2815': 'System is banned by Nintendo. You cannot ask how to fix this issue here.',
-        '102-2815': 'System is banned by Nintendo. You cannot ask how to fix this issue here.',
         '102-2816': 'System is banned by Nintendo (related to Splatoon). You cannot ask how to fix this issue here.',
         '106-0306': 'NNID is temporarily banned from Splatoon online multiplayer. You cannot ask how to fix this issue here.',
         '106-0346': 'NNID is permanently banned from Splatoon online multiplayer. You cannot ask how to fix this issue here.',
