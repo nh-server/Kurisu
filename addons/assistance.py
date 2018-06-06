@@ -53,7 +53,7 @@ class Assistance:
     @commands.command(pass_context=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def guide(self, ctx, *, console=""):
-        """Links to Plailect's or FlimFlam69's guide."""
+        """Links to Plailect's or FlimFlam69's guide or T3CHNOLOG1C's guide."""
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="Guide", color=discord.Color(0xCE181E))
             embed.set_author(name="Plailect", url="https://3ds.hacks.guide/")
@@ -74,6 +74,13 @@ class Assistance:
             embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
             embed.url = "https://switch.hacks.guide/"
             embed.description = "Plailect's Switch 3.0.0 Homebrew guide"
+            await self.bot.say("", embed=embed)
+        if self.check_console(console, ctx.message.channel.name, ('switch', 'nx')):
+            embed = discord.Embed(title="Guide", color=discord.Color(0xCB0004))
+            embed.set_author(name="T3CHNOLOG1C", url="https://t3chnolog1c.github.io/SwitchGuide/")
+            embed.set_thumbnail(url="https://avatars0.githubusercontent.com/u/25619701?s=460&v=4")
+            embed.url = "https://t3chnolog1c.github.io/SwitchGuide/"
+            embed.description = "T3CHNOLOG1C's Switch Homebrew Guide (RCM Method)"
             await self.bot.say("", embed=embed)
 
     #Embed to Soundhax Download Website
@@ -444,6 +451,18 @@ class Assistance:
     async def nsupdate(self):
         """Erase pending updates on Nintendo Switch"""
         await self.simple_embed("When an update is downloaded, but not installed, the console will not display the firmware version in System Settings. \n\n• To fix this, *power the console off* (hold the power button, follow on-screen prompts). ***Hold*** Volume Down and Volume Up, then Power. When you see Maintenance Mode, you may reboot, and check System Settings. \n\n *To block automatic update downloads, enter 104.236.106.125 as your primary DNS and 62.210.147.20 as your secondary DNS for your home network.*", title="How to delete pending Switch Updates")
+
+    # Embed to xGhostBoysx RCM guide
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def rcm(self):
+        """Guide for triggering RCM on the Switch"""
+        embed = discord.Embed(title="RCM Guide", color=discord.Color(0x0e5ab3))
+        embed.set_author(name="xGhostBoyx", url="https://xghostboyx.github.io/RCM-Guide/")
+        embed.set_thumbnail(url="https://i.imgur.com/kvC7Y4p.png")
+        embed.url = "https://xghostboyx.github.io/RCM-Guide/"
+        embed.description = "Guide for triggering RCM on the Switch"
+        await self.bot.say("", embed=embed)
 
 def setup(bot):
     bot.add_cog(Assistance(bot))

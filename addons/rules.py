@@ -148,7 +148,7 @@ class Rules:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r16(self):
         """Displays rule 16."""
-        await self.simple_embed("Trying to evade, look for loopholes, or stay borderline within the rules will be treated as breaking them.", title="Rule 16")
+        await self.simple_embed("Trying to evade, look for loopholes, or stay borderline within the rules will be treated as breaking them. The spirit of the rules is more important than the wording of them.", title="Rule 16")
 
 def setup(bot):
     bot.add_cog(Rules(bot))
