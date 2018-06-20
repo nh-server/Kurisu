@@ -213,7 +213,7 @@ class Err:
         '002-0119': 'System update required (outdated friends-module)',
         '002-0120': 'Title update required (outdated title version)',
         '002-0121': 'Local friend code SEED has invalid signature.\n\nThis should not happen unless it is modified. The only use case for modifying this file is for system unbanning, so you cannot ask how to fix this issue here.',
-        '002-0123': 'System is generally banned by Nintendo. You cannot ask how to fix this issue here.
+        '002-0123': 'System is generally banned by Nintendo. You cannot ask how to fix this issue here.',
         '003-1099': 'Access point could not be found with the given SSID.',
         '003-2001': 'DNS error. If using a custom DNS server, make sure the settings are correct.',
         '005-4800': 'HTTP Status 500 (Internal Error), unknown cause(?). eShop servers might have issues.',
@@ -255,7 +255,7 @@ class Err:
         '022-2633': 'Nintendo Network ID temporarily locked due to too many incorrect password attempts. Try again later.',
         '022-2634': 'Nintendo Network ID is not correctly linked on the system. This can be a result of formatting the SysNAND using System Settings to unlink it from the EmuNAND.\n\n<steps on how to fix>\n\nTinyFormat is recommended for unlinking in the future.',
         '022-2812': 'System is permanently banned by Nintendo for illegally playing the Pokemon Sun & Moon ROM leak online before release. You cannot ask how to fix this issue here.',
-        '022-2815': 'System is banned by Nintendo from Miiverse access. Miiverse is done for so who cares?',
+        '022-2815': 'System is banned by Nintendo from Miiverse access.',
         '032-1820': 'Browser error that asks whether you want to go on to a potentially dangerous website. Can be bypassed by touching "yes".',
         '090-0212': 'Game is permanently banned from Pokémon Global Link. This is most likely as a result of using altered or illegal save data.',
         # Wii U
@@ -269,8 +269,8 @@ class Err:
         '102-2816': 'System is banned for a/multiple game(s) (preferably Splatoon) for an unknown duration, by attempting to use modified static.pack/+ game files online. You cannot ask how to fix this issue here.',
         '106-0306': 'NNID is temporarily banned from a/multiple games (preferably Splatoon) online multiplayer. You cannot ask how to fix this issue here.',
         '106-0346': 'NNID is permanently banned from a/multiple games (preferably Splatoon) online multiplayer. You cannot ask how to fix this issue here.',
-        '115-1009': 'System is permanently banned from Miiverse. Miiverse is done for so who cares?',
-        '121-0902': 'Permissions missing for the action you are trying to perfrom (Miiverse error). Miiverse is done for so who cares?',
+        '115-1009': 'System is permanently banned from Miiverse.',
+        '121-0902': 'Permissions missing for the action you are trying to perfrom (Miiverse error).',
         '150-1031': 'Disc could not be read. Either the disc is dirty, the lens is dirty, or the disc is unsupported (i.e. not a Wii or Wii U game).',
         '160-0101': '"Generic error". Can happen when formatting a system with CBHC.',
         '160-0102': 'Error in SLC/MLC or USB.',
