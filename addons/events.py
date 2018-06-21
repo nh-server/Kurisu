@@ -89,6 +89,7 @@ class Events:
         'vi1lian3ds',
         'vil1ian3ds',
         'cdnfx',
+        'exshop',
     )
 
     # terms that should cause a notice but not auto-delete
