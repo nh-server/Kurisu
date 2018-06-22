@@ -91,7 +91,9 @@ class Events:
         'cdnfx',
         'exhop',
         'exshop',
-        'exnhop',
+        'enxhop',
+        'exnhop',  # typo of the above, not sure how common
+        'enxshop',  # also typo
     )
 
     # terms that should cause a notice but not auto-delete
