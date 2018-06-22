@@ -69,18 +69,16 @@ class ModWarn:
         await self.bot.send_message(self.bot.modlogs_channel, msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.warn <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
 
     @commands.command(pass_context=True)
-    async def listwarns(self, ctx, user):
+    async def listwarns(self, ctx, user: discord.Member = None):
         """List warns for a user. Staff and Helpers only."""
+        if not user: # If user is set to None, its a selfcheck
+            user = ctx.message.author
         issuer = ctx.message.author
         if (self.bot.helpers_role not in issuer.roles) and (self.bot.staff_role not in issuer.roles):
             msg = "{0} This command is limited to Staff and Helpers.".format(issuer.mention)
             await self.bot.say(msg)
             return
-        try:
-            member = ctx.message.mentions[0]
-        except IndexError:
-            await self.bot.say("Please mention a user.")
-            return
+        member = user # A bit sloppy but its to reduce the amount of work needed to change below.
         embed = discord.Embed(color=discord.Color.dark_red())
         embed.set_author(name="Warns for {}#{}".format(member.display_name, member.discriminator), icon_url=member.avatar_url)
         with open("data/warnsv2.json", "r") as f:
