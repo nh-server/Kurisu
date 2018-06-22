@@ -72,15 +72,14 @@ class ModWarn:
     async def listwarns(self, ctx, user):
         """List warns for a user. Staff and Helpers only."""
         issuer = ctx.message.author
-        if (self.bot.helpers_role not in issuer.roles) and (self.bot.staff_role not in issuer.roles):
-            msg = "{0} This command is limited to Staff and Helpers.".format(issuer.mention)
-            await self.bot.say(msg)
-            return
         try:
             member = ctx.message.mentions[0]
         except IndexError:
-            await self.bot.say("Please mention a user.")
-            return
+            member = issuer
+        if (self.bot.helpers_role not in issuer.roles) and (self.bot.staff_role not in issuer.roles) and (member != issuer):
+                msg = "{0} Using this command on others is limited to Staff and Helpers.".format(issuer.mention)
+                await self.bot.say(msg)
+                return
         embed = discord.Embed(color=discord.Color.dark_red())
         embed.set_author(name="Warns for {}#{}".format(member.display_name, member.discriminator), icon_url=member.avatar_url)
         with open("data/warnsv2.json", "r") as f:
