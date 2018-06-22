@@ -2,8 +2,10 @@
 *.sh
 *.log
 *.json
-*.sqlite
+*.png
+*.bin
 ._*
 .DS_Store
 __pycache__
 data/
+.idea/

@@ -74,11 +74,11 @@ class ModWarn:
         if not user: # If user is set to None, its a selfcheck
             user = ctx.message.author
         issuer = ctx.message.author
-        if (self.bot.helpers_role not in issuer.roles) and (self.bot.staff_role not in issuer.roles):
-            msg = "{0} This command is limited to Staff and Helpers.".format(issuer.mention)
-            await self.bot.say(msg)
-            return
         member = user # A bit sloppy but its to reduce the amount of work needed to change below.
+        if (self.bot.helpers_role not in issuer.roles) and (self.bot.staff_role not in issuer.roles) and (member != issuer):
+                msg = "{0} Using this command on others is limited to Staff and Helpers.".format(issuer.mention)
+                await self.bot.say(msg)
+                return
         embed = discord.Embed(color=discord.Color.dark_red())
         embed.set_author(name="Warns for {}#{}".format(member.display_name, member.discriminator), icon_url=member.avatar_url)
         with open("data/warnsv2.json", "r") as f:
@@ -147,7 +147,7 @@ class ModWarn:
             return
         warns1 = warns[user_id1]
         if user_id2 not in warns:
-            warns[user_id2] = []
+            warns[user_id2] = {}
         warns2 = warns[user_id2]
         if "name" not in warns2:
             orig_name = ""

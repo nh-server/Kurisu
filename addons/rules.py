@@ -130,13 +130,13 @@ class Rules:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r13(self):
         """Displays rule 13."""
-        await self.simple_embed("Ask a staff member before posting invite links to things like servers on Discord, Skype groups, etc.", title="Rule 13")
+        await self.simple_embed("Ask a staff member before advertising in our server or posting invite links to things like servers on Discord, Skype groups, etc.", title="Rule 13")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r14(self):
         """Displays rule 14."""
-        await self.simple_embed("Off-topic content goes to {}. Keep low-quality content like memes out. There is a channel for that, read {} to find it.".format(self.bot.offtopic_channel.mention, self.bot.welcome_channel.mention), title="Rule 14")
+        await self.simple_embed("Off-topic content goes to {}. Keep low-quality content like memes out.".format(self.bot.offtopic_channel.mention), title="Rule 14")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)

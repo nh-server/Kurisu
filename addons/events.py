@@ -80,6 +80,18 @@ class Events:
         'ciangle',
         'fieashop',
         'fefosheep',
+        'villain3ds',
+        'vi11ain3ds',
+        'vi1lain3ds',
+        'vil1ain3ds',
+        'villian3ds',
+        'vi11ian3ds',
+        'vi1lian3ds',
+        'vil1ian3ds',
+        'cdnfx',
+        'exhop',
+        'exshop',
+        'exnhop',
     )
 
     # terms that should cause a notice but not auto-delete
@@ -88,16 +100,7 @@ class Events:
         'notabug',
     )
 
-    drama_alert = (
-        'attackhelicopter',
-        'gender',
-        'faggot',
-        # 'retarded',
-        # 'cunt',
-        'tranny',
-        'nigger',
-        'incest',
-    )
+    drama_alert = ()
 
     ignored_file_extensions = (
         '.jpg',
@@ -107,6 +110,7 @@ class Events:
         '.bmp',
         '.tiff',
         '.psd',
+        '.sed',
     )
 
     # unbanning stuff
@@ -139,10 +143,10 @@ class Events:
             await self.bot.send_message(self.bot.watchlogs_channel, msg, embed=embed)
         is_help_channel = "assistance" in message.channel.name
         msg = ''.join(char for char in message.content.lower() if char in printable)
-        msg_no_separators = re.sub('[ -]', '', msg)
+        msg_no_separators = re.sub('[ \*_\-~]', '', msg)
 
         contains_invite_link = "discordapp.com/invite" in msg or "discord.gg" in msg or "join.skype.com" in msg
-        contains_piracy_site_mention = any(x in msg for x in ('3dsiso', '3dschaos', 'wiiuiso', 'madloader', 'darkumbra', 'chaosgamez',))
+        contains_piracy_site_mention = any(x in msg for x in ('3dsiso', '3dschaos', 'wiiuiso', 'madloader', 'darkumbra', 'chaosgamez', 'maxconsole',))
         contains_piracy_url_mention = any(x in msg for x in ('3ds.titlekeys', 'wiiu.titlekeys', 'titlekeys.com', '95.183.50.10',))
         contains_piracy_tool_mention = any(x in msg_no_separators for x in self.piracy_tools)
         contains_piracy_tool_alert_mention = any(x in msg_no_separators for x in self.piracy_tools_alert)
@@ -156,7 +160,7 @@ class Events:
         for f in message.attachments:
             if not f["filename"].lower().endswith(self.ignored_file_extensions):
                 embed2 = discord.Embed(description="Size: {}\nDownload: [{}]({})".format(f["size"], self.bot.escape_name(f["filename"]), f["url"]))
-                await self.bot.send_message(self.bot.messagelogs_channel, "📎 **Attachment**: {} uploaded to {}".format(message.author.mention, message.channel.mention), embed=embed2)
+                await self.bot.send_message(self.bot.uploadlogs_channel, "📎 **Attachment**: {} uploaded to {}".format(message.author.mention, message.channel.mention), embed=embed2)
         if contains_invite_link:
             await self.bot.send_message(self.bot.messagelogs_channel, "✉️ **Invite posted**: {} posted an invite link in {}\n------------------\n{}".format(message.author.mention, message.channel.mention, message.content))
         if contains_misinformation_url_mention:
@@ -222,7 +226,9 @@ class Events:
         for url in urls:
             ps = urlparse(url)
             if ps.netloc.startswith('3ds-guide.b4k.co'):
-                to_replace.append(ps._replace(netloc='3ds.guide').geturl())
+                to_replace.append(ps._replace(netloc='3ds.hacks.guide').geturl())
+            elif ps.netloc.startswith('hax.b4k.co') and ps.path.startswith('/3ds/guide'):
+                to_replace.append(ps._replace(netloc='3ds.guide', path=ps.query[2:], query='').geturl())
         if to_replace:
             msg_user = "Please read {}. Guide mirrors may not be linked to, therefore your message was automatically deleted.\nPlease link to <https://3ds.guide> or <https://wiiu.guide> directly instead of mirrors of the sites.\n\nThe official equivalents of the links are:".format(self.bot.welcome_channel.mention)
             for url in to_replace:
@@ -333,7 +339,7 @@ class Events:
         if message.channel.name.endswith('nofilter'):
             return
         await self.bot.wait_until_all_ready()
-        if message.author == self.bot.server.me or self.bot.staff_role in message.author.roles or message.channel == self.bot.helpers_channel:  # don't process messages by the bot or staff or in the helpers channel
+        if message.author == self.bot.server.me or self.bot.staff_role in message.author.roles or message.channel in self.bot.whitelisted_channels:  # don't process messages by the bot or staff or in the helpers channel
             return
         await self.scan_message(message)
         # await self.keyword_search(message)
@@ -345,7 +351,7 @@ class Events:
             if message_after.channel.name.endswith('nofilter'):
                 return
             await self.bot.wait_until_all_ready()
-            if message_after.author == self.bot.server.me or self.bot.staff_role in message_after.author.roles or message_after.channel == self.bot.helpers_channel:  # don't process messages by the bot or staff or in the helpers channel
+            if message_after.author == self.bot.server.me or self.bot.staff_role in message_after.author.roles or message_after.channel in self.bot.whitelisted_channels:  # don't process messages by the bot or staff or in the helpers channel
                 return
             await self.scan_message(message_after, is_edit=True)
         except AttributeError:

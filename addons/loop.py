@@ -4,12 +4,15 @@ import discord
 import feedparser
 import sys
 import time
-import datetime
 import traceback
 import os
 import json
+import requests
+import pytz
+from datetime import datetime, timedelta
 from discord.ext import commands
 from urllib.parse import urlparse, parse_qs
+from html import unescape
 
 class Loop:
     """
@@ -23,20 +26,80 @@ class Loop:
     def __unload(self):
         self.is_active = False
 
+    async def remove_restriction_id(self, member_id, rst):
+        with open("data/restrictions.json", "r") as f:
+            rsts = json.load(f)
+        if member_id not in rsts:
+            rsts[member_id] = []
+        if rst in rsts[member_id]:
+            rsts[member_id].remove(rst)
+        with open("data/restrictions.json", "w") as f:
+            json.dump(rsts, f)
+
     is_active = True
 
-    last_hour = datetime.datetime.now().hour
+    last_hour = datetime.now().hour
 
-    warning_time_period_ban = datetime.timedelta(minutes=30)
-    warning_time_period_mute = datetime.timedelta(minutes=10)
-    warning_time_period_nohelp = datetime.timedelta(minutes=10)
+    warning_time_period_ban = timedelta(minutes=30)
+    warning_time_period_mute = timedelta(minutes=10)
+    warning_time_period_nohelp = timedelta(minutes=10)
+
+    tz = pytz.timezone('US/Pacific')
+
+    netinfo_embed = discord.Embed(description="This needs to be set up")
+    # netinfo_future_embed = discord.Embed(description="This needs to be set up")
+
+    def netinfo_parse_time(self, timestr):
+        return datetime.strptime(' '.join(timestr.split()), '%A, %B %d, %Y %I :%M %p').replace(tzinfo=self.tz)
+
+    async def update_netinfo(self):
+        r = requests.get('https://www.nintendo.co.jp/netinfo/en_US/status.json?callback=getJSON')
+        j = json.loads(r.text[8:-2])
+        now = datetime.now(self.tz)
+        embed = discord.Embed(title="Network Maintenance Information / Online Status",
+                              url="https://www.nintendo.co.jp/netinfo/en_US/index.html",
+                              description="All times are US/Pacific.")
+        embed.set_footer(text="This information was last updated {}.".format(now.strftime('%A, %B %d, %Y %I:%M %p')))
+        for m in j["operational_statuses"]:
+            begin = self.netinfo_parse_time(m["begin"])
+            if "end" in m:
+                end = self.netinfo_parse_time(m["end"])
+            else:
+                end = datetime(year=2099, month=1, day=1, tzinfo=self.tz)
+            if begin <= now < end:
+                m_desc = ', '.join(m["platform"])
+                m_desc += '\nBegins: ' + begin.strftime('%A, %B %d, %Y %I:%M %p')
+                if end.year != 2099:
+                    m_desc += '\nEnds: ' + end.strftime('%A, %B %d, %Y %I:%M %p')
+                embed.add_field(name='Current Status: {}, {}'.format(m["software_title"].replace(' <br /> ', ', '), ', '.join(m["services"])),
+                                value=m_desc, inline=False)
+        for m in j["temporary_maintenances"]:
+            begin = self.netinfo_parse_time(m["begin"])
+            if "end" in m:
+                end = self.netinfo_parse_time(m["end"])
+            else:
+                end = datetime(year=2099, month=1, day=1, tzinfo=self.tz)
+            if begin <= now < end:
+                m_desc = ', '.join(m["platform"])
+                m_desc += '\nBegins: ' + begin.strftime('%A, %B %d, %Y %I:%M %p')
+                if end.year != 2099:
+                    m_desc += '\nEnds: ' + end.strftime('%A, %B %d, %Y %I:%M %p')
+                embed.add_field(name='Current Maintenance: {}, {}'.format(m["software_title"].replace(' <br />\r\n', ', '), ', '.join(m["services"])),
+                                value=m_desc, inline=False)
+        self.netinfo_embed = embed
+
+    @commands.command()
+    @commands.cooldown(rate=1, per=60.0, type=commands.BucketType.channel)
+    async def netinfo(self):
+        await self.bot.say(embed=self.netinfo_embed)
 
     async def start_update_loop(self):
         # thanks Luc#5653
+        await self.update_netinfo()
         await self.bot.wait_until_all_ready()
         while self.is_active:
             try:
-                timestamp = datetime.datetime.now()
+                timestamp = datetime.now()
                 timebans = copy.copy(self.bot.timebans)
                 timemutes = copy.copy(self.bot.timemutes)
                 timenohelp = copy.copy(self.bot.timenohelp)
@@ -55,6 +118,7 @@ class Loop:
 
                 for mute in timemutes.items():
                     if timestamp > mute[1][0]:
+                        await self.remove_restriction_id(mute[0], "Muted")
                         msg = "🔈 **Mute expired**: <@{}>".format(mute[0])
                         await self.bot.send_message(self.bot.modlogs_channel, msg)
                         self.bot.timemutes.pop(mute[0])
@@ -77,6 +141,7 @@ class Loop:
 
                 for nohelp in timenohelp.items():
                     if timestamp > nohelp[1][0]:
+                        await self.remove_restriction_id(nohelp[0], "No-Help")
                         msg = "⭕️ **No-Help Restriction expired**: <@{}>".format(nohelp[0])
                         await self.bot.send_message(self.bot.modlogs_channel, msg)
                         await self.bot.send_message(self.bot.helpers_channel, msg)
@@ -102,43 +167,8 @@ class Loop:
                     await self.bot.send_message(self.bot.helpers_channel, "{} has {:,} members at this hour!".format(self.bot.server.name, self.bot.server.member_count))
                     self.last_hour = timestamp.hour
 
-                if (timestamp.minute - 1) % 5 == 0 and timestamp.second == 0:
-                    # ugly but it works
-                    ninupdates_feed = feedparser.parse('https://yls8.mtheall.com/ninupdates/feed.php')
-                    # ninupdates_feed = feedparser.parse('./feed.rss')
-                    reported_systems = []
-                    for entry in ninupdates_feed['entries']:
-                        system, ver = entry['title'].split()
-                        if system in reported_systems:
-                            continue
-                        reported_systems.append(system)
-                        reporturl = entry['link']
-                        reporturl_date = parse_qs(urlparse(reporturl).query)['date'][0]
-                        reportpath = 'data/ninupdates/{}.json'.format(system)
-                        to_write = {'reportdate': reporturl_date}
-                        if not os.path.isfile(reportpath):
-                            to_write['ver'] = ver
-                            with open(reportpath, 'w') as f:
-                                json.dump(to_write, f)
-                        else:
-                            with open(reportpath, 'r') as f:
-                                oldver = json.load(f)
-                            if oldver['reportdate'] != reporturl_date:
-                                # "Reminder to not update until confirmed safe or known broken features are fixed."
-                                if reporturl_date == ver:
-                                    await self.bot.send_message(self.bot.announcements_channel, '⏬ System updated detected for {}\n<{}>'.format(system, reporturl))
-                                    to_write['ver'] = reporturl_date
-                                else:
-                                    await self.bot.send_message(self.bot.announcements_channel, '⏬ System updated detected for {}: {}\n<{}>'.format(system, ver, reporturl))
-                                    to_write['ver'] = ver
-                                with open(reportpath, 'w') as f:
-                                    json.dump(to_write, f)
-                            elif oldver['reportdate'] == oldver['ver'] and len(ver) != 17:
-                                # lazy method of seeing if an update + vernumber was found before the bot caught the update in the first place
-                                await self.bot.send_message(self.bot.announcements_channel, 'ℹ️ New update version for {}: {} ({})'.format(system, ver, reporturl_date))
-                                to_write['ver'] = ver
-                                with open(reportpath, 'w') as f:
-                                    json.dump(to_write, f)
+                if timestamp.minute % 30 == 0 and timestamp.second == 0:
+                    self.bot.loop.create_task(self.update_netinfo())
 
             except Exception as e:
                 print('Ignoring exception in start_update_loop', file=sys.stderr)

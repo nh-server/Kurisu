@@ -4,22 +4,18 @@
 # license: Apache License 2.0
 # https://github.com/916253/Kurisu
 
-description = """
-Kurisu, the bot for the 3DS Hacking Discord!
-"""
-
 # import dependencies
-import os
-from discord.ext import commands
-import discord
-import datetime
-import json, asyncio
+import asyncio
 import copy
 import configparser
+import datetime
 import traceback
-import sys
+import json
 import os
-import re
+
+import discord
+from discord.ext import commands
+
 
 # sets working directory to bot's folder
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -48,58 +44,34 @@ if not os.path.isfile("data/warnsv2.json"):
         with open("data/warnsv2.json", "w") as f:
             f.write("{}")
 
-# create restrictions.json if it doesn't exist
-if not os.path.isfile("data/restrictions.json"):
-    with open("data/restrictions.json", "w") as f:
-        f.write("{}")
+_filepaths = [
+    "restrictions.json",
+    "timemutes.json",
+    "timenohelp.json",
+    "staff.json",
+    "helpers.json",
+    "timebans.json",
+    "softbans.json",
+    "watch.json"
+]
 
-# create timemutes.json if it doesn't exist
-if not os.path.isfile("data/timemutes.json"):
-    with open("data/timemutes.json", "w") as f:
-        f.write("{}")
-        
-# create timenohelp.json if it doesn't exist
-if not os.path.isfile("data/timenohelp.json"):
-    with open("data/timenohelp.json", "w") as f:
-        f.write("{}")
+for fp in _filepaths:
+    fp = "data/%s" %(fp)
 
-# create staff.json if it doesn't exist
-if not os.path.isfile("data/staff.json"):
-    with open("data/staff.json", "w") as f:
-        f.write("{}")
+    if not os.path.isfile(fp):
+        with open(fp, "w") as inf:
+            json.dump({}, inf)
 
-# create helpers.json if it doesn't exist
-if not os.path.isfile("data/helpers.json"):
-    with open("data/helpers.json", "w") as f:
-        f.write("{}")
-
-# create timebans.json if it doesn't exist
-if not os.path.isfile("data/timebans.json"):
-    with open("data/timebans.json", "w") as f:
-        f.write("{}")
-
-# create softbans.json if it doesn't exist
-if not os.path.isfile("data/softbans.json"):
-    with open("data/softbans.json", "w") as f:
-        f.write("{}")
-
-# create watch.json if it doesn't exist
-if not os.path.isfile("data/watch.json"):
-    with open("data/watch.json", "w") as f:
-        f.write("{}")
-
-prefix = ['!', '.']
-bot = commands.Bot(command_prefix=prefix, description=description, pm_help=None)
+bot = commands.Bot(command_prefix=['!', '.'], description="Kurisu, the bot for the 3DS Hacking Discord!", pm_help=None)
 
 bot.actions = []  # changes messages in mod-/server-logs
 with open("data/watch.json", "r") as f:
     bot.watching = json.load(f)  # post user messages to messaage-logs
 
 # http://stackoverflow.com/questions/3411771/multiple-character-replace-with-python
-chars = "\\`*_<>#@:~"
 def escape_name(name):
     name = str(name)
-    for c in chars:
+    for c in "\\`*_<>#@:~":
         if c in name:
             name = name.replace(c, "\\" + c)
     return name.replace("@", "@\u200b")  # prevent mentions
@@ -126,6 +98,7 @@ async def on_command_error(error, ctx):
         await asyncio.sleep(10)
         await bot.delete_message(message)
     else:
+        ctx.command.reset_cooldown(ctx)
         await bot.send_message(ctx.message.channel, "An error occured while processing the `{}` command.".format(ctx.command.name))
         print('Ignoring exception in command {0.command} in {0.message.channel}'.format(ctx))
         mods_msg = "Exception occured in `{0.command}` in {0.message.channel.mention}".format(ctx)
@@ -179,6 +152,7 @@ async def on_ready():
         bot.modlogs_channel = discord.utils.get(server.channels, name="mod-logs")
         bot.serverlogs_channel = discord.utils.get(server.channels, name="server-logs")
         bot.messagelogs_channel = discord.utils.get(server.channels, name="message-logs")
+        bot.uploadlogs_channel = discord.utils.get(server.channels, name="upload-logs")
         bot.watchlogs_channel = discord.utils.get(server.channels, name="watch-logs")
         bot.botcmds_channel = discord.utils.get(server.channels, name="bot-cmds")
         bot.boterr_channel = discord.utils.get(server.channels, name="bot-err")
@@ -192,6 +166,7 @@ async def on_ready():
         bot.helpers_role = discord.utils.get(server.roles, name="Helpers")
         bot.onduty3ds_role = discord.utils.get(server.roles, name="On-Duty 3DS")
         bot.ondutywiiu_role = discord.utils.get(server.roles, name="On-Duty Wii U")
+        bot.ondutyswitch_role = discord.utils.get(server.roles, name="On-Duty Switch")
         bot.verified_role = discord.utils.get(server.roles, name="Verified")
         bot.trusted_role = discord.utils.get(server.roles, name="Trusted")
         bot.probation_role = discord.utils.get(server.roles, name="Probation")
@@ -203,6 +178,9 @@ async def on_ready():
         bot.eventchat_role = discord.utils.get(server.roles, name="#eventchat")
         bot.everyone_role = server.default_role
 
+        # channels to exempt from most checks
+        bot.whitelisted_channels = (bot.helpers_channel, bot.modlogs_channel, bot.mods_channel, bot.watchlogs_channel, bot.announcements_channel)
+
         bot.staff_ranks = {
             "HalfOP": bot.halfop_role,
             "OP": bot.op_role,
@@ -213,6 +191,7 @@ async def on_ready():
         bot.helper_roles = {
             "3DS": bot.onduty3ds_role,
             "WiiU": bot.ondutywiiu_role,
+            "Switch": bot.ondutyswitch_role,
         }
 
         # load timebans
@@ -246,8 +225,8 @@ async def on_ready():
         bot.timenohelp = {}
         timenohelp_i = copy.copy(timenohelp)
         for user_id, timestamp in timenohelp_i.items():
-            bot.timenohelp[user_id] = [datetime.datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S"), False]  # last variable is "notified", for <=10 minute notifications            
-            
+            bot.timenohelp[user_id] = [datetime.datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S"), False]  # last variable is "notified", for <=10 minute notifications
+
         bot.all_ready = True
         bot._is_all_ready.set()
 
@@ -290,6 +269,7 @@ addons = [
     'addons.loop',
     'addons.memes',
     'addons.helper_list',
+    'addons.imgconvert',
     'addons.mod_staff',
     'addons.mod_warn',
     'addons.mod_watch',
@@ -309,5 +289,6 @@ for extension in addons:
         failed_addons.append([extension, type(e).__name__, e])
 
 # Execute
-print('Bot directory: ', dir_path)
-bot.run(config['Main']['token'])
+if __name__ == "__main__":
+    print('Bot directory: ', dir_path)
+    bot.run(config['Main']['token'])
