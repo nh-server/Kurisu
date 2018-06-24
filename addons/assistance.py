@@ -449,7 +449,7 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def blackscreen(self):
         """Endless black screen on boot"""
-        await self.simple_embed(" If you have CFW, and have attempted to boot your console but only see a black screen and a solid blue LED, please follow these steps./n1. Turn off your console./n2. Take out any game cartridge you have in./n3. With the SD card inserted, power on your console./n4. Let it sit, open and turned on, for up to 15 minutes. Do not touch it during this time./n5. If the console boots to home menu, proceed as normal./n6. If the console still does not boot to home menu, come back and ask for more help./nNote: If your blue LED flashes on, then off, this is a separate issue.", title="Endless black screen on boot")
+        await self.simple_embed("If you have CFW, and have attempted to boot your console but only see a black screen and a solid blue LED, please follow these steps./n1. Turn off your console./n2. Take out any game cartridge you have in./n3. With the SD card inserted, power on your console./n4. Let it sit, open and turned on, for up to 15 minutes. Do not touch it during this time./n5. If the console boots to home menu, proceed as normal./n6. If the console still does not boot to home menu, come back and ask for more help./nNote: If your blue LED flashes on, then off, this is a separate issue.", title="Endless black screen on boot")
     
 def setup(bot):
     bot.add_cog(Assistance(bot))
