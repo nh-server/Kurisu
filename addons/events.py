@@ -134,6 +134,12 @@ class Events:
         'coolrom',
         'romsmania',
         'completeroms',
+        'romhustler',
+        'doperoms',
+        'freeroms',
+        'portableroms',
+        'portalroms',
+        'romulation',
     )
 
     # I hate naming variables sometimes
