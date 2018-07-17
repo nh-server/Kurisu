@@ -186,7 +186,7 @@ class Events:
                 embed2 = discord.Embed(description="Size: {}\nDownload: [{}]({})".format(f["size"], self.bot.escape_name(f["filename"]), f["url"]))
                 await self.bot.send_message(self.bot.uploadlogs_channel, "📎 **Attachment**: {} uploaded to {}".format(message.author.mention, message.channel.mention), embed=embed2)
         if contains_invite_link:
-            await self.bot.send_message(self.bot.messagelogs_channel, "✉️ **Invite posted**: {} posted an invite link in {}\n------------------\n{}".format(message.author.mention, message.channel.mention, message.content))
+            await self.bot.send_message(self.bot.messagelogs_channel, "✉️ **Invite posted**: {} posted an invite link in {}\n------------------\n{}".format(message.author.mention, message.channel.mention, message.content.replace("@", "@\u200b")))
         if contains_misinformation_url_mention:
             try:
                 await self.bot.delete_message(message)
