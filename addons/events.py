@@ -156,6 +156,9 @@ class Events:
             rsts[member.id].append(rst)
         with open("data/restrictions.json", "w") as f:
             json.dump(rsts, f)
+    
+    # this is not a good idea, but i'll make a better implementation later
+    channels_to_watch_for_videos = ['196635695958196224', '247557068490276864', '279783073497874442', '439933093118476289']
 
     async def scan_message(self, message, is_edit=False):
         embed = discord.Embed()
@@ -177,6 +180,7 @@ class Events:
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site',))
         contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub', 'strawpoii', 'hackinformer.com', 'switchthem.es',))
         contains_unbanning_stuff = any(x in msg_no_separators for x in self.unbanning_stuff)
+        contains_video = any(x in msg for x in ('youtube', 'youtu.be')) and message.channel.id in self.channels_to_watch_for_videos
 
         # contains_guide_mirror_mention = any(x in msg for x in ('3ds-guide.b4k.co',))
         contains_drama_alert = any(x in msg_no_separators for x in self.drama_alert)
@@ -243,6 +247,8 @@ class Events:
             except discord.errors.Forbidden:
                 pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
             await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned an unbanning site/service/program directly in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
+        if contains_video:
+            await self.bot.send_message(self.bot.messagelogs_channel, "▶️ **Video posted**: {} posted a video in {}\n------------------\n{}".format(message.author.mention, message.channel.mention, message.content.replace("@", "@\u200b")))
 
         # check for guide mirrors and post the actual link
         urls = re.findall(r'(https?://\S+)', msg)
