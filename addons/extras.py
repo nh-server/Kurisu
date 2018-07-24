@@ -21,9 +21,9 @@ class Extras:
     async def kurisu(self, aliases=['about']):
         """About Kurisu"""
         embed = discord.Embed(title="Kurisu", color=discord.Color.green())
-        embed.set_author(name="916253 and ihaveahax")
+        embed.set_author(name="Started by 916253, maintained by ihaveahax")
         embed.set_thumbnail(url="http://i.imgur.com/hjVY4Et.jpg")
-        embed.url = "https://github.com/916253/Kurisu"
+        embed.url = "https://github.com/nh-server/Kurisu"
         embed.description = "Kurisu, the Nintendo Homebrew Discord bot!"
         await self.bot.say("", embed=embed)
 
