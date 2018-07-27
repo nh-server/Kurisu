@@ -200,7 +200,7 @@ class Assistance:
         """Information about video guides relating to custom firmware"""
         embed = discord.Embed(title="Why you should not use video guides", color=discord.Color.dark_orange())
         embed.description = "Reasons to not use video guides:\n- They get outdated quickly\n- Tough to update and give assistance for\n- Can be misinformative and dangerous for the console"
-        embed.add_field(name="Recommended Solution", value="Read [Plailect's written complete guide for boot9strap](https://3ds.hacks.guide).")
+        embed.add_field(name="Recommended Solution", value="Read [Plailect's written guides](https://hacks.guide).")
         await self.bot.say("", embed=embed)
 
     @commands.command()
