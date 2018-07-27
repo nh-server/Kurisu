@@ -200,8 +200,8 @@ class Assistance:
     async def vguides(self):
         """Information about video guides relating to custom firmware"""
         embed = discord.Embed(title="Why you should not use video guides", color=discord.Color.dark_orange())
-        embed.description = "\"Video guides\" for custom firmware and arm9loaderhax/boot9strap are not recommended for use. Their contents generally become outdated very quickly for them to be of any use, and they are harder to update unlike a written guide.\n\nWhen this happens, video guides become more complicated than current methods, having users do certain tasks which may not be required anymore.\n\nThere is also a risk of the uploader spreading misinformation or including potentially harmful files, sometimes unintentionally. Using other people's files to install arm9loaderhax can cause serious issues and even brick your system."
-        embed.add_field(name="Recommended", value="The recommended thing to do is to use [Plailect's written complete guide for boot9strap](https://3ds.hacks.guide). It is the most up to date one and is recommended for everyone.")
+        embed.description = "Reasons to not use video guides:\n- They get outdated quickly\n- Tough to update and give assistance for\n- Can be misinformative and dangerous for the console"
+        embed.add_field(name="Recommended Solution", value="Read [Plailect's written complete guide for boot9strap](https://3ds.hacks.guide).")
         await self.bot.say("", embed=embed)
 
     @commands.command()
