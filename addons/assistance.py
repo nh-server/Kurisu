@@ -443,12 +443,6 @@ class Assistance:
     async def nsupdate(self):
         """Erase pending updates on Nintendo Switch"""
         await self.simple_embed("When an update is downloaded, but not installed, the console will not display the firmware version in System Settings. \n\n• To fix this, *power the console off* (hold the power button, follow on-screen prompts). ***Hold*** Volume Down and Volume Up, then Power. When you see Maintenance Mode, you may reboot, and check System Settings. \n\n *To block automatic update downloads, enter 104.236.106.125 as your primary DNS and 62.210.147.20 as your secondary DNS for your home network.*", title="How to delete pending Switch Updates")
-    
-    @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def blackscreen(self):
-        """Endless black screen on boot"""
-        await self.simple_embed("If you have CFW, and have attempted to boot your console but only see a black screen and a solid blue LED, please follow these steps./n1. Turn off your console./n2. Take out any game cartridge you have in./n3. With the SD card inserted, power on your console./n4. Let it sit, open and turned on, for up to 15 minutes. Do not touch it during this time./n5. If the console boots to home menu, proceed as normal./n6. If the console still does not boot to home menu, come back and ask for more help./nNote: If your blue LED flashes on, then off, this is a separate issue.", title="Endless black screen on boot")
-    
+
 def setup(bot):
     bot.add_cog(Assistance(bot))
