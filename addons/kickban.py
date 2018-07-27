@@ -5,7 +5,6 @@ import json
 import re
 import time
 from discord.ext import commands
-from sys import argv
 
 class KickBan:
     """

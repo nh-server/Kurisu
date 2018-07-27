@@ -1,9 +1,5 @@
-import discord
-import re
 import xkcd
 from discord.ext import commands
-from sys import argv
-from urllib.parse import urlparse
 
 class xkcdparse:
     """

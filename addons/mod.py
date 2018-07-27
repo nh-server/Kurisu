@@ -5,7 +5,6 @@ import re
 import time
 from discord.ext import commands
 from subprocess import call
-from sys import argv
 
 class Mod:
     """

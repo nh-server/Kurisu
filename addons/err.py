@@ -3,7 +3,6 @@ import discord
 import re
 from discord.ext import commands
 from discord import Color
-from sys import argv
 
 class Err:
     """

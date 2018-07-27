@@ -2,10 +2,8 @@ import asyncio
 import discord
 import json
 import re
-from discord.ext import commands
 from subprocess import call
 from string import printable
-from sys import argv
 from urllib.parse import urlparse
 
 class Events:
@@ -119,15 +117,15 @@ class Events:
     unbanning_stuff = (
         'unbanmii',
     )
-    
+
     # piracy sites
     piracy_sites = (
-        '3dsiso', 
-        '3dschaos', 
-        'wiiuiso', 
-        'madloader', 
-        'darkumbra', 
-        'chaosgamez', 
+        '3dsiso',
+        '3dschaos',
+        'wiiuiso',
+        'madloader',
+        'darkumbra',
+        'chaosgamez',
         'maxconsole',
         'emuparadise',
         'loveroms',
@@ -156,7 +154,7 @@ class Events:
             rsts[member.id].append(rst)
         with open("data/restrictions.json", "w") as f:
             json.dump(rsts, f)
-    
+
     # this is not a good idea, but i'll make a better implementation later
     channels_to_watch_for_videos = ['196635695958196224', '247557068490276864', '279783073497874442', '439933093118476289', '468195563125342228']
 
@@ -343,7 +341,7 @@ class Events:
             log_msg = "🔒 **Auto-locked**: {} locked for spam".format(message.channel.mention)
             await self.bot.send_message(self.bot.modlogs_channel, log_msg, embed=embed)
             await self.bot.send_message(self.bot.mods_channel, log_msg + " @here\nSee {} for a list of deleted messages.".format(self.bot.modlogs_channel.mention))
-            msgs_to_delete = self.channel_antispam[message.channel.id][:]  # clone list so nothing is removed while going through it
+            # msgs_to_delete = self.channel_antispam[message.channel.id][:]  # clone list so nothing is removed while going through it
             # for msg in msgs_to_delete:
             #     try:
             #         await self.bot.delete_message(msg)

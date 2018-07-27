@@ -1,7 +1,5 @@
 from io import BytesIO
-import discord
 import requests
-from discord.ext import commands
 from PIL import Image
 
 class ImageConvert:

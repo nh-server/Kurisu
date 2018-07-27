@@ -1,7 +1,5 @@
-import discord
 import json
 from discord.ext import commands
-from sys import argv
 
 class Helper_list:
     """
@@ -32,7 +30,6 @@ class Helper_list:
     async def delhelper(self, ctx, user):
         """Remove user from helpers. Owners only."""
         member = ctx.message.mentions[0]
-        server = ctx.message.author.server
         await self.bot.say(member.name)
         with open("data/helpers.json", "r") as f:
             helpers = json.load(f)
@@ -46,7 +43,6 @@ class Helper_list:
     async def helpon(self, ctx):
         """Gain highlighted helping role. Only needed by Helpers."""
         author = ctx.message.author
-        server = author.server
         with open("data/helpers.json", "r") as f:
             helpers = json.load(f)
         if author.id not in helpers:
@@ -61,7 +57,6 @@ class Helper_list:
     async def helpoff(self, ctx):
         """Remove highlighted helping role. Only needed by Helpers."""
         author = ctx.message.author
-        server = author.server
         with open("data/helpers.json", "r") as f:
             helpers = json.load(f)
         if author.id not in helpers:

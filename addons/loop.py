@@ -1,18 +1,13 @@
 import asyncio
 import copy
 import discord
-import feedparser
 import sys
-import time
 import traceback
-import os
 import json
 import requests
 import pytz
 from datetime import datetime, timedelta
 from discord.ext import commands
-from urllib.parse import urlparse, parse_qs
-from html import unescape
 
 class Loop:
     """

@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-from sys import argv
 
 class Assistance:
     """
@@ -8,7 +7,7 @@ class Assistance:
     """
     def __init__(self, bot):
         self.bot = bot
-        self.systems = systems = ("3ds", "wiiu", "wii u", "switch", "nx")
+        self.systems = ("3ds", "wiiu", "wii u", "switch", "nx")
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     async def simple_embed(self, text, title="", color=discord.Color.default()):
@@ -370,7 +369,7 @@ class Assistance:
             embed.url = "https://mega.nz/#!qnAE1YjC!q3FRHgIAVEo4nRI2IfANHJr-r7Sil3YpPYE4w8ZbUPY"
             embed.description = "The recommended way to play old classics on your 3DS"
             await self.bot.say("", embed=embed)
-            
+
         if self.check_console(console, ctx.message.channel.name, ('wiiu', 'wii u')):
             embed1 = discord.Embed(title="Wii and GameCube games for WiiU", color=discord.Color.red())
             embed1.set_author(name="TeconMoon")
@@ -378,14 +377,14 @@ class Assistance:
             embed1.url = "https://gbatemp.net/threads/release-wiivc-injector-script-gc-wii-homebrew-support.483577/"
             embed1.description = "The recommended way to play Wii and gamecube games on your WiiU"
             await self.bot.say("", embed=embed1)
-            
+
             embed2 = discord.Embed(title="Virtual Console Injects for WiiU", color=discord.Color.red())
             embed2.set_author(name="CatmanFan")
             embed2.set_thumbnail(url="https://gbatemp.net/data/avatars/m/398/398221.jpg")
             embed2.url = "https://gbatemp.net/threads/release-injectiine-wii-u-virtual-console-injector.491386/"
             embed2.description = "The recommended way to play old classics on your WiiU"
             await self.bot.say("", embed=embed2)
-            
+
     # Embed to Chroma Ryu's godmode9 guide
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)

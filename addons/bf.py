@@ -1,7 +1,5 @@
-import discord
 import getch
 from discord.ext import commands
-from sys import argv
 
 class bf:
     """

@@ -3,7 +3,6 @@ import hashlib
 import sqlite3
 import struct
 from discord.ext import commands
-from sys import argv
 
 class FriendCode:
     """

@@ -1,11 +1,8 @@
-import datetime
 import discord
 import os
 import random
-import re
 import string
 from discord.ext import commands
-from sys import argv
 
 class Extras:
     """
@@ -37,32 +34,6 @@ class Extras:
     async def embedtext(self, *, text):
         """Embed content."""
         await self.bot.say(embed=discord.Embed(description=text))
-
-    @commands.command(hidden=True)
-    async def timedelta(self, length):
-        # thanks Luc#5653
-        units = {
-            "d": 86400,
-            "h": 3600,
-            "m": 60,
-            "s": 1
-        }
-        seconds = 0
-        match = re.findall("([0-9]+[smhd])", length)  # Thanks to 3dshax server's former bot
-        if match is None:
-            return None
-        for item in match:
-            seconds += int(item[:-1]) * units[item[-1]]
-        curr = datetime.datetime.now()
-        diff = datetime.timedelta(seconds=seconds)
-        # http://stackoverflow.com/questions/2119472/convert-a-timedelta-to-days-hours-and-minutes
-        days, hours, minutes = td.days, td.seconds//3600, (td.seconds//60)%60
-        msg = "```\ncurr: {}\nnew:  {}\ndiff: {}\n```".format(
-            curr,
-            curr + diff,
-            diff
-        )
-        await self.bot.say(msg)
 
     @commands.has_permissions(manage_nicknames=True)
     @commands.command()
@@ -145,10 +116,6 @@ class Extras:
     async def _34c3(self):
         """Console Security - Switch"""
         await self.bot.say("https://www.youtube.com/watch?v=Ec4NgWRE8ik")
-
-    @commands.command()
-    async def de(self):
-        invalid()
 
     @commands.has_permissions(administrator=True)
     @commands.command(pass_context=True, hidden=True)
