@@ -1,3 +1,4 @@
+import sys
 import binascii
 import discord
 import re
