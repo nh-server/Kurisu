@@ -90,6 +90,7 @@ class Events:
         'exhop',
         'exshop',
         'enxhop',
+        'goodshop',
         'exnhop',  # typo of the above, not sure how common
         'enxshop',  # also typo
     )
