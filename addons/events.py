@@ -93,7 +93,11 @@ class Events:
         'goodshop',
         'exnhop',  # typo of the above, not sure how common
         'enxshop',  # also typo
-        'vwfe_n7ahks', # video mentioning freeshop
+    )
+
+    # use the full ID, including capitalization and dashes
+    piracy_video_ids = (
+        'VWFe_n7AhKs',
     )
 
     # terms that should cause a notice but not auto-delete
@@ -176,6 +180,7 @@ class Events:
         contains_piracy_site_mention = any(x in msg for x in self.piracy_sites)
         contains_piracy_url_mention = any(x in msg for x in ('3ds.titlekeys', 'wiiu.titlekeys', 'titlekeys.com', '95.183.50.10',))
         contains_piracy_tool_mention = any(x in msg_no_separators for x in self.piracy_tools)
+        contains_piracy_video_id = any(x in message.content for x in self.piracy_video_ids)
         contains_piracy_tool_alert_mention = any(x in msg_no_separators for x in self.piracy_tools_alert)
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site',))
         contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub', 'strawpoii', 'hackinformer.com', 'switchthem.es', 'console.guide',))
@@ -214,6 +219,16 @@ class Events:
             except discord.errors.Forbidden:
                 pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
             await self.bot.send_message(self.bot.messagelogs_channel, "**Bad tool**: {} mentioned a piracy tool in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
+        if contains_piracy_video_id:
+            try:
+                await self.bot.delete_message(message)
+            except discord.errors.NotFound:
+                pass
+            try:
+                await self.bot.send_message(message.author, "Please read {}. You cannot link videos that mention piracy, therefore your message was automatically deleted.".format(self.bot.welcome_channel.mention), embed=embed)
+            except discord.errors.Forbidden:
+                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
+            await self.bot.send_message(self.bot.messagelogs_channel, "**Bad video**: {} linked a banned video in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
         if contains_piracy_tool_alert_mention:
             await self.bot.send_message(self.bot.messagelogs_channel, "**Bad tool**: {} likely mentioned a piracy tool in {}".format(message.author.mention, message.channel.mention), embed=embed)
         if contains_piracy_site_mention or contains_piracy_url_mention:
