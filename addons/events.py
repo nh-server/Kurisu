@@ -93,6 +93,7 @@ class Events:
         'goodshop',
         'exnhop',  # typo of the above, not sure how common
         'enxshop',  # also typo
+        'vwfe_n7ahks', # video mentioning freeshop
     )
 
     # terms that should cause a notice but not auto-delete
