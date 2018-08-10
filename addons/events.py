@@ -398,6 +398,8 @@ class Events:
             await self.bot.wait_until_all_ready()
             if message_after.author == self.bot.server.me or self.bot.staff_role in message_after.author.roles or message_after.channel in self.bot.whitelisted_channels:  # don't process messages by the bot or staff or in the helpers channel
                 return
+            if message_before.content == message_after.content:
+                return
             await self.scan_message(message_after, is_edit=True)
         except AttributeError:
             pass  # I need to figure this out eventually. at the moment there's no real harm doing this.
