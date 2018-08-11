@@ -425,11 +425,11 @@ class Assistance:
     @commands.command(pass_context=True, name="7zip")
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def p7zip(self):
-        """Download 7zip"""
-        embed = discord.Embed(title="Download 7zip", color=discord.Color(0x0000ff))
-        embed.set_thumbnail(url="http://i.imgur.com/cX1fuf6.png")
-        embed.url = "http://www.7-zip.org/download.html"
-        embed.description = "To be able to extract .7z files you need 7zip installed, get it here."
+        """Download a .7z file extractor"""
+        embed = discord.Embed(title="Download 7-Zip or The Unarchiver", color=discord.Color(0x0000ff))
+        embed.description = ("To be able to extract .7z files, you will need an extractor that supports this format.\n"
+                             "• [7-Zip](https://www.7-zip.org) for Windows\n"
+                             "• [The Unarchiver](https://theunarchiver.com) for macOS")
         await self.bot.say("", embed=embed)
 
     @commands.command()
