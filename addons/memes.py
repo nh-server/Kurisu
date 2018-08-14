@@ -285,6 +285,12 @@ class Memes:
         """MEMES?"""
         await self._meme(ctx, "https://i.imgur.com/cWXBb5g.png")
 
+    @commands.command(pass_context=True, hidden=True, aliases=['nekobang'])
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def nodding(self, ctx):
+        """MEMES?"""
+        await self._meme(ctx, "https://cdn.discordapp.com/attachments/468930145546403870/478702943819005962/nodding.gif")
+
 # Load the extension
 def setup(bot):
     bot.add_cog(Memes(bot))
