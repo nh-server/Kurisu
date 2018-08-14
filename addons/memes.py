@@ -285,7 +285,7 @@ class Memes:
         """MEMES?"""
         await self._meme(ctx, "https://i.imgur.com/cWXBb5g.png")
 
-    @commands.command(pass_context=True, hidden=True)
+    @commands.command(pass_context=True, hidden=True, aliases=['nekobang'])
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def nodding(self, ctx):
         """MEMES?"""
