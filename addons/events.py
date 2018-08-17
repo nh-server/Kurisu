@@ -71,13 +71,13 @@ class Events:
         'eshopfree',
         'erappêshop',
         'fręëšhøp',
-        'feeshop',
         'fbimod',
         'freakshop',
         'fleashop',
         'ciangle',
         'fieashop',
         'fefosheep',
+        'freebrew',
         'villain3ds',
         'vi11ain3ds',
         'vi1lain3ds',
@@ -103,6 +103,7 @@ class Events:
     # terms that should cause a notice but not auto-delete
     piracy_tools_alert = (
         'freshop',
+        'feeshop',
         'notabug',
     )
 
