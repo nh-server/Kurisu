@@ -57,7 +57,9 @@ class Events:
         'makifbi',
         'utikdownloadhelper',
         'wiiuusbhelper',
-        'w11uusbh3lper'
+        'wiiusbhelper',
+        'w11uusbh3lper',
+        'w11usbh3lper',
         'funkii',
         'funkey',
         'funk11',
