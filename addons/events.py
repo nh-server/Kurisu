@@ -95,6 +95,7 @@ class Events:
         'goodshop',
         'exnhop',  # typo of the above, not sure how common
         'enxshop',  # also typo
+        'cdnsp',
     )
 
     # use the full ID, including capitalization and dashes
