@@ -69,6 +69,7 @@ class Events:
         'frappeshop',
         'frickshop',
         'usbheler',
+        'usbhelper',
         'frishop',
         'eshopfree',
         'erappêshop',
