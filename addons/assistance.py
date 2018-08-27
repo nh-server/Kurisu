@@ -449,8 +449,7 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def sdlock(self):
         """Disable write protection on an SD Card"""
-        await self.bot.say("https://i.imgur.com/RvKjWcz.png")
-        await self.simple_embed("This switch on the SD Card should be facing upwards, as in this photo. Otherwise, your device will refuse to write to it. /nIf it is write locked, your console and other applications may behave unexpectedly.*", title="Disable write protection on an SD Card")
+        await self.simple_embed("This switch on the SD Card should be facing upwards, as in [this photo](https://i.imgur.com/RvKjWcz.png). Otherwise, your device will refuse to write to it. /nIf it is write locked, your console and other applications may behave unexpectedly.*", title="Disable write protection on an SD Card")
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
