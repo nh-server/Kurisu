@@ -172,9 +172,9 @@ class Assistance:
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def s4sel(self):
-        """Links to a tool for Smash 4 mods"""
-        await self.simple_embed("To install mods for Smash, [Smash Selector](https://gbatemp.net/threads/release-smash-selector.431245/) is recommended. Instructions for use can be found on the page.")
+    async def modmoon(self):
+        """Links to a tool for a mod manager"""
+        await self.simple_embed("To install mods for Smash 3DS, and to manage other LayeredFS mods, [Mod-Moon](https://github.com/Swiftloke/ModMoon/releases) is recommended. Instructions for use can be found on the page.")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -192,7 +192,7 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def inoriwarn(self):
         """Warns users to keep the channels on-topic - Staff & Helper Declaration Only"""
-        await self.simple_embed(" **Please keep the channels clean and on-topic, further derailing will result in intervention.  A staff or helper will be the quickest route to resolution; you can contact available staff by private messaging the Mod-mail bot.** A full list of staff and helpers can be found in #welcome-and-rules if you don't know who they are.")
+        await self.simple_embed(" **Please keep the channels clean and on-topic, further derailing will result in intervention.  A staff or helper will be the quickest route to resolution; you can contact available staff by private messaging the Mod-Mail bot.** A full list of staff and helpers can be found in #welcome-and-rules if you don't know who they are.")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -223,7 +223,7 @@ class Assistance:
     async def stock114(self):
         """Advisory for consoles on stock 11.4+ firmware"""
         embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
-        embed.description = "You have 4 possible options for installing CFW:\n- [NTRBoot](https://3ds.hacks.guide/ntrboot) which requires a compatible NDS flashcart and maybe an additional DS(i) or hacked 3DS console depending on the flashcart\n- [DSiWare](https://3ds.hacks.guide/installing-boot9strap-\(dsiware\)) which involves system transferring from a hacked 3DS to an unhacked 3DS\n- [Seedminer](https://jisagi.github.io/SeedminerGuide/) which requires a compatible DSiWare game\n- [Hardmod](https://3ds.hacks.guide/installing-boot9strap-\(hardmod\)) which requires soldering **Not for beginners!**\n **Downgrading is impossible on 11.4+!**"
+        embed.description = "You have 3 possible options for installing CFW:\n- [NTRBoot](https://3ds.hacks.guide/ntrboot) which requires a compatible NDS flashcart and maybe an additional DS(i) or hacked 3DS console depending on the flashcart\n- [Seedminer](https://jisagi.github.io/SeedminerGuide/) which requires a compatible DSiWare game\n- [Hardmod](https://3ds.hacks.guide/installing-boot9strap-\(hardmod\)) which requires soldering **Not for beginners!**\n **Downgrading is impossible on 11.4+!**"
         await self.bot.say("", embed=embed)
 
     @commands.command(aliases=["fuse-3ds", "fuse"])
@@ -438,11 +438,21 @@ class Assistance:
         """Message on flash drives on the Wii U"""
         await self.simple_embed("Some flash drives work with the Wii U, some don't. If you have read or write errors, or games crash often, you might want to try a different flash drive or hard drive")
 
+    #Information about pending Switch updates
     @commands.command(aliases=["nxupdate"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def nsupdate(self):
         """Erase pending updates on Nintendo Switch"""
         await self.simple_embed("When an update is downloaded, but not installed, the console will not display the firmware version in System Settings. \n\n• To fix this, *power the console off* (hold the power button, follow on-screen prompts). ***Hold*** Volume Down and Volume Up, then Power. When you see Maintenance Mode, you may reboot, and check System Settings. \n\n *To block automatic update downloads, enter 104.236.106.125 as your primary DNS and 62.210.147.20 as your secondary DNS for your home network.*", title="How to delete pending Switch Updates")
 
+    @commands.command(aliases=["write"])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def sdlock(self):
+        """Disable write protection on an SD Card"""
+        embed = discord.Embed(title="Disable write protection on an SD Card")
+        embed.description = "This switch on the SD Card should be facing upwards, as in this photo. Otherwise, your device will refuse to write to it. /nIf it is write locked, your console and other applications may behave unexpectedly.*"
+        embed.set_image(url="https://i.imgur.com/RvKjWcz.png")
+        await self.bot.say("", embed=embed)
+        
 def setup(bot):
     bot.add_cog(Assistance(bot))
