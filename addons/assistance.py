@@ -263,7 +263,11 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def notbricked(self):
         """Missing boot.firm"""
-        await self.simple_embed("If your power LED turns on and off after you installed b9s, you are not bricked and are just missing a file called boot.firm in the root of your SD card.\nTo fix this you should:\n1.Check you inserted the SD card in your console\n2.Place/replace the file, downloading it from https://github.com/AuroraWright/Luma3DS/releases\nChecking your SD for errors or corruption:\n\tWindows: https://3ds.hacks.guide/h2testw-(windows)#\n\tLinux: https://3ds.hacks.guide/f3-(linux)#\n\tMac: https://3ds.hacks.guide/f3x-(mac)#", title="No. You are not bricked")
+        embed = discord.Embed("No, you are not bricked")
+        embed.description = "If your power LED turns on and off after you installed b9s, you are not bricked and are just missing a file called boot.firm in the root of your SD card."
+        embed.add_field(name="How to fix the issue", value="1. Check you inserted the SD card in your console\n 2.Place/replace the file, downloading it from https://github.com/AuroraWright/Luma3DS/releases", inline=False)
+        embed.add_field(name="Checking your SD for errors or corruption", value="- Windows: https://3ds.hacks.guide/h2testw-(windows)#\n- Linux: https://3ds.hacks.guide/f3-(linux)#\n- Mac: https://3ds.hacks.guide/f3x-(mac)#", inline=False)
+        await self.bot.say("", embed=embed)
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
