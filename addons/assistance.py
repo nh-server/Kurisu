@@ -454,7 +454,7 @@ class Assistance:
     async def sdlock(self):
         """Disable write protection on an SD Card"""
         embed = discord.Embed(title="Disable write protection on an SD Card")
-        embed.description = "This switch on the SD Card should be facing upwards, as in this photo. Otherwise, your device will refuse to write to it. /nIf it is write locked, your console and other applications may behave unexpectedly.*"
+        embed.description = "This switch on the SD Card should be facing upwards, as in this photo. Otherwise, your device will refuse to write to it.\n*If it is write locked, your console and other applications may behave unexpectedly.*"
         embed.set_image(url="https://i.imgur.com/RvKjWcz.png")
         await self.bot.say("", embed=embed)
         
