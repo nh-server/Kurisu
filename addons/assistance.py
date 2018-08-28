@@ -251,13 +251,13 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def bigsd(self):
         """SD bigger than 32GB"""
-        await self.simple_embed("If you want to change your SD card to one bigger than 32GB then you'll have to format it to FAT32.\nYou can do this with the tool of your preference.\nFormatter examples:\n- [guiformat - Windows](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm)\n- [gparted - Linux](http://gparted.org/download.php)\n- [Disk Utility - macOS](https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010) (Always choose \"MS-DOS (FAT)\" regardless of size, not ExFAT.)", title="Big SD cards")
+        await self.simple_embed("If you want to change your SD card to one bigger than 32GB then you'll have to format it to FAT32.\nYou can do this with the tool of your preference.\nFormatter examples:\n• Windows: [guiformat](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm)\n• Linux: [gparted](http://gparted.org/download.php)\n• Mac: [Disk Utility](https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010) (Always choose \"MS-DOS (FAT)\" regardless of size, not ExFAT.)", title="Big SD cards")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def sderrors(self):
         """Sd Error Guide"""
-        await self.simple_embed("Guide For Checking SD Card For Errors\n- [H2testw Guide - Windows](https://3ds.hacks.guide/h2testw-(windows\))\n- [F3 Guide - Linux](https://3ds.hacks.guide/f3-(linux\))\n- [F3X Guide - Mac](https://3ds.hacks.guide/f3x-(mac\))", title="SD Card Errors")
+        await self.simple_embed("Guide For Checking SD Card For Errors\n• Windows: [H2testw Guide](https://3ds.hacks.guide/h2testw-(windows\))\n• Linux: [F3 Guide](https://3ds.hacks.guide/f3-(linux\))\n• Mac: [F3X Guide](https://3ds.hacks.guide/f3x-(mac\))", title="SD Card Errors")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -265,8 +265,8 @@ class Assistance:
         """Missing boot.firm"""
         embed = discord.Embed(title="No, you are not bricked")
         embed.description = "If your power LED turns on and off after you installed b9s, you are not bricked and are just missing a file called boot.firm in the root of your SD card."
-        embed.add_field(name="How to fix the issue", value="1. Check you inserted the SD card in your console\n 2.Place/replace the file, downloading it from https://github.com/AuroraWright/Luma3DS/releases", inline=False)
-        embed.add_field(name="Checking your SD for errors or corruption", value="- Windows: https://3ds.hacks.guide/h2testw-(windows)#\n- Linux: https://3ds.hacks.guide/f3-(linux)#\n- Mac: https://3ds.hacks.guide/f3x-(mac)#", inline=False)
+        embed.add_field(name="How to fix the issue", value="1. Check you inserted the SD card in your console\n 2. Place/replace the file, downloading it from https://github.com/AuroraWright/Luma3DS/releases", inline=False)
+        embed.add_field(name="Checking your SD for errors or corruption", value="• Windows: https://3ds.hacks.guide/h2testw-(windows)#\n• Linux: https://3ds.hacks.guide/f3-(linux)#\n• Mac: https://3ds.hacks.guide/f3x-(mac)#", inline=False)
         await self.bot.say("", embed=embed)
 
     @commands.command()
@@ -432,8 +432,8 @@ class Assistance:
         """Download a .7z file extractor"""
         embed = discord.Embed(title="Download 7-Zip or The Unarchiver", color=discord.Color(0x0000ff))
         embed.description = ("To be able to extract .7z files, you will need an extractor that supports this format.\n"
-                             "• [7-Zip](https://www.7-zip.org) for Windows\n"
-                             "• [The Unarchiver](https://theunarchiver.com) for macOS")
+                             "• Windows: [7-Zip](https://www.7-zip.org)\n"
+                             "• Mac: [The Unarchiver](https://theunarchiver.com)")
         await self.bot.say("", embed=embed)
 
     @commands.command()
