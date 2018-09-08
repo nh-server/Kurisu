@@ -149,6 +149,7 @@ class Events:
         'portableroms',
         'portalroms',
         'romulation',
+        'emulator.games',
     )
 
     # I hate naming variables sometimes
