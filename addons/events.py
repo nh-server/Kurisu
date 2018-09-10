@@ -150,6 +150,7 @@ class Events:
         'portalroms',
         'romulation',
         'emulator.games',
+        'reinx.guide',
     )
 
     # I hate naming variables sometimes
