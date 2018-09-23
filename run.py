@@ -150,6 +150,7 @@ async def on_ready():
         bot.elsewhere_channel = discord.utils.get(server.channels, name="elsewhere")
         bot.mods_channel = discord.utils.get(server.channels, name="mods")
         bot.modlogs_channel = discord.utils.get(server.channels, name="mod-logs")
+        bot.modmail_channel = discord.utils.get(server.channels, name="mod-mail")
         bot.serverlogs_channel = discord.utils.get(server.channels, name="server-logs")
         bot.messagelogs_channel = discord.utils.get(server.channels, name="message-logs")
         bot.uploadlogs_channel = discord.utils.get(server.channels, name="upload-logs")
@@ -179,7 +180,7 @@ async def on_ready():
         bot.everyone_role = server.default_role
 
         # channels to exempt from most checks
-        bot.whitelisted_channels = (bot.helpers_channel, bot.modlogs_channel, bot.mods_channel, bot.watchlogs_channel, bot.announcements_channel)
+        bot.whitelisted_channels = (bot.helpers_channel, bot.modmail_channel, bot.modlogs_channel, bot.mods_channel, bot.watchlogs_channel, bot.announcements_channel)
 
         bot.staff_ranks = {
             "HalfOP": bot.halfop_role,
