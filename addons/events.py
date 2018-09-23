@@ -151,6 +151,7 @@ class Events:
         'romulation',
         'emulator.games',
         'reinx.guide',
+        '3dscia',
     )
 
     # I hate naming variables sometimes
