@@ -259,7 +259,7 @@ class Assistance:
         """SD Error Guide"""
         await self.simple_embed("Guide For Checking SD Card For Errors\n http://3ds.filthycasuals.tech/sderrors.html \n This covers Windows, Linux and Mac.", title="SD Card Errors")
         
-            @commands.command()
+    @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def lumabug(self):
         """Luma Black Screen Bug"""
