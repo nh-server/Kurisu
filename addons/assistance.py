@@ -223,7 +223,7 @@ class Assistance:
     async def stock114(self):
         """Advisory for consoles on stock 11.4+ firmware"""
         embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
-        embed.description = "You have 3 possible options for installing CFW:\n- [NTRBoot](https://3ds.hacks.guide/ntrboot) which requires a compatible NDS flashcart and maybe an additional DS(i) or hacked 3DS console depending on the flashcart\n- [Frogminer](https://jisagi.github.io/FrogminerGuide) A free CFW installation method using Steel Diver: Sub Wars\n- [Hardmod](https://3ds.hacks.guide/installing-boot9strap-\(hardmod\)) which requires soldering **Not for beginners!**\n **Downgrading is impossible on 11.4+!**"
+        embed.description = "You have 3 possible options for installing CFW:\n- [NTRBoot](https://3ds.hacks.guide/ntrboot) which requires a compatible NDS flashcart and maybe an additional DS(i) or hacked 3DS console depending on the flashcart\n- [Seedminer](https://3ds.hacks.guide/installing-boot9strap-\(seedminer\)) which requires a compatible DSiWare game\n- [Frogminer](https://jisagi.github.io/FrogminerGuide) A free CFW installation method using Steel Diver: Sub Wars\n- [Hardmod](https://3ds.hacks.guide/installing-boot9strap-\(hardmod\)) which requires soldering **Not for beginners!**\n **Downgrading is impossible on 11.4+!**"
         await self.bot.say("", embed=embed)
 
     @commands.command(aliases=["fuse-3ds", "fuse"])
