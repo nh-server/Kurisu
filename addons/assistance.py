@@ -151,13 +151,6 @@ class Assistance:
         """Links to approved hardmodder list"""
         await self.simple_embed("Don't want to hardmod yourself? Ask one of the installers on the server! <http://pastebin.com/wNr42PtH>")
 
-    # Link to Astronautlevel's Luma3ds builds site
-    @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def builds(self):
-        """Links to astronautlevel's luma commit site."""
-        await self.simple_embed("Astronautlevel's Luma3DS commit builds can be found here: https://astronautlevel2.github.io/Luma3DS \n(Warning: most builds here are meant for developers and are untested, use at your own risk!)")
-
     # Links to ctrtransfer guide
     @commands.command(aliases=["ctrtransfer","ctrnandtransfer"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -175,12 +168,6 @@ class Assistance:
     async def modmoon(self):
         """Links to a tool for a mod manager"""
         await self.simple_embed("To install mods for Smash 3DS, and to manage other LayeredFS mods, [Mod-Moon](https://github.com/Swiftloke/ModMoon/releases) is recommended. Instructions for use can be found on the page.")
-
-    @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def brick(self):
-        """Warns about 2.1 dangers"""
-        await self.simple_embed("While on 2.1, **NEVER** shut the N3DS lid, update any model, format a 2DS or attempt to play a game on a cartridge. Doing any of these things *will* brick your system.", color=discord.Color.red())
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
