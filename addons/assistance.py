@@ -205,7 +205,7 @@ class Assistance:
         embed.add_field(name="Check your 3DSs IP (Homebrew)", value="1. Open Homebrew Launcher\n2. Press Y")
         await self.bot.say("", embed=embed)
 
-    @commands.command(aliases=["stock114","stock115","stock116","stock117"])
+    @commands.command(aliases=["stock114","stock115","stock116","stock117","stock118"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def stock(self):
         """Advisory for consoles on stock 11.4+ firmware"""
