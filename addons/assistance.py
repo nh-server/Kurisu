@@ -151,13 +151,6 @@ class Assistance:
         """Links to approved hardmodder list"""
         await self.simple_embed("Don't want to hardmod yourself? Ask one of the installers on the server! <http://pastebin.com/wNr42PtH>")
 
-    # Link to Astronautlevel's Luma3ds builds site
-    @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def builds(self):
-        """Links to astronautlevel's luma commit site."""
-        await self.simple_embed("Astronautlevel's Luma3DS commit builds can be found here: https://astronautlevel2.github.io/Luma3DS \n(Warning: most builds here are meant for developers and are untested, use at your own risk!)")
-
     # Links to ctrtransfer guide
     @commands.command(aliases=["ctrtransfer","ctrnandtransfer"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -175,12 +168,6 @@ class Assistance:
     async def modmoon(self):
         """Links to a tool for a mod manager"""
         await self.simple_embed("To install mods for Smash 3DS, and to manage other LayeredFS mods, [Mod-Moon](https://github.com/Swiftloke/ModMoon/releases) is recommended. Instructions for use can be found on the page.")
-
-    @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def brick(self):
-        """Warns about 2.1 dangers"""
-        await self.simple_embed("While on 2.1, **NEVER** shut the N3DS lid, update any model, format a 2DS or attempt to play a game on a cartridge. Doing any of these things *will* brick your system.", color=discord.Color.red())
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -218,12 +205,12 @@ class Assistance:
         embed.add_field(name="Check your 3DSs IP (Homebrew)", value="1. Open Homebrew Launcher\n2. Press Y")
         await self.bot.say("", embed=embed)
 
-    @commands.command(aliases=["stock115","stock"])
+    @commands.command(aliases=["stock114","stock115","stock116","stock117","stock118"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def stock114(self):
+    async def stock(self):
         """Advisory for consoles on stock 11.4+ firmware"""
         embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
-        embed.description = "You have 3 possible options for installing CFW:\n- [NTRBoot](https://3ds.hacks.guide/ntrboot) which requires a compatible NDS flashcart and maybe an additional DS(i) or hacked 3DS console depending on the flashcart\n- [Seedminer](https://3ds.hacks.guide/installing-boot9strap-\(seedminer\)) which requires a compatible DSiWare game\n- [Hardmod](https://3ds.hacks.guide/installing-boot9strap-\(hardmod\)) which requires soldering **Not for beginners!**\n **Downgrading is impossible on 11.4+!**"
+        embed.description = "You have 4 possible options for installing CFW:\n- [NTRBoot](https://3ds.hacks.guide/ntrboot) which requires a compatible NDS flashcart and maybe an additional DS(i) or hacked 3DS console depending on the flashcart\n- [Frogminer](https://jisagi.github.io/FrogminerGuide) which requires a homebrew entrypoint like [steelminer](http://steelminer.jisagi.net/) (free method) or freakyhax\n- [Seedminer](https://3ds.hacks.guide/installing-boot9strap-\(seedminer\)) which requires a compatible DSiWare game\n- [Hardmod](https://3ds.hacks.guide/installing-boot9strap-\(hardmod\)) which requires soldering **Not for beginners!**\n **Downgrading is impossible on 11.4+!**"
         await self.bot.say("", embed=embed)
 
     @commands.command(aliases=["fuse-3ds", "fuse"])
