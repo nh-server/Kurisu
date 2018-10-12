@@ -154,19 +154,19 @@ class Extras:
     
     @commands.command(pass_context=True)
     async def rainbow(self, ctx):
-        """Spookybrew"""
+        """Colorful"""
         month = datetime.date.today().month
         if month == 6:
             member = ctx.message.author
             if member.nick and member.nick[-1] == "🌈":
                 await self.bot.say("Your nickname already ends in a rainbow!")
-            elif member.name[-1] == "":
+            elif member.name[-1] == "🌈" and not member.nick:
                 await self.bot.say("Your name already ends in a rainbow!")
             else:
                 await self.bot.change_nickname(member, member.display_name + " 🌈")
-                await self.bot.say("Your nickname is now \"{} 🌈\"!".format(member.display_name))  
+                await self.bot.say("Your nickname is now \"{} \"!".format(member.display_name))  
         else:
-            await self.bot.say("This month is not colorful enough")
+            await self.bot.say("This month is not colorful enough!")
             
     @commands.command(pass_context=True)
     async def norainbow(self, ctx):
@@ -188,13 +188,13 @@ class Extras:
             member = ctx.message.author
             if member.nick and member.nick[-1] == "🎃":
                 await self.bot.say("Your nickname already ends in a pumpkin!")
-            elif member.name[-1] == "":
+            elif member.name[-1] == "🎃" and not member.nick:
                 await self.bot.say("Your name already ends in a pumpkin!")
             else:
                 await self.bot.change_nickname(member, member.display_name + " 🎃")
-                await self.bot.say("Your nickname is now \"{} 🎃\"!".format(member.display_name))  
+                await self.bot.say("Your nickname is now \"{} \"!".format(member.display_name))  
         else:
-            await self.bot.say("This month is not spooky enough")
+            await self.bot.say("This month is not spooky enough!")
 
     @commands.command(pass_context=True)
     async def nospooky(self, ctx):
@@ -216,11 +216,11 @@ class Extras:
             member = ctx.message.author
             if member.nick and member.nick[-1] == "🦃":
                 await self.bot.say("Your nickname already ends in a turkey!")
-            elif member.name[-1] == "":
+            elif member.name[-1] == "🦃" and not member.nick:
                 await self.bot.say("Your name already ends in a turkey!")
             else:
                 await self.bot.change_nickname(member, member.display_name + " 🦃")
-                await self.bot.say("Your nickname is now \"{} 🦃\"!".format(member.display_name))  
+                await self.bot.say("Your nickname is now \"{} \"!".format(member.display_name))  
         else:
             await self.bot.say("This month is not thankful enough!")
 
@@ -244,11 +244,11 @@ class Extras:
             member = ctx.message.author
             if member.nick and member.nick[-1] == "🎄":
                 await self.bot.say("Your nickname already ends in an xmas tree!")
-            elif member.name[-1] == "":
+            elif member.name[-1] == "🎄" and not member.nick:
                 await self.bot.say("Your name already ends in an xmas tree!")
             else:
                 await self.bot.change_nickname(member, member.display_name + " 🎄")
-                await self.bot.say("Your nickname is now \"{} 🎄\"!".format(member.display_name))  
+                await self.bot.say("Your nickname is now \"{} \"!".format(member.display_name))  
         else:
             await self.bot.say("This month is not christmassy enough!")
             
