@@ -154,7 +154,7 @@ class Extras:
     
     @commands.command(pass_context=True)
     async def rainbow(self, ctx):
-        """Spookybrew"""
+        """Colorful"""
         month = datetime.date.today().month
         if month == 6:
             member = ctx.message.author
@@ -164,7 +164,7 @@ class Extras:
                 await self.bot.say("Your name already ends in a rainbow!")
             else:
                 await self.bot.change_nickname(member, member.display_name + " 🌈")
-                await self.bot.say("Your nickname is now \"{} 🌈\"!".format(member.display_name))  
+                await self.bot.say("Your nickname is now \"{} \"!".format(member.display_name))  
         else:
             await self.bot.say("This month is not colorful enough")
             
@@ -192,7 +192,7 @@ class Extras:
                 await self.bot.say("Your name already ends in a pumpkin!")
             else:
                 await self.bot.change_nickname(member, member.display_name + " 🎃")
-                await self.bot.say("Your nickname is now \"{} 🎃\"!".format(member.display_name))  
+                await self.bot.say("Your nickname is now \"{} \"!".format(member.display_name))  
         else:
             await self.bot.say("This month is not spooky enough")
 
@@ -220,7 +220,7 @@ class Extras:
                 await self.bot.say("Your name already ends in a turkey!")
             else:
                 await self.bot.change_nickname(member, member.display_name + " 🦃")
-                await self.bot.say("Your nickname is now \"{} 🦃\"!".format(member.display_name))  
+                await self.bot.say("Your nickname is now \"{} \"!".format(member.display_name))  
         else:
             await self.bot.say("This month is not thankful enough!")
 
@@ -248,7 +248,7 @@ class Extras:
                 await self.bot.say("Your name already ends in an xmas tree!")
             else:
                 await self.bot.change_nickname(member, member.display_name + " 🎄")
-                await self.bot.say("Your nickname is now \"{} 🎄\"!".format(member.display_name))  
+                await self.bot.say("Your nickname is now \"{} \"!".format(member.display_name))  
         else:
             await self.bot.say("This month is not christmassy enough!")
             
