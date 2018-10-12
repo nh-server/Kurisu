@@ -166,7 +166,7 @@ class Extras:
                 await self.bot.change_nickname(member, member.display_name + " 🌈")
                 await self.bot.say("Your nickname is now \"{} \"!".format(member.display_name))  
         else:
-            await self.bot.say("This month is not colorful enough")
+            await self.bot.say("This month is not colorful enough!")
             
     @commands.command(pass_context=True)
     async def norainbow(self, ctx):
@@ -194,7 +194,7 @@ class Extras:
                 await self.bot.change_nickname(member, member.display_name + " 🎃")
                 await self.bot.say("Your nickname is now \"{} \"!".format(member.display_name))  
         else:
-            await self.bot.say("This month is not spooky enough")
+            await self.bot.say("This month is not spooky enough!")
 
     @commands.command(pass_context=True)
     async def nospooky(self, ctx):
