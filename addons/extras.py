@@ -160,7 +160,7 @@ class Extras:
             member = ctx.message.author
             if member.nick and member.nick[-1] == "🌈":
                 await self.bot.say("Your nickname already ends in a rainbow!")
-            elif member.name[-1] == "":
+            elif member.name[-1] == "🌈" and not member.nick:
                 await self.bot.say("Your name already ends in a rainbow!")
             else:
                 await self.bot.change_nickname(member, member.display_name + " 🌈")
@@ -188,7 +188,7 @@ class Extras:
             member = ctx.message.author
             if member.nick and member.nick[-1] == "🎃":
                 await self.bot.say("Your nickname already ends in a pumpkin!")
-            elif member.name[-1] == "":
+            elif member.name[-1] == "🎃" and not member.nick:
                 await self.bot.say("Your name already ends in a pumpkin!")
             else:
                 await self.bot.change_nickname(member, member.display_name + " 🎃")
@@ -216,7 +216,7 @@ class Extras:
             member = ctx.message.author
             if member.nick and member.nick[-1] == "🦃":
                 await self.bot.say("Your nickname already ends in a turkey!")
-            elif member.name[-1] == "":
+            elif member.name[-1] == "🦃" and not member.nick:
                 await self.bot.say("Your name already ends in a turkey!")
             else:
                 await self.bot.change_nickname(member, member.display_name + " 🦃")
@@ -244,7 +244,7 @@ class Extras:
             member = ctx.message.author
             if member.nick and member.nick[-1] == "🎄":
                 await self.bot.say("Your nickname already ends in an xmas tree!")
-            elif member.name[-1] == "":
+            elif member.name[-1] == "🎄" and not member.nick:
                 await self.bot.say("Your name already ends in an xmas tree!")
             else:
                 await self.bot.change_nickname(member, member.display_name + " 🎄")
