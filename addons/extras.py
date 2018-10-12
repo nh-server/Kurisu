@@ -1,3 +1,4 @@
+import datetime
 import discord
 import os
 import random
@@ -166,14 +167,18 @@ class Extras:
     @commands.command(pass_context=True)
     async def spooky(self, ctx):
         """Spookybrew"""
-        member = ctx.message.author
-        if member.nick and member.nick[-1] == "🎃":
-            await self.bot.say("Your nickname already ends in a pumpkin!")
-        elif member.name[-1] == "":
-            await self.bot.say("Your name already ends in a pumpkin!")
+        month = datetime.date.today().month
+        if month == 10:
+            member = ctx.message.author
+            if member.nick and member.nick[-1] == "🎃":
+                await self.bot.say("Your nickname already ends in a pumpkin!")
+            elif member.name[-1] == "":
+                await self.bot.say("Your name already ends in a pumpkin!")
+            else:
+                await self.bot.change_nickname(member, member.display_name + " 🎃")
+                await self.bot.say("Your nickname is now \"{} 🎃\"!".format(member.display_name))  
         else:
-            await self.bot.change_nickname(member, member.display_name + " 🎃")
-            await self.bot.say("Your nickname is now \"{} 🎃\"!".format(member.display_name))  
+            await self.bot.say("This month is not spooky enough")
 
     @commands.command(pass_context=True)
     async def nospooky(self, ctx):
