@@ -164,6 +164,18 @@ class Extras:
             await self.bot.say("You don't have a rainbow!")
 
     @commands.command(pass_context=True)
+    async def spooky(self, ctx):
+        """Spookybrew"""
+        member = ctx.message.author
+        if member.nick and member.nick[-1] == "🎃":
+            await self.bot.say("Your nickname already ends in a pumpkin!")
+        elif member.name[-1] == "":
+            await self.bot.say("Your name already ends in a pumpkin!")
+        else:
+            await self.bot.change_nickname(member, member.display_name + " 🎃")
+            await self.bot.say("Your nickname is now \"{} 🎃\"!".format(member.display_name))  
+
+    @commands.command(pass_context=True)
     async def nospooky(self, ctx):
         """Tired of it."""
         member = ctx.message.author
