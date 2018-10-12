@@ -151,7 +151,23 @@ class Extras:
                 await self.bot.send_message(author, "Access to #eventchat granted.")
         else:
             await self.bot.send_message(author, "{} is not a valid toggleable channel.".format(channelname))
-
+    
+    @commands.command(pass_context=True)
+    async def rainbow(self, ctx):
+        """Spookybrew"""
+        month = datetime.date.today().month
+        if month == 6:
+            member = ctx.message.author
+            if member.nick and member.nick[-1] == "🌈":
+                await self.bot.say("Your nickname already ends in a rainbow!")
+            elif member.name[-1] == "":
+                await self.bot.say("Your name already ends in a rainbow!")
+            else:
+                await self.bot.change_nickname(member, member.display_name + " 🌈")
+                await self.bot.say("Your nickname is now \"{} 🌈\"!".format(member.display_name))  
+        else:
+            await self.bot.say("This month is not colorful enough")
+            
     @commands.command(pass_context=True)
     async def norainbow(self, ctx):
         """Tired of it."""
@@ -191,6 +207,22 @@ class Extras:
             await self.bot.say("Your username is the one with the pumpkin!")
         else:
             await self.bot.say("You don't have a pumpkin!")
+            
+    @commands.command(pass_context=True)
+    async def turkey(self, ctx):
+        """Turkeybrew"""
+        month = datetime.date.today().month
+        if month == 11:
+            member = ctx.message.author
+            if member.nick and member.nick[-1] == "🦃":
+                await self.bot.say("Your nickname already ends in a turkey!")
+            elif member.name[-1] == "":
+                await self.bot.say("Your name already ends in a turkey!")
+            else:
+                await self.bot.change_nickname(member, member.display_name + " 🦃")
+                await self.bot.say("Your nickname is now \"{} 🦃\"!".format(member.display_name))  
+        else:
+            await self.bot.say("This month is not thankful enough!")
 
     @commands.command(pass_context=True)
     async def noturkey(self, ctx):
@@ -203,7 +235,23 @@ class Extras:
             await self.bot.say("Your username is the one with the turkey!")
         else:
             await self.bot.say("You don't have a turkey!")
-
+            
+    @commands.command(pass_context=True)
+    async def xmasthing(self, ctx):
+        """It's xmas time."""
+        month = datetime.date.today().month
+        if month == 12:
+            member = ctx.message.author
+            if member.nick and member.nick[-1] == "🎄":
+                await self.bot.say("Your nickname already ends in an xmas tree!")
+            elif member.name[-1] == "":
+                await self.bot.say("Your name already ends in an xmas tree!")
+            else:
+                await self.bot.change_nickname(member, member.display_name + " 🎄")
+                await self.bot.say("Your nickname is now \"{} 🎄\"!".format(member.display_name))  
+        else:
+            await self.bot.say("This month is not christmassy enough!")
+            
     @commands.command(pass_context=True)
     async def noxmasthing(self, ctx):
         """Tired of it."""
