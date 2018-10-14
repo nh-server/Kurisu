@@ -193,7 +193,7 @@ class Events:
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site',))
         contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub', 'strawpoii', 'hackinformer.com', 'switchthem.es', 'console.guide', 'jacksorrell.co.uk', 'nintendobrew.com',))
         contains_unbanning_stuff = any(x in msg_no_separators for x in self.unbanning_stuff)
-        contains_video = any(x in msg for x in ('youtube', 'youtu.be')) and message.channel.id in self.channels_to_watch_for_videos
+        contains_video = any(x in msg for x in ('youtube.com', 'youtu.be')) and message.channel.id in self.channels_to_watch_for_videos
 
         # contains_guide_mirror_mention = any(x in msg for x in ('3ds-guide.b4k.co',))
         contains_drama_alert = any(x in msg_no_separators for x in self.drama_alert)
