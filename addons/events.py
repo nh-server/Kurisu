@@ -170,7 +170,7 @@ class Events:
             json.dump(rsts, f)
 
     # this is not a good idea, but i'll make a better implementation later
-    channels_to_watch_for_videos = ['196635695958196224', '247557068490276864', '279783073497874442', '439933093118476289', '468195563125342228']
+    channels_to_watch_for_videos = ['196635695958196224', '247557068490276864', '279783073497874442', '439933093118476289']
 
     async def scan_message(self, message, is_edit=False):
         embed = discord.Embed()
