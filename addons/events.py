@@ -152,7 +152,6 @@ class Events:
         'emulator.games',
         'reinx.guide',
         '3dscia',
-        'darkumbra',
         'vimm',
         'cdromance',
         'ziperto'
