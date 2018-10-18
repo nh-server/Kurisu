@@ -150,9 +150,7 @@ class Events:
         'portalroms',
         'romulation',
         'emulator.games',
-        'reinx.guide',
         '3dscia',
-        'NxpeNwz', # reinx
     )
 
     # I hate naming variables sometimes
@@ -192,7 +190,7 @@ class Events:
         contains_piracy_video_id = any(x in message.content for x in self.piracy_video_ids)
         contains_piracy_tool_alert_mention = any(x in msg_no_separators for x in self.piracy_tools_alert)
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site',))
-        contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub', 'strawpoii', 'hackinformer.com', 'switchthem.es', 'console.guide', 'jacksorrell.co.uk', 'jacksorrell.tv', 'nintendobrew.com',))
+        contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub', 'strawpoii', 'hackinformer.com', 'switchthem.es', 'console.guide', 'jacksorrell.co.uk', 'jacksorrell.tv', 'nintendobrew.com', 'reinx.guide', 'NxpeNwz'))
         contains_unbanning_stuff = any(x in msg_no_separators for x in self.unbanning_stuff)
         contains_video = any(x in msg for x in ('youtube.com', 'youtu.be')) and message.channel.id in self.channels_to_watch_for_videos
 
