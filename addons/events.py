@@ -152,7 +152,7 @@ class Events:
         'emulator.games',
         'reinx.guide',
         '3dscia',
-        'NxpeNwz', // reinx
+        'NxpeNwz', # reinx
     )
 
     # I hate naming variables sometimes
