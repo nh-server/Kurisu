@@ -88,7 +88,7 @@ class Lockdown:
                     await self.bot.say("{0} {1} can't be locked by a helper.".format(issuer.mention, c.mention))	
                     continue
                 overwrites_everyone = c.overwrites_for(self.bot.everyone_role)
-                overwrites_helpers = c.overwrites_for(self.bot.everyone_role)
+                overwrites_helpers = c.overwrites_for(self.bot.helpers_role)
                 if overwrites_everyone.send_messages is False:
                     await self.bot.say("🔒 {} is already locked down. Use `.unlock` to unlock.".format(c.mention))
                     continue
