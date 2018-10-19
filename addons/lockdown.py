@@ -86,7 +86,7 @@ class Lockdown:
             for c in channels:
                 if (ishelper) and (c not in self.bot.assistance_channels):
                     await self.bot.say("{0} {1} can't be locked by a helper.".format(issuer.mention, c.mention))	
-                    return
+                    continue
                 overwrites_everyone = c.overwrites_for(self.bot.everyone_role)
                 overwrites_helpers = c.overwrites_for(self.bot.everyone_role)
                 if overwrites_everyone.send_messages is False:
