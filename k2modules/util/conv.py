@@ -3,7 +3,7 @@ from discord.ext.commands.converter import Converter, MemberConverter
 from discord.ext.commands.errors import BadArgument
 
 if TYPE_CHECKING:
-    from typing import Optional, Tuple, Union
+    from typing import Optional
     from discord import Member
     from discord.ext.commands import Context
 

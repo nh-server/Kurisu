@@ -41,8 +41,7 @@ class Kurisu2(commands.Bot):
     _guild: discord.Guild = None
 
     def __init__(self, command_prefix, config_directory, logging_level=logging.WARNING, **options):
-        from k2modules.util.database import (RestrictionsDatabaseManager, ConfigurationDatabaseManager,
-                                             WarnsDatabaseManager)
+        from k2modules.util import RestrictionsManager, WarnsManager
         super().__init__(command_prefix, **options)
 
         self._roles: Dict[str, discord.Role] = {}
@@ -76,9 +75,12 @@ class Kurisu2(commands.Bot):
 
         self.debug = logging_level is logging.DEBUG
 
-        self.restrictions = RestrictionsDatabaseManager(self, 'restrictions.sqlite3')
-        self.configuration = ConfigurationDatabaseManager(self, 'configuration.sqlite3')
-        self.warns = WarnsDatabaseManager(self, 'warns.sqlite3')
+        # self.restrictions = RestrictionsDatabaseManager(self, 'restrictions.sqlite3')
+        # self.configuration = ConfigurationDatabaseManager(self, 'configuration.sqlite3')
+        # self.warns = WarnsDatabaseManager(self, 'warns.sqlite3')
+        self.restrictions = RestrictionsManager(self)
+        self.configuration = None
+        self.warns = WarnsManager(self)
 
         self.log.debug('Kurisu2 class initialized')
 
@@ -214,21 +216,22 @@ def main(*, config_directory='configs', debug=False, change_directory=False):
         dir_path = os.path.dirname(os.path.realpath(__file__))
         os.chdir(dir_path)
 
-    bot = Kurisu2(('.', '!'), config_directory, logging_level=logging.DEBUG if debug else logging.INFO,
-                  description="Kurisu2, the bot for Nintendo Homebrew!", pm_help=None)
-
     # attempt to get current git information
     try:
         commit = check_output(['git', 'rev-parse', 'HEAD']).decode('ascii')[:-1]
     except CalledProcessError as e:
-        bot.log.info('Checking for git commit failed: %s: %s', type(e).__name__, e)
+        print(f'Checking for git commit failed: {type(e).__name__}: {e}')
         commit = "<unknown>"
 
     try:
         branch = check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).decode()[:-1]
     except CalledProcessError as e:
-        bot.log.info('Checking for git branch failed: %s: %s', type(e).__name__, e)
+        print(f'Checking for git branch failed: {type(e).__name__}: {e}')
         branch = "<unknown>"
+
+    # do not remove a command prefix unless it is demonstrably causing problems
+    bot = Kurisu2(('.', '!'), config_directory, logging_level=logging.DEBUG if debug else logging.INFO,
+                  description="Kurisu2, the bot for Nintendo Homebrew!", pm_help=None)
 
     bot.log.info('Starting Kurisu2 on commit %s on branch %s', commit, branch)
 

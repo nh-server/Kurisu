@@ -10,16 +10,6 @@ if TYPE_CHECKING:
     from kurisu2 import Kurisu2
 
 
-# could this be made better?
-def get_warn_action(count: int) -> str:
-    if count <= 2:
-        return 'nothing'
-    elif count <= 4:
-        return 'kick'
-    else:
-        return 'ban'
-
-
 class Warns(Extension):
     """User warning commands."""
 
@@ -27,16 +17,8 @@ class Warns(Extension):
     @commands.command(name='warn')
     async def add_warning(self, ctx: commands.Context, member: discord.Member, *, reason: str):
         """Warn a member."""
-        res = self.warns.add_warning(user_id=member.id, issuer=ctx.author.id, reason=reason)
-        if res[0] is True:
-            await ctx.send(f'{member.mention} was given their {ordinal(res[1])} warning.')
-            action = get_warn_action(res[1])
-            if action == 'kick':
-                pass  # await member.kick(reason=f'Reached {res[1]} warns')
-            elif action == 'ban':
-                pass  # await member.ban(reason=f'Reached {res[1]} warns')
-        else:
-            await ctx.send('Failed to add a warning! This should never happen!')
+        res = await self.warns.add_warning(member, ctx.author, reason, do_action=False)
+        await ctx.send(f'{member.mention} was given their {ordinal(res)} warning.')
 
     # TODO: make this staff/helpers-only
     @commands.command(name='delwarn')
@@ -61,7 +43,7 @@ class Warns(Extension):
         embed = discord.Embed()
         embed.set_author(name=f'Warns for {member.display_if_exist}',
                          icon_url=discord.Embed.Empty if member.member is None else member.member.avatar_url)
-        warns = sorted(self.warns.get_warnings(user_id=member.id), key=lambda x: x.warn_id)
+        warns = sorted(self.warns.get_warnings(member), key=lambda x: x.warn_id)
         for entry in warns:
             field = [f'Warn ID: {entry.warn_id}']
             if ctx.channel.name in private_channels:

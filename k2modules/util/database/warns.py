@@ -1,9 +1,11 @@
+from collections import OrderedDict
 from datetime import datetime
 from typing import Tuple, Generator, NamedTuple, Optional
 
 from discord.utils import time_snowflake, snowflake_time
 
-from .common import DatabaseManager
+from ..tools import i2s, s2i
+from .common import BaseDatabaseManager
 
 
 class WarnEntry(NamedTuple):
@@ -14,57 +16,60 @@ class WarnEntry(NamedTuple):
     reason: str
 
 
-class WarnsDatabaseManager(DatabaseManager, table='warns', columns={'snowflake': 'blob', 'user_id': 'integer',
-                                                                    'issuer': 'text', 'reason': 'text'}):
+tables = {'warns': OrderedDict((('snowflake', 'blob'), ('user_id', 'blob'), ('issuer', 'text'), ('reason', 'text')))}
+
+
+class WarnsDatabaseManager(BaseDatabaseManager, tables=tables):
     """Manages the warns database."""
 
-    def add_warning(self, user_id: int, issuer: int, reason: str) -> Tuple[bool, int]:
+    def add_warning(self, user_id: int, issuer: int, reason: str) -> int:
         """Add a warning to the user id."""
-        assert isinstance(user_id, int)
-        assert isinstance(reason, str)
+        assert isinstance(user_id, int), type(user_id)
+        assert isinstance(reason, str), type(str)
         now = time_snowflake(datetime.now())
-        res = self._insert(allow_duplicates=True, snowflake=now.to_bytes(8, 'big'), user_id=user_id.to_bytes(8, 'big'),
-                           issuer=issuer.to_bytes(8, 'big'), reason=reason)
-        if res:
-            self.log.debug('Added warning %d to user id %d, %r', now, user_id, reason)
-        count = self._row_count(user_id=user_id.to_bytes(8, 'big'))
-        return res, count
+        self._insert('warns', snowflake=i2s(now), user_id=i2s(user_id), issuer=i2s(issuer), reason=reason)
+        self.log.debug('Added warning %d to user id %d, %r', now, user_id, reason)
+        count = self._row_count('warns', user_id=i2s(user_id))
+        return count
 
     def get_warnings(self, user_id: int) -> Generator[WarnEntry, None, None]:
         """Get warnings for a user id."""
         assert isinstance(user_id, int)
-        res = self._select(user_id=user_id)
-        for snowflake, w_user_id, issuer, reason in self._select(user_id=user_id.to_bytes(8, 'big')):
-            yield WarnEntry(user_id=int.from_bytes(w_user_id, 'big'), warn_id=int.from_bytes(snowflake, 'big'),
-                            date=snowflake_time(int.from_bytes(snowflake, 'big')), issuer=int.from_bytes(issuer, 'big'),
+        for snowflake, w_user_id, issuer, reason in self._select('warns', user_id=i2s(user_id)):
+            yield WarnEntry(user_id=s2i(w_user_id),
+                            warn_id=s2i(snowflake),
+                            date=snowflake_time(s2i(snowflake)),
+                            issuer=s2i(issuer),
                             reason=reason)
 
     def get_warning(self, warn_id: int) -> Optional[WarnEntry]:
         """Get a specific warning based on warn id."""
         assert isinstance(warn_id, int)
         try:
-            res = next(self._select(snowflake=warn_id.to_bytes(8, 'big')))
+            res = next(self._select('warns', snowflake=i2s(warn_id)))
         except StopIteration:
-            return None
-        return WarnEntry(user_id=int.from_bytes(res[1], 'big'), warn_id=int.from_bytes(res[0], 'big'),
-                         date=snowflake_time(int.from_bytes(res[0], 'big')), issuer=int.from_bytes(res[2], 'big'),
+            return
+        return WarnEntry(user_id=s2i(res[1]),
+                         warn_id=s2i(res[0]),
+                         date=snowflake_time(s2i(res[0])),
+                         issuer=s2i(res[2]),
                          reason=res[3])
 
-    def delete_warning(self, warn_id: int) -> Tuple[bool, Optional[WarnEntry]]:
+    def delete_warning(self, warn_id: int) -> Tuple[int, Optional[WarnEntry]]:
         """Remove a warning based on warn id."""
         assert isinstance(warn_id, int)
         res_warning = self.get_warning(warn_id=warn_id)
         if res_warning is None:
             return False, None
-        res_delete = self._delete(snowflake=warn_id.to_bytes(8, 'big'))
+        res_delete = self._delete('warns', snowflake=i2s(warn_id))
         if res_delete:
             self.log.debug('Removed warning %d', warn_id)
         return res_delete, res_warning
 
-    def delete_all_warnings(self, user_id: int) -> bool:
+    def delete_all_warnings(self, user_id: int) -> int:
         """Delete all warnings for a user id."""
         assert isinstance(user_id, int)
-        res = self._delete(user_id=user_id.to_bytes(8, 'big'))
+        res = self._delete('warns', user_id=i2s(user_id))
         if res:
             self.log.debug('Removed all warnings for %d', user_id)
         return res

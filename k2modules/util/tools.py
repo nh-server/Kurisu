@@ -1,9 +1,14 @@
 from contextlib import contextmanager
-from sqlite3 import Connection  # for type hinting
+from functools import partial
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from sqlite3 import Connection
+    from typing import Callable
 
 
 @contextmanager
-def connwrap(conn: Connection):
+def connwrap(conn: 'Connection'):
     """Wrap an sqlite3.Connection object to yield a Cursor, then close at the end of the context."""
     # this is probably not necessary
     with conn:
@@ -29,3 +34,10 @@ def escape_name(name) -> str:
         if c in name:
             name = name.replace(c, '\\' + c)
     return name.replace('@', '@\u200b')  # prevent mentions
+
+
+# int-to-snowflake(bytes)
+i2s: 'Callable[[int], bytes]' = partial(int.to_bytes, length=8, byteorder='big')
+
+# snowflake(bytes)-to-int
+s2i: 'Callable[[bytes], int]' = partial(int.from_bytes, byteorder='big')
