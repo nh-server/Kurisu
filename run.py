@@ -157,6 +157,12 @@ async def on_ready():
         bot.watchlogs_channel = discord.utils.get(server.channels, name="watch-logs")
         bot.botcmds_channel = discord.utils.get(server.channels, name="bot-cmds")
         bot.boterr_channel = discord.utils.get(server.channels, name="bot-err")
+        bot.ass1_channel = discord.utils.get(server.channels, name="3ds-assistance-1")
+        bot.ass2_channel = discord.utils.get(server.channels, name="3ds-assistance-2")
+        bot.wiiuass_channel = discord.utils.get(server.channels, name="wiiu-assistance")
+        bot.swass_channel = discord.utils.get(server.channels, name="switch-assistance-wip")
+        bot.hackinggeneral_channel = discord.utils.get(server.channels, name="hacking-general")
+        bot.legacysystems_channel = discord.utils.get(server.channels, name="legacy-systems")
 
         # roles
         bot.staff_role = discord.utils.get(server.roles, name="Staff")
@@ -178,6 +184,9 @@ async def on_ready():
         bot.elsewhere_role = discord.utils.get(server.roles, name="#elsewhere")
         bot.eventchat_role = discord.utils.get(server.roles, name="#eventchat")
         bot.everyone_role = server.default_role
+
+        #assistance channels
+        bot.assistance_channels = (bot.ass1_channel, bot.ass2_channel, bot.wiiuass_channel, bot.swass_channel, bot.hackinggeneral_channel, bot.legacysystems_channel)
 
         # channels to exempt from most checks
         bot.whitelisted_channels = (bot.helpers_channel, bot.modmail_channel, bot.modlogs_channel, bot.mods_channel, bot.watchlogs_channel, bot.announcements_channel)
