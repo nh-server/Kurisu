@@ -17,7 +17,7 @@ class Warns(Extension):
     @commands.command(name='warn')
     async def add_warning(self, ctx: commands.Context, member: discord.Member, *, reason: str):
         """Warn a member."""
-        res = await self.warns.add_warning(member, ctx.author, reason, do_action=False)
+        res = await self.warns.add_warning(member, ctx.author, reason)
         await ctx.send(f'{member.mention} was given their {ordinal(res)} warning.')
 
     # TODO: make this staff/helpers-only
@@ -40,10 +40,14 @@ class Warns(Extension):
                 await ctx.send(f'{ctx.author.mention} You can only use this command on yourself.')
                 return
 
+        warns = sorted(self.warns.get_warnings(member), key=lambda x: x.warn_id)
+        if not len(warns):
+            await ctx.send(f'No warns found for {member.display_if_exist}.')
+            return
+
         embed = discord.Embed()
         embed.set_author(name=f'Warns for {member.display_if_exist}',
                          icon_url=discord.Embed.Empty if member.member is None else member.member.avatar_url)
-        warns = sorted(self.warns.get_warnings(member), key=lambda x: x.warn_id)
         for entry in warns:
             field = [f'Warn ID: {entry.warn_id}']
             if ctx.channel.name in private_channels:

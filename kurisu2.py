@@ -42,6 +42,7 @@ class Kurisu2(commands.Bot):
 
     def __init__(self, command_prefix, config_directory, logging_level=logging.WARNING, **options):
         from k2modules.util import RestrictionsManager, WarnsManager
+        from k2modules.util import ConfigurationDatabaseManager
         super().__init__(command_prefix, **options)
 
         self._roles: Dict[str, discord.Role] = {}
@@ -75,12 +76,10 @@ class Kurisu2(commands.Bot):
 
         self.debug = logging_level is logging.DEBUG
 
-        # self.restrictions = RestrictionsDatabaseManager(self, 'restrictions.sqlite3')
-        # self.configuration = ConfigurationDatabaseManager(self, 'configuration.sqlite3')
-        # self.warns = WarnsDatabaseManager(self, 'warns.sqlite3')
         self.restrictions = RestrictionsManager(self)
-        self.configuration = None
         self.warns = WarnsManager(self)
+
+        self.configuration = ConfigurationDatabaseManager(self, 'configuration.sqlite3')
 
         self.log.debug('Kurisu2 class initialized')
 
@@ -105,10 +104,13 @@ class Kurisu2(commands.Bot):
         assert len(guilds) == 1
         self._guild = guilds[0]
 
-        # TODO: replace this test code
-        for n in {*channel_names.values()}:
+        for n in channel_names.values():
             self._channels[n] = discord.utils.get(self._guild.channels, name=n)
             self.log.debug('Result of searching for channel %s: %r', n, self._channels[n])
+
+        for n in role_names.values():
+            self._roles[n] = discord.utils.get(self._guild.roles, name=n)
+            self.log.debug('Result of searching for role %s: %r', n, self._roles[n])
 
         startup_message = f'{self.user.name} has started! {self._guild} has {self._guild.member_count:,} members!'
         embed = None
@@ -131,6 +133,11 @@ class Kurisu2(commands.Bot):
         if not self._is_all_ready:
             await self.wait_until_all_ready()
         return self._channels[name]
+
+    async def get_role_by_name(self, name: str) -> discord.Role:
+        if not self._is_all_ready:
+            await self.wait_until_all_ready()
+        return self._roles[name]
 
     async def on_command_error(self, ctx: commands.Context, exc: commands.CommandInvokeError):
         author: discord.Member = ctx.author
