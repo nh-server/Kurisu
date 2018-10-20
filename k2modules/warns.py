@@ -4,7 +4,7 @@ import discord
 from discord.ext import commands
 
 from kurisu2 import role_names, private_channels
-from .util import Extension, MemberOrID, caller_id_as_default, ordinal, escape_name
+from .util import Extension, MemberOrID, caller_id_as_default, check, ordinal, escape_name
 
 if TYPE_CHECKING:
     from kurisu2 import Kurisu2
@@ -13,15 +13,15 @@ if TYPE_CHECKING:
 class Warns(Extension):
     """User warning commands."""
 
-    # TODO: make this staff/helpers-only
     @commands.command(name='warn')
-    async def add_warning(self, ctx: commands.Context, member: discord.Member, *, reason: str):
+    @check.is_helper_or_staff()
+    async def add_warning(self, ctx: commands.Context, member: MemberOrID, *, reason: str):
         """Warn a member."""
         res = await self.warns.add_warning(member, ctx.author, reason)
-        await ctx.send(f'{member.mention} was given their {ordinal(res)} warning.')
+        await ctx.send(f'{escape_name(member.display_if_exist)} was given their {ordinal(res)} warning.')
 
-    # TODO: make this staff/helpers-only
     @commands.command(name='delwarn')
+    @check.is_staff()
     async def delete_warning(self, ctx: commands.Context, warn_id: int):
         """Delete a warn."""
         res = self.warns.delete_warning(warn_id=warn_id)
@@ -58,9 +58,10 @@ class Warns(Extension):
         await ctx.send(embed=embed)
 
     @commands.command(name='clearwarns')
+    @check.is_staff()
     async def clear_warnings(self, ctx: commands.Context, member: MemberOrID):
         """Remove all warnings from a user."""
-        res = self.warns.delete_all_warnings(member.id)
+        res = self.warns.delete_all_warnings(member)
         if res:
             await ctx.send(f'Removed all {res} warnings from {escape_name(member.display_if_exist)}.')
         else:

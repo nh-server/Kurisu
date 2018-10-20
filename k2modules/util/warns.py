@@ -81,6 +81,10 @@ class WarnsManager(BaseManager):
         """Remove a warning from a user."""
         return self.db.delete_warning(warn_id=warn_id)
 
+    def delete_all_warnings(self, user: 'Union[Member, User, OptionalMember]'):
+        """Remove all warnings from a user."""
+        return self.db.delete_all_warnings(user.id)
+
     def get_warnings(self, user: 'Union[Member, User, OptionalMember]'):
         """Get warnings for a user."""
         res = self.db.get_warnings(user_id=user.id)

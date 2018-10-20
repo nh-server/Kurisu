@@ -15,7 +15,7 @@ class OptionalMember(NamedTuple):
     @property
     def display_if_exist(self) -> str:
         if self.member is None:
-            return str(self.id)
+            return 'ID ' + str(self.id)
         return str(self.member)
 
 

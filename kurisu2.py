@@ -32,6 +32,8 @@ role_names = {
     # TODO: add more role names
     # general staff role
     'staff-role': 'Staff',
+    # helpers role
+    'helpers-role': 'Helpers',
 }
 
 
@@ -132,12 +134,12 @@ class Kurisu2(commands.Bot):
     async def get_channel_by_name(self, name: str) -> discord.TextChannel:
         if not self._is_all_ready:
             await self.wait_until_all_ready()
-        return self._channels[name]
+        return self._channels[channel_names[name]]
 
     async def get_role_by_name(self, name: str) -> discord.Role:
         if not self._is_all_ready:
             await self.wait_until_all_ready()
-        return self._roles[name]
+        return self._roles[role_names[name]]
 
     async def on_command_error(self, ctx: commands.Context, exc: commands.CommandInvokeError):
         author: discord.Member = ctx.author
