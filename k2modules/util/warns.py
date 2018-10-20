@@ -39,12 +39,10 @@ warn_extras = (
 )
 
 
-class WarnsManager(BaseManager):
+class WarnsManager(BaseManager, db_manager=WarnsDatabaseManager, db_filename='warns.sqlite3'):
     """Manages user warnings."""
 
-    def __init__(self, bot: 'Kurisu2'):
-        super().__init__(bot)
-        self.db = WarnsDatabaseManager(bot, 'warns.sqlite3')
+    db: WarnsDatabaseManager
 
     async def add_warning(self, user: 'Union[Member, User, OptionalMember]', issuer: 'Member', reason: str = None,
                           send_dm: bool = True, do_action: bool = True) -> int:

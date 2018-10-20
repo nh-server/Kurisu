@@ -61,7 +61,7 @@ class BaseDatabaseManager:
 
     # until PyCharm recognizes __init_subclass__ properly, these inspections must be disabled
     # noinspection PyMethodOverriding,PyArgumentList
-    def __init_subclass__(cls, tables: 'Tables', **kwargs):
+    def __init_subclass__(cls, *, tables: 'Tables', **kwargs):
         cls.tables = tables
 
     def _format_select_vars(self, keys: 'KeysView[str]') -> str:

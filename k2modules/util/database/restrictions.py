@@ -4,7 +4,7 @@ from typing import Generator, Tuple
 from k2modules.util.tools import i2s
 from .common import BaseDatabaseManager
 
-tables = {'restrictions': OrderedDict((('user_id', 'integer'), ('restriction', 'text')))}
+tables = {'restrictions': OrderedDict((('user_id', 'blob'), ('restriction', 'text')))}
 
 
 class RestrictionsDatabaseManager(BaseDatabaseManager, tables=tables):

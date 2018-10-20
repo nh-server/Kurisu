@@ -1,17 +1,10 @@
-from typing import TYPE_CHECKING
-
 from . import BaseManager
 from .database import RestrictionsDatabaseManager
 
-if TYPE_CHECKING:
-    from kurisu2 import Kurisu2
 
-
-class RestrictionsManager(BaseManager):
+class RestrictionsManager(BaseManager, db_manager=RestrictionsDatabaseManager, db_filename='restrictions.sqlite3'):
     """Manages user restrictions."""
 
-    # TODO: RestrictionsManager
+    db: RestrictionsDatabaseManager
 
-    def __init__(self, bot: 'Kurisu2'):
-        super().__init__(bot)
-        self.db = RestrictionsDatabaseManager(bot, 'restrictions.sqlite3')
+    # TODO: RestrictionsManager
