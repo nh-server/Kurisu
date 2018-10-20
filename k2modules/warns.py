@@ -14,14 +14,14 @@ class Warns(Extension):
     """User warning commands."""
 
     @commands.command(name='warn')
-    @check.is_helper_or_staff()
+    @check.check_for_position(staff=True, helper=True)
     async def add_warning(self, ctx: commands.Context, member: MemberOrID, *, reason: str):
         """Warn a member."""
         res = await self.warns.add_warning(member, ctx.author, reason)
         await ctx.send(f'{escape_name(member.display_if_exist)} was given their {ordinal(res)} warning.')
 
     @commands.command(name='delwarn')
-    @check.is_staff()
+    @check.check_for_position(staff=True)
     async def delete_warning(self, ctx: commands.Context, warn_id: int):
         """Delete a warn."""
         res = self.warns.delete_warning(warn_id=warn_id)
@@ -58,7 +58,7 @@ class Warns(Extension):
         await ctx.send(embed=embed)
 
     @commands.command(name='clearwarns')
-    @check.is_staff()
+    @check.check_for_position(staff=True)
     async def clear_warnings(self, ctx: commands.Context, member: MemberOrID):
         """Remove all warnings from a user."""
         res = self.warns.delete_all_warnings(member)

@@ -1,31 +1,28 @@
-from typing import TYPE_CHECKING
-
 from discord.ext import commands
 
 # some of this is from Luc#5653's help, who got it from RoboDanny
 
 
-def is_staff():
-    """Check if the user is staff."""
+def check_for_position(*, helper=False, staff=False, op=False, superop=False, owner=False):
+    """Check if the user has a certain position."""
     async def predicate(ctx: commands.Context):
-        return (await ctx.bot.get_role_by_name('staff-role')) in ctx.author.roles
-
-    return commands.check(predicate)
-
-
-def is_helper():
-    """Check if the user is a part of helpers."""
-    async def predicate(ctx: commands.Context):
-        return (await ctx.bot.get_role_by_name('helpers-role')) in ctx.author.roles
-
-    return commands.check(predicate)
-
-
-# could is_staff and is_helper be combined?
-def is_helper_or_staff():
-    """Check if the user is a part of helpers or staff."""
-    async def predicate(ctx: commands.Context):
-        return ((await ctx.bot.get_role_by_name('helpers-role')) in ctx.author.roles
-                or await ctx.bot.get_role_by_name('staff-role') in ctx.author.roles)
+        valid = True
+        roles = ctx.author.roles
+        get_role = ctx.bot.get_role_by_name
+        # maybe need to think of a better way to do this...
+        if helper:
+            valid = valid and (await get_role('helpers-role')) in roles
+        if staff:
+            valid = valid and (await get_role('staff-role')) in roles
+        if op:
+            valid = valid and ((await get_role('op-role')) in roles
+                               or (await get_role('superop-role')) in roles
+                               or (await get_role('owner-role')) in roles)
+        if superop:
+            valid = valid and ((await get_role('superop-role')) in roles
+                               or (await get_role('owner-role')) in roles)
+        if owner:
+            valid = valid and (await get_role('owner-role')) in roles
+        return valid
 
     return commands.check(predicate)

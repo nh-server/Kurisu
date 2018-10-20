@@ -26,14 +26,22 @@ channel_names = {
     'server-logs': 'server-logs',
 }
 
+assistance_channels = {'3ds-assistance-1', '3ds-assistance-2', 'wiiu-assistance', 'switch-assistance-wip',
+                       'legacy-systems'}
+
 private_channels = {'mods', 'helpers'}
 
 role_names = {
     # TODO: add more role names
-    # general staff role
-    'staff-role': 'Staff',
     # helpers role
     'helpers-role': 'Helpers',
+    # general staff role
+    'staff-role': 'Staff',
+    # staff levels
+    'halfop-role': 'HalfOP',
+    'op-role': 'OP',
+    'superop-role': 'SuperOP',
+    'owner-role': 'Owner',
 }
 
 
