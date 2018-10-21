@@ -1,4 +1,4 @@
-from . import BaseManager
+from .managerbase import BaseManager
 from .database import RestrictionsDatabaseManager
 
 

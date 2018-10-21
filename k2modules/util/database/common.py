@@ -53,9 +53,9 @@ class BaseDatabaseManager:
                 cols = ', '.join(f'`{c}` {v}' for c, v in cl.items())
                 try:
                     c.execute(f'CREATE TABLE {tn} ({cols})')
-                except sqlite3.OperationalError:
+                except sqlite3.OperationalError as e:
                     # table likely exists
-                    pass
+                    self.log.debug('Failed to create %s in %s: %s: %s', tn, self.dbpath, type(e), e, exc_info=e)
                 else:
                     self.log.info('%s table created in %s', tn, self.dbpath)
 
@@ -90,7 +90,6 @@ class BaseDatabaseManager:
         assert not self._db_closed
         assert self.tables
         assert table in self.tables
-        assert values
         assert all(k in self.tables[table].keys() for k in values.keys())
 
         c: sqlite3.Connection
@@ -105,7 +104,6 @@ class BaseDatabaseManager:
         assert not self._db_closed
         assert self.tables
         assert table in self.tables
-        assert values
         assert all(k in self.tables[table].keys() for k in values.keys())
 
         c: sqlite3.Connection

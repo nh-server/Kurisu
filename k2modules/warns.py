@@ -17,15 +17,16 @@ class Warns(Extension):
     @check.check_for_position(staff=True, helper=True)
     async def add_warning(self, ctx: commands.Context, member: MemberOrID, *, reason: str):
         """Warn a member."""
-        res = await self.warns.add_warning(member, ctx.author, reason)
-        await ctx.send(f'{escape_name(member.display_if_exist)} was given their {ordinal(res)} warning.')
+        warn_id, count = await self.warns.add_warning(member, ctx.author, reason)
+        await ctx.send(f'{escape_name(member.display_if_exist)} was given their {ordinal(count)} warning. '
+                       f'(Warn ID: {warn_id})')
 
     @commands.command(name='delwarn')
     @check.check_for_position(staff=True)
     async def delete_warning(self, ctx: commands.Context, warn_id: int):
         """Delete a warn."""
         res = self.warns.delete_warning(warn_id=warn_id)
-        if res[0] is True:
+        if res[0]:
             await ctx.send(f'Warning {warn_id} removed from <@!{res[1].user_id}>.')
         else:
             await ctx.send(f'No warning with ID {warn_id} was found.')
@@ -42,7 +43,7 @@ class Warns(Extension):
 
         warns = sorted(self.warns.get_warnings(member), key=lambda x: x.warn_id)
         if not len(warns):
-            await ctx.send(f'No warns found for {member.display_if_exist}.')
+            await ctx.send(f'No warns found for {escape_name(member.display_if_exist)}.')
             return
 
         embed = discord.Embed()

@@ -45,18 +45,18 @@ class WarnsManager(BaseManager, db_manager=WarnsDatabaseManager, db_filename='wa
     db: WarnsDatabaseManager
 
     async def add_warning(self, user: 'Union[Member, User, OptionalMember]', issuer: 'Member', reason: str = None,
-                          send_dm: bool = True, do_action: bool = True) -> int:
+                          send_dm: bool = True, do_action: bool = True) -> 'Tuple[int, int]':
         """Add a warning to a user."""
-        res = self.db.add_warning(user_id=user.id, issuer=issuer.id, reason=reason)
+        warn_id, count = self.db.add_warning(user_id=user.id, issuer=issuer.id, reason=reason)
         if isinstance(user, Member):
             if send_dm:
                 guild = await self.bot.get_main_guild()
                 to_send = f'You were warned on {guild.name}.'
                 if reason is not None:
                     to_send += ' The given reason is: ' + reason
-                to_send += f'\n\nPlease read the rules in #welcome-and-rules. This is your {ordinal(res)} warning.'
+                to_send += f'\n\nPlease read the rules in #welcome-and-rules. This is your {ordinal(count)} warning.'
                 try:
-                    to_send += '\n\n' + warn_extras[res - 1]
+                    to_send += '\n\n' + warn_extras[count - 1]
                 except (TypeError, IndexError):
                     # attempted to add None, or get a nonexistent extra
                     pass
@@ -67,13 +67,13 @@ class WarnsManager(BaseManager, db_manager=WarnsDatabaseManager, db_filename='wa
                     pass
 
             if do_action:
-                action = get_warn_action(res)
+                action = get_warn_action(count)
                 if action == 'kick':
-                    await user.kick(reason=f'Reached {res} warns')
+                    await user.kick(reason=f'Reached {count} warns')
                 elif action == 'ban':
-                    await user.ban(reason=f'Reached {res} warns')
+                    await user.ban(reason=f'Reached {count} warns')
 
-        return res
+        return warn_id, count
 
     def delete_warning(self, warn_id: int):
         """Remove a warning from a user."""

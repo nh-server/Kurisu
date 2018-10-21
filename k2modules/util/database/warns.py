@@ -1,11 +1,14 @@
 from collections import OrderedDict
 from datetime import datetime
-from typing import Tuple, Generator, NamedTuple, Optional
+from typing import NamedTuple, TYPE_CHECKING
 
 from discord.utils import time_snowflake, snowflake_time
 
 from ..tools import i2s, s2i
 from .common import BaseDatabaseManager
+
+if TYPE_CHECKING:
+    from typing import Tuple, Generator, Optional
 
 
 class WarnEntry(NamedTuple):
@@ -22,7 +25,7 @@ tables = {'warns': OrderedDict((('snowflake', 'blob'), ('user_id', 'blob'), ('is
 class WarnsDatabaseManager(BaseDatabaseManager, tables=tables):
     """Manages the warns database."""
 
-    def add_warning(self, user_id: int, issuer: int, reason: str) -> int:
+    def add_warning(self, user_id: int, issuer: int, reason: str) -> 'Tuple[int, int]':
         """Add a warning to the user id."""
         assert isinstance(user_id, int), type(user_id)
         assert isinstance(reason, str), type(str)
@@ -30,9 +33,9 @@ class WarnsDatabaseManager(BaseDatabaseManager, tables=tables):
         self._insert('warns', snowflake=i2s(now), user_id=i2s(user_id), issuer=i2s(issuer), reason=reason)
         self.log.debug('Added warning %d to user id %d, %r', now, user_id, reason)
         count = self._row_count('warns', user_id=i2s(user_id))
-        return count
+        return now, count
 
-    def get_warnings(self, user_id: int) -> Generator[WarnEntry, None, None]:
+    def get_warnings(self, user_id: int) -> 'Generator[WarnEntry, None, None]':
         """Get warnings for a user id."""
         assert isinstance(user_id, int)
         for snowflake, w_user_id, issuer, reason in self._select('warns', user_id=i2s(user_id)):
@@ -42,7 +45,7 @@ class WarnsDatabaseManager(BaseDatabaseManager, tables=tables):
                             issuer=s2i(issuer),
                             reason=reason)
 
-    def get_warning(self, warn_id: int) -> Optional[WarnEntry]:
+    def get_warning(self, warn_id: int) -> 'Optional[WarnEntry]':
         """Get a specific warning based on warn id."""
         assert isinstance(warn_id, int)
         try:
@@ -55,7 +58,7 @@ class WarnsDatabaseManager(BaseDatabaseManager, tables=tables):
                          issuer=s2i(res[2]),
                          reason=res[3])
 
-    def delete_warning(self, warn_id: int) -> Tuple[int, Optional[WarnEntry]]:
+    def delete_warning(self, warn_id: int) -> 'Tuple[int, Optional[WarnEntry]]':
         """Remove a warning based on warn id."""
         assert isinstance(warn_id, int)
         res_warning = self.get_warning(warn_id=warn_id)

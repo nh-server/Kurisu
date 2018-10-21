@@ -44,6 +44,13 @@ role_names = {
     'owner-role': 'Owner',
 }
 
+staff_roles = {
+    'halfop': 'halfop-role',
+    'op': 'op-role',
+    'superop': 'superop-role',
+    'owner': 'owner-role',
+}
+
 
 class Kurisu2(commands.Bot):
     """Base class for Kurisu2."""
@@ -51,8 +58,7 @@ class Kurisu2(commands.Bot):
     _guild: discord.Guild = None
 
     def __init__(self, command_prefix, config_directory, logging_level=logging.WARNING, **options):
-        from k2modules.util import RestrictionsManager, WarnsManager
-        from k2modules.util import ConfigurationDatabaseManager
+        from k2modules.util import ConfigurationManager, RestrictionsManager, WarnsManager
         super().__init__(command_prefix, **options)
 
         self._roles: Dict[str, discord.Role] = {}
@@ -88,8 +94,7 @@ class Kurisu2(commands.Bot):
 
         self.restrictions = RestrictionsManager(self)
         self.warns = WarnsManager(self)
-
-        self.configuration = ConfigurationDatabaseManager(self, 'configuration.sqlite3')
+        self.configuration = ConfigurationManager(self)
 
         self.log.debug('Kurisu2 class initialized')
 
