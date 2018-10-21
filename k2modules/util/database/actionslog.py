@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from typing import Optional
 
 tables = {'actions_log': OrderedDict((('entry_id', 'blob'), ('user_id', 'blob'), ('target_id', 'blob'),
-                                      ('type', 'text'), ('reason', 'text'))),
+                                      ('kind', 'text'), ('reason', 'text'))),
           'attachments': OrderedDict((('entry_id', 'blob'), ('url', 'text')))}
 
 
@@ -20,7 +20,7 @@ class ActionEntry(NamedTuple):
     user_id: int
     target_id: int
     date: datetime
-    type: str
+    kind: str
     reason: str
 
 
@@ -29,14 +29,14 @@ class ActionsLogDatabaseManager(BaseDatabaseManager, tables=tables):
 
     # TODO: ActionsLogDatabaseManager
 
-    def add_entry(self, user_id: int, target_id: int, type_: str, reason: 'Optional[str]', entry_id: int = None):
+    def add_entry(self, user_id: int, target_id: int, kind: str, reason: 'Optional[str]', entry_id: int = None):
         """Add an action entry."""
         now = entry_id or time_snowflake(datetime.now())
         self._insert('actions_log', entry_id=i2s(now), user_id=i2s(user_id), target_id=i2s(target_id),
-                     type=type_, reason=reason)
+                     type=kind, reason=reason)
         return now
 
-    def get_entries(self, *, entry_id: int = None, user_id: int = None, target_id: int = None, type_: str = None):
+    def get_entries(self, *, entry_id: int = None, user_id: int = None, target_id: int = None, kind: str = None):
         """Get action entries."""
         values = {}
         if entry_id:
@@ -45,14 +45,14 @@ class ActionsLogDatabaseManager(BaseDatabaseManager, tables=tables):
             values['user_id'] = i2s(user_id)
         if target_id:
             values['target_id'] = i2s(target_id)
-        if type_:
-            values['type'] = type_
-        for action_id, user_id, target_id, type_, reason in self._select('actions_log', **values):
+        if kind:
+            values['kind'] = kind
+        for action_id, user_id, target_id, kind, reason in self._select('actions_log', **values):
             yield ActionEntry(entry_id=s2i(action_id),
                               user_id=s2i(user_id),
                               target_id=s2i(target_id),
                               date=snowflake_time(s2i(action_id)),
-                              type=type_,
+                              kind=kind,
                               reason=reason)
 
     def add_attachment(self, entry_id: int, url: str):
