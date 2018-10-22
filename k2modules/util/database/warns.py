@@ -19,7 +19,7 @@ class WarnEntry(NamedTuple):
     reason: str
 
 
-tables = {'warns': OrderedDict((('snowflake', 'blob'), ('user_id', 'blob'), ('issuer', 'text'), ('reason', 'text')))}
+tables = {'warns': OrderedDict((('warn_id', 'blob'), ('user_id', 'blob'), ('issuer', 'text'), ('reason', 'text')))}
 
 
 class WarnsDatabaseManager(BaseDatabaseManager, tables=tables):
@@ -30,7 +30,7 @@ class WarnsDatabaseManager(BaseDatabaseManager, tables=tables):
         assert isinstance(user_id, int), type(user_id)
         assert isinstance(reason, str), type(str)
         now = time_snowflake(datetime.now())
-        self._insert('warns', snowflake=i2s(now), user_id=i2s(user_id), issuer=i2s(issuer), reason=reason)
+        self._insert('warns', warn_id=i2s(now), user_id=i2s(user_id), issuer=i2s(issuer), reason=reason)
         self.log.debug('Added warning %d to user id %d, %r', now, user_id, reason)
         count = self._row_count('warns', user_id=i2s(user_id))
         return now, count
@@ -38,10 +38,10 @@ class WarnsDatabaseManager(BaseDatabaseManager, tables=tables):
     def get_warnings(self, user_id: int) -> 'Generator[WarnEntry, None, None]':
         """Get warnings for a user id."""
         assert isinstance(user_id, int)
-        for snowflake, w_user_id, issuer, reason in self._select('warns', user_id=i2s(user_id)):
+        for warn_id, w_user_id, issuer, reason in self._select('warns', user_id=i2s(user_id)):
             yield WarnEntry(user_id=s2i(w_user_id),
-                            warn_id=s2i(snowflake),
-                            date=snowflake_time(s2i(snowflake)),
+                            warn_id=s2i(warn_id),
+                            date=snowflake_time(s2i(warn_id)),
                             issuer=s2i(issuer),
                             reason=reason)
 
@@ -49,7 +49,7 @@ class WarnsDatabaseManager(BaseDatabaseManager, tables=tables):
         """Get a specific warning based on warn id."""
         assert isinstance(warn_id, int)
         try:
-            res = next(self._select('warns', snowflake=i2s(warn_id)))
+            res = next(self._select('warns', warn_id=i2s(warn_id)))
         except StopIteration:
             return
         return WarnEntry(user_id=s2i(res[1]),
@@ -64,7 +64,7 @@ class WarnsDatabaseManager(BaseDatabaseManager, tables=tables):
         res_warning = self.get_warning(warn_id=warn_id)
         if res_warning is None:
             return False, None
-        res_delete = self._delete('warns', snowflake=i2s(warn_id))
+        res_delete = self._delete('warns', warn_id=i2s(warn_id))
         if res_delete:
             self.log.debug('Removed warning %d', warn_id)
         return res_delete, res_warning
