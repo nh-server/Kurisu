@@ -8,7 +8,7 @@ from ..tools import i2s, s2i
 from .common import BaseDatabaseManager
 
 if TYPE_CHECKING:
-    from typing import Optional
+    from typing import Generator, Optional
 
 tables = {'actions_log': OrderedDict((('entry_id', 'blob'), ('user_id', 'blob'), ('target_id', 'blob'),
                                       ('kind', 'text'), ('description', 'text'))),
@@ -27,16 +27,16 @@ class ActionEntry(NamedTuple):
 class ActionsLogDatabaseManager(BaseDatabaseManager, tables=tables):
     """Manages the actions_log database."""
 
-    # TODO: ActionsLogDatabaseManager
-
-    def add_entry(self, user_id: int, target_id: int, kind: str, description: 'Optional[str]', entry_id: int = None):
+    def add_entry(self, user_id: int, target_id: int, kind: str, description: 'Optional[str]',
+                  entry_id: int = None) -> int:
         """Add an action entry."""
         now = entry_id or time_snowflake(datetime.now())
         self._insert('actions_log', entry_id=i2s(now), user_id=i2s(user_id), target_id=i2s(target_id),
                      type=kind, description=description)
         return now
 
-    def get_entries(self, *, entry_id: int = None, user_id: int = None, target_id: int = None, kind: str = None):
+    def get_entries(self, *, entry_id: int = None, user_id: int = None, target_id: int = None,
+                    kind: str = None) -> 'Generator[ActionEntry, None, None]':
         """Get action entries."""
         values = {}
         if entry_id:
@@ -59,6 +59,10 @@ class ActionsLogDatabaseManager(BaseDatabaseManager, tables=tables):
         """Add an attachment to an action entry."""
         self._insert('attachments', entry_id=i2s(entry_id), url=url)
 
-    def get_attachments(self, entry_id: int):
+    def get_attachments(self, entry_id: int) -> 'Generator[str, None, None]':
         """Get attachments for an action entry."""
         yield from (x[1] for x in self._select('attachments', entry_id=i2s(entry_id)))
+
+    def clear_attachments(self, entry_id: int):
+        """Clear attachments for an action entry."""
+        self._delete('attachments', entry_id=i2s(entry_id))

@@ -10,7 +10,6 @@ if TYPE_CHECKING:
     from . import OptionalMember
     from typing import Union
     from discord import User
-    from kurisu2 import Kurisu2
 
 
 # could this be made better?
