@@ -20,10 +20,16 @@ channel_names = {
     'startup-message': 'helpers',
     # staff channel
     'staff': 'mods',
+    # helpers channel
+    'helpers': 'helpers',
     # moderator logs
     'moderator-logs': 'mod-logs',
     # server logs
     'server-logs': 'server-logs',
+    # watch logs
+    'user-watch-logs': 'watch-logs',
+    # upload logs
+    'user-upload-logs': 'upload-logs',
 }
 
 assistance_channels = {'3ds-assistance-1', '3ds-assistance-2', 'wiiu-assistance', 'switch-assistance-wip',
@@ -58,7 +64,8 @@ class Kurisu2(commands.Bot):
     _guild: discord.Guild = None
 
     def __init__(self, command_prefix, config_directory, logging_level=logging.WARNING, **options):
-        from k2modules.util import ConfigurationManager, RestrictionsManager, WarnsManager
+        from k2modules.util import (ActionsLogManager, ConfigurationManager, RestrictionsManager, UserLogManager,
+                                    WarnsManager)
         super().__init__(command_prefix, **options)
 
         self._roles: Dict[str, discord.Role] = {}
@@ -95,6 +102,8 @@ class Kurisu2(commands.Bot):
         self.restrictions = RestrictionsManager(self)
         self.warns = WarnsManager(self)
         self.configuration = ConfigurationManager(self)
+        self.actionslog = ActionsLogManager(self)
+        self.userlog = UserLogManager(self)
 
         self.log.debug('Kurisu2 class initialized')
 

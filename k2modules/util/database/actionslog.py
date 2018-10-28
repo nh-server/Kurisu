@@ -29,11 +29,11 @@ class ActionsLogDatabaseManager(BaseDatabaseManager, tables=tables):
     """Manages the actions_log database."""
 
     def add_entry(self, user_id: int, target_id: int, kind: str, description: str = None, extra: str = None,
-                  entry_id: int = None) -> int:
+                  custom_entry_id: int = None) -> int:
         """Add an action entry."""
-        now = entry_id or time_snowflake(datetime.now())
+        now = custom_entry_id or time_snowflake(datetime.now())
         self._insert('actions_log', entry_id=i2s(now), user_id=i2s(user_id), target_id=i2s(target_id),
-                     type=kind, description=description, extra=extra)
+                     kind=kind, description=description, extra=extra)
         return now
 
     def get_entries(self, *, entry_id: int = None, user_id: int = None, target_id: int = None,

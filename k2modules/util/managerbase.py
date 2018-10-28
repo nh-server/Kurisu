@@ -24,4 +24,7 @@ class BaseManager:
         cls.db_filename = db_filename
 
     def close(self):
-        self.db.close()
+        try:
+            self.db.close()
+        except AttributeError:
+            pass
