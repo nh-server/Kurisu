@@ -4,15 +4,15 @@ from typing import TYPE_CHECKING, NamedTuple
 
 from discord.utils import time_snowflake, snowflake_time
 
-from ..tools import i2s, s2i
+from ..tools import u2s, s2u
 from .common import BaseDatabaseManager
 
 if TYPE_CHECKING:
     from typing import Generator, Optional
 
-tables = {'actions_log': OrderedDict((('entry_id', 'blob'), ('user_id', 'blob'), ('target_id', 'blob'),
+tables = {'actions_log': OrderedDict((('entry_id', 'int'), ('user_id', 'int'), ('target_id', 'int'),
                                       ('kind', 'text'), ('description', 'text'), ('extra', 'text'))),
-          'attachments': OrderedDict((('entry_id', 'blob'), ('url', 'text')))}
+          'attachments': OrderedDict((('entry_id', 'int'), ('url', 'text')))}
 
 
 class ActionEntry(NamedTuple):
@@ -32,7 +32,7 @@ class ActionsLogDatabaseManager(BaseDatabaseManager, tables=tables):
                   custom_entry_id: int = None) -> int:
         """Add an action entry."""
         now = custom_entry_id or time_snowflake(datetime.now())
-        self._insert('actions_log', entry_id=i2s(now), user_id=i2s(user_id), target_id=i2s(target_id),
+        self._insert('actions_log', entry_id=u2s(now), user_id=u2s(user_id), target_id=u2s(target_id),
                      kind=kind, description=description, extra=extra)
         return now
 
@@ -41,30 +41,30 @@ class ActionsLogDatabaseManager(BaseDatabaseManager, tables=tables):
         """Get action entries."""
         values = {}
         if entry_id:
-            values['entry_id'] = i2s(entry_id)
+            values['entry_id'] = u2s(entry_id)
         if user_id:
-            values['user_id'] = i2s(user_id)
+            values['user_id'] = u2s(user_id)
         if target_id:
-            values['target_id'] = i2s(target_id)
+            values['target_id'] = u2s(target_id)
         if kind:
             values['kind'] = kind
         for action_id, user_id, target_id, kind, description, extra in self._select('actions_log', **values):
-            yield ActionEntry(entry_id=s2i(action_id),
-                              user_id=s2i(user_id),
-                              target_id=s2i(target_id),
-                              date=snowflake_time(s2i(action_id)),
+            yield ActionEntry(entry_id=s2u(action_id),
+                              user_id=s2u(user_id),
+                              target_id=s2u(target_id),
+                              date=snowflake_time(s2u(action_id)),
                               kind=kind,
                               description=description,
                               extra=extra)
 
     def add_attachment(self, entry_id: int, url: str):
         """Add an attachment to an action entry."""
-        self._insert('attachments', entry_id=i2s(entry_id), url=url)
+        self._insert('attachments', entry_id=u2s(entry_id), url=url)
 
     def get_attachments(self, entry_id: int) -> 'Generator[str, None, None]':
         """Get attachments for an action entry."""
-        yield from (x[1] for x in self._select('attachments', entry_id=i2s(entry_id)))
+        yield from (x[1] for x in self._select('attachments', entry_id=u2s(entry_id)))
 
     def clear_attachments(self, entry_id: int):
         """Clear attachments for an action entry."""
-        self._delete('attachments', entry_id=i2s(entry_id))
+        self._delete('attachments', entry_id=u2s(entry_id))

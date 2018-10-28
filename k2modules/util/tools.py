@@ -36,8 +36,14 @@ def escape_name(name) -> str:
     return name.replace('@', '@\u200b')  # prevent mentions
 
 
-# int-to-snowflake(bytes)
-i2s: 'Callable[[int], bytes]' = partial(int.to_bytes, length=8, byteorder='big')
+# unsigned to signed 64-bit
+def u2s(i: int):
+    if i & 0x8000000000000000:
+        # unlikely to happen, I think
+        return int.from_bytes(i.to_bytes(8, 'little'), 'little', signed=True)
+    return i
 
-# snowflake(bytes)-to-int
-s2i: 'Callable[[bytes], int]' = partial(int.from_bytes, byteorder='big')
+
+# signed to unsigned 64-bit
+def s2u(i: int):
+    return i & 0xFFFFFFFFFFFFFFFF
