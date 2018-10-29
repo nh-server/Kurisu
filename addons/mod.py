@@ -129,6 +129,7 @@ class Mod:
             member = ctx.message.mentions[0]
             await self.add_restriction(member, "Muted")
             await self.bot.add_roles(member, self.bot.muted_role)
+            await self.bot.remove_roles(member, self.bot.elsewhere_role)
             msg_user = "You were muted!"
             if reason != "":
                 msg_user += " The given reason is: " + reason
