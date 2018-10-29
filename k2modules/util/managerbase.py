@@ -15,16 +15,10 @@ class BaseManager:
         self.log.debug('Initializing %s', type(self).__name__)
 
         if self.db_manager:
-            self.db = self.db_manager(bot, self.db_filename)
+            self.db = self.db_manager(bot)
 
     # until PyCharm recognizes __init_subclass__ properly, these inspections must be disabled
     # noinspection PyMethodOverriding,PyArgumentList
-    def __init_subclass__(cls, *, db_manager: 'Type[BaseDatabaseManager]' = None, db_filename: str = None, **kwargs):
+    def __init_subclass__(cls, *, db_manager: 'Type[BaseDatabaseManager]' = None, **kwargs):
         cls.db_manager = db_manager
-        cls.db_filename = db_filename
 
-    def close(self):
-        try:
-            self.db.close()
-        except AttributeError:
-            pass

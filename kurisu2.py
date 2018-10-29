@@ -2,6 +2,7 @@
 
 import logging
 import os
+import sqlite3
 from asyncio import Event
 from configparser import ConfigParser
 from datetime import datetime
@@ -63,7 +64,7 @@ class Kurisu2(commands.Bot):
 
     _guild: discord.Guild = None
 
-    def __init__(self, command_prefix, config_directory, logging_level=logging.WARNING, **options):
+    def __init__(self, command_prefix, logging_level=logging.WARNING, **options):
         from k2modules.util import (ActionsLogManager, ConfigurationManager, RestrictionsManager, UserLogManager,
                                     WarnsManager)
         super().__init__(command_prefix, **options)
@@ -72,11 +73,7 @@ class Kurisu2(commands.Bot):
         self._channels: Dict[str, discord.TextChannel] = {}
         self._failed_extensions: Dict[str, BaseException] = {}
 
-        self.config_directory = config_directory
-
         self.exitcode = 0
-
-        os.makedirs(self.config_directory, exist_ok=True)
 
         self._is_all_ready = Event(loop=self.loop)
 
@@ -99,9 +96,12 @@ class Kurisu2(commands.Bot):
 
         self.debug = logging_level is logging.DEBUG
 
+        self.dbcon = sqlite3.connect('kurisu2_data.sqlite')
+        self.db_closed = False
+
         self.restrictions = RestrictionsManager(self)
-        self.warns = WarnsManager(self)
         self.configuration = ConfigurationManager(self)
+        self.warns = WarnsManager(self)
         self.actionslog = ActionsLogManager(self)
         self.userlog = UserLogManager(self)
 
@@ -218,9 +218,8 @@ class Kurisu2(commands.Bot):
 
     async def close(self):
         self.log.info('Kurisu is shutting down')
-        self.restrictions.close()
-        self.configuration.close()
-        self.warns.close()
+        self.dbcon.close()
+        self.db_closed = True
         await super().close()
 
     async def is_all_ready(self):
@@ -232,7 +231,7 @@ class Kurisu2(commands.Bot):
         await self._is_all_ready.wait()
 
 
-def main(*, config_directory='configs', debug=False, change_directory=False):
+def main(*, debug=False, change_directory=False):
     """Main script to run the bot."""
     if discord.version_info.major < 1:
         print(f'discord.py is not at least 1.0.0x. (current version: {discord.__version__})')
@@ -261,7 +260,7 @@ def main(*, config_directory='configs', debug=False, change_directory=False):
         branch = "<unknown>"
 
     # do not remove a command prefix unless it is demonstrably causing problems
-    bot = Kurisu2(('.', '!'), config_directory, logging_level=logging.DEBUG if debug else logging.INFO,
+    bot = Kurisu2(('.', '!'), logging_level=logging.DEBUG if debug else logging.INFO,
                   description="Kurisu2, the bot for Nintendo Homebrew!", pm_help=None)
 
     bot.log.info('Starting Kurisu2 on commit %s on branch %s', commit, branch)

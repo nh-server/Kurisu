@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from . import OptionalMember
 
 
-class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager, db_filename='configuration.sqlite3'):
+class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager):
     """Manages bot configuration."""
 
     db: ConfigurationDatabaseManager

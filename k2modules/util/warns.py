@@ -8,7 +8,7 @@ from .database import WarnsDatabaseManager
 
 if TYPE_CHECKING:
     from . import OptionalMember
-    from typing import Union
+    from typing import Union, Tuple
     from discord import User
 
 
@@ -38,7 +38,7 @@ warn_extras = (
 )
 
 
-class WarnsManager(BaseManager, db_manager=WarnsDatabaseManager, db_filename='warns.sqlite3'):
+class WarnsManager(BaseManager, db_manager=WarnsDatabaseManager):
     """Manages user warnings."""
 
     db: WarnsDatabaseManager

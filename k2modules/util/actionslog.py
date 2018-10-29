@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from .conv import OptionalMember
 
 
-class ActionsLogManager(BaseManager, db_manager=ActionsLogDatabaseManager, db_filename='actions.sqlite3'):
+class ActionsLogManager(BaseManager, db_manager=ActionsLogDatabaseManager):
     """Manages the action log."""
 
     db: ActionsLogDatabaseManager

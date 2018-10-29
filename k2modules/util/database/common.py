@@ -34,17 +34,12 @@ class ColumnValueFormatter:
 class BaseDatabaseManager:
     """Manages sqlite3 connections and operations for Kurisu2."""
 
-    _db_closed = False
     tables: 'Tables' = None
 
-    def __init__(self, bot: 'Kurisu2', database_path: str):
+    def __init__(self, bot: 'Kurisu2'):
         self.bot = bot
         self.log = bot.log
-
-        self.log.debug('Initializing %s', type(self).__name__)
-        self.dbpath = os.path.join(bot.config_directory, database_path)
-        self.log.debug('Loading sqlite3 database: %s', self.dbpath)
-        self.conn = sqlite3.connect(self.dbpath)
+        self.conn = bot.dbcon
 
         # create columns
         c: sqlite3.Cursor
@@ -55,9 +50,9 @@ class BaseDatabaseManager:
                     c.execute(f'CREATE TABLE {tn} ({cols})')
                 except sqlite3.OperationalError as e:
                     # table likely exists
-                    self.log.debug('Failed to create %s in %s: %s: %s', tn, self.dbpath, type(e), e, exc_info=e)
+                    self.log.debug('Failed to create %s: %s: %s', tn, type(e), e, exc_info=e)
                 else:
-                    self.log.info('%s table created in %s', tn, self.dbpath)
+                    self.log.info('%s table created', tn)
 
     # until PyCharm recognizes __init_subclass__ properly, these inspections must be disabled
     # noinspection PyMethodOverriding,PyArgumentList
@@ -65,7 +60,7 @@ class BaseDatabaseManager:
         cls.tables = tables
 
     def _format_select_vars(self, keys: 'KeysView[str]') -> str:
-        assert not self._db_closed
+        assert not self.bot.db_closed
         assert all(k in chain.from_iterable(x.keys() for x in self.tables.values()) for k in keys)
 
         if len(keys) == 0:
@@ -73,21 +68,21 @@ class BaseDatabaseManager:
         return 'WHERE ' + ' AND '.join(f'`{c}` = :{c}' for c in keys)
 
     def _format_insert_vars(self, keys: 'KeysView[str]') -> str:
-        assert not self._db_closed
+        assert not self.bot.db_closed
         assert keys
         assert all(k in chain.from_iterable(x.keys() for x in self.tables.values()) for k in keys)
 
         return ', '.join(f':{c}' for c in keys)
 
     def _format_cols(self, keys: 'KeysView[str]') -> str:
-        assert not self._db_closed
+        assert not self.bot.db_closed
         assert keys
         assert all(k in chain.from_iterable(x.keys() for x in self.tables.values()) for k in keys)
 
         return ', '.join(f'`{c}`' for c in keys)
 
     def _select(self, table: str, **values) -> 'Generator[Tuple, None, None]':
-        assert not self._db_closed
+        assert not self.bot.db_closed
         assert self.tables
         assert table in self.tables
         assert all(k in self.tables[table].keys() for k in values.keys())
@@ -101,7 +96,7 @@ class BaseDatabaseManager:
             yield from res
 
     def _row_count(self, table: str, **values) -> int:
-        assert not self._db_closed
+        assert not self.bot.db_closed
         assert self.tables
         assert table in self.tables
         assert all(k in self.tables[table].keys() for k in values.keys())
@@ -115,7 +110,7 @@ class BaseDatabaseManager:
             return res.fetchone()[0]
 
     def _insert(self, table: str, **values):
-        assert not self._db_closed
+        assert not self.bot.db_closed
         assert self.tables
         assert table in self.tables
         assert values
@@ -131,7 +126,7 @@ class BaseDatabaseManager:
                            ColumnValueFormatter(self.tables[table], values))
 
     def _delete(self, table: str, **values) -> int:
-        assert not self._db_closed
+        assert not self.bot.db_closed
         assert self.tables
         assert table in self.tables
         assert values
@@ -146,23 +141,3 @@ class BaseDatabaseManager:
             self.log.debug('Executed DELETE query with parameters %s',
                            ColumnValueFormatter(self.tables[table], values))
             return res.rowcount
-
-    def close(self):
-        """Close the connection to the database."""
-        if self._db_closed:
-            return
-        try:
-            self.conn.commit()
-            self.conn.close()
-            self._db_closed = True
-            self.log.debug('Unloaded sqlite3 database: %s', self.dbpath)
-        except sqlite3.ProgrammingError:
-            pass
-
-    def __del__(self):
-        # this will only occur during shutdown if I screwed up
-        # noinspection PyBroadException
-        try:
-            self.close()
-        except:
-            pass
