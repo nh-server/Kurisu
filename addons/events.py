@@ -383,7 +383,7 @@ class Events:
                 pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
             log_msg = "🚫 **Auto-probated**: {} probated for mass user mentions | {}#{}\n🗓 __Creation__: {}\n🏷 __User ID__: {}".format(message.author.mention, message.author.name, message.author.discriminator, message.author.created_at, message.author.id)
             embed = discord.Embed(title="Deleted messages", color=discord.Color.gold())
-            msgs_to_delete = self.user_antispam["p" + message.author.id][:]  # clone list so nothing is removed while going through it
+            msgs_to_delete = self.user_antispam["p" + message.author.id].copy()  # clone list so nothing is removed while going through it
             for msg in msgs_to_delete:
                 embed.add_field(name="#"+msg[0].channel.name, value="\u200b" + msg[0].content)  # added zero-width char to prevent an error with an empty string (lazy workaround)
             await self.bot.send_message(self.bot.modlogs_channel, log_msg, embed=embed)
