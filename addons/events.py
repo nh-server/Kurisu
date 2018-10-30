@@ -450,8 +450,9 @@ class Events:
             return
         await self.scan_message(message)
         # await self.keyword_search(message)
+        if self.bot.helpers_role not in message.author.roles:
+            self.bot.loop.create_task(self.user_ping_check(message))
         self.bot.loop.create_task(self.user_spam_check(message))
-        self.bot.loop.create_task(self.user_ping_check(message))
         self.bot.loop.create_task(self.channel_spam_check(message))
 
     async def on_message_edit(self, message_before, message_after):
