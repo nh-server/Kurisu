@@ -2,6 +2,7 @@ import asyncio
 import discord
 import json
 import re
+from collections import deque
 from subprocess import call
 from string import printable
 from urllib.parse import urlparse
@@ -367,6 +368,41 @@ class Events:
         except KeyError:
             pass  # if the array doesn't exist, don't raise an error
 
+    async def user_ping_check(self, message):
+        if "p" + message.author.id not in self.user_antispam:
+            self.user_antispam["p" + message.author.id] = deque()
+        self.user_antispam["p" + message.author.id].append((message, len(message.mentions)))
+        _, user_mentions = zip(*self.user_antispam["p" + message.author.id])
+        if sum(user_mentions) > 6:
+            await self.add_restriction(message.author, "Probation")
+            await self.bot.add_roles(message.author, self.bot.probation_role)
+            msg_user = "You were automatically placed under probation for mentioning too many users in a short period of time!\n\nIf you believe this was done in error, send a direct message to one of the staff in {}.".format(self.bot.welcome_channel.mention)
+            try:
+                await self.bot.send_message(message.author, msg_user)
+            except discord.errors.Forbidden:
+                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
+            log_msg = "🚫 **Auto-probated**: {} probated for mass user mentions | {}#{}\n🗓 __Creation__: {}\n🏷 __User ID__: {}".format(message.author.mention, message.author.name, message.author.discriminator, message.author.created_at, message.author.id)
+            embed = discord.Embed(title="Deleted messages", color=discord.Color.gold())
+            msgs_to_delete = self.user_antispam["p" + message.author.id][:]  # clone list so nothing is removed while going through it
+            for msg in msgs_to_delete:
+                embed.add_field(name="#"+msg.channel.name, value="\u200b" + msg.content)  # added zero-width char to prevent an error with an empty string (lazy workaround)
+            await self.bot.send_message(self.bot.modlogs_channel, log_msg, embed=embed)
+            await self.bot.send_message(self.bot.mods_channel, log_msg + "\nSee {} for a list of deleted messages. @here".format(self.bot.modlogs_channel.mention))
+            for msg in msgs_to_delete:
+                try:
+                    await self.bot.delete_message(msg)
+                except discord.errors.NotFound:
+                    pass  # don't fail if the message doesn't exist
+            self.user_antispam["p" + message.author.id].clear()
+        else:
+            await asyncio.sleep(10)
+            self.user_antispam["p" + message.author.id].popleft()
+        try:
+            if len(self.user_antispam["p" + message.author.id]) == 0:
+                self.user_antispam.pop("p" + message.author.id)
+        except KeyError:
+            pass  # if the array doesn't exist, don't raise an error
+
     async def channel_spam_check(self, message):
         if message.channel.id not in self.channel_antispam:
             self.channel_antispam[message.channel.id] = []
@@ -414,6 +450,8 @@ class Events:
             return
         await self.scan_message(message)
         # await self.keyword_search(message)
+        if self.bot.helpers_role not in message.author.roles:
+            self.bot.loop.create_task(self.user_ping_check(message))
         self.bot.loop.create_task(self.user_spam_check(message))
         self.bot.loop.create_task(self.channel_spam_check(message))
 
