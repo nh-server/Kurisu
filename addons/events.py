@@ -385,12 +385,12 @@ class Events:
             embed = discord.Embed(title="Deleted messages", color=discord.Color.gold())
             msgs_to_delete = self.user_antispam["p" + message.author.id][:]  # clone list so nothing is removed while going through it
             for msg in msgs_to_delete:
-                embed.add_field(name="#"+msg.channel.name, value="\u200b" + msg.content)  # added zero-width char to prevent an error with an empty string (lazy workaround)
+                embed.add_field(name="#"+msg[0].channel.name, value="\u200b" + msg[0].content)  # added zero-width char to prevent an error with an empty string (lazy workaround)
             await self.bot.send_message(self.bot.modlogs_channel, log_msg, embed=embed)
             await self.bot.send_message(self.bot.mods_channel, log_msg + "\nSee {} for a list of deleted messages. @here".format(self.bot.modlogs_channel.mention))
             for msg in msgs_to_delete:
                 try:
-                    await self.bot.delete_message(msg)
+                    await self.bot.delete_message(msg[0])
                 except discord.errors.NotFound:
                     pass  # don't fail if the message doesn't exist
             self.user_antispam["p" + message.author.id].clear()
