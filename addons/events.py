@@ -296,7 +296,7 @@ class Events:
             await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned a blocked guide mirror in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
 
         # check for mention spam
-        if len(message.mentions) >= 6:
+        if len(message.mentions) >= 6 and not self.bot.helpers_role in message.author.roles:
             log_msg = "⛔ **Auto-ban**: {} banned for mass user mentions | {}#{}\n🗓 __Creation__: {}\n🏷 __User ID__: {}".format(message.author.mention, message.author.name, message.author.discriminator, message.author.created_at, message.author.id)
             embed = discord.Embed(title="Deleted message", color=discord.Color.gold())
             embed.add_field(name="#" + message.channel.name,
