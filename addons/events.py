@@ -295,6 +295,25 @@ class Events:
                 pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
             await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned a blocked guide mirror in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
 
+        # check for mention spam
+        if len(message.mentions) >= 6:
+            log_msg = "⛔ **Auto-ban**: {} banned for mass user mentions | {}#{}\n🗓 __Creation__: {}\n🏷 __User ID__: {}".format(message.author.mention, message.author.name, message.author.discriminator, message.author.created_at, message.author.id)
+            embed = discord.Embed(title="Deleted message", color=discord.Color.gold())
+            embed.add_field(name="#" + message.channel.name,
+                            value="\u200b" + message.content)
+            await self.bot.send_message(self.bot.modlogs_channel, log_msg, embed=embed)
+            await self.bot.send_message(self.bot.mods_channel, log_msg + "\nSee {} for the deleted message.".format(self.bot.modlogs_channel.mention))
+            try:
+                await self.bot.delete_message(message)
+            except discord.errors.NotFound:
+                pass
+            try:
+                await self.bot.send_message(message.author, "You were automatically banned from {} for mass user mentions.\n\nThis ban does not expire.".format(self.bot.server.name))
+            except discord.errors.Forbidden:
+                pass
+            self.bot.actions.append("ub:" + message.author.id)
+            await self.bot.ban(message.author, 0)
+
 
     async def keyword_search(self, message):
         msg = ''.join(char for char in message.content.lower() if char in printable)
