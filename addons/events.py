@@ -173,10 +173,12 @@ class Events:
     channels_to_watch_for_videos = ['196635695958196224', '247557068490276864', '279783073497874442', '439933093118476289']
 
     async def scan_message(self, message, is_edit=False):
-        embed = discord.Embed()
+        embed = discord.Embed()    
         embed.description = message.content
         if message.author.id in self.bot.watching:
-            msg = "{} in {}".format(message.author.mention, message.channel.mention)
+            link = "[#"+message.channel.name+"](https://discordapp.com/channels/"+ message.server.id + "/" + message.channel.id + "/" + message.id+")\n"
+            msg = message.author.mention
+            embed.description = link + embed.description
             if is_edit:
                 msg += " (edited)"
             await self.bot.send_message(self.bot.watchlogs_channel, msg, embed=embed)
