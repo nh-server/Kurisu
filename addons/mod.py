@@ -164,6 +164,8 @@ class Mod:
             member = ctx.message.mentions[0]
             await self.add_restriction(member, "Muted")
             await self.bot.add_roles(member, self.bot.muted_role)
+            if self.bot.elsewhere_role in member.roles:
+                await self.bot.remove_roles(member, self.bot.elsewhere_role)
             issuer = ctx.message.author
             # thanks Luc#5653
             units = {
