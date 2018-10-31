@@ -442,7 +442,7 @@ class Events:
                 await self.bot.send_message(self.bot.helpers_channel, "Automatically pulling changes!")
                 call(['git', 'pull'])
                 await self.bot.close()
-                return
+            return
         if message.channel.name.endswith('nofilter'):
             return
         await self.bot.wait_until_all_ready()
