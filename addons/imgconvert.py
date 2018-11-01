@@ -12,15 +12,15 @@ class ImageConvert:
         self.bot = bot
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
-    def img_convert(self, in_img):
-        img_obj = Image.open(BytesIO(in_img))
-        img_out = BytesIO()
-        img_obj.save(img_out, 'png')
-        img_out.seek(0)
-        return img_out
-
     async def on_message(self, message):
         # BMP conversion
+        def img_convert(self, in_img):
+            img_obj = Image.open(BytesIO(in_img))
+            img_out = BytesIO()
+            img_obj.save(img_out, 'png')
+            img_out.seek(0)
+            return img_out
+
         for f in message.attachments:
             if f["filename"].lower().endswith('.bmp') and f["size"] <= 600000:  # 600kb
                 async with aiohttp.ClientSession() as session:
