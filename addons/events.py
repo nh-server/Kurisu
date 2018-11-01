@@ -176,17 +176,17 @@ class Events:
         embed = discord.Embed()    
         embed.description = message.content
         if message.author.id in self.bot.watching:
-            content = "Channel:\n[#"+message.channel.name+"](https://discordapp.com/channels/" + message.server.id + "/" + message.channel.id + "/" + message.id+")\n"
+            content = "**Channel**:\n[#"+message.channel.name+"](https://discordapp.com/channels/" + message.server.id + "/" + message.channel.id + "/" + message.id+")\n"
             msg = message.author.mention
             if message.attachments:
-                content += "Images:\n"
+                content += "**Images**:\n"
                 for c,f in enumerate(message.attachments):
                     if f["filename"].lower().endswith(self.ignored_file_extensions):
                         content += "[[{}]]({}) ".format(c+1, f["url"])
                         if f == message.attachments[-1]:
                             content += "\n"
             if message.content:
-                content += "Message:\n"
+                content += "**Message**:\n"
             embed.description = content + embed.description
             if is_edit:
                 msg += " (edited)"
