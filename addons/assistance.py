@@ -243,8 +243,14 @@ class Assistance:
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def sderrors(self):
-        """Sd Error Guide"""
-        await self.simple_embed("Guide For Checking SD Card For Errors\n• Windows: [H2testw Guide](https://3ds.hacks.guide/h2testw-(windows\))\n• Linux: [F3 Guide](https://3ds.hacks.guide/f3-(linux\))\n• Mac: [F3X Guide](https://3ds.hacks.guide/f3x-(mac\))", title="SD Card Errors")
+        """SD Error Guide"""
+        await self.simple_embed("Guide For Checking SD Card For Errors\n http://3ds.filthycasuals.tech/sderrors.html \n This covers Windows, Linux and Mac.", title="SD Card Errors")
+        
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def lumabug(self):
+        """Luma Black Screen Bug"""
+        await self.simple_embed("If you have Luma3DS and your console is stuck on a black screen after you power it on, follow these steps:\n 1. Power off the console.\n 2. Take out any game cartridge, but leave the SD card in.\n 3. Power on the console.\n 4. Leave the console open and powered on for 10-15 minutes. Do not touch the console during this time.\n If the console boots successfully in that time, the bug is now fixed \n and is unlikely to happen again. If the console still fails to boot to home menu, \n come back and ask for more help. Mention that you have already tried the 'Luma black screen process.'", title="Luma Black Screen Bug")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
