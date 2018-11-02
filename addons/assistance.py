@@ -266,7 +266,7 @@ class Assistance:
         embed = discord.Embed(title="No, you are not bricked")
         embed.description = "If your power LED turns on and off after you installed b9s, you are not bricked and are just missing a file called boot.firm in the root of your SD card."
         embed.add_field(name="How to fix the issue", value="1. Check you inserted the SD card in your console\n 2. Place/replace the file, downloading it from https://github.com/AuroraWright/Luma3DS/releases", inline=False)
-        embed.add_field(name="Checking your SD for errors or corruption", value="• Windows: https://3ds.hacks.guide/h2testw-(windows)#\n• Linux: https://3ds.hacks.guide/f3-(linux)#\n• Mac: https://3ds.hacks.guide/f3x-(mac)#", inline=False)
+        embed.add_field(name="Checking your SD for errors or corruption", value="https://3ds.filthycasuals.tech/sderrors.html \n Please read the instructions carefully.", inline=False)
         await self.bot.say("", embed=embed)
 
     @commands.command()
@@ -297,7 +297,7 @@ class Assistance:
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def luma(self, lumaversion=""):
-        """Downloadlinks for luma versions"""
+        """Download links for Luma versions"""
         if lumaversion != "":
             await self.simple_embed("Luma v{}\nhttps://github.com/AuroraWright/Luma3DS/releases/tag/v{}".format(lumaversion, lumaversion), color=discord.Color.blue())
         else:
@@ -318,7 +318,7 @@ class Assistance:
     @commands.command(aliases=["redscr"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def boot3dsx(self):
-        """Download link for 3DS homebrew launcher, boot.3dsx"""
+        """Download link for 3DS Homebrew Launcher, boot.3dsx"""
         await self.simple_embed("The 3DS Homebrew Launcher, [boot.3dsx](https://github.com/fincs/new-hbmenu/releases/download/v2.0.0/boot.3dsx)")
 
     # Intructions for deleting home menu Extdata
@@ -371,7 +371,8 @@ class Assistance:
             embed.set_author(name="Asdolo", url="https://gbatemp.net/members/asdolo.389539/")
             embed.set_thumbnail(url="https://i.imgur.com/rHa76XM.png")
             embed.url = "https://mega.nz/#!qnAE1YjC!q3FRHgIAVEo4nRI2IfANHJr-r7Sil3YpPYE4w8ZbUPY"
-            embed.description = "The recommended way to play old classics on your 3DS"
+            embed.description = ("The recommended way to play old classics on your 3DS.\n"
+                                 "Usage guide [here](http://3ds.filthycasuals.tech/nsui.html)")
             await self.bot.say("", embed=embed)
 
         if self.check_console(console, ctx.message.channel.name, ('wiiu', 'wii u')):
