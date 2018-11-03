@@ -160,7 +160,7 @@ async def on_ready():
         bot.ass1_channel = discord.utils.get(server.channels, name="3ds-assistance-1")
         bot.ass2_channel = discord.utils.get(server.channels, name="3ds-assistance-2")
         bot.wiiuass_channel = discord.utils.get(server.channels, name="wiiu-assistance")
-        bot.swass_channel = discord.utils.get(server.channels, name="switch-assistance-wip")
+        bot.swass_channel = discord.utils.get(server.channels, name="switch-assistance")
         bot.hackinggeneral_channel = discord.utils.get(server.channels, name="hacking-general")
         bot.legacysystems_channel = discord.utils.get(server.channels, name="legacy-systems")
 
