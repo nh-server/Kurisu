@@ -353,6 +353,8 @@ class Events:
         self.user_antispam[message.author.id].append(message)
         if len(self.user_antispam[message.author.id]) == 6:  # it can trigger it multiple times if I use >. it can't skip to a number so this should work
             await self.bot.add_roles(message.author, self.bot.muted_role)
+            if self.bot.elsewhere_role in message.author.roles:
+                await self.bot.remove_roles(message.author, self.bot.elsewhere_role)
             await self.add_restriction(message.author, "Muted")
             msg_user = "You were automatically muted for sending too many messages in a short period of time!\n\nIf you believe this was done in error, send a direct message to one of the staff in {}.".format(self.bot.welcome_channel.mention)
             try:
