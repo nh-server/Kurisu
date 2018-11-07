@@ -129,8 +129,6 @@ class Mod:
             member = ctx.message.mentions[0]
             await self.add_restriction(member, "Muted")
             await self.bot.add_roles(member, self.bot.muted_role)
-            if self.bot.elsewhere_role in member.roles:
-                await self.bot.remove_roles(member, self.bot.elsewhere_role)
             msg_user = "You were muted!"
             if reason != "":
                 msg_user += " The given reason is: " + reason
@@ -139,6 +137,8 @@ class Mod:
             except discord.errors.Forbidden:
                 pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
             await self.bot.say("{} can no longer speak.".format(member.mention))
+            if self.bot.elsewhere_role in member.roles:
+                await self.bot.remove_roles(member, self.bot.elsewhere_role)
             msg = "🔇 **Muted**: {} muted {} | {}#{}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
             if reason != "":
                 msg += "\n✏️ __Reason__: " + reason
@@ -164,8 +164,6 @@ class Mod:
             member = ctx.message.mentions[0]
             await self.add_restriction(member, "Muted")
             await self.bot.add_roles(member, self.bot.muted_role)
-            if self.bot.elsewhere_role in member.roles:
-                await self.bot.remove_roles(member, self.bot.elsewhere_role)
             issuer = ctx.message.author
             # thanks Luc#5653
             units = {
@@ -199,6 +197,8 @@ class Mod:
             except discord.errors.Forbidden:
                 pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
             await self.bot.say("{} can no longer speak.".format(member.mention))
+            if self.bot.elsewhere_role in member.roles:
+                await self.bot.remove_roles(member, self.bot.elsewhere_role)
             msg = "🔇 **Timed mute**: {} muted {} until {} | {}#{}".format(issuer.mention, member.mention, unmute_time_string, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
             if reason != "":
                 msg += "\n✏️ __Reason__: " + reason

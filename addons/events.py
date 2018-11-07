@@ -353,8 +353,6 @@ class Events:
         self.user_antispam[message.author.id].append(message)
         if len(self.user_antispam[message.author.id]) == 6:  # it can trigger it multiple times if I use >. it can't skip to a number so this should work
             await self.bot.add_roles(message.author, self.bot.muted_role)
-            if self.bot.elsewhere_role in message.author.roles:
-                await self.bot.remove_roles(message.author, self.bot.elsewhere_role)
             await self.add_restriction(message.author, "Muted")
             msg_user = "You were automatically muted for sending too many messages in a short period of time!\n\nIf you believe this was done in error, send a direct message to one of the staff in {}.".format(self.bot.welcome_channel.mention)
             try:
@@ -368,6 +366,8 @@ class Events:
                 embed.add_field(name="#"+msg.channel.name, value="\u200b" + msg.content)  # added zero-width char to prevent an error with an empty string (lazy workaround)
             await self.bot.send_message(self.bot.modlogs_channel, log_msg, embed=embed)
             await self.bot.send_message(self.bot.mods_channel, log_msg + "\nSee {} for a list of deleted messages.".format(self.bot.modlogs_channel.mention))
+            if self.bot.elsewhere_role in message.author.roles:
+                await self.bot.remove_roles(message.author, self.bot.elsewhere_role)
             for msg in msgs_to_delete:
                 try:
                     await self.bot.delete_message(msg)
