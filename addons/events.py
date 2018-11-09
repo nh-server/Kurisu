@@ -366,8 +366,6 @@ class Events:
                 embed.add_field(name="#"+msg.channel.name, value="\u200b" + msg.content)  # added zero-width char to prevent an error with an empty string (lazy workaround)
             await self.bot.send_message(self.bot.modlogs_channel, log_msg, embed=embed)
             await self.bot.send_message(self.bot.mods_channel, log_msg + "\nSee {} for a list of deleted messages.".format(self.bot.modlogs_channel.mention))
-            if self.bot.elsewhere_role in message.author.roles:
-                await self.bot.remove_roles(message.author, self.bot.elsewhere_role)
             for msg in msgs_to_delete:
                 try:
                     await self.bot.delete_message(msg)

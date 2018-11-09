@@ -137,8 +137,6 @@ class Mod:
             except discord.errors.Forbidden:
                 pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
             await self.bot.say("{} can no longer speak.".format(member.mention))
-            if self.bot.elsewhere_role in member.roles:
-                await self.bot.remove_roles(member, self.bot.elsewhere_role)
             msg = "🔇 **Muted**: {} muted {} | {}#{}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
             if reason != "":
                 msg += "\n✏️ __Reason__: " + reason
@@ -197,8 +195,6 @@ class Mod:
             except discord.errors.Forbidden:
                 pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
             await self.bot.say("{} can no longer speak.".format(member.mention))
-            if self.bot.elsewhere_role in member.roles:
-                await self.bot.remove_roles(member, self.bot.elsewhere_role)
             msg = "🔇 **Timed mute**: {} muted {} until {} | {}#{}".format(issuer.mention, member.mention, unmute_time_string, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
             if reason != "":
                 msg += "\n✏️ __Reason__: " + reason
