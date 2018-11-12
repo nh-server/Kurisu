@@ -41,18 +41,19 @@ class BaseDatabaseManager:
         self.log = bot.log
         self.conn = bot.dbcon
 
-        # create columns
-        c: sqlite3.Cursor
-        with connwrap(self.conn) as c:
-            for tn, cl in self.tables.items():
-                cols = ', '.join(f'`{c}` {v}' for c, v in cl.items())
-                try:
-                    c.execute(f'CREATE TABLE {tn} ({cols})')
-                except sqlite3.OperationalError as e:
-                    # table likely exists
-                    self.log.debug('Failed to create %s: %s: %s', tn, type(e), e, exc_info=e)
-                else:
-                    self.log.info('%s table created', tn)
+        if bot.db_create_tables:
+            # create columns
+            c: sqlite3.Cursor
+            with connwrap(self.conn) as c:
+                for tn, cl in self.tables.items():
+                    cols = ', '.join(f'`{c}` {v}' for c, v in cl.items())
+                    try:
+                        c.execute(f'CREATE TABLE {tn} ({cols})')
+                    except sqlite3.OperationalError as e:
+                        # table likely exists
+                        self.log.debug('Failed to create %s: %s: %s', tn, type(e), e, exc_info=e)
+                    else:
+                        self.log.info('%s table created', tn)
 
     # until PyCharm recognizes __init_subclass__ properly, these inspections must be disabled
     # noinspection PyMethodOverriding,PyArgumentList

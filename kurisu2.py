@@ -10,15 +10,16 @@ from subprocess import check_output, CalledProcessError
 from sys import argv
 from sys import exit, exc_info, hexversion
 from traceback import format_exception
-from typing import Dict
+from typing import TYPE_CHECKING
 
 import discord
 from discord.ext import commands
 
+if TYPE_CHECKING:
+    from typing import Dict, Union
+
 channel_names = {
     # TODO: add more channel names
-    # destination for startup message
-    'startup-message': 'helpers',
     # staff channel
     'staff': 'mods',
     # helpers channel
@@ -31,12 +32,21 @@ channel_names = {
     'user-watch-logs': 'watch-logs',
     # upload logs
     'user-upload-logs': 'upload-logs',
+    # mod mail, only used for private_channels
+    'mod-mail': 'mod-mail',
 }
 
-assistance_channels = {'3ds-assistance-1', '3ds-assistance-2', 'wiiu-assistance', 'switch-assistance-wip',
+channel_alias_names = {y: x for x, y in channel_names.items()}
+
+# alias name
+startup_message_channel = 'helpers'
+
+# real names
+assistance_channels = {'3ds-assistance-1', '3ds-assistance-2', 'wiiu-assistance', 'switch-assistance',
                        'legacy-systems'}
 
-private_channels = {'mods', 'helpers'}
+# alias names
+private_channels = {'staff', 'helpers', 'mod-logs', 'mod-mail'}
 
 role_names = {
     # TODO: add more role names
@@ -96,6 +106,10 @@ class Kurisu2(commands.Bot):
 
         self.debug = logging_level is logging.DEBUG
 
+        if not os.path.isfile('kurisu2_data.sqlite'):
+            self.db_create_tables = True
+        else:
+            self.db_create_tables = False
         self.dbcon = sqlite3.connect('kurisu2_data.sqlite')
         self.db_closed = False
 
@@ -144,7 +158,7 @@ class Kurisu2(commands.Bot):
             for c, e in self._failed_extensions.items():
                 embed.add_field(name=c, value=f'{type(e).__module__}.{type(e).__qualname__}: {e}')
 
-        await self._channels[channel_names['startup-message']].send(startup_message, embed=embed)
+        await self._channels[channel_names[startup_message_channel]].send(startup_message, embed=embed)
 
         self._is_all_ready.set()
 
@@ -162,6 +176,15 @@ class Kurisu2(commands.Bot):
         if not self._is_all_ready:
             await self.wait_until_all_ready()
         return self._roles[role_names[name]]
+
+    def is_private_channel(self, channel: 'Union[discord.TextChannel, str]'):
+        if isinstance(channel, discord.TextChannel):
+            channel = channel.name
+            try:
+                channel = channel_alias_names[channel]
+            except KeyError:
+                return False
+        return channel in private_channels
 
     async def on_command_error(self, ctx: commands.Context, exc: commands.CommandInvokeError):
         author: discord.Member = ctx.author
