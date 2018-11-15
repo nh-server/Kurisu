@@ -52,7 +52,7 @@ class Assistance:
     @commands.command(pass_context=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def guide(self, ctx, *, console=""):
-        """Links to Plailect's or FlimFlam69's guide."""
+        """Links to the recomended guides."""
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="Guide", color=discord.Color(0xCE181E))
             embed.set_author(name="Plailect", url="https://3ds.hacks.guide/")
@@ -69,10 +69,10 @@ class Assistance:
             await self.bot.say("", embed=embed)
         if self.check_console(console, ctx.message.channel.name, ('switch', 'nx')):
             embed = discord.Embed(title="Guide", color=discord.Color(0xCB0004))
-            embed.set_author(name="Plailect", url="https://switch.hacks.guide/")
-            embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
-            embed.url = "https://switch.hacks.guide/"
-            embed.description = "Plailect's Switch 3.0.0 Homebrew guide"
+            embed.set_author(name="Noirscape", url="https://switchguide.xyz/")
+            embed.set_thumbnail(url="https://avatars3.githubusercontent.com/u/13433513")
+            embed.url = "https://switchguide.xyz/"
+            embed.description = "Noirscape's Switch homebrew guide"
             await self.bot.say("", embed=embed)
 
     #Embed to Soundhax Download Website
