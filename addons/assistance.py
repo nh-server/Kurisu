@@ -387,12 +387,12 @@ class Assistance:
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def dump(self):
-        """How to dump/build CIAs using GodMode9"""
+        """How to dump/build CIAs and Files using GodMode9"""
         embed = discord.Embed(title="GodMode9 dump/build Guide", color=discord.Color(0x66FFFF))
         embed.set_author(name="Chroma Ryu", url="https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Godmode9-CIA-Dumping-and-Building")
         embed.set_thumbnail(url="https://i.imgur.com/U8NA9lx.png")
         embed.url = "https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Godmode9-CIA-Dumping-and-Building"
-        embed.description = "How to dump/build CIAs using GodMode9"
+        embed.description = "How to dump/build CIAs and Files using GodMode9"
         await self.bot.say("", embed=embed)
 
     # Embed to Chroma Ryu's layeredfs guide
