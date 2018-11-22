@@ -462,5 +462,17 @@ class Mod:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
+    @commands.has_permissions(ban_members=True)
+    @commands.command(pass_context=True, name="nickname", aliases=["nick"])
+    async def nickname(self, ctx, member, *, nickname):
+        """Gives a user a nickname."""
+        try:
+            if len(nickname) < 2 or len(nickname) > 32:
+                msg = "{} The nickname must be between 2 and 32 characters long.".format(ctx.message.author.mention)
+                return await self.bot.say(msg)
+            await self.bot.change_nickname(member, nickname)
+        except discord.errors.Forbidden:
+            await self.bot.say("💢 I don't have permission to do this.")
+
 def setup(bot):
     bot.add_cog(Mod(bot))
