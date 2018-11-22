@@ -464,7 +464,7 @@ class Mod:
 
     @commands.has_permissions(ban_members=True)
     @commands.command(pass_context=True, name="nickname", aliases=["nick"])
-    async def nickname(self, ctx, member, *, nickname):
+    async def nickname(self, ctx, member: discord.Member, *, nickname):
         """Gives a user a nickname."""
         try:
             if len(nickname) < 2 or len(nickname) > 32:
