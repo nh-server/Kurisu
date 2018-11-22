@@ -463,7 +463,7 @@ class Mod:
             await self.bot.say("💢 I don't have permission to do this.")
 
     @commands.has_permissions(ban_members=True)
-    @commands.command(pass_context=True, name="nickname", aliases=["nick"])
+    @commands.command(pass_context=True, name="nickname")
     async def nickname(self, ctx, member: discord.Member, *, nickname):
         """Gives a user a nickname."""
         try:
