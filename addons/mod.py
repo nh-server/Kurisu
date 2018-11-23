@@ -266,7 +266,6 @@ class Mod:
     @commands.command(pass_context=True, name="takehelp")
     async def takehelp(self, ctx, user, *, reason=""):
         """Remove access to help-and-questions. Staff and Helpers only."""
-        author = ctx.message.author
         try:
             member = ctx.message.mentions[0]
             await self.add_restriction(member, "No-Help")
@@ -302,7 +301,6 @@ class Mod:
     @commands.command(pass_context=True, name="givehelp")
     async def givehelp(self, ctx, user):
         """Restore access to help-and-questions. Staff and Helpers only."""
-        author = ctx.message.author
         try:
             member = ctx.message.mentions[0]
             await self.remove_restriction(member, "No-Help")
