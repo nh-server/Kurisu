@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from addons.checks import *
+from addons.checks import check_staff
 
 class Assistance:
     """

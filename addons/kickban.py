@@ -5,7 +5,7 @@ import json
 import re
 import time
 from discord.ext import commands
-from addons.checks import *
+from addons.checks import is_staff, check_staff
 
 class KickBan:
     """

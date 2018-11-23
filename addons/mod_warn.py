@@ -2,7 +2,7 @@ import discord
 import json
 import time
 from discord.ext import commands
-from addons.checks import *
+from addons.checks import is_staff, check_staff
 
 class ModWarn:
     """
@@ -22,7 +22,7 @@ class ModWarn:
         except IndexError:
             await self.bot.say("Please mention a user.")
             return
-        if self.bot.staff_role in member.roles:
+        if check_staff(member.id, "HalfOP"):
             await self.bot.say("You can't warn another staffer with this command!")
             return
         with open("data/warnsv2.json", "r") as f:
