@@ -5,6 +5,7 @@ import json
 import re
 import time
 from discord.ext import commands
+from addons.checks import is_staff
 
 class KickBan:
     """
@@ -14,7 +15,7 @@ class KickBan:
         self.bot = bot
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
-    @commands.has_permissions(manage_nicknames=True)
+    @is_staff("HalfOP")
     @commands.command(pass_context=True, name="kick")
     async def kick_member(self, ctx, user, *, reason=""):
         """Kicks a user from the server. Staff only."""
@@ -65,7 +66,7 @@ class KickBan:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
-    @commands.has_permissions(ban_members=True)
+    @is_staff("OP")
     @commands.command(pass_context=True, name="ban")
     async def ban_member(self, ctx, user, *, reason=""):
         """Bans a user from the server. OP+ only."""
@@ -116,7 +117,7 @@ class KickBan:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
-    @commands.has_permissions(ban_members=True)
+    @is_staff("OP")
     @commands.command(pass_context=True, name="silentban", hidden=True)
     async def silentban_member(self, ctx, user, *, reason=""):
         """Bans a user from the server, without a notification. OP+ only."""
@@ -159,7 +160,7 @@ class KickBan:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
-    @commands.has_permissions(ban_members=True)
+    @is_staff("OP")
     @commands.command(pass_context=True, name="timeban")
     async def timeban_member(self, ctx, user, length, *, reason=""):
         """Bans a user for a limited period of time. OP+ only.\n\nLength format: #d#h#m#s"""
@@ -231,7 +232,7 @@ class KickBan:
         await self.bot.send_message(self.bot.serverlogs_channel, msg)
         await self.bot.send_message(self.bot.modlogs_channel, msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.timeban <user> <length> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
 
-    @commands.has_permissions(ban_members=True)
+    @is_staff("OP")
     @commands.command(pass_context=True, name="softban")
     async def softban_member(self, ctx, user, *, reason):
         """Soft-ban a user. OP+ only.\n\nThis "bans" the user without actually doing a ban on Discord. The bot will instead kick the user every time they join. Discord bans are account- and IP-based."""
@@ -282,7 +283,7 @@ class KickBan:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
-    @commands.has_permissions(ban_members=True)
+    @is_staff("OP")
     @commands.command(pass_context=True, name="softbanid")
     async def softbanid_member(self, ctx, user_id, *, reason):
         """Soft-ban a user based on ID. OP+ only.\n\nThis "bans" the user without actually doing a ban on Discord. The bot will instead kick the user every time they join. Discord bans are account- and IP-based."""
@@ -303,7 +304,7 @@ class KickBan:
         await self.bot.send_message(self.bot.modlogs_channel, msg)
         await self.bot.send_message(self.bot.serverlogs_channel, msg)
 
-    @commands.has_permissions(ban_members=True)
+    @is_staff("OP")
     @commands.command(pass_context=True, name="unsoftban")
     async def unsoftban_member(self, ctx, user_id):
         issuer = ctx.message.author
@@ -321,7 +322,7 @@ class KickBan:
         msg = "⚠️ **Un-soft-ban**: {} un-soft-banned {}".format(issuer.mention, self.bot.escape_name(name) if name != "???" else "ID {}".format(user_id))
         await self.bot.send_message(self.bot.modlogs_channel, msg)
 
-    @commands.has_permissions(manage_nicknames=True)
+    @is_staff("HalfOP")
     @commands.command()
     async def listsoftbans(self, user_id=""):
         """List soft bans. Shows all if an ID is not specified."""

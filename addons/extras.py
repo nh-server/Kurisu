@@ -4,6 +4,7 @@ import os
 import random
 import string
 from discord.ext import commands
+from addons.checks import is_staff
 
 class Extras:
     """
@@ -30,13 +31,13 @@ class Extras:
         """Prints the member count of the server."""
         await self.bot.say("{} has {:,} members!".format(self.bot.server.name, self.bot.server.member_count))
 
-    @commands.has_permissions(ban_members=True)
+    @is_staff("OP")
     @commands.command(hidden=True)
     async def embedtext(self, *, text):
         """Embed content."""
         await self.bot.say(embed=discord.Embed(description=text))
 
-    @commands.has_permissions(manage_nicknames=True)
+    @is_staff("HalfOP")
     @commands.command()
     async def estprune(self, days=30):
         """Estimate count of members that would be pruned based on the amount of days. Staff only."""
@@ -50,7 +51,7 @@ class Extras:
         count = await self.bot.estimate_pruned_members(server=self.bot.server, days=days)
         await self.bot.edit_message(msg, "{:,} members inactive for {} day(s) would be kicked from {}!".format(count, days, self.bot.server.name))
 
-    @commands.has_permissions(manage_nicknames=True)
+    @is_staff("HalfOP")
     @commands.command()
     async def activecount(self, days=30):
         """Shows the number of members active in the past amount of days. Staff only."""
@@ -68,7 +69,7 @@ class Extras:
             await self.bot.edit_message(msg, "{:,} members were active in the past {} days in {}!".format(self.bot.server.member_count-count, days, self.bot.server.name))
 
 
-    @commands.has_permissions(manage_nicknames=True)
+    @is_staff("HalfOP")
     @commands.command(pass_context=True)
     async def prune30(self, ctx, key=""):
         """Prune members that are inactive for 30 days. Staff only."""
@@ -89,14 +90,14 @@ class Extras:
         msg = "👢 **Prune**: {} pruned {:,} members".format(ctx.message.author.mention, count)
         await self.bot.send_message(self.bot.modlogs_channel, msg)
 
-    @commands.has_permissions(manage_nicknames=True)
+    @is_staff("HalfOP")
     @commands.command()
     async def disableleavelogs(self):
         """DEBUG COMMAND"""
         self.bot.pruning = True
         await self.bot.say("disable")
 
-    @commands.has_permissions(manage_nicknames=True)
+    @is_staff("HalfOP")
     @commands.command()
     async def enableleavelogs(self):
         """DEBUG COMMAND"""
@@ -118,7 +119,7 @@ class Extras:
         """Console Security - Switch"""
         await self.bot.say("https://www.youtube.com/watch?v=Ec4NgWRE8ik")
 
-    @commands.has_permissions(administrator=True)
+    @is_staff("Owner")
     @commands.command(pass_context=True, hidden=True)
     async def dumpchannel(self, ctx, channel_name, limit=100):
         """Dump 100 messages from a channel to a file."""

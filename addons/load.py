@@ -1,4 +1,5 @@
 from discord.ext import commands
+from addons.checks import is_staff
 
 class Load:
     """
@@ -9,7 +10,7 @@ class Load:
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     # Load test
-    @commands.has_permissions(ban_members=True)
+    @is_staff("OP")
     @commands.command(hidden=True)
     async def load(self, *, module : str):
         """Loads an addon."""
@@ -21,7 +22,7 @@ class Load:
         except Exception as e:
             await self.bot.say('💢 Failed!\n```\n{}: {}\n```'.format(type(e).__name__, e))
 
-    @commands.has_permissions(ban_members=True)
+    @is_staff("OP")
     @commands.command(hidden=True)
     async def unload(self, *, module : str):
         """Unloads an addon."""
@@ -36,7 +37,7 @@ class Load:
         except Exception as e:
             await self.bot.say('💢 Failed!\n```\n{}: {}\n```'.format(type(e).__name__, e))
 
-    @commands.has_permissions(ban_members=True)
+    @is_staff("OP")
     @commands.command(name='reload', hidden=True)
     async def _reload(self, *, module : str):
         """Reloads an addon."""
