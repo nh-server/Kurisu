@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from addons.checks import is_staff
+from addons.checks import *
 
 class Lockdown:
     """
@@ -68,7 +68,7 @@ class Lockdown:
     async def softlock(self, ctx, *, channels=""):
         """Lock message sending in the channel, without the "disciplinary action" note. Staff and Helpers only."""
         issuer = ctx.message.author
-        ishelper = is_staff('HalfOP')
+        ishelper = not check_staff(ctx.message.author.id, 'HalfOP')
         try:
             if len(ctx.message.channel_mentions) == 0:
                 channels = [ctx.message.channel]              		
@@ -103,7 +103,7 @@ class Lockdown:
     async def unlock(self, ctx, *, channels=""):
         """Unlock message sending in the channel. Staff only and Helpers only."""
         issuer = ctx.message.author
-        ishelper = is_staff('HalfOP')
+        ishelper = not check_staff(ctx.message.author.id, 'HalfOP')
         try:
             if len(ctx.message.channel_mentions) == 0:
                 channels = [ctx.message.channel]              		

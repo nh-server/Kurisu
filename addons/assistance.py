@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from addons.checks import is_staff
+from addons.checks import *
 
 class Assistance:
     """
@@ -33,7 +33,7 @@ class Assistance:
     async def staffreq(self, ctx, *, msg_request=""):
         """Request staff, with optional additional text. Helpers, Staff, Verified only."""
         author = ctx.message.author
-        if not is_staff('Helper') and (self.bot.verified_role not in author.roles) and (self.bot.trusted_role not in author.roles):
+        if not check_staff(ctx.message.author.id, 'Helper') and (self.bot.verified_role not in author.roles) and (self.bot.trusted_role not in author.roles):
             msg = "{0} You cannot used this command at this time. Please ask individual staff members if you need help.".format(author.mention)
             await self.bot.say(msg)
             return

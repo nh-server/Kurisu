@@ -57,7 +57,7 @@ class Helper_list:
         if author.id not in addons.checks.helpers:
             await self.bot.say("You are not listed as a helper, and can't use this.")
             return
-        await self.bot.remove_roles(author, self.bot.helper_roles[helpers[author.id]])
+        await self.bot.remove_roles(author, self.bot.helper_roles[addons.checks.helpers[author.id]])
         await self.bot.say("{} is no longer actively helping!".format(author.mention))
         msg = "👎🏻 **De-Elevated: -Help**: {} | {}#{}".format(author.mention, author.name, author.discriminator)
         await self.bot.send_message(self.bot.modlogs_channel, msg)

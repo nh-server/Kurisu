@@ -16,6 +16,7 @@ def is_staff(role):
         if role == "Helper":
             try:
                 helpers[ctx.message.author.id]
+                return True
             except:
                 pass
         try:
@@ -25,3 +26,15 @@ def is_staff(role):
         return rank <= staff_rank[role]
     return commands.check(predicate)
 
+def check_staff(id,role):
+    if role == "Helper":
+        try:
+            helpers[id]
+            return True
+        except KeyError:
+            pass
+    try:
+        rank = staff_rank[staff[id]]
+    except KeyError:
+        return False
+    return rank <= staff_rank[role]

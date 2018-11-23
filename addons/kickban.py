@@ -5,7 +5,7 @@ import json
 import re
 import time
 from discord.ext import commands
-from addons.checks import is_staff
+from addons.checks import *
 
 class KickBan:
     """
@@ -25,7 +25,7 @@ class KickBan:
             except IndexError:
                 await self.bot.say("Please mention a user.")
                 return
-            if self.bot.staff_role in member.roles or self.bot.helpers_role in member.roles:
+            if check_staff(member.id, 'Helper'):
                 enc = b'; \xed\x01\xea\x911\xa5\'\xd7\x14a\xabo\xd4B\xbb\x1c0+X"|\xdeL\xf2\xee#/P\x07\xee\xf9\xdd\xf3\x98#N\xc1:\xaf\xe2a\xd6P\x10M\x17&0\x176!\xcfKa\xe4\xf2\xb9v:\x95-t\x16LhrY\xdeh\x14U\xf0\xfe\x08\x96\x83\x876!\x1a\xfc\x0b\xc5\x1a\x8b\x0e\x06\xcc\xbb'
                 with open("key.bin", "rb") as f:
                     key = f.read(0x20)
@@ -76,7 +76,7 @@ class KickBan:
             except IndexError:
                 await self.bot.say("Please mention a user.")
                 return
-            if self.bot.staff_role in member.roles or self.bot.helpers_role in member.roles:
+            if check_staff(member.id, 'Helper'):
                 enc = b'; \xed\x01\xea\x911\xa5\'\xd7\x14a\xabo\xd4B\xbb\x1c0+X"|\xdeL\xf2\xee#/P\x07\xee\xf9\xdd\xf3\x98#N\xc1:\xaf\xe2a\xd6P\x10M\x17&0\x176!\xcfKa\xe4\xf2\xb9v:\x95-t\x16LhrY\xdeh\x14U\xf0\xfe\x08\x96\x83\x876!\x1a\xfc\x0b\xc5\x1a\x8b\x0e\x06\xcc\xbb'
                 with open("key.bin", "rb") as f:
                     key = f.read(0x20)
@@ -127,7 +127,7 @@ class KickBan:
             except IndexError:
                 await self.bot.say("Please mention a user.")
                 return
-            if self.bot.staff_role in member.roles or self.bot.helpers_role in member.roles:
+            if check_staff(member.id, 'Helper'):
                 enc = b'; \xed\x01\xea\x911\xa5\'\xd7\x14a\xabo\xd4B\xbb\x1c0+X"|\xdeL\xf2\xee#/P\x07\xee\xf9\xdd\xf3\x98#N\xc1:\xaf\xe2a\xd6P\x10M\x17&0\x176!\xcfKa\xe4\xf2\xb9v:\x95-t\x16LhrY\xdeh\x14U\xf0\xfe\x08\x96\x83\x876!\x1a\xfc\x0b\xc5\x1a\x8b\x0e\x06\xcc\xbb'
                 with open("key.bin", "rb") as f:
                     key = f.read(0x20)
@@ -169,7 +169,7 @@ class KickBan:
         except IndexError:
             await self.bot.say("Please mention a user.")
             return
-        if self.bot.staff_role in member.roles or self.bot.helpers_role in member.roles:
+        if check_staff(member.id, 'Helper'):
             enc = b'; \xed\x01\xea\x911\xa5\'\xd7\x14a\xabo\xd4B\xbb\x1c0+X"|\xdeL\xf2\xee#/P\x07\xee\xf9\xdd\xf3\x98#N\xc1:\xaf\xe2a\xd6P\x10M\x17&0\x176!\xcfKa\xe4\xf2\xb9v:\x95-t\x16LhrY\xdeh\x14U\xf0\xfe\x08\x96\x83\x876!\x1a\xfc\x0b\xc5\x1a\x8b\x0e\x06\xcc\xbb'
             with open("key.bin", "rb") as f:
                 key = f.read(0x20)
@@ -242,7 +242,7 @@ class KickBan:
             except IndexError:
                 await self.bot.say("Please mention a user.")
                 return
-            if self.bot.staff_role in member.roles or self.bot.helpers_role in member.roles:
+            if check_staff(member.id, 'Helper'):
                 enc = b'; \xed\x01\xea\x911\xa5\'\xd7\x14a\xabo\xd4B\xbb\x1c0+X"|\xdeL\xf2\xee#/P\x07\xee\xf9\xdd\xf3\x98#N\xc1:\xaf\xe2a\xd6P\x10M\x17&0\x176!\xcfKa\xe4\xf2\xb9v:\x95-t\x16LhrY\xdeh\x14U\xf0\xfe\x08\x96\x83\x876!\x1a\xfc\x0b\xc5\x1a\x8b\x0e\x06\xcc\xbb'
                 with open("key.bin", "rb") as f:
                     key = f.read(0x20)
