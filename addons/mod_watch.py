@@ -1,5 +1,6 @@
 import json
 from discord.ext import commands
+from addons.checks import is_staff
 
 class Modwatch:
     """
@@ -9,7 +10,7 @@ class Modwatch:
         self.bot = bot
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
-    @commands.has_permissions(manage_nicknames=True)
+    @is_staff("HalfOP")
     @commands.command(pass_context=True)
     async def watch(self, ctx, user):
         try:
@@ -25,7 +26,7 @@ class Modwatch:
         await self.bot.send_message(self.bot.modlogs_channel, msg)
         await self.bot.send_message(self.bot.watchlogs_channel, msg)
 
-    @commands.has_permissions(manage_nicknames=True)
+    @is_staff("HalfOP")
     @commands.command(pass_context=True)
     async def unwatch(self, ctx, user):
         try:
