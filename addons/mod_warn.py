@@ -14,14 +14,9 @@ class ModWarn:
 
     @is_staff('Helper')
     @commands.command(pass_context=True)
-    async def warn(self, ctx, user, *, reason=""):
+    async def warn(self, ctx, member: discord.Member, *, reason=""):
         """Warn a user. Staff and Helpers only."""
         issuer = ctx.message.author
-        try:
-            member = ctx.message.mentions[0]
-        except IndexError:
-            await self.bot.say("Please mention a user.")
-            return
         if check_staff(member.id, "HalfOP"):
             await self.bot.say("You can't warn another staffer with this command!")
             return
@@ -161,13 +156,8 @@ class ModWarn:
 
     @is_staff("HalfOP")
     @commands.command(pass_context=True)
-    async def delwarn(self, ctx, user, idx: int):
+    async def delwarn(self, ctx, member: discord.Member, idx: int):
         """Remove a specific warn from a user. Staff only."""
-        try:
-            member = ctx.message.mentions[0]
-        except IndexError:
-            await self.bot.say("Please mention a user.")
-            return
         with open("data/warnsv2.json", "r") as f:
             warns = json.load(f)
         if member.id not in warns:
@@ -224,13 +214,8 @@ class ModWarn:
 
     @is_staff("HalfOP")
     @commands.command(pass_context=True)
-    async def clearwarns(self, ctx, user):
+    async def clearwarns(self, ctx, member: discord.Member):
         """Clear all warns for a user. Staff only."""
-        try:
-            member = ctx.message.mentions[0]
-        except IndexError:
-            await self.bot.say("Please mention a user.")
-            return
         with open("data/warnsv2.json", "r") as f:
             warns = json.load(f)
         if member.id not in warns:
@@ -266,6 +251,15 @@ class ModWarn:
         await self.bot.say("{} no longer has any warns!".format(warns[user_id]["name"]))
         msg = "🗑 **Cleared warns**: {} cleared {} warns from {} ({})".format(ctx.message.author.mention, warn_count, warns[user_id]["name"], user_id)
         await self.bot.send_message(self.bot.modlogs_channel, msg)
+
+    @warn.error
+    @listwarns.error
+    @delwarn.error
+    @clearwarns.error
+    async def warn_error_handler(self, error, ctx):
+        if isinstance(error, commands.errors.BadArgument):
+            await self.bot.say("User not found. Search terms are case sensitive.")
+
 
 def setup(bot):
     bot.add_cog(ModWarn(bot))
