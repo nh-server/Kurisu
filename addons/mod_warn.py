@@ -72,7 +72,7 @@ class ModWarn:
             user = ctx.message.author
         issuer = ctx.message.author
         member = user # A bit sloppy but its to reduce the amount of work needed to change below.
-        if not check_staff(ctx.message.author,"Helper") and (member != issuer):
+        if not check_staff(ctx.message.author.id,"Helper") and (member != issuer):
                 msg = "{0} Using this command on others is limited to Staff and Helpers.".format(issuer.mention)
                 await self.bot.say(msg)
                 return
