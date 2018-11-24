@@ -53,9 +53,8 @@ class Mod:
 
     @is_staff("Helper")
     @commands.command(pass_context=True, hidden=True)
-    async def userinfo(self, ctx, user):
+    async def userinfo(self, ctx, u: discord.Member = None):
         """Gets user info. Staff and Helpers only."""
-        u = ctx.message.mentions[0]
         role = u.top_role.name
         if role == "@everyone":
             role = "@ everyone"
