@@ -3,6 +3,7 @@ import json
 import time
 from discord.ext import commands
 from addons.checks import is_staff, check_staff
+from addons import converters
 
 class ModWarn:
     """
@@ -14,7 +15,7 @@ class ModWarn:
 
     @is_staff('Helper')
     @commands.command(pass_context=True)
-    async def warn(self, ctx, member: discord.Member, *, reason=""):
+    async def warn(self, ctx, member: converters.SafeMember, *, reason=""):
         """Warn a user. Staff and Helpers only."""
         issuer = ctx.message.author
         if check_staff(member.id, "HalfOP"):
@@ -156,7 +157,7 @@ class ModWarn:
 
     @is_staff("HalfOP")
     @commands.command(pass_context=True)
-    async def delwarn(self, ctx, member: discord.Member, idx: int):
+    async def delwarn(self, ctx, member: converters.SafeMember, idx: int):
         """Remove a specific warn from a user. Staff only."""
         with open("data/warnsv2.json", "r") as f:
             warns = json.load(f)
@@ -214,7 +215,7 @@ class ModWarn:
 
     @is_staff("HalfOP")
     @commands.command(pass_context=True)
-    async def clearwarns(self, ctx, member: discord.Member):
+    async def clearwarns(self, ctx, member: converters.SafeMember):
         """Clear all warns for a user. Staff only."""
         with open("data/warnsv2.json", "r") as f:
             warns = json.load(f)
@@ -258,7 +259,7 @@ class ModWarn:
     @clearwarns.error
     async def warn_error_handler(self, error, ctx):
         if isinstance(error, commands.errors.BadArgument):
-            await self.bot.say("User not found. Search terms are case sensitive.")
+            await self.bot.say(error)
 
 
 def setup(bot):
