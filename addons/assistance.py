@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from addons.checks import check_staff
 
 class Assistance:
     """
@@ -32,7 +33,7 @@ class Assistance:
     async def staffreq(self, ctx, *, msg_request=""):
         """Request staff, with optional additional text. Helpers, Staff, Verified only."""
         author = ctx.message.author
-        if (self.bot.helpers_role not in author.roles) and (self.bot.staff_role not in author.roles) and (self.bot.verified_role not in author.roles) and (self.bot.trusted_role not in author.roles):
+        if not check_staff(ctx.message.author.id, 'Helper') and (self.bot.verified_role not in author.roles) and (self.bot.trusted_role not in author.roles):
             msg = "{0} You cannot used this command at this time. Please ask individual staff members if you need help.".format(author.mention)
             await self.bot.say(msg)
             return
@@ -52,7 +53,7 @@ class Assistance:
     @commands.command(pass_context=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def guide(self, ctx, *, console=""):
-        """Links to Plailect's or FlimFlam69's guide."""
+        """Links to the recomended guides."""
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="Guide", color=discord.Color(0xCE181E))
             embed.set_author(name="Plailect", url="https://3ds.hacks.guide/")
@@ -69,10 +70,10 @@ class Assistance:
             await self.bot.say("", embed=embed)
         if self.check_console(console, ctx.message.channel.name, ('switch', 'nx')):
             embed = discord.Embed(title="Guide", color=discord.Color(0xCB0004))
-            embed.set_author(name="Plailect", url="https://switch.hacks.guide/")
-            embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
-            embed.url = "https://switch.hacks.guide/"
-            embed.description = "Plailect's Switch 3.0.0 Homebrew guide"
+            embed.set_author(name="Noirscape", url="https://switchguide.xyz/")
+            embed.set_thumbnail(url="https://avatars3.githubusercontent.com/u/13433513")
+            embed.url = "https://switchguide.xyz/"
+            embed.description = "Noirscape's Switch homebrew guide"
             await self.bot.say("", embed=embed)
 
     #Embed to Soundhax Download Website
@@ -113,7 +114,7 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def update(self):
         """Explains how to safely prepare for an update if you have boot9strap installed"""
-        await self.simple_embed("**Is it safe to update to 11.8?** \n\n **Luma3DS 9.1** \n You can update to 11.8 safely. \n\n **Luma3DS 8.0 - 9.0** \n Run Luma updater to get the latest Luma3DS version, then update your console. Being on these Luma3DS versions on 11.8 will cause a blackscreen until you update. \n\n **Luma3DS 7.1** \n Follow the [B9S upgrade guide](https://3ds.hacks.guide/updating-b9s) \n\n **Luma3DS <=7.0.5** \n Follow the [a9lh-to-b9s guide](https://3ds.hacks.guide/a9lh-to-b9s) \n\n **To find out your Luma3DS version, hold select on bootup and look at the top left corner of the top screen**")
+        await self.simple_embed("**Is it safe to update to 11.8?** \n\n **Luma3DS 9.1** \n You can update to 11.8 safely. \n\n **Luma3DS 8.0 - 9.0** \n Follow this guide: (https://bit.ly/2Q58acr), then you can update to 11.8. Being on these Luma3DS versions on 11.8 will cause a blackscreen until you update. \n\n **Luma3DS 7.1** \n Follow the [B9S upgrade guide](https://3ds.hacks.guide/updating-b9s) \n\n **Luma3DS <=7.0.5** \n Follow the [a9lh-to-b9s guide](https://3ds.hacks.guide/a9lh-to-b9s) \n\n **To find out your Luma3DS version, hold select on bootup and look at the top left corner of the top screen**")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -259,7 +260,7 @@ class Assistance:
         embed = discord.Embed(title="No, you are not bricked")
         embed.description = "If your power LED turns on and off after you installed b9s, you are not bricked and are just missing a file called boot.firm in the root of your SD card."
         embed.add_field(name="How to fix the issue", value="1. Check you inserted the SD card in your console\n 2. Place/replace the file, downloading it from https://github.com/AuroraWright/Luma3DS/releases", inline=False)
-        embed.add_field(name="Checking your SD for errors or corruption", value="• Windows: https://3ds.hacks.guide/h2testw-(windows)#\n• Linux: https://3ds.hacks.guide/f3-(linux)#\n• Mac: https://3ds.hacks.guide/f3x-(mac)#", inline=False)
+        embed.add_field(name="Checking your SD for errors or corruption", value="https://3ds.filthycasuals.tech/sderrors.html \n Please read the instructions carefully.", inline=False)
         await self.bot.say("", embed=embed)
 
     @commands.command()
@@ -290,7 +291,7 @@ class Assistance:
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def luma(self, lumaversion=""):
-        """Downloadlinks for luma versions"""
+        """Download links for Luma versions"""
         if lumaversion != "":
             await self.simple_embed("Luma v{}\nhttps://github.com/AuroraWright/Luma3DS/releases/tag/v{}".format(lumaversion, lumaversion), color=discord.Color.blue())
         else:
@@ -311,7 +312,7 @@ class Assistance:
     @commands.command(aliases=["redscr"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def boot3dsx(self):
-        """Download link for 3DS homebrew launcher, boot.3dsx"""
+        """Download link for 3DS Homebrew Launcher, boot.3dsx"""
         await self.simple_embed("The 3DS Homebrew Launcher, [boot.3dsx](https://github.com/fincs/new-hbmenu/releases/download/v2.0.0/boot.3dsx)")
 
     # Intructions for deleting home menu Extdata
@@ -364,7 +365,8 @@ class Assistance:
             embed.set_author(name="Asdolo", url="https://gbatemp.net/members/asdolo.389539/")
             embed.set_thumbnail(url="https://i.imgur.com/rHa76XM.png")
             embed.url = "https://mega.nz/#!qnAE1YjC!q3FRHgIAVEo4nRI2IfANHJr-r7Sil3YpPYE4w8ZbUPY"
-            embed.description = "The recommended way to play old classics on your 3DS"
+            embed.description = ("The recommended way to play old classics on your 3DS.\n"
+                                 "Usage guide [here](http://3ds.filthycasuals.tech/nsui.html)")
             await self.bot.say("", embed=embed)
 
         if self.check_console(console, ctx.message.channel.name, ('wiiu', 'wii u')):
@@ -386,12 +388,12 @@ class Assistance:
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def dump(self):
-        """How to dump/build CIAs using GodMode9"""
+        """How to dump/build CIAs and Files using GodMode9"""
         embed = discord.Embed(title="GodMode9 dump/build Guide", color=discord.Color(0x66FFFF))
         embed.set_author(name="Chroma Ryu", url="https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Godmode9-CIA-Dumping-and-Building")
         embed.set_thumbnail(url="https://i.imgur.com/U8NA9lx.png")
         embed.url = "https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Godmode9-CIA-Dumping-and-Building"
-        embed.description = "How to dump/build CIAs using GodMode9"
+        embed.description = "How to dump/build CIAs and Files using GodMode9"
         await self.bot.say("", embed=embed)
 
     # Embed to Chroma Ryu's layeredfs guide
