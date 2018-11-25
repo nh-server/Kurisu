@@ -98,6 +98,8 @@ class Events:
         'exnhop',  # typo of the above, not sure how common
         'enxshop',  # also typo
         'cdnsp',
+        'wareznx',
+        'wareznext',
     )
 
     # use the full ID, including capitalization and dashes
