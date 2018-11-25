@@ -295,6 +295,7 @@ class Err:
         '2168-0001': ['Resource/Handle not available. (No known support page)', None],
         '2168-0002': ['Segmentation Fault. (No known support page)', None],
         '2168-0003': ['Memory access must be 4 bytes aligned. (No known support page)', None],
+        '2181-4008': ['System is permanently banned by Nintendo. You cannot ask how to fix this issue here.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/42061'],
         '2811-5001': ['General connection error.', 'http://en-americas-support.nintendo.com/app/answers/detail/a_id/22392/p/897'],
     }
 
