@@ -100,6 +100,7 @@ class Events:
         'cdnsp',
         'wareznx',
         'wareznext',
+        'softcobra',
     )
 
     # use the full ID, including capitalization and dashes
