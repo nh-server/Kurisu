@@ -128,7 +128,7 @@ class Assistance:
                 
                 **Luma3DS 8.0 - 9.0**
                 Follow this guide: (https://bit.ly/2Q58acr), then you can update to 11.8. Being on these Luma3DS \
-                versions on 11.8 will cause a blackscreen until you update.
+versions on 11.8 will cause a blackscreen until you update.
                 
                 **Luma3DS 7.1** 
                 Follow the [B9S upgrade guide](https://3ds.hacks.guide/updating-b9s)
@@ -192,8 +192,7 @@ class Assistance:
         """Links to a tool for a mod manager"""
         await self.simple_embed(cleandoc("""
                                 To install mods for Smash 3DS, and to manage other LayeredFS mods,\
-                                [Mod-Moon](https://github.com/Swiftloke/ModMoon/releases) is recommended. \
-                                Instructions for use can be found on the page.
+[Mod-Moon](https://github.com/Swiftloke/ModMoon/releases) is recommended. Instructions for use can be found on the page.
                                 """))
 
     @commands.command()
@@ -202,8 +201,8 @@ class Assistance:
         """Tells user to be descriptive"""
         await self.simple_embed("""
                                 > Reminder: if you would like someone to help you, please be as descriptive as \
-                                possible, of your situation, things you have done, as little as they may seem, \
-                                aswell as assisting materials. Asking to ask wont expedite your process, and may delay assistance."
+possible, of your situation, things you have done, as little as they may seem, \
+aswell as assisting materials. Asking to ask wont expedite your process, and may delay assistance."
                                 """)
 
     @commands.command()
@@ -212,9 +211,9 @@ class Assistance:
         """Warns users to keep the channels on-topic - Staff & Helper Declaration Only"""
         await self.simple_embed("""
                                 **Please keep the channels clean and on-topic, further derailing will result in \
-                                intervention.  A staff or helper will be the quickest route to resolution; you can \
-                                contact available staff by private messaging the Mod-Mail bot.** A full list of staff \
-                                and helpers can be found in #welcome-and-rules if you don't know who they are.
+intervention.  A staff or helper will be the quickest route to resolution; you can \
+contact available staff by private messaging the Mod-Mail bot.** A full list of staff \
+and helpers can be found in #welcome-and-rules if you don't know who they are.
                                 """)
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -254,13 +253,13 @@ class Assistance:
             embed.description = cleandoc("""
                 You have 4 possible options for installing CFW:
                 - [NTRBoot](https://3ds.hacks.guide/ntrboot) which requires a compatible NDS flashcart and maybe an\
-                additional DS(i) or hacked 3DS console depending on the flashcart
+additional DS(i) or hacked 3DS console depending on the flashcart
                 - [Frogminer](https://jisagi.github.io/FrogminerGuide) which requires a homebrew entrypoint like \
-                [steelminer](http://steelminer.jisagi.net/) (free method) or freakyhax.
+[steelminer](http://steelminer.jisagi.net/) (free method) or freakyhax.
                 - [Seedminer](https://3ds.hacks.guide/installing-boot9strap-\(seedminer\)) which requires a compatible \
-                DSiWare game
+DSiWare game
                 - [Hardmod](https://3ds.hacks.guide/installing-boot9strap-\(hardmod\)) which requires "soldering \
-                **Not for beginners!**
+**Not for beginners!**
                 **Downgrading is impossible on 11.4+!**
                 """)
             await self.bot.say("", embed=embed)
@@ -272,8 +271,8 @@ class Assistance:
                 **6.1.0 and below:** You can safely use [Atmosphere](http://switchguide.xyz/).
                 **6.2.0:** Custom firmware is currently incompatible with this version.
 
-                "Second-generation" invulnerable systems should **not** update past 4.1.0, as these systems may have \
-                custom firmware on this version in the very far future.
+                "Second-generation" invulnerable systems should **not** update past 4.1.0, as these systems may have\
+custom firmware on this version in the very far future.
 
                 **Downgrading is convoluted, often breaks sleep mode, and is generally not worth the effort!** 
                 """)
@@ -286,7 +285,7 @@ class Assistance:
         embed = discord.Embed(title="Extract/Decrypt games, NAND backups, and SD contents with fuse-3ds", color=discord.Color(0xCE181E))
         embed.description = cleandoc("""
                             This is a tutorial that shows you how to use fuse-3ds to extract the contents of games, \
-                            NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
+NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
                             """)
         embed.url = "https://gbatemp.net/threads/499994/"
         await self.bot.say("", embed=embed)
@@ -297,14 +296,14 @@ class Assistance:
         """Get homebrew launcher working on 11.4+ firmware"""
         await self.simple_embed("""
                                 If you are looking to get access to the homebrew launcher on your unhacked 11.4+ 3DS \
-                                (Not CFW or CIA installation!), then you will need an exploit like ninjhax, stickerhax,\
-                                freakyhax or oot3dhax. \nPlease note that stickerhax and oot3dhax require prior access\
-                                to the homebrew launcher to install the hack on them (Or you can use a powersaves with\
-                                oot3d)
+(Not CFW or CIA installation!), then you will need an exploit like ninjhax, stickerhax,\
+freakyhax or oot3dhax. 
+                                Please note that stickerhax and oot3dhax require prior access to the homebrew launcher \
+to install the hack on them (Or you can use a powersaves with oot3d)
                                 
                                 If you want access to homebrew on 11.4+, it is recommended that you rather install CFW,\
-                                as a NTRBoot compatible DS flashcart costs a lot less than a copy of Freakyforms Deluxe,\
-                                Cubic Ninja, Paper Mario Sticker Star or Ocarina of Time 3D.
+as a NTRBoot compatible DS flashcart costs a lot less than a copy of Freakyforms Deluxe,\
+Cubic Ninja, Paper Mario Sticker Star or Ocarina of Time 3D.
                                 """)
 
     @commands.command()
@@ -313,7 +312,7 @@ class Assistance:
         """Read the guide please"""
         await self.simple_embed("""
                                 Asking something that is on the guide will make everyone lose time, so please read and \
-                                re-read the guide steps 2 or 3 times before coming here.
+re-read the guide steps 2 or 3 times before coming here.
                                 """, title="Please read the guide")
 
     @commands.command()
@@ -322,13 +321,13 @@ class Assistance:
         """SD bigger than 32GB"""
         await self.simple_embed("""
                                 If you want to change your SD card to one bigger than 32GB then you'll have to \
-                                format it to FAT32.
+format it to FAT32.
                                 You can do this with the tool of your preference.
                                 Formatter examples:
                                 • Windows: [guiformat](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm)
                                 • Linux: [gparted](http://gparted.org/download.php)
                                 • Mac: [Disk Utility](https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010)\
-                                 (Always choose "MS-DOS (FAT)" regardless of size, not ExFAT.)
+(Always choose "MS-DOS (FAT)" regardless of size, not ExFAT.)
                                 """
                                 , title="Big SD cards")
 
@@ -348,15 +347,15 @@ class Assistance:
         """Luma Black Screen Bug"""
         await self.simple_embed("""
                                 If you have Luma3DS and your console is stuck on a black screen after you power it on,\
-                                follow these steps:
+follow these steps:
                                 1. Power off the console.
                                 2. Take out any game cartridge, but leave the SD card in.
                                 3. Power on the console.
                                 4. Leave the console open and powered on for 10-15 minutes. Do not touch the console \
-                                during this time.
-                                If the console boots successfully in that time, the bug is now fixed \
-                                and is unlikely to happen again. If the console still fails to boot to home menu, \
-                                come back and ask for more help. Mention that you have already tried the 'Luma black screen process.
+during this time.
+                                If the console boots successfully in that time, the bug is now fixed and is unlikely to\ 
+happen again. If the console still fails to boot to home menu, come back and ask for more help. Mention that you have \
+already tried the 'Luma black screen process.
                                 """, title="Luma Black Screen Bug")
 
     @commands.command()
@@ -366,7 +365,7 @@ class Assistance:
         embed = discord.Embed(title="No, you are not bricked")
         embed.description = cleandoc("""
                             If your power LED turns on and off after you installed b9s, you are not bricked and are\
-                            just missing a file called boot.firm in the root of your SD card.
+just missing a file called boot.firm in the root of your SD card.
                             """)
         embed.add_field(name="How to fix the issue", value="1. Check you inserted the SD card in your console\n 2. Place/replace the file, downloading it from https://github.com/AuroraWright/Luma3DS/releases", inline=False)
         embed.add_field(name="Checking your SD for errors or corruption", value="https://3ds.filthycasuals.tech/sderrors.html \n Please read the instructions carefully.", inline=False)
@@ -378,7 +377,7 @@ class Assistance:
         """Recommendation about EmuNAND"""
         await self.simple_embed("""
                                 If you want to set up an EmuNAND the first thing to know is that you probably don't\
-                                need it; if you don't know what an EmuNAND is, you don't need one.
+need it; if you don't know what an EmuNAND is, you don't need one.
                                 """, title="EmuNAND Recommendation")
 
     @commands.command()
@@ -387,8 +386,8 @@ class Assistance:
         """Notice about failed update on Wii U"""
         await self.simple_embed("""
                                  A failed update in Download Management does not mean there is an update and the system\
-                                 is trying to download it. This means your blocking method (DNS etc.) is working and \
-                                 the system can't check for an update.
+is trying to download it. This means your blocking method (DNS etc.) is working and \
+the system can't check for an update.
                                  """, color=discord.Color(0x009AC7))
 
     @commands.command()
@@ -397,7 +396,7 @@ class Assistance:
         """Failed to mount CTRNAND error"""
         await self.simple_embed("""
                                 While following the guide, after installing boot9strap, if you get an error that says \
-                                "Failed to mount CTRNAND", just continue on with the guide.
+"Failed to mount CTRNAND", just continue on with the guide.
                                 """)
 
     @commands.command()
@@ -451,7 +450,7 @@ class Assistance:
         """Deleting home menu extdata"""
         await self.simple_embed("""
                                 1. Navigate to the following folder on your SD card: \
-                                `/Nintendo 3DS/(32 Character ID)/(32 Character ID)/extdata/00000000/`
+`/Nintendo 3DS/(32 Character ID)/(32 Character ID)/extdata/00000000/`
                                 2. Delete the corresponding folder for your region:
                                   USA: `0000008f`
                                   EUR: `00000098`
@@ -465,7 +464,7 @@ class Assistance:
         """Deleting home menu theme data"""
         await self.simple_embed("""
                                 1. Navigate to the following folder on your SD card: \
-                                `/Nintendo 3DS/(32 Character ID)/(32 Character ID)/extdata/00000000/`
+`/Nintendo 3DS/(32 Character ID)/(32 Character ID)/extdata/00000000/`
                                 2. Delete the corresponding folder for your region:
                                   USA: `000002cd`
                                   EUR: `000002ce`
@@ -488,7 +487,7 @@ class Assistance:
         """Fix for the PM init failed error"""
         await self.simple_embed("""
                                 If you are receiving a "PM init failed" error when attempting to launch safehax and \
-                                are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safehax/releases/tag/r19)
+are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safehax/releases/tag/r19)
                                 """)
 
     # Embed to Apache Thunder's Flashcart Launcher
@@ -584,7 +583,7 @@ class Assistance:
         """Message on flash drives on the Wii U"""
         await self.simple_embed("""
                                 Some flash drives work with the Wii U, some don't. If you have read or write errors, \
-                                or games crash often, you might want to try a different flash drive or hard drive
+or games crash often, you might want to try a different flash drive or hard drive
                                 """)
     #Information about pending Switch updates
     @commands.command(aliases=["nxupdate"])
@@ -593,14 +592,14 @@ class Assistance:
         """Erase pending updates on Nintendo Switch"""
         await self.simple_embed("""
                                 When an update is downloaded, but not installed, the console will not display the \
-                                firmware version in System Settings.
+firmware version in System Settings.
                                 
                                 • To fix this, *power the console off* (hold the power button, follow on-screen prompts).\
-                                ***Hold*** Volume Down and Volume Up, then Power. When you see Maintenance Mode, you \
-                                may reboot, and check System Settings.
+***Hold*** Volume Down and Volume Up, then Power. When you see Maintenance Mode, you \
+may reboot, and check System Settings.
                                 
                                 *To block automatic update downloads, enter 104.236.106.125 as your primary DNS and \
-                                62.210.147.20 as your secondary DNS for your home network.*
+62.210.147.20 as your secondary DNS for your home network.*
                                  """, title="How to delete pending Switch Updates")
 
     @commands.command(aliases=["write"])
@@ -610,7 +609,7 @@ class Assistance:
         embed = discord.Embed(title="Disable write protection on an SD Card")
         embed.description = cleandoc("""
                                      This switch on the SD Card should be facing upwards, as in this photo. Otherwise, \
-                                     your device will refuse to write to it.
+your device will refuse to write to it.
                                      *If it is write locked, your console and other applications may behave unexpectedly.*
                                      """)
         embed.set_image(url="https://i.imgur.com/RvKjWcz.png")
