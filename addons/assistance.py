@@ -272,6 +272,9 @@ class Assistance:
                 **6.1.0 and below:** You can safely use [Atmosphere](http://switchguide.xyz/).
                 **6.2.0:** Custom firmware is currently incompatible with this version.
 
+                "Second-generation" invulnerable systems should **not** update past 4.1.0, as these systems may have \
+                custom firmware on this version in the very far future.
+
                 **Downgrading is convoluted, often breaks sleep mode, and is generally not worth the effort!** 
                 """)
             await self.bot.say("", embed=embed)
