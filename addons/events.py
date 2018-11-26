@@ -57,10 +57,7 @@ class Events:
         'makiversion',
         'makifbi',
         'utikdownloadhelper',
-        'wiiuusbhelper',
-        'wiiusbhelper',
-        'w11uusbh3lper',
-        'w11usbh3lper',
+        'usbh3lper',
         'funkii',
         'funkey',
         'funk11',
@@ -101,6 +98,10 @@ class Events:
         'wareznx',
         'wareznext',
         'softcobra',
+        'softcobra',
+        'uwizard',
+        'jnustool',
+        'nusgrabber',
     )
 
     # use the full ID, including capitalization and dashes
