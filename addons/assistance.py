@@ -248,7 +248,7 @@ class Assistance:
     @commands.command(pass_context=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def stock(self,ctx,console=""):
-        """Advisory for consoles on stock 11.4+ firmware"""
+        """Advisory for various Nintendo systems on stock firmware"""
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
             embed.description = cleandoc("""
@@ -262,6 +262,17 @@ class Assistance:
                 - [Hardmod](https://3ds.hacks.guide/installing-boot9strap-\(hardmod\)) which requires "soldering \
                 **Not for beginners!**
                 **Downgrading is impossible on 11.4+!**
+                """)
+            await self.bot.say("", embed=embed)
+        if self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+            embed = discord.Embed(title="Using a first-generation Switch?", color=0xe60012)
+            embed.description = cleandoc("""
+                Use [this GBATemp thread](https://tinyurl.com/nxserial) to determine if your Switch is a first-gen unit.
+
+                **6.1.0 and below:** You can safely use [Atmosphere](http://switchguide.xyz/).
+                **6.2.0:** Custom firmware is currently incompatible with this version.
+
+                **Downgrading is convoluted, often breaks sleep mode, and is generally not worth the effort!** 
                 """)
             await self.bot.say("", embed=embed)
 
