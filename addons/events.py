@@ -98,7 +98,6 @@ class Events:
         'wareznx',
         'wareznext',
         'softcobra',
-        'softcobra',
         'uwizard',
         'jnustool',
         'nusgrabber',
