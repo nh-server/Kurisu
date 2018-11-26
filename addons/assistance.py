@@ -207,7 +207,7 @@ class Assistance:
         embed.add_field(name="Check your 3DSs IP (Homebrew)", value="1. Open Homebrew Launcher\n2. Press Y")
         await self.bot.say("", embed=embed)
 
-    @commands.command(pass_context=True, aliases=["stock114","stock115","stock116","stock117","stock118","stocknx"])
+    @commands.command(pass_context=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def stock(self,ctx,console=""):
         """Advisory for various Nintendo systems on stock firmware"""
