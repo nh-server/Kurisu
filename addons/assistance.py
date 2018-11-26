@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from addons.checks import check_staff
+import inspect
 
 class Assistance:
     """
@@ -206,13 +207,36 @@ class Assistance:
         embed.add_field(name="Check your 3DSs IP (Homebrew)", value="1. Open Homebrew Launcher\n2. Press Y")
         await self.bot.say("", embed=embed)
 
-    @commands.command(aliases=["stock114","stock115","stock116","stock117","stock118"])
+    @commands.command(pass_context=True, aliases=["stock114","stock115","stock116","stock117","stock118","stocknx"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def stock(self):
-        """Advisory for consoles on stock 11.4+ firmware"""
-        embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
-        embed.description = "You have 4 possible options for installing CFW:\n- [NTRBoot](https://3ds.hacks.guide/ntrboot) which requires a compatible NDS flashcart and maybe an additional DS(i) or hacked 3DS console depending on the flashcart\n- [Frogminer](https://jisagi.github.io/FrogminerGuide) which requires a homebrew entrypoint like [steelminer](http://steelminer.jisagi.net/) (free method) or freakyhax\n- [Seedminer](https://3ds.hacks.guide/installing-boot9strap-\(seedminer\)) which requires a compatible DSiWare game\n- [Hardmod](https://3ds.hacks.guide/installing-boot9strap-\(hardmod\)) which requires soldering **Not for beginners!**\n **Downgrading is impossible on 11.4+!**"
-        await self.bot.say("", embed=embed)
+    async def stock(self,ctx,console=""):
+        """Advisory for various Nintendo systems on stock firmware"""
+        if self.check_console(console, ctx.message.channel.name, '3ds'):
+            embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
+            embed.description = inspect.cleandoc("""
+                You have 4 possible options for installing CFW:
+                - [NTRBoot](https://3ds.hacks.guide/ntrboot) which requires a compatible NDS flashcart and maybe an\
+                additional DS(i) or hacked 3DS console depending on the flashcart
+                - [Frogminer](https://jisagi.github.io/FrogminerGuide) which requires a homebrew entrypoint like \
+                [steelminer](http://steelminer.jisagi.net/) (free method) or freakyhax.
+                - [Seedminer](https://3ds.hacks.guide/installing-boot9strap-\(seedminer\)) which requires a compatible \
+                DSiWare game
+                - [Hardmod](https://3ds.hacks.guide/installing-boot9strap-\(hardmod\)) which requires "soldering \
+                **Not for beginners!**
+                **Downgrading is impossible on 11.4+!**
+                """)
+            await self.bot.say("", embed=embed)
+        if self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+            embed = discord.Embed(title="Using a first-generation Switch?", color=0xe60012)
+            embed.description = inspect.cleandoc("""
+                Use [this GBATemp thread](https://tinyurl.com/nxserial) to determine if your Switch is a first-gen unit.
+
+                **6.1.0 and below:** You can safely use [Atmosphere](http://switchguide.xyz/).
+                **6.2.0:** Custom firmware is currently incompatible with this version.
+
+                **Downgrading is convoluted, often breaks sleep mode, and is generally not worth the effort!** 
+                """)
+            await self.bot.say("", embed=embed)
 
     @commands.command(aliases=["fuse-3ds", "fuse"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
