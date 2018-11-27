@@ -37,7 +37,19 @@ class Memes:
     async def s_99(self, ctx):
         """Memes."""
         await self._meme(ctx, "**ALL HAIL BRITANNIA!**")
+        
+    @commands.command(pass_context=True, hidden=True)
+    @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
+    async def warm(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "User has been warmed.")
 
+    @commands.command(pass_context=True, hidden=True)
+    @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
+    async def bean(self, ctx):
+        """Memes."""
+        await self._meme(ctx, ":bean:")
+        
     @commands.command(pass_context=True, hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def screams(self, ctx):
