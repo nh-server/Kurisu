@@ -5,6 +5,7 @@ import re
 import time
 from discord.ext import commands
 from subprocess import call
+from addons.checks import is_staff
 
 class Mod:
     """
@@ -34,14 +35,14 @@ class Mod:
         with open("data/restrictions.json", "w") as f:
             json.dump(rsts, f)
 
-    @commands.has_permissions(administrator=True)
+    @is_staff("Owner")
     @commands.command()
     async def quit(self, *gamename):
         """Stops the bot."""
         await self.bot.say("👋 Bye bye!")
         await self.bot.close()
 
-    @commands.has_permissions(manage_server=True)
+    @is_staff("SuperOP")
     @commands.command(hidden=True)
     async def pull(self, *gamename):
         """Pull new changes from GitHub and restart."""
@@ -50,21 +51,16 @@ class Mod:
         await self.bot.say("👋 Restarting bot!")
         await self.bot.close()
 
+    @is_staff("Helper")
     @commands.command(pass_context=True, hidden=True)
-    async def userinfo(self, ctx, user):
+    async def userinfo(self, ctx, u: discord.Member = None):
         """Gets user info. Staff and Helpers only."""
-        issuer = ctx.message.author
-        if (self.bot.helpers_role not in issuer.roles) and (self.bot.staff_role not in issuer.roles):
-            msg = "{0} This command is limited to Staff and Helpers.".format(issuer.mention)
-            await self.bot.say(msg)
-            return
-        u = ctx.message.mentions[0]
         role = u.top_role.name
         if role == "@everyone":
             role = "@ everyone"
         await self.bot.say("name = {}\nid = {}\ndiscriminator = {}\navatar = {}\nbot = {}\navatar_url = {}\ndefault_avatar = {}\ndefault_avatar_url = <{}>\ncreated_at = {}\ndisplay_name = {}\njoined_at = {}\nstatus = {}\ngame = {}\ncolour = {}\ntop_role = {}\n".format(u.name, u.id, u.discriminator, u.avatar, u.bot, u.avatar_url, u.default_avatar, u.default_avatar_url, u.created_at, u.display_name, u.joined_at, u.status, u.game, u.colour, role))
 
-    @commands.has_permissions(manage_nicknames=True)
+    @is_staff("HalfOP")
     @commands.command(pass_context=True, hidden=True)
     async def matchuser(self, ctx, *, rgx: str):
         """Match users by regex."""
@@ -76,7 +72,7 @@ class Mod:
         msg += "```"
         await self.bot.send_message(author, msg)
 
-    @commands.has_permissions(administrator=True)
+    @is_staff("Owner")
     @commands.command(pass_context=True, hidden=True)
     async def multiban(self, ctx, *, members: str):
         """Multi-ban users."""
@@ -91,7 +87,7 @@ class Mod:
         msg += "```"
         await self.bot.send_message(author, msg)
 
-    @commands.has_permissions(administrator=True)
+    @is_staff("Owner")
     @commands.command(pass_context=True, hidden=True)
     async def multibanre(self, ctx, *, rgx: str):
         """Multi-ban users by regex."""
@@ -110,7 +106,7 @@ class Mod:
         msg += "```"
         await self.bot.send_message(author, msg)
 
-    @commands.has_permissions(manage_nicknames=True)
+    @is_staff("HalfOP")
     @commands.command(pass_context=True, name="clear")
     async def purge(self, ctx, limit: int):
         """Clears a given number of messages. Staff only."""
@@ -121,7 +117,7 @@ class Mod:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
-    @commands.has_permissions(manage_nicknames=True)
+    @is_staff("HalfOP")
     @commands.command(pass_context=True, name="mute")
     async def mute(self, ctx, user, *, reason=""):
         """Mutes a user so they can't speak. Staff only."""
@@ -154,7 +150,7 @@ class Mod:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
-    @commands.has_permissions(manage_nicknames=True)
+    @is_staff("HalfOP")
     @commands.command(pass_context=True, name="timemute")
     async def timemute(self, ctx, user, length, *, reason=""):
         """Mutes a user for a limited period of time so they can't speak. Staff only.\n\nLength format: #d#h#m#s"""
@@ -204,7 +200,7 @@ class Mod:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
-    @commands.has_permissions(manage_nicknames=True)
+    @is_staff("HalfOP")
     @commands.command(pass_context=True, name="unmute")
     async def unmute(self, ctx, user):
         """Unmutes a user so they can speak. Staff only."""
@@ -225,7 +221,7 @@ class Mod:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
-    @commands.has_permissions(manage_nicknames=True)
+    @is_staff("HalfOP")
     @commands.command(pass_context=True, name="noembed")
     async def noembed(self, ctx, user, *, reason=""):
         """Removes embed permissions from a user. Staff only."""
@@ -251,7 +247,7 @@ class Mod:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
-    @commands.has_permissions(manage_nicknames=True)
+    @is_staff("HalfOP")
     @commands.command(pass_context=True, name="embed")
     async def embed(self, ctx, user):
         """Restore embed permissios for a user. Staff only."""
@@ -265,14 +261,10 @@ class Mod:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
+    @is_staff("Helper")
     @commands.command(pass_context=True, name="takehelp")
     async def takehelp(self, ctx, user, *, reason=""):
         """Remove access to help-and-questions. Staff and Helpers only."""
-        author = ctx.message.author
-        if (self.bot.helpers_role not in author.roles) and (self.bot.staff_role not in author.roles):
-            msg = "{} You cannot use this command.".format(author.mention)
-            await self.bot.say(msg)
-            return
         try:
             member = ctx.message.mentions[0]
             await self.add_restriction(member, "No-Help")
@@ -304,14 +296,10 @@ class Mod:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
+    @is_staff("Helper")
     @commands.command(pass_context=True, name="givehelp")
     async def givehelp(self, ctx, user):
         """Restore access to help-and-questions. Staff and Helpers only."""
-        author = ctx.message.author
-        if (self.bot.helpers_role not in author.roles) and (self.bot.staff_role not in author.roles):
-            msg = "{} You cannot use this command.".format(author.mention)
-            await self.bot.say(msg)
-            return
         try:
             member = ctx.message.mentions[0]
             await self.remove_restriction(member, "No-Help")
@@ -331,14 +319,10 @@ class Mod:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
+    @is_staff("Helper")
     @commands.command(pass_context=True, name="timetakehelp")
     async def timetakehelp(self, ctx, user, length, *, reason=""):
         """Restricts a user from Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
-        author = ctx.message.author
-        if (self.bot.helpers_role not in author.roles) and (self.bot.staff_role not in author.roles):
-            msg = "{} You cannot use this command.".format(author.mention)
-            await self.bot.say(msg)
-            return
         try:
             member = ctx.message.mentions[0]
             await self.add_restriction(member, "No-Help")
@@ -387,7 +371,7 @@ class Mod:
         except discord.errors.Forbidden:
             await self.bot.say("?? I don't have permission to do this.")
 
-    @commands.has_permissions(manage_nicknames=True)
+    @is_staff("HalfOP")
     @commands.command(pass_context=True, name="probate")
     async def probate(self, ctx, user, *, reason=""):
         """Probate a user. Staff only."""
@@ -412,7 +396,7 @@ class Mod:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
-    @commands.has_permissions(manage_nicknames=True)
+    @is_staff("HalfOP")
     @commands.command(pass_context=True, name="unprobate")
     async def unprobate(self, ctx, user):
         """Unprobate a user. Staff only."""
@@ -426,7 +410,7 @@ class Mod:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
-    @commands.has_permissions(ban_members=True)
+    @is_staff("OP")
     @commands.command(pass_context=True)
     async def playing(self, ctx, *gamename):
         """Sets playing message. Staff only."""
@@ -435,7 +419,7 @@ class Mod:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
-    @commands.has_permissions(ban_members=True)
+    @is_staff("OP")
     @commands.command(pass_context=True)
     async def status(self, ctx, status):
         """Sets status. Staff only."""
@@ -453,7 +437,7 @@ class Mod:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
-    @commands.has_permissions(ban_members=True)
+    @is_staff("OP")
     @commands.command(pass_context=True, hidden=True)
     async def username(self, ctx, *, username):
         """Sets bot name. Staff only."""

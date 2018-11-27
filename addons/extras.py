@@ -1,8 +1,10 @@
+import datetime
 import discord
 import os
 import random
 import string
 from discord.ext import commands
+from addons.checks import is_staff
 
 class Extras:
     """
@@ -14,8 +16,8 @@ class Extras:
 
     prune_key = "nokey"
 
-    @commands.command()
-    async def kurisu(self, aliases=['about']):
+    @commands.command(aliases=['about'])
+    async def kurisu(self):
         """About Kurisu"""
         embed = discord.Embed(title="Kurisu", color=discord.Color.green())
         embed.set_author(name="Started by 916253, maintained by ihaveahax")
@@ -29,13 +31,13 @@ class Extras:
         """Prints the member count of the server."""
         await self.bot.say("{} has {:,} members!".format(self.bot.server.name, self.bot.server.member_count))
 
-    @commands.has_permissions(ban_members=True)
+    @is_staff("OP")
     @commands.command(hidden=True)
     async def embedtext(self, *, text):
         """Embed content."""
         await self.bot.say(embed=discord.Embed(description=text))
 
-    @commands.has_permissions(manage_nicknames=True)
+    @is_staff("HalfOP")
     @commands.command()
     async def estprune(self, days=30):
         """Estimate count of members that would be pruned based on the amount of days. Staff only."""
@@ -49,7 +51,7 @@ class Extras:
         count = await self.bot.estimate_pruned_members(server=self.bot.server, days=days)
         await self.bot.edit_message(msg, "{:,} members inactive for {} day(s) would be kicked from {}!".format(count, days, self.bot.server.name))
 
-    @commands.has_permissions(manage_nicknames=True)
+    @is_staff("HalfOP")
     @commands.command()
     async def activecount(self, days=30):
         """Shows the number of members active in the past amount of days. Staff only."""
@@ -67,7 +69,7 @@ class Extras:
             await self.bot.edit_message(msg, "{:,} members were active in the past {} days in {}!".format(self.bot.server.member_count-count, days, self.bot.server.name))
 
 
-    @commands.has_permissions(manage_nicknames=True)
+    @is_staff("HalfOP")
     @commands.command(pass_context=True)
     async def prune30(self, ctx, key=""):
         """Prune members that are inactive for 30 days. Staff only."""
@@ -88,14 +90,14 @@ class Extras:
         msg = "👢 **Prune**: {} pruned {:,} members".format(ctx.message.author.mention, count)
         await self.bot.send_message(self.bot.modlogs_channel, msg)
 
-    @commands.has_permissions(manage_nicknames=True)
+    @is_staff("HalfOP")
     @commands.command()
     async def disableleavelogs(self):
         """DEBUG COMMAND"""
         self.bot.pruning = True
         await self.bot.say("disable")
 
-    @commands.has_permissions(manage_nicknames=True)
+    @is_staff("HalfOP")
     @commands.command()
     async def enableleavelogs(self):
         """DEBUG COMMAND"""
@@ -117,7 +119,7 @@ class Extras:
         """Console Security - Switch"""
         await self.bot.say("https://www.youtube.com/watch?v=Ec4NgWRE8ik")
 
-    @commands.has_permissions(administrator=True)
+    @is_staff("Owner")
     @commands.command(pass_context=True, hidden=True)
     async def dumpchannel(self, ctx, channel_name, limit=100):
         """Dump 100 messages from a channel to a file."""
@@ -141,16 +143,25 @@ class Extras:
             else:
                 await self.bot.add_roles(author, self.bot.elsewhere_role)
                 await self.bot.send_message(author, "Access to #elsewhere granted.")
-        elif channelname == "eventchat":
-            if self.bot.eventchat_role in author.roles:
-                await self.bot.remove_roles(author, self.bot.eventchat_role)
-                await self.bot.send_message(author, "Access to #eventchat granted.")
-            else:
-                await self.bot.add_roles(author, self.bot.eventchat_role)
-                await self.bot.send_message(author, "Access to #eventchat granted.")
         else:
             await self.bot.send_message(author, "{} is not a valid toggleable channel.".format(channelname))
-
+    
+    @commands.command(pass_context=True)
+    async def rainbow(self, ctx):
+        """Colorful"""
+        month = datetime.date.today().month
+        if month == 6:
+            member = ctx.message.author
+            if member.nick and member.nick[-1] == "🌈":
+                await self.bot.say("Your nickname already ends in a rainbow!")
+            elif member.name[-1] == "🌈" and not member.nick:
+                await self.bot.say("Your name already ends in a rainbow!")
+            else:
+                await self.bot.change_nickname(member, member.display_name + " 🌈")
+                await self.bot.say("Your nickname is now \"{} \"!".format(member.display_name))  
+        else:
+            await self.bot.say("This month is not colorful enough!")
+            
     @commands.command(pass_context=True)
     async def norainbow(self, ctx):
         """Tired of it."""
@@ -164,6 +175,22 @@ class Extras:
             await self.bot.say("You don't have a rainbow!")
 
     @commands.command(pass_context=True)
+    async def spooky(self, ctx):
+        """Spookybrew"""
+        month = datetime.date.today().month
+        if month == 10:
+            member = ctx.message.author
+            if member.nick and member.nick[-1] == "🎃":
+                await self.bot.say("Your nickname already ends in a pumpkin!")
+            elif member.name[-1] == "🎃" and not member.nick:
+                await self.bot.say("Your name already ends in a pumpkin!")
+            else:
+                await self.bot.change_nickname(member, member.display_name + " 🎃")
+                await self.bot.say("Your nickname is now \"{} \"!".format(member.display_name))  
+        else:
+            await self.bot.say("This month is not spooky enough!")
+
+    @commands.command(pass_context=True)
     async def nospooky(self, ctx):
         """Tired of it."""
         member = ctx.message.author
@@ -174,6 +201,22 @@ class Extras:
             await self.bot.say("Your username is the one with the pumpkin!")
         else:
             await self.bot.say("You don't have a pumpkin!")
+            
+    @commands.command(pass_context=True)
+    async def turkey(self, ctx):
+        """Turkeybrew"""
+        month = datetime.date.today().month
+        if month == 11:
+            member = ctx.message.author
+            if member.nick and member.nick[-1] == "🦃":
+                await self.bot.say("Your nickname already ends in a turkey!")
+            elif member.name[-1] == "🦃" and not member.nick:
+                await self.bot.say("Your name already ends in a turkey!")
+            else:
+                await self.bot.change_nickname(member, member.display_name + " 🦃")
+                await self.bot.say("Your nickname is now \"{} \"!".format(member.display_name))  
+        else:
+            await self.bot.say("This month is not thankful enough!")
 
     @commands.command(pass_context=True)
     async def noturkey(self, ctx):
@@ -186,7 +229,23 @@ class Extras:
             await self.bot.say("Your username is the one with the turkey!")
         else:
             await self.bot.say("You don't have a turkey!")
-
+            
+    @commands.command(pass_context=True)
+    async def xmasthing(self, ctx):
+        """It's xmas time."""
+        month = datetime.date.today().month
+        if month == 12:
+            member = ctx.message.author
+            if member.nick and member.nick[-1] == "🎄":
+                await self.bot.say("Your nickname already ends in an xmas tree!")
+            elif member.name[-1] == "🎄" and not member.nick:
+                await self.bot.say("Your name already ends in an xmas tree!")
+            else:
+                await self.bot.change_nickname(member, member.display_name + " 🎄")
+                await self.bot.say("Your nickname is now \"{} \"!".format(member.display_name))  
+        else:
+            await self.bot.say("This month is not christmassy enough!")
+            
     @commands.command(pass_context=True)
     async def noxmasthing(self, ctx):
         """Tired of it."""

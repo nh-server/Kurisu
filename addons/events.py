@@ -2,6 +2,7 @@ import asyncio
 import discord
 import json
 import re
+from collections import deque
 from subprocess import call
 from string import printable
 from urllib.parse import urlparse
@@ -97,6 +98,9 @@ class Events:
         'exnhop',  # typo of the above, not sure how common
         'enxshop',  # also typo
         'cdnsp',
+        'wareznx',
+        'wareznext',
+        'softcobra',
     )
 
     # use the full ID, including capitalization and dashes
@@ -150,7 +154,6 @@ class Events:
         'portalroms',
         'romulation',
         'emulator.games',
-        'reinx.guide',
         '3dscia',
     )
 
@@ -170,13 +173,24 @@ class Events:
             json.dump(rsts, f)
 
     # this is not a good idea, but i'll make a better implementation later
-    channels_to_watch_for_videos = ['196635695958196224', '247557068490276864', '279783073497874442', '439933093118476289', '468195563125342228']
+    channels_to_watch_for_videos = ['196635695958196224', '247557068490276864', '279783073497874442', '439933093118476289']
 
     async def scan_message(self, message, is_edit=False):
-        embed = discord.Embed()
+        embed = discord.Embed()    
         embed.description = message.content
         if message.author.id in self.bot.watching:
-            msg = "{} in {}".format(message.author.mention, message.channel.mention)
+            content = "**Channel**:\n[#"+message.channel.name+"](https://discordapp.com/channels/" + message.server.id + "/" + message.channel.id + "/" + message.id+")\n"
+            msg = message.author.mention
+            if message.attachments:
+                content += "**Images**:\n"
+                for c,f in enumerate(message.attachments):
+                    if f["filename"].lower().endswith(self.ignored_file_extensions):
+                        content += "[[{}]]({}) ".format(c+1, f["url"])
+                        if f == message.attachments[-1]:
+                            content += "\n"
+            if message.content:
+                content += "**Message**:\n"
+            embed.description = content + embed.description
             if is_edit:
                 msg += " (edited)"
             await self.bot.send_message(self.bot.watchlogs_channel, msg, embed=embed)
@@ -191,9 +205,9 @@ class Events:
         contains_piracy_video_id = any(x in message.content for x in self.piracy_video_ids)
         contains_piracy_tool_alert_mention = any(x in msg_no_separators for x in self.piracy_tools_alert)
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site',))
-        contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub', 'strawpoii', 'hackinformer.com', 'switchthem.es', 'console.guide', 'jacksorrell.co.uk',))
+        contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub', 'strawpoii', 'hackinformer.com', 'switchthem.es', 'console.guide', 'jacksorrell.co.uk', 'jacksorrell.tv', 'nintendobrew.com', 'reinx.guide', 'NxpeNwz'))
         contains_unbanning_stuff = any(x in msg_no_separators for x in self.unbanning_stuff)
-        contains_video = any(x in msg for x in ('youtube', 'youtu.be')) and message.channel.id in self.channels_to_watch_for_videos
+        contains_video = any(x in msg for x in ('youtube.com', 'youtu.be')) and message.channel.id in self.channels_to_watch_for_videos
 
         # contains_guide_mirror_mention = any(x in msg for x in ('3ds-guide.b4k.co',))
         contains_drama_alert = any(x in msg_no_separators for x in self.drama_alert)
@@ -296,6 +310,25 @@ class Events:
                 pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
             await self.bot.send_message(self.bot.messagelogs_channel, "**Bad site**: {} mentioned a blocked guide mirror in {} (message deleted)".format(message.author.mention, message.channel.mention), embed=embed)
 
+        # check for mention spam
+        if len(message.mentions) >= 6 and not self.bot.helpers_role in message.author.roles:
+            log_msg = "🚫 **Auto-probate**: {} probated for mass user mentions | {}#{}\n🗓 __Creation__: {}\n🏷 __User ID__: {}".format(message.author.mention, message.author.name, message.author.discriminator, message.author.created_at, message.author.id)
+            embed = discord.Embed(title="Deleted message", color=discord.Color.gold())
+            embed.add_field(name="#" + message.channel.name,
+                            value="\u200b" + message.content)
+            await self.bot.send_message(self.bot.modlogs_channel, log_msg, embed=embed)
+            await self.bot.send_message(self.bot.mods_channel, log_msg + "\nSee {} for the deleted message. @here".format(self.bot.modlogs_channel.mention))
+            try:
+                await self.bot.delete_message(message)
+            except discord.errors.NotFound:
+                pass
+            try:
+                await self.bot.send_message(message.author, "You were automatically placed under probation in {} for mass user mentions.".format(self.bot.server.name))
+            except discord.errors.Forbidden:
+                pass
+            await self.add_restriction(message.author, "Probation")
+            await self.bot.add_roles(message.author, self.bot.probation_role)
+
 
     async def keyword_search(self, message):
         msg = ''.join(char for char in message.content.lower() if char in printable)
@@ -349,6 +382,41 @@ class Events:
         except KeyError:
             pass  # if the array doesn't exist, don't raise an error
 
+    async def user_ping_check(self, message):
+        if "p" + message.author.id not in self.user_antispam:
+            self.user_antispam["p" + message.author.id] = deque()
+        self.user_antispam["p" + message.author.id].append((message, len(message.mentions)))
+        _, user_mentions = zip(*self.user_antispam["p" + message.author.id])
+        if sum(user_mentions) > 6:
+            await self.add_restriction(message.author, "Probation")
+            await self.bot.add_roles(message.author, self.bot.probation_role)
+            msg_user = "You were automatically placed under probation for mentioning too many users in a short period of time!\n\nIf you believe this was done in error, send a direct message to one of the staff in {}.".format(self.bot.welcome_channel.mention)
+            try:
+                await self.bot.send_message(message.author, msg_user)
+            except discord.errors.Forbidden:
+                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
+            log_msg = "🚫 **Auto-probated**: {} probated for mass user mentions | {}#{}\n🗓 __Creation__: {}\n🏷 __User ID__: {}".format(message.author.mention, message.author.name, message.author.discriminator, message.author.created_at, message.author.id)
+            embed = discord.Embed(title="Deleted messages", color=discord.Color.gold())
+            msgs_to_delete = self.user_antispam["p" + message.author.id].copy()  # clone list so nothing is removed while going through it
+            for msg in msgs_to_delete:
+                embed.add_field(name="#"+msg[0].channel.name, value="\u200b" + msg[0].content)  # added zero-width char to prevent an error with an empty string (lazy workaround)
+            await self.bot.send_message(self.bot.modlogs_channel, log_msg, embed=embed)
+            await self.bot.send_message(self.bot.mods_channel, log_msg + "\nSee {} for a list of deleted messages. @here".format(self.bot.modlogs_channel.mention))
+            for msg in msgs_to_delete:
+                try:
+                    await self.bot.delete_message(msg[0])
+                except discord.errors.NotFound:
+                    pass  # don't fail if the message doesn't exist
+            self.user_antispam["p" + message.author.id].clear()
+        else:
+            await asyncio.sleep(10)
+            self.user_antispam["p" + message.author.id].popleft()
+        try:
+            if len(self.user_antispam["p" + message.author.id]) == 0:
+                self.user_antispam.pop("p" + message.author.id)
+        except KeyError:
+            pass  # if the array doesn't exist, don't raise an error
+
     async def channel_spam_check(self, message):
         if message.channel.id not in self.channel_antispam:
             self.channel_antispam[message.channel.id] = []
@@ -388,7 +456,7 @@ class Events:
                 await self.bot.send_message(self.bot.helpers_channel, "Automatically pulling changes!")
                 call(['git', 'pull'])
                 await self.bot.close()
-                return
+            return
         if message.channel.name.endswith('nofilter'):
             return
         await self.bot.wait_until_all_ready()
@@ -396,6 +464,8 @@ class Events:
             return
         await self.scan_message(message)
         # await self.keyword_search(message)
+        if self.bot.helpers_role not in message.author.roles:
+            self.bot.loop.create_task(self.user_ping_check(message))
         self.bot.loop.create_task(self.user_spam_check(message))
         self.bot.loop.create_task(self.channel_spam_check(message))
 
