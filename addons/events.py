@@ -57,10 +57,7 @@ class Events:
         'makiversion',
         'makifbi',
         'utikdownloadhelper',
-        'wiiuusbhelper',
-        'wiiusbhelper',
-        'w11uusbh3lper',
-        'w11usbh3lper',
+        'usbh3lper',
         'funkii',
         'funkey',
         'funk11',
@@ -98,6 +95,12 @@ class Events:
         'exnhop',  # typo of the above, not sure how common
         'enxshop',  # also typo
         'cdnsp',
+        'wareznx',
+        'wareznext',
+        'softcobra',
+        'uwizard',
+        'jnustool',
+        'nusgrabber',
     )
 
     # use the full ID, including capitalization and dashes

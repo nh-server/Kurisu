@@ -229,6 +229,7 @@ class Err:
         '007-2404': 'An error occurred while attempting to connect to the Nintendo eShop.\nMake sure you are running the latest firmware, since this error will appear if you are trying to access the eShop on older versions.',
         '007-2720': 'SSL error?',
         '007-2916': 'HTTP error, server is probably down. Try again later?',
+        '007-2920': 'This error is caused by installing a game or game update from an unofficial source, as it contains a bad ticket.\nThe only solution is to delete the unofficial game or update as well as its ticket\nin FBI, and install the game or update legitimately.',
         '007-2913': 'HTTP error, server is probably down. Try again later?',
         '007-2923': 'The Nintendo Servers are currently down for maintenance. Please try again later.',
         '007-3102': 'Cannot find title on Nintendo eShop. Probably pulled.',
@@ -295,6 +296,7 @@ class Err:
         '2168-0001': ['Resource/Handle not available. (No known support page)', None],
         '2168-0002': ['Segmentation Fault. (No known support page)', None],
         '2168-0003': ['Memory access must be 4 bytes aligned. (No known support page)', None],
+        '2181-4008': ['System is permanently banned by Nintendo. You cannot ask how to fix this issue here.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/42061'],
         '2811-5001': ['General connection error.', 'http://en-americas-support.nintendo.com/app/answers/detail/a_id/22392/p/897'],
     }
 

@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from addons.checks import is_staff, check_staff
 
 class Lockdown:
     """
@@ -9,7 +10,7 @@ class Lockdown:
         self.bot = bot
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
-    @commands.has_permissions(manage_nicknames=True)
+    @is_staff("HalfOP")
     @commands.command(pass_context=True, name="lockdown")
     async def lockdown(self, ctx, *, channels=""):
         """Lock message sending in the channel. Staff only."""
@@ -34,7 +35,7 @@ class Lockdown:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
-    @commands.has_permissions(administrator=True)
+    @is_staff("Owner")
     @commands.command(pass_context=True, name="slockdown")
     async def slockdown(self, ctx, *, channels=""):
         """Lock message sending in the channel for everyone. Owners only."""
@@ -62,17 +63,12 @@ class Lockdown:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
-
+    @is_staff('Helper')
     @commands.command(pass_context=True, name="softlock")
     async def softlock(self, ctx, *, channels=""):
         """Lock message sending in the channel, without the "disciplinary action" note. Staff and Helpers only."""
         issuer = ctx.message.author
-        ishelper = None
-        if (self.bot.helpers_role not in issuer.roles) and (self.bot.staff_role not in issuer.roles):
-            msg = "{0} This command is limited to Staff and Helpers.".format(issuer.mention)
-            await self.bot.say(msg)
-            return
-        ishelper = self.bot.staff_role not in issuer.roles
+        ishelper = not check_staff(ctx.message.author.id, 'HalfOP')
         try:
             if len(ctx.message.channel_mentions) == 0:
                 channels = [ctx.message.channel]              		
@@ -103,16 +99,11 @@ class Lockdown:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
-    @commands.command(pass_context=True, name="unlock")
+    @is_staff('Helper')
     async def unlock(self, ctx, *, channels=""):
         """Unlock message sending in the channel. Staff only and Helpers only."""
         issuer = ctx.message.author
-        ishelper = None
-        if (self.bot.helpers_role not in issuer.roles) and (self.bot.staff_role not in issuer.roles):
-            msg = "{0} This command is limited to Staff and Helpers.".format(issuer.mention)
-            await self.bot.say(msg)
-            return
-        ishelper = self.bot.staff_role not in issuer.roles
+        ishelper = not check_staff(ctx.message.author.id, 'HalfOP')
         try:
             if len(ctx.message.channel_mentions) == 0:
                 channels = [ctx.message.channel]              		
