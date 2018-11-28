@@ -48,7 +48,7 @@ class Memes:
     @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
     async def bean(self, ctx):
         """Memes."""
-        await self._meme(ctx, ":bean:")
+        await self._meme(ctx, "<a:bean:462076812076384257>")
         
     @commands.command(pass_context=True, hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
