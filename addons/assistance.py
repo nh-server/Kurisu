@@ -39,7 +39,7 @@ class Assistance:
             await self.bot.say(msg)
             return
         await self.bot.delete_message(ctx.message)
-        # await self.bot.say("Request sent.")
+        # await self.bot("Request sent.")
         msg = "❗️ **Assistance requested**: {0} by {1} | {2}#{3} @here".format(ctx.message.channel.mention, author.mention, author.name, ctx.message.author.discriminator)
         if msg_request != "":
             # msg += "\n✏️ __Additional text__: " + msg_request
@@ -252,12 +252,16 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
             embed.description = cleandoc("""
                 You have many possible options for installing CFW:
-                - You can install CFW for free on the latest firmware using the [Frogminer](https://3ds.hacks.guide/installing-boot9strap-\(frogminer\)) exploit
+                - You can install CFW for free on the latest firmware using the \
+[Frogminer](https://3ds.hacks.guide/installing-boot9strap-\(frogminer\)) exploit
                 
                 - Other methods:
-                - [NTRBoot](https://3ds.hacks.guide/ntrboot) which requires a compatible NDS flashcart. An additional DS(i) or hacked 3DS console **may** be required depending on the flashcart
-                - [Hardmod](https://3ds.hacks.guide/installing-boot9strap-\(hardmod\)) which requires soldering **(Not for beginners!)**
-                - See [the guide](https://3ds.hacks.guide/) for more methods and details about CFW installation on current and older frmwares.
+                - [NTRBoot](https://3ds.hacks.guide/ntrboot) which requires a compatible NDS flashcart. \
+An additional DS(i) or hacked 3DS console **may** be required depending on the flashcart
+                - [Hardmod](https://3ds.hacks.guide/installing-boot9strap-\(hardmod\)) which requires \
+soldering **(Not for beginners!)**
+                - See [the guide](https://3ds.hacks.guide/) for more methods and details about CFW \
+installation on current and older frmwares.
                 
                 Note: **Downgrading is impossible on 11.4+!**"
                 """)
