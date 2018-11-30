@@ -268,8 +268,7 @@ DSiWare game
             embed.description = cleandoc("""
                 Use [this GBATemp thread](https://tinyurl.com/nxserial) to determine if your Switch is a first-gen unit.
 
-                **6.1.0 and below:** You can safely use [Atmosphere](http://switchguide.xyz/).
-                **6.2.0:** Custom firmware is currently incompatible with this version.
+                Currently all firmware versions are compatible with [Atmosphere](http://switchguide.xyz/).
 
                 "Second-generation" invulnerable systems should **not** update past 4.1.0, as these systems may have\
 custom firmware on this version in the very far future.
