@@ -41,8 +41,8 @@ class Extras:
         for c in des_channels.split():
             try:
                 ch = converter(ctx, c).convert()
-            except commands.errors.BadArgument:
-                await self.bot.say("Channel {} not found".format(c))
+            except commands.errors.BadArgument as e:
+                await self.bot.say(e)
                 continue
             await self.bot.edit_channel_permissions(ch, role, overwrite=perms)
         await self.bot.say("Changed permissions successfully")
