@@ -33,13 +33,14 @@ class Extras:
         await self.bot.say("{} has {:,} members!".format(self.bot.server.name, self.bot.server.member_count))
 
     @is_staff("SuperOP")
-    @commands.command(pass_context=True, hidden=True)
-    async def copyrole(self, ctx, role: discord.Role, channel: discord.Channel, *, channels):
+    @commands.command(pass_context=True, no_pm=True, hidden=True)
+    async def copyrole(self, ctx, role: discord.Role, src_channel: discord.Channel, *, des_channels):
         """Copy role permission from a channel to channels"""
-        perms = channel.overwrites_for(role)
-        for c in channels.split():
+        perms = src_channel.overwrites_for(role)
+        converter = commands.ChannelConverter
+        for c in des_channels.split():
             try:
-                ch = commands.ChannelConverter(ctx, c).convert()
+                ch = converter(ctx, c).convert()
             except commands.errors.BadArgument:
                 await self.bot.say("Channel {} not found".format(c))
                 continue
