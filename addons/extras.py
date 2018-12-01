@@ -2,6 +2,7 @@ import datetime
 import discord
 import os
 import random
+import re
 import string
 from discord.ext import commands
 from addons.checks import is_staff
@@ -30,6 +31,43 @@ class Extras:
     async def membercount(self):
         """Prints the member count of the server."""
         await self.bot.say("{} has {:,} members!".format(self.bot.server.name, self.bot.server.member_count))
+
+    @is_staff("SuperOP")
+    @commands.command(pass_context=True, hidden=True)
+    async def copyrole(self, ctx, role: discord.Role, channel: discord.Channel, *, channels):
+        """Copy role permission from a channel to channels"""
+        perms = channel.overwrites_for(role)
+        for c in channels.split(" "):
+            try:
+                ch = commands.ChannelConverter(ctx, c).convert()
+            except commands.errors.BadArgument:
+                await self.bot.say("Channel {} not found".format(c))
+                continue
+            await self.bot.edit_channel_permissions(ch, role, overwrite=perms)
+        await self.bot.say("Changed permissions successfully")
+
+    @is_staff("Staff")
+    @commands.command(pass_context=True, hidden=True)
+    async def userroles(self, ctx, u: discord.Member = None):
+        """Gets user roles and their id. Staff only."""
+        if not u:
+            u = ctx.message.author
+        msg = "{}'s Roles:\n\n".format(u.mention)
+        for role in ctx.message.author.roles:
+            if role.is_everyone: #Dont include everyone role
+                continue
+            msg += "{} = {}\n".format(role, role.id)
+        await self.bot.send_message(ctx.message.author, msg)
+
+    @is_staff("Staff")
+    @commands.command(pass_context=True, hidden=True)
+    async def serverroles(self, ctx, exp: str):
+        """Gets the server roles and their id by regex. Staff only."""
+        msg = "Server roles matching `{}`:\n\n".format(exp)
+        for role in ctx.message.server.roles:
+            if bool(re.search(exp, role.name, re.IGNORECASE)):
+                msg += "{} = {}\n".format(role.name, role.id)
+        await self.bot.send_message(ctx.message.author, msg)
 
     @is_staff("OP")
     @commands.command(hidden=True)
