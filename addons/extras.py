@@ -54,7 +54,7 @@ class Extras:
         if not u:
             u = ctx.message.author
         msg = "{}'s Roles:\n\n".format(u.mention)
-        for role in ctx.message.author.roles:
+        for role in u.roles:
             if role.is_everyone: #Dont include everyone role
                 continue
             msg += "{} = {}\n".format(role, role.id)
