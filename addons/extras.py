@@ -37,7 +37,7 @@ class Extras:
     async def copyrole(self, ctx, role: discord.Role, channel: discord.Channel, *, channels):
         """Copy role permission from a channel to channels"""
         perms = channel.overwrites_for(role)
-        for c in channels.split(" "):
+        for c in channels.split():
             try:
                 ch = commands.ChannelConverter(ctx, c).convert()
             except commands.errors.BadArgument:
