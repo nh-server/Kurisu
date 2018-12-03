@@ -106,11 +106,21 @@ class NXErr:
         212: "GRC ",
         216: "Migration ",
         217: "Migration Idc Server ",
+
+        # Libnx
+
         345: "libnx ",
         346: "Homebrew ABI ",
         347: "Homebrew Loader ",
         348: "libnx Nvidia",
-        349: "libnx Binder"
+        349: "libnx Binder",
+
+        # Support Errors
+
+        800: "General web-applet",
+        809: "WifiWebAuthApplet",
+        810: "Whitelisted-applet",
+        811: "ShopN",
     }
 
     known_errcodes = {
@@ -593,10 +603,9 @@ class NXErr:
         0x1D5C: "LibnxNvidiaError_Busy",
         0x1F5C: "LibnxNvidiaError_ResourceError",
         0x215C: "LibnxNvidiaError_CountMismatch",
-        # These are written as hex already in result.h - Will just copy them ... ?
-        0x1000: "LibnxNvidiaError_SharedMemoryTooSmall",
-        0x30003: "LibnxNvidiaError_FileOperationFailed",
-        0x3000F: "LibnxNvidiaError_IoctlFailed",
+        0x235C: "LibnxNvidiaError_SharedMemoryTooSmall",
+        0x255C: "LibnxNvidiaError_FileOperationFailed",
+        0x275C: "LibnxNvidiaError_IoctlFailed",
 
         # Non-SwitchBrew Error Codes - Should probably add them to SwitchBrew if you read this
 
@@ -606,6 +615,7 @@ class NXErr:
         0x3E8EA0: 'Failed connection test',
         0x1F4E7C: '(normal) console ban',
         0x27EE7C: '(potential) complete account ban', # This error is still super new, needs more informations
+        0x36B72B: "Access token expired",
         # 0x3E8E89: 'Failed to access Firmware Updates - Often because of DNS!',
         # ^ Also used by libcurl
 
