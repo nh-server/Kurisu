@@ -100,6 +100,7 @@ class Lockdown:
             await self.bot.say("💢 I don't have permission to do this.")
 
     @is_staff('Helper')
+    @commands.command(pass_context=True, name="unlock")
     async def unlock(self, ctx, *, channels=""):
         """Unlock message sending in the channel. Staff only and Helpers only."""
         issuer = ctx.message.author

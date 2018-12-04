@@ -6,6 +6,7 @@ import time
 from discord.ext import commands
 from subprocess import call
 from addons.checks import is_staff
+from addons import converters
 
 class Mod:
     """
@@ -119,10 +120,9 @@ class Mod:
 
     @is_staff("HalfOP")
     @commands.command(pass_context=True, name="mute")
-    async def mute(self, ctx, user, *, reason=""):
+    async def mute(self, ctx, member: converters.SafeMember, *, reason=""):
         """Mutes a user so they can't speak. Staff only."""
         try:
-            member = ctx.message.mentions[0]
             await self.add_restriction(member, "Muted")
             await self.bot.add_roles(member, self.bot.muted_role)
             msg_user = "You were muted!"
@@ -152,10 +152,9 @@ class Mod:
 
     @is_staff("HalfOP")
     @commands.command(pass_context=True, name="timemute")
-    async def timemute(self, ctx, user, length, *, reason=""):
+    async def timemute(self, ctx, member: converters.SafeMember, length, *, reason=""):
         """Mutes a user for a limited period of time so they can't speak. Staff only.\n\nLength format: #d#h#m#s"""
         try:
-            member = ctx.message.mentions[0]
             await self.add_restriction(member, "Muted")
             await self.bot.add_roles(member, self.bot.muted_role)
             issuer = ctx.message.author
@@ -202,10 +201,9 @@ class Mod:
 
     @is_staff("HalfOP")
     @commands.command(pass_context=True, name="unmute")
-    async def unmute(self, ctx, user):
+    async def unmute(self, ctx, member: converters.SafeMember):
         """Unmutes a user so they can speak. Staff only."""
         try:
-            member = ctx.message.mentions[0]
             await self.remove_restriction(member, "Muted")
             await self.bot.remove_roles(member, self.bot.muted_role)
             await self.bot.say("{} can now speak again.".format(member.mention))
@@ -223,10 +221,9 @@ class Mod:
 
     @is_staff("HalfOP")
     @commands.command(pass_context=True, name="noembed")
-    async def noembed(self, ctx, user, *, reason=""):
+    async def noembed(self, ctx, member: converters.SafeMember, *, reason=""):
         """Removes embed permissions from a user. Staff only."""
         try:
-            member = ctx.message.mentions[0]
             await self.add_restriction(member, "No-Embed")
             await self.bot.add_roles(member, self.bot.noembed_role)
             msg_user = "You lost embed and upload permissions!"
@@ -249,10 +246,9 @@ class Mod:
 
     @is_staff("HalfOP")
     @commands.command(pass_context=True, name="embed")
-    async def embed(self, ctx, user):
+    async def embed(self, ctx, member: converters.SafeMember):
         """Restore embed permissios for a user. Staff only."""
         try:
-            member = ctx.message.mentions[0]
             await self.remove_restriction(member, "No-Embed")
             await self.bot.remove_roles(member, self.bot.noembed_role)
             await self.bot.say("{} can now embed links and attach files again.".format(member.mention))
@@ -263,10 +259,9 @@ class Mod:
 
     @is_staff("Helper")
     @commands.command(pass_context=True, name="takehelp")
-    async def takehelp(self, ctx, user, *, reason=""):
+    async def takehelp(self, ctx, member: converters.SafeMember, *, reason=""):
         """Remove access to help-and-questions. Staff and Helpers only."""
         try:
-            member = ctx.message.mentions[0]
             await self.add_restriction(member, "No-Help")
             await self.bot.add_roles(member, self.bot.nohelp_role)
             msg_user = "You lost access to help channels!"
@@ -298,10 +293,9 @@ class Mod:
 
     @is_staff("Helper")
     @commands.command(pass_context=True, name="givehelp")
-    async def givehelp(self, ctx, user):
+    async def givehelp(self, ctx, member: converters.SafeMember):
         """Restore access to help-and-questions. Staff and Helpers only."""
         try:
-            member = ctx.message.mentions[0]
             await self.remove_restriction(member, "No-Help")
             await self.bot.remove_roles(member, self.bot.nohelp_role)
             await self.bot.say("{} can access the help channels again.".format(member.mention))
@@ -321,10 +315,9 @@ class Mod:
 
     @is_staff("Helper")
     @commands.command(pass_context=True, name="timetakehelp")
-    async def timetakehelp(self, ctx, user, length, *, reason=""):
+    async def timetakehelp(self, ctx, member: converters.SafeMember, length, *, reason=""):
         """Restricts a user from Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         try:
-            member = ctx.message.mentions[0]
             await self.add_restriction(member, "No-Help")
             await self.bot.add_roles(member, self.bot.nohelp_role)
             issuer = ctx.message.author
@@ -373,10 +366,9 @@ class Mod:
 
     @is_staff("HalfOP")
     @commands.command(pass_context=True, name="probate")
-    async def probate(self, ctx, user, *, reason=""):
+    async def probate(self, ctx, member: converters.SafeMember, *, reason=""):
         """Probate a user. Staff only."""
         try:
-            member = ctx.message.mentions[0]
             await self.add_restriction(member, "Probation")
             await self.bot.add_roles(member, self.bot.probation_role)
             msg_user = "You are under probation!"
@@ -398,10 +390,9 @@ class Mod:
 
     @is_staff("HalfOP")
     @commands.command(pass_context=True, name="unprobate")
-    async def unprobate(self, ctx, user):
+    async def unprobate(self, ctx, member: converters.SafeMember):
         """Unprobate a user. Staff only."""
         try:
-            member = ctx.message.mentions[0]
             await self.remove_restriction(member, "Probation")
             await self.bot.remove_roles(member, self.bot.probation_role)
             await self.bot.say("{} is out of probation.".format(member.mention))
@@ -445,6 +436,20 @@ class Mod:
             await self.bot.edit_profile(username=('{}'.format(username)))
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
+
+    @mute.error
+    @timemute.error
+    @unmute.error
+    @noembed.error
+    @embed.error
+    @takehelp.error
+    @givehelp.error
+    @timetakehelp.error
+    @probate.error
+    @unprobate.error
+    async def mod_action_error_handler(self, error, ctx):
+        if isinstance(error, commands.errors.BadArgument):
+            await self.bot.say(error)
 
 def setup(bot):
     bot.add_cog(Mod(bot))
