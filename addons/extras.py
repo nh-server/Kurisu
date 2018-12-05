@@ -53,7 +53,7 @@ class Extras:
         """Gets user roles and their id. Staff only."""
         if not u:
             u = ctx.message.author
-        msg = "{}'s Roles:\n\n".format(u.mention)
+        msg = "{}'s Roles:\n\n".format(u)
         for role in u.roles:
             if role.is_everyone: #Dont include everyone role
                 continue
