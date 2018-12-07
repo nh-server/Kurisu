@@ -136,7 +136,7 @@ versions on 11.9 will cause a blackscreen until you update.
                 **Luma3DS <=7.0.5**
                 Follow the [a9lh-to-b9s guide](https://3ds.hacks.guide/a9lh-to-b9s)
                  
-                **To find out your Luma3DS version, hold select on bootup and look at the top left corner of the top screen**")
+                **To find out your Luma3DS version, hold select on bootup and look at the top left corner of the top screen**
                 """)
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -191,7 +191,7 @@ versions on 11.9 will cause a blackscreen until you update.
     async def modmoon(self):
         """Links to a tool for a mod manager"""
         await self.simple_embed(cleandoc("""
-                                To install mods for Smash 3DS, and to manage other LayeredFS mods,\
+                                To install mods for Smash 3DS, and to manage other LayeredFS mods, \
 [Mod-Moon](https://github.com/Swiftloke/ModMoon/releases) is recommended. Instructions for use can be found on the page.
                                 """))
 
@@ -252,13 +252,13 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
             embed.description = cleandoc("""
                 You have 4 possible options for installing CFW:
-                - [NTRBoot](https://3ds.hacks.guide/ntrboot) which requires a compatible NDS flashcart and maybe an\
-additional DS(i) or hacked 3DS console depending on the flashcart
+                - [NTRBoot](https://3ds.hacks.guide/ntrboot) which requires a compatible NDS flashcart and maybe an \
+additional DS(i) or hacked 3DS console depending on the flashcart.
                 - [Frogminer](https://3ds.filthycasuals.tech/frogminer.html) which requires a homebrew entrypoint like \
 [steelminer](http://steelminer.jisagi.net/) (free method) or freakyhax.
                 - [Seedminer](https://3ds.hacks.guide/installing-boot9strap-\(seedminer\)) which requires a compatible \
-DSiWare game
-                - [Hardmod](https://3ds.hacks.guide/installing-boot9strap-\(hardmod\)) which requires "soldering \
+DSiWare game.
+                - [Hardmod](https://3ds.hacks.guide/installing-boot9strap-\(hardmod\)) which requires soldering \
 **Not for beginners!**
                 **Downgrading is impossible on 11.4+!**
                 """)
@@ -270,7 +270,7 @@ DSiWare game
 
                 Currently all firmware versions are compatible with [Atmosphere](http://switchguide.xyz/).
 
-                "Second-generation" invulnerable systems should **not** update past 4.1.0, as these systems may have\
+                "Second-generation" invulnerable systems should **not** update past 4.1.0, as these systems may have \
 custom firmware on this version in the very far future.
 
                 **Downgrading is convoluted, often breaks sleep mode, and is generally not worth the effort!** 
@@ -295,13 +295,13 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         """Get homebrew launcher working on 11.4+ firmware"""
         await self.simple_embed("""
                                 If you are looking to get access to the homebrew launcher on your unhacked 11.4+ 3DS \
-(Not CFW or CIA installation!), then you will need an exploit like ninjhax, stickerhax,\
+(Not CFW or CIA installation!), then you will need an exploit like ninjhax, stickerhax, \
 freakyhax or oot3dhax. 
                                 Please note that stickerhax and oot3dhax require prior access to the homebrew launcher \
 to install the hack on them (Or you can use a powersaves with oot3d)
                                 
-                                If you want access to homebrew on 11.4+, it is recommended that you rather install CFW,\
-as a NTRBoot compatible DS flashcart costs a lot less than a copy of Freakyforms Deluxe,\
+                                If you want access to homebrew on 11.4+, it is recommended that you rather install CFW, \
+as a NTRBoot compatible DS flashcart costs a lot less than a copy of Freakyforms Deluxe, \
 Cubic Ninja, Paper Mario Sticker Star or Ocarina of Time 3D.
                                 """)
 
@@ -325,7 +325,7 @@ format it to FAT32.
                                 Formatter examples:
                                 • Windows: [guiformat](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm)
                                 • Linux: [gparted](http://gparted.org/download.php)
-                                • Mac: [Disk Utility](https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010)\
+                                • Mac: [Disk Utility](https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010) \
 (Always choose "MS-DOS (FAT)" regardless of size, not ExFAT.)
                                 """
                                 , title="Big SD cards")
@@ -345,16 +345,16 @@ format it to FAT32.
     async def lumabug(self):
         """Luma Black Screen Bug"""
         await self.simple_embed("""
-                                If you have Luma3DS and your console is stuck on a black screen after you power it on,\
+                                If you have Luma3DS and your console is stuck on a black screen after you power it on, \
 follow these steps:
                                 1. Power off the console.
                                 2. Take out any game cartridge, but leave the SD card in.
                                 3. Power on the console.
                                 4. Leave the console open and powered on for 10-15 minutes. Do not touch the console \
 during this time.
-                                If the console boots successfully in that time, the bug is now fixed and is unlikely to\ 
+                                If the console boots successfully in that time, the bug is now fixed and is unlikely to \
 happen again. If the console still fails to boot to home menu, come back and ask for more help. Mention that you have \
-already tried the 'Luma black screen process.
+already tried the Luma black screen process.
                                 """, title="Luma Black Screen Bug")
 
     @commands.command()
@@ -363,7 +363,7 @@ already tried the 'Luma black screen process.
         """Missing boot.firm"""
         embed = discord.Embed(title="No, you are not bricked")
         embed.description = cleandoc("""
-                            If your power LED turns on and off after you installed b9s, you are not bricked and are\
+                            If your power LED turns on and off after you installed b9s, you are not bricked and are \
 just missing a file called boot.firm in the root of your SD card.
                             """)
         embed.add_field(name="How to fix the issue", value="1. Check you inserted the SD card in your console\n 2. Place/replace the file, downloading it from https://github.com/AuroraWright/Luma3DS/releases", inline=False)
@@ -375,7 +375,7 @@ just missing a file called boot.firm in the root of your SD card.
     async def emureco(self):
         """Recommendation about EmuNAND"""
         await self.simple_embed("""
-                                If you want to set up an EmuNAND the first thing to know is that you probably don't\
+                                If you want to set up an EmuNAND the first thing to know is that you probably don't \
 need it; if you don't know what an EmuNAND is, you don't need one.
                                 """, title="EmuNAND Recommendation")
 
@@ -384,7 +384,7 @@ need it; if you don't know what an EmuNAND is, you don't need one.
     async def failedupdate(self):
         """Notice about failed update on Wii U"""
         await self.simple_embed("""
-                                 A failed update in Download Management does not mean there is an update and the system\
+                                 A failed update in Download Management does not mean there is an update and the system \
 is trying to download it. This means your blocking method (DNS etc.) is working and \
 the system can't check for an update.
                                  """, color=discord.Color(0x009AC7))
