@@ -47,7 +47,7 @@ class Extras:
             await self.bot.edit_channel_permissions(ch, role, overwrite=perms)
         await self.bot.say("Changed permissions successfully")
 
-    @is_staff("Staff")
+    @is_staff("HalfOP")
     @commands.command(pass_context=True, hidden=True)
     async def userroles(self, ctx, u: discord.Member = None):
         """Gets user roles and their id. Staff only."""
@@ -60,7 +60,7 @@ class Extras:
             msg += "{} = {}\n".format(role, role.id)
         await self.bot.send_message(ctx.message.author, msg)
 
-    @is_staff("Staff")
+    @is_staff("HalfOP")
     @commands.command(pass_context=True, hidden=True)
     async def serverroles(self, ctx, exp: str):
         """Gets the server roles and their id by regex. Staff only."""
