@@ -254,7 +254,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 You have 4 possible options for installing CFW:
                 - [NTRBoot](https://3ds.hacks.guide/ntrboot) which requires a compatible NDS flashcart and maybe an \
 additional DS(i) or hacked 3DS console depending on the flashcart.
-                - [Frogminer](https://3ds.filthycasuals.tech/frogminer.html) which requires a homebrew entrypoint like \
+                - [Frogminer](https://jisagi.github.io/FrogminerGuide/) which requires a homebrew entrypoint like \
 [steelminer](http://steelminer.jisagi.net/) (free method) or freakyhax.
                 - [Seedminer](https://3ds.hacks.guide/installing-boot9strap-\(seedminer\)) which requires a compatible \
 DSiWare game.
