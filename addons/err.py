@@ -318,7 +318,7 @@ class Err:
         elif rc == 2343432205:
             await self.bot.say(binascii.unhexlify(hex(43563598107828907579305977861310806718428700278286708)[2:]).decode('utf-8'))
 
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, aliases=["ninerr"])
     async def err(self, ctx, err: str):
         """
         Parses Nintendo and CTR error codes, with a fancy embed. 0x prefix is not required.
@@ -397,10 +397,6 @@ class Err:
         value += self.get_name(self.levels, level, 'level')
         embed.description = value
         await self.bot.say("", embed=embed)
-
-    @commands.command(pass_context=True, hidden=True)
-    async def ninerr(self, ctx):
-        await self.bot.say("Merged with " + ctx.prefix + "err, use that instead")
 
 def setup(bot):
     bot.add_cog(Err(bot))
