@@ -328,7 +328,7 @@ class Err:
         mod = (rc >> 10) & 0xFF
         summ = (rc >> 21) & 0x3F
         level = (rc >> 27) & 0x1F
-        return desc, mod, summ, level
+        return desc, mod, summ, level, rc
 
     @commands.command(pass_context=True)
     async def err(self, ctx, err: str):
@@ -371,7 +371,7 @@ class Err:
                     embed.color = embed.Empty
                     embed.description = "I don't know this one! Click the error code for details on Nintendo Support.\n\nIf you keep getting this issue and Nintendo Support does not help, and know how to fix it, you should report relevant details to <@78465448093417472> so it can be added to the bot."
         else:
-            desc, mod, summ, level = await self.convert_zerox(err)
+            desc, mod, summ, level, rc = await self.convert_zerox(err)
 
             # garbage
             embed = discord.Embed(title="0x{:X}".format(rc))
@@ -383,7 +383,7 @@ class Err:
 
     @commands.command(pass_context=True)
     async def err2(self, ctx, err: str):
-        desc, mod, summ, level = await self.convert_zerox(err)
+        desc, mod, summ, level, rc = await self.convert_zerox(err)
  
         # garbage
         embed = discord.Embed(title="0x{:X}".format(rc))
