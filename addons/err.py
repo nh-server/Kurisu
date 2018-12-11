@@ -318,7 +318,19 @@ class Err:
         elif rc == 2343432205:
             await self.bot.say(binascii.unhexlify(hex(43563598107828907579305977861310806718428700278286708)[2:]).decode('utf-8'))
 
-    @commands.command(pass_context=True, aliases=["ninerr"])
+    async def convert_zerox(self, err):
+        err = err.strip()
+        if err.startswith("0x"):
+            err = err[2:]
+        rc = int(err, 16)
+        await self.aaaa(rc)
+        desc = rc & 0x3FF
+        mod = (rc >> 10) & 0xFF
+        summ = (rc >> 21) & 0x3F
+        level = (rc >> 27) & 0x1F
+        return desc, mod, summ, level
+
+    @commands.command(pass_context=True)
     async def err(self, ctx, err: str):
         """
         Parses Nintendo and CTR error codes, with a fancy embed. 0x prefix is not required.
@@ -359,15 +371,7 @@ class Err:
                     embed.color = embed.Empty
                     embed.description = "I don't know this one! Click the error code for details on Nintendo Support.\n\nIf you keep getting this issue and Nintendo Support does not help, and know how to fix it, you should report relevant details to <@78465448093417472> so it can be added to the bot."
         else:
-            err = err.strip()
-            if err.startswith("0x"):
-                err = err[2:]
-            rc = int(err, 16)
-            await self.aaaa(rc)
-            desc = rc & 0x3FF
-            mod = (rc >> 10) & 0xFF
-            summ = (rc >> 21) & 0x3F
-            level = (rc >> 27) & 0x1F
+            desc, mod, summ, level = await self.convert_zerox(err)
 
             # garbage
             embed = discord.Embed(title="0x{:X}".format(rc))
@@ -379,16 +383,8 @@ class Err:
 
     @commands.command(pass_context=True)
     async def err2(self, ctx, err: str):
-        err = err.strip()
-        if err.startswith("0x"):
-            err = err[2:]
-        rc = int(err, 16)
-        await self.aaaa(rc)
-        desc = rc & 0x3FF
-        mod = (rc >> 10) & 0xFF
-        summ = (rc >> 21) & 0x3F
-        level = (rc >> 27) & 0x1F
-
+        desc, mod, summ, level = await self.convert_zerox(err)
+ 
         # garbage
         embed = discord.Embed(title="0x{:X}".format(rc))
         value = self.get_name(self.modules, mod, 'module') + '\n'
