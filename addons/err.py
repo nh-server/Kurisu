@@ -3,6 +3,7 @@ import discord
 import re
 from discord.ext import commands
 from discord import Color
+import string
 
 class Err:
     """
@@ -370,7 +371,7 @@ class Err:
                 else:
                     embed.color = embed.Empty
                     embed.description = "I don't know this one! Click the error code for details on Nintendo Support.\n\nIf you keep getting this issue and Nintendo Support does not help, and know how to fix it, you should report relevant details to <@78465448093417472> so it can be added to the bot."
-        else:
+        elif err.startswith("0x") or all(c in string.hexdigits for c in err):
             desc, mod, summ, level, rc = await self.convert_zerox(err)
 
             # garbage
@@ -379,10 +380,16 @@ class Err:
             embed.add_field(name="Description", value=self.get_name(self.descriptions, desc), inline=False)
             embed.add_field(name="Summary", value=self.get_name(self.summaries, summ), inline=False)
             embed.add_field(name="Level", value=self.get_name(self.levels, level), inline=False)
+        else:
+            return await self.bot.say("Invalid error code.")
+
         await self.bot.say("", embed=embed)
 
     @commands.command(pass_context=True)
     async def err2(self, ctx, err: str):
+        if not err.startswith("0x") and not all(c in string.hexdigits for c in err):
+            return await self.bot.say("Invalid error code.")
+
         desc, mod, summ, level, rc = await self.convert_zerox(err)
  
         # garbage
