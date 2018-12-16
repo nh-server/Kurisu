@@ -172,6 +172,7 @@ async def on_ready():
         bot.superop_role = discord.utils.get(server.roles, name="SuperOP")
         bot.owner_role = discord.utils.get(server.roles, name="Owner")
         bot.helpers_role = discord.utils.get(server.roles, name="Helpers")
+        bot.retired_role = discord.utils.get(server.roles, name="Retired Staff")
         bot.onduty3ds_role = discord.utils.get(server.roles, name="On-Duty 3DS")
         bot.ondutywiiu_role = discord.utils.get(server.roles, name="On-Duty Wii U")
         bot.ondutyswitch_role = discord.utils.get(server.roles, name="On-Duty Switch")
