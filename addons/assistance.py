@@ -370,6 +370,16 @@ just missing a file called boot.firm in the root of your SD card.
         embed.add_field(name="Checking your SD for errors or corruption", value="https://3ds.filthycasuals.tech/sderrors.html \n Please read the instructions carefully.", inline=False)
         await self.bot.say("", embed=embed)
 
+    @commands.command(pass_context=True)
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def troubleshoot(self, ctx, *, console=""):
+        """Link to Common Issue Troubleshooting guide."""
+        if self.check_console(console, ctx.message.channel.name, '3ds'):
+            await self.simple_embed("""
+                                    a troubleshooting guide for common issues you may run into while installing steelminer or frogminer.\n
+                                    [click here](https://3ds.filthycasuals.tech/issues.html)
+                                    """,title="Troubleshooting FrogMiner and SteelMiner for 3DS")
+
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def emureco(self):
