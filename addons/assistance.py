@@ -172,7 +172,7 @@ versions on 11.9 will cause a blackscreen until you update.
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def hmodders(self):
         """Links to approved hardmodder list"""
-        await self.simple_embed("Don't want to hardmod yourself? Ask one of the installers on the server! <http://pastebin.com/wNr42PtH>")
+        await self.simple_embed("Don't want to hardmod yourself? Ask one of the installers on the server! <https://pastebin.com/FAiczew4>")
 
     # Links to ctrtransfer guide
     @commands.command(aliases=["ctrtransfer","ctrnandtransfer"])
