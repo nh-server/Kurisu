@@ -121,6 +121,10 @@ class NXErr:
         809: "WifiWebAuthApplet",
         810: "Whitelisted-applet",
         811: "ShopN",
+
+        # Custom Sysmodules
+
+        311: "SwitchPresence",
     }
 
     known_errcodes = {
@@ -566,6 +570,7 @@ class NXErr:
         0x5759: "LibnxError_ApmFailedToInitialize",
         0x5959: "LibnxError_NvinfoFailedToInitialize",
         0x5B59: "LibnxError_NvbufFailedToInitialize",
+        0x5D59: "LibnxError_LibAppletBadExit",
 
         # - Libnx Binder -
         0x35D: "LibnxBinderError_Unknown",
@@ -616,12 +621,39 @@ class NXErr:
         0x1F4E7C: '(normal) console ban',
         0x27EE7C: '(potential) complete account ban', # This error is still super new, needs more informations
         0x36B72B: "Access token expired",
+        0x1F486E: "Internet connection lost because the console entered sleep mode.",
         # 0x3E8E89: 'Failed to access Firmware Updates - Often because of DNS!',
         # ^ Also used by libcurl
 
         # Atmosphere
 
         0xCAFEF: "Atmosphere: Version Mismatch",
+
+        # SwitchPresence
+
+        0x337: "Error_InitSocket",
+        0x537: "Error_Listen",
+        0x737: "Error_Accepting",
+        0x937: "Error_ListAppFailed",
+        0xb37: "Error_InvalidMagic",
+        0xd37: "Error_CmdIdNotConfirm",
+        0xf37: "Error_CmdIdNotSendBuff",
+        0x1137: "Error_RecData",
+        0x1337: "Error_SendData",
+        0x1537: "Error_InitNS",
+        0x1737: "Error_InitACC",
+        0x1937: "Error_GetControlData",
+        0x1b37: "Error_InvalidControlSize",
+        0x1d37: "Error_GetAciveUser",
+        0x1f37: "Error_GetProfile",
+        0x2137: "Error_ProfileGet",
+        0x2337: "Error_InitPMDMNT",
+        0x2537: "Error_GetAppPid",
+        0x2737: "Error_GetProcessTid",
+        0x2937: "Error_InitPMINFO",
+        0x2b37: "Error_GetPidList",
+        0x2d37: "Error_GetDebugProc",
+        0x2f37: "Error_CloseHandle",
     }
 
     known_errcode_ranges = {
