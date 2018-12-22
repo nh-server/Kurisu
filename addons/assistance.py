@@ -71,10 +71,10 @@ class Assistance:
             await self.bot.say("", embed=embed)
         if self.check_console(console, ctx.message.channel.name, ('switch', 'nx')):
             embed = discord.Embed(title="Guide", color=discord.Color(0xCB0004))
-            embed.set_author(name="Noirscape", url="https://switchguide.xyz/")
-            embed.set_thumbnail(url="https://avatars3.githubusercontent.com/u/13433513")
-            embed.url = "https://switchguide.xyz/"
-            embed.description = "Noirscape's Switch homebrew guide"
+            embed.set_author(name="NH All-Star Team", url="https://nh-server.github.io/switch-guide/")
+            embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
+            embed.url = "https://nh-server.github.io/switch-guide/"
+            embed.description = "A Switch guide from stock to Atmosphere"
             await self.bot.say("", embed=embed)
 
     #Embed to Soundhax Download Website
@@ -266,9 +266,7 @@ DSiWare game.
         if self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Using a first-generation Switch?", color=0xe60012)
             embed.description = cleandoc("""
-                Use [this GBATemp thread](https://tinyurl.com/nxserial) to determine if your Switch is a first-gen unit.
-
-                Currently all firmware versions are compatible with [Atmosphere](http://switchguide.xyz/).
+                Currently all firmware versions are compatible with [Atmosphere](https://nh-server.github.io/switch-guide/).
 
                 "Second-generation" invulnerable systems should **not** update past 4.1.0, as these systems may have \
 custom firmware on this version in the very far future.
