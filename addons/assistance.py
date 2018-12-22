@@ -74,7 +74,7 @@ class Assistance:
             embed.set_author(name="NH All-Star Team", url="https://nh-server.github.io/switch-guide/")
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
             embed.url = "https://nh-server.github.io/switch-guide/"
-            embed.description = "A Switch from stock to Atmosphere"
+            embed.description = "A Switch guide from stock to Atmosphere"
             await self.bot.say("", embed=embed)
 
     #Embed to Soundhax Download Website
