@@ -101,6 +101,8 @@ class Events:
         'uwizard',
         'jnustool',
         'nusgrabber',
+        'fr33$h0p',
+        'fshop',  # common outright bypass, but not sure if it will interact with legitimate words
     )
 
     # use the full ID, including capitalization and dashes
