@@ -64,7 +64,7 @@ class ModWarn:
     @is_staff('OP')
     @commands.command(pass_context=True)
     async def softwarn(self, ctx, member: converters.SafeMember, *, reason=""):
-        """Warn a user. Staff and Helpers only."""
+        """Warn a user without automated action. Staff only."""
         issuer = ctx.message.author
         if check_staff(member.id, "HalfOP"):
             await self.bot.say("You can't warn another staffer with this command!")
