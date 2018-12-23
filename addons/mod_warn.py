@@ -87,7 +87,7 @@ class ModWarn:
             # much \n
             msg += " The given reason is: " + reason
         msg += "\n\nThis is warn #{}.".format(len(warns[member.id]["warns"]))
-        msg += "\n\nThis wont trigger any action."
+        msg += "\n\nThis won't trigger any action."
         try:
             await self.bot.send_message(member, msg)
         except discord.errors.Forbidden:
