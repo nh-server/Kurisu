@@ -61,6 +61,44 @@ class ModWarn:
             msg += "\n✏️ __Reason__: " + reason
         await self.bot.send_message(self.bot.modlogs_channel, msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.warn <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
 
+    @is_staff('OP')
+    @commands.command(pass_context=True)
+    async def softwarn(self, ctx, member: converters.SafeMember, *, reason=""):
+        """Warn a user without automated action. Staff only."""
+        issuer = ctx.message.author
+        if check_staff(member.id, "HalfOP"):
+            await self.bot.say("You can't warn another staffer with this command!")
+            return
+        with open("data/warnsv2.json", "r") as f:
+            warns = json.load(f)
+        if member.id not in warns:
+            warns[member.id] = {"warns": []}
+        warn_count = len(warns[member.id]["warns"])
+        if warn_count >= 5:
+            await self.bot.say("A user can't have more than 5 warns!")
+            return
+        warns[member.id]["name"] = member.name + "#" + member.discriminator
+        timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        warns[member.id]["warns"].append({"issuer_id": issuer.id, "issuer_name": issuer.name, "reason": reason, "timestamp": timestamp})
+        with open("data/warnsv2.json", "w") as f:
+            json.dump(warns, f)
+        msg = "You were warned on {}.".format(self.bot.server.name)
+        if reason != "":
+            # much \n
+            msg += " The given reason is: " + reason
+        msg += "\n\nThis is warn #{}.".format(len(warns[member.id]["warns"]))
+        msg += "\n\nThis won't trigger any action."
+        try:
+            await self.bot.send_message(member, msg)
+        except discord.errors.Forbidden:
+            pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
+        await self.bot.say("{} softwarned. User has {} warning(s)".format(member.mention, len(warns[member.id]["warns"])))
+        msg = "⚠️ **Warned**: {} softwarned {} (warn #{}) | {}#{}".format(issuer.mention, member.mention, len(warns[member.id]["warns"]), member.name, member.discriminator)
+        if reason != "":
+            # much \n
+            msg += "\n✏️ __Reason__: " + reason
+        await self.bot.send_message(self.bot.modlogs_channel, msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.warn <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
+
     @commands.command(pass_context=True)
     async def listwarns(self, ctx, user: discord.Member = None):
         """List warns for a user. Staff and Helpers only."""

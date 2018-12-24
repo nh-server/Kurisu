@@ -121,6 +121,10 @@ class NXErr:
         809: "WifiWebAuthApplet",
         810: "Whitelisted-applet",
         811: "ShopN",
+
+        # Custom Sysmodules
+
+        311: "SwitchPresence",
     }
 
     known_errcodes = {
@@ -566,6 +570,7 @@ class NXErr:
         0x5759: "LibnxError_ApmFailedToInitialize",
         0x5959: "LibnxError_NvinfoFailedToInitialize",
         0x5B59: "LibnxError_NvbufFailedToInitialize",
+        0x5D59: "LibnxError_LibAppletBadExit",
 
         # - Libnx Binder -
         0x35D: "LibnxBinderError_Unknown",
@@ -616,12 +621,41 @@ class NXErr:
         0x1F4E7C: '(normal) console ban',
         0x27EE7C: '(potential) complete account ban', # This error is still super new, needs more informations
         0x36B72B: "Access token expired",
+        0x1F486E: "Internet connection lost because the console entered sleep mode.",
         # 0x3E8E89: 'Failed to access Firmware Updates - Often because of DNS!',
         # ^ Also used by libcurl
 
         # Atmosphere
 
         0xCAFEF: "Atmosphere: Version Mismatch",
+
+        # SwitchPresence
+
+        0x337: "Error_InitSocket",
+        0x537: "Error_Listen",
+        0x737: "Error_Accepting",
+        0x937: "Error_ListAppFailed",
+        0xb37: "Error_InvalidMagic",
+        0xd37: "Error_CmdIdNotConfirm",
+        0xf37: "Error_CmdIdNotSendBuff",
+        0x1137: "Error_RecData",
+        0x1337: "Error_SendData",
+        0x1537: "Error_InitNS",
+        0x1737: "Error_InitACC",
+        0x1937: "Error_GetControlData",
+        0x1b37: "Error_InvalidControlSize",
+        0x1d37: "Error_GetAciveUser",
+        0x1f37: "Error_GetProfile",
+        0x2137: "Error_ProfileGet",
+        0x2337: "Error_InitPMDMNT",
+        0x2537: "Error_GetAppPid",
+        0x2737: "Error_GetProcessTid",
+        0x2937: "Error_InitPMINFO",
+        0x2b37: "Error_GetPidList",
+        0x2d37: "Error_GetDebugProc",
+        0x2f37: "Error_CloseHandle",
+ 
+        0xDEADBEEF: "Congrats, you found some hexspeak \n \n https://www.youtube.com/watch?v=DLzxrzFCyOs"
     }
 
     known_errcode_ranges = {
@@ -650,6 +684,62 @@ class NXErr:
             [6300, 6399, "Error: Unsupported operation."],
             [6400, 6499, "Error: Permission denied."],
         ],
+        
+        #NIFM Support Page Links
+        110: [
+            [2900, 2999, "https://en-americas-support.nintendo.com/app/answers/detail/a_id/22277/p/897"],
+            [2000, 2899, "https://en-americas-support.nintendo.com/app/answers/detail/a_id/22263/p/897"],
+        ]
+    }
+
+    # Game Erros - Strings because Nintendo decided that it would be useless to put them into normal ints ;^)
+    # Attention: These need to be formatted -> <errcode>: "<game>: <description>" - Also Nintendo support codes
+    nin_err = {
+        #Splatoon 2
+        "2-AAB6A-3400": "Splatoon 2: A kick from online due to exefs edits.",
+
+        #Youtube
+        "2-ARVHA-0000": "Youtube: Unknown Error",
+
+        #Nintendo Support Page
+        "2005-0003": "This error code may indicate an issue related to the microSD card being used. (https://en-americas-support.nintendo.com/app/answers/detail/a_id/22393/p/897)",
+        "2110-1100": "This error code typically indicates that the Nintendo Switch console was unable to detect a network which matches any of the saved networks within the Internet settings. (https://en-americas-support.nintendo.com/app/answers/detail/a_id/22780/p/897)",
+        "2618-0516": "This error code generally indicates that your network is not optimal for peer to peer connections, likely due to your network's NAT type. (https://en-americas-support.nintendo.com/app/answers/detail/a_id/25855/p/897)",
+        "2110-2003": "Error codes in this range generally indicate an error occurred when the Nintendo Switch console attempted to initially connect to a wireless router (usually prior to obtaining an IP address). (https://en-americas-support.nintendo.com/app/answers/detail/a_id/27023/p/897)",
+        "2813-6838": "You are unable to redeem a Nintendo eShop Card (https://en-americas-support.nintendo.com/app/answers/detail/a_id/22630/p/897)",
+        "2813-6561": "In most cases, this error indicates the Nintendo eShop card or download code was entered incorrectly, or was intended for a different region's Nintendo eShop. (https://en-americas-support.nintendo.com/app/answers/detail/a_id/25870/p/897)",
+        "2618-0513": "This error code generally indicates that your network is not optimal for peer to peer connections, this may be due to the ISP, Internet connection speeds, or due to your network's NAT type. (https://en-americas-support.nintendo.com/app/answers/detail/a_id/25980/p/897)",
+        "2618-0201": "This error may be the result your connection timing out due to a slow Internet service or a poor wireless environment. (https://en-americas-support.nintendo.com/app/answers/detail/a_id/25866/p/897)",
+        "2002-0001": "An error code is received when powering up the Nintendo Switch console, or when coming out of sleep mode. (https://en-americas-support.nintendo.com/app/answers/detail/a_id/27167/p/897)",
+        "2813-1470": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/26362/p/897",
+        "2124-4007": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/28046/p/897",
+        "2811-5001": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/22392/p/897",
+        "2110-3127": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/22567/p/897",
+        "9001-0026": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/27311/p/897",
+        "2124-8006": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/25858/p/897",
+        "2124-8007": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/25858/p/897",
+        "2137-8006": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/22493/p/897",
+        "2155-8007": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/42264/p/897",
+        "2811-1006": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/25859/p/897",
+        "2813-0055": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/27056/p/897",
+        "2181-4008": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/42061/p/897",
+        "2137-8056": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/28910/p/897",
+        "2618-0502": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/25865/p/897",
+        "2618-0501": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/25865/p/897",
+        "2162-0002": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/22596/p/897",
+        "2137-8035": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/22298/p/897",
+        "2618-0006": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/25856/p/897",
+        "2016-0641": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/27004/p/897",
+        "2016-0247": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/22720/p/897",
+        "2124-8028": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/22443/p/897",
+        "2811-1028": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/22503/p/897",
+        "2306-0303": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/42878/p/897",
+        "2123-0301": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/28291/p/897",
+        "2168-0002": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/22518/p/897",
+        "2160-8007": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/28530/p/897",
+        "2160-8006": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/28530/p/897",
+        "2101-0001": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/22624/p/897",
+        # If somebody wants to continue this: https://en-americas-support.nintendo.com/app/answers/list/st/5/kw/error%20code/p/897/page/5
     }
 
     def get_name(self, d, k):
@@ -668,10 +758,14 @@ class NXErr:
           .serr 0xDC05
           .serr 2005-0110
         """
+        # Normal Errors that follow the standard guidelines
         if re.match('[0-9][0-9][0-9][0-9]\-[0-9][0-9][0-9][0-9]', err):
             module = int(err[0:4]) - 2000
             desc = int(err[5:9])
             errcode = (desc << 9) + module
+        elif err in self.nin_err:
+            await self.bot.say(embed=discord.Embed(title="Game / Support Page Error Code", description="**Description:** {}".format(self.nin_err[err])))
+            return
         else:
             if err.startswith("0x"):
                 err = err[2:]
@@ -686,6 +780,11 @@ class NXErr:
             for errcode_range in self.known_errcode_ranges[module]:
                 if desc >= errcode_range[0] and desc <= errcode_range[1]:
                     explanation += errcode_range[2] + '\n\n'
+        # Game / Support Errors because they are either special or I'm just lazy
+        elif err in self.nin_err:
+            await self.bot.say(embed=discord.Embed(title="Game / Support Page Error Code", description="**Description:** {}".format(self.nin_err[err])))
+            return
+        # Return back to normal guidelines
         else:
             explanation = "It seems like your error code is unknown. You should report relevant details to <@141532589725974528> so it can be added to the bot. \n \n"
         explanation += 'Module: ' + self.get_name(self.modules, module)

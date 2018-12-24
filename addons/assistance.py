@@ -32,9 +32,9 @@ class Assistance:
 
     @commands.command(pass_context=True, aliases=["sr", "Sr", "sR", "SR"], hidden=True)
     async def staffreq(self, ctx, *, msg_request=""):
-        """Request staff, with optional additional text. Helpers, Staff, Verified only."""
+        """Request staff, with optional additional text. Helpers, Staff, retired Staff, Verified only."""
         author = ctx.message.author
-        if not check_staff(ctx.message.author.id, 'Helper') and (self.bot.verified_role not in author.roles) and (self.bot.trusted_role not in author.roles):
+        if not check_staff(ctx.message.author.id, 'Helper') and (self.bot.verified_role not in author.roles) and (self.bot.trusted_role not in author.roles) and (self.bot.retired_role not in author.roles):
             msg = "{0} You cannot used this command at this time. Please ask individual staff members if you need help.".format(author.mention)
             await self.bot.say(msg)
             return
@@ -71,10 +71,10 @@ class Assistance:
             await self.bot.say("", embed=embed)
         if self.check_console(console, ctx.message.channel.name, ('switch', 'nx')):
             embed = discord.Embed(title="Guide", color=discord.Color(0xCB0004))
-            embed.set_author(name="Noirscape", url="https://switchguide.xyz/")
-            embed.set_thumbnail(url="https://avatars3.githubusercontent.com/u/13433513")
-            embed.url = "https://switchguide.xyz/"
-            embed.description = "Noirscape's Switch homebrew guide"
+            embed.set_author(name="NH All-Star Team", url="https://nh-server.github.io/switch-guide/")
+            embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
+            embed.url = "https://nh-server.github.io/switch-guide/"
+            embed.description = "A Switch guide from stock to Atmosphere"
             await self.bot.say("", embed=embed)
 
     #Embed to Soundhax Download Website
@@ -172,7 +172,7 @@ versions on 11.9 will cause a blackscreen until you update.
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def hmodders(self):
         """Links to approved hardmodder list"""
-        await self.simple_embed("Don't want to hardmod yourself? Ask one of the installers on the server! <http://pastebin.com/wNr42PtH>")
+        await self.simple_embed("Don't want to hardmod yourself? Ask one of the installers on the server! <https://pastebin.com/FAiczew4>")
 
     # Links to ctrtransfer guide
     @commands.command(aliases=["ctrtransfer","ctrnandtransfer"])
@@ -266,9 +266,9 @@ DSiWare game.
         if self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Using a first-generation Switch?", color=0xe60012)
             embed.description = cleandoc("""
-                Use [this GBATemp thread](https://tinyurl.com/nxserial) to determine if your Switch is a first-gen unit.
+                Use [our guide](https://nh-server.github.io/switch-guide/user_guide/getting_started/) to determine if your Switch is a first-gen unit.
 
-                Currently all firmware versions are compatible with [Atmosphere](http://switchguide.xyz/).
+                Currently all firmware versions are compatible with [Atmosphere](https://nh-server.github.io/switch-guide/).
 
                 "Second-generation" invulnerable systems should **not** update past 4.1.0, as these systems may have \
 custom firmware on this version in the very far future.
@@ -547,9 +547,9 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
     async def layeredfs(self):
         """How to use Luma 8.0+ LayeredFs"""
         embed = discord.Embed(title="LayeredFs Guide", color=discord.Color(0x66FFFF))
-        embed.set_author(name="Chroma Ryu", url="https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Using-Luma3DS'-layeredfs-(Only-version-8.0-and-higer)")
+        embed.set_author(name="Chroma Ryu", url="https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Using-Luma3DS'-layeredfs-(Only-version-8.0-and-higher)")
         embed.set_thumbnail(url="https://i.imgur.com/U8NA9lx.png")
-        embed.url = "https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Using-Luma3DS'-layeredfs-(Only-version-8.0-and-higer)"
+        embed.url = "https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Using-Luma3DS'-layeredfs-(Only-version-8.0-and-higher)"
         embed.description = "How to use Luma 8.0+ LayeredFs for ROM Hacking."
         await self.bot.say("", embed=embed)
 

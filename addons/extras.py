@@ -205,10 +205,15 @@ class Extras:
     async def norainbow(self, ctx):
         """Tired of it."""
         member = ctx.message.author
-        if member.nick and member.nick[-1] == "🌈":
-            await self.bot.say("Your nickname is now \"{}\"!".format(member.display_name[0:-1].strip()))
-            await self.bot.change_nickname(member, member.display_name[0:-1])
-        elif member.name[-1] == "🌈":
+        pattern = re.compile(r'🌈')
+        if member.nick:
+            search = re.finditer(pattern, member.nick)
+            if search:
+                res = list(search)[-1]
+                nick = member.display_name[0:res.start()] + member.display_name[res.end():]
+                await self.bot.say("Your nickname is now \"{}\"!".format(nick))
+                await self.bot.change_nickname(member, nick)
+        elif bool(re.search(pattern, member.name)):
             await self.bot.say("Your username is the one with the rainbow!")
         else:
             await self.bot.say("You don't have a rainbow!")
@@ -233,10 +238,15 @@ class Extras:
     async def nospooky(self, ctx):
         """Tired of it."""
         member = ctx.message.author
-        if member.nick and member.nick[-1] == "🎃":
-            await self.bot.say("Your nickname is now \"{}\"!".format(member.display_name[0:-1].strip()))
-            await self.bot.change_nickname(member, member.display_name[0:-1])
-        elif member.name[-1] == "🎃":
+        pattern = re.compile(r'🎃')
+        if member.nick:
+            search = re.finditer(pattern, member.nick)
+            if search:
+                res = list(search)[-1]
+                nick = member.display_name[0:res.start()] + member.display_name[res.end():]
+                await self.bot.say("Your nickname is now \"{}\"!".format(nick))
+                await self.bot.change_nickname(member, nick)
+        elif bool(re.search(pattern, member.name)):
             await self.bot.say("Your username is the one with the pumpkin!")
         else:
             await self.bot.say("You don't have a pumpkin!")
@@ -261,10 +271,15 @@ class Extras:
     async def noturkey(self, ctx):
         """Tired of it."""
         member = ctx.message.author
-        if member.nick and member.nick[-1] == "🦃":
-            await self.bot.say("Your nickname is now \"{}\"!".format(member.display_name[0:-1].strip()))
-            await self.bot.change_nickname(member, member.display_name[0:-1])
-        elif member.name[-1] == "🦃":
+        pattern = re.compile(r'🦃')
+        if member.nick:
+            search = re.finditer(pattern, member.nick)
+            if search:
+                res = list(search)[-1]
+                nick = member.display_name[0:res.start()] + member.display_name[res.end():]
+                await self.bot.say("Your nickname is now \"{}\"!".format(nick))
+                await self.bot.change_nickname(member, nick)
+        elif bool(re.search(pattern, member.name)):
             await self.bot.say("Your username is the one with the turkey!")
         else:
             await self.bot.say("You don't have a turkey!")
@@ -289,10 +304,15 @@ class Extras:
     async def noxmasthing(self, ctx):
         """Tired of it."""
         member = ctx.message.author
-        if member.nick and member.nick[-1] == "🎄":
-            await self.bot.say("Your nickname is now \"{}\"!".format(member.display_name[0:-1].strip()))
-            await self.bot.change_nickname(member, member.display_name[0:-1])
-        elif member.name[-1] == "🎄":
+        pattern = re.compile(r'🎄')
+        if member.nick:
+            search = re.finditer(pattern, member.nick)
+            if search:
+                res = list(search)[-1]
+                nick = member.display_name[0:res.start()] + member.display_name[res.end():]
+                await self.bot.say("Your nickname is now \"{}\"!".format(nick))
+                await self.bot.change_nickname(member, nick)
+        elif bool(re.search(pattern, member.name)):
             await self.bot.say("Your username is the one with the xmas tree!")
         else:
             await self.bot.say("You don't have an xmas tree!")
