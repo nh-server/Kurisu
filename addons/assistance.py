@@ -266,6 +266,8 @@ DSiWare game.
         if self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Using a first-generation Switch?", color=0xe60012)
             embed.description = cleandoc("""
+                Use [our guide](https://nh-server.github.io/switch-guide/user_guide/getting_started/) to determine if your Switch is a first-gen unit.
+
                 Currently all firmware versions are compatible with [Atmosphere](https://nh-server.github.io/switch-guide/).
 
                 "Second-generation" invulnerable systems should **not** update past 4.1.0, as these systems may have \
