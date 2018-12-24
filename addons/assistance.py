@@ -336,7 +336,7 @@ format it to FAT32.
         """SD Error Guide"""
         await self.simple_embed("""
                                 Guide For Checking SD Card For Errors
-                                http://3ds.filthycasuals.tech/sderrors.html
+                                http://3ds.eiphax.tech/sderrors.html
                                 This covers Windows, Linux and Mac.
                                 """, title="SD Card Errors")
         
@@ -367,7 +367,7 @@ already tried the Luma black screen process.
 just missing a file called boot.firm in the root of your SD card.
                             """)
         embed.add_field(name="How to fix the issue", value="1. Check you inserted the SD card in your console\n 2. Place/replace the file, downloading it from https://github.com/AuroraWright/Luma3DS/releases", inline=False)
-        embed.add_field(name="Checking your SD for errors or corruption", value="https://3ds.filthycasuals.tech/sderrors.html \n Please read the instructions carefully.", inline=False)
+        embed.add_field(name="Checking your SD for errors or corruption", value="https://3ds.eiphax.tech/sderrors.html \n Please read the instructions carefully.", inline=False)
         await self.bot.say("", embed=embed)
 
     @commands.command()
@@ -511,7 +511,7 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
             embed.set_thumbnail(url="https://i.imgur.com/rHa76XM.png")
             embed.url = "https://mega.nz/#!qnAE1YjC!q3FRHgIAVEo4nRI2IfANHJr-r7Sil3YpPYE4w8ZbUPY"
             embed.description = ("The recommended way to play old classics on your 3DS.\n"
-                                 "Usage guide [here](http://3ds.filthycasuals.tech/nsui.html)")
+                                 "Usage guide [here](http://3ds.eiphax.tech/nsui.html)")
             await self.bot.say("", embed=embed)
 
         if self.check_console(console, ctx.message.channel.name, ('wiiu', 'wii u')):
