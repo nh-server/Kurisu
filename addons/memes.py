@@ -290,6 +290,12 @@ class Memes:
     async def fuck(self, ctx):
         """MEMES?"""
         await self._meme(ctx, "https://i.imgur.com/4lNA5Ud.gif")
+    
+    @commands.command(pass_context=True, hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def planet(self, ctx):
+        """haha yes!"""
+        await self._meme(ctx, "https://i.imgur.com/YIBADGT.png")
 
 # Load the extension
 def setup(bot):
