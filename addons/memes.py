@@ -296,6 +296,12 @@ class Memes:
     async def planet(self, ctx):
         """haha yes!"""
         await self._meme(ctx, "https://i.imgur.com/YIBADGT.png")
+       
+    @commands.command(pass_context=True, hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def pbanj(self, ctx):
+        """he has the power"""
+        await self._meme(ctx, "https://i.imgur.com/EQy9pl3.png")
 
 # Load the extension
 def setup(bot):
