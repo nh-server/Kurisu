@@ -377,7 +377,7 @@ just missing a file called boot.firm in the root of your SD card.
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             await self.simple_embed("""
                                     a troubleshooting guide for common issues you may run into while installing steelminer or frogminer.
-                                    [click here](https://3ds.filthycasuals.tech/issues.html)
+                                    [click here](https://3ds.eiphax.tech/issues.html)
                                     """,title="Troubleshooting FrogMiner and SteelMiner for 3DS")
 
     @commands.command()
