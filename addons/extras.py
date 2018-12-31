@@ -317,5 +317,39 @@ class Extras:
         else:
             await self.bot.say("You don't have an xmas tree!")
 
+    @commands.command(pass_context=True)
+    async def fireworks(self, ctx):
+        """It's CurrentYear+1 time."""
+        month = datetime.date.today().month
+        day = datetime.date.today().day
+        if month == 12 and day == 31 or month == 1 and day == 1:
+            member = ctx.message.author
+            if member.nick and member.nick[-1] == "🎆":
+                await self.bot.say("Your nickname already ends in fireworks!")
+            elif member.name[-1] == "🎆" and not member.nick:
+                await self.bot.say("Your name already ends in fireworks!")
+            else:
+                await self.bot.change_nickname(member, member.display_name + " 🎆")
+                await self.bot.say("Your nickname is now \"{} \"!".format(member.display_name))
+        else:
+            await self.bot.say("This day is not old/new enough!")
+
+    @commands.command(pass_context=True)
+    async def nofireworks(self, ctx):
+        """Tired of it."""
+        member = ctx.message.author
+        pattern = re.compile(r'🎆')
+        if member.nick:
+            search = re.finditer(pattern, member.nick)
+            if search:
+                res = list(search)[-1]
+                nick = member.display_name[0:res.start()] + member.display_name[res.end():]
+                await self.bot.say("Your nickname is now \"{}\"!".format(nick))
+                await self.bot.change_nickname(member, nick)
+        elif bool(re.search(pattern, member.name)):
+            await self.bot.say("Your username is the one with the fireworks!")
+        else:
+            await self.bot.say("You don't have fireworks!")
+
 def setup(bot):
     bot.add_cog(Extras(bot))
