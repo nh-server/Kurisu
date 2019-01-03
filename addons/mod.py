@@ -363,7 +363,33 @@ class Mod:
             await self.bot.send_message(self.bot.helpers_channel, msg)
         except discord.errors.Forbidden:
             await self.bot.say("?? I don't have permission to do this.")
-
+            
+    @is_staff("Helper")
+    @commands.command(pass_context=True, name="takesmallhelp")
+    async def takesmallhelp(self, ctx, member: converters.SafeMember):
+        """Remove access to small help channel. Staff and Helpers only."""
+        try:
+            await self.bot.remove_roles(member, self.bot.smallhelp_role)
+            await self.bot.say("{} can no longer access the small help channel.".format(member.mention))
+            msg = "⭕️ **Small help access revoked**: {} revoked access to small help channel from {} | {}#{}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
+            await self.bot.send_message(self.bot.modlogs_channel, msg)
+            await self.bot.send_message(self.bot.helpers_channel, msg)
+        except discord.errors.Forbidden:
+            await self.bot.say("💢 I don't have permission to do this.")     
+       
+    @is_staff("Helper")
+    @commands.command(pass_context=True, name="givesmallhelp")
+    async def givesmallhelp(self, ctx, member: converters.SafeMember):
+        """Provide access to small help channel for 1-on-1 help. Staff and Helpers only."""
+        try:
+            await self.bot.add_roles(member, self.bot.smallhelp_role)
+            await self.bot.say("{} can access the small help channel.".format(member.mention))
+            msg = "⭕️ **Small help access granted**: {} granted access to small help channel to {} | {}#{}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
+            await self.bot.send_message(self.bot.modlogs_channel, msg)
+            await self.bot.send_message(self.bot.helpers_channel, msg)
+        except discord.errors.Forbidden:
+            await self.bot.say("💢 I don't have permission to do this.")
+            
     @is_staff("HalfOP")
     @commands.command(pass_context=True, name="probate")
     async def probate(self, ctx, member: converters.SafeMember, *, reason=""):
@@ -445,6 +471,8 @@ class Mod:
     @takehelp.error
     @givehelp.error
     @timetakehelp.error
+    @takesmallhelp.error
+    @givesmallhelp.error
     @probate.error
     @unprobate.error
     async def mod_action_error_handler(self, error, ctx):
