@@ -207,12 +207,15 @@ class Extras:
         member = ctx.message.author
         pattern = re.compile(r'🌈')
         if member.nick:
-            search = re.finditer(pattern, member.nick)
+            iterator = re.finditer(pattern, member.nick)
+            search = list(iterator)
             if search:
-                res = list(search)[-1]
+                res = search[-1]
                 nick = member.display_name[0:res.start()] + member.display_name[res.end():]
                 await self.bot.say("Your nickname is now \"{}\"!".format(nick))
                 await self.bot.change_nickname(member, nick)
+            else:
+                await self.bot.say("You don't have a rainbow!")
         elif bool(re.search(pattern, member.name)):
             await self.bot.say("Your username is the one with the rainbow!")
         else:
@@ -240,12 +243,15 @@ class Extras:
         member = ctx.message.author
         pattern = re.compile(r'🎃')
         if member.nick:
-            search = re.finditer(pattern, member.nick)
+            iterator = re.finditer(pattern, member.nick)
+            search = list(iterator)
             if search:
-                res = list(search)[-1]
+                res = search[-1]
                 nick = member.display_name[0:res.start()] + member.display_name[res.end():]
                 await self.bot.say("Your nickname is now \"{}\"!".format(nick))
                 await self.bot.change_nickname(member, nick)
+            else:
+                await self.bot.say("You don't have a pumpkin!!")
         elif bool(re.search(pattern, member.name)):
             await self.bot.say("Your username is the one with the pumpkin!")
         else:
@@ -273,12 +279,15 @@ class Extras:
         member = ctx.message.author
         pattern = re.compile(r'🦃')
         if member.nick:
-            search = re.finditer(pattern, member.nick)
+            iterator = re.finditer(pattern, member.nick)
+            search = list(iterator)
             if search:
-                res = list(search)[-1]
+                res = search[-1]
                 nick = member.display_name[0:res.start()] + member.display_name[res.end():]
                 await self.bot.say("Your nickname is now \"{}\"!".format(nick))
                 await self.bot.change_nickname(member, nick)
+            else:
+                await self.bot.say("You don't have a turkey!")
         elif bool(re.search(pattern, member.name)):
             await self.bot.say("Your username is the one with the turkey!")
         else:
@@ -306,12 +315,15 @@ class Extras:
         member = ctx.message.author
         pattern = re.compile(r'🎄')
         if member.nick:
-            search = re.finditer(pattern, member.nick)
+            iterator = re.finditer(pattern, member.nick)
+            search = list(iterator)
             if search:
-                res = list(search)[-1]
+                res = search[-1]
                 nick = member.display_name[0:res.start()] + member.display_name[res.end():]
                 await self.bot.say("Your nickname is now \"{}\"!".format(nick))
                 await self.bot.change_nickname(member, nick)
+            else:
+                await self.bot.say("You don't have an xmas tree!")
         elif bool(re.search(pattern, member.name)):
             await self.bot.say("Your username is the one with the xmas tree!")
         else:
@@ -340,12 +352,15 @@ class Extras:
         member = ctx.message.author
         pattern = re.compile(r'🎆')
         if member.nick:
-            search = re.finditer(pattern, member.nick)
+            iterator = re.finditer(pattern, member.nick)
+            search = list(iterator)
             if search:
-                res = list(search)[-1]
+                res = search[-1]
                 nick = member.display_name[0:res.start()] + member.display_name[res.end():]
                 await self.bot.say("Your nickname is now \"{}\"!".format(nick))
                 await self.bot.change_nickname(member, nick)
+            else:
+                await self.bot.say("You don't have fireworks!")
         elif bool(re.search(pattern, member.name)):
             await self.bot.say("Your username is the one with the fireworks!")
         else:
