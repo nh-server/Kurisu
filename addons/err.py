@@ -3,6 +3,7 @@ import discord
 import re
 from discord.ext import commands
 from discord import Color
+import string
 
 class Err:
     """
@@ -230,7 +231,7 @@ class Err:
         '007-2404': 'An error occurred while attempting to connect to the Nintendo eShop.\nMake sure you are running the latest firmware, since this error will appear if you are trying to access the eShop on older versions.',
         '007-2720': 'SSL error?',
         '007-2916': 'HTTP error, server is probably down. Try again later?',
-        '007-2920': 'This error is caused by installing a game or game update from an unofficial source, as it contains a bad ticket.\nThe only solution is to delete the unofficial game or update as well as its ticket\nin FBI, and install the game or update legitimately.',
+        '007-2920': 'This error is caused by installing a game or game update from an unofficial source, as it contains a bad ticket.\nThe only solution is to delete the unofficial game or update as well as its ticket\nin FBI, and install the game or update legitimately. If the title was uninstalled\nalready, remove the ticket in FBI.',
         '007-2913': 'HTTP error, server is probably down. Try again later?',
         '007-2923': 'The Nintendo Servers are currently down for maintenance. Please try again later.',
         '007-3102': 'Cannot find title on Nintendo eShop. Probably pulled.',
@@ -238,6 +239,7 @@ class Err:
         '009-1000': 'System update required. (friends module?)',
         '009-2916': 'NIM HTTP error, server is probably down. Try again later?',
         '009-2913': 'NIM HTTP error, server is probably down. Try again later?',
+        '009-2920': 'This error is caused by installing a game or game update from an unofficial source, as it contains a bad ticket.\nThe only solution is to delete the unofficial game or update as well as its ticket\nin FBI, and install the game or update legitimately. If the title was uninstalled\nalready, remove the ticket in FBI.',
         '009-4079': 'Could not access SD card. General purpose error.',
         '009-4998': '"Local content is newer."\nThe actual cause of this error is unknown.',
         '009-6106': '"AM error in NIM."\nProbably a bad ticket.',
@@ -319,6 +321,18 @@ class Err:
         elif rc == 2343432205:
             await self.bot.say(binascii.unhexlify(hex(43563598107828907579305977861310806718428700278286708)[2:]).decode('utf-8'))
 
+    async def convert_zerox(self, err):
+        err = err.strip()
+        if err.startswith("0x"):
+            err = err[2:]
+        rc = int(err, 16)
+        await self.aaaa(rc)
+        desc = rc & 0x3FF
+        mod = (rc >> 10) & 0xFF
+        summ = (rc >> 21) & 0x3F
+        level = (rc >> 27) & 0x1F
+        return desc, mod, summ, level, rc
+
     @commands.command(pass_context=True)
     async def err(self, ctx, err: str):
         """
@@ -359,16 +373,8 @@ class Err:
                 else:
                     embed.color = embed.Empty
                     embed.description = "I don't know this one! Click the error code for details on Nintendo Support.\n\nIf you keep getting this issue and Nintendo Support does not help, and know how to fix it, you should report relevant details to <@78465448093417472> so it can be added to the bot."
-        else:
-            err = err.strip()
-            if err.startswith("0x"):
-                err = err[2:]
-            rc = int(err, 16)
-            await self.aaaa(rc)
-            desc = rc & 0x3FF
-            mod = (rc >> 10) & 0xFF
-            summ = (rc >> 21) & 0x3F
-            level = (rc >> 27) & 0x1F
+        elif err.startswith("0x") or all(c in string.hexdigits for c in err):
+            desc, mod, summ, level, rc = await self.convert_zerox(err)
 
             # garbage
             embed = discord.Embed(title="0x{:X}".format(rc))
@@ -376,20 +382,18 @@ class Err:
             embed.add_field(name="Description", value=self.get_name(self.descriptions, desc), inline=False)
             embed.add_field(name="Summary", value=self.get_name(self.summaries, summ), inline=False)
             embed.add_field(name="Level", value=self.get_name(self.levels, level), inline=False)
+        else:
+            return await self.bot.say("Invalid error code.")
+
         await self.bot.say("", embed=embed)
 
     @commands.command(pass_context=True)
     async def err2(self, ctx, err: str):
-        err = err.strip()
-        if err.startswith("0x"):
-            err = err[2:]
-        rc = int(err, 16)
-        await self.aaaa(rc)
-        desc = rc & 0x3FF
-        mod = (rc >> 10) & 0xFF
-        summ = (rc >> 21) & 0x3F
-        level = (rc >> 27) & 0x1F
+        if not err.startswith("0x") and not all(c in string.hexdigits for c in err):
+            return await self.bot.say("Invalid error code.")
 
+        desc, mod, summ, level, rc = await self.convert_zerox(err)
+ 
         # garbage
         embed = discord.Embed(title="0x{:X}".format(rc))
         value = self.get_name(self.modules, mod, 'module') + '\n'
@@ -398,10 +402,6 @@ class Err:
         value += self.get_name(self.levels, level, 'level')
         embed.description = value
         await self.bot.say("", embed=embed)
-
-    @commands.command(pass_context=True, hidden=True)
-    async def ninerr(self, ctx):
-        await self.bot.say("Merged with " + ctx.prefix + "err, use that instead")
 
 def setup(bot):
     bot.add_cog(Err(bot))
