@@ -313,7 +313,15 @@ Cubic Ninja, Paper Mario Sticker Star or Ocarina of Time 3D.
                                 Asking something that is on the guide will make everyone lose time, so please read and \
 re-read the guide steps 2 or 3 times before coming here.
                                 """, title="Please read the guide")
-
+        
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def pkhex(self):
+        """PKHeX tutorial"""
+        await self.simple_embed("""
+                                Basic tutorial for [PKHeX](https://3ds.eiphax.tech/pkhex.html)
+                                """, title="Learn to PKHeX")
+        
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def bigsd(self):
