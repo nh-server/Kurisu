@@ -316,11 +316,11 @@ re-read the guide steps 2 or 3 times before coming here.
         
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def pkhex(self):
-        """PKHeX tutorial"""
+    async def acnl(self):
+        """AC:NL editing tutorial"""
         await self.simple_embed("""
-                                Basic tutorial for [PKHeX](https://3ds.eiphax.tech/pkhex.html)
-                                """, title="Learn to PKHeX")
+                                Basic tutorial for [AC:NL editing](https://3ds.eiphax.tech/acnl.html)
+                                """, title="Learn to edit AC:NL")
         
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
