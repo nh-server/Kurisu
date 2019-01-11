@@ -251,11 +251,13 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
             embed.description = cleandoc("""
-                You have 4 possible options for installing CFW:
+                You have 5 possible options for installing CFW:
                 - [NTRBoot](https://3ds.hacks.guide/ntrboot) which requires a compatible NDS flashcart and maybe an \
 additional DS(i) or hacked 3DS console depending on the flashcart.
                 - [Frogminer](https://jisagi.github.io/FrogminerGuide/) which requires a homebrew entrypoint like \
 [steelminer](http://steelminer.jisagi.net/) (free method) or freakyhax.
+                - [Fredminer](https://3ds.eiphax.tech/fredminer.html/) which requires *any* DSiWare game from the \
+eShop, free or paid.
                 - [Seedminer](https://3ds.hacks.guide/installing-boot9strap-\(seedminer\)) which requires a compatible \
 DSiWare game.
                 - [Hardmod](https://3ds.hacks.guide/installing-boot9strap-\(hardmod\)) which requires soldering \
