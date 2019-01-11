@@ -253,11 +253,11 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             embed.description = cleandoc("""
                 You have 5 possible options for installing CFW:
                 - [NTRBoot](https://3ds.hacks.guide/ntrboot) which requires a compatible NDS flashcart and maybe an \
-additional DS(i) or hacked 3DS console depending on the flashcart.
+additional DS(i) or hacked 3DS console depending on the flashcart (All versions, all hardware)
                 - [Frogminer](https://jisagi.github.io/FrogminerGuide/) which requires a homebrew entrypoint like \
-[steelminer](http://steelminer.jisagi.net/) (free method) or freakyhax.
+[steelminer](http://steelminer.jisagi.net/) (free method) or freakyhax (Suggested for EU systems)
                 - [Fredminer](https://3ds.eiphax.tech/fredminer.html) which requires *any* DSiWare game from the \
-eShop, free or paid.
+eShop, free or paid (Suggested for US/JP systems)
                 - [Seedminer](https://3ds.hacks.guide/installing-boot9strap-\(seedminer\)) which requires a compatible \
 DSiWare game.
                 - [Hardmod](https://3ds.hacks.guide/installing-boot9strap-\(hardmod\)) which requires soldering \
