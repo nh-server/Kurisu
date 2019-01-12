@@ -251,7 +251,6 @@ class Extras:
         else:
             await self.bot.say("This month is not spooky enough!")
 
-    @is_staff("OP")
     @commands.command(pass_context=True)
     async def nospooky(self, ctx):
         """Tired of it."""
