@@ -13,6 +13,11 @@ import traceback
 import json
 import os
 
+if os.environ.get('KURISU_TRACEMALLOC', '0') == '1':
+    print('Using tracemalloc')
+    import tracemalloc
+    tracemalloc.start()
+
 import discord
 from discord.ext import commands
 

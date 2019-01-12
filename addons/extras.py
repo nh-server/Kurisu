@@ -158,6 +158,20 @@ class Extras:
         """Console Security - Switch"""
         await self.bot.say("https://www.youtube.com/watch?v=Ec4NgWRE8ik")
 
+    if os.environ.get('KURISU_TRACEMALLOC', '0') == '1':
+        @is_staff("OP")
+        @commands.command(hidden=True)
+        async def tmsnap(self):
+            os.makedirs('tmsnap', exist_ok=True)
+            import tracemalloc
+            snapshot = tracemalloc.take_snapshot()
+            log_fn = 'tmsnap/' + datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S') + '.log'
+            await self.bot.say('Dumping to ' + log_fn)
+            with open(log_fn, 'w', encoding='utf-8') as o:
+                for s in snapshot.statistics('lineno'):
+                    print(':'.join((str(s.traceback), str(s.size), str(s.count))), file=o)
+            await self.bot.say('Done!')
+
     @is_staff("Owner")
     @commands.command(pass_context=True, hidden=True)
     async def dumpchannel(self, ctx, channel_name, limit=100):
@@ -237,6 +251,7 @@ class Extras:
         else:
             await self.bot.say("This month is not spooky enough!")
 
+    @is_staff("OP")
     @commands.command(pass_context=True)
     async def nospooky(self, ctx):
         """Tired of it."""
