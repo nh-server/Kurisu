@@ -71,7 +71,7 @@ class Assistance:
             await self.bot.say("", embed=embed)
         if self.check_console(console, ctx.message.channel.name, ('switch', 'nx')):
             embed = discord.Embed(title="Guide", color=discord.Color(0xCB0004))
-            embed.set_author(name="NH All-Star Team", url="https://nh-server.github.io/switch-guide/")
+            embed.set_author(name="NH Discord Server", url="https://nh-server.github.io/switch-guide/")
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
             embed.url = "https://nh-server.github.io/switch-guide/"
             embed.description = "A Switch guide from stock to Atmosphere"
