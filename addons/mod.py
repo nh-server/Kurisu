@@ -390,10 +390,10 @@ class Mod:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
             
-    @is_staff("HalfOP")
+    @is_staff("Helper")
     @commands.command(pass_context=True, name="probate")
     async def probate(self, ctx, member: converters.SafeMember, *, reason=""):
-        """Probate a user. Staff only."""
+        """Probate a user. Staff and Helpers only."""
         try:
             await self.add_restriction(member, "Probation")
             await self.bot.add_roles(member, self.bot.probation_role)
@@ -414,10 +414,10 @@ class Mod:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
-    @is_staff("HalfOP")
+    @is_staff("Helper")
     @commands.command(pass_context=True, name="unprobate")
     async def unprobate(self, ctx, member: converters.SafeMember):
-        """Unprobate a user. Staff only."""
+        """Unprobate a user. Staff and Helpers only."""
         try:
             await self.remove_restriction(member, "Probation")
             await self.bot.remove_roles(member, self.bot.probation_role)
