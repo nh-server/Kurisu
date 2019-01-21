@@ -63,8 +63,8 @@ class Rules:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r4(self):
         """Displays rule 4."""
-        await self.simple_embed("Don't ask to ask, just ask. Just post your question instead of asking if you can and you will get an answer faster.\n"
-                                    " • Add details when asking. \"x doesn't work\" will slow down help.", title="Rule 4")
+        await self.simple_embed("If you would like assistance, please directly ask your question or concern. You don't need to ask to ask.\n"
+                                    " • Please remember to be detailed when asking. Being vague, like \"x doesn't work\" makes things harder for everyone.", title="Rule 4")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
