@@ -625,6 +625,30 @@ your device will refuse to write to it.
                                      """)
         embed.set_image(url="https://i.imgur.com/RvKjWcz.png")
         await self.bot.say("", embed=embed)
+		
+    #Creates tutorial command group
+    @commands.group(pass_context=True)
+    async def tutorial(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await self.bot.say("No game/app given")
+
+    @tutorial.command(aliases=["pkhex", "poke", "pkm"])
+    async def pokemon(self):
+        """Links to PKHeX tutorial"""
+        embed = discord.Embed(title="PKHeX tutorial", color=discord.Color.red())
+        embed.set_thumbnail(url="https://i.imgur.com/rr7Xf3E.jpg")
+        embed.url = "https://3ds.eiphax.tech/pkhex.html"
+        embed.description = "Basic tutorial for PKHeX"
+        await self.bot.say("", embed=embed)
+
+    @tutorial.command(aliases=["acnl"])
+    async def Animal_crossing(self):
+        """Links to AC:NL editing tutorial"""
+        embed = discord.Embed(title="AC:NL editing tutorial", color=discord.Color.green())
+        embed.set_thumbnail(url="https://i.imgur.com/3rVToMF.png")
+        embed.url = "https://3ds.eiphax.tech/acnl.html"
+        embed.description = "Basic tutorial for AC:NL editing"
+        await self.bot.say("", embed=embed)
         
 def setup(bot):
     bot.add_cog(Assistance(bot))
