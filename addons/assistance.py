@@ -570,17 +570,17 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def pkhex(self):
         """PKHeX tutorial"""
-		await self.simple_embed("""
+	await self.simple_embed("""
                                 Basic tutorial for [PKHeX](https://3ds.eiphax.tech/pkhex.html)
                                 """, title="Learn to PKHeX")
         
         
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-	    async def acnl(self):
+    async def acnl(self):
         """AC:NL editing tutorial"""
-		await self.simple_embed("""
-								Basic tutorial for [AC:NL editing](https://3ds.eiphax.tech/acnl.html)
+	await self.simple_embed("""
+				Basic tutorial for [AC:NL editing](https://3ds.eiphax.tech/acnl.html)
                                 """, title="Learn to edit AC:NL")
         
         
