@@ -625,6 +625,47 @@ your device will refuse to write to it.
                                      """)
         embed.set_image(url="https://i.imgur.com/RvKjWcz.png")
         await self.bot.say("", embed=embed)
+		
+    #Creates tutorial command group
+    @commands.group(pass_context=True)
+    async def tutorial(self, ctx):
+        """Links to one of multiple guides"""
+        if ctx.invoked_subcommand is None:
+            await ctx.invoke(self.bot.get_command('help'), *ctx.command.qualified_name.split())
+
+    @tutorial.command()
+    async def pokemon(self):
+        """Displays different guides for Pokemon"""
+        embed = discord.Embed(title="Possible guides for **Pokemon**:", color=discord.Color.red())
+        embed.description = "**pkhex**|**pkhax**|**pkgen** Links to PKHeX tutorial\n**randomize** Links to layeredfs randomizing tutorial"
+        await self.bot.say("", embed=embed)
+
+    @tutorial.command(hidden=True, aliases=["pkhax", "pkgen"])
+    async def pkhex(self):
+        """Links to PKHeX tutorial"""
+        embed = discord.Embed(title="PKHeX tutorial", color=discord.Color.red())
+        embed.set_thumbnail(url="https://i.imgur.com/rr7Xf3E.jpg")
+        embed.url = "https://3ds.eiphax.tech/pkhex.html"
+        embed.description = "Basic tutorial for PKHeX"
+        await self.bot.say("", embed=embed)
+
+    @tutorial.command(hidden=True, )
+    async def randomize(self):
+        """Links to layeredfs randomizing tutorial"""
+        embed = discord.Embed(title="randomizing with layeredfs", color=discord.Color.red())
+        embed.set_thumbnail(url="https://i.imgur.com/rr7Xf3E.jpg")
+        embed.url = "https://zetadesigns.github.io/randomizing-layeredfs.html"
+        embed.description = "Basic tutorial for randomizing with layeredfs"
+        await self.bot.say("", embed=embed)
+
+    @tutorial.command(aliases=["Animal_crossing"])
+    async def acnl(self):
+        """Links to AC:NL editing tutorial"""
+        embed = discord.Embed(title="AC:NL editing tutorial", color=discord.Color.green())
+        embed.set_thumbnail(url="https://i.imgur.com/3rVToMF.png")
+        embed.url = "https://3ds.eiphax.tech/acnl.html"
+        embed.description = "Basic tutorial for AC:NL editing"
+        await self.bot.say("", embed=embed)
         
 def setup(bot):
     bot.add_cog(Assistance(bot))
