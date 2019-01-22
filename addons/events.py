@@ -103,6 +103,16 @@ class Events:
         'nusgrabber',
         'fr33$h0p',
         'fshop',  # common outright bypass, but not sure if it will interact with legitimate words
+        'free.shop',
+        'fréeshop',
+        'freéshop',
+        'frééshop',
+        'frèeshop',
+        'freèshop',
+        'frèèshop',
+        'freêshop',
+        'frêeshop',
+        'frêêshop',
     )
 
     # use the full ID, including capitalization and dashes
