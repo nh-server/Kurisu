@@ -189,6 +189,7 @@ async def on_ready():
         bot.nohelp_role = discord.utils.get(server.roles, name="No-Help")
         bot.noembed_role = discord.utils.get(server.roles, name="No-Embed")
         bot.elsewhere_role = discord.utils.get(server.roles, name="#elsewhere")
+        bot.smallhelp_role = discord.utils.get(server.roles, name="Small Help")
         bot.everyone_role = server.default_role
 
         #assistance channels
