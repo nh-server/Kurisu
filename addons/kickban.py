@@ -14,6 +14,16 @@ class KickBan:
         self.bot = bot
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
+    async def meme(self, beaner, beaned, action, channel, reason):
+        await self.bot.say("Seriously? What makes you think it's okay to try and {} another staff or helper like that?".format(action))
+        msg = "{} attempted to {} {}|{}#{} in {} ".format(beaner.mention, action, beaned.mention,
+                                                                  self.bot.escape_name(beaned.name),
+                                                                  beaned.discriminator, channel.mention)
+        if reason != "":
+            msg += "for the reason " + reason
+        await self.bot.send_message(self.bot.meta_channel, msg + (" without a reason" if reason == "" else ""))
+
+
     @is_staff("HalfOP")
     @commands.command(pass_context=True, name="kick")
     async def kick_member(self, ctx, user, *, reason=""):
@@ -25,11 +35,7 @@ class KickBan:
                 await self.bot.say("Please mention a user.")
                 return
             if check_staff(member.id, 'Helper'):
-                await self.bot.say("Seriously? What makes you think it's okay to try and kick another staff or helper like that?")
-                msg = "{} attempted to kick or ban {}|{}#{} in {}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), member.discriminator, ctx.message.channel.mention)
-                if reason != "":
-                    msg += "for the reason" + reason
-                await self.bot.send_message(self.bot.meta_channel, msg + (" without a reason" if reason == "" else ""))
+                await self.meme(ctx.message.author, member, "kick", ctx.message.channel, reason)
                 return
             msg = "You were kicked from {}.".format(self.bot.server.name)
             if reason != "":
@@ -61,11 +67,7 @@ class KickBan:
                 await self.bot.say("Please mention a user.")
                 return
             if check_staff(member.id, 'Helper'):
-                await self.bot.say("Seriously? What makes you think it's okay to try and kick another staff or helper like that?")
-                msg = "{} attempted to kick or ban {}|{}#{} in {}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), member.discriminator, ctx.message.channel.mention)
-                if reason != "":
-                    msg += "for the reason" + reason
-                await self.bot.send_message(self.bot.meta_channel, msg + (" without a reason" if reason == "" else ""))
+                await self.meme(ctx.message.author, member, "ban", ctx.message.channel, reason)
                 return
             msg = "You were banned from {}.".format(self.bot.server.name)
             if reason != "":
@@ -97,11 +99,7 @@ class KickBan:
                 await self.bot.say("Please mention a user.")
                 return
             if check_staff(member.id, 'Helper'):
-                await self.bot.say("Seriously? What makes you think it's okay to try and kick another staff or helper like that?")
-                msg = "{} attempted to kick or ban {}|{}#{} in {}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), member.discriminator, ctx.message.channel.mention)
-                if reason != "":
-                    msg += "for the reason" + reason
-                await self.bot.send_message(self.bot.meta_channel, msg + (" without a reason" if reason == "" else ""))
+                await self.meme(ctx.message.author, member, "ban", ctx.message.channel, reason)
                 return
             self.bot.actions.append("ub:"+member.id)
             await self.bot.ban(member, 0)
@@ -124,11 +122,7 @@ class KickBan:
             await self.bot.say("Please mention a user.")
             return
         if check_staff(member.id, 'Helper'):
-            await self.bot.say("Seriously? What makes you think it's okay to try and kick another staff or helper like that?")
-            msg = "{} attempted to kick or ban {}|{}#{} in {}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), member.discriminator, ctx.message.channel.mention)
-            if reason != "":
-                msg += "for the reason" + reason
-            await self.bot.send_message(self.bot.meta_channel, msg + (" without a reason" if reason == "" else ""))
+            await self.meme(ctx.message.author, member, "timeban", ctx.message.channel, reason)
             return
         # thanks Luc#5653
         units = {
@@ -181,11 +175,7 @@ class KickBan:
                 await self.bot.say("Please mention a user.")
                 return
             if check_staff(member.id, 'Helper'):
-                await self.bot.say("Seriously? What makes you think it's okay to try and kick another staff or helper like that?")
-                msg = "{} attempted to kick or ban {}|{}#{} in {}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), member.discriminator, ctx.message.channel.mention)
-                if reason != "":
-                    msg += "for the reason" + reason
-                await self.bot.send_message(self.bot.meta_channel, msg + (" without a reason" if reason == "" else ""))
+                await self.meme(ctx.message.author, member, "softban", ctx.message.channel, reason)
                 return
             issuer = ctx.message.author
             with open("data/softbans.json", "r") as f:
