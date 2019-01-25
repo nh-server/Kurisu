@@ -1,4 +1,3 @@
-import pyaes
 import datetime
 import discord
 import json
@@ -115,7 +114,6 @@ class KickBan:
         if check_staff(member.id, 'Helper'):
             await self.bot.say("You can't ban another staffer with this command!")
             return
-        issuer = ctx.message.author
         # thanks Luc#5653
         units = {
             "d": 86400,
