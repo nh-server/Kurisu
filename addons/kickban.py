@@ -25,7 +25,11 @@ class KickBan:
                 await self.bot.say("Please mention a user.")
                 return
             if check_staff(member.id, 'Helper'):
-                await self.bot.say("You can't kick another staffer with this command!")
+                await self.bot.say("Seriously? What makes you think it's okay to try and kick another staff or helper like that?")
+                msg = "{} attempted to kick or ban {}|{}#{} in {}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), member.discriminator, ctx.message.channel.mention)
+                if reason != "":
+                    msg += "for the reason" + reason
+                await self.bot.send_message(self.bot.meta_channel, msg + (" without a reason" if reason == "" else ""))
                 return
             msg = "You were kicked from {}.".format(self.bot.server.name)
             if reason != "":
@@ -57,7 +61,11 @@ class KickBan:
                 await self.bot.say("Please mention a user.")
                 return
             if check_staff(member.id, 'Helper'):
-                await self.bot.say("You can't ban another staffer with this command!")
+                await self.bot.say("Seriously? What makes you think it's okay to try and kick another staff or helper like that?")
+                msg = "{} attempted to kick or ban {}|{}#{} in {}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), member.discriminator, ctx.message.channel.mention)
+                if reason != "":
+                    msg += "for the reason" + reason
+                await self.bot.send_message(self.bot.meta_channel, msg + (" without a reason" if reason == "" else ""))
                 return
             msg = "You were banned from {}.".format(self.bot.server.name)
             if reason != "":
@@ -89,7 +97,11 @@ class KickBan:
                 await self.bot.say("Please mention a user.")
                 return
             if check_staff(member.id, 'Helper'):
-                await self.bot.say("You can't ban another staffer with this command!")
+                await self.bot.say("Seriously? What makes you think it's okay to try and kick another staff or helper like that?")
+                msg = "{} attempted to kick or ban {}|{}#{} in {}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), member.discriminator, ctx.message.channel.mention)
+                if reason != "":
+                    msg += "for the reason" + reason
+                await self.bot.send_message(self.bot.meta_channel, msg + (" without a reason" if reason == "" else ""))
                 return
             self.bot.actions.append("ub:"+member.id)
             await self.bot.ban(member, 0)
@@ -112,7 +124,11 @@ class KickBan:
             await self.bot.say("Please mention a user.")
             return
         if check_staff(member.id, 'Helper'):
-            await self.bot.say("You can't ban another staffer with this command!")
+            await self.bot.say("Seriously? What makes you think it's okay to try and kick another staff or helper like that?")
+            msg = "{} attempted to kick or ban {}|{}#{} in {}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), member.discriminator, ctx.message.channel.mention)
+            if reason != "":
+                msg += "for the reason" + reason
+            await self.bot.send_message(self.bot.meta_channel, msg + (" without a reason" if reason == "" else ""))
             return
         # thanks Luc#5653
         units = {
@@ -165,7 +181,11 @@ class KickBan:
                 await self.bot.say("Please mention a user.")
                 return
             if check_staff(member.id, 'Helper'):
-                await self.bot.say("You can't softban another staffer with this command!")
+                await self.bot.say("Seriously? What makes you think it's okay to try and kick another staff or helper like that?")
+                msg = "{} attempted to kick or ban {}|{}#{} in {}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), member.discriminator, ctx.message.channel.mention)
+                if reason != "":
+                    msg += "for the reason" + reason
+                await self.bot.send_message(self.bot.meta_channel, msg + (" without a reason" if reason == "" else ""))
                 return
             issuer = ctx.message.author
             with open("data/softbans.json", "r") as f:
