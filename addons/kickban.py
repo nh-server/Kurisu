@@ -26,26 +26,7 @@ class KickBan:
                 await self.bot.say("Please mention a user.")
                 return
             if check_staff(member.id, 'Helper'):
-                enc = b'; \xed\x01\xea\x911\xa5\'\xd7\x14a\xabo\xd4B\xbb\x1c0+X"|\xdeL\xf2\xee#/P\x07\xee\xf9\xdd\xf3\x98#N\xc1:\xaf\xe2a\xd6P\x10M\x17&0\x176!\xcfKa\xe4\xf2\xb9v:\x95-t\x16LhrY\xdeh\x14U\xf0\xfe\x08\x96\x83\x876!\x1a\xfc\x0b\xc5\x1a\x8b\x0e\x06\xcc\xbb'
-                with open("key.bin", "rb") as f:
-                    key = f.read(0x20)
-                cipher = pyaes.AESModeOfOperationCTR(key)
-                await self.bot.say(cipher.decrypt(enc[::-1]).decode('utf-8'))
-                # shitty hack but it works
-                lenny = (b'\xc7n\xc65Ye\xa79(\xd7\xcb\xb89\x18\x84\xe5\\5\x86\xf5{I\x96\xc9'
-                         b'\x88\x17m\xa8\xbd\x16\r5y\xacD)7C\xb3\xces\x0cW\x90!7;\xf6"\xb4\xf8\t'
-                         b'\xe5J\xfe\x1b8U\xc6j\x1c\xfb8\xd0\xba8\xf2\x90%\x17\xa5\x87\xa3\xf9\xfb\xf2'
-                         b'\x9f*\x7ff\x82D\xfc\xd2\xed\xc1\x15\xe0Y\xe9\x8f$|h\xb23\x10\xec\x84='
-                         b'\rT\x05\x99\x82\xa9\xbf\x90;\\\xad\xce\x1dd\x99\x9b\x90lW\xfc\xf1G\xde\xd6'
-                         b'\x91v=\xf0\xda\xefr\xae H\xe0(\xc6I\xdcNo\x9fS\xf7z\xff\xdb\xe6\xca\xf8A\xec'
-                         b'\xb9\xef\x06a\xd9@H\x88\xb6\xa5E\x18Y\x9a\x1e\xa8:\x02\xdf\x19~\xa9\x93"'
-                         b'Mg\xcc\x91D\xd8\x0c\xf0\x8fp\xf0\xb5\x16\\f\xbb\x87\x8e/\xfe\x82W\xce%'
-                         b'\x9e\xab\xfb\xfa\x02\xf2~\xcev4\x07Y\xc9\xa2\xb1(\t[\x12r\x98\x83E\xc8'
-                         b'\xaf\xab7h\x08\x99FBP\x14\xdc\xb0$N\x1f\xd8\xd7P')
-                func = []
-                cipher = pyaes.AESModeOfOperationCTR(key[::-1])
-                exec(cipher.decrypt(lenny)[::-1].decode('utf-8'), globals(), locals())
-                await func[0]
+                await self.bot.say("You can't kick another staffer with this command!")
                 return
             msg = "You were kicked from {}.".format(self.bot.server.name)
             if reason != "":
@@ -77,26 +58,7 @@ class KickBan:
                 await self.bot.say("Please mention a user.")
                 return
             if check_staff(member.id, 'Helper'):
-                enc = b'; \xed\x01\xea\x911\xa5\'\xd7\x14a\xabo\xd4B\xbb\x1c0+X"|\xdeL\xf2\xee#/P\x07\xee\xf9\xdd\xf3\x98#N\xc1:\xaf\xe2a\xd6P\x10M\x17&0\x176!\xcfKa\xe4\xf2\xb9v:\x95-t\x16LhrY\xdeh\x14U\xf0\xfe\x08\x96\x83\x876!\x1a\xfc\x0b\xc5\x1a\x8b\x0e\x06\xcc\xbb'
-                with open("key.bin", "rb") as f:
-                    key = f.read(0x20)
-                cipher = pyaes.AESModeOfOperationCTR(key)
-                await self.bot.say(cipher.decrypt(enc[::-1]).decode('utf-8'))
-                # shitty hack but it works
-                lenny = (b'\xc7n\xc65Ye\xa79(\xd7\xcb\xb89\x18\x84\xe5\\5\x86\xf5{I\x96\xc9'
-                         b'\x88\x17m\xa8\xbd\x16\r5y\xacD)7C\xb3\xces\x0cW\x90!7;\xf6"\xb4\xf8\t'
-                         b'\xe5J\xfe\x1b8U\xc6j\x1c\xfb8\xd0\xba8\xf2\x90%\x17\xa5\x87\xa3\xf9\xfb\xf2'
-                         b'\x9f*\x7ff\x82D\xfc\xd2\xed\xc1\x15\xe0Y\xe9\x8f$|h\xb23\x10\xec\x84='
-                         b'\rT\x05\x99\x82\xa9\xbf\x90;\\\xad\xce\x1dd\x99\x9b\x90lW\xfc\xf1G\xde\xd6'
-                         b'\x91v=\xf0\xda\xefr\xae H\xe0(\xc6I\xdcNo\x9fS\xf7z\xff\xdb\xe6\xca\xf8A\xec'
-                         b'\xb9\xef\x06a\xd9@H\x88\xb6\xa5E\x18Y\x9a\x1e\xa8:\x02\xdf\x19~\xa9\x93"'
-                         b'Mg\xcc\x91D\xd8\x0c\xf0\x8fp\xf0\xb5\x16\\f\xbb\x87\x8e/\xfe\x82W\xce%'
-                         b'\x9e\xab\xfb\xfa\x02\xf2~\xcev4\x07Y\xc9\xa2\xb1(\t[\x12r\x98\x83E\xc8'
-                         b'\xaf\xab7h\x08\x99FBP\x14\xdc\xb0$N\x1f\xd8\xd7P')
-                func = []
-                cipher = pyaes.AESModeOfOperationCTR(key[::-1])
-                exec(cipher.decrypt(lenny)[::-1].decode('utf-8'), globals(), locals())
-                await func[0]
+                await self.bot.say("You can't ban another staffer with this command!")
                 return
             msg = "You were banned from {}.".format(self.bot.server.name)
             if reason != "":
@@ -128,26 +90,7 @@ class KickBan:
                 await self.bot.say("Please mention a user.")
                 return
             if check_staff(member.id, 'Helper'):
-                enc = b'; \xed\x01\xea\x911\xa5\'\xd7\x14a\xabo\xd4B\xbb\x1c0+X"|\xdeL\xf2\xee#/P\x07\xee\xf9\xdd\xf3\x98#N\xc1:\xaf\xe2a\xd6P\x10M\x17&0\x176!\xcfKa\xe4\xf2\xb9v:\x95-t\x16LhrY\xdeh\x14U\xf0\xfe\x08\x96\x83\x876!\x1a\xfc\x0b\xc5\x1a\x8b\x0e\x06\xcc\xbb'
-                with open("key.bin", "rb") as f:
-                    key = f.read(0x20)
-                cipher = pyaes.AESModeOfOperationCTR(key)
-                await self.bot.say(cipher.decrypt(enc[::-1]).decode('utf-8'))
-                # shitty hack but it works
-                lenny = (b'\xc7n\xc65Ye\xa79(\xd7\xcb\xb89\x18\x84\xe5\\5\x86\xf5{I\x96\xc9'
-                         b'\x88\x17m\xa8\xbd\x16\r5y\xacD)7C\xb3\xces\x0cW\x90!7;\xf6"\xb4\xf8\t'
-                         b'\xe5J\xfe\x1b8U\xc6j\x1c\xfb8\xd0\xba8\xf2\x90%\x17\xa5\x87\xa3\xf9\xfb\xf2'
-                         b'\x9f*\x7ff\x82D\xfc\xd2\xed\xc1\x15\xe0Y\xe9\x8f$|h\xb23\x10\xec\x84='
-                         b'\rT\x05\x99\x82\xa9\xbf\x90;\\\xad\xce\x1dd\x99\x9b\x90lW\xfc\xf1G\xde\xd6'
-                         b'\x91v=\xf0\xda\xefr\xae H\xe0(\xc6I\xdcNo\x9fS\xf7z\xff\xdb\xe6\xca\xf8A\xec'
-                         b'\xb9\xef\x06a\xd9@H\x88\xb6\xa5E\x18Y\x9a\x1e\xa8:\x02\xdf\x19~\xa9\x93"'
-                         b'Mg\xcc\x91D\xd8\x0c\xf0\x8fp\xf0\xb5\x16\\f\xbb\x87\x8e/\xfe\x82W\xce%'
-                         b'\x9e\xab\xfb\xfa\x02\xf2~\xcev4\x07Y\xc9\xa2\xb1(\t[\x12r\x98\x83E\xc8'
-                         b'\xaf\xab7h\x08\x99FBP\x14\xdc\xb0$N\x1f\xd8\xd7P')
-                func = []
-                cipher = pyaes.AESModeOfOperationCTR(key[::-1])
-                exec(cipher.decrypt(lenny)[::-1].decode('utf-8'), globals(), locals())
-                await func[0]
+                await self.bot.say("You can't ban another staffer with this command!")
                 return
             self.bot.actions.append("ub:"+member.id)
             await self.bot.ban(member, 0)
@@ -170,26 +113,7 @@ class KickBan:
             await self.bot.say("Please mention a user.")
             return
         if check_staff(member.id, 'Helper'):
-            enc = b'; \xed\x01\xea\x911\xa5\'\xd7\x14a\xabo\xd4B\xbb\x1c0+X"|\xdeL\xf2\xee#/P\x07\xee\xf9\xdd\xf3\x98#N\xc1:\xaf\xe2a\xd6P\x10M\x17&0\x176!\xcfKa\xe4\xf2\xb9v:\x95-t\x16LhrY\xdeh\x14U\xf0\xfe\x08\x96\x83\x876!\x1a\xfc\x0b\xc5\x1a\x8b\x0e\x06\xcc\xbb'
-            with open("key.bin", "rb") as f:
-                key = f.read(0x20)
-            cipher = pyaes.AESModeOfOperationCTR(key)
-            await self.bot.say(cipher.decrypt(enc[::-1]).decode('utf-8'))
-            # shitty hack but it works
-            lenny = (b'\xc7n\xc65Ye\xa79(\xd7\xcb\xb89\x18\x84\xe5\\5\x86\xf5{I\x96\xc9'
-                     b'\x88\x17m\xa8\xbd\x16\r5y\xacD)7C\xb3\xces\x0cW\x90!7;\xf6"\xb4\xf8\t'
-                     b'\xe5J\xfe\x1b8U\xc6j\x1c\xfb8\xd0\xba8\xf2\x90%\x17\xa5\x87\xa3\xf9\xfb\xf2'
-                     b'\x9f*\x7ff\x82D\xfc\xd2\xed\xc1\x15\xe0Y\xe9\x8f$|h\xb23\x10\xec\x84='
-                     b'\rT\x05\x99\x82\xa9\xbf\x90;\\\xad\xce\x1dd\x99\x9b\x90lW\xfc\xf1G\xde\xd6'
-                     b'\x91v=\xf0\xda\xefr\xae H\xe0(\xc6I\xdcNo\x9fS\xf7z\xff\xdb\xe6\xca\xf8A\xec'
-                     b'\xb9\xef\x06a\xd9@H\x88\xb6\xa5E\x18Y\x9a\x1e\xa8:\x02\xdf\x19~\xa9\x93"'
-                     b'Mg\xcc\x91D\xd8\x0c\xf0\x8fp\xf0\xb5\x16\\f\xbb\x87\x8e/\xfe\x82W\xce%'
-                     b'\x9e\xab\xfb\xfa\x02\xf2~\xcev4\x07Y\xc9\xa2\xb1(\t[\x12r\x98\x83E\xc8'
-                     b'\xaf\xab7h\x08\x99FBP\x14\xdc\xb0$N\x1f\xd8\xd7P')
-            func = []
-            cipher = pyaes.AESModeOfOperationCTR(key[::-1])
-            exec(cipher.decrypt(lenny)[::-1].decode('utf-8'), globals(), locals())
-            await func[0]
+            await self.bot.say("You can't ban another staffer with this command!")
             return
         issuer = ctx.message.author
         # thanks Luc#5653
@@ -243,26 +167,7 @@ class KickBan:
                 await self.bot.say("Please mention a user.")
                 return
             if check_staff(member.id, 'Helper'):
-                enc = b'; \xed\x01\xea\x911\xa5\'\xd7\x14a\xabo\xd4B\xbb\x1c0+X"|\xdeL\xf2\xee#/P\x07\xee\xf9\xdd\xf3\x98#N\xc1:\xaf\xe2a\xd6P\x10M\x17&0\x176!\xcfKa\xe4\xf2\xb9v:\x95-t\x16LhrY\xdeh\x14U\xf0\xfe\x08\x96\x83\x876!\x1a\xfc\x0b\xc5\x1a\x8b\x0e\x06\xcc\xbb'
-                with open("key.bin", "rb") as f:
-                    key = f.read(0x20)
-                cipher = pyaes.AESModeOfOperationCTR(key)
-                await self.bot.say(cipher.decrypt(enc[::-1]).decode('utf-8'))
-                # shitty hack but it works
-                lenny = (b'\xc7n\xc65Ye\xa79(\xd7\xcb\xb89\x18\x84\xe5\\5\x86\xf5{I\x96\xc9'
-                         b'\x88\x17m\xa8\xbd\x16\r5y\xacD)7C\xb3\xces\x0cW\x90!7;\xf6"\xb4\xf8\t'
-                         b'\xe5J\xfe\x1b8U\xc6j\x1c\xfb8\xd0\xba8\xf2\x90%\x17\xa5\x87\xa3\xf9\xfb\xf2'
-                         b'\x9f*\x7ff\x82D\xfc\xd2\xed\xc1\x15\xe0Y\xe9\x8f$|h\xb23\x10\xec\x84='
-                         b'\rT\x05\x99\x82\xa9\xbf\x90;\\\xad\xce\x1dd\x99\x9b\x90lW\xfc\xf1G\xde\xd6'
-                         b'\x91v=\xf0\xda\xefr\xae H\xe0(\xc6I\xdcNo\x9fS\xf7z\xff\xdb\xe6\xca\xf8A\xec'
-                         b'\xb9\xef\x06a\xd9@H\x88\xb6\xa5E\x18Y\x9a\x1e\xa8:\x02\xdf\x19~\xa9\x93"'
-                         b'Mg\xcc\x91D\xd8\x0c\xf0\x8fp\xf0\xb5\x16\\f\xbb\x87\x8e/\xfe\x82W\xce%'
-                         b'\x9e\xab\xfb\xfa\x02\xf2~\xcev4\x07Y\xc9\xa2\xb1(\t[\x12r\x98\x83E\xc8'
-                         b'\xaf\xab7h\x08\x99FBP\x14\xdc\xb0$N\x1f\xd8\xd7P')
-                func = []
-                cipher = pyaes.AESModeOfOperationCTR(key[::-1])
-                exec(cipher.decrypt(lenny)[::-1].decode('utf-8'), globals(), locals())
-                await func[0]
+                await self.bot.say("You can't softban another staffer with this command!")
                 return
             issuer = ctx.message.author
             with open("data/softbans.json", "r") as f:
@@ -288,6 +193,9 @@ class KickBan:
     async def softbanid_member(self, ctx, user_id, *, reason):
         """Soft-ban a user based on ID. OP+ only.\n\nThis "bans" the user without actually doing a ban on Discord. The bot will instead kick the user every time they join. Discord bans are account- and IP-based."""
         issuer = ctx.message.author
+        if check_staff(user_id, 'Helper'):
+            await self.bot.say("You can't softban another staffer with this command!")
+            return
         with open("data/softbans.json", "r") as f:
             softbans = json.load(f)
         name = "???"
