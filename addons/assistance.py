@@ -666,6 +666,16 @@ your device will refuse to write to it.
         embed.url = "https://3ds.eiphax.tech/acnl.html"
         embed.description = "Basic tutorial for AC:NL editing"
         await self.bot.say("", embed=embed)
-        
+
+    @commands.command()
+    async def tinydb(self):
+        """Community-maintained homebrew database"""
+        embed = discord.Embed(title="Tinydb", color=discord.Color.green())
+        embed.set_author(name="DeadPhoenix")
+        embed.set_thumbnail(url="https://files.frozenchen.me/kNJz8.png")
+        embed.url = "http://tinydb.eiphax.tech"
+        embed.description = "A Community-maintained homebrew database"
+        await self.bot.say("", embed=embed)
+
 def setup(bot):
     bot.add_cog(Assistance(bot))
