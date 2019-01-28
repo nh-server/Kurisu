@@ -8,6 +8,9 @@ DROP TABLE IF EXISTS restrictions;
 DROP TABLE IF EXISTS staff;
 DROP TABLE IF EXISTS warns;
 
+PRAGMA application_id = 0x6B756462; -- kudb
+PRAGMA user_version = 1;
+
 CREATE TABLE actions_log (
   entry_id INTEGER PRIMARY KEY,
   user_id INTEGER,
