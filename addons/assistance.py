@@ -252,15 +252,15 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
             embed.description = cleandoc("""
                 You have 5 possible options for installing CFW:
-                - [NTRBoot](https://3ds.hacks.guide/ntrboot) which requires a compatible NDS flashcart and maybe an \
+                > [NTRBoot](https://3ds.hacks.guide/ntrboot) which requires a compatible NDS flashcart and maybe an \
 additional DS(i) or hacked 3DS console depending on the flashcart (All versions, all hardware)
-                - [Frogminer](https://jisagi.github.io/FrogminerGuide/) which requires a homebrew entrypoint like \
+                > [Frogminer](https://jisagi.github.io/FrogminerGuide/) which requires a homebrew entrypoint like \
 [steelminer](http://steelminer.jisagi.net/) (free method) or freakyhax (Suggested for EU systems)
-                - [Fredminer](https://3ds.eiphax.tech/fredminer.html) which requires *any* DSiWare game from the \
-eShop, free or paid (Suggested for US/JP systems)
-                - [Seedminer](https://3ds.hacks.guide/installing-boot9strap-\(seedminer\)) which requires a compatible \
-DSiWare game.
-                - [Hardmod](https://3ds.hacks.guide/installing-boot9strap-\(hardmod\)) which requires soldering \
+                > [Fredminer](https://3ds.eiphax.tech/fredminer.html) which requires *any* DSiWare game from the \
+eShop, free or paid (Suggested for non-EU systems)
+                > [Seedminer](https://3ds.hacks.guide/installing-boot9strap-\(seedminer\)) which requires a compatible \
+DSiWare game
+                > [Hardmod](https://3ds.hacks.guide/installing-boot9strap-\(hardmod\)) which requires soldering \
 **Not for beginners!**
                 **Downgrading is impossible on 11.4+!**
                 """)
@@ -632,6 +632,15 @@ your device will refuse to write to it.
         """Links to one of multiple guides"""
         if ctx.invoked_subcommand is None:
             await ctx.invoke(self.bot.get_command('help'), *ctx.command.qualified_name.split())
+	
+    @tutorial.command(aliases=["twilightmenu"])
+    async def twlmenu(self):
+        """Links to twlmenu tutorial"""
+        embed = discord.Embed(title="TWiLightMenu++ tutorial", color=discord.Color.purple())
+        embed.set_thumbnail(url="https://avatars3.githubusercontent.com/u/16110127?s=400&v=4")
+        embed.url = "https://3ds.eiphax.tech/twlmenu.html"
+        embed.description = "Basic tutorial for TWiLightMenu++"
+        await self.bot.say("", embed=embed)
 
     @tutorial.command()
     async def pokemon(self):
@@ -674,7 +683,7 @@ your device will refuse to write to it.
         embed.set_author(name="DeadPhoenix")
         embed.set_thumbnail(url="https://files.frozenchen.me/kNJz8.png")
         embed.url = "http://tinydb.eiphax.tech"
-        embed.description = "A Community-maintained homebrew database"
+        embed.description = "A community-maintained homebrew database"
         await self.bot.say("", embed=embed)
 
 def setup(bot):
