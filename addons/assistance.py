@@ -77,6 +77,14 @@ class Assistance:
             embed.description = "A Switch guide from stock to Atmosphere"
             await self.bot.say("", embed=embed)
 
+    @commands.command(aliases=["finalizing","finalizingsetup"])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def finalize(self):
+        """Finalizing Setup"""
+        await self.simple_embed("""
+                    3DS Hacks Guide's [Finalizing Setup](https://3ds.hacks.guide/finalizing-setup)
+                    """, title="Finalizing Setup")
+
     #Embed to Soundhax Download Website
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -246,25 +254,16 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
 
     @commands.command(pass_context=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def stock(self,ctx,console=""):
+    async def stock(self, ctx, console=""):
         """Advisory for various Nintendo systems on stock firmware"""
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
-            embed.description = cleandoc("""
-                You have 5 possible options for installing CFW:
-                - [NTRBoot](https://3ds.hacks.guide/ntrboot) which requires a compatible NDS flashcart and maybe an \
-additional DS(i) or hacked 3DS console depending on the flashcart (All versions, all hardware)
-                - [Frogminer](https://jisagi.github.io/FrogminerGuide/) which requires a homebrew entrypoint like \
-[steelminer](http://steelminer.jisagi.net/) (free method) or freakyhax (Suggested for EU systems)
-                - [Fredminer](https://3ds.eiphax.tech/fredminer.html) which requires *any* DSiWare game from the \
-eShop, free or paid (Suggested for US/JP systems)
-                - [Seedminer](https://3ds.hacks.guide/installing-boot9strap-\(seedminer\)) which requires a compatible \
-DSiWare game.
-                - [Hardmod](https://3ds.hacks.guide/installing-boot9strap-\(hardmod\)) which requires soldering \
-**Not for beginners!**
-                **Downgrading is impossible on 11.4+!**
-                """)
-            await self.bot.say("", embed=embed)
+            embed.add_field(name="NTRBoot", value="requires a compatible NDS flashcart and maybe an additional DS(i) or hacked 3DS console depending on the flashcart (All versions, all hardware). [Guide](https://3ds.hacks.guide/ntrboot)", inline=False)
+            embed.add_field(name="Frogminer", value="requires a homebrew entrypoint like [steelminer](http://steelminer.jisagi.net/) (free method) or freakyhax (Suggested for EU systems). [Guide](https://jisagi.github.io/FrogminerGuide/)", inline=False)
+            embed.add_field(name="Fredminer", value="requires *any* DSiWare game from the eShop, free or paid (Suggested for non-EU systems). [Guide](https://3ds.eiphax.tech/fredminer.html)", inline=False)
+            embed.add_field(name="Seedminer", value="requires a compatible DSiWare game. [Guide](https://3ds.hacks.guide/installing-boot9strap-\(seedminer\))", inline=False)
+            embed.add_field(name="Hardmod", value="which requires soldering **Not for beginners!**. [Guide](https://3ds.hacks.guide/installing-boot9strap-\(hardmod\))", inline=False)
+            await self.bot.say(embed=embed)
         if self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Using a first-generation Switch?", color=0xe60012)
             embed.description = cleandoc("""
@@ -341,7 +340,7 @@ format it to FAT32.
                                 http://3ds.eiphax.tech/sderrors.html
                                 This covers Windows, Linux and Mac.
                                 """, title="SD Card Errors")
-        
+
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def lumabug(self):
@@ -596,6 +595,7 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
                                 Some flash drives work with the Wii U, some don't. If you have read or write errors, \
 or games crash often, you might want to try a different flash drive or hard drive
                                 """)
+
     #Information about pending Switch updates
     @commands.command(aliases=["nxupdate"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -625,7 +625,7 @@ your device will refuse to write to it.
                                      """)
         embed.set_image(url="https://i.imgur.com/RvKjWcz.png")
         await self.bot.say("", embed=embed)
-		
+
     #Creates tutorial command group
     @commands.group(pass_context=True)
     async def tutorial(self, ctx):
@@ -665,6 +665,15 @@ your device will refuse to write to it.
         embed.set_thumbnail(url="https://i.imgur.com/3rVToMF.png")
         embed.url = "https://3ds.eiphax.tech/acnl.html"
         embed.description = "Basic tutorial for AC:NL editing"
+        await self.bot.say("", embed=embed)
+
+    @tutorial.command(aliases=["twilightmenu", "dsimenu++", "srloader"])
+    async def twlmenu(self):
+        """Links to twlmenu tutorial"""
+        embed = discord.Embed(title="TWiLightMenu++ tutorial", color=discord.Color.purple())
+        embed.set_thumbnail(url="https://avatars3.githubusercontent.com/u/16110127?s=400&v=4")
+        embed.url = "https://3ds.eiphax.tech/twlmenu.html"
+        embed.description = "Basic tutorial for TWiLightMenu++"
         await self.bot.say("", embed=embed)
 
     @commands.command()
