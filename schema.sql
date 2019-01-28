@@ -33,11 +33,16 @@ CREATE TABLE no_filter (
 );
 
 CREATE TABLE permanent_roles (
-  user_id INTEGER,
+  user_id INTEGER NOT NULL,
   role_id INTEGER
 );
 
 CREATE TABLE staff (
-  user_id INTEGER,
+  user_id INTEGER NOT NULL,
   level TEXT
+);
+
+CREATE TABLE mail_ignore (
+  user_id INTEGER NOT NULL,
+  reason TEXT
 );

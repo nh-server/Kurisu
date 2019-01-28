@@ -6,8 +6,6 @@ from .common import BaseDatabaseManager
 if TYPE_CHECKING:
     from typing import Generator, Tuple
 
-# I can't really think of a use for this... maybe I'll remove it if nothing happens.
-
 
 class ConfigurationDatabaseManager(BaseDatabaseManager):
     """Manages the configuration database."""
