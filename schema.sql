@@ -45,7 +45,9 @@ CREATE TABLE staff (
   level TEXT
 );
 
-CREATE TABLE mail_ignore (
+CREATE TABLE warns (
+  warn_id INTEGER PRIMARY KEY,
   user_id INTEGER NOT NULL,
+  issuer INTEGER,
   reason TEXT
-);
+)
