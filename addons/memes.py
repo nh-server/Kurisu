@@ -94,18 +94,6 @@ class Memes:
 
     @commands.command(pass_context=True, hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
-    async def kina(self, ctx):
-        """Memes."""
-        await self._meme(ctx, "https://i.imgur.com/C2Is4xt.png")
-
-    @commands.command(pass_context=True, hidden=True)
-    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
-    async def kina2(self, ctx):
-        """Memes."""
-        await self._meme(ctx, "https://i.imgur.com/WCiNd0x.png")
-
-    @commands.command(pass_context=True, hidden=True)
-    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def shotsfired(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/zf2XrNk.gifv")

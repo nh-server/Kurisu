@@ -71,7 +71,7 @@ class Assistance:
             await self.bot.say("", embed=embed)
         if self.check_console(console, ctx.message.channel.name, ('switch', 'nx')):
             embed = discord.Embed(title="Guide", color=discord.Color(0xCB0004))
-            embed.set_author(name="NH All-Star Team", url="https://nh-server.github.io/switch-guide/")
+            embed.set_author(name="NH Discord Server", url="https://nh-server.github.io/switch-guide/")
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
             embed.url = "https://nh-server.github.io/switch-guide/"
             embed.description = "A Switch guide from stock to Atmosphere"
@@ -202,7 +202,7 @@ versions on 11.9 will cause a blackscreen until you update.
         await self.simple_embed("""
                                 > Reminder: if you would like someone to help you, please be as descriptive as \
 possible, of your situation, things you have done, as little as they may seem, \
-aswell as assisting materials. Asking to ask wont expedite your process, and may delay assistance."
+aswell as assisting materials. Asking to ask wont expedite your process, and may delay assistance.
                                 """)
 
     @commands.command()
@@ -251,11 +251,13 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
             embed.description = cleandoc("""
-                You have 4 possible options for installing CFW:
+                You have 5 possible options for installing CFW:
                 - [NTRBoot](https://3ds.hacks.guide/ntrboot) which requires a compatible NDS flashcart and maybe an \
-additional DS(i) or hacked 3DS console depending on the flashcart.
+additional DS(i) or hacked 3DS console depending on the flashcart (All versions, all hardware)
                 - [Frogminer](https://jisagi.github.io/FrogminerGuide/) which requires a homebrew entrypoint like \
-[steelminer](http://steelminer.jisagi.net/) (free method) or freakyhax.
+[steelminer](http://steelminer.jisagi.net/) (free method) or freakyhax (Suggested for EU systems)
+                - [Fredminer](https://3ds.eiphax.tech/fredminer.html) which requires *any* DSiWare game from the \
+eShop, free or paid (Suggested for US/JP systems)
                 - [Seedminer](https://3ds.hacks.guide/installing-boot9strap-\(seedminer\)) which requires a compatible \
 DSiWare game.
                 - [Hardmod](https://3ds.hacks.guide/installing-boot9strap-\(hardmod\)) which requires soldering \
@@ -631,6 +633,57 @@ your device will refuse to write to it.
                                      """)
         embed.set_image(url="https://i.imgur.com/RvKjWcz.png")
         await self.bot.say("", embed=embed)
-        
+		
+    #Creates tutorial command group
+    @commands.group(pass_context=True)
+    async def tutorial(self, ctx):
+        """Links to one of multiple guides"""
+        if ctx.invoked_subcommand is None:
+            await ctx.invoke(self.bot.get_command('help'), *ctx.command.qualified_name.split())
+
+    @tutorial.command()
+    async def pokemon(self):
+        """Displays different guides for Pokemon"""
+        embed = discord.Embed(title="Possible guides for **Pokemon**:", color=discord.Color.red())
+        embed.description = "**pkhex**|**pkhax**|**pkgen** Links to PKHeX tutorial\n**randomize** Links to layeredfs randomizing tutorial"
+        await self.bot.say("", embed=embed)
+
+    @tutorial.command(hidden=True, aliases=["pkhax", "pkgen"])
+    async def pkhex(self):
+        """Links to PKHeX tutorial"""
+        embed = discord.Embed(title="PKHeX tutorial", color=discord.Color.red())
+        embed.set_thumbnail(url="https://i.imgur.com/rr7Xf3E.jpg")
+        embed.url = "https://3ds.eiphax.tech/pkhex.html"
+        embed.description = "Basic tutorial for PKHeX"
+        await self.bot.say("", embed=embed)
+
+    @tutorial.command(hidden=True, )
+    async def randomize(self):
+        """Links to layeredfs randomizing tutorial"""
+        embed = discord.Embed(title="randomizing with layeredfs", color=discord.Color.red())
+        embed.set_thumbnail(url="https://i.imgur.com/rr7Xf3E.jpg")
+        embed.url = "https://zetadesigns.github.io/randomizing-layeredfs.html"
+        embed.description = "Basic tutorial for randomizing with layeredfs"
+        await self.bot.say("", embed=embed)
+
+    @tutorial.command(aliases=["Animal_crossing"])
+    async def acnl(self):
+        """Links to AC:NL editing tutorial"""
+        embed = discord.Embed(title="AC:NL editing tutorial", color=discord.Color.green())
+        embed.set_thumbnail(url="https://i.imgur.com/3rVToMF.png")
+        embed.url = "https://3ds.eiphax.tech/acnl.html"
+        embed.description = "Basic tutorial for AC:NL editing"
+        await self.bot.say("", embed=embed)
+
+    @commands.command()
+    async def tinydb(self):
+        """Community-maintained homebrew database"""
+        embed = discord.Embed(title="Tinydb", color=discord.Color.green())
+        embed.set_author(name="DeadPhoenix")
+        embed.set_thumbnail(url="https://files.frozenchen.me/kNJz8.png")
+        embed.url = "http://tinydb.eiphax.tech"
+        embed.description = "A Community-maintained homebrew database"
+        await self.bot.say("", embed=embed)
+
 def setup(bot):
     bot.add_cog(Assistance(bot))
