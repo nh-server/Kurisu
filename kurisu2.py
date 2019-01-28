@@ -273,8 +273,8 @@ def main(*, debug=False, change_directory=False):
         print(f'discord.py is not at least 1.0.0x. (current version: {discord.__version__})')
         return 2
 
-    if not hexversion >= 0x030701F0:  # 3.7.1
-        print('Kurisu2 requires 3.7.1 or later.')
+    if not hexversion >= 0x030702F0:  # 3.7.2
+        print('Kurisu2 requires 3.7.2 or later.')
         return 2
 
     if change_directory:
