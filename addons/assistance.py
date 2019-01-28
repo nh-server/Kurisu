@@ -334,10 +334,18 @@ format it to FAT32.
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def finalize(self):
+        """Finalizing Setup"""
+        await self.simple_embed("""
+				3DS Hacks Guide's [Finalizing Setup](https://3ds.hacks.guide/finalizing-setup)
+				""", title="Finalizing Setup")
+
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def sderrors(self):
         """SD Error Guide"""
         await self.simple_embed("""
-                                Guide For Checking SD Card For Errors
+				Guide For Checking SD Card For Errors
                                 http://3ds.eiphax.tech/sderrors.html
                                 This covers Windows, Linux and Mac.
                                 """, title="SD Card Errors")
