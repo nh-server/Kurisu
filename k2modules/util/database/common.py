@@ -92,8 +92,7 @@ class BaseDatabaseManager:
         with connwrap(self.conn) as c:
             query = f'SELECT * FROM {table} {self._format_select_vars(values.keys())}'
             res = c.execute(query, values)
-            self.log.debug('Executed SELECT query with parameters %s',
-                           ColumnValueFormatter(self.tables[table], values))
+            self.log.debug('Executed SELECT query on %s with parameters %s', table, values)
             yield from res
 
     def _row_count(self, table: str, **values) -> int:
@@ -106,8 +105,7 @@ class BaseDatabaseManager:
         with connwrap(self.conn) as c:
             query = f'SELECT COUNT(*) FROM {table} {self._format_select_vars(values.keys())}'
             res = c.execute(query, values)
-            self.log.debug('Executed SELECT COUNT() query with parameters %s',
-                           ColumnValueFormatter(self.tables[table], values))
+            self.log.debug('Executed SELECT COUNT() query on %s with parameters %s', table, values)
             return res.fetchone()[0]
 
     def _insert(self, table: str, **values):
@@ -123,8 +121,7 @@ class BaseDatabaseManager:
                      f'VALUES ({self._format_insert_vars(values.keys())})')
             # TODO: catch an exception here, but what?
             c.execute(query, values)
-            self.log.debug('Executed SELECT query with parameters %s',
-                           ColumnValueFormatter(self.tables[table], values))
+            self.log.debug('Executed INSERT query on %s with parameters %s', table, values)
 
     def _delete(self, table: str, **values) -> int:
         assert not self.bot.db_closed
@@ -139,6 +136,5 @@ class BaseDatabaseManager:
             # TODO: catch some exception here, probably
             # (DELETE shouldn't raise unless something has gone horribly wrong)
             res = c.execute(query, values)
-            self.log.debug('Executed DELETE query with parameters %s',
-                           ColumnValueFormatter(self.tables[table], values))
+            self.log.debug('Executed DELETE query on %s with parameters %s', table, values)
             return res.rowcount
