@@ -659,6 +659,15 @@ your device will refuse to write to it.
         embed.description = "Basic tutorial for AC:NL editing"
         await self.bot.say("", embed=embed)
 
+    @tutorial.command(aliases=["twilightmenu", "dsimenu++", "srloader"])
+    async def twlmenu(self):
+        """Links to twlmenu tutorial"""
+        embed = discord.Embed(title="TWiLightMenu++ tutorial", color=discord.Color.purple())
+        embed.set_thumbnail(url="https://avatars3.githubusercontent.com/u/16110127?s=400&v=4")
+        embed.url = "https://3ds.eiphax.tech/twlmenu.html"
+        embed.description = "Basic tutorial for TWiLightMenu++"
+        await self.bot.say("", embed=embed)
+
     @commands.command()
     async def tinydb(self):
         """Community-maintained homebrew database"""
