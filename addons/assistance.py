@@ -77,6 +77,14 @@ class Assistance:
             embed.description = "A Switch guide from stock to Atmosphere"
             await self.bot.say("", embed=embed)
 
+    @commands.command(aliases=["finalizing","finalizingsetup"])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def finalize(self):
+        """Finalizing Setup"""
+        await self.simple_embed("""
+                    3DS Hacks Guide's [Finalizing Setup](https://3ds.hacks.guide/finalizing-setup)
+                    """, title="Finalizing Setup")
+
     #Embed to Soundhax Download Website
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
