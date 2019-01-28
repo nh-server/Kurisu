@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from datetime import datetime
 from typing import NamedTuple, TYPE_CHECKING
 
@@ -19,10 +18,7 @@ class WarnEntry(NamedTuple):
     reason: str
 
 
-tables = {'warns': OrderedDict((('warn_id', 'int'), ('user_id', 'int'), ('issuer', 'int'), ('reason', 'text')))}
-
-
-class WarnsDatabaseManager(BaseDatabaseManager, tables=tables):
+class WarnsDatabaseManager(BaseDatabaseManager):
     """Manages the warns database."""
 
     def add_warning(self, user_id: int, issuer: int, reason: str) -> 'Tuple[int, int]':

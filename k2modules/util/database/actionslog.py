@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from datetime import datetime
 from typing import TYPE_CHECKING, NamedTuple
 
@@ -9,10 +8,6 @@ from .common import BaseDatabaseManager
 
 if TYPE_CHECKING:
     from typing import Generator, Optional
-
-tables = {'actions_log': OrderedDict((('entry_id', 'int'), ('user_id', 'int'), ('target_id', 'int'),
-                                      ('kind', 'text'), ('description', 'text'), ('extra', 'text'))),
-          'attachments': OrderedDict((('entry_id', 'int'), ('url', 'text')))}
 
 
 class ActionEntry(NamedTuple):
@@ -25,7 +20,7 @@ class ActionEntry(NamedTuple):
     extra: 'Optional[str]'
 
 
-class ActionsLogDatabaseManager(BaseDatabaseManager, tables=tables):
+class ActionsLogDatabaseManager(BaseDatabaseManager):
     """Manages the actions_log database."""
 
     def add_entry(self, user_id: int, target_id: int, kind: str, description: str = None, extra: str = None,

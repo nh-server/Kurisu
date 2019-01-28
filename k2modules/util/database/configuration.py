@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from typing import TYPE_CHECKING
 
 from ..tools import s2u
@@ -9,12 +8,8 @@ if TYPE_CHECKING:
 
 # I can't really think of a use for this... maybe I'll remove it if nothing happens.
 
-tables = {'flags': OrderedDict((('key', 'text'), ('value', 'bool'))),
-          'staff': OrderedDict((('user_id', 'int'), ('level', 'text'))),
-          'nofilter': OrderedDict((('channel_id', 'int'),))}
 
-
-class ConfigurationDatabaseManager(BaseDatabaseManager, tables=tables):
+class ConfigurationDatabaseManager(BaseDatabaseManager):
     """Manages the configuration database."""
 
     def set_flag(self, key: str, value: bool):

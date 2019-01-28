@@ -18,6 +18,8 @@ from discord.ext import commands
 if TYPE_CHECKING:
     from typing import Dict, Union
 
+DATABASE_NAME = 'kurisu2_data.sqlite'
+
 channel_names = {
     # TODO: add more channel names
     # staff channel
@@ -106,11 +108,22 @@ class Kurisu2(commands.Bot):
 
         self.debug = logging_level is logging.DEBUG
 
-        if not os.path.isfile('kurisu2_data.sqlite'):
-            self.db_create_tables = True
+        if not os.path.isfile(DATABASE_NAME):
+            # read schema, open db, init
+            self.log.info('Creating database %s', DATABASE_NAME)
+            with open('schema.sql', 'r', encoding='utf-8') as f:
+                schema = f.read()
+
+            self.dbcon = sqlite3.connect(DATABASE_NAME)
+            self.dbcon.executescript(schema)
+            self.dbcon.commit()
+
+            self.log.info('%s initialized', DATABASE_NAME)
+
         else:
-            self.db_create_tables = False
-        self.dbcon = sqlite3.connect('kurisu2_data.sqlite')
+            # just open db, no setup
+            self.dbcon = sqlite3.connect(DATABASE_NAME)
+
         self.db_closed = False
 
         self.restrictions = RestrictionsManager(self)

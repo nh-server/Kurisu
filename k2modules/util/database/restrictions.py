@@ -1,13 +1,10 @@
-from collections import OrderedDict
 from typing import Generator, Tuple
 
 from k2modules.util.tools import u2s
 from .common import BaseDatabaseManager
 
-tables = {'restrictions': OrderedDict((('user_id', 'int'), ('restriction', 'text')))}
 
-
-class RestrictionsDatabaseManager(BaseDatabaseManager, tables=tables):
+class RestrictionsDatabaseManager(BaseDatabaseManager):
     """Manages the restrictions database."""
 
     def add_restriction(self, user_id: int, restriction: str) -> bool:
