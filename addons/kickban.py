@@ -89,6 +89,30 @@ class KickBan:
             await self.bot.say("💢 I don't have permission to do this.")
 
     @is_staff("OP")
+    @commands.command(pass_context=True, name="banid")
+    async def banid_member(self, ctx, userid, *, reason=""):
+        """Bans a user id from the server. OP+ only."""
+        try:
+            member = discord.Object(userid)
+            member.server = ctx.message.server
+            if check_staff(member.id, 'Helper'):
+                await self.bot.say("You can't ban another staffer with this command!")
+                return
+            self.bot.actions.append("ub:" + member.id)
+            await self.bot.ban(member, 0)
+            await self.bot.say("ID {} is now b&. 👍".format(member.id))
+            msg = "⛔ **Ban**: {} banned ID {}".format(ctx.message.author.mention, member.id)
+            if reason != "":
+                msg += "\n✏️ __Reason__: " + reason
+            await self.bot.send_message(self.bot.serverlogs_channel, msg)
+            await self.bot.send_message(self.bot.modlogs_channel, msg + (
+                "\nPlease add an explanation below. In the future, it is recommended to use `.banid <userid> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
+        except discord.errors.Forbidden:
+            await self.bot.say("💢 I don't have permission to do this.")
+        except discord.errors.NotFound:
+            await self.bot.say("No user associated with ID {}.".format(member.id))
+
+    @is_staff("OP")
     @commands.command(pass_context=True, name="silentban", hidden=True)
     async def silentban_member(self, ctx, user, *, reason=""):
         """Bans a user from the server, without a notification. OP+ only."""
