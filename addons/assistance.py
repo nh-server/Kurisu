@@ -258,11 +258,11 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
         """Advisory for various Nintendo systems on stock firmware"""
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
-            embed.add_field(name="NTRBoot", value="requires a compatible NDS flashcart and maybe an additional DS(i) or hacked 3DS console depending on the flashcart (All versions, all hardware). [Guide](https://3ds.hacks.guide/ntrboot)", inline=False)
-            embed.add_field(name="Frogminer", value="requires a homebrew entrypoint like [steelminer](http://steelminer.jisagi.net/) (free method) or freakyhax (Suggested for EU systems). [Guide](https://jisagi.github.io/FrogminerGuide/)", inline=False)
-            embed.add_field(name="Fredminer", value="requires *any* DSiWare game from the eShop, free or paid (Suggested for non-EU systems). [Guide](https://3ds.eiphax.tech/fredminer.html)", inline=False)
-            embed.add_field(name="Seedminer", value="requires a compatible DSiWare game. [Guide](https://3ds.hacks.guide/installing-boot9strap-\(seedminer\))", inline=False)
-            embed.add_field(name="Hardmod", value="which requires soldering **Not for beginners!**. [Guide](https://3ds.hacks.guide/installing-boot9strap-\(hardmod\))", inline=False)
+            embed.add_field(name="NTRBoot", value="Requires a compatible NDS flashcart and maybe an additional DS(i) or hacked 3DS console depending on the flashcart (All versions, all hardware). [Guide](https://3ds.hacks.guide/ntrboot)", inline=False)
+            embed.add_field(name="Frogminer", value="Requires a homebrew entrypoint like [steelminer](http://steelminer.jisagi.net/) (free method) or any homebrew primary exploit. [Guide](https://jisagi.github.io/FrogminerGuide/) (Suggested for EUR systems)", inline=False)
+            embed.add_field(name="Fredminer", value="Requires *any* DSiWare game from the eShop, free or paid (Suggested for non-EU systems). [Guide](https://3ds.eiphax.tech/fredminer.html)", inline=False)
+            embed.add_field(name="Seedminer", value="Requires a compatible DSiWare game. [Guide](https://3ds.hacks.guide/installing-boot9strap-\(seedminer\))", inline=False)
+            embed.add_field(name="Hardmod", value="Requires soldering **Not for beginners!**. [Guide](https://3ds.hacks.guide/installing-boot9strap-\(hardmod\))", inline=False)
             await self.bot.say(embed=embed)
         if self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Using a first-generation Switch?", color=0xe60012)
