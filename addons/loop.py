@@ -90,7 +90,6 @@ class Loop:
 
     async def start_update_loop(self):
         # thanks Luc#5653
-        await self.update_netinfo()
         await self.bot.wait_until_all_ready()
         while self.is_active:
             try:
