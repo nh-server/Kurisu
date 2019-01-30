@@ -232,7 +232,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 Reasons to not use video guides:
                 - They get outdated quickly
                 - Tough to update and give assistance for
-                - Can be misinformative and dangerous for the console"
+                - Can be misinformative and dangerous for the console
                 """)
         embed.add_field(name="Recommended Solution", value="Read [Plailect's written guides](https://hacks.guide).")
         await self.bot.say("", embed=embed)
