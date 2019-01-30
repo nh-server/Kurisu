@@ -41,7 +41,7 @@ class Loop:
 
     tz = pytz.timezone('US/Pacific')
 
-    netinfo_embed = discord.Embed(description="This needs to be set up")
+    netinfo_embed = discord.Embed(description="The Network Maintenance Information page has not been successfully checked yet.")
     # netinfo_future_embed = discord.Embed(description="This needs to be set up")
 
     def netinfo_parse_time(self, timestr):
