@@ -686,5 +686,19 @@ your device will refuse to write to it.
         embed.description = "A Community-maintained homebrew database"
         await self.bot.say("", embed=embed)
 
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def exfat(self):
+        """exFAT on Switch: why not to use it"""
+        await self.simple_embed("""
+                                The recommended filesystem format for the Switch is FAT32. 
+                                
+                                While the Switch supports exFAT through an additional update from Nintendo, here are reasons not to use it:
+                                
+                                * This filesystem is prone to corruption.
+                                * Nintendo does not use files larger than 4GB even while exFAT is used.
+                                """
+                                , title="exFAT on Switch: Why you shouldn't use it")
+
 def setup(bot):
     bot.add_cog(Assistance(bot))
