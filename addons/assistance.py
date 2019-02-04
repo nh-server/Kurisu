@@ -373,7 +373,7 @@ just missing a file called boot.firm in the root of your SD card.
     @commands.command(pass_context=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def troubleshoot(self, ctx, *, console=""):
-        """Links to common issue troubleshooting guides."""
+        """Troubleshooting guides for common issues"""
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed=discord.Embed(title="Troubleshooting guide for Frogminer and Steelminer", color=discord.Color(0xA2BAE0))
             embed.set_author(name="Eip", url="https://3ds.eiphax.tech/")
