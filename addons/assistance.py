@@ -274,7 +274,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 "Second-generation" invulnerable systems should **not** update past 4.1.0, as these systems may have \
 custom firmware on this version in the very far future.
 
-                **Downgrading is generally not worth the effort!** 
+                Downgrading is **impossible** on patched consoles, and isn't worth your time on unpatched ones. 
                 """)
             await self.bot.say("", embed=embed)
 
