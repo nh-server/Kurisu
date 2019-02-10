@@ -135,27 +135,27 @@ Thanks for stopping by and have a good time!
             # role removal
             if roles_before - roles_after:
                 msg = "\n👑 __Role removal__: "
-                for index, role in enumerate(roles_before):
+                roles = []
+                for role in roles_before:
                     if role.name == "@everyone":
                         continue
                     if role not in roles_after:
-                        msg += "_~~" + role.name + "~~_"
+                        roles.append("_~~" + role.name + "~~_")
                     else:
-                        msg += role.name
-                    if index != len(roles_before) - 1:
-                        msg += ", "
+                        roles.append(role.name)
+                msg += ', '.join(roles)
             # role addition
             elif roles_after - roles_before:
                 msg = "\n👑 __Role addition__: "
-                for index, role in enumerate(roles_after):
+                roles = []
+                for role in roles_after:
                     if role.name == "@everyone":
                         continue
                     if role not in roles_before:
-                        msg += "__**" + role.name + "**__"
+                        roles.append("__**" + role.name + "**__")
                     else:
-                        msg += role.name
-                    if index != len(roles_after) - 1:
-                        msg += ", "
+                        roles.append(role.name)
+                msg += ', '.join(roles)
         if self.bot.escape_name(member_before.name) != self.bot.escape_name(member_after.name):
             do_log = True
             dest = self.bot.serverlogs_channel
