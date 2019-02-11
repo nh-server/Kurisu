@@ -240,8 +240,7 @@ class Mod:
             await self.add_restriction(member, "no-elsewhere")
             roles = member.roles
 
-            if self.bot.elsewhere_role in roles:
-                roles.remove(self.bot.elsewhere_role)
+            roles = [x for x in roles if x != self.bot.elsewhere_role]
             if self.bot.noelsewhere_role not in roles:
                 roles.append(self.bot.noelsewhere_role)
             await self.bot.replace_roles(member, *roles)
