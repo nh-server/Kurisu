@@ -127,33 +127,35 @@ Thanks for stopping by and have a good time!
         await self.bot.wait_until_all_ready()
         do_log = False  # only nickname and roles should be logged
         dest = self.bot.modlogs_channel
-        if member_before.roles != member_after.roles:
+        roles_before = set(member_before.roles)
+        roles_after = set(member_after.roles)
+        if roles_before ^ roles_after:
             do_log = True
             dest = self.bot.serverlogs_channel
             # role removal
-            if len(member_before.roles) > len(member_after.roles):
+            if roles_before - roles_after:
                 msg = "\n👑 __Role removal__: "
-                for index, role in enumerate(member_before.roles):
+                roles = []
+                for role in roles_before:
                     if role.name == "@everyone":
                         continue
-                    if role not in member_after.roles:
-                        msg += "_~~" + role.name + "~~_"
+                    if role not in roles_after:
+                        roles.append("_~~" + role.name + "~~_")
                     else:
-                        msg += role.name
-                    if index != len(member_before.roles) - 1:
-                        msg += ", "
+                        roles.append(role.name)
+                msg += ', '.join(roles)
             # role addition
-            elif len(member_before.roles) < len(member_after.roles):
+            elif roles_after - roles_before:
                 msg = "\n👑 __Role addition__: "
-                for index, role in enumerate(member_after.roles):
+                roles = []
+                for role in roles_after:
                     if role.name == "@everyone":
                         continue
-                    if role not in member_before.roles:
-                        msg += "__**" + role.name + "**__"
+                    if role not in roles_before:
+                        roles.append("__**" + role.name + "**__")
                     else:
-                        msg += role.name
-                    if index != len(member_after.roles) - 1:
-                        msg += ", "
+                        roles.append(role.name)
+                msg += ', '.join(roles)
         if self.bot.escape_name(member_before.name) != self.bot.escape_name(member_after.name):
             do_log = True
             dest = self.bot.serverlogs_channel
