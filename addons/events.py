@@ -216,7 +216,7 @@ class Events:
         contains_piracy_tool_mention = any(x in msg_no_separators for x in self.piracy_tools)
 
         #modified regular expresion made by deme72
-        exp = re.compile('(?:https?://)?(?:(?:(?:www\.)?youtube\.com(?:/(?:watch\?.*?v=([^&\s]+).*)))|(?:youtu\.be/(.*)?))')
+        exp = re.compile('(?:https?://)?(?:(?:(?:www\.)?youtube\.com(?:/(?:watch\?.*?v=([^&\s]+)(?:[^\s]))))|(?:youtu\.be/([^\s]+)))')
         res = exp.findall(message.content)
         contains_video = any(res)
         contains_piracy_video_id = False if not contains_video else any(x or y for x, y in res if x in self.piracy_video_ids or y in self.piracy_video_ids)
