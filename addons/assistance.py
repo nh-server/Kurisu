@@ -602,15 +602,19 @@ or games crash often, you might want to try a different flash drive or hard driv
     async def nsupdate(self):
         """Erase pending updates on Nintendo Switch"""
         await self.simple_embed("""
-                                When an update is downloaded, but not installed, the console will not display the \
+                                When an update is downloaded, and not installed, the console won't display the \
 firmware version in System Settings.
                                 
                                 • To fix this, *power the console off* (hold the power button, follow on-screen prompts).\
-***Hold*** Volume Down and Volume Up, then Power. When you see Maintenance Mode, you \
+__Hold__ Volume Down and Volume Up, then Power. When you see Maintenance Mode, you \
 may reboot, and check System Settings.
                                 
                                 *To block automatic update downloads, enter 104.236.106.125 as your primary DNS and \
 62.210.147.20 as your secondary DNS for your home network.*
+
+                                Alternatively, the following DNS blocks all Nintendo servers, __including gameplay \
+                                and eShop servers__.
+                                `163.172.141.219` (primary) / `45.248.48.62` (secondary)
                                  """, title="How to delete pending Switch Updates")
 
     @commands.command(aliases=["write"])
