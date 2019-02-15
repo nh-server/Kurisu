@@ -692,13 +692,16 @@ your device will refuse to write to it.
     async def autorcm(self):
         """Warnings about AutoRCM"""
         await self.simple_embed("""
-                                AutoRCM is a method to preserve eFuse count, in order to downgrade to a specific firmware without requiring a replacement bootloader to boot. __Most people don't need this__, but can be also used for convienience.
+                                AutoRCM is a tool to preserve eFuse count and automcatically boot to RCM when the console is powered off. __Most people don't need this__, but can be also used for convienience.
                                 
-                                • When the console powers off from the normal OS if AutoRCM is installed, it will\
- automatically reboot to RCM. You would need to inject Hekate and select `Power off` from the menu to fully turn the console off.
+                                • When the console powers off from the normal OS if AutoRCM is installed, it will automatically reboot to RCM. \
+You would need to inject Hekate and select `Power off` from the menu to fully turn the console off.
                                 
                                 • You will depend on your SD Card to take advantage of CFW. If anything happens to it\
-or your card slot, your console can only ever boot stock firmware. \
+or your card slot, your console will only be able to boot stock firmware. \
+
+                                • The console doesn't charge quickly in RCM. To gain normal charge speed, charge to 1.5%, inject Hekate+Atmosphère.\
+                                If you see the battery icon on the top left of the screen, then the console is charging at its normal speed.
 
                                 To use AutoRCM, boot `Hekate` > `Tools` > `AutoRCM`. To uninstall, go to the same location.
                                  """, title="Information about AutoRCM")
