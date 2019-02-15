@@ -686,6 +686,23 @@ your device will refuse to write to it.
         embed.description = "A Community-maintained homebrew database"
         await self.bot.say("", embed=embed)
 
+    #Information about autoRCM
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def autorcm(self):
+        """Warnings about AutoRCM"""
+        await self.simple_embed("""
+                                AutoRCM is a method to preserve eFuse count, in order to downgrade to a specific firmware without requiring a replacement bootloader to boot. __Most people don't need this__, but can be also used for convienience.
+                                
+                                • When the console powers off from the normal OS if AutoRCM is installed, it will\
+ automatically reboot to RCM. You would need to inject Hekate and select `Power off` from the menu to fully turn the console off.
+                                
+                                • You will depend on your SD Card to take advantage of CFW. If anything happens to it\
+or your card slot, your console can only ever boot stock firmware. \
+
+                                To use AutoRCM, boot `Hekate` > `Tools` > `AutoRCM`. To uninstall, go to the same location.
+                                 """, title="Information about AutoRCM")
+
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def exfat(self):
