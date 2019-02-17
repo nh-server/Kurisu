@@ -697,8 +697,8 @@ your device will refuse to write to it.
                                 • When the console powers off from the normal OS if AutoRCM is installed, it will automatically reboot to RCM. \
 You would need to inject Hekate and select `Power off` from the menu to fully turn the console off.
                                 
-                                • You will depend on your SD Card to take advantage of CFW. If anything happens to it\
-or your card slot, your console will only be able to boot stock firmware. \
+                                • You will depend on your SD Card to take advantage of CFW. In the event that the microSD is unavailable, you can only boot into stock firmware. \
+                                `**Warning: if you updated from <4.1.0 without burning fuses, booting stock firmware __will__ update your game card slot, rendering it unusable when you restore a <4.1.0 NAND!!`
 
                                 • The console doesn't charge quickly in RCM. To gain normal charge speed, charge to 1.5%, inject Hekate+Atmosphère.\
                                 If you see the battery icon on the top left of the screen, then the console is charging at its normal speed.
