@@ -82,7 +82,12 @@ class Assistance:
             embed.url = "https://sites.google.com/site/completesg/"
             embed.description = "A complete original Wii softmod guide"
             await self.bot.say("", embed=embed)
-
+        if self.check_console(console, ctx.message.channel.name, ('dsi')):
+            embed = discord.Embed(title="Guide", color=discord.Color(0xCB0004))
+            embed.set_author(name="jerbear64 & emiyl", url="https://dsi.cfw.guide/")
+            embed.url = "https://dsi.cfw.guide/"
+            embed.description = "A complete Nintendo DSi homebrew guide, from stock to HiyaCFW"
+            await self.bot.say("", embed=embed)
     @commands.command(aliases=["finalizing","finalizingsetup"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def finalize(self):
