@@ -9,7 +9,7 @@ class Assistance:
     """
     def __init__(self, bot):
         self.bot = bot
-        self.systems = ("3ds", "wiiu", "wii u", "switch", "nx", "ns")
+        self.systems = ("3ds", "wiiu", "wii u", "switch", "nx", "ns", "wii", "dsi")
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     async def simple_embed(self, text, title="", color=discord.Color.default()):
@@ -76,13 +76,13 @@ class Assistance:
             embed.url = "https://nh-server.github.io/switch-guide/"
             embed.description = "A Switch guide from stock to Atmosphere"
             await self.bot.say("", embed=embed)
-        if self.check_console(console, ctx.message.channel.name, ('wii')):
+        if self.check_console(console, ctx.message.channel.name, ('legacy', 'wii')):
             embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
             embed.set_author(name="tj_cool", url="https://sites.google.com/site/completesg/")
             embed.url = "https://sites.google.com/site/completesg/"
             embed.description = "A complete original Wii softmod guide"
             await self.bot.say("", embed=embed)
-        if self.check_console(console, ctx.message.channel.name, ('dsi')):
+        if self.check_console(console, ctx.message.channel.name, ('legacy', 'dsi')):
             embed = discord.Embed(title="Guide", color=discord.Color(0xCB0004))
             embed.set_author(name="jerbear64 & emiyl", url="https://dsi.cfw.guide/")
             embed.url = "https://dsi.cfw.guide/"
