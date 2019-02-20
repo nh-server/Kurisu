@@ -17,13 +17,13 @@ class Assistance:
         embed.description = cleandoc(text)
         await self.bot.say("", embed=embed)
 
-    def check_console(self, message, channel, consoles):
+    def check_console(self, message, channel, consoles, exclude='Kurisu'):
         message = message.lower()
         if not (channel.startswith(self.systems) or message.startswith(self.systems)):
             message = "auto"
-        if message.startswith(consoles):
+        if message.startswith(consoles) and not message.startswith(exclude):
             return True
-        elif channel.startswith(consoles) and not message.startswith(self.systems):
+        elif (channel.startswith(consoles) and not channel.startswith(exclude)) and not message.startswith(self.systems):
             return True
         elif message.startswith(self.systems):
             return False
@@ -76,7 +76,7 @@ class Assistance:
             embed.url = "https://nh-server.github.io/switch-guide/"
             embed.description = "A Switch guide from stock to Atmosphere"
             await self.bot.say("", embed=embed)
-        if self.check_console(console, ctx.message.channel.name, ('legacy', 'wii')):
+        if self.check_console(console, ctx.message.channel.name, ('legacy', 'wii'), 'wii u'): 
             embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
             embed.set_author(name="tj_cool", url="https://sites.google.com/site/completesg/")
             embed.url = "https://sites.google.com/site/completesg/"
