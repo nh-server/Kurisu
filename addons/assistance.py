@@ -234,7 +234,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 - Tough to update and give assistance for
                 - Can be misinformative and dangerous for the console
                 """)
-        embed.add_field(name="Recommended Solution", value="Read [Plailect's written guides](https://hacks.guide).")
+        embed.add_field(name="Recommended Solution", value="Read a trusted written guide. Ask for help if you need a link to one.")
         await self.bot.say("", embed=embed)
 
     @commands.command()
