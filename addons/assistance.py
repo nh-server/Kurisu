@@ -76,7 +76,7 @@ class Assistance:
             embed.url = "https://nh-server.github.io/switch-guide/"
             embed.description = "A Switch guide from stock to Atmosphere"
             await self.bot.say("", embed=embed)
-        if self.check_console(console, ctx.message.channel.name, ('legacy', 'wii'), 'wii u'): 
+        if self.check_console(console, ctx.message.channel.name, ('legacy', 'wii'), ('wii u', 'wiiu')): 
             embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
             embed.set_author(name="tj_cool", url="https://sites.google.com/site/completesg/")
             embed.url = "https://sites.google.com/site/completesg/"
