@@ -32,7 +32,7 @@ class Assistance:
 
     @commands.command(pass_context=True, aliases=["sr", "Sr", "sR", "SR"], hidden=True)
     async def staffreq(self, ctx, *, msg_request=""):
-        """Request staff, with optional additional text. Helpers, Staff, retired Staff, Verified only."""
+        """Request staff, with optional additional text. Trusted, Helpers, Staff, Retired Staff, Verified only."""
         author = ctx.message.author
         if not check_staff(ctx.message.author.id, 'Helper') and (self.bot.verified_role not in author.roles) and (self.bot.trusted_role not in author.roles) and (self.bot.retired_role not in author.roles):
             msg = "{0} You cannot used this command at this time. Please ask individual staff members if you need help.".format(author.mention)
