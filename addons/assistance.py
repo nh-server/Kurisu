@@ -295,7 +295,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         await self.simple_embed("""
                                 If you wish to access the Homebrew Launcher on 11.4+, you have two options.
                                 First of all, you can use Steelminer, a free exploit to install the Homebrew Launcher. However, homebrew-only access has disadvantages.
-                                For example, homebrew-only is often unstable and crashes for no reason. Also, it is limited in features and system access.
+                                For example, homebrew-only is often unstable and will crash unexpectedly. Also, it is limited in features and system access.
                                 The second option is to install CFW, or custom firmware. Please use `.guide 3ds` for a list of ways to get CFW.
                                 Here is a [Steelhax guide](https://git.io/fhbGY). Do NOT proceed to `Installing boot9strap` if you do not want CFW.
                                 """)
