@@ -234,7 +234,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 - Tough to update and give assistance for
                 - Can be misinformative and dangerous for the console
                 """)
-        embed.add_field(name="Recommended Solution", value="Read [Plailect's written guides](https://hacks.guide).")
+        embed.add_field(name="Recommended Solution", value="Read a trusted written tutorial. Try `.guide` for a list.")
         await self.bot.say("", embed=embed)
 
     @commands.command()
@@ -291,17 +291,13 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def hbl(self):
-        """Get homebrew launcher working on 11.4+ firmware"""
+        """Get Homebrew Launcher working on 11.4+ firmware"""
         await self.simple_embed("""
-                                If you are looking to get access to the homebrew launcher on your unhacked 11.4+ 3DS \
-(Not CFW or CIA installation!), then you will need an exploit like ninjhax, stickerhax, \
-freakyhax or oot3dhax. 
-                                Please note that stickerhax and oot3dhax require prior access to the homebrew launcher \
-to install the hack on them (Or you can use a powersaves with oot3d)
-                                
-                                If you want access to homebrew on 11.4+, it is recommended that you rather install CFW, \
-as a NTRBoot compatible DS flashcart costs a lot less than a copy of Freakyforms Deluxe, \
-Cubic Ninja, Paper Mario Sticker Star or Ocarina of Time 3D.
+                                If you wish to access the Homebrew Launcher on 11.4+, you have two options.\n
+                                First of all, you can use Steelminer, a free exploit to install the Homebrew Launcher. However, homebrew-only access has disadvantages.\n
+                                For example, homebrew-only is often unstable and crashes for no reason. Also, it is limited in features and system access.\n
+                                The second option is to install CFW, or custom firmware. Please use `.guide 3ds` for a list of ways to get CFW.
+                                Here is a [Steelhax guide](https://git.io/fhbGY). Do NOT proceed to `Installing boot9strap` if you do not want CFW.
                                 """)
 
     @commands.command()
