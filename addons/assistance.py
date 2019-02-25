@@ -697,13 +697,13 @@ your device will refuse to write to it.
                                 • When the console powers off from the normal OS if AutoRCM is installed, it will automatically reboot to RCM. \
 You would need to inject Hekate and select `Power off` from the menu to fully turn the console off.
                                 
-                                • You will depend on your SD Card to take advantage of CFW. In the event that the microSD is unavailable, you can only boot into stock firmware. \
-                                `**Warning: if you updated from <4.1.0 without burning fuses, booting stock firmware __will__ update your game card slot, rendering it unusable when you restore a <4.1.0 NAND!!`
-
-                                • The console doesn't charge quickly in RCM. To gain normal charge speed, charge to 1.5%, inject Hekate+Atmosphère.\
+                                • You will depend on your SD Card to take advantage of CFW. If your microSD is unavailable, you can only boot into stock firmware. \
+                                `**Warning: if performed a fuseless update from <4.1.0, booting stock __will__ update your game card slot, rendering it unusable when you run <4.1.0!
+                                • The console charges slowly in RCM. To solve this, boot Hekate, then inject Atmosphère.\
                                 If you see the battery icon on the top left of the screen, then the console is charging at its normal speed.
 
                                 To use AutoRCM, boot `Hekate` > `Tools` > `AutoRCM`. To uninstall, go to the same location.
+                                For more information, visit [this thread](https://gbatemp.net/threads/autorcm-with-the-nintendo-switch-101.515402/).
                                  """, title="Information about AutoRCM")
 
     @commands.command()
