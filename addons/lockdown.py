@@ -30,8 +30,9 @@ class Lockdown:
                 await self.bot.edit_channel_permissions(c, self.bot.everyone_role, overwrites_everyone)
                 await self.bot.send_message(c, "🔒 Channel locked down. Only staff members may speak. Do not bring the topic to other channels or risk disciplinary actions.")
                 locked_down.append(c)
-            msg = "🔒 **Lockdown**: {1} locked down channels | {2}#{3}\n📝 __Channels__: {0}".format(', '.join(c.mention for c in locked_down), ctx.message.author.mention, ctx.message.author.name, ctx.message.author.discriminator)
-            await self.bot.send_message(self.bot.modlogs_channel, msg)
+            if locked_down:
+                msg = "🔒 **Lockdown**: {1} locked down channels | {2}#{3}\n📝 __Channels__: {0}".format(', '.join(c.mention for c in locked_down), ctx.message.author.mention, ctx.message.author.name, ctx.message.author.discriminator)
+                await self.bot.send_message(self.bot.modlogs_channel, msg)
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
@@ -58,8 +59,9 @@ class Lockdown:
                 await self.bot.edit_channel_permissions(c, self.bot.staff_role, overwrites_staff)
                 await self.bot.send_message(c, "🔒 Channel locked down. Only owners members may speak. Do not bring the topic to other channels or risk disciplinary actions.")
                 locked_down.append(c)
-            msg = "🔒 **Super lockdown**: {1} locked down channels | {2}#{3}\n📝 __Channels__: {0}".format(', '.join(c.mention for c in locked_down), ctx.message.author.mention, ctx.message.author.name, ctx.message.author.discriminator)
-            await self.bot.send_message(self.bot.modlogs_channel, msg)
+            if locked_down:
+                msg = "🔒 **Super lockdown**: {1} locked down channels | {2}#{3}\n📝 __Channels__: {0}".format(', '.join(c.mention for c in locked_down), ctx.message.author.mention, ctx.message.author.name, ctx.message.author.discriminator)
+                await self.bot.send_message(self.bot.modlogs_channel, msg)
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
@@ -94,8 +96,9 @@ class Lockdown:
                 await self.bot.edit_channel_permissions(c, self.bot.helpers_role, overwrites_helpers)
                 await self.bot.send_message(c, "🔒 Channel locked.")
                 locked_down.append(c)
-            msg = "🔒 **Soft-lock**: {1} soft-locked channels | {2}#{3}\n📝 __Channels__: {0}".format(', '.join(c.mention for c in locked_down), ctx.message.author.mention, ctx.message.author.name, ctx.message.author.discriminator)
-            await self.bot.send_message(self.bot.modlogs_channel, msg)
+            if len(locked_down):
+                msg = "🔒 **Soft-lock**: {1} soft-locked channels | {2}#{3}\n📝 __Channels__: {0}".format(', '.join(c.mention for c in locked_down), ctx.message.author.mention, ctx.message.author.name, ctx.message.author.discriminator)
+                await self.bot.send_message(self.bot.modlogs_channel, msg)
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
@@ -133,8 +136,9 @@ class Lockdown:
                 await self.bot.edit_channel_permissions(c, self.bot.helpers_role, overwrites_helpers)
                 await self.bot.send_message(c, "🔓 Channel unlocked.")
                 unlocked.append(c)
-            msg = "🔓 **Unlock**: {1} unlocked channels | {2}#{3}\n📝 __Channels__: {0}".format(', '.join(c.mention for c in unlocked), ctx.message.author.mention, ctx.message.author.name, ctx.message.author.discriminator)
-            await self.bot.send_message(self.bot.modlogs_channel, msg)
+            if unlocked:
+                msg = "🔓 **Unlock**: {1} unlocked channels | {2}#{3}\n📝 __Channels__: {0}".format(', '.join(c.mention for c in unlocked), ctx.message.author.mention, ctx.message.author.name, ctx.message.author.discriminator)
+                await self.bot.send_message(self.bot.modlogs_channel, msg)
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
