@@ -23,6 +23,7 @@ class ModStaff:
             json.dump(addons.checks.staff, f)
         # remove leftover staff roles
         await self.bot.remove_roles(member, *self.bot.staff_ranks.values())
+        await self.bot.say(member.name)
         if position == "HalfOP":  # this role requires the use of sudo
             await self.bot.add_roles(member, self.bot.staff_role)
         else:
