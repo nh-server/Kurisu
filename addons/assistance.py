@@ -604,8 +604,8 @@ firmware version in System Settings.
 ***Hold*** Volume Down and Volume Up, then Power. When you see Maintenance Mode, you \
 may reboot, and check System Settings.
                                 
-                                *To block automatic update downloads, enter 104.236.106.125 as your primary DNS and \
-62.210.147.20 as your secondary DNS for your home network.*
+                                *To block automatic update downloads, enter 163.172.141.219 as your primary DNS and \
+45.248.48.62 as your secondary DNS for your home network.*
                                  """, title="How to delete pending Switch Updates")
 
     @commands.command(aliases=["write"])
