@@ -262,6 +262,8 @@ class Err:
         '022-2815': 'System is banned by Nintendo from Miiverse access.',
         '032-1820': 'Browser error that asks whether you want to go on to a potentially dangerous website. Can be bypassed by touching "yes".',
         '090-0212': 'Game is permanently banned from Pokémon Global Link. This is most likely as a result of using altered or illegal save data.',
+        '022-2502': 'Error that can occur from region changing and trying to use a Nintendo Network ID.  [Removing the NNID](https://3ds.hacks.guide/godmode9-usage#removing-an-nnid-without-formatting-your-device) should fix the error.',
+
         # Wii U
         # these all mean different things technically and maybe i should list them
         '102-2802': 'NNID is permanently banned by Nintendo. You cannot ask how to fix this issue here.',
