@@ -708,7 +708,7 @@ your device will refuse to write to it.
                                 in the scene. \
                                 Refer to #faq-switch for a list of things to avoid doing to reduce your risks.
                                 You cannot ask about unbanning your console here.
-                                    """, title="Switch Bans")
+                                """, title="Switch Bans")
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
