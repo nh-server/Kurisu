@@ -681,6 +681,26 @@ your device will refuse to write to it.
         embed.description = "A Community-maintained homebrew database"
         await self.bot.say("", embed=embed)
 
+    #Information about autoRCM
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def autorcm(self):
+        """Warnings about AutoRCM"""
+        await self.simple_embed("""
+                                AutoRCM is a tool to preserve eFuse count and automcatically boot to RCM when the console is powered off. __Most people don't need this__, but can be also used for convienience.
+                                
+                                • When the console powers off from the normal OS if AutoRCM is installed, it will automatically reboot to RCM. \
+You would need to inject Hekate and select `Power off` from the menu to fully turn the console off.
+                                
+                                • You will depend on your SD Card to take advantage of CFW. If your microSD is unavailable, you can only boot into stock firmware. \
+                                `**Warning: if performed a fuseless update from <4.1.0, booting stock __will__ update your game card slot, rendering it unusable when you run <4.1.0!
+                                • The console charges slowly in RCM. To solve this, boot Hekate, then inject Atmosphère.\
+                                If you see the battery icon on the top left of the screen, then the console is charging at its normal speed.
+
+                                To use AutoRCM, boot `Hekate` > `Tools` > `AutoRCM`. To uninstall, go to the same location.
+                                For more information, visit [this thread](https://gbatemp.net/threads/autorcm-with-the-nintendo-switch-101.515402/).
+                                 """, title="Information about AutoRCM")
+
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def exfat(self):
