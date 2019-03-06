@@ -697,7 +697,7 @@ your device will refuse to write to it.
         
     @commands.command(pass_context=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def banrisk(self, ctx, *, console=""):
+    async def nxban(self, ctx, *, console=""):
         """Switch ban risk snippet"""
 		if self.check_console(console, ctx.message.channel.name, ('switch', 'nx')):
                     await self.simple_embed("""
@@ -710,7 +710,7 @@ your device will refuse to write to it.
                                         in the scene.
                                         Refer to #faq-switch for a list of things to avoid doing to reduce your risks.
                                         You cannot ask about unbanning your console here.
-                    			""", title="Switch Bans")
+                                        """, title="Switch Bans")
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
