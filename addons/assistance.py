@@ -700,7 +700,7 @@ your device will refuse to write to it.
     async def nxban(self, ctx, *, console=""):
         """Switch ban risk snippet"""
             if self.check_console(console, ctx.message.channel.name, ('switch', 'nx')):
-                    await self.simple_embed("""
+                await self.simple_embed("""
                                         The Switch is a much more secure system than the 3DS, and Nintendo has upped their game when it comes to bans. 
                                         One of the main reasons for this is that there are significantly more monitoring systems, \
                                         some of which cannot be turned off.
