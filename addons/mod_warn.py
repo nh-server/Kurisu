@@ -34,7 +34,7 @@ class ModWarn:
         if reason != "":
             # much \n
             msg += " The given reason is: " + reason
-        msg += "\n\nPlease read the rules in #welcome-and-rules. This is warn #{}.".format(len(warns[member.id]["warns"]))
+        msg += "\n\nPlease read the rules in <#196618637950451712>. This is warn #{}.".format(len(warns[member.id]["warns"]))
         warn_count = len(warns[member.id]["warns"])
         if warn_count == 2:
             msg += " __The next warn will automatically kick.__"
