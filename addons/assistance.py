@@ -19,13 +19,13 @@ class Assistance:
 
     def check_console(self, message, channel, consoles):
         message = message.lower()
-        if not (channel.startswith(self.systems) or message.startswith(self.systems)):
+        if not (channel.startswith(self.systems) or message in self.systems):
             message = "auto"
-        if message.startswith(consoles):
+        if message and message in consoles:
             return True
-        elif channel.startswith(consoles) and not message.startswith(self.systems):
+        elif not "wii" in consoles and channel.startswith(consoles) and not message in self.systems:
             return True
-        elif message.startswith(self.systems):
+        elif message in self.systems:
             return False
         elif message.startswith('auto'):
             return True
@@ -75,6 +75,18 @@ class Assistance:
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
             embed.url = "https://nh-server.github.io/switch-guide/"
             embed.description = "A Switch guide from stock to Atmosphere"
+            await self.bot.say("", embed=embed)
+        if self.check_console(console, ctx.message.channel.name, ('legacy', 'wii')):
+            embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
+            embed.set_author(name="tj_cool", url="https://sites.google.com/site/completesg/")
+            embed.url = "https://sites.google.com/site/completesg/"
+            embed.description = "A complete original Wii softmod guide"
+            await self.bot.say("", embed=embed)
+        if self.check_console(console, ctx.message.channel.name, ('legacy', 'dsi')):
+            embed = discord.Embed(title="Guide", color=discord.Color(0xCB0004))
+            embed.set_author(name="jerbear64 & emiyl", url="https://dsi.cfw.guide/")
+            embed.url = "https://dsi.cfw.guide/"
+            embed.description = "A complete Nintendo DSi homebrew guide, from stock to HiyaCFW"
             await self.bot.say("", embed=embed)
 
     @commands.command(aliases=["finalizing","finalizingsetup"])
