@@ -23,7 +23,7 @@ class Assistance:
             message = "auto"
         if message and message in consoles:
             return True
-        elif not "wii" in consoles and channel.startswith(consoles) and not message in self.systems:
+        elif (not "wii" in consoles or channel.startswith("legacy")) and channel.startswith(consoles) and not message in self.systems:
             return True
         elif message in self.systems:
             return False
