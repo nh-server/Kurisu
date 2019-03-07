@@ -9,7 +9,7 @@ class Assistance:
     """
     def __init__(self, bot):
         self.bot = bot
-        self.systems = ("3ds", "wiiu", "wii u", "switch", "nx", "ns")
+        self.systems = ("3ds", "wiiu", "wii u", "switch", "nx", "ns", "wii", "dsi", "legacy")
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     async def simple_embed(self, text, title="", color=discord.Color.default()):
