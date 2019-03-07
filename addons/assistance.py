@@ -267,7 +267,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             embed.description = cleandoc("""
                 Use [our guide](https://nh-server.github.io/switch-guide/user_guide/getting_started/) to determine if your Switch is a first-gen unit.
 
-                Currently firmware versions 6.2.0 and lower are compatible with [Atmosphere](https://nh-server.github.io/switch-guide/).
+                All firmware versions are currently compatible with [Atmosphere](https://nh-server.github.io/switch-guide/).
 
                 "Second-generation" invulnerable systems should **not** update past 4.1.0, as these systems may have \
 custom firmware on this version in the very far future.
