@@ -18,7 +18,7 @@ class ModWarn:
     async def warn(self, ctx, member: converters.SafeMember, *, reason=""):
         """Warn a user. Staff and Helpers only."""
         issuer = ctx.message.author
-        if check_staff(member.id, "HalfOP"):
+        if check_staff(member.id, "Helper"):
             await self.bot.say("You can't warn another staffer with this command!")
             return
         with open("data/warnsv2.json", "r") as f:
@@ -66,7 +66,7 @@ class ModWarn:
     async def softwarn(self, ctx, member: converters.SafeMember, *, reason=""):
         """Warn a user without automated action. Staff only."""
         issuer = ctx.message.author
-        if check_staff(member.id, "HalfOP"):
+        if check_staff(member.id, "Helper"):
             await self.bot.say("You can't warn another staffer with this command!")
             return
         with open("data/warnsv2.json", "r") as f:
