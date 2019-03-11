@@ -673,7 +673,7 @@ your device will refuse to write to it.
         embed = discord.Embed(title="Randomizing with LayeredFS", color=discord.Color.red())
         embed.set_thumbnail(url="https://i.imgur.com/rr7Xf3E.jpg")
         embed.url = "https://zetadesigns.github.io/randomizing-layeredfs.html"
-        embed.description = "Basic tutorial for Randomizing with LayeredFS"
+        embed.description = "Basic tutorial for randomizing with LayeredFS"
         await self.bot.say("", embed=embed)
 
     @tutorial.command(aliases=["Animal_crossing"])
