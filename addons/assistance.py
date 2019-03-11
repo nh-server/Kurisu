@@ -670,10 +670,10 @@ your device will refuse to write to it.
     @tutorial.command(hidden=True, )
     async def randomize(self):
         """Links to layeredfs randomizing tutorial"""
-        embed = discord.Embed(title="randomizing with layeredfs", color=discord.Color.red())
+        embed = discord.Embed(title="Randomizing with LayeredFS", color=discord.Color.red())
         embed.set_thumbnail(url="https://i.imgur.com/rr7Xf3E.jpg")
         embed.url = "https://zetadesigns.github.io/randomizing-layeredfs.html"
-        embed.description = "Basic tutorial for randomizing with layeredfs"
+        embed.description = "Basic tutorial for randomizing with LayeredFS"
         await self.bot.say("", embed=embed)
 
     @tutorial.command(aliases=["Animal_crossing"])
