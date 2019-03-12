@@ -119,6 +119,7 @@ class Events:
         '/hbg/shop',
         '\hbg\shop',
         'hbgsh0p',
+        'stargate',
     )
 
     # use the full ID, including capitalization and dashes
