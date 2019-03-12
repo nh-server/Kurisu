@@ -113,6 +113,12 @@ class Events:
         'freêshop',
         'frêeshop',
         'frêêshop',
+        'stargatenx',
+        'homebrewgeneralshop',
+        'hbgshop',
+        '/hbg/shop',
+        '\hbg\shop',
+        'hbgsh0p',
     )
 
     # use the full ID, including capitalization and dashes
