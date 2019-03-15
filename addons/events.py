@@ -120,6 +120,7 @@ class Events:
         '\hbg\shop',
         'hbgsh0p',
         'stargate',
+        'freestore',
     )
 
     # use the full ID, including capitalization and dashes
