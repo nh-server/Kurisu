@@ -51,7 +51,10 @@ class Assistance:
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def guide(self, ctx, *, consoles="None"):
         """Links to the recommended guides."""
-        consoleslist = [x for x in consoles.split() if x in self.systems]      
+        consoleslist = []
+        for x in consoles.split():
+            if x in self.systems and x not in consoleslist:
+                consoleslist.append(x)
         if not consoleslist:
             if ctx.message.channel.name.startswith(self.systems):
                 consoleslist.append("None")
