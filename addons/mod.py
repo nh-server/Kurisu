@@ -6,6 +6,7 @@ import time
 from discord.ext import commands
 from subprocess import call
 from addons.checks import is_staff
+import addons.checks
 from addons import converters
 
 class Mod:
@@ -503,6 +504,33 @@ class Mod:
             await self.bot.edit_profile(username=('{}'.format(username)))
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
+
+    @is_staff("OP")
+    @commands.command(pass_context=True, hidden=True)
+    async def updatestaff(self, ctx):
+        """Updates the staff list based on staff member in the server."""
+        removed = []
+        for staffmember in list(addons.checks.staff):
+            if discord.utils.get(ctx.message.server.members, id=staffmember) is None:
+                addons.checks.staff.pop(staffmember, None)
+                removed.append(await self.bot.get_user_info(staffmember))
+        with open("data/staff.json", "w") as f:
+            json.dump(addons.checks.staff, f)
+
+        for helper in list(addons.checks.helpers):
+            if discord.utils.get(ctx.message.server.members, id=helper) is None:
+                addons.checks.staff.pop(helper, None)
+                removed.append(await self.bot.get_user_info(helper))
+        with open("data/helpers.json", "w") as f:
+            json.dump(addons.checks.helpers, f)
+        if not removed:
+            await self.bot.say("Updated Staff list, no staff removed!")
+        else:
+            msg = "Updated staff list. Removed {}.".format(", ".join([x.name for x in removed]))
+            await self.bot.say(msg)
+            modmsg = "🛠 **Updated Staff list**: {} updated the staff list.\n:pencil: __Users removed__: {}".format(ctx.message.author.mention,", ".join(["{} | {}#{}".format(x.id,x.name,x.discriminator) for x in removed]))
+            await self.bot.send_message(self.bot.modlogs_channel, modmsg)
+
 
     @mute.error
     @timemute.error
