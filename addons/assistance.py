@@ -9,7 +9,7 @@ class Assistance:
     """
     def __init__(self, bot):
         self.bot = bot
-        self.systems = ("3ds", "wiiu", "wii u", "switch", "nx", "ns", "wii", "dsi", "legacy")
+        self.systems = ("3ds", "wiiu", "switch", "nx", "ns", "wii", "dsi", "legacy")
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     async def simple_embed(self, text, title="", color=discord.Color.default()):
@@ -19,16 +19,12 @@ class Assistance:
 
     def check_console(self, message, channel, consoles):
         message = message.lower()
-        if not (channel.startswith(self.systems) or message in self.systems):
-            message = "auto"
-        if message and message in consoles:
+        if message in consoles:
             return True
         elif (not "wii" in consoles or channel.startswith("legacy")) and channel.startswith(consoles) and not message in self.systems:
             return True
-        elif message in self.systems:
+        else:
             return False
-        elif message.startswith('auto'):
-            return True
 
     @commands.command(pass_context=True, aliases=["sr", "Sr", "sR", "SR"], hidden=True)
     async def staffreq(self, ctx, *, msg_request=""):
@@ -53,41 +49,52 @@ class Assistance:
 
     @commands.command(pass_context=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def guide(self, ctx, *, console=""):
+    async def guide(self, ctx, *, consoles="None"):
         """Links to the recommended guides."""
-        if self.check_console(console, ctx.message.channel.name, '3ds'):
-            embed = discord.Embed(title="Guide", color=discord.Color(0xCE181E))
-            embed.set_author(name="Plailect", url="https://3ds.hacks.guide/")
-            embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
-            embed.url = "https://3ds.hacks.guide/"
-            embed.description = "A complete guide to 3DS custom firmware, from stock to boot9strap."
-            await self.bot.say("", embed=embed)
-        if self.check_console(console, ctx.message.channel.name, ('wiiu', 'wii u')):
-            embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
-            embed.set_author(name="FlimFlam69 & Plailect", url="https://wiiu.hacks.guide/")
-            embed.set_thumbnail(url="http://i.imgur.com/CpF12I4.png")
-            embed.url = "https://wiiu.hacks.guide/"
-            embed.description = "FlimFlam69 and Plailect's Wii U custom firmware + coldboothax guide"
-            await self.bot.say("", embed=embed)
-        if self.check_console(console, ctx.message.channel.name, ('switch', 'nx')):
-            embed = discord.Embed(title="Guide", color=discord.Color(0xCB0004))
-            embed.set_author(name="NH Discord Server", url="https://nh-server.github.io/switch-guide/")
-            embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
-            embed.url = "https://nh-server.github.io/switch-guide/"
-            embed.description = "A Switch guide from stock to Atmosphere"
-            await self.bot.say("", embed=embed)
-        if self.check_console(console, ctx.message.channel.name, ('legacy', 'wii')):
-            embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
-            embed.set_author(name="tj_cool", url="https://sites.google.com/site/completesg/")
-            embed.url = "https://sites.google.com/site/completesg/"
-            embed.description = "A complete original Wii softmod guide"
-            await self.bot.say("", embed=embed)
-        if self.check_console(console, ctx.message.channel.name, ('legacy', 'dsi')):
-            embed = discord.Embed(title="Guide", color=discord.Color(0xCB0004))
-            embed.set_author(name="jerbear64 & emiyl", url="https://dsi.cfw.guide/")
-            embed.url = "https://dsi.cfw.guide/"
-            embed.description = "A complete Nintendo DSi homebrew guide, from stock to HiyaCFW"
-            await self.bot.say("", embed=embed)
+        consoleslist = [x for x in consoles.split() if x in self.systems]      
+        if not consoleslist:
+            if ctx.message.channel.name.startswith(self.systems):
+                consoleslist.append("None")
+            else:
+                await self.bot.say("Please specify console(s). Valid options: 3ds, wiiu, switch, wii, dsi.")
+                return
+        for x in consoleslist:
+            if self.check_console(x, ctx.message.channel.name, '3ds'):
+                embed = discord.Embed(title="Guide", color=discord.Color(0xCE181E))
+                embed.set_author(name="Plailect", url="https://3ds.hacks.guide/")
+                embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
+                embed.url = "https://3ds.hacks.guide/"
+                embed.description = "A complete guide to 3DS custom firmware, from stock to boot9strap."
+                await self.bot.say("", embed=embed)
+                continue
+            if self.check_console(x, ctx.message.channel.name, ('wiiu', 'wii u')):
+                embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
+                embed.set_author(name="FlimFlam69 & Plailect", url="https://wiiu.hacks.guide/")
+                embed.set_thumbnail(url="http://i.imgur.com/CpF12I4.png")
+                embed.url = "https://wiiu.hacks.guide/"
+                embed.description = "FlimFlam69 and Plailect's Wii U custom firmware + coldboothax guide"
+                await self.bot.say("", embed=embed)
+                continue
+            if self.check_console(x, ctx.message.channel.name, ('switch', 'nx')):
+                embed = discord.Embed(title="Guide", color=discord.Color(0xCB0004))
+                embed.set_author(name="NH Discord Server", url="https://nh-server.github.io/switch-guide/")
+                embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
+                embed.url = "https://nh-server.github.io/switch-guide/"
+                embed.description = "A Switch guide from stock to Atmosphere"
+                await self.bot.say("", embed=embed)
+                continue
+            if self.check_console(x, ctx.message.channel.name, ('legacy', 'wii')):
+                embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
+                embed.set_author(name="tj_cool", url="https://sites.google.com/site/completesg/")
+                embed.url = "https://sites.google.com/site/completesg/"
+                embed.description = "A complete original Wii softmod guide"
+                await self.bot.say("", embed=embed)
+            if self.check_console(x, ctx.message.channel.name, ('legacy', 'dsi')):
+                embed = discord.Embed(title="Guide", color=discord.Color(0xCB0004))
+                embed.set_author(name="jerbear64 & emiyl", url="https://dsi.cfw.guide/")
+                embed.url = "https://dsi.cfw.guide/"
+                embed.description = "A complete Nintendo DSi homebrew guide, from stock to HiyaCFW"
+                await self.bot.say("", embed=embed)	
 
     @commands.command(aliases=["finalizing","finalizingsetup"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
