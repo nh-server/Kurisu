@@ -163,16 +163,20 @@ class Kurisu(commands.Bot):
         elif isinstance(exc, commands.BadArgument):
             await ctx.send(f'{author.mention} A bad argument was given: `{exc}`\n')
             await ctx.send_help(ctx.command)
+        elif isinstance(exc, discord.ext.commands.errors.CommandOnCooldown):
+            try:
+                await ctx.message.delete()
+            except discord.errors.NotFound:
+                pass
+            await ctx.send(f"{ctx.message.author.mention} This command was used {exc.cooldown.per - exc.retry_after:.2f}s ago and is on cooldown. Try again in {exc.retry_after:.2f}s.", delete_after=10)
         elif isinstance(exc, commands.MissingRequiredArgument):
             await ctx.send(f'{author.mention} You are missing required arguments.\n')
             await ctx.send_help(ctx.command)
-
         elif isinstance(exc, commands.CommandInvokeError):
             await ctx.send(f'{author.mention} `{command}` raised an exception during usage')
             msg = "".join(format_exception(type(exc), exc, exc.__traceback__))
-            print(msg)
-            #for chunk in [msg[i:i + 1800] for i in range(0, len(msg), 1800)]:
-                #await self.channels['bot-err'].send(f'```\n{chunk}\n```')
+            for chunk in [msg[i:i + 1800] for i in range(0, len(msg), 1800)]:
+                await self.channels['bot-err'].send(f'```\n{chunk}\n```')
         else:
             if not isinstance(command, str):
                 command.reset_cooldown(ctx)
