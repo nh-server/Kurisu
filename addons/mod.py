@@ -293,7 +293,7 @@ class Mod:
             await self.bot.say("💢 I don't have permission to do this.")
 
     @is_staff("Helper")
-    @commands.command(pass_context=True, name="takehelp")
+    @commands.command(pass_context=True, name="takehelp", aliases=["nohelp"])
     async def takehelp(self, ctx, member: converters.SafeMember, *, reason=""):
         """Remove access to help-and-questions. Staff and Helpers only."""
         try:
@@ -349,7 +349,7 @@ class Mod:
             await self.bot.say("💢 I don't have permission to do this.")
 
     @is_staff("Helper")
-    @commands.command(pass_context=True, name="timetakehelp")
+    @commands.command(pass_context=True, name="timetakehelp", aliases=["timenohelp"])
     async def timetakehelp(self, ctx, member: converters.SafeMember, length, *, reason=""):
         """Restricts a user from Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         try:
