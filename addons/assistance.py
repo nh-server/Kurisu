@@ -3,7 +3,8 @@ from discord.ext import commands
 from addons.checks import check_staff
 from inspect import cleandoc
 
-class Assistance:
+
+class Assistance(commands.Cog):
     """
     Commands that will mostly be used in #help-and-questions.
     """
@@ -12,10 +13,10 @@ class Assistance:
         self.systems = ("3ds", "wiiu", "switch", "nx", "ns", "wii", "dsi", "legacy")
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
-    async def simple_embed(self, text, title="", color=discord.Color.default()):
+    async def simple_embed(self, ctx, text, title="", color=discord.Color.default()):
         embed = discord.Embed(title=title, color=color)
         embed.description = cleandoc(text)
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
     def check_console(self, message, channel, consoles):
         message = message.lower()
@@ -26,28 +27,30 @@ class Assistance:
         else:
             return False
 
-    @commands.command(pass_context=True, aliases=["sr", "Sr", "sR", "SR"], hidden=True)
-    async def staffreq(self, ctx, *, msg_request=""):
+    @commands.guild_only()
+    @commands.command(aliases=["sr", "Sr", "sR", "SR"], hidden=True)
+    async def staffreq(self, ctx,*, msg_request : str = ""):
         """Request staff, with optional additional text. Trusted, Helpers, Staff, Retired Staff, Verified only."""
-        author = ctx.message.author
-        if not check_staff(ctx.message.author.id, 'Helper') and (self.bot.verified_role not in author.roles) and (self.bot.trusted_role not in author.roles) and (self.bot.retired_role not in author.roles):
+        author = ctx.author
+        if not check_staff(ctx.author.id, 'Helper') and (self.bot.verified_role not in author.roles) and (self.bot.trusted_role not in author.roles) and (self.bot.retired_role not in author.roles):
             msg = "{0} You cannot used this command at this time. Please ask individual staff members if you need help.".format(author.mention)
-            await self.bot.say(msg)
+            await ctx.send(msg)
             return
         await self.bot.delete_message(ctx.message)
-        # await self.bot.say("Request sent.")
-        msg = "❗️ **Assistance requested**: {0} by {1} | {2}#{3} @here".format(ctx.message.channel.mention, author.mention, author.name, ctx.message.author.discriminator)
+        # await ctx.send("Request sent.")
+        msg = "❗️ **Assistance requested**: {0} by {1} | {2}#{3} @here".format(ctx.channel.mention, author.mention, author.name, ctx.author.discriminator)
         if msg_request != "":
             # msg += "\n✏️ __Additional text__: " + msg_request
             embed = discord.Embed(color=discord.Color.gold())
             embed.description = msg_request
-        await self.bot.send_message(self.bot.mods_channel, msg, embed=(embed if msg_request != "" else None))
+        await ctx.send(self.bot.mods_channel, msg, embed=(embed if msg_request != "" else None))
         try:
-            await self.bot.send_message(author, "✅ Online staff have been notified of your request in {0}.".format(ctx.message.channel.mention), embed=(embed if msg_request != "" else None))
+            await author.send("✅ Online staff have been notified of your request in {0}.".format(ctx.channel.mention), embed=(embed if msg_request != "" else None))
         except discord.errors.Forbidden:
             pass
 
-    @commands.command(pass_context=True)
+    @commands.guild_only()
+    @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def guide(self, ctx, *, consoles="None"):
         """Links to the recommended guides."""
@@ -56,84 +59,84 @@ class Assistance:
             if x in self.systems and x not in consoleslist:
                 consoleslist.append(x)
         if not consoleslist:
-            if ctx.message.channel.name.startswith(self.systems):
+            if ctx.channel.name.startswith(self.systems):
                 consoleslist.append("None")
             else:
-                await self.bot.say("Please specify console(s). Valid options: 3ds, wiiu, switch, wii, dsi.")
+                await ctx.send("Please specify console(s). Valid options: 3ds, wiiu, switch, wii, dsi.")
                 return
         for x in consoleslist:
-            if self.check_console(x, ctx.message.channel.name, '3ds'):
+            if self.check_console(x, ctx.channel.name, '3ds'):
                 embed = discord.Embed(title="Guide", color=discord.Color(0xCE181E))
                 embed.set_author(name="Plailect", url="https://3ds.hacks.guide/")
                 embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
                 embed.url = "https://3ds.hacks.guide/"
                 embed.description = "A complete guide to 3DS custom firmware, from stock to boot9strap."
-                await self.bot.say("", embed=embed)
+                await ctx.send(embed=embed)
                 continue
-            if self.check_console(x, ctx.message.channel.name, ('wiiu', 'wii u')):
+            if self.check_console(x, ctx.channel.name, ('wiiu', 'wii u')):
                 embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
                 embed.set_author(name="FlimFlam69 & Plailect", url="https://wiiu.hacks.guide/")
                 embed.set_thumbnail(url="http://i.imgur.com/CpF12I4.png")
                 embed.url = "https://wiiu.hacks.guide/"
                 embed.description = "FlimFlam69 and Plailect's Wii U custom firmware + coldboothax guide"
-                await self.bot.say("", embed=embed)
+                await ctx.send(embed=embed)
                 continue
-            if self.check_console(x, ctx.message.channel.name, ('switch', 'nx')):
+            if self.check_console(x, ctx.channel.name, ('switch', 'nx')):
                 embed = discord.Embed(title="Guide", color=discord.Color(0xCB0004))
                 embed.set_author(name="NH Discord Server", url="https://nh-server.github.io/switch-guide/")
                 embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
                 embed.url = "https://nh-server.github.io/switch-guide/"
                 embed.description = "A Switch guide from stock to Atmosphere"
-                await self.bot.say("", embed=embed)
+                await ctx.send(embed=embed)
                 continue
-            if self.check_console(x, ctx.message.channel.name, ('legacy', 'wii')):
+            if self.check_console(x, ctx.channel.name, ('legacy', 'wii')):
                 embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
                 embed.set_author(name="tj_cool", url="https://sites.google.com/site/completesg/")
                 embed.url = "https://sites.google.com/site/completesg/"
                 embed.description = "A complete original Wii softmod guide"
-                await self.bot.say("", embed=embed)
-            if self.check_console(x, ctx.message.channel.name, ('legacy', 'dsi')):
+                await ctx.send(embed=embed)
+            if self.check_console(x, ctx.channel.name, ('legacy', 'dsi')):
                 embed = discord.Embed(title="Guide", color=discord.Color(0xCB0004))
                 embed.set_author(name="jerbear64 & emiyl", url="https://dsi.cfw.guide/")
                 embed.url = "https://dsi.cfw.guide/"
                 embed.description = "A complete Nintendo DSi homebrew guide, from stock to HiyaCFW"
-                await self.bot.say("", embed=embed)	
+                await ctx.send(embed=embed)	
 
-    @commands.command(aliases=["finalizing","finalizingsetup"])
+    @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def finalize(self):
+    async def finalize(self, ctx):
         """Finalizing Setup"""
-        await self.simple_embed("""
+        await self.simple_embed(ctx,"""
                     3DS Hacks Guide's [Finalizing Setup](https://3ds.hacks.guide/finalizing-setup)
                     """, title="Finalizing Setup")
 
     #Embed to Soundhax Download Website
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def soundhax(self):
+    async def soundhax(self, ctx):
         """Links to Soundhax Website"""
         embed = discord.Embed(title="Soundhax", color=discord.Color.blue())
         embed.set_author(name="Ned Williamson", url="http://soundhax.com/")
         embed.set_thumbnail(url="http://i.imgur.com/lYf0jan.png")
         embed.url = "http://soundhax.com"
         embed.description = "Free 3DS Primary Entrypoint <= 11.3"
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
     # dsp dumper command
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def dsp(self):
+    async def dsp(self, ctx):
         """Links to Dsp1."""
         embed = discord.Embed(title="Dsp1", color=discord.Color.green())
         embed.set_author(name="zoogie", url="https://github.com/zoogie", icon_url="https://gbatemp.net/data/avatars/l/357/357147.jpg?1426471484")
         embed.description = "Dump 3DS's DSP component to SD for homebrew audio."
         embed.set_thumbnail(url="https://raw.githubusercontent.com/Cruel/DspDump/master/icon.png")
         embed.url = "https://github.com/zoogie/DSP1/releases"
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def ntrstream(self):
+    async def ntrstream(self, ctx):
         """Links to ntr streaming guide"""
         embed = discord.Embed(title="3DS Streaming Guide", color=discord.Color.blue())
         embed.url = "https://gbatemp.net/threads/release-snickerstream-revived-a-proper-release-with-lots-of-improvements-and-new-features.488374/"
@@ -144,13 +147,13 @@ class Assistance:
                 • Make sure you typed the IP correctly.
                 • Make sure you are on the latest preview for NTR 3.6.
                 """))
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def update(self):
+    async def update(self, ctx):
         """Explains how to safely prepare for an update if you have boot9strap installed"""
-        await self.simple_embed("""
+        await self.simple_embed(ctx,"""
                 **Is it safe to update to 11.9?**
                 
                 **Luma3DS 9.1**
@@ -168,79 +171,80 @@ versions on 11.9 will cause a blackscreen until you update.
                  
                 **To find out your Luma3DS version, hold select on bootup and look at the top left corner of the top screen**
                 """)
+        
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def updateb9s(self):
+    async def updateb9s(self, ctx):
         """Links to the guide for updating b9s versions"""
         embed = discord.Embed(title="Updating B9S Guide", color=discord.Color(0xCE181E))
         embed.set_author(name="Plailect", url="https://3ds.hacks.guide/updating-b9s")
         embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
         embed.url = "https://3ds.hacks.guide/updating-b9s"
         embed.description = "A guide for updating to new B9S versions."
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
     
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def updateluma(self):
+    async def updateluma(self, ctx):
         """Links to the guide for updating Luma3DS manually (8.0 or later)"""
         embed = discord.Embed(title="Manually Updating Luma3DS", color=discord.Color(0xCE181E))
         embed.set_author(name="Chenzw", url="https://gist.github.com/chenzw95/3b5b953c9c913e89fdda3c4c4d98d086")
         embed.set_thumbnail(url="https://avatars0.githubusercontent.com/u/5243259?s=400&v=4")
         embed.url = "https://gist.github.com/chenzw95/3b5b953c9c913e89fdda3c4c4d98d086"
         embed.description = "A guide for manually updating Luma3ds. This is necessary if you receive the \"Failed to apply 1 Firm patch(es)\" error."
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
     @commands.command(aliases=["a9lhtob9s","updatea9lh"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def atob(self):
+    async def atob(self, ctx):
         """Links to the guide for updating from a9lh to b9s"""
         embed = discord.Embed(title="Upgrading a9lh to b9s", color=discord.Color(0xCE181E))
         embed.set_author(name="Plailect", url="https://3ds.hacks.guide/a9lh-to-b9s")
         embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
         embed.url = "https://3ds.hacks.guide/a9lh-to-b9s"
         embed.description = "A guide for upgrading your device from arm9loaderhax to boot9strap."
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
     # Gateway h&s troubleshooting command
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def gwhs(self):
+    async def gwhs(self, ctx):
         """Links to gateway health and safety inject troubleshooting"""
-        await self.bot.say("https://3ds.hacks.guide/troubleshooting#gw_fbi")
+        await ctx.send("https://3ds.hacks.guide/troubleshooting#gw_fbi")
 
     # Hardmodder pastebin list
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def hmodders(self):
+    async def hmodders(self, ctx):
         """Links to approved hardmodder list"""
-        await self.simple_embed("Don't want to hardmod yourself? Ask one of the installers on the server! <https://pastebin.com/FAiczew4>")
+        await self.simple_embed(ctx,"Don't want to hardmod yourself? Ask one of the installers on the server! <https://pastebin.com/FAiczew4>")
 
     # Links to ctrtransfer guide
     @commands.command(aliases=["ctrtransfer","ctrnandtransfer"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def ctr(self):
+    async def ctr(self, ctx):
         """Links to ctrtransfer guide"""
         embed = discord.Embed(title="Guide - ctrtransfer", color=discord.Color.orange())
         embed.set_author(name="Plailect", url="https://3ds.hacks.guide/")
         embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
         embed.url = "https://3ds.hacks.guide/ctrtransfer"
         embed.description = "How to do the 11.5.0-38 ctrtransfer"
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def modmoon(self):
+    async def modmoon(self, ctx):
         """Links to a tool for a mod manager"""
-        await self.simple_embed(cleandoc("""
+        await self.simple_embed(ctx,cleandoc("""
                                 To install mods for Smash 3DS, and to manage other LayeredFS mods, \
 [Mod-Moon](https://github.com/Swiftloke/ModMoon/releases) is recommended. Instructions for use can be found on the page.
                                 """))
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def inoriquest(self):
+    async def inoriquest(self, ctx):
         """Tells user to be descriptive"""
-        await self.simple_embed("""
+        await self.simple_embed(ctx,"""
                                 > Reminder: if you would like someone to help you, please be as descriptive as \
 possible, of your situation, things you have done, as little as they may seem, \
 aswell as assisting materials. Asking to ask wont expedite your process, and may delay assistance.
@@ -248,17 +252,18 @@ aswell as assisting materials. Asking to ask wont expedite your process, and may
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def inoriwarn(self):
+    async def inoriwarn(self, ctx):
         """Warns users to keep the channels on-topic - Staff & Helper Declaration Only"""
-        await self.simple_embed("""
+        await self.simple_embed(ctx,"""
                                 **Please keep the channels clean and on-topic, further derailing will result in \
 intervention.  A staff or helper will be the quickest route to resolution; you can \
 contact available staff by private messaging the Mod-Mail bot.** A full list of staff \
 and helpers can be found in #welcome-and-rules if you don't know who they are.
                                 """)
+        
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def vguides(self):
+    async def vguides(self, ctx):
         """Information about video guides relating to custom firmware"""
         embed = discord.Embed(title="Why you should not use video guides", color=discord.Color.dark_orange())
         embed.description = cleandoc("""
@@ -268,34 +273,35 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 - Can be misinformative and dangerous for the console
                 """)
         embed.add_field(name="Recommended Solution", value="Read a trusted written tutorial. Try `.guide` for a list.")
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def vguides2(self):
+    async def vguides2(self, ctx):
         """Information about video guides relating to custom firmware"""
-        await self.bot.say("https://www.youtube.com/watch?v=miVDKgInzyg")
+        await ctx.send("https://www.youtube.com/watch?v=miVDKgInzyg")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def ip(self):
+    async def ip(self, ctx):
         """How to check your IP"""
         embed = discord.Embed(title="Check your 3DSs IP (CFW)", color=discord.Color.dark_orange())
         embed.description = "1. FBI\n2. Remote Install\n3. Recieve URLs over the network"
         embed.add_field(name="Check your 3DSs IP (Homebrew)", value="1. Open Homebrew Launcher\n2. Press Y")
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
-    @commands.command(pass_context=True)
+    @commands.guild_only()
+    @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def stock(self, ctx, console=""):
         """Advisory for various Nintendo systems on stock firmware"""
-        if self.check_console(console, ctx.message.channel.name, '3ds'):
+        if self.check_console(console, ctx.channel.name, '3ds'):
             embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
             embed.add_field(name="NTRBoot", value="Requires a compatible NDS flashcart and maybe an additional DS(i) or hacked 3DS console depending on the flashcart (All versions, all hardware). [Guide](https://3ds.hacks.guide/ntrboot)", inline=False)
             embed.add_field(name="Seedminer", value="Requires a DSiWare game from the eshop (free or paid) or Steel Diver: Sub Wars (free from eshop) [Guide](https://3ds.hacks.guide/seedminer)", inline=False)
             embed.add_field(name="Hardmod", value="Requires soldering **Not for beginners!**. [Guide](https://git.io/fhQk9)", inline=False)
-            await self.bot.say(embed=embed)
-        if self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+            await ctx.send(embed=embed)
+        if self.check_console(console, ctx.channel.name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Using a first-generation Switch?", color=0xe60012)
             embed.description = cleandoc("""
                 Use [our guide](https://nh-server.github.io/switch-guide/user_guide/getting_started/) to determine if your Switch is a first-gen unit.
@@ -307,11 +313,11 @@ custom firmware on this version in the very far future.
 
                 Downgrading is **impossible** on patched consoles, and isn't worth your time on unpatched ones. 
                 """)
-            await self.bot.say("", embed=embed)
+            await ctx.send(embed=embed)
 
     @commands.command(aliases=["fuse-3ds", "fuse"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def fuse3ds(self):
+    async def fuse3ds(self, ctx):
         """Link to fuse-3ds tutorial."""
         embed = discord.Embed(title="Extract/Decrypt games, NAND backups, and SD contents with fuse-3ds", color=discord.Color(0xCE181E))
         embed.description = cleandoc("""
@@ -319,13 +325,13 @@ custom firmware on this version in the very far future.
 NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
                             """)
         embed.url = "https://gbatemp.net/threads/499994/"
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def hbl(self):
+    async def hbl(self, ctx):
         """Get Homebrew Launcher working on 11.4+ firmware"""
-        await self.simple_embed("""
+        await self.simple_embed(ctx,"""
                                 If you wish to access the Homebrew Launcher on 11.4+, you have two options.
                                 First of all, you can use Steelminer, a free exploit to install the Homebrew Launcher. However, homebrew-only access has disadvantages.
                                 For example, homebrew-only is often unstable and will crash unexpectedly. Also, it is limited in features and system access.
@@ -335,18 +341,18 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def readguide(self):
+    async def readguide(self, ctx):
         """Read the guide please"""
-        await self.simple_embed("""
+        await self.simple_embed(ctx,"""
                                 Asking something that is on the guide will make everyone lose time, so please read and \
 re-read the guide steps 2 or 3 times before coming here.
                                 """, title="Please read the guide")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def bigsd(self):
+    async def bigsd(self, ctx):
         """SD bigger than 32GB"""
-        await self.simple_embed("""
+        await self.simple_embed(ctx,"""
                                 If you want to change your SD card to one bigger than 32GB then you'll have to \
 format it to FAT32.
                                 You can do this with the tool of your preference.
@@ -360,9 +366,9 @@ format it to FAT32.
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def sderrors(self):
+    async def sderrors(self, ctx):
         """SD Error Guide"""
-        await self.simple_embed("""
+        await self.simple_embed(ctx,"""
                                 Guide For Checking SD Card For Errors
                                 http://3ds.eiphax.tech/sderrors.html
                                 This covers Windows, Linux and Mac.
@@ -370,9 +376,9 @@ format it to FAT32.
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def lumabug(self):
+    async def lumabug(self, ctx):
         """Luma Black Screen Bug"""
-        await self.simple_embed("""
+        await self.simple_embed(ctx,"""
                                 If you have Luma3DS and your console is stuck on a black screen after you power it on, \
 follow these steps:
                                 1. Power off the console.
@@ -387,7 +393,7 @@ already tried the Luma black screen process.
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def notbricked(self):
+    async def notbricked(self, ctx):
         """Missing boot.firm"""
         embed = discord.Embed(title="No, you are not bricked")
         embed.description = cleandoc("""
@@ -396,33 +402,33 @@ just missing a file called boot.firm in the root of your SD card.
                             """)
         embed.add_field(name="How to fix the issue", value="1. Check you inserted the SD card in your console\n 2. Place/replace the file, downloading it from https://github.com/AuroraWright/Luma3DS/releases", inline=False)
         embed.add_field(name="Checking your SD for errors or corruption", value="https://3ds.eiphax.tech/sderrors.html \n Please read the instructions carefully.", inline=False)
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
-    @commands.command(pass_context=True)
+    @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def troubleshoot(self, ctx, *, console=""):
         """Troubleshooting guides for common issues"""
-        if self.check_console(console, ctx.message.channel.name, '3ds'):
+        if self.check_console(console, ctx.channel.name, '3ds'):
             embed=discord.Embed(title="Troubleshooting guide for *miner methods", color=discord.Color(0xA2BAE0))
             embed.url="https://3ds.eiphax.tech/issues.html"
             embed.description = "A simple troubleshooting guide for common CFW and homebrew installation issues \n when using seedminer-based methods."
-            await self.bot.say("", embed=embed)
+            await ctx.send(embed=embed)
 
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def emureco(self):
+    async def emureco(self, ctx):
         """Recommendation about EmuNAND"""
-        await self.simple_embed("""
+        await self.simple_embed(ctx,"""
                                 If you want to set up an EmuNAND the first thing to know is that you probably don't \
 need it; if you don't know what an EmuNAND is, you don't need one.
                                 """, title="EmuNAND Recommendation")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def failedupdate(self):
+    async def failedupdate(self, ctx):
         """Notice about failed update on Wii U"""
-        await self.simple_embed("""
+        await self.simple_embed(ctx,"""
                                  A failed update in Download Management does not mean there is an update and the system \
 is trying to download it. This means your blocking method (DNS etc.) is working and \
 the system can't check for an update.
@@ -430,18 +436,18 @@ the system can't check for an update.
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def ctrmount(self):
+    async def ctrmount(self, ctx):
         """Failed to mount CTRNAND error"""
-        await self.simple_embed("""
+        await self.simple_embed(ctx,"""
                                 While following the guide, after installing boot9strap, if you get an error that says \
 "Failed to mount CTRNAND", just continue on with the guide.
                                 """)
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def emptysd(self):
+    async def emptysd(self, ctx):
         """What to do if you delete all your SD card contents"""
-        await self.simple_embed("""
+        await self.simple_embed(ctx,"""
                                 If you have lost the contents of your SD card with CFW, you will need in SD root:
                                 -Homebrew launcher executable [here](https://smealum.github.io/ninjhax2/boot.3dsx)
                                 -`boot.firm` from [luma3ds latest release 7z](https://github.com/AuroraWright/Luma3DS/releases/latest)
@@ -451,12 +457,12 @@ the system can't check for an update.
     # Luma downloadlinks
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def luma(self, lumaversion=""):
+    async def luma(self, ctx, lumaversion=""):
         """Download links for Luma versions"""
         if lumaversion != "":
-            await self.simple_embed("Luma v{}\nhttps://github.com/AuroraWright/Luma3DS/releases/tag/v{}".format(lumaversion, lumaversion), color=discord.Color.blue())
+            await self.simple_embed(ctx,"Luma v{}\nhttps://github.com/AuroraWright/Luma3DS/releases/tag/v{}".format(lumaversion, lumaversion), color=discord.Color.blue())
         else:
-            await self.simple_embed("""
+            await self.simple_embed(ctx,"""
                                     Download links for the most common Luma3DS releases:
                                     [Latest Luma](https://github.com/AuroraWright/Luma3DS/releases/latest)
                                     [Luma v7.0.5](https://github.com/AuroraWright/Luma3DS/releases/tag/v7.0.5)
@@ -466,27 +472,27 @@ the system can't check for an update.
     # Embed to broken TWL Troubleshooting
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def twl(self):
+    async def twl(self, ctx):
         """Information on how to fix a broken TWL Partition"""
         embed = discord.Embed(title="Fix broken TWL", color=discord.Color(0xA2BAE0))
         embed.set_author(name="Plailect", url="https://3ds.hacks.guide/troubleshooting#dsi--ds-functionality-is-broken-after-completing-the-guide")
         embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
         embed.url = "https://3ds.hacks.guide/troubleshooting#dsi--ds-functionality-is-broken-after-completing-the-guide"
         embed.description = "Instructions on how to fix a broken TWL after doing the guide"
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
     @commands.command(aliases=["redscr"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def boot3dsx(self):
+    async def boot3dsx(self, ctx):
         """Download link for 3DS Homebrew Launcher, boot.3dsx"""
-        await self.simple_embed("The 3DS Homebrew Launcher, [boot.3dsx](https://github.com/fincs/new-hbmenu/releases/download/v2.0.0/boot.3dsx)")
+        await self.simple_embed(ctx,"The 3DS Homebrew Launcher, [boot.3dsx](https://github.com/fincs/new-hbmenu/releases/download/v2.0.0/boot.3dsx)")
 
     # Intructions for deleting home menu Extdata
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def homext(self):
+    async def homext(self, ctx):
         """Deleting home menu extdata"""
-        await self.simple_embed("""
+        await self.simple_embed(ctx,"""
                                 1. Navigate to the following folder on your SD card: \
 `/Nintendo 3DS/(32 Character ID)/(32 Character ID)/extdata/00000000/`
                                 2. Delete the corresponding folder for your region:
@@ -498,9 +504,9 @@ the system can't check for an update.
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def deltheme(self):
+    async def deltheme(self, ctx):
         """Deleting home menu theme data"""
-        await self.simple_embed("""
+        await self.simple_embed(ctx,"""
                                 1. Navigate to the following folder on your SD card: \
 `/Nintendo 3DS/(32 Character ID)/(32 Character ID)/extdata/00000000/`
                                 2. Delete the corresponding folder for your region:
@@ -510,20 +516,20 @@ the system can't check for an update.
                                   """, title="How to delete Home Menu Theme Data")
 
     @commands.command(aliases=['godmode9'])
-    async def gm9(self):
+    async def gm9(self, ctx):
         """Links to the guide on GodMode9"""
         embed = discord.Embed(title="GodMode9 Usage", color=discord.Color(0x66FFFF))
         embed.set_author(name="Plailect", url="https://3ds.hacks.guide/godmode9-usage")
         embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
         embed.url = "https://3ds.hacks.guide/godmode9-usage"
         embed.description = "GodMode9 usage guide"
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def pminit(self):
+    async def pminit(self, ctx):
         """Fix for the PM init failed error"""
-        await self.simple_embed("""
+        await self.simple_embed(ctx,"""
                                 If you are receiving a "PM init failed" error when attempting to launch safehax and \
 are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safehax/releases/tag/r19)
                                 """)
@@ -531,95 +537,95 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
     # Embed to Apache Thunder's Flashcart Launcher
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def flashcart(self):
+    async def flashcart(self, ctx):
         """Launcher for old flashcarts"""
         embed = discord.Embed(title="Launcher for old flashcards (r4,m3,dstt,dsx,etc)", color=discord.Color(0x42f462))
         embed.set_author(name="Apache Thunder", url="https://gbatemp.net/threads/r4-stage2-twl-flashcart-launcher-and-perhaps-other-cards-soon%E2%84%A2.416434/")
         embed.set_thumbnail(url="https://gbatemp.net/data/avatars/m/105/105648.jpg")
         embed.url = "https://gbatemp.net/threads/r4-stage2-twl-flashcart-launcher-and-perhaps-other-cards-soon%E2%84%A2.416434/"
         embed.description = "Launcher for old flashcards"
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
-    @commands.command(pass_context=True)
+    @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def vc(self, ctx, *, console=""):
         """Link to Virtual Console Injects for 3DS/Wiiu."""
-        if self.check_console(console, ctx.message.channel.name, '3ds'):
+        if self.check_console(console, ctx.channel.name, '3ds'):
             embed = discord.Embed(title="Virtual Console Injects for 3DS", color=discord.Color.blue())
             embed.set_author(name="Asdolo", url="https://gbatemp.net/members/asdolo.389539/")
             embed.set_thumbnail(url="https://i.imgur.com/rHa76XM.png")
             embed.url = "https://mega.nz/#!qnAE1YjC!q3FRHgIAVEo4nRI2IfANHJr-r7Sil3YpPYE4w8ZbUPY"
             embed.description = ("The recommended way to play old classics on your 3DS.\n"
                                  "Usage guide [here](http://3ds.eiphax.tech/nsui.html)")
-            await self.bot.say("", embed=embed)
+            await ctx.send(embed=embed)
 
-        if self.check_console(console, ctx.message.channel.name, ('wiiu', 'wii u')):
+        if self.check_console(console, ctx.channel.name, ('wiiu', 'wii u')):
             embed1 = discord.Embed(title="Wii and GameCube games for WiiU", color=discord.Color.red())
             embed1.set_author(name="TeconMoon")
             embed1.set_thumbnail(url="https://gbatemp.net/data/avatars/m/300/300039.jpg")
             embed1.url = "https://gbatemp.net/threads/release-wiivc-injector-script-gc-wii-homebrew-support.483577/"
             embed1.description = "The recommended way to play Wii and gamecube games on your WiiU"
-            await self.bot.say("", embed=embed1)
+            await ctx.send(embed=embed1)
 
             embed2 = discord.Embed(title="Virtual Console Injects for WiiU", color=discord.Color.red())
             embed2.set_author(name="CatmanFan")
             embed2.set_thumbnail(url="https://gbatemp.net/data/avatars/m/398/398221.jpg")
             embed2.url = "https://gbatemp.net/threads/release-injectiine-wii-u-virtual-console-injector.491386/"
             embed2.description = "The recommended way to play old classics on your WiiU"
-            await self.bot.say("", embed=embed2)
+            await ctx.send(embed=embed2)
 
     # Embed to Chroma Ryu's godmode9 guide
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def dump(self):
+    async def dump(self, ctx):
         """How to dump/build CIAs and Files using GodMode9"""
         embed = discord.Embed(title="GodMode9 dump/build Guide", color=discord.Color(0x66FFFF))
         embed.set_author(name="Chroma Ryu", url="https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Godmode9-CIA-Dumping-and-Building")
         embed.set_thumbnail(url="https://i.imgur.com/U8NA9lx.png")
         embed.url = "https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Godmode9-CIA-Dumping-and-Building"
         embed.description = "How to dump/build CIAs and Files using GodMode9"
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
     # Embed to Chroma Ryu's layeredfs guide
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def layeredfs(self):
+    async def layeredfs(self, ctx):
         """How to use Luma 8.0+ LayeredFs"""
         embed = discord.Embed(title="LayeredFs Guide", color=discord.Color(0x66FFFF))
         embed.set_author(name="Chroma Ryu", url="https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Using-Luma3DS'-layeredfs-(Only-version-8.0-and-higher)")
         embed.set_thumbnail(url="https://i.imgur.com/U8NA9lx.png")
         embed.url = "https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Using-Luma3DS'-layeredfs-(Only-version-8.0-and-higher)"
         embed.description = "How to use Luma 8.0+ LayeredFs for ROM Hacking."
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
 
     # Information about sighax
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def sighax(self):
+    async def sighax(self, ctx):
         """Information about sighax"""
         embed = discord.Embed(title="Sighax Information", color=discord.Color(0x0000ff))
         embed.set_author(name="SciresM", url="https://www.reddit.com/r/3dshacks/comments/67f6as/psa_clearing_up_some_misconceptions_about_sighax/")
         embed.set_thumbnail(url="https://i.imgur.com/11ajkdJ.jpg")
         embed.url = "https://www.reddit.com/r/3dshacks/comments/67f6as/psa_clearing_up_some_misconceptions_about_sighax/"
         embed.description = "PSA About Sighax"
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
-    @commands.command(pass_context=True, name="7zip")
+    @commands.command(name="7zip")
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def p7zip(self):
+    async def p7zip(self, ctx):
         """Download a .7z file extractor"""
         embed = discord.Embed(title="Download 7-Zip or The Unarchiver", color=discord.Color(0x0000ff))
         embed.description = ("To be able to extract .7z files, you will need an extractor that supports this format.\n"
                              "• Windows: [7-Zip](https://www.7-zip.org)\n"
                              "• Mac: [The Unarchiver](https://theunarchiver.com)")
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def flashdrives(self):
+    async def flashdrives(self, ctx):
         """Message on flash drives on the Wii U"""
-        await self.simple_embed("""
+        await self.simple_embed(ctx,"""
                                 Some flash drives work with the Wii U, some don't. If you have read or write errors, \
 or games crash often, you might want to try a different flash drive or hard drive
                                 """)
@@ -627,9 +633,9 @@ or games crash often, you might want to try a different flash drive or hard driv
     #Information about pending Switch updates
     @commands.command(aliases=["nxupdate"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def nsupdate(self):
+    async def nsupdate(self, ctx):
         """Erase pending updates on Nintendo Switch"""
-        await self.simple_embed("""
+        await self.simple_embed(ctx,"""
                                 When an update is downloaded, but not installed, the console will not display the \
 firmware version in System Settings.
                                 
@@ -641,9 +647,9 @@ may reboot, and check System Settings.
 45.248.48.62 as your secondary DNS for your home network.*
                                  """, title="How to delete pending Switch Updates")
 
-    @commands.command(aliases=["write"])
+    @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def sdlock(self):
+    async def sdlock(self, ctx):
         """Disable write protection on an SD Card"""
         embed = discord.Embed(title="Disable write protection on an SD Card")
         embed.description = cleandoc("""
@@ -652,85 +658,85 @@ your device will refuse to write to it.
                                      *If it is write locked, your console and other applications may behave unexpectedly.*
                                      """)
         embed.set_image(url="https://i.imgur.com/RvKjWcz.png")
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
-    #Creates tutorial command group
-    @commands.group(pass_context=True)
+    # Creates tutorial command group
+    @commands.group()
     async def tutorial(self, ctx):
         """Links to one of multiple guides"""
         if ctx.invoked_subcommand is None:
             await ctx.invoke(self.bot.get_command('help'), *ctx.command.qualified_name.split())
 
     @tutorial.command()
-    async def pokemon(self):
+    async def pokemon(self, ctx):
         """Displays different guides for Pokemon"""
         embed = discord.Embed(title="Possible guides for **Pokemon**:", color=discord.Color.red())
         embed.description = "**pkhex**|**pkhax**|**pkgen** Links to PKHeX tutorial\n**randomize** Links to layeredfs randomizing tutorial"
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
     @tutorial.command(hidden=True, aliases=["pkhax", "pkgen"])
-    async def pkhex(self):
+    async def pkhex(self, ctx):
         """Links to PKHeX tutorial"""
         embed = discord.Embed(title="PKHeX tutorial", color=discord.Color.red())
         embed.set_thumbnail(url="https://i.imgur.com/rr7Xf3E.jpg")
         embed.url = "https://3ds.eiphax.tech/pkhex.html"
         embed.description = "Basic tutorial for PKHeX"
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
-    @tutorial.command(hidden=True, )
-    async def randomize(self):
+    @tutorial.command(hidden=True)
+    async def randomize(self, ctx):
         """Links to layeredfs randomizing tutorial"""
         embed = discord.Embed(title="Randomizing with LayeredFS", color=discord.Color.red())
         embed.set_thumbnail(url="https://i.imgur.com/rr7Xf3E.jpg")
         embed.url = "https://zetadesigns.github.io/randomizing-layeredfs.html"
         embed.description = "Basic tutorial for randomizing with LayeredFS"
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
     @tutorial.command(aliases=["Animal_crossing"])
-    async def acnl(self):
+    async def acnl(self, ctx):
         """Links to AC:NL editing tutorial"""
         embed = discord.Embed(title="AC:NL editing tutorial", color=discord.Color.green())
         embed.set_thumbnail(url="https://i.imgur.com/3rVToMF.png")
         embed.url = "https://3ds.eiphax.tech/acnl.html"
         embed.description = "Basic tutorial for AC:NL editing"
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
     @tutorial.command(aliases=["twilightmenu", "dsimenu++", "srloader"])
-    async def twlmenu(self):
+    async def twlmenu(self, ctx):
         """Links to twlmenu tutorial"""
         embed = discord.Embed(title="TWiLightMenu++ tutorial", color=discord.Color.purple())
         embed.set_thumbnail(url="https://avatars3.githubusercontent.com/u/16110127?s=400&v=4")
         embed.url = "https://3ds.eiphax.tech/twlmenu.html"
         embed.description = "Basic tutorial for TWiLightMenu++"
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
     @commands.command()
-    async def tinydb(self):
+    async def tinydb(self, ctx):
         """Community-maintained homebrew database"""
         embed = discord.Embed(title="Tinydb", color=discord.Color.green())
         embed.set_author(name="DeadPhoenix")
         embed.set_thumbnail(url="https://files.frozenchen.me/kNJz8.png")
         embed.url = "http://tinydb.eiphax.tech"
         embed.description = "A Community-maintained homebrew database"
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
-    #Information about autoRCM
+    # Information about autoRCM
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def autorcm(self):
+    async def autorcm(self, ctx):
         """Guide and Warnings about AutoRCM"""
         embed = discord.Embed(title="Guide", color=discord.Color(0xCB0004))
         embed.set_author(name="NH Discord Server")
         embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
         embed.url = "https://nh-server.github.io/switch-guide/extras/autorcm/"
         embed.description = "Guide and Warnings about AutoRCM"
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def exfat(self):
+    async def exfat(self, ctx):
         """exFAT on Switch: why not to use it"""
-        await self.simple_embed("""
+        await self.simple_embed(ctx,"""
                                 The recommended filesystem format for the Switch is FAT32. 
                                 
                                 While the Switch supports exFAT through an additional update from Nintendo, here are reasons not to use it:
@@ -742,9 +748,9 @@ your device will refuse to write to it.
         
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def nxban(self):
+    async def nxban(self, ctx):
         """Switch ban risk snippet"""
-        await self.simple_embed("""
+        await self.simple_embed(ctx,"""
                                 The Switch is a much more secure system than the 3DS, and Nintendo has upped their game when it comes to bans. 
                                 One of the main reasons for this is that there are significantly more monitoring systems, \
 some of which cannot be turned off.
@@ -756,6 +762,7 @@ in the scene.
                                 Refer to <#465640445913858048> for a list of things to avoid doing to reduce your risks.
                                 You cannot ask about unbanning your console here.
                                 """, title="Switch Bans")
+
 
 def setup(bot):
     bot.add_cog(Assistance(bot))

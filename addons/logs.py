@@ -1,7 +1,9 @@
 import discord
+from discord.ext import commands
 import json
 
-class Logs:
+
+class Logs(commands.Cog):
     """
     Logs join and leave messages, bans and unbans, and member changes.
     """
@@ -24,6 +26,7 @@ By participating in this server, you acknowledge that user data (including messa
 Thanks for stopping by and have a good time!
 """  # ughhhhhhhh
 
+    @commands.Cog.listener()
     async def on_member_join(self, member):
         await self.bot.wait_until_all_ready()
         msg = "✅ **Join**: {} | {}#{}\n🗓 __Creation__: {}\n🏷 __User ID__: {}".format(
@@ -34,18 +37,18 @@ Thanks for stopping by and have a good time!
         if member.id in softbans:
             message_sent = False
             try:
-                await self.bot.send_message(member, "This account has not been permitted to participate in {}. The reason is: {}".format(self.bot.server.name, softbans[member.id]["reason"]))
+                await member.send("This account has not been permitted to participate in {}. The reason is: {}".format(self.bot.server.name, softbans[member.id]["reason"]))
                 message_sent = True
             except discord.errors.Forbidden:
                 pass
-            self.bot.actions.append("sbk:"+member.id)
-            await self.bot.kick(member)
+            self.bot.actions.append("sbk:"+str(member.id))
+            await member.kick()
             msg = "🚨 **Attempted join**: {} is soft-banned by <@{}> | {}#{}".format(member.mention, softbans[member.id]["issuer_id"], self.bot.escape_name(member.name), member.discriminator)
             if not message_sent:
                 msg += "\nThis message did not send to the user."
             embed = discord.Embed(color=discord.Color.red())
             embed.description = softbans[member.id]["reason"]
-            await self.bot.send_message(self.bot.serverlogs_channel, msg, embed=embed)
+            await self.bot.serverlogs_channel.send(msg, embed=embed)
             return
         with open("data/restrictions.json", "r") as f:
             rsts = json.load(f)
@@ -54,58 +57,61 @@ Thanks for stopping by and have a good time!
         if member.id in rsts:
             roles = []
             for rst in rsts[member.id]:
-                roles.append(discord.utils.get(self.bot.server.roles, name=rst))
-            await self.bot.add_roles(member, *roles)
+                roles.append(await member.guild.roles.get(name=rst))
+            await member.add_roles(*roles)
         with open("data/warnsv2.json", "r") as f:
             warns = json.load(f)
         try:
             if len(warns[member.id]["warns"]) == 0:
-                await self.bot.send_message(self.bot.serverlogs_channel, msg)
+                await self.bot.serverlogs_channel.send(msg)
             else:
                 embed = discord.Embed(color=discord.Color.dark_red())
                 embed.set_author(name="Warns for {}#{}".format(self.bot.escape_name(member.name), member.discriminator), icon_url=member.avatar_url)
                 for idx, warn in enumerate(warns[member.id]["warns"]):
                     embed.add_field(name="{}: {}".format(idx + 1, warn["timestamp"]), value="Issuer: {}\nReason: {}".format(warn["issuer_name"], warn["reason"]))
-                await self.bot.send_message(self.bot.serverlogs_channel, msg, embed=embed)
+                await self.bot.serverlogs_channel.send(msg, embed=embed)
         except KeyError:  # if the user is not in the file
-            await self.bot.send_message(self.bot.serverlogs_channel, msg)
+            await self.bot.serverlogs_channel.send(msg)
         try:
-            await self.bot.send_message(member, self.welcome_msg.format(self.bot.escape_name(member.name), self.bot.server.name, self.bot.welcome_channel.mention))
+            await member.send(self.welcome_msg.format(self.bot.escape_name(member.name), self.bot.server.name, self.bot.welcome_channel.mention))
         except discord.errors.Forbidden:
             pass
 
+    @commands.Cog.listener()
     async def on_member_remove(self, member):
         await self.bot.wait_until_all_ready()
         if "uk:"+member.id in self.bot.actions:
-            self.bot.actions.remove("uk:"+member.id)
+            self.bot.actions.remove("uk:"+str(member.id))
             return
         if "sbk:"+member.id in self.bot.actions:
-            self.bot.actions.remove("sbk:"+member.id)
+            self.bot.actions.remove("sbk:"+str(member.id))
             return
         if self.bot.pruning != 0 and "wk:"+member.id not in self.bot.actions:
             self.bot.pruning -= 1
             if self.bot.pruning == 0:
-                await self.bot.send_message(self.bot.mods_channel, "Pruning finished!")
+                await self.bot.mods_channel.send("Pruning finished!")
             return
         msg = "{}: {} | {}#{}\n🏷 __User ID__: {}".format("👢 **Auto-kick**" if "wk:"+member.id in self.bot.actions else "⬅️ **Leave**", member.mention, self.bot.escape_name(member.name), member.discriminator, member.id)
-        await self.bot.send_message(self.bot.serverlogs_channel, msg)
+        await self.bot.serverlogs_channel.send(msg)
         if "wk:"+member.id in self.bot.actions:
-            self.bot.actions.remove("wk:"+member.id)
-            await self.bot.send_message(self.bot.modlogs_channel, msg)
+            self.bot.actions.remove("wk:"+str(member.id))
+            await self.bot.modlogs_channel(msg)
 
+    @commands.Cog.listener()
     async def on_member_ban(self, member):
         await self.bot.wait_until_all_ready()
         if "ub:"+member.id in self.bot.actions:
-            self.bot.actions.remove("ub:"+member.id)
+            self.bot.actions.remove("ub:"+str(member.id))
             return
         msg = "⛔ **{}**: {} | {}#{}\n🏷 __User ID__: {}".format("Auto-ban" if "wb:"+member.id in self.bot.actions else "Ban", member.mention, self.bot.escape_name(member.name), member.discriminator, member.id)
-        await self.bot.send_message(self.bot.serverlogs_channel, msg)
+        await self.bot.serverlogs_channel.send(msg)
         if "wb:"+member.id in self.bot.actions:
-            self.bot.actions.remove("wb:"+member.id)
+            self.bot.actions.remove("wb:"+str(member.id))
         else:
             msg += "\nThe responsible staff member should add an explanation below."
-        await self.bot.send_message(self.bot.modlogs_channel, msg)
+        await self.bot.modlogs_channel(msg)
 
+    @commands.Cog.listener()
     async def on_member_unban(self, server, user):
         await self.bot.wait_until_all_ready()
         if "tbr:"+user.id in self.bot.actions:
@@ -121,8 +127,9 @@ Thanks for stopping by and have a good time!
                 timebans.pop(user.id)
                 with open("data/timebans.json", "w") as f:
                     json.dump(timebans, f)
-        await self.bot.send_message(self.bot.modlogs_channel, msg)
+        await self.bot.modlogs_channel(msg)
 
+    @commands.Cog.listener()
     async def on_member_update(self, member_before, member_after):
         await self.bot.wait_until_all_ready()
         do_log = False  # only nickname and roles should be logged
@@ -171,7 +178,7 @@ Thanks for stopping by and have a good time!
             msg += ": {0} → {1}".format(self.bot.escape_name(member_before.nick), self.bot.escape_name(member_after.nick))
         if do_log:
             msg = "ℹ️ **Member update**: {} | {}#{}".format(member_after.mention, self.bot.escape_name(member_after.name), member_after.discriminator) + msg
-            await self.bot.send_message(dest, msg)
+            await dest.send(msg)
 
 def setup(bot):
     bot.add_cog(Logs(bot))

@@ -86,32 +86,40 @@ bot.pruning = False  # used to disable leave logs if pruning, maybe.
 
 # mostly taken from https://github.com/Rapptz/discord.py/blob/async/discord/ext/commands/bot.py
 @bot.event
-async def on_command_error(error, ctx):
+async def on_command_error(ctx, error):
     if isinstance(error, commands.errors.CommandNotFound):
-        pass  # ...don't need to know if commands don't exist
+        return
+    if isinstance(error, commands.errors.NoPrivateMessage):
+        await ctx.send("This command is not available in DMs")
+        return
     if isinstance(error, commands.errors.CheckFailure):
-        await bot.send_message(ctx.message.channel, "{} You don't have permission to use this command.".format(ctx.message.author.mention))
+        await ctx.send("{} You don't have permission to use this command.".format(ctx.author.mention))
+        return
     elif isinstance(error, commands.errors.MissingRequiredArgument):
-        formatter = commands.formatter.HelpFormatter()
-        await bot.send_message(ctx.message.channel, "{} You are missing required arguments.\n{}".format(ctx.message.author.mention, formatter.format_help_for(ctx, ctx.command)[0]))
-    elif isinstance(error, commands.errors.CommandOnCooldown):
+        help_command = bot.help_command
+        help_command.context = ctx
+        await bot.help_command.prepare_help_command(ctx, ctx.command)
+        await ctx.send("{} You are missing required arguments.".format(ctx.author.mention, ctx.command.usage))
+        await bot.help_command.send_command_help(ctx.command)
+        return
+    elif isinstance(error, commands.CommandOnCooldown):
         try:
-            await bot.delete_message(ctx.message)
+            await ctx.message.delete()
         except discord.errors.NotFound:
             pass
-        message = await bot.send_message(ctx.message.channel, "{} This command was used {:.2f}s ago and is on cooldown. Try again in {:.2f}s.".format(ctx.message.author.mention, error.cooldown.per - error.retry_after, error.retry_after))
+        message = await ctx.send("{} This command was used {:.2f}s ago and is on cooldown. Try again in {:.2f}s.".format(ctx.author.mention, error.cooldown.per - error.retry_after, error.retry_after))
         await asyncio.sleep(10)
-        await bot.delete_message(message)
+        await ctx.message.delete()
     else:
-        ctx.command.reset_cooldown(ctx)
+        #ctx.command.reset_cooldown(ctx)
         if not hasattr(ctx.command, 'on_error'):
-            await bot.send_message(ctx.message.channel, "An error occured while processing the `{}` command.".format(ctx.command.name))
+            await ctx.send("An error occured while processing the `{}` command.".format(ctx.command.name))
         print('Ignoring exception in command {0.command} in {0.message.channel}'.format(ctx))
         mods_msg = "Exception occured in `{0.command}` in {0.message.channel.mention}".format(ctx)
         # traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
         tb = traceback.format_exception(type(error), error, error.__traceback__)
         print(''.join(tb))
-        await bot.send_message(bot.boterr_channel, mods_msg + '\n```' + ''.join(tb) + '\n```')
+        await bot.boterr_channel.send(mods_msg + '\n```' + ''.join(tb) + '\n```')
 
 # mostly taken from https://github.com/Rapptz/discord.py/blob/async/discord/client.py
 @bot.event
@@ -125,7 +133,7 @@ async def on_error(event_method, *args, **kwargs):
     print(''.join(tb))
     mods_msg += '\n```' + ''.join(tb) + '\n```'
     mods_msg += '\nargs: `{}`\n\nkwargs: `{}`'.format(args, kwargs)
-    await bot.send_message(bot.boterr_channel, mods_msg)
+    await bot.boterr_channel.send(mods_msg)
     print(args)
     print(kwargs)
 
@@ -139,7 +147,7 @@ bot.wait_until_all_ready = wait_until_all_ready
 @bot.event
 async def on_ready():
     # this bot should only ever be in one server anyway
-    for server in bot.servers:
+    for server in bot.guilds:
         bot.server = server
         if bot.all_ready:
             break
@@ -219,7 +227,7 @@ async def on_ready():
         timebans_i = copy.copy(timebans)
         for user_id, timestamp in timebans_i.items():
             found = False
-            for user in await bot.get_bans(server):
+            for user in await server.bans():
                 if user.id == user_id:
                     bot.timebans[user_id] = [user, datetime.datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S"), False]  # last variable is "notified", for <=30 minute notifications
                     found = True
@@ -253,20 +261,20 @@ async def on_ready():
             msg += "\n\nSome addons failed to load:\n"
             for f in failed_addons:
                 msg += "\n{}: `{}: {}`".format(*f)
-        await bot.send_message(bot.helpers_channel, msg)
+        await bot.helpers_channel.send(msg)
 
         # softban check
         with open("data/softbans.json", "r") as f:
             softbans = json.load(f)
         for member in server.members:
             if member.id in softbans:
-                await bot.send_message(member, "This account has not been permitted to participate in {}. The reason is: {}".format(bot.server.name, softbans[member.id]["reason"]))
+                await member.send("This account has not been permitted to participate in {}. The reason is: {}".format(bot.server.name, softbans[member.id]["reason"]))
                 bot.actions.append("sbk:" + member.id)
-                await bot.kick(member)
+                await member.kick()
                 msg = "🚨 **Attempted join**: {} is soft-banned by <@{}> | {}#{}".format(member.mention, softbans[member.id]["issuer_id"], bot.escape_name(member.name), member.discriminator)
                 embed = discord.Embed(color=discord.Color.red())
                 embed.description = softbans[member.id]["reason"]
-                await bot.send_message(bot.serverlogs_channel, msg, embed=embed)
+                await bot.serverlogs_channel.send(msg, embed=embed)
                 return
 
         break
@@ -275,7 +283,6 @@ async def on_ready():
 addons = [
     'addons.assistance',
     'addons.blah',
-    # 'addons.bf',
     'addons.err',
     'addons.events',
     'addons.extras',
@@ -294,7 +301,6 @@ addons = [
     'addons.mod',
     'addons.nxerr',
     'addons.rules',
-    'addons.xkcdparse',
 ]
 
 failed_addons = []

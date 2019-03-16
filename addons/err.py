@@ -5,7 +5,7 @@ from discord.ext import commands
 from discord import Color
 import string
 
-class Err:
+class Err(commands.Cog):
     """
     Parses CTR error codes.
     """
@@ -313,21 +313,21 @@ class Err:
             else:
                 return '{}'.format(k)
 
-    async def aaaa(self, rc):
+    async def aaaa(self, ctx, rc):
         # i know this is shit that's the point
         if rc == 3735928559:
-            await self.bot.say(binascii.unhexlify(hex(3273891394255502812531345138727304541163813328167758675079724534358388)[2:]).decode('utf-8'))
+            await ctx.send(binascii.unhexlify(hex(3273891394255502812531345138727304541163813328167758675079724534358388)[2:]).decode('utf-8'))
         elif rc == 3735927486:
-            await self.bot.say(binascii.unhexlify(hex(271463605137058211622646033881424078611212374995688473904058753630453734836388633396349994515442859649191631764050721993573)[2:]).decode('utf-8'))
+            await ctx.send(binascii.unhexlify(hex(271463605137058211622646033881424078611212374995688473904058753630453734836388633396349994515442859649191631764050721993573)[2:]).decode('utf-8'))
         elif rc == 2343432205:
-            await self.bot.say(binascii.unhexlify(hex(43563598107828907579305977861310806718428700278286708)[2:]).decode('utf-8'))
+            await ctx.send(binascii.unhexlify(hex(43563598107828907579305977861310806718428700278286708)[2:]).decode('utf-8'))
 
-    async def convert_zerox(self, err):
+    async def convert_zerox(self, ctx, err):
         err = err.strip()
         if err.startswith("0x"):
             err = err[2:]
         rc = int(err, 16)
-        await self.aaaa(rc)
+        await self.aaaa(ctx, rc)
         desc = rc & 0x3FF
         mod = (rc >> 10) & 0xFF
         summ = (rc >> 21) & 0x3F
@@ -375,7 +375,7 @@ class Err:
                     embed.color = embed.Empty
                     embed.description = "I don't know this one! Click the error code for details on Nintendo Support.\n\nIf you keep getting this issue and Nintendo Support does not help, and know how to fix it, you should report relevant details to <@78465448093417472> so it can be added to the bot."
         elif err.startswith("0x") or all(c in string.hexdigits for c in err):
-            desc, mod, summ, level, rc = await self.convert_zerox(err)
+            desc, mod, summ, level, rc = await self.convert_zerox(ctx, err)
 
             # garbage
             embed = discord.Embed(title="0x{:X}".format(rc))
@@ -384,14 +384,14 @@ class Err:
             embed.add_field(name="Summary", value=self.get_name(self.summaries, summ), inline=False)
             embed.add_field(name="Level", value=self.get_name(self.levels, level), inline=False)
         else:
-            return await self.bot.say("Invalid error code.")
+            return await ctx.send("Invalid error code.")
 
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
     @commands.command(pass_context=True)
     async def err2(self, ctx, err: str):
         if not err.startswith("0x") and not all(c in string.hexdigits for c in err):
-            return await self.bot.say("Invalid error code.")
+            return await ctx.send("Invalid error code.")
 
         desc, mod, summ, level, rc = await self.convert_zerox(err)
  
@@ -402,7 +402,7 @@ class Err:
         value += self.get_name(self.summaries, summ, 'summary') + '\n'
         value += self.get_name(self.levels, level, 'level')
         embed.description = value
-        await self.bot.say("", embed=embed)
+        await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Err(bot))

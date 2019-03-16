@@ -34,15 +34,15 @@ class xkcdparse:
         comic = comic.lower()
         """Show xkcd comic by number. Use "latest" to show the latest comic, or "random" to show a random comic."""
         if comic == "latest":
-            await self.bot.say("https://xkcd.com/{}/".format(xkcd.getLatestComic().number))
+            await ctx.send("https://xkcd.com/{}/".format(xkcd.getLatestComic().number))
         elif comic == "random":
-            await self.bot.say("https://xkcd.com/{}/".format(xkcd.getRandomComic().number))
+            await ctx.send("https://xkcd.com/{}/".format(xkcd.getRandomComic().number))
         elif comic.isdigit():
-            await self.bot.say("https://xkcd.com/{}/".format(xkcd.getComic(comic).number))
+            await ctx.send("https://xkcd.com/{}/".format(xkcd.getComic(comic).number))
         elif comic in self.word_responses:
-            await self.bot.say("https://xkcd.com/{}/".format(xkcd.getComic(self.word_responses[comic]).number))
+            await ctx.send("https://xkcd.com/{}/".format(xkcd.getComic(self.word_responses[comic]).number))
         else:
-            await self.bot.say("I can't find that one!")
+            await ctx.send("I can't find that one!")
 
 def setup(bot):
     bot.add_cog(xkcdparse(bot))

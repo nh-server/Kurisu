@@ -2,7 +2,7 @@ import discord
 import re
 from discord.ext import commands
 
-class NXErr:
+class NXErr(commands.Cog):
     """
     Parses NX (Nintendo Switch) error codes.
     Uses http://switchbrew.org/index.php?title=Error_codes
@@ -764,7 +764,7 @@ class NXErr:
             desc = int(err[5:9])
             errcode = (desc << 9) + module
         elif err in self.nin_err:
-            await self.bot.say(embed=discord.Embed(title="Game / Support Page Error Code", description="**Description:** {}".format(self.nin_err[err])))
+            await ctx.send(embed=discord.Embed(title="Game / Support Page Error Code", description="**Description:** {}".format(self.nin_err[err])))
             return
         else:
             if err.startswith("0x"):
@@ -782,7 +782,7 @@ class NXErr:
                     explanation += errcode_range[2] + '\n\n'
         # Game / Support Errors because they are either special or I'm just lazy
         elif err in self.nin_err:
-            await self.bot.say(embed=discord.Embed(title="Game / Support Page Error Code", description="**Description:** {}".format(self.nin_err[err])))
+            await ctx.send(embed=discord.Embed(title="Game / Support Page Error Code", description="**Description:** {}".format(self.nin_err[err])))
             return
         # Return back to normal guidelines
         else:
@@ -790,17 +790,17 @@ class NXErr:
         explanation += 'Module: ' + self.get_name(self.modules, module)
         explanation += '\nDescription: {}'.format(desc)
         embed = discord.Embed(title='0x{:X} / {}'.format(errcode, str_errcode), description=explanation)
-        await self.bot.say(embed=embed)
+        await ctx.send(embed=embed)
 
     @commands.command(pass_context=True)
     async def err2hex(self, ctx, err: str):
         if not re.match('[0-9][0-9][0-9][0-9]\-[0-9][0-9][0-9][0-9]', err):
-            await self.bot.say('Does not follow XXXX-XXXX format')
+            await ctx.send('Does not follow XXXX-XXXX format')
         else:
             module = int(err[0:4]) - 2000
             desc = int(err[5:9])
             errcode = (desc << 9) + module
-            await self.bot.say('0x{:X}'.format(errcode))
+            await ctx.send('0x{:X}'.format(errcode))
 
     @commands.command(pass_context=True)
     async def hex2err(self, ctx, err: str):
@@ -810,7 +810,7 @@ class NXErr:
         module = err & 0x1FF
         desc = (err >> 9) & 0x3FFF
         errcode = '{:04}-{:04}'.format(module + 2000, desc)
-        await self.bot.say(errcode)
+        await ctx.send(errcode)
 
 
 def setup(bot):

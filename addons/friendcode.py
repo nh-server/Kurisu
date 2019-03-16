@@ -4,7 +4,8 @@ import sqlite3
 import struct
 from discord.ext import commands
 
-class FriendCode:
+
+class FriendCode(commands.Cog):
     """
     Stores and obtains friend codes using an SQLite 3 database.
     """
@@ -38,16 +39,16 @@ class FriendCode:
         """Add your friend code."""
         fc = self.verify_fc(fc)
         if not fc:
-            await self.bot.say("This friend code is invalid.")
+            await ctx.send("This friend code is invalid.")
             return
         c = self.conn.cursor()
-        rows = c.execute('SELECT * FROM friend_codes WHERE userid = ?', (int(ctx.message.author.id),))
+        rows = c.execute('SELECT * FROM friend_codes WHERE userid = ?', (int(ctx.author.id),))
         for row in rows:
             # if the user already has one, this prevents adding another
-            await self.bot.say("Please delete your current friend code with `.fcdelete` before adding another.")
+            await ctx.send("Please delete your current friend code with `.fcdelete` before adding another.")
             return
-        c.execute('INSERT INTO friend_codes VALUES (?,?)', (int(ctx.message.author.id), fc))
-        await self.bot.say("{} Friend code inserted: {}".format(ctx.message.author.mention, self.fc_to_string(fc)))
+        c.execute('INSERT INTO friend_codes VALUES (?,?)', (int(ctx.author.id), fc))
+        await ctx.send("{} Friend code inserted: {}".format(ctx.author.mention, self.fc_to_string(fc)))
         self.conn.commit()
 
     @commands.command(pass_context=True)
@@ -55,36 +56,36 @@ class FriendCode:
         """Get other user's friend code. You must have one yourself in the database."""
         c = self.conn.cursor()
         member = ctx.message.mentions[0]
-        rows = c.execute('SELECT * FROM friend_codes WHERE userid = ?', (int(ctx.message.author.id),))
+        rows = c.execute('SELECT * FROM friend_codes WHERE userid = ?', (int(ctx.author.id),))
         for row in rows:
             # assuming there is only one, which there should be
             rows_m = c.execute('SELECT * FROM friend_codes WHERE userid = ?', (int(member.id),))
             for row_m in rows_m:
-                await self.bot.say("{} friend code is {}".format(member.mention, self.fc_to_string(row_m[1])))
+                await ctx.send("{} friend code is {}".format(member.mention, self.fc_to_string(row_m[1])))
                 try:
-                    await self.bot.send_message(member, "{} has asked for your friend code! Their code is {}.".format(self.bot.escape_name(ctx.message.author), self.fc_to_string(row[1])))
+                    member.send("{} has asked for your friend code! Their code is {}.".format(self.bot.escape_name(ctx.author), self.fc_to_string(row[1])))
                 except discord.errors.Forbidden:
                     pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
                 return
-            await self.bot.say("This user does not have a registered friend code.")
+            await ctx.send("This user does not have a registered friend code.")
             return
-        await self.bot.say("You need to register your own friend code with `.fcregister <friendcode>` before getting others.")
+        await ctx.send("You need to register your own friend code with `.fcregister <friendcode>` before getting others.")
 
     @commands.command(pass_context=True)
     async def fcdelete(self, ctx):
         """Delete your friend code."""
         c = self.conn.cursor()
-        c.execute('DELETE FROM friend_codes WHERE userid = ?', (int(ctx.message.author.id),))
-        await self.bot.say("Friend code removed from database.")
+        c.execute('DELETE FROM friend_codes WHERE userid = ?', (int(ctx.author.id),))
+        await ctx.send("Friend code removed from database.")
         self.conn.commit()
 
     @commands.command()
-    async def fctest(self, fc):
+    async def fctest(self, ctx, fc):
         fc = self.verify_fc(fc)
         if fc:
-            await self.bot.say(self.fc_to_string(fc))
+            await ctx.send(self.fc_to_string(fc))
         else:
-            await self.bot.say("invalid")
+            await ctx.send("invalid")
 
 def setup(bot):
     bot.add_cog(FriendCode(bot))

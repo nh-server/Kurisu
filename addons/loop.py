@@ -9,7 +9,8 @@ import pytz
 from datetime import datetime, timedelta
 from discord.ext import commands
 
-class Loop:
+
+class Loop(commands.Cog):
     """
     Loop events.
     """
@@ -85,8 +86,8 @@ class Loop:
 
     @commands.command()
     @commands.cooldown(rate=1, per=60.0, type=commands.BucketType.channel)
-    async def netinfo(self):
-        await self.bot.say(embed=self.netinfo_embed)
+    async def netinfo(self, ctx):
+        await ctx.send(embed=self.netinfo_embed)
 
     async def start_update_loop(self):
         # thanks Luc#5653
@@ -100,21 +101,21 @@ class Loop:
                 for ban in timebans.items():
                     if timestamp > ban[1][1]:
                         self.bot.actions.append("tbr:" + ban[0])
-                        await self.bot.unban(self.bot.server, ban[1][0])
+                        await self.bot.guilds[0].unban(ban[1][0])
                         msg = "⚠️ **Ban expired**: {} | {}#{}".format(ban[1][0].mention, self.bot.escape_name(ban[1][0].name), ban[1][0].discriminator)
-                        await self.bot.send_message(self.bot.modlogs_channel, msg)
+                        await self.bot.modlogs_channel.send( msg)
                         self.bot.timebans.pop(ban[0])
                     elif not ban[1][2]:
                         warning_time = ban[1][1] - self.warning_time_period_ban
                         if timestamp > warning_time:
                             ban[1][2] = True
-                            await self.bot.send_message(self.bot.mods_channel, "**Note**: {} will be unbanned in {} minutes.".format(self.bot.escape_name(ban[1][0]), ((ban[1][1] - timestamp).seconds // 60) + 1))
+                            await self.bot.mods_channel.send("**Note**: {} will be unbanned in {} minutes.".format(self.bot.escape_name(ban[1][0]), ((ban[1][1] - timestamp).seconds // 60) + 1))
 
                 for mute in timemutes.items():
                     if timestamp > mute[1][0]:
                         await self.remove_restriction_id(mute[0], "Muted")
                         msg = "🔈 **Mute expired**: <@{}>".format(mute[0])
-                        await self.bot.send_message(self.bot.modlogs_channel, msg)
+                        await self.bot.modlogs_channel.send( msg)
                         self.bot.timemutes.pop(mute[0])
                         member = discord.utils.get(self.bot.server.members, id=mute[0])
                         if member:
@@ -131,18 +132,18 @@ class Loop:
                         warning_time = mute[1][0] - self.warning_time_period_mute
                         if timestamp > warning_time:
                             mute[1][1] = True
-                            await self.bot.send_message(self.bot.mods_channel, "**Note**: <@{}> will be unmuted in {} minutes.".format(mute[0], ((mute[1][0] - timestamp).seconds // 60) + 1))
+                            await self.bot.mods_channel.send("**Note**: <@{}> will be unmuted in {} minutes.".format(mute[0], ((mute[1][0] - timestamp).seconds // 60) + 1))
 
                 for nohelp in timenohelp.items():
                     if timestamp > nohelp[1][0]:
                         await self.remove_restriction_id(nohelp[0], "No-Help")
                         msg = "⭕️ **No-Help Restriction expired**: <@{}>".format(nohelp[0])
-                        await self.bot.send_message(self.bot.modlogs_channel, msg)
-                        await self.bot.send_message(self.bot.helpers_channel, msg)
+                        await self.bot.modlogs_channel.send( msg)
+                        await self.bot.helpers_channel.send(msg)
                         self.bot.timenohelp.pop(nohelp[0])
                         member = discord.utils.get(self.bot.server.members, id=nohelp[0])
                         if member:
-                            await self.bot.remove_roles(member, self.bot.nohelp_role)
+                            await member.remove_roles(self.bot.nohelp_role)
                         with open("data/timenohelp.json", "r") as f:
                             timenohelp_j = json.load(f)
                         try:
@@ -155,10 +156,10 @@ class Loop:
                         warning_time = nohelp[1][0] - self.warning_time_period_nohelp
                         if timestamp > warning_time:
                             nohelp[1][1] = True
-                            await self.bot.send_message(self.bot.helpers_channel, "**Note**: <@{}> no-help restriction will expire in {} minutes.".format(nohelp[0], ((nohelp[1][0] - timestamp).seconds // 60) + 1))
+                            await self.bot.helpers_channel.send("**Note**: <@{}> no-help restriction will expire in {} minutes.".format(nohelp[0], ((nohelp[1][0] - timestamp).seconds // 60) + 1))
 
                 if timestamp.minute == 0 and timestamp.hour != self.last_hour:
-                    await self.bot.send_message(self.bot.helpers_channel, "{} has {:,} members at this hour!".format(self.bot.server.name, self.bot.server.member_count))
+                    await self.bot.helpers_channel.send("{} has {:,} members at this hour!".format(self.bot.server.name, self.bot.server.member_count))
                     self.last_hour = timestamp.hour
 
                 if timestamp.minute % 30 == 0 and timestamp.second == 0:

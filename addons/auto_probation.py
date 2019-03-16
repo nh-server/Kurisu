@@ -1,4 +1,7 @@
-class AutoProbation:
+from discord.ext import commands
+
+
+class AutoProbation(commands.Cog):
     """
     Logs join and leave messages.
     """
@@ -6,8 +9,9 @@ class AutoProbation:
         self.bot = bot
         print('Addon "{}" loaded'.format(self.__class__.__name__))
 
+    @commands.Cog.listener()
     async def on_member_join(self, member):
-        await self.bot.add_roles(member, self.bot.probation_role)
+        await member.add_roles(self.bot.probation_role, reason="Auto NoEmbed")
 
 def setup(bot):
     bot.add_cog(AutoProbation(bot))
