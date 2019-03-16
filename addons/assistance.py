@@ -542,31 +542,41 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
 
     @commands.command(pass_context=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def vc(self, ctx, *, console=""):
+    async def vc(self, ctx, *, consoles=""):
         """Link to Virtual Console Injects for 3DS/Wiiu."""
-        if self.check_console(console, ctx.message.channel.name, '3ds'):
-            embed = discord.Embed(title="Virtual Console Injects for 3DS", color=discord.Color.blue())
-            embed.set_author(name="Asdolo", url="https://gbatemp.net/members/asdolo.389539/")
-            embed.set_thumbnail(url="https://i.imgur.com/rHa76XM.png")
-            embed.url = "https://mega.nz/#!qnAE1YjC!q3FRHgIAVEo4nRI2IfANHJr-r7Sil3YpPYE4w8ZbUPY"
-            embed.description = ("The recommended way to play old classics on your 3DS.\n"
+        injects = ("3ds", "wiiu", "wii u")
+        consoleslist = []
+        for x in consoles.split():
+            if x in injects and x not in consoleslist:
+                consoleslist.append(x)
+        if not consoleslist:
+            if ctx.message.channel.name.startswith(injects):
+                consoleslist.append("None")
+            else:
+                await self.bot.say("Please specify a console; valid options are: 3ds, wiiu")
+                return
+        for x in consoleslist: 
+            if self.check_console(x, ctx.message.channel.name, '3ds'):
+                embed = discord.Embed(title="Virtual Console Injects for 3DS", color=discord.Color.blue())
+                embed.set_author(name="Asdolo", url="https://gbatemp.net/members/asdolo.389539/")
+                embed.set_thumbnail(url="https://i.imgur.com/rHa76XM.png")
+                embed.url = "https://mega.nz/#!qnAE1YjC!q3FRHgIAVEo4nRI2IfANHJr-r7Sil3YpPYE4w8ZbUPY"
+                embed.description = ("The recommended way to play old classics on your 3DS.\n"
                                  "Usage guide [here](http://3ds.eiphax.tech/nsui.html)")
-            await self.bot.say("", embed=embed)
-
-        if self.check_console(console, ctx.message.channel.name, ('wiiu', 'wii u')):
-            embed1 = discord.Embed(title="Wii and GameCube games for WiiU", color=discord.Color.red())
-            embed1.set_author(name="TeconMoon")
-            embed1.set_thumbnail(url="https://gbatemp.net/data/avatars/m/300/300039.jpg")
-            embed1.url = "https://gbatemp.net/threads/release-wiivc-injector-script-gc-wii-homebrew-support.483577/"
-            embed1.description = "The recommended way to play Wii and gamecube games on your WiiU"
-            await self.bot.say("", embed=embed1)
-
-            embed2 = discord.Embed(title="Virtual Console Injects for WiiU", color=discord.Color.red())
-            embed2.set_author(name="CatmanFan")
-            embed2.set_thumbnail(url="https://gbatemp.net/data/avatars/m/398/398221.jpg")
-            embed2.url = "https://gbatemp.net/threads/release-injectiine-wii-u-virtual-console-injector.491386/"
-            embed2.description = "The recommended way to play old classics on your WiiU"
-            await self.bot.say("", embed=embed2)
+                await self.bot.say("", embed=embed)
+            if self.check_console(x, ctx.message.channel.name, ('wiiu', 'wii u')):
+                embed1 = discord.Embed(title="Wii and GameCube games for WiiU", color=discord.Color.red())
+                embed1.set_author(name="TeconMoon")
+                embed1.set_thumbnail(url="https://gbatemp.net/data/avatars/m/300/300039.jpg")
+                embed1.url = "https://gbatemp.net/threads/release-wiivc-injector-script-gc-wii-homebrew-support.483577/"
+                embed1.description = "The recommended way to play Wii and gamecube games on your WiiU"
+                await self.bot.say("", embed=embed1)
+                embed2 = discord.Embed(title="Virtual Console Injects for WiiU", color=discord.Color.red())
+                embed2.set_author(name="CatmanFan")
+                embed2.set_thumbnail(url="https://gbatemp.net/data/avatars/m/398/398221.jpg")
+                embed2.url = "https://gbatemp.net/threads/release-injectiine-wii-u-virtual-console-injector.491386/"
+                embed2.description = "The recommended way to play old classics on your WiiU"
+                await self.bot.say("", embed=embed2)
 
     # Embed to Chroma Ryu's godmode9 guide
     @commands.command()
@@ -695,7 +705,7 @@ your device will refuse to write to it.
         embed.description = "Basic tutorial for AC:NL editing"
         await self.bot.say("", embed=embed)
 
-    @tutorial.command(aliases=["twilightmenu", "dsimenu++", "srloader"])
+    @tutorial.command(aliases=["twilightmenu", "dsimenu++", "srloader", "twilight"])
     async def twlmenu(self):
         """Links to twlmenu tutorial"""
         embed = discord.Embed(title="TWiLightMenu++ tutorial", color=discord.Color.purple())
