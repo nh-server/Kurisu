@@ -67,7 +67,7 @@ for fp in _filepaths:
         with open(fp, "w") as inf:
             json.dump({}, inf)
 
-bot = commands.Bot(command_prefix=['!', '.'], description="Kurisu, the bot for the 3DS Hacking Discord!", pm_help=None)
+bot = commands.Bot(command_prefix=['!', '.'], description="Kurisu, the bot for the Nintendo Homebrew Discord server!", pm_help=None)
 
 bot.actions = []  # changes messages in mod-/server-logs
 with open("data/watch.json", "r") as f:
