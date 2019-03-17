@@ -1,21 +1,21 @@
 import asyncio
 import discord
-import json
 import re
 from collections import deque
 from subprocess import call
 from string import printable
 from urllib.parse import urlparse
 from discord.ext import commands
+from cogs.database import DatabaseCog
 
 
-class Events(commands.Cog):
+class Events(DatabaseCog):
     """
     Special event handling.
     """
     def __init__(self, bot):
         self.bot = bot
-        print('Cog "{}" loaded'.format(self.__class__.__name__))
+        print('Cog "{}" loaded'.format(self.qualified_name))
 
     # don't add spaces or dashes to words
     piracy_tools = (
@@ -183,23 +183,13 @@ class Events(commands.Cog):
     channel_antispam = {}
     help_notice_anti_repeat = []
 
-    async def add_restriction(self, member, rst):
-        with open("data/restrictions.json", "r") as f:
-            rsts = json.load(f)
-        if member.id not in rsts:
-            rsts[member.id] = []
-        if rst not in rsts[member.id]:
-            rsts[member.id].append(rst)
-        with open("data/restrictions.json", "w") as f:
-            json.dump(rsts, f)
-
     # this is not a good idea, but i'll make a better implementation later
     channels_to_watch_for_videos = ['196635695958196224', '247557068490276864', '279783073497874442', '439933093118476289']
 
     async def scan_message(self, message, is_edit=False):
         embed = discord.Embed()    
         embed.description = message.content
-        if message.author.id in self.bot.watching:
+        if self.is_watched(message.author.id):
             content = "**Channel**:\n[#"+message.channel.name+"](https://discordapp.com/channels/" + str(message.guild.id) + "/" + str(message.channel.id) + "/" + str(message.id)+")\n"
             msg = message.author.mention
             if message.attachments:
@@ -353,7 +343,7 @@ class Events(commands.Cog):
             except discord.errors.Forbidden:
                 pass
             await self.add_restriction(message.author, "Probation")
-            await message.author.addroles(self.bot.probation_role)
+            await message.author.add_roles(self.bot.probation_role)
 
 
     async def keyword_search(self, message):
@@ -381,7 +371,7 @@ class Events(commands.Cog):
             self.user_antispam[message.author.id] = []
         self.user_antispam[message.author.id].append(message)
         if len(self.user_antispam[message.author.id]) == 6:  # it can trigger it multiple times if I use >. it can't skip to a number so this should work
-            await message.author.addroles(self.bot.muted_role)
+            await message.author.add_roles(self.bot.muted_role)
             await self.add_restriction(message.author, "Muted")
             msg_user = "You were automatically muted for sending too many messages in a short period of time!\n\nIf you believe this was done in error, send a direct message to one of the staff in {}.".format(self.bot.welcome_channel.mention)
             try:
@@ -411,7 +401,7 @@ class Events(commands.Cog):
     async def user_ping_check(self, message):
         if "p" + str(message.author.id) not in self.user_antispam:
             self.user_antispam["p" + str(message.author.id)] = deque()
-        self.user_antispam["p" + message.author.id].append((message, len(message.mentions)))
+        self.user_antispam["p" + str(message.author.id)].append((message, len(message.mentions)))
         _, user_mentions = zip(*self.user_antispam["p" + str(message.author.id)])
         if sum(user_mentions) > 6:
             await self.add_restriction(message.author, "Probation")
@@ -436,9 +426,9 @@ class Events(commands.Cog):
             self.user_antispam["p" + message.author.id].clear()
         else:
             await asyncio.sleep(10)
-            self.user_antispam["p" + message.author.id].popleft()
+            self.user_antispam["p" + str(message.author.id)].popleft()
         try:
-            if len(self.user_antispam["p" + message.author.id]) == 0:
+            if len(self.user_antispam["p" + str(message.author.id)]) == 0:
                 self.user_antispam.pop("p" + message.author.id)
         except KeyError:
             pass  # if the array doesn't exist, don't raise an error
@@ -509,6 +499,7 @@ class Events(commands.Cog):
             await self.scan_message(message_after, is_edit=True)
         except AttributeError:
             pass  # I need to figure this out eventually. at the moment there's no real harm doing this.
+
 
 def setup(bot):
     bot.add_cog(Events(bot))

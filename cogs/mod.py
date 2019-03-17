@@ -1,5 +1,4 @@
 import datetime
-import json
 import re
 import time
 import discord
@@ -14,29 +13,6 @@ class Mod(DatabaseCog):
     """
     Staff commands.
     """
-    def __init__(self, bot):
-        self.bot = bot
-        print('Cog "{}" loaded'.format(self.qualified_name))
-
-    async def add_restriction(self, member, rst):
-        with open("data/restrictions.json", "r") as f:
-            rsts = json.load(f)
-        if member.id not in rsts:
-            rsts[member.id] = []
-        if rst not in rsts[member.id]:
-            rsts[member.id].append(rst)
-        with open("data/restrictions.json", "w") as f:
-            json.dump(rsts, f)
-
-    async def remove_restriction(self, member, rst):
-        with open("data/restrictions.json", "r") as f:
-            rsts = json.load(f)
-        if member.id not in rsts:
-            rsts[member.id] = []
-        if rst in rsts[member.id]:
-            rsts[member.id].remove(rst)
-        with open("data/restrictions.json", "w") as f:
-            json.dump(rsts, f)
 
     @is_staff("Owner")
     @commands.command()
@@ -128,7 +104,7 @@ class Mod(DatabaseCog):
     async def mute(self, ctx, member: SafeMember, *, reason=""):
         """Mutes a user so they can't speak. Staff only."""
         try:
-            await self.add_restriction(member, "Muted")
+            self.add_restriction(member.id, "Muted")
             await member.add_roles(self.bot.muted_role)
             msg_user = "You were muted!"
             if reason != "":
@@ -154,7 +130,7 @@ class Mod(DatabaseCog):
     async def timemute(self, ctx, member: SafeMember, length, *, reason=""):
         """Mutes a user for a limited period of time so they can't speak. Staff only.\n\nLength format: #d#h#m#s"""
         try:
-            await self.add_restriction(member, "Muted")
+            self.add_restriction(member.id, "Muted")
             await member.add_roles(self.bot.muted_role)
             issuer = ctx.author
             # thanks Luc#5653
@@ -175,7 +151,7 @@ class Mod(DatabaseCog):
             unmute_time = timestamp + delta
             unmute_time_string = unmute_time.strftime("%Y-%m-%d %H:%M:%S")
             self.add_timed_restriction(member.id, unmute_time_string, 'timemute')
-            self.bot.timemutes[member.id] = [unmute_time, False]  # last variable is "notified", for <=10 minute notifications
+            #self.add_restriction(member.id, 'Muted')
             msg_user = "You were muted!"
             if reason != "":
                 msg_user += " The given reason is: " + reason
@@ -199,13 +175,12 @@ class Mod(DatabaseCog):
     async def unmute(self, ctx, member: SafeMember):
         """Unmutes a user so they can speak. Staff only."""
         try:
-            await self.remove_restriction(member, "Muted")
-            await self.member.remove_roles(self.bot.muted_role)
+            self.remove_restriction(member.id, "Muted")
+            await member.remove_roles(self.bot.muted_role)
             await ctx.send("{} can now speak again.".format(member.mention))
             msg = "🔈 **Unmuted**: {} unmuted {} | {}#{}".format(ctx.author.mention, member.mention, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
             await self.bot.modlogs_channel.send(msg)
             self.remove_timed_restriction(member.id, 'timemute')
-            self.bot.timemutes.pop(member.id)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
 
@@ -214,7 +189,7 @@ class Mod(DatabaseCog):
     async def elsewhere(self, ctx, member: SafeMember):
         """Restore elsewhere access for a user. Staff only."""
         try:
-            await self.remove_restriction(member, "no-elsewhere")
+            self.remove_restriction(member.id, "no-elsewhere")
             await self.member.remove_roles(self.bot.noelsewhere_role)
             await ctx.send("{} can access elsewhere again.".format(member.mention))
             msg = "⭕️ **Restored elsewhere**: {} restored elsewhere access to {} | {}#{}".format(ctx.author.mention, member.mention, self.bot.escape_name(member.name), member.discriminator)
@@ -227,7 +202,7 @@ class Mod(DatabaseCog):
     async def noelsewhere(self, ctx, member: SafeMember, *, reason=""):
         """Removes elsewhere access from a user. Staff only."""
         try:
-            await self.add_restriction(member, "no-elsewhere")
+            self.add_restriction(member.id, "no-elsewhere")
             member.add_roles(self.bot.noelsewhere_role)
             member.remove_roles(self.bot.elsewhere_role)
             await ctx.send("{} can no longer access elsewhere.".format(member.mention))
@@ -245,7 +220,7 @@ class Mod(DatabaseCog):
     async def noembed(self, ctx, member: SafeMember, *, reason=""):
         """Removes embed permissions from a user. Staff only."""
         try:
-            await self.add_restriction(member, "No-Embed")
+            self.add_restriction(member.id, "No-Embed")
             await member.add_roles(self.bot.noembed_role)
             msg_user = "You lost embed and upload permissions!"
             if reason != "":
@@ -270,7 +245,7 @@ class Mod(DatabaseCog):
     async def embed(self, ctx, member: SafeMember):
         """Restore embed permissios for a user. Staff only."""
         try:
-            await self.remove_restriction(member, "No-Embed")
+            self.remove_restriction(member.id, "No-Embed")
             await self.member.remove_roles(self.bot.noembed_role)
             await ctx.send("{} can now embed links and attach files again.".format(member.mention))
             msg = "⭕️ **Restored Embed**: {} restored embed to {} | {}#{}".format(ctx.author.mention, member.mention, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
@@ -283,7 +258,7 @@ class Mod(DatabaseCog):
     async def takehelp(self, ctx, member: SafeMember, *, reason=""):
         """Remove access to help-and-questions. Staff and Helpers only."""
         try:
-            await self.add_restriction(member, "No-Help")
+            self.add_restriction(member.id, "No-Help")
             await member.add_roles(self.bot.nohelp_role)
             msg_user = "You lost access to help channels!"
             if reason != "":
@@ -303,7 +278,6 @@ class Mod(DatabaseCog):
             await self.bot.helpers_channel.send(msg)
             #add to .takehelp
             self.remove_timed_restriction(member.id, 'timetakehelp')
-            self.bot.timenohelp.pop(member.id)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
 
@@ -312,7 +286,7 @@ class Mod(DatabaseCog):
     async def givehelp(self, ctx, member: SafeMember):
         """Restore access to help-and-questions. Staff and Helpers only."""
         try:
-            await self.remove_restriction(member, "No-Help")
+            self.remove_restriction(member.id, "No-Help")
             await self.member.remove_roles(self.bot.nohelp_role)
             await ctx.send("{} can access the help channels again.".format(member.mention))
             msg = "⭕️ **Help access restored**: {} restored access to help channels to {} | {}#{}".format(ctx.author.mention, member.mention, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
@@ -320,7 +294,6 @@ class Mod(DatabaseCog):
             await self.bot.helpers_channel.send(msg)
             #add to .givehelp
             self.remove_timed_restriction(member.id, 'timetakehelp')
-            self.bot.timenohelp.pop(member.id)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
 
@@ -329,7 +302,7 @@ class Mod(DatabaseCog):
     async def timetakehelp(self, ctx, member: SafeMember, length, *, reason=""):
         """Restricts a user from Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         try:
-            await self.add_restriction(member, "No-Help")
+            self.add_restriction(member.id, "No-Help")
             await member.add_roles(self.bot.nohelp_role)
             issuer = ctx.author
             # thanks Luc#5653
@@ -350,7 +323,7 @@ class Mod(DatabaseCog):
             unnohelp_time = timestamp + delta
             unnohelp_time_string = unnohelp_time.strftime("%Y-%m-%d %H:%M:%S")
             self.add_timed_restriction(member.id, unnohelp_time_string, 'timetakehelp')
-            self.bot.timenohelp[member.id] = [unnohelp_time, False]  # last variable is "notified", for <=10 minute notifications
+            self.add_restriction(member.id, "No-Help")
             msg_user = "You lost access to help channels temporarily!"
             if reason != "":
                 msg_user += " The given reason is: " + reason
@@ -404,7 +377,7 @@ class Mod(DatabaseCog):
     async def probate(self, ctx, member: SafeMember, *, reason=""):
         """Probate a user. Staff and Helpers only."""
         try:
-            await self.add_restriction(member, "Probation")
+            self.add_restriction(member.id, "Probation")
             await member.add_roles(self.bot.probation_role)
             msg_user = "You are under probation!"
             if reason != "":
@@ -428,7 +401,7 @@ class Mod(DatabaseCog):
     async def unprobate(self, ctx, member: SafeMember):
         """Unprobate a user. Staff and Helpers only."""
         try:
-            await self.remove_restriction(member, "Probation")
+            self.remove_restriction(member.id, "Probation")
             await self.member.remove_roles(self.bot.probation_role)
             await ctx.send("{} is out of probation.".format(member.mention))
             msg = "⭕️ **Un-probated**: {} un-probated {} | {}#{}".format(ctx.author.mention, member.mention, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
@@ -493,6 +466,10 @@ class Mod(DatabaseCog):
             await ctx.send(msg)
             modmsg = "🛠 **Updated Staff list**: {} updated the staff list.\n:pencil: __Users removed__: {}".format(ctx.author.mention,", ".join(["{} | {}#{}".format(x.id,x.name,x.discriminator) for x in removed]))
             await self.bot.modlogs_channel.send(modmsg)
+
+    async def cog_command_error(self, ctx, error):
+        if isinstance(error, commands.errors.CheckFailure):
+            await ctx.send("{} You don't have permission to use this command.".format(ctx.author.mention))
 
 
 def setup(bot):

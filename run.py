@@ -6,11 +6,8 @@
 
 # import dependencies
 import asyncio
-import copy
 import configparser
-import datetime
 import traceback
-import json
 import sqlite3
 import os
 
@@ -33,27 +30,9 @@ config.read("config.ini")
 
 os.makedirs("data", exist_ok=True)
 os.makedirs("data/ninupdates", exist_ok=True)
-# create warnsv2.json if it doesn't exist, and convert warns.json if needed
-if not os.path.isfile("data/warnsv2.json"):
-    if os.path.isfile("data/warns.json"):
-        print("Converting warns.json to warnsv2 format")
-        with open("data/warns.json", "r") as f:
-            warns = json.load(f)
-        warnsv2 = {}
-        for user_id, info in warns.items():
-            warnsv2[user_id] = {"name": info["name"], "warns": []}
-            for w_idx in range(len(info["warns"])):
-                warnsv2[user_id]["warns"].append(info["warns"][str(w_idx + 1)])
-        with open("data/warnsv2.json", "w") as f:
-            json.dump(warnsv2, f)
-    else:
-        with open("data/warnsv2.json", "w") as f:
-            f.write("{}")
 
-
-
-bot = commands.Bot(command_prefix=['!', '.'], description="Kurisu, the bot for the 3DS Hacking Discord!", pm_help=None)
-
+bot = commands.Bot(command_prefix=['!', '.'], description="Kurisu, the bot for the Nintendo Homebrew Discord Server!")
+bot.help_command.dm_help = None
 bot.actions = []  # changes messages in mod-/server-logs
 
 # http://stackoverflow.com/questions/3411771/multiple-character-replace-with-python
@@ -68,23 +47,22 @@ bot.escape_name = escape_name
 bot.pruning = False  # used to disable leave logs if pruning, maybe.
 
 # mostly taken from https://github.com/Rapptz/discord.py/blob/async/discord/ext/commands/bot.py
+
+
 @bot.event
 async def on_command_error(ctx, error):
+
     if isinstance(error, commands.errors.CommandNotFound):
         return
     if isinstance(error, commands.errors.NoPrivateMessage):
         await ctx.send("This command is not available in DMs")
         return
-    #if isinstance(error, commands.errors.CheckFailure):
-    #    await ctx.send("{} You don't have permission to use this command.".format(ctx.author.mention))
-   #     return
+
     elif isinstance(error, commands.errors.MissingRequiredArgument):
-        help_command = bot.help_command
-        help_command.context = ctx
-        await bot.help_command.prepare_help_command(ctx, ctx.command)
-        await ctx.send("{} You are missing required arguments.".format(ctx.author.mention, ctx.command.usage))
-        await bot.help_command.send_command_help(ctx.command)
+        await ctx.send_help(ctx.command)
         return
+    elif isinstance(error, commands.errors.BadArgument):
+        await ctx.send(error)
     elif isinstance(error, commands.CommandOnCooldown):
         try:
             await ctx.message.delete()
@@ -94,7 +72,7 @@ async def on_command_error(ctx, error):
         await asyncio.sleep(10)
         await ctx.message.delete()
     else:
-        #ctx.command.reset_cooldown(ctx)
+        ctx.command.reset_cooldown(ctx)
         if not hasattr(ctx.command, 'on_error'):
             await ctx.send("An error occured while processing the `{}` command.".format(ctx.command.name))
         print('Ignoring exception in command {0.command} in {0.message.channel}'.format(ctx))
@@ -208,34 +186,6 @@ async def on_ready():
         bot.conn = sqlite3.connect('data/kurisu.sqlite')
         bot.c = bot.conn.cursor()
 
-        # load timebans
-        bot.timebans = {}
-        rows = bot.c.execute('SELECT * FROM timed_restriction WHERE type = "timeban"')
-        for row in rows.fetchall():
-            user_id = row[0]
-            found = False
-            print(await guild.bans())
-            for banentry in await guild.bans():
-                if banentry.user.id == user_id:
-                    bot.timebans[user_id] = [banentry.user, datetime.datetime.strptime(row[1], "%Y-%m-%d %H:%M:%S"), False]  # last variable is "notified", for <=30 minute notifications
-                    found = True
-                    break
-            if not found:
-                bot.c.execute('DELETE FROM timed_restriction WHERE type = "timeban" AND user_id = ?', (user_id,))
-                print("Removed {} from timebans".format(user_id))
-        bot.conn.commit()
-
-        # load timemute
-        rows = bot.c.execute('SELECT * FROM timed_restriction WHERE type = "timemute"')
-        bot.timemutes = {}
-        for row in rows.fetchall():
-            bot.timemutes[row[0]] = [datetime.datetime.strptime(row[1], "%Y-%m-%d %H:%M:%S"), False]  # last variable is "notified", for <=10 minute notifications
-
-        # load timenohelp
-        rows = bot.c.execute('SELECT * FROM timed_restriction WHERE type = "timenohelp"')
-        bot.timenohelp = {}
-        for row in rows.fetchall():
-            bot.timenohelp[row[0]] = [datetime.datetime.strptime(row[1], "%Y-%m-%d %H:%M:%S"), False]  # last variable is "notified", for <=10 minute notifications
         bot.all_ready = True
         bot._is_all_ready.set()
 
@@ -251,7 +201,6 @@ async def on_ready():
         for member in guild.members:
             for softban in softbans:
                 if member.id == softban[0]:
-                    print('rip')
                     await member.send("This account has not been permitted to participate in {}. The reason is: {}".format(bot.guild.name, softban[3]))
                     bot.actions.append("sbk:" + str(member.id))
                     try:
@@ -263,9 +212,6 @@ async def on_ready():
                     embed.description = softban[3]
                     await bot.serverlogs_channel.send(msg, embed=embed)
                     return
-
-    rows = bot.c.execute('SELECT user_id FROM watchlist').fetchall()
-    bot.watching = [x[0] for x in rows]  # post user messages to messaage-logs
 
 # loads extensions
 cogs = [

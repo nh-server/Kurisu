@@ -1,17 +1,17 @@
 import discord
 from discord.ext import commands
-from cogs.checks import check_staff
+from cogs.checks import check_staff_id
 from inspect import cleandoc
 
 
 class Assistance(commands.Cog):
     """
-    Commands that will mostly be used in #help-and-questions.
+    Commands that will mostly be used in the help channels.
     """
     def __init__(self, bot):
         self.bot = bot
         self.systems = ("3ds", "wiiu", "switch", "nx", "ns", "wii", "dsi", "legacy")
-        print('Cog "{}" loaded'.format(self.__class__.__name__))
+        print('Cog "{}" loaded'.format(self.qualified_name))
 
     async def simple_embed(self, ctx, text, title="", color=discord.Color.default()):
         embed = discord.Embed(title=title, color=color)
@@ -32,7 +32,7 @@ class Assistance(commands.Cog):
     async def staffreq(self, ctx,*, msg_request : str = ""):
         """Request staff, with optional additional text. Trusted, Helpers, Staff, Retired Staff, Verified only."""
         author = ctx.author
-        if not check_staff(ctx.author.id, 'Helper') and (self.bot.verified_role not in author.roles) and (self.bot.trusted_role not in author.roles) and (self.bot.retired_role not in author.roles):
+        if not check_staff_id(ctx, 'Helper', ctx.author.id) and (self.bot.verified_role not in author.roles) and (self.bot.trusted_role not in author.roles) and (self.bot.retired_role not in author.roles):
             msg = "{0} You cannot used this command at this time. Please ask individual staff members if you need help.".format(author.mention)
             await ctx.send(msg)
             return

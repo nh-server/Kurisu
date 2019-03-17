@@ -5,7 +5,7 @@ import time
 from cogs.database import DatabaseCog
 from discord.ext import commands
 from cogs import converters
-from cogs.checks import is_staff, check_staff
+from cogs.checks import is_staff, check_staff_id
 import sqlite3
 
 
@@ -14,7 +14,6 @@ class KickBan(DatabaseCog):
     """
     Kicking and banning users.
     """
-
     async def meme(self, beaner, beaned, action, channel, reason):
         await channel.send("Seriously? What makes you think it's okay to try and {} another staff or helper like that?".format(action))
         msg = "{} attempted to {} {}|{}#{} in {} ".format(beaner.mention, action, beaned.mention,
@@ -28,7 +27,7 @@ class KickBan(DatabaseCog):
     @commands.command(name="kick")
     async def kick_member(self, ctx, member: converters.SafeMember, *, reason=""):
         """Kicks a user from the server. Staff only."""
-        if check_staff(member.id, 'Helper'):
+        if check_staff_id(ctx, 'Helper', member.id):
             await self.meme(ctx.author, member, "kick", ctx.channel, reason)
             return
         msg = "You were kicked from {}.".format(ctx.guild.name)
@@ -56,7 +55,7 @@ class KickBan(DatabaseCog):
     @commands.command(name="ban")
     async def ban_member(self, ctx, member: converters.SafeMember, *, reason=""):
         """Bans a user from the server. OP+ only."""
-        if check_staff(member.id, 'Helper'):
+        if check_staff_id(ctx, 'Helper', member.id):
             await self.meme(ctx.author, member, "ban", ctx.channel, reason)
             return
         msg = "You were banned from {}.".format(ctx.guild.name)
@@ -87,7 +86,7 @@ class KickBan(DatabaseCog):
             user = await self.bot.get_user_info(userid)
         except discord.errors.NotFound:
             await ctx.send("No user associated with ID {}.".format(user.id))
-        if check_staff(user.id, 'Helper'):
+        if check_staff_id(ctx, 'Helper', user.id):
             await ctx.send("You can't ban another staffer with this command!")
             return
         self.bot.actions.append("ub:" + str(user.id))
@@ -107,7 +106,7 @@ class KickBan(DatabaseCog):
     @commands.command(name="silentban", hidden=True)
     async def silentban_member(self, ctx, member: converters.SafeMember, *, reason=""):
         """Bans a user from the server, without a notification. OP+ only."""
-        if check_staff(member.id, 'Helper'):
+        if check_staff_id(ctx, 'Helper', member.id):
             await self.meme(ctx.author, member, "ban", ctx.channel, reason)
             return
         self.bot.actions.append("ub:"+str(member.id))
@@ -126,7 +125,8 @@ class KickBan(DatabaseCog):
     @commands.command(name="timeban")
     async def timeban_member(self, ctx, member: converters.SafeMember, length, *, reason="no reason"):
         """Bans a user for a limited period of time. OP+ only.\n\nLength format: #d#h#m#s"""
-        if check_staff(member.id, 'Helper'):
+
+        if check_staff_id(ctx, 'Helper', member.id):
             await self.meme(ctx.author, member, "timeban", ctx.channel, reason)
             return
         # thanks Luc#5653
@@ -146,8 +146,7 @@ class KickBan(DatabaseCog):
         delta = datetime.timedelta(seconds=seconds)
         unban_time = timestamp + delta
         unban_time_string = unban_time.strftime("%Y-%m-%d %H:%M:%S")
-        self.add_timed_restriction(self, member.id, unban_time_string, 'timeban')
-        self.bot.timebans[str(member.id)] = [member, unban_time, False]  # last variable is "notified", for <=30 minute notifications
+        self.add_timed_restriction(member.id, unban_time_string, 'timeban')
         msg = "You were banned from {}.".format(ctx.guild.name)
         if reason != "":
             msg += " The given reason is: " + reason
@@ -172,7 +171,7 @@ class KickBan(DatabaseCog):
     @commands.command(name="softban")
     async def softban_member(self, ctx, member: converters.SafeMember, *, reason):
         """Soft-ban a user. OP+ only.\n\nThis "bans" the user without actually doing a ban on Discord. The bot will instead kick the user every time they join. Discord bans are account- and IP-based."""
-        if check_staff(member.id, 'Helper'):
+        if check_staff_id(ctx, 'Helper', member.id):
             await self.meme(ctx.author, member, "softban", ctx.channel, reason)
             return
         self.add_softban(ctx, member, reason)
@@ -191,7 +190,7 @@ class KickBan(DatabaseCog):
     @commands.command(name="softbanid")
     async def softbanid_member(self, ctx, user_id: int, *, reason):
         """Soft-ban a user based on ID. OP+ only.\n\nThis "bans" the user without actually doing a ban on Discord. The bot will instead kick the user every time they join. Discord bans are account- and IP-based."""
-        if check_staff(str(user_id), 'Helper'):
+        if check_staff_id(ctx, 'Helper', user_id):
             await ctx.send("You can't softban another staffer with this command!")
             return
         user = await self.bot.get_user_info(user_id)
@@ -214,6 +213,11 @@ class KickBan(DatabaseCog):
         await ctx.send("{} has been unbanned!".format(self.bot.help_command.remove_mentions(user.name)))
         msg = "⚠️ **Un-soft-ban**: {} un-soft-banned {}".format(ctx.author.mention, self.bot.help_command.remove_mentions(user.name))
         await self.bot.modlogs_channel.send(msg)
+
+    async def cog_command_error(self, ctx, error):
+        if isinstance(error, commands.errors.CheckFailure):
+            await ctx.send("{} You don't have permission to use this command.".format(ctx.author.mention))
+
 
 def setup(bot):
     bot.add_cog(KickBan(bot))

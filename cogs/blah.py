@@ -9,7 +9,7 @@ class Blah(commands.Cog, command_attrs=dict(hidden=True)):
     """
     def __init__(self, bot):
         self.bot = bot
-        print('Cog "{}" loaded'.format(self.__class__.__name__))
+        print('Cog "{}" loaded'.format(self.qualified_name))
 
     @is_staff("OP")
     @commands.command()
@@ -32,6 +32,10 @@ class Blah(commands.Cog, command_attrs=dict(hidden=True)):
     @commands.command()
     async def dm(self, ctx, member: discord.Member, *, inp):
         await member.send(inp)
+
+    async def cog_command_error(self, ctx, error):
+        if isinstance(error, commands.errors.CheckFailure):
+            await ctx.send("{} You don't have permission to use this command.".format(ctx.author.mention))
 
 def setup(bot):
     bot.add_cog(Blah(bot))

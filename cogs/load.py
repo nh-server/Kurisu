@@ -8,7 +8,7 @@ class Load(commands.Cog, command_attrs=dict(hidden=True)):
     """
     def __init__(self, bot):
         self.bot = bot
-        print('Cog "{}" loaded'.format(self.__class__.__name__))
+        print('Cog "{}" loaded'.format(self.qualified_name))
 
     # Load test
     @is_staff("OP")
@@ -50,6 +50,11 @@ class Load(commands.Cog, command_attrs=dict(hidden=True)):
             await ctx.send('✅ Extension reloaded.')
         except Exception as e:
             await ctx.send('💢 Failed!\n```\n{}: {}\n```'.format(type(e).__name__, e))
+
+    async def cog_command_error(self, ctx, error):
+        if isinstance(error, commands.errors.CheckFailure):
+            await ctx.send("{} You don't have permission to use this command.".format(ctx.author.mention))
+
 
 def setup(bot):
     bot.add_cog(Load(bot))

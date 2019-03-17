@@ -5,13 +5,14 @@ from discord.ext import commands
 from discord import Color
 import string
 
+
 class Err(commands.Cog):
     """
     Parses CTR error codes.
     """
     def __init__(self, bot):
         self.bot = bot
-        print('Cog "{}" loaded'.format(self.__class__.__name__))
+        print('Cog "{}" loaded'.format(self.qualified_name))
 
     # CTR Error Codes
     summaries = {
@@ -403,6 +404,7 @@ class Err(commands.Cog):
         value += self.get_name(self.levels, level, 'level')
         embed.description = value
         await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Err(bot))

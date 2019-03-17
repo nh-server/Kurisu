@@ -1,4 +1,3 @@
-import json
 from discord.ext import commands
 from cogs.checks import is_staff
 from cogs.database import DatabaseCog
@@ -10,7 +9,6 @@ class ModStaff(DatabaseCog):
     """
     Staff management commands.
     """
-    
     @is_staff("Owner")
     @commands.command()
     async def addstaff(self, ctx, member: converters.SafeMember, position):
@@ -69,6 +67,11 @@ class ModStaff(DatabaseCog):
         await ctx.send("{} is no longer using sudo!".format(author.mention))
         msg = "🕵 **Unsudo**: {} | {}#{}".format(author.mention, author.name, author.discriminator)
         await self.bot.modlogs_channel.send(msg)
+
+    async def cog_command_error(self, ctx, error):
+        if isinstance(error, commands.errors.CheckFailure):
+            await ctx.send("{} You don't have permission to use this command.".format(ctx.author.mention))
+
 
 def setup(bot):
     bot.add_cog(ModStaff(bot))

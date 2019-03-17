@@ -1,15 +1,12 @@
 import discord
 from discord.ext import commands
-import json
+from cogs.database import DatabaseCog
 
 
-class Logs(commands.Cog):
+class Logs(DatabaseCog):
     """
     Logs join and leave messages, bans and unbans, and member changes.
     """
-    def __init__(self, bot):
-        self.bot = bot
-        print('Cog "{}" loaded'.format(self.__class__.__name__))
 
     welcome_msg = """
 Hello {0}, welcome to the {1} server on Discord!
@@ -32,45 +29,40 @@ Thanks for stopping by and have a good time!
         msg = "✅ **Join**: {} | {}#{}\n🗓 __Creation__: {}\n🏷 __User ID__: {}".format(
             member.mention, self.bot.escape_name(member.name), member.discriminator, member.created_at, member.id
         )
-        softbans = [x[0] for x in self.bot.c.execute('SELECT user_id from softbans').fetchall()]
-        if member.id in softbans:
+        softban = self.get_softbans(member.id)
+        if softban:
             message_sent = False
             try:
-                await member.send("This account has not been permitted to participate in {}. The reason is: {}".format(self.bot.server.name, softbans[member.id]["reason"]))
+                await member.send("This account has not been permitted to participate in {}. The reason is: {}".format(self.bot.server.name, softban[3]))
                 message_sent = True
             except discord.errors.Forbidden:
                 pass
             self.bot.actions.append("sbk:"+str(member.id))
             await member.kick()
-            msg = "🚨 **Attempted join**: {} is soft-banned by <@{}> | {}#{}".format(member.mention, softbans[member.id]["issuer_id"], self.bot.escape_name(member.name), member.discriminator)
+            msg = "🚨 **Attempted join**: {} is soft-banned by <@{}> | {}#{}".format(member.mention, softban[2], self.bot.escape_name(member.name), member.discriminator)
             if not message_sent:
                 msg += "\nThis message did not send to the user."
             embed = discord.Embed(color=discord.Color.red())
-            embed.description = softbans[member.id]["reason"]
+            embed.description = softban[3]
             await self.bot.serverlogs_channel.send(msg, embed=embed)
             return
-        with open("data/restrictions.json", "r") as f:
-            rsts = json.load(f)
-        if member.id in self.bot.timemutes:
-            self.bot.add_roles(member, self.bot.muted_role)
-        if member.id in rsts:
+        rst = self.get_restrictions_roles(member.id)
+        if rst:
             roles = []
-            for rst in rsts[member.id]:
-                roles.append(await member.guild.roles.get(name=rst))
+            for role in rst:
+                roles.append(discord.utils.get(member.guild.roles, name=role))
             await member.add_roles(*roles)
-        with open("data/warnsv2.json", "r") as f:
-            warns = json.load(f)
-        try:
-            if len(warns[member.id]["warns"]) == 0:
-                await self.bot.serverlogs_channel.send(msg)
-            else:
-                embed = discord.Embed(color=discord.Color.dark_red())
-                embed.set_author(name="Warns for {}#{}".format(self.bot.escape_name(member.name), member.discriminator), icon_url=member.avatar_url)
-                for idx, warn in enumerate(warns[member.id]["warns"]):
-                    embed.add_field(name="{}: {}".format(idx + 1, warn["timestamp"]), value="Issuer: {}\nReason: {}".format(warn["issuer_name"], warn["reason"]))
-                await self.bot.serverlogs_channel.send(msg, embed=embed)
-        except KeyError:  # if the user is not in the file
+
+        warns = self.get_warns(member.id)
+
+        if len(warns) == 0:
             await self.bot.serverlogs_channel.send(msg)
+        else:
+            embed = discord.Embed(color=discord.Color.dark_red())
+            embed.set_author(name="Warns for {}#{}".format(self.bot.escape_name(member.name), member.discriminator), icon_url=member.avatar_url)
+            for idx, warn in enumerate(warns):
+                embed.add_field(name="{}: {}".format(idx + 1, warn[3]), value="Issuer: {}\nReason: {}".format(warn[1], warn[2]))
+            await self.bot.serverlogs_channel.send(msg, embed=embed)
         try:
             await member.send(self.welcome_msg.format(self.bot.escape_name(member.name), member.guild.name, self.bot.welcome_channel.mention))
         except discord.errors.Forbidden:
@@ -117,10 +109,9 @@ Thanks for stopping by and have a good time!
             self.bot.actions.remove("tbr:"+str(user.id))
             return
         msg = "⚠️ **Unban**: {} | {}#{}".format(user.mention, self.bot.escape_name(user.name), user.discriminator)
-        if user.id in self.bot.timebans:
+        if self.get_softbans(user.id):
             msg += "\nTimeban removed."
-            self.bot.timebans.popstr(user.id)
-            self.bot.execute('DELETE FROM timed_restriction WHERE user_id=? and type="timeban"',user.id)
+            self.remove_timed_restriction(user.id,'timeban')
         await self.bot.modlogs_channel.send(msg)
 
     @commands.Cog.listener()
@@ -173,6 +164,7 @@ Thanks for stopping by and have a good time!
         if do_log:
             msg = "ℹ️ **Member update**: {} | {}#{}".format(member_after.mention, self.bot.escape_name(member_after.name), member_after.discriminator) + msg
             await dest.send(msg)
+
 
 def setup(bot):
     bot.add_cog(Logs(bot))

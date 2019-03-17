@@ -1,5 +1,4 @@
 import asyncio
-import copy
 import discord
 import sys
 import traceback
@@ -8,29 +7,20 @@ import requests
 import pytz
 from datetime import datetime, timedelta
 from discord.ext import commands
+from cogs.database import DatabaseCog
 
 
-class Loop(commands.Cog):
+class Loop(DatabaseCog):
     """
     Loop events.
     """
     def __init__(self, bot):
-        self.bot = bot
+        DatabaseCog.__init__(self, bot)
         bot.loop.create_task(self.start_update_loop())
-        print('Cog "{}" loaded'.format(self.__class__.__name__))
+
 
     def __unload(self):
         self.is_active = False
-
-    async def remove_restriction_id(self, member_id, rst):
-        with open("data/restrictions.json", "r") as f:
-            rsts = json.load(f)
-        if member_id not in rsts:
-            rsts[member_id] = []
-        if rst in rsts[member_id]:
-            rsts[member_id].remove(rst)
-        with open("data/restrictions.json", "w") as f:
-            json.dump(rsts, f)
 
     is_active = True
 
@@ -95,68 +85,55 @@ class Loop(commands.Cog):
         while self.is_active:
             try:
                 timestamp = datetime.now()
-                timebans = copy.copy(self.bot.timebans)
-                timemutes = copy.copy(self.bot.timemutes)
-                timenohelp = copy.copy(self.bot.timenohelp)
-                for ban in timebans.items():
-                    if timestamp > ban[1][1]:
+                for ban in self.get_time_restrictions('timeban'):
+                    unban_time = datetime.strptime(ban[1], "%Y-%m-%d %H:%M:%S")
+                    if timestamp > unban_time:
+                        user = await self.bot.get_user_info(ban[0])
                         self.bot.actions.append("tbr:" + str(ban[0]))
-                        await self.bot.guilds[0].unban(ban[1][0])
-                        msg = "⚠️ **Ban expired**: {} | {}#{}".format(ban[1][0].mention, self.bot.escape_name(ban[1][0].name), ban[1][0].discriminator)
-                        await self.bot.modlogs_channel.send( msg)
-                        self.bot.timebans.pop(ban[0])
-                    elif not ban[1][2]:
-                        warning_time = ban[1][1] - self.warning_time_period_ban
+                        await self.bot.guilds[0].unban(user)
+                        msg = "⚠️ **Ban expired**: {} | {}#{}".format(user.mention, self.bot.escape_name(user.name), user.discriminator)
+                        await self.bot.modlogs_channel.send(msg)
+                        self.remove_timed_restriction(user.id, 'timeban')
+                    elif not ban[3]:
+                        warning_time = unban_time - self.warning_time_period_ban
                         if timestamp > warning_time:
-                            ban[1][2] = True
-                            await self.bot.mods_channel.send("**Note**: {} will be unbanned in {} minutes.".format(self.bot.escape_name(ban[1][0]), ((ban[1][1] - timestamp).seconds // 60) + 1))
+                            self.set_time_restriction_alert(ban[0], 'timeban')
+                            user = await self.bot.get_user_info(ban[0])
+                            await self.bot.mods_channel.send("**Note**: {} will be unbanned in {} minutes.".format(user.name, ((unban_time - timestamp).seconds // 60) + 1))
 
-                for mute in timemutes.items():
-                    if timestamp > mute[1][0]:
-                        await self.remove_restriction_id(mute[0], "Muted")
+                for mute in self.get_time_restrictions('timemute'):
+                    unmute_time = datetime.strptime(mute[1], "%Y-%m-%d %H:%M:%S")
+                    if timestamp > unmute_time:
+                        self.remove_timed_restriction(mute[0], "timemute")
+                        self.remove_restriction(mute[0], 'Muted')
                         msg = "🔈 **Mute expired**: <@{}>".format(mute[0])
-                        await self.bot.modlogs_channel.send( msg)
-                        self.bot.timemutes.pop(mute[0])
-                        member = discord.utils.get(self.bot.guild.members, id=mute[0])
+                        await self.bot.modlogs_channel.send(msg)
+                        member = self.bot.guilds[0].get_member(mute[0])
                         if member:
-                            await self.bot.remove_roles(member, self.bot.muted_role)
-                        with open("data/timemutes.json", "r") as f:
-                            timemutes_j = json.load(f)
-                        try:
-                            timemutes_j.pop(mute[0])
-                            with open("data/timemutes.json", "w") as f:
-                                json.dump(timemutes_j, f)
-                        except KeyError:
-                            pass
-                    elif not mute[1][1]:
-                        warning_time = mute[1][0] - self.warning_time_period_mute
+                            await member.remove_roles(self.bot.muted_role)
+                    elif not mute[3]:
+                        warning_time = unmute_time - self.warning_time_period_mute
                         if timestamp > warning_time:
-                            mute[1][1] = True
-                            await self.bot.mods_channel.send("**Note**: <@{}> will be unmuted in {} minutes.".format(mute[0], ((mute[1][0] - timestamp).seconds // 60) + 1))
+                            self.set_time_restriction_alert(mute[0], 'timemute')
+                            user = await self.bot.get_user_info(mute[0])
+                            await self.bot.mods_channel.send("**Note**: <@{}> will be unmuted in {} minutes.".format(user.name, ((unmute_time - timestamp).seconds // 60) + 1))
 
-                for nohelp in timenohelp.items():
-                    if timestamp > nohelp[1][0]:
-                        await self.remove_restriction_id(nohelp[0], "No-Help")
+                for nohelp in self.get_time_restrictions('timenohelp'):
+                    help_time = datetime.strptime(nohelp[1], "%Y-%m-%d %H:%M:%S")
+                    if timestamp > help_time:
+                        self.remove_timed_restriction(nohelp[0], "timetakehelp")
+                        self.remove_restriction(nohelp[0],'No-Help')
                         msg = "⭕️ **No-Help Restriction expired**: <@{}>".format(nohelp[0])
-                        await self.bot.modlogs_channel.send( msg)
+                        await self.bot.modlogs_channel.send(msg)
                         await self.bot.helpers_channel.send(msg)
-                        self.bot.timenohelp.pop(nohelp[0])
-                        member = discord.utils.get(self.bot.server.members, id=nohelp[0])
+                        member = self.bot.guilds[0].get_member(nohelp[0])
                         if member:
                             await member.remove_roles(self.bot.nohelp_role)
-                        with open("data/timenohelp.json", "r") as f:
-                            timenohelp_j = json.load(f)
-                        try:
-                            timenohelp_j.pop(nohelp[0])
-                            with open("data/timenohelp.json", "w") as f:
-                                json.dump(timenohelp_j, f)
-                        except KeyError:
-                            pass
                     elif not nohelp[1][1]:
-                        warning_time = nohelp[1][0] - self.warning_time_period_nohelp
+                        warning_time = help_time - self.warning_time_period_nohelp
                         if timestamp > warning_time:
-                            nohelp[1][1] = True
-                            await self.bot.helpers_channel.send("**Note**: <@{}> no-help restriction will expire in {} minutes.".format(nohelp[0], ((nohelp[1][0] - timestamp).seconds // 60) + 1))
+                            self.set_time_restriction_alert(nohelp[0], 'timetakehelp')
+                            await self.bot.helpers_channel.send("**Note**: <@{}> no-help restriction will expire in {} minutes.".format(nohelp[0], ((help_time - timestamp).seconds // 60) + 1))
 
                 if timestamp.minute == 0 and timestamp.hour != self.last_hour:
                     await self.bot.helpers_channel.send("{} has {:,} members at this hour!".format(self.bot.guilds[0].name, self.bot.guilds[0].member_count))
@@ -171,6 +148,7 @@ class Loop(commands.Cog):
                 print('{0.__class__.__name__}: {0}'.format(e), file=sys.stderr)
             finally:
                 await asyncio.sleep(1)
+
 
 def setup(bot):
     bot.add_cog(Loop(bot))

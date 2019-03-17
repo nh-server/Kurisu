@@ -7,7 +7,7 @@ class AutoNoEmbed(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        print('Cog "{}" loaded'.format(self.__class__.__name__))
+        print('Cog "{}" loaded'.format(self.qualified_name))
 
     @commands.Cog.listener()
     async def on_member_join(self, member):

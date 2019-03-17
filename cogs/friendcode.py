@@ -74,5 +74,6 @@ class FriendCode(DatabaseCog):
         else:
             await ctx.send("Invalid.")
 
+
 def setup(bot):
     bot.add_cog(FriendCode(bot))

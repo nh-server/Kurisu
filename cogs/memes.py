@@ -8,7 +8,7 @@ class Memes(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        print('Cog "{}" loaded'.format(self.__class__.__name__))
+        print('Cog "{}" loaded'.format(self.qualified_name))
 
     async def _meme(self, ctx, msg):
             await ctx.send(self.bot.escape_name(ctx.author.display_name) + ": " + msg)
@@ -17,10 +17,6 @@ class Memes(commands.Cog):
         author = ctx.author
         if isinstance(ctx.channel, discord.abc.GuildChannel) and (ctx.channel.name[0:5] == "help-" or "assistance" in ctx.channel.name or (self.bot.nomemes_role in author.roles)):
             await ctx.message.delete()
-            try:
-                await author.send("Meme commands are disabled in this channel, or your privileges have been revoked.")
-            except discord.errors.Forbidden:
-                await ctx.send(author.mention + " Meme commands are disabled in this channel, or your privileges have been revoked.")
             return False
         return True
 
@@ -301,8 +297,12 @@ class Memes(commands.Cog):
         await self._meme(ctx, "https://imgur.com/a/5IcfK6N")
 
     async def cog_command_error(self, ctx, error):
-        print('Error in {0.command.qualified_name}: {1}'.format(ctx, error))
-        return
+        if isinstance(error, commands.CheckFailure):
+            try:
+                await ctx.author.send("Meme commands are disabled in this channel, or your privileges have been revoked.")
+            except discord.errors.Forbidden:
+                await ctx.send(
+                    ctx.author.mention + " Meme commands are disabled in this channel, or your privileges have been revoked.")
 
 # Load the extension
 def setup(bot):

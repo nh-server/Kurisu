@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
-from cogs.checks import is_staff, check_staff
+from cogs.checks import is_staff, check_staff_id
+
 
 @commands.guild_only()
 class Lockdown(commands.Cog):
@@ -9,7 +10,7 @@ class Lockdown(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        print('Cog "{}" loaded'.format(self.__class__.__name__))
+        print('Cog "{}" loaded'.format(self.qualified_name))
 
     @is_staff("HalfOP")
     @commands.command()
@@ -61,7 +62,7 @@ class Lockdown(commands.Cog):
         if not channels:
             channels.append(ctx.channel)
         locked_down = []
-        ishelper= not check_staff(ctx.author.id, "HalfOP")
+        ishelper= not check_staff_id(ctx, "HalfOP", id)
         for c in channels:
             if (ishelper) and (c not in self.bot.assistance_channels):
                 await ctx.send("{0} {1} can't be locked by a helper.".format(ctx.author.mention, c.mention))
@@ -87,7 +88,7 @@ class Lockdown(commands.Cog):
         """Unlock message sending in the channel. Staff only and Helpers only."""
         if not channels:
             channels.append(ctx.channel)
-        ishelper= not check_staff(ctx.author.id, "HalfOP")
+        ishelper= not check_staff_id(ctx, "HalfOP", ctx.author.id)
         try:
             if len(ctx.channel_mentions) == 0:
                 channels = [ctx.channel]
@@ -121,6 +122,11 @@ class Lockdown(commands.Cog):
                 await self.bot.modlogs_channel.send(msg)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
+
+    async def cog_command_error(self, ctx, error):
+        if isinstance(error, commands.errors.CheckFailure):
+            await ctx.send("{} You don't have permission to use this command.".format(ctx.author.mention))
+
 
 def setup(bot):
     bot.add_cog(Lockdown(bot))

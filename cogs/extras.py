@@ -15,7 +15,7 @@ class Extras(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        print('Cog "{}" loaded'.format(self.__class__.__name__))
+        print('Cog "{}" loaded'.format(self.qualified_name))
 
     prune_key = "nokey"
 
@@ -389,6 +389,11 @@ class Extras(commands.Cog):
             await ctx.send("Your username is the one with the fireworks!")
         else:
             await ctx.send("You don't have fireworks!")
+
+    async def cog_command_error(self, ctx, error):
+        if isinstance(error, commands.errors.CheckFailure):
+            await ctx.send("{} You don't have permission to use this command.".format(ctx.author.mention))
+
 
 def setup(bot):
     bot.add_cog(Extras(bot))
