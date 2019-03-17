@@ -400,7 +400,7 @@ class Extras:
                 await self.bot.change_nickname(member, member.display_name + " 🍀")
                 await self.bot.say("Your nickname is now \"{} \"!".format(member.display_name))
         else:
-            await self.bot.say("This day is not old/new enough!")
+            await self.bot.say("This day is not filled with enough Jameson Irish Whiskey [PAID PROMOTION]!")
 
     @commands.command(pass_context=True)
     async def noshamrock(self, ctx):
