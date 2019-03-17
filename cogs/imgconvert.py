@@ -13,7 +13,7 @@ class ImageConvert(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        print('Addon "{}" loaded'.format(self.__class__.__name__))
+        print('Cog "{}" loaded'.format(self.__class__.__name__))
 
     @staticmethod
     def img_convert(in_img):

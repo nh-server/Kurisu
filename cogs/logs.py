@@ -9,7 +9,7 @@ class Logs(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        print('Addon "{}" loaded'.format(self.__class__.__name__))
+        print('Cog "{}" loaded'.format(self.__class__.__name__))
 
     welcome_msg = """
 Hello {0}, welcome to the {1} server on Discord!
@@ -32,8 +32,7 @@ Thanks for stopping by and have a good time!
         msg = "✅ **Join**: {} | {}#{}\n🗓 __Creation__: {}\n🏷 __User ID__: {}".format(
             member.mention, self.bot.escape_name(member.name), member.discriminator, member.created_at, member.id
         )
-        with open("data/softbans.json", "r") as f:
-            softbans = json.load(f)
+        softbans = [x[0] for x in self.bot.c.execute('SELECT user_id from softbans').fetchall()]
         if member.id in softbans:
             message_sent = False
             try:
@@ -73,29 +72,29 @@ Thanks for stopping by and have a good time!
         except KeyError:  # if the user is not in the file
             await self.bot.serverlogs_channel.send(msg)
         try:
-            await member.send(self.welcome_msg.format(self.bot.escape_name(member.name), self.bot.server.name, self.bot.welcome_channel.mention))
+            await member.send(self.welcome_msg.format(self.bot.escape_name(member.name), member.guild.name, self.bot.welcome_channel.mention))
         except discord.errors.Forbidden:
             pass
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
         await self.bot.wait_until_all_ready()
-        if "uk:"+member.id in self.bot.actions:
+        if "uk:"+str(member.id) in self.bot.actions:
             self.bot.actions.remove("uk:"+str(member.id))
             return
-        if "sbk:"+member.id in self.bot.actions:
+        if "sbk:"+str(member.id) in self.bot.actions:
             self.bot.actions.remove("sbk:"+str(member.id))
             return
-        if self.bot.pruning != 0 and "wk:"+member.id not in self.bot.actions:
+        if self.bot.pruning != 0 and "wk:"+str(member.id) not in self.bot.actions:
             self.bot.pruning -= 1
             if self.bot.pruning == 0:
                 await self.bot.mods_channel.send("Pruning finished!")
             return
-        msg = "{}: {} | {}#{}\n🏷 __User ID__: {}".format("👢 **Auto-kick**" if "wk:"+member.id in self.bot.actions else "⬅️ **Leave**", member.mention, self.bot.escape_name(member.name), member.discriminator, member.id)
+        msg = "{}: {} | {}#{}\n🏷 __User ID__: {}".format("👢 **Auto-kick**" if "wk:"+str(member.id) in self.bot.actions else "⬅️ **Leave**", member.mention, self.bot.escape_name(member.name), member.discriminator, member.id)
         await self.bot.serverlogs_channel.send(msg)
-        if "wk:"+member.id in self.bot.actions:
+        if "wk:"+str(member.id) in self.bot.actions:
             self.bot.actions.remove("wk:"+str(member.id))
-            await self.bot.modlogs_channel(msg)
+            await self.bot.modlogs_channel.send(msg)
 
     @commands.Cog.listener()
     async def on_member_ban(self, member):
@@ -109,25 +108,20 @@ Thanks for stopping by and have a good time!
             self.bot.actions.remove("wb:"+str(member.id))
         else:
             msg += "\nThe responsible staff member should add an explanation below."
-        await self.bot.modlogs_channel(msg)
+        await self.bot.modlogs_channel.send(msg)
 
     @commands.Cog.listener()
     async def on_member_unban(self, server, user):
         await self.bot.wait_until_all_ready()
-        if "tbr:"+user.id in self.bot.actions:
-            self.bot.actions.remove("tbr:"+user.id)
+        if "tbr:"+str(user.id) in self.bot.actions:
+            self.bot.actions.remove("tbr:"+str(user.id))
             return
         msg = "⚠️ **Unban**: {} | {}#{}".format(user.mention, self.bot.escape_name(user.name), user.discriminator)
         if user.id in self.bot.timebans:
             msg += "\nTimeban removed."
-            self.bot.timebans.pop(user.id)
-            with open("data/timebans.json", "r") as f:
-                timebans = json.load(f)
-            if user.id in timebans:
-                timebans.pop(user.id)
-                with open("data/timebans.json", "w") as f:
-                    json.dump(timebans, f)
-        await self.bot.modlogs_channel(msg)
+            self.bot.timebans.popstr(user.id)
+            self.bot.execute('DELETE FROM timed_restriction WHERE user_id=? and type="timeban"',user.id)
+        await self.bot.modlogs_channel.send(msg)
 
     @commands.Cog.listener()
     async def on_member_update(self, member_before, member_after):

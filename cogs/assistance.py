@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from addons.checks import check_staff
+from cogs.checks import check_staff
 from inspect import cleandoc
 
 
@@ -11,7 +11,7 @@ class Assistance(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.systems = ("3ds", "wiiu", "switch", "nx", "ns", "wii", "dsi", "legacy")
-        print('Addon "{}" loaded'.format(self.__class__.__name__))
+        print('Cog "{}" loaded'.format(self.__class__.__name__))
 
     async def simple_embed(self, ctx, text, title="", color=discord.Color.default()):
         embed = discord.Embed(title=title, color=color)

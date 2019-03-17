@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from addons.checks import is_staff, check_staff
+from cogs.checks import is_staff, check_staff
 
 @commands.guild_only()
 class Lockdown(commands.Cog):
@@ -9,7 +9,7 @@ class Lockdown(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        print('Addon "{}" loaded'.format(self.__class__.__name__))
+        print('Cog "{}" loaded'.format(self.__class__.__name__))
 
     @is_staff("HalfOP")
     @commands.command()

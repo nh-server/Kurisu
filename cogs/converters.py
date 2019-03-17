@@ -22,3 +22,4 @@ class SafeMember(commands.Converter):
             if result is None:
                 raise commands.errors.BadArgument('Member "{}" not found.'.format(user_id))
         return result
+

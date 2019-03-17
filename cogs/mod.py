@@ -1,23 +1,22 @@
 import datetime
-import discord
 import json
 import re
 import time
 import discord
 from discord.ext import commands
 from subprocess import call
-from addons.checks import is_staff
-import addons.checks
-from addons import converters
+from cogs.checks import is_staff
+from cogs.database import DatabaseCog
+from cogs.converters import SafeMember
 
 
-class Mod(commands.Cog):
+class Mod(DatabaseCog):
     """
     Staff commands.
     """
     def __init__(self, bot):
         self.bot = bot
-        print('Addon "{}" loaded'.format(self.__class__.__name__))
+        print('Cog "{}" loaded'.format(self.qualified_name))
 
     async def add_restriction(self, member, rst):
         with open("data/restrictions.json", "r") as f:
@@ -44,6 +43,7 @@ class Mod(commands.Cog):
     async def quit(self, ctx):
         """Stops the bot."""
         await ctx.send("👋 Bye bye!")
+        self.bot.conn.close()
         await self.bot.close()
 
     @is_staff("SuperOP")
@@ -53,16 +53,18 @@ class Mod(commands.Cog):
         await ctx.send("Pulling changes...")
         call(['git', 'pull'])
         await ctx.send("👋 Restarting bot!")
-        await self.bot.close()
+        await self.quit(ctx)
 
     @is_staff("Helper")
     @commands.command(hidden=True, )
     async def userinfo(self, ctx, u: discord.Member = None):
         """Gets user info. Staff and Helpers only."""
         role = u.top_role.name
-        if role == "@everyone":
-            role = "@ everyone"
-        await ctx.send("name = {}\nid = {}\ndiscriminator = {}\navatar = {}\nbot = {}\navatar_url = {}\ndefault_avatar = {}\ndefault_avatar_url = <{}>\ncreated_at = {}\ndisplay_name = {}\njoined_at = {}\nstatus = {}\ngame = {}\ncolour = {}\ntop_role = {}\n".format(u.name, u.id, u.discriminator, u.avatar, u.bot, u.avatar_url, u.default_avatar, u.default_avatar_url, u.created_at, u.display_name, u.joined_at, u.status, u.game, u.colour, role))
+        await ctx.send(
+            "name = {}\nid = {}\ndiscriminator = {}\navatar = {}\nbot = {}\navatar_url = {}\ndefault_avatar = {}\ndefault_avatar_url = <{}>\ncreated_at = {}\ndisplay_name = {}\njoined_at = {}\nstatus = {}\ngame = {}\ncolour = {}\ntop_role = {}\n".format(
+                u.name, u.id, u.discriminator, u.avatar, u.bot, u.avatar_url, u.default_avatar, u.default_avatar_url,
+                u.created_at, u.display_name, u.joined_at, u.status, u.game, u.colour,
+                self.bot.help_command.remove_mentions(role)))
 
     @is_staff("HalfOP")
     @commands.command(hidden=True)
@@ -78,15 +80,15 @@ class Mod(commands.Cog):
 
     @is_staff("Owner")
     @commands.command(hidden=True)
-    async def multiban(self, ctx, *, members: str):
+    async def multiban(self, ctx, users : commands.Greedy[SafeMember]):
         """Multi-ban users."""
         author = ctx.author
         msg = "```\nbanned:\n"
-        for m in ctx.message.mentions:
+        for m in users:
             msg += "{} - {}#{}\n".format(m.id, m.name, m.discriminator)
             try:
                 await m.ban()
-            except discord.error.NotFound:
+            except discord.errors.NotFound:
                 pass
         msg += "```"
         await author.send(msg)
@@ -98,14 +100,14 @@ class Mod(commands.Cog):
         author = ctx.author
         msg = "```\nbanned:\n"
         toban = []  # because "dictionary changed size during iteration"
-        for m in self.bot.server.members:
+        for m in self.bot.guild.members:
             if bool(re.search(rgx, m.name, re.IGNORECASE)):
                 msg += "{} - {}#{}\n".format(m.id, m.name, m.discriminator)
                 toban.append(m)
         for m in toban:
             try:
                 await m.ban()
-            except discord.error.NotFound:
+            except discord.errors.NotFound:
                 pass
         msg += "```"
         await author.send(msg)
@@ -115,7 +117,7 @@ class Mod(commands.Cog):
     async def purge(self, ctx, limit: int):
         """Clears a given number of messages. Staff only."""
         try:
-            ctx.channel.purge(limit=limit)
+            await ctx.channel.purge(limit=limit)
             msg = "🗑 **Cleared**: {} cleared {} messages in {}".format(ctx.author.mention, limit, ctx.channel.mention)
             await self.bot.modlogs_channel.send(msg)
         except discord.errors.Forbidden:
@@ -123,7 +125,7 @@ class Mod(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.command()
-    async def mute(self, ctx, member: converters.SafeMember, *, reason=""):
+    async def mute(self, ctx, member: SafeMember, *, reason=""):
         """Mutes a user so they can't speak. Staff only."""
         try:
             await self.add_restriction(member, "Muted")
@@ -143,19 +145,13 @@ class Mod(commands.Cog):
                 msg += "\nPlease add an explanation below. In the future, it is recommended to use `.mute <user> [reason]` as the reason is automatically sent to the user."
             await self.bot.modlogs_channel.send(msg)
             # change to permanent mute
-            if member.id in self.bot.timemutes:
-                self.bot.timemutes.pop(member.id)
-                with open("data/timemutes.json", "r") as f:
-                    timemutes = json.load(f)
-                timemutes.pop(member.id)
-                with open("data/timemutes.json", "w") as f:
-                    json.dump(timemutes, f)
+            self.remove_timed_restriction(member.id, 'timemute')
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
 
     @is_staff("HalfOP")
     @commands.command()
-    async def timemute(self, ctx, member: converters.SafeMember, length, *, reason=""):
+    async def timemute(self, ctx, member: SafeMember, length, *, reason=""):
         """Mutes a user for a limited period of time so they can't speak. Staff only.\n\nLength format: #d#h#m#s"""
         try:
             await self.add_restriction(member, "Muted")
@@ -178,12 +174,8 @@ class Mod(commands.Cog):
             delta = datetime.timedelta(seconds=seconds)
             unmute_time = timestamp + delta
             unmute_time_string = unmute_time.strftime("%Y-%m-%d %H:%M:%S")
-            with open("data/timemutes.json", "r") as f:
-                timemutes = json.load(f)
-            timemutes[member.id] = unmute_time_string
+            self.add_timed_restriction(member.id, unmute_time_string, 'timemute')
             self.bot.timemutes[member.id] = [unmute_time, False]  # last variable is "notified", for <=10 minute notifications
-            with open("data/timemutes.json", "w") as f:
-                json.dump(timemutes, f)
             msg_user = "You were muted!"
             if reason != "":
                 msg_user += " The given reason is: " + reason
@@ -204,7 +196,7 @@ class Mod(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.command()
-    async def unmute(self, ctx, member: converters.SafeMember):
+    async def unmute(self, ctx, member: SafeMember):
         """Unmutes a user so they can speak. Staff only."""
         try:
             await self.remove_restriction(member, "Muted")
@@ -212,19 +204,14 @@ class Mod(commands.Cog):
             await ctx.send("{} can now speak again.".format(member.mention))
             msg = "🔈 **Unmuted**: {} unmuted {} | {}#{}".format(ctx.author.mention, member.mention, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
             await self.bot.modlogs_channel.send(msg)
-            if member.id in self.bot.timemutes:
-                self.bot.timemutes.pop(member.id)
-                with open("data/timemutes.json", "r") as f:
-                    timemutes = json.load(f)
-                timemutes.pop(member.id)
-                with open("data/timemutes.json", "w") as f:
-                    json.dump(timemutes, f)
+            self.remove_timed_restriction(member.id, 'timemute')
+            self.bot.timemutes.pop(member.id)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
 
     @is_staff("HalfOP")
     @commands.command()
-    async def elsewhere(self, ctx, member: converters.SafeMember):
+    async def elsewhere(self, ctx, member: SafeMember):
         """Restore elsewhere access for a user. Staff only."""
         try:
             await self.remove_restriction(member, "no-elsewhere")
@@ -237,7 +224,7 @@ class Mod(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.command()
-    async def noelsewhere(self, ctx, member: converters.SafeMember, *, reason=""):
+    async def noelsewhere(self, ctx, member: SafeMember, *, reason=""):
         """Removes elsewhere access from a user. Staff only."""
         try:
             await self.add_restriction(member, "no-elsewhere")
@@ -255,7 +242,7 @@ class Mod(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.command()
-    async def noembed(self, ctx, member: converters.SafeMember, *, reason=""):
+    async def noembed(self, ctx, member: SafeMember, *, reason=""):
         """Removes embed permissions from a user. Staff only."""
         try:
             await self.add_restriction(member, "No-Embed")
@@ -280,7 +267,7 @@ class Mod(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.command()
-    async def embed(self, ctx, member: converters.SafeMember):
+    async def embed(self, ctx, member: SafeMember):
         """Restore embed permissios for a user. Staff only."""
         try:
             await self.remove_restriction(member, "No-Embed")
@@ -293,7 +280,7 @@ class Mod(commands.Cog):
 
     @is_staff("Helper")
     @commands.command()
-    async def takehelp(self, ctx, member: converters.SafeMember, *, reason=""):
+    async def takehelp(self, ctx, member: SafeMember, *, reason=""):
         """Remove access to help-and-questions. Staff and Helpers only."""
         try:
             await self.add_restriction(member, "No-Help")
@@ -315,19 +302,14 @@ class Mod(commands.Cog):
             await self.bot.modlogs_channel.send(msg)
             await self.bot.helpers_channel.send(msg)
             #add to .takehelp
-            if member.id in self.bot.timenohelp:
-                self.bot.timenohelp.pop(member.id)
-                with open("data/timenohelp.json", "r") as f:
-                    timenohelp = json.load(f)
-                timenohelp.pop(member.id)
-                with open("data/timenohelp.json", "w") as f:
-                    json.dump(timenohelp, f)
+            self.remove_timed_restriction(member.id, 'timetakehelp')
+            self.bot.timenohelp.pop(member.id)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
 
     @is_staff("Helper")
     @commands.command()
-    async def givehelp(self, ctx, member: converters.SafeMember):
+    async def givehelp(self, ctx, member: SafeMember):
         """Restore access to help-and-questions. Staff and Helpers only."""
         try:
             await self.remove_restriction(member, "No-Help")
@@ -337,19 +319,14 @@ class Mod(commands.Cog):
             await self.bot.modlogs_channel.send(msg)
             await self.bot.helpers_channel.send(msg)
             #add to .givehelp
-            if member.id in self.bot.timenohelp:
-                self.bot.timenohelp.pop(member.id)
-                with open("data/timenohelp.json", "r") as f:
-                    timenohelp = json.load(f)
-                timenohelp.pop(member.id)
-                with open("data/timenohelp.json", "w") as f:
-                    json.dump(timenohelp, f)
+            self.remove_timed_restriction(member.id, 'timetakehelp')
+            self.bot.timenohelp.pop(member.id)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
 
     @is_staff("Helper")
     @commands.command()
-    async def timetakehelp(self, ctx, member: converters.SafeMember, length, *, reason=""):
+    async def timetakehelp(self, ctx, member: SafeMember, length, *, reason=""):
         """Restricts a user from Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         try:
             await self.add_restriction(member, "No-Help")
@@ -372,12 +349,8 @@ class Mod(commands.Cog):
             delta = datetime.timedelta(seconds=seconds)
             unnohelp_time = timestamp + delta
             unnohelp_time_string = unnohelp_time.strftime("%Y-%m-%d %H:%M:%S")
-            with open("data/timenohelp.json", "r") as f:
-                timenohelp = json.load(f)
-            timenohelp[member.id] = unnohelp_time_string
+            self.add_timed_restriction(member.id, unnohelp_time_string, 'timetakehelp')
             self.bot.timenohelp[member.id] = [unnohelp_time, False]  # last variable is "notified", for <=10 minute notifications
-            with open("data/timenohelp.json", "w") as f:
-                json.dump(timenohelp, f)
             msg_user = "You lost access to help channels temporarily!"
             if reason != "":
                 msg_user += " The given reason is: " + reason
@@ -400,7 +373,7 @@ class Mod(commands.Cog):
             
     @is_staff("Helper")
     @commands.command()
-    async def takesmallhelp(self, ctx, members: commands.Greedy[discord.Member]):
+    async def takesmallhelp(self, ctx, members: commands.Greedy[SafeMember]):
         """Remove access to small help channel. Staff and Helpers only."""
         for member in members:
             try:
@@ -414,7 +387,7 @@ class Mod(commands.Cog):
        
     @is_staff("Helper")
     @commands.command()
-    async def givesmallhelp(self, ctx, members: commands.Greedy[discord.Member]):
+    async def givesmallhelp(self, ctx, members: commands.Greedy[SafeMember]):
         """Provide access to small help channel for 1-on-1 help. Staff and Helpers only."""
         for member in members:
             try:
@@ -428,7 +401,7 @@ class Mod(commands.Cog):
             
     @is_staff("Helper")
     @commands.command(pass_context=True, name="probate")
-    async def probate(self, ctx, member: converters.SafeMember, *, reason=""):
+    async def probate(self, ctx, member: SafeMember, *, reason=""):
         """Probate a user. Staff and Helpers only."""
         try:
             await self.add_restriction(member, "Probation")
@@ -452,7 +425,7 @@ class Mod(commands.Cog):
 
     @is_staff("Helper")
     @commands.command()
-    async def unprobate(self, ctx, member: converters.SafeMember):
+    async def unprobate(self, ctx, member: SafeMember):
         """Unprobate a user. Staff and Helpers only."""
         try:
             await self.remove_restriction(member, "Probation")
@@ -495,7 +468,7 @@ class Mod(commands.Cog):
     async def username(self, ctx, *, username):
         """Sets bot name. Staff only."""
         try:
-            await self.bot.edit(username=('{}'.format(username)))
+            await self.bot.user.edit(username=('{}'.format(username)))
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
 
@@ -504,19 +477,15 @@ class Mod(commands.Cog):
     async def updatestaff(self, ctx):
         """Updates the staff list based on staff member in the server."""
         removed = []
-        for staffmember in list(addons.checks.staff):
-            if discord.utils.get(ctx.message.server.members, id=staffmember) is None:
-                addons.checks.staff.pop(staffmember, None)
+        for staffmember in self.get_staff():
+            if ctx.guild.get_member(staffmember) is None:
+                self.remove_staff(staffmember)
                 removed.append(await self.bot.get_user_info(staffmember))
-        with open("data/staff.json", "w") as f:
-            json.dump(addons.checks.staff, f)
 
-        for helper in list(addons.checks.helpers):
-            if discord.utils.get(ctx.message.server.members, id=helper) is None:
-                addons.checks.staff.pop(helper, None)
+        for helper in self.get_helpers():
+            if ctx.guild.get_member(helper) is None:
+                self.remove_helper(helper)
                 removed.append(await self.bot.get_user_info(helper))
-        with open("data/helpers.json", "w") as f:
-            json.dump(addons.checks.helpers, f)
         if not removed:
             await ctx.send("Updated Staff list, no staff removed!")
         else:

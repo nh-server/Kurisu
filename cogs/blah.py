@@ -1,15 +1,15 @@
 from discord.ext import commands
-from addons.checks import is_staff
+from cogs.checks import is_staff
 import discord
 
 
 class Blah(commands.Cog, command_attrs=dict(hidden=True)):
     """
-    Custom addon to make announcements.
+    Custom Cog to make announcements.
     """
     def __init__(self, bot):
         self.bot = bot
-        print('Addon "{}" loaded'.format(self.__class__.__name__))
+        print('Cog "{}" loaded'.format(self.__class__.__name__))
 
     @is_staff("OP")
     @commands.command()

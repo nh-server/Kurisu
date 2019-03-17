@@ -1,21 +1,19 @@
 import datetime
 import discord
-import json
 import re
 import time
+from cogs.database import DatabaseCog
 from discord.ext import commands
-from addons import converters
-from addons.checks import is_staff, check_staff
+from cogs import converters
+from cogs.checks import is_staff, check_staff
+import sqlite3
 
 
 @commands.guild_only()
-class KickBan(commands.Cog):
+class KickBan(DatabaseCog):
     """
     Kicking and banning users.
     """
-    def __init__(self, bot):
-        self.bot = bot
-        print('Addon "{}" loaded'.format(self.__class__.__name__))
 
     async def meme(self, beaner, beaned, action, channel, reason):
         await channel.send("Seriously? What makes you think it's okay to try and {} another staff or helper like that?".format(action))
@@ -25,7 +23,6 @@ class KickBan(commands.Cog):
         if reason != "":
             msg += "for the reason " + reason
         await self.bot.meta_channel.send(msg + (" without a reason" if reason == "" else ""))
-
 
     @is_staff("HalfOP")
     @commands.command(name="kick")
@@ -44,7 +41,7 @@ class KickBan(commands.Cog):
             pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
         self.bot.actions.append("uk:"+str(member.id))
         try:
-            await member.kick()
+            await member.kick(reason=reason if reason else 'No reason')
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
         await ctx.send("{} is now gone. 👌".format(self.bot.help_command.remove_mentions(member.name)))
@@ -84,7 +81,7 @@ class KickBan(commands.Cog):
 
     @is_staff("OP")
     @commands.command(name="banid")
-    async def banid_member(self, ctx, userid: str, *, reason=""):
+    async def banid_member(self, ctx, userid: int, *, reason=""):
         """Bans a user id from the server. OP+ only."""
         try:
             user = await self.bot.get_user_info(userid)
@@ -93,19 +90,18 @@ class KickBan(commands.Cog):
         if check_staff(user.id, 'Helper'):
             await ctx.send("You can't ban another staffer with this command!")
             return
-        self.bot.actions.append("ub:" + user.id)
+        self.bot.actions.append("ub:" + str(user.id))
         try:
-            await user.ban()
+            await ctx.guild.ban(user)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
-        await ctx.send("ID {} is now b&. 👍".format(user.id))
+        await ctx.send("User {} | {} is now b&. 👍".format(user.id, user.name))
         msg = "⛔ **Ban**: {} banned ID {}".format(ctx.author.mention, user.id)
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         await self.bot.serverlogs_channel.send(msg)
         await self.bot.modlogs_channel.send(msg + (
             "\nPlease add an explanation below. In the future, it is recommended to use `.banid <userid> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
-
 
     @is_staff("OP")
     @commands.command(name="silentban", hidden=True)
@@ -128,7 +124,7 @@ class KickBan(commands.Cog):
 
     @is_staff("OP")
     @commands.command(name="timeban")
-    async def timeban_member(self, ctx, member: converters.SafeMember, length, *, reason=""):
+    async def timeban_member(self, ctx, member: converters.SafeMember, length, *, reason="no reason"):
         """Bans a user for a limited period of time. OP+ only.\n\nLength format: #d#h#m#s"""
         if check_staff(member.id, 'Helper'):
             await self.meme(ctx.author, member, "timeban", ctx.channel, reason)
@@ -150,12 +146,8 @@ class KickBan(commands.Cog):
         delta = datetime.timedelta(seconds=seconds)
         unban_time = timestamp + delta
         unban_time_string = unban_time.strftime("%Y-%m-%d %H:%M:%S")
-        with open("data/timebans.json", "r") as f:
-            timebans = json.load(f)
-        timebans[member.id] = unban_time_string
-        self.bot.timebans[member.id] = [member, unban_time, False]  # last variable is "notified", for <=30 minute notifications
-        with open("data/timebans.json", "w") as f:
-            json.dump(timebans, f)
+        self.add_timed_restriction(self, member.id, unban_time_string, 'timeban')
+        self.bot.timebans[str(member.id)] = [member, unban_time, False]  # last variable is "notified", for <=30 minute notifications
         msg = "You were banned from {}.".format(ctx.guild.name)
         if reason != "":
             msg += " The given reason is: " + reason
@@ -166,7 +158,7 @@ class KickBan(commands.Cog):
             pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
         self.bot.actions.append("ub:"+str(member.id))
         try:
-            await member.ban()
+            await member.ban(reason=reason)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
         await ctx.send("{} is now b& until {} {}. 👍".format(self.bot.escape_name(member), unban_time_string, time.tzname[0]))
@@ -183,46 +175,31 @@ class KickBan(commands.Cog):
         if check_staff(member.id, 'Helper'):
             await self.meme(ctx.author, member, "softban", ctx.channel, reason)
             return
-        issuer = ctx.author
-        with open("data/softbans.json", "r") as f:
-            softbans = json.load(f)
-        if member.id not in softbans:
-            softbans[member.id] = {}
-        timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        softbans[member.id] = {"name": "{}#{}".format(member.name, member.discriminator), "issuer_id": issuer.id, "issuer_name": issuer.name, "reason": reason, "timestamp": timestamp}
-        with open("data/softbans.json", "w") as f:
-            json.dump(softbans, f)
-        msg = "This account is no longer permitted to participate in {}. The reason is: {}".format(ctx.guild.name, softbans[member.id]["reason"])
+        self.add_softban(ctx, member, reason)
+        msg = "This account is no longer permitted to participate in {}. The reason is: {}".format(ctx.guild.name, reason)
         await member.send(msg)
         try:
-            await member.kick
+            await member.kick(reason=reason)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
-        await ctx.send("{} is now b&. 👍".format(self.bot.escape_name(member)))
-        msg = "⛔ **Soft-ban**: {} soft-banned {} | {}#{}\n🏷 __User ID__: {}\n✏️ __Reason__: {}".format(ctx.author.mention, member.mention, self.bot.escape_name(member.name), member.discriminator, member.id, reason)
+        await ctx.send("{} is now b&. 👍".format(self.bot.help_command.remove_mentions(member)))
+        msg = "⛔ **Soft-ban**: {} soft-banned {} | {}#{}\n🏷 __User ID__: {}\n✏️ __Reason__: {}".format(ctx.author.mention, member.mention, self.bot.help_command.remove_mentions(member.name), member.discriminator, member.id, reason)
         await self.bot.modlogs_channel.send(msg)
         await self.bot.serverlogs_channel.send(msg)
 
-
     @is_staff("OP")
     @commands.command(name="softbanid")
-    async def softbanid_member(self, ctx, user_id, *, reason):
+    async def softbanid_member(self, ctx, user_id: int, *, reason):
         """Soft-ban a user based on ID. OP+ only.\n\nThis "bans" the user without actually doing a ban on Discord. The bot will instead kick the user every time they join. Discord bans are account- and IP-based."""
-        issuer = ctx.author
-        if check_staff(user_id, 'Helper'):
+        if check_staff(str(user_id), 'Helper'):
             await ctx.send("You can't softban another staffer with this command!")
             return
-        with open("data/softbans.json", "r") as f:
-            softbans = json.load(f)
-        name = "???"
-        if user_id not in softbans:
-            softbans[user_id] = {}
-        elif softbans[user_id]["name"] != "???":
-            name = softbans[user_id]["name"]
-        timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        softbans[user_id] = {"name": name, "issuer_id": issuer.id, "issuer_name": issuer.name, "reason": reason, "timestamp": timestamp}
-        with open("data/softbans.json", "w") as f:
-            json.dump(softbans, f)
+        user = await self.bot.get_user_info(user_id)
+        try:
+            self.add_softban(ctx, user, reason)
+        except sqlite3.IntegrityError:
+            await ctx.send('User is already softbanned.')
+            return
         await ctx.send("ID {} is now b&. 👍".format(user_id))
         msg = "⛔ **Soft-ban**: {} soft-banned ID {}\n✏️ __Reason__: {}".format(ctx.author.mention, user_id, reason)
         await self.bot.modlogs_channel.send(msg)
@@ -230,56 +207,13 @@ class KickBan(commands.Cog):
 
     @is_staff("OP")
     @commands.command(name="unsoftban")
-    async def unsoftban_member(self, ctx, user_id):
-        issuer = ctx.author
+    async def unsoftban_member(self, ctx, user_id: int):
         """Un-soft-ban a user based on ID. OP+ only."""
-        with open("data/softbans.json", "r") as f:
-            softbans = json.load(f)
-        if user_id not in softbans:
-            await ctx.send("{} is not soft-banned!".format(user_id))
-            return
-        name = softbans[user_id]["name"]
-        softbans.pop(user_id)
-        with open("data/softbans.json", "w") as f:
-            json.dump(softbans, f)
-        await ctx.send("{} has been unbanned!".format(self.bot.escape_name(name) if name != "???" else user_id))
-        msg = "⚠️ **Un-soft-ban**: {} un-soft-banned {}".format(issuer.mention, self.bot.escape_name(name) if name != "???" else "ID {}".format(user_id))
+        self.remove_softban(user_id)
+        user = await self.bot.get_user_info(user_id)
+        await ctx.send("{} has been unbanned!".format(self.bot.help_command.remove_mentions(user.name)))
+        msg = "⚠️ **Un-soft-ban**: {} un-soft-banned {}".format(ctx.author.mention, self.bot.help_command.remove_mentions(user.name))
         await self.bot.modlogs_channel.send(msg)
-
-    @is_staff("HalfOP")
-    @commands.command()
-    async def listsoftbans(self, ctx, user_id=""):
-        """List soft bans. Shows all if an ID is not specified."""
-        with open("data/softbans.json", "r") as f:
-            softbans = json.load(f)
-        embed = discord.Embed(color=discord.Color.dark_red())
-        if user_id == "":
-            embed.title = "All soft bans"
-            for softban in softbans:
-                # sorry this is garbage
-                embed.add_field(
-                    name=self.bot.escape_name(softbans[softban]["name"]) if softbans[softban]["name"] != "???" else softban,
-                    value="{}Issuer: {}\nTime: {}\nReason: {}".format(
-                        "" if softbans[softban]["name"] == "???" else "ID: {}\n".format(softban),
-                        self.bot.escape_name(softbans[softban]["issuer_name"]),
-                        softbans[softban]["timestamp"],
-                        softbans[softban]["reason"]
-                    )
-                )
-        else:
-            if user_id in softbans:
-                embed.title = self.bot.escape_name(softbans[user_id]["name"]) if softbans[user_id]["name"] != "???" else user_id
-                embed.description = "{}Issuer: {}\nTime: {}\nReason: {}".format(
-                    "" if softbans[user_id]["name"] == "???" else "ID: {}\n".format(user_id),
-                    self.bot.escape_name(softbans[user_id]["issuer_name"]),
-                    softbans[user_id]["timestamp"],
-                    softbans[user_id]["reason"]
-                )
-            else:
-                embed.color = discord.Color.green()
-                embed.title = user_id
-                embed.description = "ID is not banned!"
-        await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(KickBan(bot))

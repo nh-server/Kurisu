@@ -17,7 +17,7 @@ class Loop(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         bot.loop.create_task(self.start_update_loop())
-        print('Addon "{}" loaded'.format(self.__class__.__name__))
+        print('Cog "{}" loaded'.format(self.__class__.__name__))
 
     def __unload(self):
         self.is_active = False
@@ -100,7 +100,7 @@ class Loop(commands.Cog):
                 timenohelp = copy.copy(self.bot.timenohelp)
                 for ban in timebans.items():
                     if timestamp > ban[1][1]:
-                        self.bot.actions.append("tbr:" + ban[0])
+                        self.bot.actions.append("tbr:" + str(ban[0]))
                         await self.bot.guilds[0].unban(ban[1][0])
                         msg = "⚠️ **Ban expired**: {} | {}#{}".format(ban[1][0].mention, self.bot.escape_name(ban[1][0].name), ban[1][0].discriminator)
                         await self.bot.modlogs_channel.send( msg)
@@ -117,7 +117,7 @@ class Loop(commands.Cog):
                         msg = "🔈 **Mute expired**: <@{}>".format(mute[0])
                         await self.bot.modlogs_channel.send( msg)
                         self.bot.timemutes.pop(mute[0])
-                        member = discord.utils.get(self.bot.server.members, id=mute[0])
+                        member = discord.utils.get(self.bot.guild.members, id=mute[0])
                         if member:
                             await self.bot.remove_roles(member, self.bot.muted_role)
                         with open("data/timemutes.json", "r") as f:
@@ -159,7 +159,7 @@ class Loop(commands.Cog):
                             await self.bot.helpers_channel.send("**Note**: <@{}> no-help restriction will expire in {} minutes.".format(nohelp[0], ((nohelp[1][0] - timestamp).seconds // 60) + 1))
 
                 if timestamp.minute == 0 and timestamp.hour != self.last_hour:
-                    await self.bot.helpers_channel.send("{} has {:,} members at this hour!".format(self.bot.server.name, self.bot.server.member_count))
+                    await self.bot.helpers_channel.send("{} has {:,} members at this hour!".format(self.bot.guilds[0].name, self.bot.guilds[0].member_count))
                     self.last_hour = timestamp.hour
 
                 if timestamp.minute % 30 == 0 and timestamp.second == 0:

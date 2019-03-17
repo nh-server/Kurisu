@@ -2,25 +2,15 @@ import discord
 import hashlib
 import sqlite3
 import struct
+from cogs.database import DatabaseCog
 from discord.ext import commands
+from cogs.converters import SafeMember
 
 
-class FriendCode(commands.Cog):
+class FriendCode(DatabaseCog):
     """
     Stores and obtains friend codes using an SQLite 3 database.
     """
-    def __init__(self, bot):
-        self.bot = bot
-        print('Loading fc.sqlite')
-        self.conn = sqlite3.connect('data/fc.sqlite')
-        print('Addon "{}" loaded'.format(self.__class__.__name__))
-
-    def __unload(self):
-        print('Committing to fc.sqlite')
-        self.conn.commit()
-        print('Unloading fc.sqlite')
-        self.conn.close()
-
     # based on https://github.com/megumisonoda/SaberBot/blob/master/lib/saberbot/valid_fc.rb
     def verify_fc(self, fc):
         fc = int(fc.replace('-', ''))
@@ -41,22 +31,19 @@ class FriendCode(commands.Cog):
         if not fc:
             await ctx.send("This friend code is invalid.")
             return
-        c = self.conn.cursor()
-        rows = c.execute('SELECT * FROM friend_codes WHERE userid = ?', (int(ctx.author.id),))
+        rows = self.bot.c.execute('SELECT * FROM friend_codes WHERE user_id = ?', (ctx.author.id,))
         for row in rows:
             # if the user already has one, this prevents adding another
             await ctx.send("Please delete your current friend code with `.fcdelete` before adding another.")
             return
-        c.execute('INSERT INTO friend_codes VALUES (?,?)', (int(ctx.author.id), fc))
+        self.bot.c.execute('INSERT INTO friend_codes VALUES (?,?)', (ctx.author.id, fc))
         await ctx.send("{} Friend code inserted: {}".format(ctx.author.mention, self.fc_to_string(fc)))
-        self.conn.commit()
+        self.bot.conn.commit()
 
     @commands.command(pass_context=True)
-    async def fcquery(self, ctx, user):
+    async def fcquery(self, ctx, member:  SafeMember):
         """Get other user's friend code. You must have one yourself in the database."""
-        c = self.conn.cursor()
-        member = ctx.message.mentions[0]
-        rows = c.execute('SELECT * FROM friend_codes WHERE userid = ?', (int(ctx.author.id),))
+        rows = self.bot.c.execute('SELECT * FROM friend_codes WHERE userid = ?', (int(ctx.author.id),))
         for row in rows:
             # assuming there is only one, which there should be
             rows_m = c.execute('SELECT * FROM friend_codes WHERE userid = ?', (int(member.id),))
@@ -74,10 +61,10 @@ class FriendCode(commands.Cog):
     @commands.command(pass_context=True)
     async def fcdelete(self, ctx):
         """Delete your friend code."""
-        c = self.conn.cursor()
-        c.execute('DELETE FROM friend_codes WHERE userid = ?', (int(ctx.author.id),))
+        c = self.bot.conn.cursor()
+        c.execute('DELETE FROM friend_codes WHERE userid = ?', (ctx.author.id,))
         await ctx.send("Friend code removed from database.")
-        self.conn.commit()
+        self.bot.conn.commit()
 
     @commands.command()
     async def fctest(self, ctx, fc):
@@ -85,7 +72,7 @@ class FriendCode(commands.Cog):
         if fc:
             await ctx.send(self.fc_to_string(fc))
         else:
-            await ctx.send("invalid")
+            await ctx.send("Invalid.")
 
 def setup(bot):
     bot.add_cog(FriendCode(bot))

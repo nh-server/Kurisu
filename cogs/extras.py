@@ -6,7 +6,7 @@ import re
 import string
 from discord.ext import commands
 from discord import TextChannel
-from addons.checks import is_staff
+from cogs.checks import is_staff
 
 
 class Extras(commands.Cog):
@@ -15,7 +15,7 @@ class Extras(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        print('Addon "{}" loaded'.format(self.__class__.__name__))
+        print('Cog "{}" loaded'.format(self.__class__.__name__))
 
     prune_key = "nokey"
 

@@ -2,8 +2,8 @@ import discord
 import json
 import time
 from discord.ext import commands
-from addons.checks import is_staff, check_staff
-from addons import converters
+from cogs.checks import is_staff, check_staff
+from cogs import converters
 
 
 @commands.guild_only()
@@ -13,7 +13,7 @@ class ModWarn(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        print('Addon "{}" loaded'.format(self.__class__.__name__))
+        print('Cog "{}" loaded'.format(self.__class__.__name__))
 
     @is_staff('Helper')
     @commands.command()
@@ -32,7 +32,7 @@ class ModWarn(commands.Cog):
         warns[member.id]["warns"].append({"issuer_id": issuer.id, "issuer_name": issuer.name, "reason": reason, "timestamp": timestamp})
         with open("data/warnsv2.json", "w") as f:
             json.dump(warns, f)
-        msg = "You were warned on {}.".format(self.bot.server.name)
+        msg = "You were warned on {}.".format(ctx.guild.name)
         if reason != "":
             # much \n
             msg += " The given reason is: " + reason
@@ -73,8 +73,6 @@ class ModWarn(commands.Cog):
         if check_staff(member.id, "Helper"):
             await ctx.send("You can't warn another staffer with this command!")
             return
-        with open("data/warnsv2.json", "r") as f:
-            warns = json.load(f)
         if member.id not in warns:
             warns[member.id] = {"warns": []}
         warn_count = len(warns[member.id]["warns"])

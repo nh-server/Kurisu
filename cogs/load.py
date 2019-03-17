@@ -1,5 +1,5 @@
 from discord.ext import commands
-from addons.checks import is_staff
+from cogs.checks import is_staff
 
 
 class Load(commands.Cog, command_attrs=dict(hidden=True)):
@@ -8,16 +8,16 @@ class Load(commands.Cog, command_attrs=dict(hidden=True)):
     """
     def __init__(self, bot):
         self.bot = bot
-        print('Addon "{}" loaded'.format(self.__class__.__name__))
+        print('Cog "{}" loaded'.format(self.__class__.__name__))
 
     # Load test
     @is_staff("OP")
     @commands.command()
     async def load(self, ctx, *, module: str):
-        """Loads an addon."""
+        """Loads an Cog."""
         try:
-            if module[0:7] != "addons.":
-                module = "addons." + module
+            if module[0:7] != "cogs.":
+                module = "cogs." + module
             self.bot.load_extension(module)
             await ctx.send('✅ Extension loaded.')
         except Exception as e:
@@ -26,11 +26,11 @@ class Load(commands.Cog, command_attrs=dict(hidden=True)):
     @is_staff("OP")
     @commands.command()
     async def unload(self, ctx, *, module: str):
-        """Unloads an addon."""
+        """Unloads an Cog."""
         try:
-            if module[0:7] != "addons.":
-                module = "addons." + module
-            if module == "addons.load":
+            if module[0:7] != "cogs.":
+                module = "cogs." + module
+            if module == "cogs.load":
                 await ctx.send("❌ I don't think you want to unload that!")
             else:
                 self.bot.unload_extension(module)
@@ -41,10 +41,10 @@ class Load(commands.Cog, command_attrs=dict(hidden=True)):
     @is_staff("OP")
     @commands.command(name='reload')
     async def _reload(self, ctx, *, module : str):
-        """Reloads an addon."""
+        """Reloads an Cog."""
         try:
-            if module[0:7] != "addons.":
-                module = "addons." + module
+            if module[0:7] != "cogs.":
+                module = "cogs." + module
             self.bot.unload_extension(module)
             self.bot.load_extension(module)
             await ctx.send('✅ Extension reloaded.')

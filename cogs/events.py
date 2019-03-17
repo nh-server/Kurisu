@@ -15,7 +15,7 @@ class Events(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        print('Addon "{}" loaded'.format(self.__class__.__name__))
+        print('Cog "{}" loaded'.format(self.__class__.__name__))
 
     # don't add spaces or dashes to words
     piracy_tools = (
@@ -200,7 +200,7 @@ class Events(commands.Cog):
         embed = discord.Embed()    
         embed.description = message.content
         if message.author.id in self.bot.watching:
-            content = "**Channel**:\n[#"+message.channel.name+"](https://discordapp.com/channels/" + message.server.id + "/" + message.channel.id + "/" + message.id+")\n"
+            content = "**Channel**:\n[#"+message.channel.name+"](https://discordapp.com/channels/" + str(message.guild.id) + "/" + str(message.channel.id) + "/" + str(message.id)+")\n"
             msg = message.author.mention
             if message.attachments:
                 content += "**Images**:\n"
@@ -214,7 +214,7 @@ class Events(commands.Cog):
             embed.description = content + embed.description
             if is_edit:
                 msg += " (edited)"
-            self.bot.watchlogs_channel.send(msg, embed=embed)
+            await self.bot.watchlogs_channel.send(msg, embed=embed)
         is_help_channel = "assistance" in message.channel.name
         msg = ''.join(char for char in message.content.lower() if char in printable)
         msg_no_separators = re.sub('[ \*_\-~]', '', msg)
@@ -239,11 +239,11 @@ class Events(commands.Cog):
         contains_drama_alert = any(x in msg_no_separators for x in self.drama_alert)
 
         for f in message.attachments:
-            if not f["filename"].lower().endswith(self.ignored_file_extensions):
-                embed2 = discord.Embed(description="Size: {}\nDownload: [{}]({})".format(f["size"], self.bot.escape_name(f["filename"]), f["url"]))
+            if not f.filename.lower().endswith(self.ignored_file_extensions):
+                embed2 = discord.Embed(description="Size: {}\nMessage: [{}]({})\nDownload: [{}]({})".format(f.size, message.channel.name, message.jump_url, self.bot.escape_name(f.filename), f.url))
                 await self.bot.uploadlogs_channel.send("📎 **Attachment**: {} uploaded to {}".format(message.author.mention, message.channel.mention), embed=embed2)
         if contains_invite_link:
-            await self.bot.messagelogs_channel.send("✉️ **Invite posted**: {} posted an invite link in {}\n------------------\n{}".format(message.author.mention, message.channel.mention, message.content.replace("@", "@\u200b")))
+            await self.bot.messagelogs_channel.send("✉️ **Invite posted**: {} posted an invite link in {}\n------------------\n{}".format(message.author.mention, message.channel.mention, self.bot.help_command.remove_mentions(message.content)))
         if contains_misinformation_url_mention:
             try:
                 await message.delete()
@@ -409,10 +409,10 @@ class Events(commands.Cog):
             pass  # if the array doesn't exist, don't raise an error
 
     async def user_ping_check(self, message):
-        if "p" + message.author.id not in self.user_antispam:
-            self.user_antispam["p" + message.author.id] = deque()
+        if "p" + str(message.author.id) not in self.user_antispam:
+            self.user_antispam["p" + str(message.author.id)] = deque()
         self.user_antispam["p" + message.author.id].append((message, len(message.mentions)))
-        _, user_mentions = zip(*self.user_antispam["p" + message.author.id])
+        _, user_mentions = zip(*self.user_antispam["p" + str(message.author.id)])
         if sum(user_mentions) > 6:
             await self.add_restriction(message.author, "Probation")
             await message.author.add_roles(self.bot.probation_role)
@@ -496,6 +496,8 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, message_before, message_after):
+        if isinstance(message_before.channel, discord.abc.PrivateChannel):
+            return
         try:
             if message_after.channel.name.endswith('nofilter'):
                 return
