@@ -385,5 +385,42 @@ class Extras:
         else:
             await self.bot.say("You don't have fireworks!")
 
+ @commands.command(pass_context=True)
+    async def shamrock(self, ctx):
+        """Get out your Jameson Irish Whiskey [PAID PROMOTION]."""
+        month = datetime.date.today().month
+        day = datetime.date.today().day
+        if month == 3 and day == 16 or month == 3 and day == 17:
+            member = ctx.message.author
+            if member.nick and member.nick[-1] == "🍀":
+                await self.bot.say("Your nickname already ends in a shamrock!")
+            elif member.name[-1] == "🍀" and not member.nick:
+                await self.bot.say("Your name already ends in a shamrock!")
+            else:
+                await self.bot.change_nickname(member, member.display_name + " 🍀")
+                await self.bot.say("Your nickname is now \"{} \"!".format(member.display_name))
+        else:
+            await self.bot.say("This day is not old/new enough!")
+
+    @commands.command(pass_context=True)
+    async def noshamrock(self, ctx):
+        """Tired of it."""
+        member = ctx.message.author
+        pattern = re.compile(r'🍀')
+        if member.nick:
+            iterator = re.finditer(pattern, member.nick)
+            search = list(iterator)
+            if search:
+                res = search[-1]
+                nick = member.display_name[0:res.start()] + member.display_name[res.end():]
+                await self.bot.say("Your nickname is now \"{}\"!".format(nick))
+                await self.bot.change_nickname(member, nick)
+            else:
+                await self.bot.say("You don't have a shamrock!")
+        elif bool(re.search(pattern, member.name)):
+            await self.bot.say("Your username is the one with the shamrock!")
+        else:
+            await self.bot.say("You don't have a shamrock!")
+            
 def setup(bot):
     bot.add_cog(Extras(bot))
