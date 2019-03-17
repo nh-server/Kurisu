@@ -385,7 +385,7 @@ class Extras:
         else:
             await self.bot.say("You don't have fireworks!")
 
- @commands.command(pass_context=True)
+    @commands.command(pass_context=True)
     async def shamrock(self, ctx):
         """Get out your Jameson Irish Whiskey [PAID PROMOTION]."""
         month = datetime.date.today().month
