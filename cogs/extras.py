@@ -435,6 +435,54 @@ class Extras(commands.Cog):
         else:
             await ctx.send("You don't have fireworks!")
 
+    @commands.guild_only()
+    @commands.command()
+    async def shamrock(self, ctx):
+        """Get out your Jameson Irish Whiskey [PAID PROMOTION]."""
+        emoji = '🍀'
+        month = datetime.date.today().month
+        day = datetime.date.today().day
+        if month == 3 and day == 16 or month == 3 and day == 17:
+            member = ctx.author
+            if member.nick and member.nick[-1] == emoji:
+                await ctx.send("Your nickname already ends in a shamrock!")
+            elif member.name[-1] == emoji and not member.nick:
+                await ctx.send("Your name already ends in fireworks!")
+            else:
+                try:
+                    await ctx.author.edit(nick=f"{member.display_name} {emoji}")
+                except discord.errors.Forbidden:
+                    await ctx.send("💢  I can't change your nickname!")
+                    return
+                await ctx.send(f"Your nickname is now `{member.display_name}`!")
+        else:
+            await ctx.send("This day is not filled with enough Jameson Irish Whiskey [PAID PROMOTION]!")
+
+    @commands.guild_only()
+    @commands.command(pass_context=True)
+    async def noshamrock(self, ctx):
+        """Tired of it."""
+        member = ctx.message.author
+        pattern = re.compile(r'🍀')
+        if member.nick:
+            iterator = re.finditer(pattern, member.nick)
+            search = list(iterator)
+            if search:
+                res = search[-1]
+                nick = member.display_name[0:res.start()] + member.display_name[res.end():]
+                try:
+                    await ctx.author.edit(nick=nick)
+                except discord.errors.Forbidden:
+                    await ctx.send("💢  I can't change your nickname!")
+                    return
+                await ctx.send(f"Your nickname is now `{nick}`!")
+            else:
+                await ctx.send("You don't have a shamrock!")
+        elif bool(re.search(pattern, member.name)):
+            await ctx.send("Your username is the one with the shamrock!")
+        else:
+            await ctx.send("You don't have a shamrock!")
+
 
 def setup(bot):
     bot.add_cog(Extras(bot))
