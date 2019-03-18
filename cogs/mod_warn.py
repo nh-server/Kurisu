@@ -174,7 +174,7 @@ class ModWarn(DatabaseCog):
         warn = warns[idx-1]
         embed = discord.Embed(color=discord.Color.dark_red(), title="Warn {} on {}".format(idx, warn[3]),
                               description="Issuer: {}\nReason: {}".format(warn[1], warn[2]))
-        self.remove_warn(member.id, idx)
+        self.remove_warn_id(member.id, idx)
         await ctx.send("{} has a warning removed!".format(member.mention))
         msg = "🗑 **Deleted warn**: {} removed warn {} from {} | {}#{}".format(ctx.author.mention, idx, member.mention, member.name, member.discriminator)
         await self.bot.modlogs_channel.send(msg, embed=embed)
@@ -197,7 +197,7 @@ class ModWarn(DatabaseCog):
         warn = warns[idx-1]
         embed = discord.Embed(color=discord.Color.dark_red(), title="Warn {} on {}".format(idx, warn[3]),
                               description="Issuer: {}\nReason: {}".format(warn[1], warn[2]))
-        self.remove_warn(user_id, idx)
+        self.remove_warn_id(user_id, idx)
         member = await self.bot_get_user_info(user_id)
         await ctx.send("{} has a warning removed!".format(member.name))
         msg = "🗑 **Deleted warn**: {} removed warn {} from {} | {}#{}".format(ctx.author.mention, idx, member.mention, member.name, member.discriminator)

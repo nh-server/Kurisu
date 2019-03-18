@@ -46,7 +46,7 @@ Thanks for stopping by and have a good time!
             embed.description = softban[3]
             await self.bot.serverlogs_channel.send(msg, embed=embed)
             return
-        rst = self.get_restrictions_roles(member.id)
+        rst = self.get_restrictions_roles_id(member.id)
         if rst:
             roles = []
             for role in rst:

@@ -85,7 +85,7 @@ class Loop(DatabaseCog):
         while self.is_active:
             try:
                 timestamp = datetime.now()
-                for ban in self.get_time_restrictions('timeban'):
+                for ban in self.get_time_restrictions_by_type('timeban'):
                     unban_time = datetime.strptime(ban[1], "%Y-%m-%d %H:%M:%S")
                     if timestamp > unban_time:
                         user = await self.bot.get_user_info(ban[0])
@@ -101,7 +101,7 @@ class Loop(DatabaseCog):
                             user = await self.bot.get_user_info(ban[0])
                             await self.bot.mods_channel.send("**Note**: {} will be unbanned in {} minutes.".format(user.name, ((unban_time - timestamp).seconds // 60) + 1))
 
-                for mute in self.get_time_restrictions('timemute'):
+                for mute in self.get_time_restrictions_by_type('timemute'):
                     unmute_time = datetime.strptime(mute[1], "%Y-%m-%d %H:%M:%S")
                     if timestamp > unmute_time:
                         self.remove_timed_restriction(mute[0], "timemute")
@@ -118,7 +118,7 @@ class Loop(DatabaseCog):
                             user = await self.bot.get_user_info(mute[0])
                             await self.bot.mods_channel.send("**Note**: <@{}> will be unmuted in {} minutes.".format(user.name, ((unmute_time - timestamp).seconds // 60) + 1))
 
-                for nohelp in self.get_time_restrictions('timenohelp'):
+                for nohelp in self.get_time_restrictions_by_type('timenohelp'):
                     help_time = datetime.strptime(nohelp[1], "%Y-%m-%d %H:%M:%S")
                     if timestamp > help_time:
                         self.remove_timed_restriction(nohelp[0], "timetakehelp")

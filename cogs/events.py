@@ -342,7 +342,7 @@ class Events(DatabaseCog):
                 await message.author.send("You were automatically placed under probation in {} for mass user mentions.".format(self.bot.server.name))
             except discord.errors.Forbidden:
                 pass
-            await self.add_restriction(message.author, "Probation")
+            self.add_restriction(message.author, self.bot.probation_role)
             await message.author.add_roles(self.bot.probation_role)
 
 
