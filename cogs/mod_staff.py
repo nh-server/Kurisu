@@ -1,29 +1,34 @@
 from discord.ext import commands
+from cogs import converters
 from cogs.checks import is_staff
 from cogs.database import DatabaseCog
-from cogs import converters
 
 
-@commands.guild_only()
 class ModStaff(DatabaseCog):
     """
     Staff management commands.
     """
+
+    async def cog_check(self, ctx):
+        if ctx.guild is None:
+            raise commands.NoPrivateMessage()
+        return True
+
     @is_staff("Owner")
     @commands.command()
     async def addstaff(self, ctx, member: converters.SafeMember, position):
         """Add user as staff. Owners only."""
-        if position not in self.bot.staff_ranks:
-            await ctx.send("💢 That's not a valid position. You can use __{}__".format("__, __".join(self.bot.staff_ranks.keys())))
+        if position not in self.bot.staff_roles:
+            await ctx.send(f"💢 That's not a valid position. You can use __{'__, __'.join(self.bot.staff_ranks.keys())}__")
             return
         self.add_staff(member.id, position)
         # remove leftover staff roles
-        await member.remove_roles(*self.bot.staff_ranks.values())
+        await member.remove_roles(*self.bot.staff_roles.values())
         if position == "HalfOP":  # this role requires the use of sudo
-            await member.add_roles(self.bot.staff_role)
+            await member.add_roles(self.bot.roles['Staff'])
         else:
-            await member.add_roles(self.bot.staff_role, self.bot.staff_ranks[position])
-        await ctx.send("{} is now on staff as {}. Welcome to the secret party room!".format(member.mention, position))
+            await member.add_roles(*(self.bot.roles['Staff'], self.bot.roles[position]))
+        await ctx.send(f"{member.mention} is now on staff as {position}. Welcome to the secret party room!")
 
     @is_staff("Owner")
     @commands.command()
@@ -31,11 +36,11 @@ class ModStaff(DatabaseCog):
         """Remove user from staff. Owners only."""
         await ctx.send(member.name)
         self.remove_staff(member.id)
-        await member.remove_roles(self.bot.staff_role, *self.bot.staff_ranks.values())
-        await ctx.send("{} is no longer staff. Stop by some time!".format(member.mention))
+        await member.remove_roles(*self.bot.staff_roles.values())
+        await ctx.send(f"{member.mention} is no longer staff. Stop by some time!")
 
     @is_staff("HalfOP")
-    @commands.command(pass_context=True)
+    @commands.command()
     async def sudo(self, ctx):
         """Gain staff powers temporarily. Only needed by HalfOPs."""
         author = ctx.author
@@ -46,13 +51,13 @@ class ModStaff(DatabaseCog):
         if staff_role != "HalfOP":
             await ctx.send("You are not HalfOP, therefore this command is not required.")
             return
-        await author.add_roles(self.bot.halfop_role)
-        await ctx.send("{} is now using sudo. Welcome to the twilight zone!".format(author.mention))
-        msg = "👮 **Sudo**: {} | {}#{}".format(author.mention, author.name, author.discriminator)
-        await self.bot.modlogs_channel.send(msg)
+        await author.add_roles(self.bot.roles['HalfOP'])
+        await ctx.send(f"{author.mention} is now using sudo. Welcome to the twilight zone!")
+        msg = f"👮 **Sudo**: {author.mention} | {author}"
+        await self.bot.channels['mod-logs'].send(msg)
 
     @is_staff("HalfOP")
-    @commands.command(pass_context=True)
+    @commands.command()
     async def unsudo(self, ctx):
         """Remove temporary staff powers. Only needed by HalfOPs."""
         author = ctx.author
@@ -63,14 +68,10 @@ class ModStaff(DatabaseCog):
         if staff_role != "HalfOP":
             await ctx.send("You are not HalfOP, therefore this command is not required.")
             return
-        await author.remove_roles(self.bot.halfop_role)
-        await ctx.send("{} is no longer using sudo!".format(author.mention))
-        msg = "🕵 **Unsudo**: {} | {}#{}".format(author.mention, author.name, author.discriminator)
-        await self.bot.modlogs_channel.send(msg)
-
-    async def cog_command_error(self, ctx, error):
-        if isinstance(error, commands.errors.CheckFailure):
-            await ctx.send("{} You don't have permission to use this command.".format(ctx.author.mention))
+        await author.remove_roles(self.bot.roles['HalfOP'])
+        await ctx.send(f"{author.mention} is no longer using sudo!")
+        msg = f"🕵 **Unsudo**: {author.mention} | {author}"
+        await self.bot.channels['mod-logs'].send(msg)
 
 
 def setup(bot):

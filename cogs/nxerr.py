@@ -10,7 +10,7 @@ class NXErr(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        print('Cog "{}" loaded'.format(self.qualified_name))
+        print(f'Cog "{self.qualified_name}" loaded')
 
     # Modules
     modules = {
@@ -620,7 +620,7 @@ class NXErr(commands.Cog):
         0x3E8E7C: 'Error in account login/creation',
         0x3E8EA0: 'Failed connection test',
         0x1F4E7C: '(normal) console ban',
-        0x27EE7C: '(potential) complete account ban', # This error is still super new, needs more informations
+        0x27EE7C: '(potential) complete account ban',  # This error is still super new, needs more informations
         0x36B72B: "Access token expired",
         0x1F486E: "Internet connection lost because the console entered sleep mode.",
         # 0x3E8E89: 'Failed to access Firmware Updates - Often because of DNS!',
@@ -686,7 +686,7 @@ class NXErr(commands.Cog):
             [6400, 6499, "Error: Permission denied."],
         ],
         
-        #NIFM Support Page Links
+        # NIFM Support Page Links
         110: [
             [2900, 2999, "https://en-americas-support.nintendo.com/app/answers/detail/a_id/22277/p/897"],
             [2000, 2899, "https://en-americas-support.nintendo.com/app/answers/detail/a_id/22263/p/897"],
@@ -696,13 +696,13 @@ class NXErr(commands.Cog):
     # Game Erros - Strings because Nintendo decided that it would be useless to put them into normal ints ;^)
     # Attention: These need to be formatted -> <errcode>: "<game>: <description>" - Also Nintendo support codes
     nin_err = {
-        #Splatoon 2
+        # Splatoon 2
         "2-AAB6A-3400": "Splatoon 2: A kick from online due to exefs edits.",
 
-        #Youtube
+        # Youtube
         "2-ARVHA-0000": "Youtube: Unknown Error",
 
-        #Nintendo Support Page
+        # Nintendo Support Page
         "2005-0003": "This error code may indicate an issue related to the microSD card being used. (https://en-americas-support.nintendo.com/app/answers/detail/a_id/22393/p/897)",
         "2110-1100": "This error code typically indicates that the Nintendo Switch console was unable to detect a network which matches any of the saved networks within the Internet settings. (https://en-americas-support.nintendo.com/app/answers/detail/a_id/22780/p/897)",
         "2618-0516": "This error code generally indicates that your network is not optimal for peer to peer connections, likely due to your network's NAT type. (https://en-americas-support.nintendo.com/app/answers/detail/a_id/25855/p/897)",
@@ -745,9 +745,9 @@ class NXErr(commands.Cog):
 
     def get_name(self, d, k):
         if k in d:
-            return '{} ({})'.format(d[k], k)
+            return f'{d[k]} ({k})'
         else:
-            return '{}'.format(k)
+            return f'{k}'
 
     @commands.command(pass_context=True)
     async def serr(self, ctx, err: str):
@@ -765,7 +765,7 @@ class NXErr(commands.Cog):
             desc = int(err[5:9])
             errcode = (desc << 9) + module
         elif err in self.nin_err:
-            await ctx.send(embed=discord.Embed(title="Game / Support Page Error Code", description="**Description:** {}".format(self.nin_err[err])))
+            await ctx.send(embed=discord.Embed(title="Game / Support Page Error Code", description=f"**Description:** {self.nin_err[err]}"))
             return
         else:
             if err.startswith("0x"):
@@ -773,24 +773,24 @@ class NXErr(commands.Cog):
             errcode = int(err, 16)
             module = errcode & 0x1FF
             desc = (errcode >> 9) & 0x3FFF
-        str_errcode = '{:04}-{:04}'.format(module + 2000, desc)
+        str_errcode = f'{module + 2000:04}-{desc:04}'
         explanation = ''
         if errcode in self.known_errcodes:
             explanation += self.known_errcodes[errcode] + '\n\n'
         elif module in self.known_errcode_ranges:
             for errcode_range in self.known_errcode_ranges[module]:
-                if desc >= errcode_range[0] and desc <= errcode_range[1]:
+                if errcode_range[0] <= desc <= errcode_range[1]:
                     explanation += errcode_range[2] + '\n\n'
         # Game / Support Errors because they are either special or I'm just lazy
         elif err in self.nin_err:
-            await ctx.send(embed=discord.Embed(title="Game / Support Page Error Code", description="**Description:** {}".format(self.nin_err[err])))
+            await ctx.send(embed=discord.Embed(title="Game / Support Page Error Code", description=f"**Description:** {self.nin_err[err]}"))
             return
         # Return back to normal guidelines
         else:
             explanation = "It seems like your error code is unknown. You should report relevant details to <@141532589725974528> so it can be added to the bot. \n \n"
         explanation += 'Module: ' + self.get_name(self.modules, module)
-        explanation += '\nDescription: {}'.format(desc)
-        embed = discord.Embed(title='0x{:X} / {}'.format(errcode, str_errcode), description=explanation)
+        explanation += f'\nDescription: {desc}'
+        embed = discord.Embed(title=f'0x{errcode:X} / {str_errcode}', description=explanation)
         await ctx.send(embed=embed)
 
     @commands.command(pass_context=True)
@@ -801,7 +801,7 @@ class NXErr(commands.Cog):
             module = int(err[0:4]) - 2000
             desc = int(err[5:9])
             errcode = (desc << 9) + module
-            await ctx.send('0x{:X}'.format(errcode))
+            await ctx.send(f'0x{errcode:X}')
 
     @commands.command(pass_context=True)
     async def hex2err(self, ctx, err: str):
@@ -810,7 +810,7 @@ class NXErr(commands.Cog):
         err = int(err, 16)
         module = err & 0x1FF
         desc = (err >> 9) & 0x3FFF
-        errcode = '{:04}-{:04}'.format(module + 2000, desc)
+        errcode = f'{module + 2000:04}-{desc:04}'
         await ctx.send(errcode)
 
 

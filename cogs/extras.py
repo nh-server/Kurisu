@@ -4,9 +4,10 @@ import os
 import random
 import re
 import string
+
+from cogs.checks import is_staff
 from discord.ext import commands
 from discord import TextChannel
-from cogs.checks import is_staff
 
 
 class Extras(commands.Cog):
@@ -15,7 +16,7 @@ class Extras(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        print('Cog "{}" loaded'.format(self.qualified_name))
+        print(f'Cog "{self.qualified_name}" loaded')
 
     prune_key = "nokey"
 
@@ -32,7 +33,7 @@ class Extras(commands.Cog):
     @commands.command()
     async def membercount(self, ctx):
         """Prints the member count of the server."""
-        await ctx.send("{} has {:,} members!".format(ctx.guild.name, ctx.guild.member_count))
+        await ctx.send(f"{ctx.guild.name} has {ctx.guild.member_count:,} members!")
 
     @commands.guild_only()
     @is_staff("SuperOP")
@@ -44,29 +45,29 @@ class Extras(commands.Cog):
             await c.set_permissions(role, overwrite=perms)
         await ctx.send("Changed permissions successfully")
 
-    @commands.guild_only()
     @is_staff("HalfOP")
+    @commands.guild_only()
     @commands.command(hidden=True)
     async def userroles(self, ctx, u: discord.Member = None):
         """Gets user roles and their id. Staff only."""
         if not u:
             u = ctx.author
-        msg = "{}'s Roles:\n\n".format(u)
+        msg = f"{u}'s Roles:\n\n"
         for role in u.roles:
-            if role.is_default(): #Dont include everyone role
+            if role.is_default():
                 continue
-            msg += "{} = {}\n".format(role, role.id)
+            msg += f"{role} = {role.id}\n"
         await ctx.author.send(msg)
 
-    @commands.guild_only()
     @is_staff("HalfOP")
+    @commands.guild_only()
     @commands.command(hidden=True)
     async def serverroles(self, ctx, exp: str):
         """Gets the server roles and their id by regex. Staff only."""
-        msg = "Server roles matching `{}`:\n\n".format(exp)
+        msg = f"Server roles matching `{exp}`:\n\n"
         for role in ctx.guild.roles:
             if bool(re.search(exp, role.name, re.IGNORECASE)):
-                msg += "{} = {}\n".format(role.name, role.id)
+                msg += f"{role.name} = {role.id}\n"
         await ctx.author.send(msg)
 
     @is_staff("OP")
@@ -75,8 +76,8 @@ class Extras(commands.Cog):
         """Embed content."""
         await ctx.send(embed=discord.Embed(description=text))
 
-    @commands.guild_only()
     @is_staff("HalfOP")
+    @commands.guild_only()
     @commands.command()
     async def estprune(self, ctx, days=30):
         """Estimate count of members that would be pruned based on the amount of days. Staff only."""
@@ -87,13 +88,13 @@ class Extras(commands.Cog):
             await ctx.send("Minimum 1 day")
             return
 
-        msg = await ctx.send("I'm figuring this out!".format(ctx.guild.name))
+        msg = await ctx.send(f"I'm figuring this out!")
         with ctx.channel.typing:
             count = await ctx.guildestimate_pruned_members(days=days)
-            await msg.edit(content="{:,} members inactive for {} day(s) would be kicked from {}!".format(count, days, ctx.guild.name))
+            await msg.edit(content=f"{count:,} members inactive for {days} day(s) would be kicked from {ctx.guild.name}!")
 
-    @commands.guild_only()
     @is_staff("HalfOP")
+    @commands.guild_only()
     @commands.command()
     async def activecount(self, ctx, days=30):
         """Shows the number of members active in the past amount of days. Staff only."""
@@ -103,16 +104,16 @@ class Extras(commands.Cog):
         if days < 1:
             await ctx.send("Minimum 1 day")
             return
-        msg = await ctx.send("I'm figuring this out!".format(ctx.guild.name))
+        msg = await ctx.send(f"I'm figuring this out!")
         with ctx.channel.typing:
             count = await ctx.guildestimate_pruned_members(days=days)
             if days == 1:
-                await msg.edit(content="{:,} members were active today in {}!".format(ctx.guild.member_count-count, ctx.guild.name))
+                await msg.edit(content=f"{ctx.guild.member_count - count:,} members were active today in {ctx.guild.name}!")
             else:
-                await msg.edit(content="{:,} members were active in the past {} days in {}!".format(ctx.guild.member_count-count, days, ctx.guild.name))
+                await msg.edit(content=f"{ctx.guild.member_count - count:,} members were active in the past {days} days in {ctx.guild.name}!")
 
-    @commands.guild_only()
     @is_staff("HalfOP")
+    @commands.guild_only()
     @commands.command()
     async def prune30(self, ctx, key=""):
         """Prune members that are inactive for 30 days. Staff only."""
@@ -123,15 +124,16 @@ class Extras(commands.Cog):
             if key != "":
                 await ctx.send("That's not the correct key.")
             self.prune_key = ''.join(random.sample(string.ascii_letters, 8))
-            await ctx.send("Are you sure you want to prune members inactive for 30 days?\nTo see how many members get kicked, use `.estprune`.\nTo confirm the prune, use the command `.prune30 {}`.".format(self.prune_key))
+            await ctx.send(
+                f"Are you sure you want to prune members inactive for 30 days?\nTo see how many members get kicked, use `.estprune`.\nTo confirm the prune, use the command `.prune30 {self.prune_key}`.")
             return
         self.prune_key = ''.join(random.sample(string.ascii_letters, 8))
         await ctx.send("Starting pruning!")
         count = await ctx.guild.prune_members(days=30)
         self.bot.pruning = count
-        await self.bot.mods_channel.send("{:,} are currently being kicked from {}!".format(count, ctx.guild.name))
-        msg = "👢 **Prune**: {} pruned {:,} members".format(ctx.author.mention, count)
-        await self.bot.modlogs_channel.send(msg)
+        await self.bot.channels['mods'].send(f"{count:,} are currently being kicked from {ctx.guild.name}!")
+        msg = f"👢 **Prune**: {ctx.author.mention} pruned {count:,} members"
+        await self.bot.channels['mod-logs'].send(msg)
 
     @is_staff("HalfOP")
     @commands.command()
@@ -147,97 +149,95 @@ class Extras(commands.Cog):
         self.bot.pruning = False
         await ctx.send("enable")
 
-    @commands.command(name="32c3", )
+    @commands.command(name="32c3")
     async def _32c3(self, ctx):
         """Console Hacking 2015"""
         await ctx.send("https://www.youtube.com/watch?v=bZczf57HSag")
 
-    @commands.command(name="33c3", )
+    @commands.command(name="33c3")
     async def _33c3(self, ctx):
         """Nintendo Hacking 2016"""
         await ctx.send("https://www.youtube.com/watch?v=8C5cn_Qj0G8")
 
-    @commands.command(name="34c3", )
+    @commands.command(name="34c3")
     async def _34c3(self, ctx):
         """Console Security - Switch"""
         await ctx.send("https://www.youtube.com/watch?v=Ec4NgWRE8ik")
 
-    if os.environ.get('KURISU_TRACEMALLOC', '0') == '1':
-        @commands.guild_only()
-        @is_staff("OP")
-        @commands.command(hidden=True)
-        async def tmsnap(self, ctx):
-            os.makedirs('tmsnap', exist_ok=True)
-            import tracemalloc
-            snapshot = tracemalloc.take_snapshot()
-            log_fn = 'tmsnap/' + datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S') + '.log'
-            await ctx.send('Dumping to ' + log_fn)
-            with open(log_fn, 'w', encoding='utf-8') as o:
-                for s in snapshot.statistics('lineno'):
-                    print(':'.join((str(s.traceback), str(s.size), str(s.count))), file=o)
-            await ctx.send('Done!')
-
-    @commands.guild_only()
     @is_staff("Owner")
+    @commands.guild_only()
     @commands.command(hidden=True)
     async def dumpchannel(self, ctx, channel: TextChannel, limit=100):
         """Dump 100 messages from a channel to a file."""
-        await ctx.send("Dumping {} messages from {}".format(limit, channel.mention))
-        os.makedirs("#{}-{}".format(channel.name, channel.id), exist_ok=True)
+        await ctx.send(f"Dumping {limit} messages from {channel.mention}")
+        os.makedirs(f"#{channel.name}-{channel.id}", exist_ok=True)
         async for message in channel.history(limit=limit):
-            with open("#{}-{}/{}.txt".format(channel.name, channel.id, message.id), "w") as f:
+            with open(f"#{channel.name}-{channel.id}/{message.id}.txt", "w") as f:
                 f.write(message.content)
         await ctx.send("Done!")
 
     @commands.command(hidden=True)
     async def togglechannel(self, ctx, channelname):
         """Enable or disable access to specific channels."""
-        author = ctx.author
-        await ctx.message.delete()
+        author = self.bot.guild.get_member(ctx.author.id)
+        if isinstance(ctx.channel, discord.abc.GuildChannel):
+            await ctx.message.delete()
         try:
             if channelname == "elsewhere":
-                if self.bot.elsewhere_role in author.roles:
-                    await author.remove_roles(self.bot.elsewhere_role)
+                if self.bot.roles['#elsewhere'] in author.roles:
+                    await author.remove_roles(self.bot.roles['#elsewhere'])
                     await author.send("Access to #elsewhere removed.")
-                elif self.bot.noelsewhere_role not in author.roles:
-                    await author.add_roles(author, self.bot.elsewhere_role)
-                    await ctx.send("Access to #elsewhere granted.")
+                elif self.bot.roles['no-elsewhere'] not in author.roles:
+                    await author.add_roles(self.bot.roles['#elsewhere'])
+                    await author.send("Access to #elsewhere granted.")
                 else:
                     await author.send("Your access to elsewhere is restricted, contact staff to remove it.")
             else:
-                await ctx.send_message("{} is not a valid toggleable channel.".format(channelname))
+                await ctx.send(f"{channelname} is not a valid toggleable channel.")
         except discord.errors.Forbidden:
             pass
 
+    @commands.guild_only()
     @commands.command()
     async def rainbow(self, ctx):
         """Colorful"""
+        emoji = '🌈'
         month = datetime.date.today().month
-        if month == 6:
+        if month == 3:
             member = ctx.author
-            if member.nick and member.nick[-1] == "🌈":
+            if member.nick and member.nick[-1] == emoji:
                 await ctx.send("Your nickname already ends in a rainbow!")
-            elif member.name[-1] == "🌈" and not member.nick:
+            elif member.name[-1] == emoji and not member.nick:
                 await ctx.send("Your name already ends in a rainbow!")
             else:
-                await self.bot.change_nickname(member, member.display_name + " 🌈")
-                await ctx.send("Your nickname is now \"{} \"!".format(member.display_name))  
+                try:
+                    await ctx.author.edit(nick=f"{member.display_name} {emoji}")
+                except discord.errors.Forbidden:
+                    await ctx.send("💢  I can't change your nickname!")
+                    return
+                await ctx.send(f"Your nickname is now `{self.bot.help_command.remove_mentions(member.display_name)}`!")
         else:
             await ctx.send("This month is not colorful enough!")
-            
+
+    @commands.guild_only()
     @commands.command()
     async def norainbow(self, ctx):
         """Tired of it."""
+        emoji = '🌈'
         member = ctx.author
-        pattern = re.compile(r'🌈')
+        pattern = re.compile(rf'{emoji}')
         if member.nick:
             iterator = re.finditer(pattern, member.nick)
             search = list(iterator)
             if search:
                 res = search[-1]
                 nick = member.display_name[0:res.start()] + member.display_name[res.end():]
-                await ctx.send("Your nickname is now \"{}\"!".format(nick))
-                await self.bot.change_nickname(member, nick)
+                try:
+                    await ctx.author.edit(nick=nick)
+                except discord.errors.Forbidden:
+                    await ctx.send("💢  I can't change your nickname!")
+                    return
+                await ctx.send(f"Your nickname is now `{nick}`!")
             else:
                 await ctx.send("You don't have a rainbow!")
         elif bool(re.search(pattern, member.name)):
@@ -245,22 +245,29 @@ class Extras(commands.Cog):
         else:
             await ctx.send("You don't have a rainbow!")
 
+    @commands.guild_only()
     @commands.command()
     async def spooky(self, ctx):
         """Spookybrew"""
+        emoji = '🎃'
         month = datetime.date.today().month
         if month == 10:
             member = ctx.author
-            if member.nick and member.nick[-1] == "🎃":
+            if member.nick and member.nick[-1] == emoji:
                 await ctx.send("Your nickname already ends in a pumpkin!")
-            elif member.name[-1] == "🎃" and not member.nick:
+            elif member.name[-1] == emoji and not member.nick:
                 await ctx.send("Your name already ends in a pumpkin!")
             else:
-                await self.bot.change_nickname(member, member.display_name + " 🎃")
-                await ctx.send("Your nickname is now \"{} \"!".format(member.display_name))  
+                try:
+                    await ctx.author.edit(nick=f"{member.display_name} {emoji}")
+                except discord.errors.Forbidden:
+                    await ctx.send("💢  I can't change your nickname!")
+                    return
+                await ctx.send(f"Your nickname is now `{member.display_name}`!")
         else:
             await ctx.send("This month is not spooky enough!")
 
+    @commands.guild_only()
     @commands.command()
     async def nospooky(self, ctx):
         """Tired of it."""
@@ -272,31 +279,41 @@ class Extras(commands.Cog):
             if search:
                 res = search[-1]
                 nick = member.display_name[0:res.start()] + member.display_name[res.end():]
-                await ctx.send("Your nickname is now \"{}\"!".format(nick))
-                await self.bot.change_nickname(member, nick)
+                try:
+                    await ctx.author.edit(nick=nick)
+                except discord.errors.Forbidden:
+                    await ctx.send("💢  I can't change your nickname!")
+                    return
             else:
                 await ctx.send("You don't have a pumpkin!!")
         elif bool(re.search(pattern, member.name)):
             await ctx.send("Your username is the one with the pumpkin!")
         else:
             await ctx.send("You don't have a pumpkin!")
-            
+
+    @commands.guild_only()
     @commands.command()
     async def turkey(self, ctx):
         """Turkeybrew"""
+        emoji = '🦃'
         month = datetime.date.today().month
         if month == 11:
             member = ctx.author
-            if member.nick and member.nick[-1] == "🦃":
+            if member.nick and member.nick[-1] == emoji:
                 await ctx.send("Your nickname already ends in a turkey!")
-            elif member.name[-1] == "🦃" and not member.nick:
+            elif member.name[-1] == emoji and not member.nick:
                 await ctx.send("Your name already ends in a turkey!")
             else:
-                await self.bot.change_nickname(member, member.display_name + " 🦃")
-                await ctx.send("Your nickname is now \"{} \"!".format(member.display_name))  
+                try:
+                    await ctx.author.edit(nick=f"{member.display_name} {emoji}")
+                except discord.errors.Forbidden:
+                    await ctx.send("💢  I can't change your nickname!")
+                    return
+                await ctx.send(f"Your nickname is now `{member.display_name}`!")
         else:
             await ctx.send("This month is not thankful enough!")
 
+    @commands.guild_only()
     @commands.command()
     async def noturkey(self, ctx):
         """Tired of it."""
@@ -308,31 +325,42 @@ class Extras(commands.Cog):
             if search:
                 res = search[-1]
                 nick = member.display_name[0:res.start()] + member.display_name[res.end():]
-                await ctx.send("Your nickname is now \"{}\"!".format(nick))
-                await self.bot.change_nickname(member, nick)
+                try:
+                    await ctx.author.edit(nick=nick)
+                except discord.errors.Forbidden:
+                    await ctx.send("💢  I can't change your nickname!")
+                    return
+                await ctx.send(f"Your nickname is now `{nick}`!")
             else:
                 await ctx.send("You don't have a turkey!")
         elif bool(re.search(pattern, member.name)):
             await ctx.send("Your username is the one with the turkey!")
         else:
             await ctx.send("You don't have a turkey!")
-            
+
+    @commands.guild_only()
     @commands.command()
     async def xmasthing(self, ctx):
         """It's xmas time."""
+        emoji = '🎄'
         month = datetime.date.today().month
         if month == 12:
             member = ctx.author
-            if member.nick and member.nick[-1] == "🎄":
+            if member.nick and member.nick[-1] == emoji:
                 await ctx.send("Your nickname already ends in an xmas tree!")
-            elif member.name[-1] == "🎄" and not member.nick:
+            elif member.name[-1] == emoji and not member.nick:
                 await ctx.send("Your name already ends in an xmas tree!")
             else:
-                await self.bot.change_nickname(member, member.display_name + " 🎄")
-                await ctx.send("Your nickname is now \"{} \"!".format(member.display_name))  
+                try:
+                    await ctx.author.edit(nick=f"{member.display_name} {emoji}")
+                except discord.errors.Forbidden:
+                    await ctx.send("💢  I can't change your nickname!")
+                    return
+                await ctx.send(f"Your nickname is now `{member.display_name}`!")
         else:
             await ctx.send("This month is not christmassy enough!")
-            
+
+    @commands.guild_only()
     @commands.command()
     async def noxmasthing(self, ctx):
         """Tired of it."""
@@ -344,8 +372,12 @@ class Extras(commands.Cog):
             if search:
                 res = search[-1]
                 nick = member.display_name[0:res.start()] + member.display_name[res.end():]
-                await ctx.send("Your nickname is now \"{}\"!".format(nick))
-                await self.bot.change_nickname(member, nick)
+                try:
+                    await ctx.author.edit(nick=nick)
+                except discord.errors.Forbidden:
+                    await ctx.send("💢  I can't change your nickname!")
+                    return
+                await ctx.send(f"Your nickname is now `{nick}`!")
             else:
                 await ctx.send("You don't have an xmas tree!")
         elif bool(re.search(pattern, member.name)):
@@ -353,23 +385,30 @@ class Extras(commands.Cog):
         else:
             await ctx.send("You don't have an xmas tree!")
 
+    @commands.guild_only()
     @commands.command()
     async def fireworks(self, ctx):
         """It's CurrentYear+1 time."""
+        emoji = '🎆'
         month = datetime.date.today().month
         day = datetime.date.today().day
         if month == 12 and day == 31 or month == 1 and day == 1:
             member = ctx.author
-            if member.nick and member.nick[-1] == "🎆":
+            if member.nick and member.nick[-1] == emoji:
                 await ctx.send("Your nickname already ends in fireworks!")
-            elif member.name[-1] == "🎆" and not member.nick:
+            elif member.name[-1] == emoji and not member.nick:
                 await ctx.send("Your name already ends in fireworks!")
             else:
-                await self.bot.change_nickname(member, member.display_name + " 🎆")
-                await ctx.send("Your nickname is now \"{} \"!".format(member.display_name))
+                try:
+                    await ctx.author.edit(nick=f"{member.display_name} {emoji}")
+                except discord.errors.Forbidden:
+                    await ctx.send("💢  I can't change your nickname!")
+                    return
+                await ctx.send(f"Your nickname is now `{member.display_name}`!")
         else:
             await ctx.send("This day is not old/new enough!")
 
+    @commands.guild_only()
     @commands.command()
     async def nofireworks(self, ctx):
         """Tired of it."""
@@ -381,18 +420,18 @@ class Extras(commands.Cog):
             if search:
                 res = search[-1]
                 nick = member.display_name[0:res.start()] + member.display_name[res.end():]
-                await ctx.send("Your nickname is now \"{}\"!".format(nick))
-                await self.bot.change_nickname(member, nick)
+                try:
+                    await ctx.author.edit(nick=nick)
+                except discord.errors.Forbidden:
+                    await ctx.send("💢  I can't change your nickname!")
+                    return
+                await ctx.send(f"Your nickname is now `{nick}`!")
             else:
                 await ctx.send("You don't have fireworks!")
         elif bool(re.search(pattern, member.name)):
             await ctx.send("Your username is the one with the fireworks!")
         else:
             await ctx.send("You don't have fireworks!")
-
-    async def cog_command_error(self, ctx, error):
-        if isinstance(error, commands.errors.CheckFailure):
-            await ctx.send("{} You don't have permission to use this command.".format(ctx.author.mention))
 
 
 def setup(bot):

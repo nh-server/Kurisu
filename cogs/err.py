@@ -1,9 +1,10 @@
 import binascii
 import discord
 import re
-from discord.ext import commands
-from discord import Color
 import string
+
+from discord import Color
+from discord.ext import commands
 
 
 class Err(commands.Cog):
@@ -12,7 +13,7 @@ class Err(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        print('Cog "{}" loaded'.format(self.qualified_name))
+        print(f'Cog "{self.qualified_name}" loaded')
 
     # CTR Error Codes
     summaries = {
@@ -307,12 +308,12 @@ class Err(commands.Cog):
 
     def get_name(self, d, k, show_unknown=False):
         if k in d:
-            return '{} ({})'.format(d[k], k)
+            return f'{d[k]} ({k})'
         else:
             if show_unknown:
-                return '_Unknown {}_ ({})'.format(show_unknown, k)  # crappy method
+                return f'_Unknown {show_unknown}_ ({k})'  # crappy method
             else:
-                return '{}'.format(k)
+                return f'{k}'
 
     async def aaaa(self, ctx, rc):
         # i know this is shit that's the point
@@ -346,7 +347,7 @@ class Err(commands.Cog):
         """
         if re.match('[0-1][0-9][0-9]\-[0-9][0-9][0-9][0-9]', err):
             embed = discord.Embed(title=err + (": Nintendo 3DS" if err[0] == "0" else ": Wii U"))
-            embed.url = "http://www.nintendo.com/consumer/wfc/en_na/ds/results.jsp?error_code={}&system={}&locale=en_US".format(err, "3DS" if err[0] == "0" else "Wiiu")
+            embed.url = f"http://www.nintendo.com/consumer/wfc/en_na/ds/results.jsp?error_code={err}&system={'3DS' if err[0] == '0' else 'Wiiu'}&locale=en_US"
             if err not in self.errcodes:
                 embed.description = "I don't know this one! Click the error code for details on Nintendo Support.\n\nIf you keep getting this issue and Nintendo Support does not help, or know how to fix it, you should report relevant details to <@78465448093417472> so it can be added to the bot."
             else:
@@ -379,7 +380,7 @@ class Err(commands.Cog):
             desc, mod, summ, level, rc = await self.convert_zerox(ctx, err)
 
             # garbage
-            embed = discord.Embed(title="0x{:X}".format(rc))
+            embed = discord.Embed(title=f"0x{rc:X}")
             embed.add_field(name="Module", value=self.get_name(self.modules, mod), inline=False)
             embed.add_field(name="Description", value=self.get_name(self.descriptions, desc), inline=False)
             embed.add_field(name="Summary", value=self.get_name(self.summaries, summ), inline=False)
@@ -397,7 +398,7 @@ class Err(commands.Cog):
         desc, mod, summ, level, rc = await self.convert_zerox(err)
  
         # garbage
-        embed = discord.Embed(title="0x{:X}".format(rc))
+        embed = discord.Embed(title=f"0x{rc:X}")
         value = self.get_name(self.modules, mod, 'module') + '\n'
         value += self.get_name(self.descriptions, desc, 'description') + '\n'
         value += self.get_name(self.summaries, summ, 'summary') + '\n'

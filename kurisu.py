@@ -2,17 +2,15 @@
 
 # Kurisu by 916253 & ihaveamac
 # license: Apache License 2.0
-# https://github.com/916253/Kurisu
+# https://github.com/nh-server/Kurisu
 
-# import dependencies
-import logging
 from asyncio import Event
 from configparser import ConfigParser
 import sqlite3
 from subprocess import check_output, CalledProcessError
 import os
-from sys import exit, exc_info, hexversion
-from traceback import format_exception
+from sys import exit, hexversion
+from traceback import format_exception, print_exc
 import discord
 from discord.ext import commands
 
@@ -20,9 +18,11 @@ from discord.ext import commands
 dir_path = os.path.dirname(os.path.realpath(__file__))
 os.chdir(dir_path)
 
-#Load config
+# Load config
 config = ConfigParser()
 config.read("config.ini")
+
+DATABASE_NAME = 'data/kurisu.sqlite'
 
 # loads extensions
 cogs = [
@@ -48,11 +48,10 @@ cogs = [
     'cogs.rules',
 ]
 
-DATABASE = 'data/kurisu.sqlite'
 
 class Kurisu(commands.Bot):
     """Its him!!."""
-    def __init__(self, command_prefix,description, logging_level=logging.WARNING, ):
+    def __init__(self, command_prefix, description):
         super().__init__(command_prefix=command_prefix, description=description)
 
         self.roles = {
@@ -69,49 +68,60 @@ class Kurisu(commands.Bot):
             'Muted': None,
             'No-Help': None,
             'no-elsewhere': None,
+            'No-Memes': None,
+            'No-Embed': None,
             '#elsewhere': None,
             'Small Help': None,
+
         }
 
+        self.actions = []
+        self.pruning = False
+
         self.channels = {
+            'announcements': None,
+            'welcome-and-rules': None,
             'mods': None,
             'helpers': None,
+            'message-logs': None,
             'mod-logs': None,
-            'server-logs': None,
             'watch-logs': None,
             'upload-logs': None,
             'mod-mail': None,
+            'bot-err': None,
+            'server-logs': None,
+            'meta': None,
         }
-        self.exitcode = 2
-        self._is_all_ready = Event(loop=self.loop)
 
         self.failed_cogs = []
+        self.exitcode = 0
+        self._is_all_ready = Event(loop=self.loop)
 
         os.makedirs("data", exist_ok=True)
         os.makedirs("data/ninupdates", exist_ok=True)
-        if not os.path.isfile(DATABASE):
+
+        if not os.path.isfile(DATABASE_NAME):
             # read schema, open db, init
-            print("Create database")
+            print(f'Creating database {DATABASE_NAME}')
             with open('schema.sql', 'r', encoding='utf-8') as f:
                 schema = f.read()
-            self.dbcon = sqlite3.connect(DATABASE)
+            self.dbcon = sqlite3.connect(DATABASE_NAME)
             self.dbcon.executescript(schema)
             self.dbcon.commit()
-
-            print('%s initialized', DATABASE)
+            self.c = self.dbcon.cursor()
+            print(f'{DATABASE_NAME} initialized')
         else:
             # just open db, no setup
-            self.dbcon = sqlite3.connect(DATABASE)
+            self.dbcon = sqlite3.connect(DATABASE_NAME)
             self.c = self.dbcon.cursor()
-
-        print('Kurisu is alive!')
+        self.db_closed = False
 
     def load_cogs(self):
         for extension in cogs:
             try:
                 self.load_extension(extension)
-            except Exception as e:
-                print('{} failed to load.\n{}: {}'.format(extension, type(e).__name__, e))
+            except BaseException as e:
+                print(f'{extension} failed to load.', extension)
                 self.failed_cogs.append([extension, type(e).__name__, e])
 
     async def on_ready(self):
@@ -129,11 +139,21 @@ class Kurisu(commands.Bot):
             if not self.roles[n]:
                 print(f'Failed to find role {n}')
 
+        self.staff_roles = {'Owner': self.roles['Owner'],
+                            'SuperOP': self.roles['Owner'],
+                            'OP': self.roles['OP'],
+                            'HalfOP': self.roles['HalfOP']}
+
+        self.helper_roles = {"3DS": self.roles['On-Duty 3DS'],
+                             "WiiU": self.roles['On-Duty Wii U'],
+                             "Switch": self.roles['On-Duty Switch']}
+
         startup_message = f'{self.user.name} has started! {self.guild} has {self.guild.member_count:,} members!'
         if len(self.failed_cogs) != 0:
             startup_message += "\n\nSome addons failed to load:\n"
             for f in self.failed_cogs:
                 startup_message += "\n{}: `{}: {}`".format(*f)
+        print(startup_message)
         await self.channels['helpers'].send(startup_message)
         self._is_all_ready.set()
 
@@ -156,23 +176,30 @@ class Kurisu(commands.Bot):
         elif isinstance(exc, commands.BadArgument):
             await ctx.send(f'{author.mention} A bad argument was given: `{exc}`\n')
             await ctx.send_help(ctx.command)
-
         elif isinstance(exc, commands.MissingRequiredArgument):
-            await ctx.send('{author.mention} You are missing required arguments.\n')
+            await ctx.send(f'{author.mention} You are missing required arguments.\n')
             await ctx.send_help(ctx.command)
-
         elif isinstance(exc, commands.CommandInvokeError):
-            print('Exception in %s: %s: %s', command, type(exc).__name__, exc)
             await ctx.send(f'{author.mention} `{command}` raised an exception during usage')
-
+            await self.channels['bot-err'].send(f'```\n{"".join(format_exception(type(exc), exc, exc.__traceback__))}\n```')
         else:
-            print('Unexpected exception in %s: %s: %s', command, type(exc).__name__, exc)
             if not isinstance(command, str):
                 command.reset_cooldown(ctx)
             await ctx.send(f'{author.mention} Unexpected exception occurred while using the command `{command}`')
+            await self.channels['bot-err'].send(f'```\n{"".join(format_exception(type(exc), exc, exc.__traceback__))}\n```')
 
     async def on_error(self, event_method, *args, **kwargs):
-        print('Exception occurred in %s', event_method)
+        print(f'Exception occurred in {event_method}')
+        print_exc()
+
+    def add_cog(self, cog):
+        super().add_cog(cog)
+
+    async def close(self):
+        print('Kurisu is shutting down')
+        self.dbcon.close()
+        self.db_closed = True
+        await super().close()
 
     async def is_all_ready(self):
         """Checks if the bot is finished setting up."""
@@ -183,13 +210,13 @@ class Kurisu(commands.Bot):
         await self._is_all_ready.wait()
 
 
-def main(debug=False):
+def main():
     """Main script to run the bot."""
     if discord.version_info.major < 1:
         print(f'discord.py is not at least 1.0.0x. (current version: {discord.__version__})')
         return 2
 
-    if not hexversion >= 0x030702F0:  # 3.7.2
+    if not hexversion >= 0x030702F0:  # 3.7.1
         print('Kurisu requires 3.7.2 or later.')
         return 2
 
@@ -206,17 +233,14 @@ def main(debug=False):
         print(f'Checking for git branch failed: {type(e).__name__}: {e}')
         branch = "<unknown>"
 
-
-    # do not remove a command prefix unless it is demonstrably causing problems
-    bot = Kurisu(('.', '!'), logging_level=logging.DEBUG if debug else logging.INFO, description="Kurisu, the bot for Nintendo Homebrew!")
-    bot.help_command.pm_help = None
-    bot.log.info('Starting Kurisu2 on commit %s on branch %s', commit, branch)
+    bot = Kurisu(('.', '!'), description="Kurisu, the bot for Nintendo Homebrew!")
+    bot.help_command.dm_help = None
+    print(f'Starting Kurisu on commit {commit} on branch {branch}', commit, branch)
     bot.load_cogs()
-
-    bot.log.debug('Running bot')
     bot.run(config['Main']['token'])
+
     return bot.exitcode
 
 
 if __name__ == '__main__':
-    main()
+    exit(main())

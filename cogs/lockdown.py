@@ -10,122 +10,126 @@ class Lockdown(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        print('Cog "{}" loaded'.format(self.qualified_name))
+        print(f'Cog "{self.qualified_name}" loaded')
+
+    async def cog_check(self, ctx):
+        if ctx.guild is None:
+            raise commands.NoPrivateMessage()
+        return True
 
     @is_staff("HalfOP")
     @commands.command()
     async def lockdown(self, ctx, channels: commands.Greedy[discord.TextChannel]):
         """Lock message sending in the channel. Staff only."""
+        author = ctx.author
         if not channels:
             channels.append(ctx.channel)
         locked_down = []
         for c in channels:
-            if c.overwrites_for(self.bot.everyone_role) is False:
-                await ctx.send("🔒 {} is already locked down. Use `.unlock` to unlock.".format(c.mention))
+            if c.overwrites_for(ctx.guild.default_role) is False:
+                await ctx.send(f"🔒 {c.mention} is already locked down. Use `.unlock` to unlock.")
                 continue
             try:
-                await c.set_permissions(self.bot.everyone_role, send_messages=False)
+                await c.set_permissions(ctx.guild.default_role, send_messages=False)
             except discord.errors.Forbidden:
                 await ctx.send("💢 I don't have permission to do this.")
             await c.send("🔒 Channel locked down. Only staff members may speak. Do not bring the topic to other channels or risk disciplinary actions.")
             locked_down.append(c)
         if locked_down:
-            msg = "🔒 **Lockdown**: {1} locked down channels | {2}#{3}\n📝 __Channels__: {0}".format(', '.join(c.mention for c in locked_down), ctx.author.mention, ctx.author.name, ctx.author.discriminator)
-            await self.bot.modlogs_channel.send(msg)
-        
+            msg = f"🔒 **Lockdown**: {ctx.author.mention} locked down channels | {author}\n📝 __Channels__: {', '.join(c.mention for c in locked_down)}"
+            await self.bot.channels['mod-logs'].send(msg)
+
     @is_staff("Owner")
     @commands.command()
     async def slockdown(self, ctx, channels: commands.Greedy[discord.TextChannel]):
         """Lock message sending in the channel for everyone. Owners only."""
+        author = ctx.author
         if not channels:
             channels.append(ctx.channel)
         locked_down = []
         for c in channels:
-            if c.overwrites_for(self.bot.staff_role).send_messages is False:
-                await ctx.send("🔒 {} is already locked down. Use `.unlock` to unlock.".format(c.mention))
+            if c.overwrites_for(self.bot.roles['Staff']).send_messages is False:
+                await ctx.send(f"🔒 {c.mention} is already locked down. Use `.unlock` to unlock.")
                 continue
             try:
-                await c.set_permissions(self.bot.everyone_role, send_messages=False)
-                await c.set_permissions(self.bot.staff_role, send_messages=False)
+                await c.set_permissions(ctx.guild.default_role, send_messages=False)
+                await c.set_permissions(self.bot.roles['Staff'], send_messages=False)
             except discord.errors.Forbidden:
                 await ctx.send("💢 I don't have permission to do this.")
             await c.send("🔒 Channel locked down. Only owners members may speak. Do not bring the topic to other channels or risk disciplinary actions.")
             locked_down.append(c)
         if locked_down:
-            msg = "🔒 **Super lockdown**: {1} locked down channels | {2}#{3}\n📝 __Channels__: {0}".format(', '.join(c.mention for c in locked_down), ctx.author.mention, ctx.author.name, ctx.author.discriminator)
-            await self.bot.modlogs_channel.send(msg)
+            msg = f"🔒 **Super lockdown**: {ctx.author.mention} locked down channels | {author}\n📝 __Channels__: {', '.join(c.mention for c in locked_down)}"
+            await self.bot.channels['mod-logs'].send(msg)
 
     @is_staff('Helper')
     @commands.command()
     async def softlock(self, ctx, channels: commands.Greedy[discord.TextChannel]):
         """Lock message sending in the channel, without the "disciplinary action" note. Staff and Helpers only."""
+        author = ctx.author
         if not channels:
             channels.append(ctx.channel)
         locked_down = []
-        ishelper= not check_staff_id(ctx, "HalfOP", id)
+        ishelper = not check_staff_id(ctx, "HalfOP", id)
         for c in channels:
-            if (ishelper) and (c not in self.bot.assistance_channels):
-                await ctx.send("{0} {1} can't be locked by a helper.".format(ctx.author.mention, c.mention))
+            if ishelper and (c not in self.bot.assistance_channels):
+                await ctx.send(f"{ctx.author.mention} {c.mention} can't be locked by a helper.")
                 continue
-            if c.overwrites_for(self.bot.everyone_role).send_message is False:
-                await ctx.send("🔒 {} is already locked down. Use `.unlock` to unlock.".format(c.mention))
+            if c.overwrites_for(ctx.guild.default_role).send_message is False:
+                await ctx.send(f"🔒 {c.mention} is already locked down. Use `.unlock` to unlock.")
                 continue
             try:
-                await c.set_permissions(self.bot.everyone_role, send_messages=False)
-                await c.set_permissions(self.bot.helpers_role, send_messages=ishelper)
+                await c.set_permissions(ctx.guild.default_role, send_messages=False)
+                await c.set_permissions(self.bot.roles['Helpers'], send_messages=ishelper)
             except discord.errors.Forbidden:
                 await ctx.send("💢 I don't have permission to do this.")
             await c.send("🔒 Channel locked.")
             locked_down.append(c)
         if len(locked_down):
-            msg = "🔒 **Soft-lock**: {1} soft-locked channels | {2}#{3}\n📝 __Channels__: {0}".format(', '.join(c.mention for c in locked_down), ctx.author.mention, ctx.author.name, ctx.author.discriminator)
-            await self.bot.modlogs_channel.send(msg)
-
+            msg = f"🔒 **Soft-lock**: {ctx.author.mention} soft-locked channels | {author}\n📝 __Channels__: {', '.join(c.mention for c in locked_down)}"
+            await self.bot.channels['mod-logs'].send(msg)
 
     @is_staff('Helper')
     @commands.command()
     async def unlock(self, ctx, channels: commands.Greedy[discord.TextChannel]):
         """Unlock message sending in the channel. Staff only and Helpers only."""
+        author = ctx.author
         if not channels:
             channels.append(ctx.channel)
-        ishelper= not check_staff_id(ctx, "HalfOP", ctx.author.id)
+        ishelper = not check_staff_id(ctx, "HalfOP", ctx.author.id)
         try:
             if len(ctx.channel_mentions) == 0:
                 channels = [ctx.channel]
-                if (ishelper) and (ctx.channel not in self.bot.assistance_channels):
-                    msg = "{0} Helpers cannot use this command outside of the assistance channels.".format(issuer.mention)
+                if ishelper and (ctx.channel not in self.bot.assistance_channels):
+                    msg = f"{ctx.author.mention} Helpers cannot use this command outside of the assistance channels."
                     await ctx.send(msg)
                     return
             else:
                 channels = ctx.channel_mentions
             unlocked = []
             for c in channels:
-                if (ishelper) and (c not in self.bot.assistance_channels):
-                    await ctx.send("{0} {1} can't be unlocked by a helper.".format(issuer.mention, c.mention))	
+                if ishelper and (c not in self.bot.assistance_channels):
+                    await ctx.send(f"{ctx.author.mention} {c.mention} can't be unlocked by a helper.")
                     return
-                overwrites_everyone = c.overwrites_for(self.bot.everyone_role)
-                overwrites_staff = c.overwrites_for(self.bot.staff_role)
-                overwrites_helpers = c.overwrites_for(self.bot.helpers_role)
-                if c.overwrites_for(self.bot.everyone_role).send_messages is None:
-                    await ctx.send("🔓 {} is already unlocked.".format(c.mention))
+                overwrites_everyone = c.overwrites_for(ctx.guild.default_role)
+                overwrites_staff = c.overwrites_for(self.bot.roles['Staff'])
+                overwrites_helpers = c.overwrites_for(self.bot.roles['Helpers'])
+                if c.overwrites_for(ctx.guild.default_role).send_messages is None:
+                    await ctx.send(f"🔓 {c.mention} is already unlocked.")
                     return
                 overwrites_everyone.send_messages = None
-                overwrites_staff.send_messages = True                
+                overwrites_staff.send_messages = True
                 overwrites_helpers.send_messages = None
-                await c.set_permissions(self.bot.everyone_role, send_messages=None)
-                await c.set_permissions(self.bot.helpers_role, send_messages=True)
-                await c.set_permissions(self.bot.staff_role, send_messages=None)
+                await c.set_permissions(ctx.guild.default_role, send_messages=None)
+                await c.set_permissions(self.bot.roles['Helpers'], send_messages=True)
+                await c.set_permissions(self.bot.roles['Staff'], send_messages=None)
                 await c.send("🔓 Channel unlocked.")
                 unlocked.append(c)
             if unlocked:
-                msg = "🔓 **Unlock**: {1} unlocked channels | {2}#{3}\n📝 __Channels__: {0}".format(', '.join(c.mention for c in unlocked), ctx.author.mention, ctx.author.name, ctx.author.discriminator)
-                await self.bot.modlogs_channel.send(msg)
+                msg = f"🔓 **Unlock**: {ctx.author.mention} unlocked channels | {author}\n📝 __Channels__: {', '.join(c.mention for c in unlocked)}"
+                await self.bot.channels['mod-logs'].send(msg)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
-
-    async def cog_command_error(self, ctx, error):
-        if isinstance(error, commands.errors.CheckFailure):
-            await ctx.send("{} You don't have permission to use this command.".format(ctx.author.mention))
 
 
 def setup(bot):

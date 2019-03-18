@@ -1,33 +1,37 @@
-from cogs.checks import is_staff
-from discord.ext import commands
-import cogs.checks
 from cogs.database import DatabaseCog
 from cogs.converters import SafeMember
+from cogs.checks import is_staff
+from discord.ext import commands
 
 
-@commands.guild_only()
 class HelperList(DatabaseCog):
     """
     Management of active helpers.
     """
+
+    async def cog_check(self, ctx):
+        if ctx.guild is None:
+            raise commands.NoPrivateMessage()
+        return True
+
     @is_staff(role='Owner')
     @commands.command()
     async def addhelper(self, ctx, member: SafeMember, position):
         """Add user as a helper. Owners only."""
         if position not in self.bot.helper_roles:
-            await ctx.send("💢 That's not a valid position. You can use __{}__".format("__, __".join(self.bot.helper_roles.keys())))
+            await ctx.send(f"💢 That's not a valid position. You can use __{'__, __'.join(self.bot.helper_roles.keys())}__")
             return
         self.add_helper(member.id, position)
-        await member.add_roles(self.bot.helpers_role)
-        await ctx.send("{} is now a helper. Welcome to the party room!".format(member.mention, position))
+        await member.add_roles(self.bot.roles['Helpers'])
+        await ctx.send(f"{member.mention} is now a helper. Welcome to the party room!")
 
     @commands.command()
     async def delhelper(self, ctx, member: SafeMember):
         """Remove user from helpers. Owners only."""
         await ctx.send(member.name)
         self.remove_helper(member.id)
-        await member.remove_roles(self.bot.helpers_role, *self.bot.helper_roles.values())
-        await ctx.send("{} is no longer a helper. Stop by some time!".format(member.mention))
+        await member.remove_roles(self.bot.roles['Helpers'])
+        await ctx.send(f"{member.mention} is no longer a helper. Stop by some time!")
 
     @commands.command()
     async def helpon(self, ctx):
@@ -38,9 +42,9 @@ class HelperList(DatabaseCog):
             await ctx.send("You are not listed as a helper, and can't use this.")
             return
         await author.add_roles(self.bot.helper_roles[console])
-        await ctx.send("{} is now actively helping.".format(author.mention))
-        msg = "🚑 **Elevated: +Help**: {} | {}#{}".format(author.mention, author.name, author.discriminator)
-        await self.bot.modlogs_channel.send(msg)
+        await ctx.send(f"{author.mention} is now actively helping.")
+        msg = f"🚑 **Elevated: +Help**: {author.mention} | {author}"
+        await self.bot.channels['mod-logs'].send(msg)
 
     @commands.command()
     async def helpoff(self, ctx):
@@ -50,14 +54,10 @@ class HelperList(DatabaseCog):
         if not console:
             await ctx.send("You are not listed as a helper, and can't use this.")
             return
-        await author.remove_roles(self.bot.helper_roles[cogs.checks.helpers[console]])
-        await ctx.send("{} is no longer actively helping!".format(author.mention))
-        msg = "👎🏻 **De-Elevated: -Help**: {} | {}#{}".format(author.mention, author.name, author.discriminator)
-        await self.bot.modlogs_channel.send(msg)
-
-    async def cog_command_error(self, ctx, error):
-        if isinstance(error, commands.errors.CheckFailure):
-            await ctx.send("{} You don't have permission to use this command.".format(ctx.author.mention))
+        await author.remove_roles(self.bot.helper_roles[console])
+        await ctx.send(f"{author.mention} is no longer actively helping!")
+        msg = f"👎🏻 **De-Elevated: -Help**: {author.mention} | {author}"
+        await self.bot.channels['mod-logs'].send(msg)
 
 
 def setup(bot):

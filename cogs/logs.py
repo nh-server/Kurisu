@@ -26,45 +26,44 @@ Thanks for stopping by and have a good time!
     @commands.Cog.listener()
     async def on_member_join(self, member):
         await self.bot.wait_until_all_ready()
-        msg = "✅ **Join**: {} | {}#{}\n🗓 __Creation__: {}\n🏷 __User ID__: {}".format(
-            member.mention, self.bot.escape_name(member.name), member.discriminator, member.created_at, member.id
-        )
+        msg = f"✅ **Join**: {member.mention} | {member}\n🗓 __Creation__: {member.created_at}\n🏷 __User ID__: {member.id}"
         softban = self.get_softbans(member.id)
         if softban:
             message_sent = False
             try:
-                await member.send("This account has not been permitted to participate in {}. The reason is: {}".format(self.bot.server.name, softban[3]))
+                await member.send(
+                    f"This account has not been permitted to participate in {self.bot.server.name}. The reason is: {softban[3]}")
                 message_sent = True
             except discord.errors.Forbidden:
                 pass
             self.bot.actions.append("sbk:"+str(member.id))
             await member.kick()
-            msg = "🚨 **Attempted join**: {} is soft-banned by <@{}> | {}#{}".format(member.mention, softban[2], self.bot.escape_name(member.name), member.discriminator)
+            msg = f"🚨 **Attempted join**: {member.mention} is soft-banned by <@{softban[2]}> | {member}"
             if not message_sent:
                 msg += "\nThis message did not send to the user."
             embed = discord.Embed(color=discord.Color.red())
             embed.description = softban[3]
-            await self.bot.serverlogs_channel.send(msg, embed=embed)
+            await self.bot.channels['server-logs'].send(msg, embed=embed)
             return
         rst = self.get_restrictions_roles_id(member.id)
         if rst:
             roles = []
             for role in rst:
-                roles.append(discord.utils.get(member.guild.roles, name=role))
+                roles.append(member.guild.get_role(role))
             await member.add_roles(*roles)
 
         warns = self.get_warns(member.id)
 
         if len(warns) == 0:
-            await self.bot.serverlogs_channel.send(msg)
+            await self.bot.channels['server-logs'].send(msg)
         else:
             embed = discord.Embed(color=discord.Color.dark_red())
-            embed.set_author(name="Warns for {}#{}".format(self.bot.escape_name(member.name), member.discriminator), icon_url=member.avatar_url)
+            embed.set_author(name=f"Warns for {member}", icon_url=member.avatar_url)
             for idx, warn in enumerate(warns):
-                embed.add_field(name="{}: {}".format(idx + 1, warn[3]), value="Issuer: {}\nReason: {}".format(warn[1], warn[2]))
-            await self.bot.serverlogs_channel.send(msg, embed=embed)
+                embed.add_field(name=f"{idx + 1}: {warn[3]}", value=f"Issuer: {(await self.bot.get_user_info(warn[1])).display_name}\nReason: {warn[2]}")
+            await self.bot.channels['server-logs'].send(msg, embed=embed)
         try:
-            await member.send(self.welcome_msg.format(self.bot.escape_name(member.name), member.guild.name, self.bot.welcome_channel.mention))
+            await member.send(self.welcome_msg.format(self.bot.help_command.remove_mentions(member.name), member.guild.name, self.bot.channels['welcome-and-rules'].mention))
         except discord.errors.Forbidden:
             pass
 
@@ -80,27 +79,27 @@ Thanks for stopping by and have a good time!
         if self.bot.pruning != 0 and "wk:"+str(member.id) not in self.bot.actions:
             self.bot.pruning -= 1
             if self.bot.pruning == 0:
-                await self.bot.mods_channel.send("Pruning finished!")
+                await self.bot.channels['mods'].send("Pruning finished!")
             return
-        msg = "{}: {} | {}#{}\n🏷 __User ID__: {}".format("👢 **Auto-kick**" if "wk:"+str(member.id) in self.bot.actions else "⬅️ **Leave**", member.mention, self.bot.escape_name(member.name), member.discriminator, member.id)
-        await self.bot.serverlogs_channel.send(msg)
+        msg = f"{'👢 **Auto-kick**' if 'wk:' + str(member.id) in self.bot.actions else '⬅️ **Leave**'}: {member.mention} | {member}\n🏷 __User ID__: {member.id}"
+        await self.bot.channels['server-logs'].send(msg)
         if "wk:"+str(member.id) in self.bot.actions:
             self.bot.actions.remove("wk:"+str(member.id))
-            await self.bot.modlogs_channel.send(msg)
+            await self.bot.channels['mod-logs'].send(msg)
 
     @commands.Cog.listener()
-    async def on_member_ban(self, member):
+    async def on_member_ban(self, guild, member):
         await self.bot.wait_until_all_ready()
-        if "ub:"+member.id in self.bot.actions:
+        if "ub:"+str(member.id) in self.bot.actions:
             self.bot.actions.remove("ub:"+str(member.id))
             return
-        msg = "⛔ **{}**: {} | {}#{}\n🏷 __User ID__: {}".format("Auto-ban" if "wb:"+member.id in self.bot.actions else "Ban", member.mention, self.bot.escape_name(member.name), member.discriminator, member.id)
-        await self.bot.serverlogs_channel.send(msg)
-        if "wb:"+member.id in self.bot.actions:
+        msg = "⛔ **'Auto-ban'" if 'wb:' + str(member.id) in self.bot.actions else f"⛔ **Ban**: {member.mention} | {member}\n🏷 __User ID__: {member.id}"
+        await self.bot.channels['server-logs'].send(msg)
+        if "wb:"+str(member.id) in self.bot.actions:
             self.bot.actions.remove("wb:"+str(member.id))
         else:
             msg += "\nThe responsible staff member should add an explanation below."
-        await self.bot.modlogs_channel.send(msg)
+        await self.bot.channels['mod-logs'].send(msg)
 
     @commands.Cog.listener()
     async def on_member_unban(self, server, user):
@@ -108,22 +107,22 @@ Thanks for stopping by and have a good time!
         if "tbr:"+str(user.id) in self.bot.actions:
             self.bot.actions.remove("tbr:"+str(user.id))
             return
-        msg = "⚠️ **Unban**: {} | {}#{}".format(user.mention, self.bot.escape_name(user.name), user.discriminator)
+        msg = f"⚠️ **Unban**: {user.mention} | {user}"
         if self.get_softbans(user.id):
             msg += "\nTimeban removed."
-            self.remove_timed_restriction(user.id,'timeban')
-        await self.bot.modlogs_channel.send(msg)
+            self.remove_timed_restriction(user.id, 'timeban')
+        await self.bot.channels['mod-logs'].send(msg)
 
     @commands.Cog.listener()
     async def on_member_update(self, member_before, member_after):
         await self.bot.wait_until_all_ready()
         do_log = False  # only nickname and roles should be logged
-        dest = self.bot.modlogs_channel
+        dest = self.bot.channels['mod-logs']
         roles_before = set(member_before.roles)
         roles_after = set(member_after.roles)
         if roles_before ^ roles_after:
             do_log = True
-            dest = self.bot.serverlogs_channel
+            dest = self.bot.channels['server-logs']
             # role removal
             if roles_before - roles_after:
                 msg = "\n👑 __Role removal__: "
@@ -148,21 +147,21 @@ Thanks for stopping by and have a good time!
                     else:
                         roles.append(role.name)
                 msg += ', '.join(roles)
-        if self.bot.escape_name(member_before.name) != self.bot.escape_name(member_after.name):
+        if self.bot.help_command.remove_mentions(member_before.name) != self.bot.help_command.remove_mentions(member_after.name):
             do_log = True
-            dest = self.bot.serverlogs_channel
-            msg = "\n📝 __Username change__: {} → {}".format(self.bot.escape_name(member_before.name), self.bot.escape_name(member_after.name))
+            dest = self.bot.channels['server-logs']
+            msg = f"\n📝 __Username change__: {self.bot.help_command.remove_mentions(member_before.name)} → {self.bot.help_command.remove_mentions(member_after.name)}"
         if member_before.nick != member_after.nick:
             do_log = True
-            if member_before.nick == None:
+            if member_before.nick is None:
                 msg = "\n🏷 __Nickname addition__"
-            elif member_after.nick == None:
+            elif member_after.nick is None:
                 msg = "\n🏷 __Nickname removal__"
             else:
                 msg = "\n🏷 __Nickname change__"
-            msg += ": {0} → {1}".format(self.bot.escape_name(member_before.nick), self.bot.escape_name(member_after.nick))
+            msg += f": {self.bot.help_command.remove_mentions(member_after.nick)} → {self.bot.help_command.remove_mentions(member_after.nick)}"
         if do_log:
-            msg = "ℹ️ **Member update**: {} | {}#{}".format(member_after.mention, self.bot.escape_name(member_after.name), member_after.discriminator) + msg
+            msg = f"ℹ️ **Member update**: {member_after.mention} | {member_after} {msg}"
             await dest.send(msg)
 
 

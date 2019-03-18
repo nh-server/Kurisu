@@ -8,7 +8,12 @@ class Load(commands.Cog, command_attrs=dict(hidden=True)):
     """
     def __init__(self, bot):
         self.bot = bot
-        print('Cog "{}" loaded'.format(self.qualified_name))
+        print(f'Cog "{self.qualified_name}" loaded')
+
+    async def cog_check(self, ctx):
+        if ctx.guild is None:
+            raise commands.NoPrivateMessage()
+        return True
 
     # Load test
     @is_staff("OP")
@@ -21,7 +26,7 @@ class Load(commands.Cog, command_attrs=dict(hidden=True)):
             self.bot.load_extension(module)
             await ctx.send('✅ Extension loaded.')
         except Exception as e:
-            await ctx.send('💢 Failed!\n```\n{}: {}\n```'.format(type(e).__name__, e))
+            await ctx.send(f'💢 Failed!\n```\n{type(e).__name__}: {e}\n```')
 
     @is_staff("OP")
     @commands.command()
@@ -36,11 +41,11 @@ class Load(commands.Cog, command_attrs=dict(hidden=True)):
                 self.bot.unload_extension(module)
                 await ctx.send('✅ Extension unloaded.')
         except Exception as e:
-            await ctx.send('💢 Failed!\n```\n{}: {}\n```'.format(type(e).__name__, e))
+            await ctx.send(f'💢 Failed!\n```\n{type(e).__name__}: {e}\n```')
 
     @is_staff("OP")
     @commands.command(name='reload')
-    async def _reload(self, ctx, *, module : str):
+    async def _reload(self, ctx, *, module: str):
         """Reloads an Cog."""
         try:
             if module[0:7] != "cogs.":
@@ -49,11 +54,7 @@ class Load(commands.Cog, command_attrs=dict(hidden=True)):
             self.bot.load_extension(module)
             await ctx.send('✅ Extension reloaded.')
         except Exception as e:
-            await ctx.send('💢 Failed!\n```\n{}: {}\n```'.format(type(e).__name__, e))
-
-    async def cog_command_error(self, ctx, error):
-        if isinstance(error, commands.errors.CheckFailure):
-            await ctx.send("{} You don't have permission to use this command.".format(ctx.author.mention))
+            await ctx.send(f'💢 Failed!\n```\n{type(e).__name__}: {e}\n```')
 
 
 def setup(bot):

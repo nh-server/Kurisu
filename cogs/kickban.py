@@ -2,26 +2,29 @@ import datetime
 import discord
 import re
 import time
-from cogs.database import DatabaseCog
-from discord.ext import commands
+
 from cogs import converters
 from cogs.checks import is_staff, check_staff_id
-import sqlite3
+from cogs.database import DatabaseCog
+from discord.ext import commands
 
 
-@commands.guild_only()
 class KickBan(DatabaseCog):
     """
     Kicking and banning users.
     """
-    async def meme(self, beaner, beaned, action, channel, reason):
-        await channel.send("Seriously? What makes you think it's okay to try and {} another staff or helper like that?".format(action))
-        msg = "{} attempted to {} {}|{}#{} in {} ".format(beaner.mention, action, beaned.mention,
-                                                                  self.bot.escape_name(beaned.name),
-                                                                  beaned.discriminator, channel.mention)
+
+    async def cog_check(self, ctx):
+        if ctx.guild is None:
+            raise commands.NoPrivateMessage()
+        return True
+
+    async def meme(self, beaner: discord.Member, beaned: discord.Member, action: str, channel: discord.TextChannel, reason: str):
+        await channel.send(f"Seriously? What makes you think it's okay to try and {action} another staff or helper like that?")
+        msg = f"{beaner.mention} attempted to {action} {beaned.mention}|{beaned} in {channel.mention} "
         if reason != "":
             msg += "for the reason " + reason
-        await self.bot.meta_channel.send(msg + (" without a reason" if reason == "" else ""))
+        await self.bot.channels['meta'].send(msg + (" without a reason" if reason == "" else ""))
 
     @is_staff("HalfOP")
     @commands.command(name="kick")
@@ -30,26 +33,26 @@ class KickBan(DatabaseCog):
         if check_staff_id(ctx, 'Helper', member.id):
             await self.meme(ctx.author, member, "kick", ctx.channel, reason)
             return
-        msg = "You were kicked from {}.".format(ctx.guild.name)
+        msg = f"You were kicked from {ctx.guild.name}."
         if reason != "":
             msg += " The given reason is: " + reason
         msg += "\n\nYou are able to rejoin the server, but please read the rules in #welcome-and-rules before participating again."
         try:
             await member.send(msg)
-        except discord.errors.Forbidden:
+        except (discord.errors.Forbidden, discord.errors.HTTPException):
             pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
-        self.bot.actions.append("uk:"+str(member.id))
         try:
-            await member.kick(reason=reason if reason else 'No reason')
+            self.bot.actions.append("uk:" + str(member.id))
+            await member.kick(reason=reason)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
-        await ctx.send("{} is now gone. 👌".format(self.bot.help_command.remove_mentions(member.name)))
-        msg = "👢 **Kick**: {} kicked {} | {}#{}\n🏷 __User ID__: {}".format(ctx.author.mention, member.mention, self.bot.escape_name(member.name), member.discriminator, member.id)
+            return
+        await ctx.send(f"{self.bot.help_command.remove_mentions(member.name)} is now gone. 👌")
+        msg = f"👢 **Kick**: {ctx.author.mention} kicked {member.mention} | {member}\n🏷 __User ID__: {member.id}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
-        await self.bot.serverlogs_channel.send(msg)
-        await self.bot.modlogs_channel.send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.kick <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
-
+        await self.bot.channels['server-logs'].send(msg)
+        await self.bot.channels['mod-logs'].send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.kick <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
 
     @is_staff("OP")
     @commands.command(name="ban")
@@ -58,25 +61,26 @@ class KickBan(DatabaseCog):
         if check_staff_id(ctx, 'Helper', member.id):
             await self.meme(ctx.author, member, "ban", ctx.channel, reason)
             return
-        msg = "You were banned from {}.".format(ctx.guild.name)
+        msg = f"You were banned from {ctx.guild.name}."
         if reason != "":
             msg += " The given reason is: " + reason
         msg += "\n\nThis ban does not expire."
         try:
             await member.send(msg)
-        except discord.errors.Forbidden:
+        except (discord.errors.Forbidden, discord.errors.HTTPException):
             pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
-        self.bot.actions.append("ub:"+str(member.id))
         try:
+            self.bot.actions.append("ub:" + str(member.id))
             await member.ban()
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
-        await ctx.send("{} is now b&. 👍".format(self.bot.help_command.remove_mentions(member)))
-        msg = "⛔ **Ban**: {} banned {} | {}#{}\n🏷 __User ID__: {}".format(ctx.author.mention, member.mention, self.bot.escape_name(member.name), member.discriminator, member.id)
+            return
+        await ctx.send(f"{self.bot.help_command.remove_mentions(str(member))} is now b&. 👍")
+        msg = f"⛔ **Ban**: {ctx.author.mention} banned {member.mention} | {member}\n🏷 __User ID__: {member.id}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
-        await self.bot.serverlogs_channel.send(msg)
-        await self.bot.modlogs_channel.send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.ban <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
+        await self.bot.channels['server-logs'].send(msg)
+        await self.bot.channels['mod-logs'].send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.ban <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
 
     @is_staff("OP")
     @commands.command(name="banid")
@@ -85,22 +89,22 @@ class KickBan(DatabaseCog):
         try:
             user = await self.bot.get_user_info(userid)
         except discord.errors.NotFound:
-            await ctx.send("No user associated with ID {}.".format(user.id))
+            await ctx.send(f"No user associated with ID {user.id}.")
         if check_staff_id(ctx, 'Helper', user.id):
             await ctx.send("You can't ban another staffer with this command!")
             return
-        self.bot.actions.append("ub:" + str(user.id))
         try:
+            self.bot.actions.append("ub:" + str(user.id))
             await ctx.guild.ban(user)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
-        await ctx.send("User {} | {} is now b&. 👍".format(user.id, user.name))
-        msg = "⛔ **Ban**: {} banned ID {}".format(ctx.author.mention, user.id)
+            return
+        await ctx.send(f"User {user.id} | {user.name} is now b&. 👍")
+        msg = f"⛔ **Ban**: {ctx.author.mention} banned ID {user.id}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
-        await self.bot.serverlogs_channel.send(msg)
-        await self.bot.modlogs_channel.send(msg + (
-            "\nPlease add an explanation below. In the future, it is recommended to use `.banid <userid> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
+        await self.bot.channels['server-logs'].send(msg)
+        await self.bot.channels['mod-logs'].send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.banid <userid> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
 
     @is_staff("OP")
     @commands.command(name="silentban", hidden=True)
@@ -109,23 +113,23 @@ class KickBan(DatabaseCog):
         if check_staff_id(ctx, 'Helper', member.id):
             await self.meme(ctx.author, member, "ban", ctx.channel, reason)
             return
-        self.bot.actions.append("ub:"+str(member.id))
         try:
+            self.bot.actions.append("ub:" + str(member.id))
             await member.ban()
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
-        await ctx.send("{} is now b&. 👍".format(self.bot.escape_name(member)))
-        msg = "⛔ **Silent ban**: {} banned {} | {}#{}\n🏷 __User ID__: {}".format(ctx.author.mention, member.mention, self.bot.escape_name(member.name), member.discriminator, member.id)
+            return
+        await ctx.send(f"{self.bot.help_command.remove_mentions(member)} is now b&. 👍")
+        msg = f"⛔ **Silent ban**: {ctx.author.mention} banned {member.mention} | {member}\n🏷 __User ID__: {member.id}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
-        await self.bot.serverlogs_channel.send(msg)
-        await self.bot.modlogs_channel.send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.silentban <user> [reason]`." if reason == "" else ""))
+        await self.bot.channels['server-logs'].send(msg)
+        await self.bot.channels['mod-logs'].send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.silentban <user> [reason]`." if reason == "" else ""))
 
     @is_staff("OP")
     @commands.command(name="timeban")
-    async def timeban_member(self, ctx, member: converters.SafeMember, length, *, reason="no reason"):
+    async def timeban_member(self, ctx, member: converters.SafeMember, length, *, reason=""):
         """Bans a user for a limited period of time. OP+ only.\n\nLength format: #d#h#m#s"""
-
         if check_staff_id(ctx, 'Helper', member.id):
             await self.meme(ctx.author, member, "timeban", ctx.channel, reason)
             return
@@ -146,26 +150,27 @@ class KickBan(DatabaseCog):
         delta = datetime.timedelta(seconds=seconds)
         unban_time = timestamp + delta
         unban_time_string = unban_time.strftime("%Y-%m-%d %H:%M:%S")
-        self.add_timed_restriction(member.id, unban_time_string, 'timeban')
-        msg = "You were banned from {}.".format(ctx.guild.name)
+        msg = f"You were banned from {ctx.guild.name}."
         if reason != "":
             msg += " The given reason is: " + reason
-        msg += "\n\nThis ban expires {} {}.".format(unban_time_string, time.tzname[0])
+        msg += f"\n\nThis ban expires {unban_time_string} {time.tzname[0]}."
         try:
             await member.send(msg)
-        except discord.errors.Forbidden:
+        except (discord.errors.Forbidden, discord.errors.HTTPException):
             pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
-        self.bot.actions.append("ub:"+str(member.id))
         try:
+            self.bot.actions.append("ub:" + str(member.id))
             await member.ban(reason=reason)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
-        await ctx.send("{} is now b& until {} {}. 👍".format(self.bot.escape_name(member), unban_time_string, time.tzname[0]))
-        msg = "⛔ **Time ban**: {} banned {} until {} | {}#{}\n🏷 __User ID__: {}".format(ctx.author.mention, member.mention, unban_time_string, self.bot.escape_name(member.name), member.discriminator, member.id)
+            return
+        self.add_timed_restriction(member.id, unban_time_string, 'timeban')
+        await ctx.send(f"{self.bot.help_command.remove_mentions(member)} is now b& until {unban_time_string} {time.tzname[0]}. 👍")
+        msg = f"⛔ **Time ban**: {ctx.author.mention} banned {member.mention} until {unban_time_string} | {member}\n🏷 __User ID__: {member.id}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
-        await self.bot.serverlogs_channel.send(msg)
-        await self.bot.modlogs_channel.send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.timeban <user> <length> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
+        await self.bot.channels['server-logs'].send(msg)
+        await self.bot.channels['mod-logs'].send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.timeban <user> <length> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
 
     @is_staff("OP")
     @commands.command(name="softban")
@@ -174,17 +179,19 @@ class KickBan(DatabaseCog):
         if check_staff_id(ctx, 'Helper', member.id):
             await self.meme(ctx.author, member, "softban", ctx.channel, reason)
             return
-        self.add_softban(ctx, member, reason)
-        msg = "This account is no longer permitted to participate in {}. The reason is: {}".format(ctx.guild.name, reason)
+        if not self.add_softban(member.id, ctx.author.id, reason):
+            await ctx.send('User is already softbanned!')
+        msg = f"This account is no longer permitted to participate in {ctx.guild.name}. The reason is: {reason}"
         await member.send(msg)
         try:
             await member.kick(reason=reason)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
-        await ctx.send("{} is now b&. 👍".format(self.bot.help_command.remove_mentions(member)))
-        msg = "⛔ **Soft-ban**: {} soft-banned {} | {}#{}\n🏷 __User ID__: {}\n✏️ __Reason__: {}".format(ctx.author.mention, member.mention, self.bot.help_command.remove_mentions(member.name), member.discriminator, member.id, reason)
-        await self.bot.modlogs_channel.send(msg)
-        await self.bot.serverlogs_channel.send(msg)
+            return
+        await ctx.send(f"{self.bot.help_command.remove_mentions(member)} is now b&. 👍")
+        msg = f"⛔ **Soft-ban**: {ctx.author.mention} soft-banned {member.mention} | {member}\n🏷 __User ID__: {member.id}\n✏️ __Reason__: {reason}"
+        await self.bot.channels['mod-logs'].send(msg)
+        await self.bot.channels['server-logs'].send(msg)
 
     @is_staff("OP")
     @commands.command(name="softbanid")
@@ -194,15 +201,13 @@ class KickBan(DatabaseCog):
             await ctx.send("You can't softban another staffer with this command!")
             return
         user = await self.bot.get_user_info(user_id)
-        try:
-            self.add_softban(ctx, user, reason)
-        except sqlite3.IntegrityError:
-            await ctx.send('User is already softbanned.')
+        if not self.add_softban(user_id, ctx.author.id, reason):
+            await ctx.send('User is already softbanned!')
             return
-        await ctx.send("ID {} is now b&. 👍".format(user_id))
-        msg = "⛔ **Soft-ban**: {} soft-banned ID {}\n✏️ __Reason__: {}".format(ctx.author.mention, user_id, reason)
-        await self.bot.modlogs_channel.send(msg)
-        await self.bot.serverlogs_channel.send(msg)
+        await ctx.send(f"ID {user_id} is now b&. 👍")
+        msg = f"⛔ **Soft-ban**: {ctx.author.mention} soft-banned ID {user}\n✏️ __Reason__: {reason}"
+        await self.bot.channels['mod-logs'].send(msg)
+        await self.bot.channels['server-logs'].send(msg)
 
     @is_staff("OP")
     @commands.command(name="unsoftban")
@@ -210,13 +215,9 @@ class KickBan(DatabaseCog):
         """Un-soft-ban a user based on ID. OP+ only."""
         self.remove_softban(user_id)
         user = await self.bot.get_user_info(user_id)
-        await ctx.send("{} has been unbanned!".format(self.bot.help_command.remove_mentions(user.name)))
-        msg = "⚠️ **Un-soft-ban**: {} un-soft-banned {}".format(ctx.author.mention, self.bot.help_command.remove_mentions(user.name))
-        await self.bot.modlogs_channel.send(msg)
-
-    async def cog_command_error(self, ctx, error):
-        if isinstance(error, commands.errors.CheckFailure):
-            await ctx.send("{} You don't have permission to use this command.".format(ctx.author.mention))
+        await ctx.send(f"{self.bot.help_command.remove_mentions(user.name)} has been unbanned!")
+        msg = f"⚠️ **Un-soft-ban**: {ctx.author.mention} un-soft-banned {self.bot.help_command.remove_mentions(user.name)}"
+        await self.bot.channels['mod-logs'].send(msg)
 
 
 def setup(bot):

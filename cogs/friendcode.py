@@ -1,10 +1,10 @@
 import discord
 import hashlib
-import sqlite3
 import struct
+
+from cogs.converters import SafeMember
 from cogs.database import DatabaseCog
 from discord.ext import commands
-from cogs.converters import SafeMember
 
 
 class FriendCode(DatabaseCog):
@@ -18,11 +18,11 @@ class FriendCode(DatabaseCog):
             return None
         principal_id = fc & 0xFFFFFFFF
         checksum = (fc & 0xFF00000000) >> 32
-        return (fc if hashlib.sha1(struct.pack('<L', principal_id)).digest()[0] >> 1 == checksum else None)
+        return fc if hashlib.sha1(struct.pack('<L', principal_id)).digest()[0] >> 1 == checksum else None
 
     def fc_to_string(self, fc):
         fc = str(fc).rjust(12, '0')
-        return "{} - {} - {}".format(fc[0:4], fc[4:8], fc[8:12])
+        return f"{fc[0:4]} - {fc[4:8]} - {fc[8:12]}"
 
     @commands.command(pass_context=True)
     async def fcregister(self, ctx, fc):
@@ -37,20 +37,20 @@ class FriendCode(DatabaseCog):
             await ctx.send("Please delete your current friend code with `.fcdelete` before adding another.")
             return
         self.bot.c.execute('INSERT INTO friend_codes VALUES (?,?)', (ctx.author.id, fc))
-        await ctx.send("{} Friend code inserted: {}".format(ctx.author.mention, self.fc_to_string(fc)))
-        self.bot.conn.commit()
+        await ctx.send(f"{ctx.author.mention} Friend code inserted: {self.fc_to_string(fc)}")
+        self.bot.dbcon.commit()
 
     @commands.command(pass_context=True)
     async def fcquery(self, ctx, member:  SafeMember):
         """Get other user's friend code. You must have one yourself in the database."""
-        rows = self.bot.c.execute('SELECT * FROM friend_codes WHERE userid = ?', (int(ctx.author.id),))
+        rows = self.bot.c.execute('SELECT * FROM friend_codes WHERE user_id = ?', (int(ctx.author.id),))
         for row in rows:
             # assuming there is only one, which there should be
-            rows_m = c.execute('SELECT * FROM friend_codes WHERE userid = ?', (int(member.id),))
+            rows_m = self.bot.c.execute('SELECT * FROM friend_codes WHERE user_id = ?', (int(member.id),))
             for row_m in rows_m:
-                await ctx.send("{} friend code is {}".format(member.mention, self.fc_to_string(row_m[1])))
+                await ctx.send(f"{member.mention} friend code is {self.fc_to_string(row_m[1])}")
                 try:
-                    member.send("{} has asked for your friend code! Their code is {}.".format(self.bot.escape_name(ctx.author), self.fc_to_string(row[1])))
+                    member.send(f"{self.bot.help_command.remove_mentions(ctx.author)} has asked for your friend code! Their code is {self.fc_to_string(row[1])}.")
                 except discord.errors.Forbidden:
                     pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
                 return
@@ -61,10 +61,10 @@ class FriendCode(DatabaseCog):
     @commands.command(pass_context=True)
     async def fcdelete(self, ctx):
         """Delete your friend code."""
-        c = self.bot.conn.cursor()
-        c.execute('DELETE FROM friend_codes WHERE userid = ?', (ctx.author.id,))
+        c = self.bot.dbcon.cursor()
+        c.execute('DELETE FROM friend_codes WHERE user_id = ?', (ctx.author.id,))
         await ctx.send("Friend code removed from database.")
-        self.bot.conn.commit()
+        self.bot.dbcon.commit()
 
     @commands.command()
     async def fctest(self, ctx, fc):

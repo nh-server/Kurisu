@@ -8,7 +8,7 @@ class Rules(commands.Cog, command_attrs=dict()):
     """
     def __init__(self, bot):
         self.bot = bot
-        print('Cog "{}" loaded'.format(self.qualified_name))
+        print(f'Cog "{self.qualified_name}" loaded')
 
     async def simple_embed(self, ctx, text, title="", color=discord.Color.default()):
         embed = discord.Embed(title=title, color=color)
@@ -32,14 +32,14 @@ class Rules(commands.Cog, command_attrs=dict()):
     async def nick(self, ctx):
         """Displays the Nickname and Avatar Policy."""
         await ctx.send("🏷 ___Username/Nickname and Avatar policy___\n"
-                           "Usernames are to be kept primarily alphanumeric, to keep them easy to tag and read. Excessively long usernames are not acceptable. Usernames and avatars that are annoying, offensive, inappropriate (\"nsfw\"), and/or disruptive to others are also not allowed.\n"
-                           "Usernames that go against these rules will be assigned a nickname. Users can request a specific nickname that follows these rules by asking in <#270890866820775946> or by sending a direct message to <@333857992170536961>.\n"
-                           "Users with avatars against these rules will be asked to change them or be kicked from the server.")
+                       "Usernames are to be kept primarily alphanumeric, to keep them easy to tag and read. Excessively long usernames are not acceptable. Usernames and avatars that are annoying, offensive, inappropriate (\"nsfw\"), and/or disruptive to others are also not allowed.\n"
+                       "Usernames that go against these rules will be assigned a nickname. Users can request a specific nickname that follows these rules by asking in <#270890866820775946> or by sending a direct message to <@333857992170536961>.\n"
+                        "Users with avatars against these rules will be asked to change them or be kicked from the server.")
 
     @commands.command(hidden=False)
     async def rules(self, ctx):
         """Links to rules website."""
-        await ctx.send("Please check {} for a full list of rules".format(self.bot.welcome_channel.mention))
+        await ctx.send(f"Please check {self.bot.channels['welcome-and-rules'].mention} for a full list of rules")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -58,21 +58,21 @@ class Rules(commands.Cog, command_attrs=dict()):
     async def r3(self, ctx):
         """Displays rule 3."""
         await self.simple_embed(ctx, "Keep 3DS and Wii U support questions to the assistance channels.\n"
-                                    "• Don't ask how to bypass network restrictions in place by Nintendo or game developers. This includes bypassing console bans.", title="Rule 3")
+                                     "• Don't ask how to bypass network restrictions in place by Nintendo or game developers. This includes bypassing console bans.", title="Rule 3")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r4(self, ctx):
         """Displays rule 4."""
         await self.simple_embed(ctx, "If you would like assistance, please directly ask your question or concern. You don't need to ask to ask.\n"
-                                    " • Please remember to be detailed when asking. Being vague, like \"x doesn't work\" makes things harder for everyone.", title="Rule 4")
+                                     " • Please remember to be detailed when asking. Being vague, like \"x doesn't work\" makes things harder for everyone.", title="Rule 4")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r5(self, ctx):
         """Displays rule 5."""
         await self.simple_embed(ctx, "Don't spam. Don't post your question twice unless you fully believe you were not intentionally ignored.\n"
-                                    " • For excessively long text, use a service like https://hastebin.com.", title="Rule 5")
+                                     " • For excessively long text, use a service like https://hastebin.com.", title="Rule 5")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -109,15 +109,15 @@ class Rules(commands.Cog, command_attrs=dict()):
     async def realr11(self, ctx):
         """Displays rule 11."""
         await self.simple_embed(ctx, "The Piracy rule: Don't...\n"
-                                    " • ask how to pirate games\n"
-                                    " • share full game data\n"
-                                    " • mention piracy sites and tools by name\n"
-                                    " • share game tickets and titlekeys\n"
-                                    " • ask to share direct messages to help with piracy\n"
-                                    " • discuss piracy in the assistance channels\n"
-                                    " • in general commit copyright violations\n\n"
+                                     " • ask how to pirate games\n"
+                                     " • share full game data\n"
+                                     " • mention piracy sites and tools by name\n"
+                                     " • share game tickets and titlekeys\n"
+                                     " • ask to share direct messages to help with piracy\n"
+                                     " • discuss piracy in the assistance channels\n"
+                                     " • in general commit copyright violations\n\n"
 
-                                    "If you simply need to tell someone to not ask about piracy, consider `.pirate` instead. `.r11` was changed to match `.pirate` due to its large embed.", title="Rule 11")
+                                     "If you simply need to tell someone to not ask about piracy, consider `.pirate` instead. `.r11` was changed to match `.pirate` due to its large embed.", title="Rule 11")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -135,19 +135,21 @@ class Rules(commands.Cog, command_attrs=dict()):
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r14(self, ctx):
         """Displays rule 14."""
-        await self.simple_embed(ctx, "Off-topic content goes to {}. Keep low-quality content like memes out.".format(self.bot.offtopic_channel.mention), title="Rule 14")
+        await self.simple_embed(ctx,
+                                f"Off-topic content goes to {self.bot.offtopic_channel.mention}. Keep low-quality content like memes out.", title="Rule 14")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r15(self, ctx):
         """Displays rule 15."""
-        await self.simple_embed(ctx, "Voice and music commands and other random/contextless command usage belong in {} and {} respectively.".format(self.bot.voiceandmusic_channel.mention, self.bot.botcmds_channel.mention), title="Rule 15")
+        await self.simple_embed(ctx, f"Voice and music commands and other random/contextless command usage belong in {self.bot.channels['voiceandmusic'].mention} and {self.bot.channels['bot-cmds'].mention} respectively.", title="Rule 15")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r16(self, ctx):
         """Displays rule 16."""
         await self.simple_embed(ctx, "Trying to evade, look for loopholes, or stay borderline within the rules will be treated as breaking them.", title="Rule 16")
+
 
 def setup(bot):
     bot.add_cog(Rules(bot))

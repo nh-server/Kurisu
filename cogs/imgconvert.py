@@ -1,9 +1,10 @@
-from io import BytesIO
 import aiohttp
 import concurrent.futures
 import functools
+
 from discord import File
 from discord.ext import commands
+from io import BytesIO
 from PIL import Image
 
 
@@ -13,7 +14,7 @@ class ImageConvert(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        print('Cog "{}" loaded'.format(self.qualified_name))
+        print(f'Cog "{self.qualified_name}" loaded')
 
     @staticmethod
     def img_convert(in_img):
@@ -33,7 +34,7 @@ class ImageConvert(commands.Cog):
                         img_content = await img_request.read()
                         with concurrent.futures.ProcessPoolExecutor() as pool:
                             img_out = await self.bot.loop.run_in_executor(pool, functools.partial(self.img_convert, img_content))
-                        out_message = "{} from {}".format(self.bot.escape_name(f.filename), message.author.mention)
+                        out_message = f"{self.bot.help_command.remove_mentions(f.filename)} from {message.author.mention}"
                         new_filename = f.filename[:-3] + "png"
                         img = File(img_out, filename=new_filename)
                         await message.channel.send(file=img, content=out_message)
