@@ -121,6 +121,9 @@ class Events(DatabaseCog):
         '\hbg\shop',
         'hbgsh0p',
         'stargate',
+        'freestore',
+        'sxinstaller',
+        'sxos',
     )
 
     # use the full ID, including capitalization and dashes
@@ -133,6 +136,8 @@ class Events(DatabaseCog):
         'freshop',
         'feeshop',
         'notabug',
+        'sx',
+        'tx',
     )
 
     drama_alert = ()
