@@ -120,6 +120,9 @@ class Events:
         '\hbg\shop',
         'hbgsh0p',
         'stargate',
+        'freestore',
+        'sxinstaller',
+        'sxos',
     )
 
     # use the full ID, including capitalization and dashes
@@ -132,6 +135,8 @@ class Events:
         'freshop',
         'feeshop',
         'notabug',
+        'sx',
+        'tx',
     )
 
     drama_alert = ()
