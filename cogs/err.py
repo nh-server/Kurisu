@@ -336,7 +336,7 @@ class Err(commands.Cog):
         level = (rc >> 27) & 0x1F
         return desc, mod, summ, level, rc
 
-    @commands.command(pass_context=True)
+    @commands.command()
     async def err(self, ctx, err: str):
         """
         Parses Nintendo and CTR error codes, with a fancy embed. 0x prefix is not required.
@@ -390,7 +390,7 @@ class Err(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @commands.command(pass_context=True)
+    @commands.command()
     async def err2(self, ctx, err: str):
         if not err.startswith("0x") and not all(c in string.hexdigits for c in err):
             return await ctx.send("Invalid error code.")

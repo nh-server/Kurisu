@@ -749,7 +749,7 @@ class NXErr(commands.Cog):
         else:
             return f'{k}'
 
-    @commands.command(pass_context=True)
+    @commands.command()
     async def serr(self, ctx, err: str):
         """
         Parses Nintendo Switch error codes according to http://switchbrew.org/index.php?title=Error_codes.
@@ -793,7 +793,7 @@ class NXErr(commands.Cog):
         embed = discord.Embed(title=f'0x{errcode:X} / {str_errcode}', description=explanation)
         await ctx.send(embed=embed)
 
-    @commands.command(pass_context=True)
+    @commands.command()
     async def err2hex(self, ctx, err: str):
         if not re.match('[0-9][0-9][0-9][0-9]\-[0-9][0-9][0-9][0-9]', err):
             await ctx.send('Does not follow XXXX-XXXX format')
@@ -803,7 +803,7 @@ class NXErr(commands.Cog):
             errcode = (desc << 9) + module
             await ctx.send(f'0x{errcode:X}')
 
-    @commands.command(pass_context=True)
+    @commands.command()
     async def hex2err(self, ctx, err: str):
         if err.startswith("0x"):
             err = err[2:]

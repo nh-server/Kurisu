@@ -60,7 +60,7 @@ class ModWarn(DatabaseCog):
         await self.bot.channels['mod-logs'].send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.warn <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
 
     @is_staff('OP')
-    @commands.command(pass_context=True)
+    @commands.command()
     async def softwarn(self, ctx, member: converters.SafeMember, *, reason=""):
         """Warn a user without automated action. Staff only."""
         issuer = ctx.author
@@ -93,7 +93,7 @@ class ModWarn(DatabaseCog):
         await self.bot.channels['mod-logs'].send(msg + (
             "\nPlease add an explanation below. In the future, it is recommended to use `.warn <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
 
-    @commands.command(pass_context=True)
+    @commands.command()
     async def listwarns(self, ctx, user: discord.Member = None):
         """List warns for a user. Staff and Helpers only."""
         if not user:  # If user is set to None, its a selfcheck
@@ -121,7 +121,7 @@ class ModWarn(DatabaseCog):
         await ctx.send(embed=embed)
 
     @is_staff("Helper")
-    @commands.command(pass_context=True)
+    @commands.command()
     async def listwarnsid(self, ctx, user_id: int):
         """List warns for a user based on ID. Staff and Helpers only."""
         member = await self.bot.get_user_info(user_id)
@@ -143,7 +143,7 @@ class ModWarn(DatabaseCog):
         await ctx.send(embed=embed)
 
     @is_staff("SuperOP")
-    @commands.command(pass_context=True)
+    @commands.command()
     async def copywarns_id2id(self, ctx, user_id1: int, user_id2: int):
         """Copy warns from one user ID to another. Overwrites all warns of the target user ID. Staff only."""
         warns = self.get_warns(user_id1)
@@ -161,7 +161,7 @@ class ModWarn(DatabaseCog):
         await self.bot.channels['mod-logs'].send(msg)
 
     @is_staff("HalfOP")
-    @commands.command(pass_context=True)
+    @commands.command()
     async def delwarn(self, ctx, member: converters.SafeMember, idx: int):
         """Remove a specific warn from a user. Staff only."""
         warns = self.get_warns(member.id)
@@ -184,7 +184,7 @@ class ModWarn(DatabaseCog):
         await self.bot.channels['mod-logs'].send(msg, embed=embed)
 
     @is_staff("HalfOP")
-    @commands.command(pass_context=True)
+    @commands.command()
     async def delwarnid(self, ctx, user_id: int, idx: int):
         """Remove a specific warn from a user based on ID. Staff only."""
         warns = self.get_warns(user_id)
@@ -208,7 +208,7 @@ class ModWarn(DatabaseCog):
         await self.bot.channels['mod-logs'].send(msg, embed=embed)
 
     @is_staff("HalfOP")
-    @commands.command(pass_context=True)
+    @commands.command()
     async def clearwarns(self, ctx, member: converters.SafeMember):
         """Clear all warns for a user. Staff only."""
         warns = self.get_warns(member.id)
@@ -222,7 +222,7 @@ class ModWarn(DatabaseCog):
         await self.bot.channels['mod-logs'].send(msg)
 
     @is_staff("HalfOP")
-    @commands.command(pass_context=True)
+    @commands.command()
     async def clearwarnsid(self, ctx, user_id):
         """Clear all warns for a user based on ID. Staff only."""
         member = await self.bot.get_user_info(user_id)

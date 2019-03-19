@@ -445,19 +445,16 @@ class Events(DatabaseCog):
         if isinstance(message.channel, discord.abc.PrivateChannel):
             return
         if message.author.name == "GitHub" and message.author.discriminator == "0000":
-            if message.embeds[0]['title'].startswith('[Kurisu:master]'):
+            if message.embeds[0].title.startswith('[Kurisu:port]'):
                 await self.bot.channels['helpers'].send("Automatically pulling changes!")
                 call(['git', 'pull'])
                 await self.bot.close()
             return
-        if self.check_nofilter(message.channel):
+        if message.author == message.guild.me or check_staff_id(self, 'Helper', message.author.id) or self.check_nofilter(message.channel):  # don't process messages by the bot or staff or in the helpers channel
             return
         await self.bot.wait_until_all_ready()
-        if message.author == message.guild.me or check_staff_id(self, 'HalfOP', message.author.id) or self.check_nofilter(message.channel):  # don't process messages by the bot or staff or in the helpers channel
-            return
         await self.scan_message(message)
-        if self.bot.roles['Helpers'] not in message.author.roles:
-            self.bot.loop.create_task(self.user_ping_check(message))
+        self.bot.loop.create_task(self.user_ping_check(message))
         self.bot.loop.create_task(self.user_spam_check(message))
         self.bot.loop.create_task(self.channel_spam_check(message))
 

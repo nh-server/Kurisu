@@ -11,6 +11,7 @@ class FriendCode(DatabaseCog):
     """
     Stores and obtains friend codes using an SQLite 3 database.
     """
+
     # based on https://github.com/megumisonoda/SaberBot/blob/master/lib/saberbot/valid_fc.rb
     def verify_fc(self, fc):
         fc = int(fc.replace('-', ''))
@@ -24,7 +25,7 @@ class FriendCode(DatabaseCog):
         fc = str(fc).rjust(12, '0')
         return f"{fc[0:4]} - {fc[4:8]} - {fc[8:12]}"
 
-    @commands.command(pass_context=True)
+    @commands.command()
     async def fcregister(self, ctx, fc):
         """Add your friend code."""
         fc = self.verify_fc(fc)
@@ -40,7 +41,7 @@ class FriendCode(DatabaseCog):
         await ctx.send(f"{ctx.author.mention} Friend code inserted: {self.fc_to_string(fc)}")
         self.bot.dbcon.commit()
 
-    @commands.command(pass_context=True)
+    @commands.command()
     async def fcquery(self, ctx, member:  SafeMember):
         """Get other user's friend code. You must have one yourself in the database."""
         rows = self.bot.c.execute('SELECT * FROM friend_codes WHERE user_id = ?', (int(ctx.author.id),))
@@ -58,7 +59,7 @@ class FriendCode(DatabaseCog):
             return
         await ctx.send("You need to register your own friend code with `.fcregister <friendcode>` before getting others.")
 
-    @commands.command(pass_context=True)
+    @commands.command()
     async def fcdelete(self, ctx):
         """Delete your friend code."""
         c = self.bot.dbcon.cursor()

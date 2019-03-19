@@ -362,8 +362,7 @@ format it to FAT32.
                                 • Linux: [gparted](http://gparted.org/download.php)
                                 • Mac: [Disk Utility](https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010) \
 (Always choose "MS-DOS (FAT)" regardless of size, not ExFAT.)
-                                """
-                                , title="Big SD cards")
+                                """, title="Big SD cards")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -664,7 +663,7 @@ your device will refuse to write to it.
     async def tutorial(self, ctx):
         """Links to one of multiple guides"""
         if ctx.invoked_subcommand is None:
-            await ctx.invoke(self.bot.get_command('help'), *ctx.command.qualified_name.split())
+            await ctx.send_help(ctx.command)
 
     @tutorial.command()
     async def pokemon(self, ctx):
@@ -673,7 +672,7 @@ your device will refuse to write to it.
         embed.description = "**pkhex**|**pkhax**|**pkgen** Links to PKHeX tutorial\n**randomize** Links to layeredfs randomizing tutorial"
         await ctx.send(embed=embed)
 
-    @tutorial.command(hidden=True, aliases=["pkhax", "pkgen"])
+    @tutorial.command(aliases=["pkhax", "pkgen"])
     async def pkhex(self, ctx):
         """Links to PKHeX tutorial"""
         embed = discord.Embed(title="PKHeX tutorial", color=discord.Color.red())
@@ -682,7 +681,7 @@ your device will refuse to write to it.
         embed.description = "Basic tutorial for PKHeX"
         await ctx.send(embed=embed)
 
-    @tutorial.command(hidden=True)
+    @tutorial.command()
     async def randomize(self, ctx):
         """Links to layeredfs randomizing tutorial"""
         embed = discord.Embed(title="Randomizing with LayeredFS", color=discord.Color.red())
@@ -742,8 +741,7 @@ your device will refuse to write to it.
                                 
                                 * This filesystem is prone to corruption.
                                 * Nintendo does not use files larger than 4GB even while exFAT is used.
-                                """
-                                , title="exFAT on Switch: Why you shouldn't use it")
+                                """, title="exFAT on Switch: Why you shouldn't use it")
         
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)

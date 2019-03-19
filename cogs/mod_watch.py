@@ -27,7 +27,7 @@ class Modwatch(DatabaseCog):
         await self.bot.channels['watch-logs'].send(msg)
 
     @is_staff("HalfOP")
-    @commands.command(pass_context=True)
+    @commands.command()
     async def unwatch(self, ctx, member: converters.SafeMember):
         if not self.is_watched(member.id):
             await ctx.send("This user was not being watched.")

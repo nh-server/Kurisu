@@ -21,6 +21,7 @@ roles = {
 DATABASE_NAME = 'data/kurisu.sqlite'
 bot = commands.Bot(('.', '!'), description="Database Converter!")
 
+
 @bot.event
 async def on_ready():
     if not os.path.isfile(DATABASE_NAME):
@@ -39,7 +40,7 @@ async def on_ready():
         c = dbcon.cursor()
 
     for n in roles.keys():
-        roles[n] = discord.utils.get(bot.guild.roles, name=n)
+        roles[n] = discord.utils.get(bot.guilds[0].roles, name=n)
 
     with open("data/restrictions.json", "r") as f:
         rsts = json.load(f)
