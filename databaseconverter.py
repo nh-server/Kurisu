@@ -39,6 +39,15 @@ async def on_ready():
         dbcon = sqlite3.connect(DATABASE_NAME)
         c = dbcon.cursor()
 
+    fccon = sqlite3.connect('data/fc.sqlite')
+    fc = fccon.cursor()
+    rows =fc.execute('SELECT * FROM friend_codes').fetchall()
+    for row in rows:
+        try:
+            c.execute('INSERT INTO friend_codes VALUES(?, ?)', row)
+        except sqlite3.IntegrityError:
+            continue
+
     for n in roles.keys():
         roles[n] = discord.utils.get(bot.guilds[0].roles, name=n)
 
@@ -71,13 +80,16 @@ async def on_ready():
 
     for id in warns.keys():
         for warn in warns[id]["warns"]:
-            c.execute ('INSERT INTO warns VALUES(?, ?, ?, ?)', (id, warn['issuer_id'], warn['reason'], warn['timestamp']))
+            if c.execute('SELECT * FROM warns WHERE user_id=? AND issuer_id=? AND reason=? AND TIMESTAMP = ?', (id, warn['issuer_id'], warn['reason'], warn['timestamp'])).fetchone():
+                continue
+            c.execute('INSERT INTO warns VALUES(?, ?, ?, ?)', (id, warn['issuer_id'], warn['reason'], warn['timestamp']))
 
     for id in helpers.keys():
         try:
             c.execute ('INSERT INTO helpers VALUES(?, ?)', (id, helpers[id]))
         except sqlite3.IntegrityError:
             c.execute ('UPDATE helpers SET console=? WHERE user_id=?', (helpers[id], id,))
+
     for id in softbans.keys():
         try:
             c.execute ('INSERT INTO softbans VALUES(?, ? , ?, ?)', (id, softbans[id]['issuer_id'], softbans[id]['reason'], softbans[id]["timestamp"]))
@@ -117,13 +129,14 @@ async def on_ready():
             continue
     print('Data converted successfully!')
     dbcon.commit()
+    dbcon.close()
     await bot.close()
 
 
 def main():
-
     print(f'Starting Database Converter')
     bot.run(config['Main']['token'])
+
 
 if __name__=='__main__':
     exit(main())

@@ -421,6 +421,25 @@ class Mod(DatabaseCog):
         """Sets bot name. Staff only."""
         await self.bot.user.edit(username=f'{username}')
 
+    @is_staff("SuperOP")
+    @commands.guild_only()
+    @commands.command(hidden=True)
+    async def nofilter(self, ctx, channel: discord.TextChannel):
+        """Adds nofilter to the channel"""
+        if not self.add_nofilter(channel):
+            ctx.send("Channel already has no filter")
+            return
+        await self.bot.channels['mod-logs'].send(f"⭕ **No filter**: {ctx.author.mention} added no filter from {channel.mention}")
+
+    @is_staff("SuperOP")
+    @commands.guild_only()
+    @commands.command(hidden=True)
+    async def filter(self, ctx, channel: discord.TextChannel):
+        """Adds nofilter to the channel"""
+        self.remove_nofilter(channel)
+        await self.bot.channels['mod-logs'].send(f"🚫 **Filter**: {ctx.author.mention} removed no filter from {channel.mention}")
+
+
     @is_staff("OP")
     @commands.guild_only()
     @commands.command(hidden=True)

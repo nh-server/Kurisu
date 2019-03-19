@@ -146,7 +146,7 @@ class DatabaseCog(commands.Cog):
 
     def add_nofilter(self, channel):
         try:
-            self.bot.c.execute('INSERT INTO nofilter VALUES(?)', channel.id)
+            self.bot.c.execute('INSERT INTO nofilter VALUES(?)', (channel.id,))
             self.bot.dbcon.commit()
             return True
         except sqlite3.IntegrityError:
