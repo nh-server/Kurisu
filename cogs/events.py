@@ -136,8 +136,8 @@ class Events(DatabaseCog):
         'freshop',
         'feeshop',
         'notabug',
-        'sx',
-        'tx',
+        #'sx',
+        #'tx',
     )
 
     drama_alert = ()
