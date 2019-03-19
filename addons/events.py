@@ -135,8 +135,8 @@ class Events:
         'freshop',
         'feeshop',
         'notabug',
-        'sx',
-        'tx',
+        #'sx',
+        #'tx',
     )
 
     drama_alert = ()
