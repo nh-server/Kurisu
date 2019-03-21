@@ -198,7 +198,16 @@ class Extras:
                     await self.bot.add_roles(author, self.bot.elsewhere_role)
                     await self.bot.send_message(author, "Access to #elsewhere granted.")
                 else:
-                    await self.bot.send_message(author, "Your access to elsewhere is restricted, contact staff to remove it.")
+                    await self.bot.send_message(author, "Your access to #elsewhere is restricted, contact staff to remove it.")
+            if channelname == "artswhere":
+                if self.bot.art_role in author.roles:
+                    await self.bot.remove_roles(author, self.bot.art_role)
+                    await self.bot.send_message(author, "Access to #art-discussion removed.")
+                elif self.bot.noart_role not in author.roles:
+                    await self.bot.add_roles(author, self.bot.art_role)
+                    await self.bot.send_message(author, "Access to #art-discussion granted.")
+                else:
+                    await self.bot.send_message(author, "Your access to #art-discussion is restricted, contact staff to remove it.")
             else:
                 await self.bot.send_message(author, "{} is not a valid toggleable channel.".format(channelname))
         except discord.errors.Forbidden:
