@@ -294,27 +294,38 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
     @commands.guild_only()
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def stock(self, ctx, console=""):
+    async def stock(self, ctx, consoles=""):
         """Advisory for various Nintendo systems on stock firmware"""
-        if self.check_console(console, ctx.channel.name, '3ds'):
-            embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
-            embed.add_field(name="NTRBoot", value="Requires a compatible NDS flashcart and maybe an additional DS(i) or hacked 3DS console depending on the flashcart (All versions, all hardware). [Guide](https://3ds.hacks.guide/ntrboot)", inline=False)
-            embed.add_field(name="Seedminer", value="Requires a DSiWare game from the eshop (free or paid) or Steel Diver: Sub Wars (free from eshop) [Guide](https://3ds.hacks.guide/seedminer)", inline=False)
-            embed.add_field(name="Hardmod", value="Requires soldering **Not for beginners!**. [Guide](https://git.io/fhQk9)", inline=False)
-            await ctx.send(embed=embed)
-        if self.check_console(console, ctx.channel.name, ('nx', 'switch', 'ns')):
-            embed = discord.Embed(title="Using a first-generation Switch?", color=0xe60012)
-            embed.description = cleandoc("""
+        system = ("3ds", "nx", "ns", "switch")
+        consoleslist = []
+        for x in consoles.split():
+            if x in system and x not in consoleslist:
+                consoleslist.append(x)
+        if not consoleslist:
+            if ctx.message.channel.name.startswith(system):
+                consoleslist.append("None")
+            else:
+                await ctx.send("Please specify a console; valid options are: 3ds, switch")
+                return
+        for x in consoleslist:
+            if self.check_console(x, ctx.message.channel.name, '3ds'):
+                embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
+                embed.add_field(name="NTRBoot", value="Requires a compatible NDS flashcart and maybe an additional DS(i) or hacked 3DS console depending on the flashcart (All versions, all hardware). [Guide](https://3ds.hacks.guide/ntrboot)", inline=False)
+                embed.add_field(name="Seedminer", value="Requires a DSiWare game from the eshop (free or paid) or Steel Diver: Sub Wars (free from eshop) [Guide](https://3ds.hacks.guide/seedminer)", inline=False)
+                embed.add_field(name="Hardmod", value="Requires soldering **Not for beginners!**. [Guide](https://git.io/fhQk9)", inline=False)
+                await ctx.send(embed=embed)
+                continue
+            if self.check_console(x, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+                embed = discord.Embed(title="Using a first-generation Switch?", color=0xe60012)
+                embed.description = cleandoc("""
                 Use [our guide](https://nh-server.github.io/switch-guide/user_guide/getting_started/) to determine if your Switch is a first-gen unit.
-
                 All firmware versions up to 7.0.1 are currently compatible with [Atmosphere](https://nh-server.github.io/switch-guide/).
-
                 "Second-generation" invulnerable systems should **not** update past 4.1.0, as these systems may have \
 custom firmware on this version in the very far future.
-
                 Downgrading is **impossible** on patched consoles, and isn't worth your time on unpatched ones. 
                 """)
-            await ctx.send(embed=embed)
+                await ctx.send(embed=embed)
+
 
     @commands.command(aliases=["fuse-3ds", "fuse"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
