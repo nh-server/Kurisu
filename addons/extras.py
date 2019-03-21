@@ -199,7 +199,7 @@ class Extras:
                     await self.bot.send_message(author, "Access to #elsewhere granted.")
                 else:
                     await self.bot.send_message(author, "Your access to #elsewhere is restricted, contact staff to remove it.")
-            if channelname == "artswhere":
+            elif channelname == "artswhere":
                 if self.bot.art_role in author.roles:
                     await self.bot.remove_roles(author, self.bot.art_role)
                     await self.bot.send_message(author, "Access to #art-discussion removed.")
