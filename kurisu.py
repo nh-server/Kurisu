@@ -124,7 +124,7 @@ class Kurisu(commands.Bot):
                 print(f'Failed to find role {n}')
 
         self.staff_roles = {'Owner': self.roles['Owner'],
-                            'SuperOP': self.roles['Owner'],
+                            'SuperOP': self.roles['SuperOP'],
                             'OP': self.roles['OP'],
                             'HalfOP': self.roles['HalfOP']}
 
