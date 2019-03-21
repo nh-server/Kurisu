@@ -69,6 +69,7 @@ class Kurisu(commands.Bot):
             'No-Help': None,
             'no-elsewhere': None,
             'No-Memes': None,
+            'no-art': None,
             'No-Embed': None,
             '#elsewhere': None,
             'Small Help': None,

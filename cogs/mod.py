@@ -182,6 +182,36 @@ class Mod(DatabaseCog):
             await ctx.send("💢 I don't have permission to do this.")
 
     @is_staff("HalfOP")
+    @commands.command()
+    async def art(self, ctx, member: SafeMember):
+        """Restore art-discussion access for a user. Staff only."""
+        await self.remove_restriction(member.id , self.bot.roles['no-art'])
+        try:
+            await member.remove_roles(self.bot.roles['no-art'])
+        except discord.Forbidden:
+            await ctx.send("💢 I don't have permission to do this.")
+        await ctx.send(f"{member.mention} can access art-discussion again.")
+        msg = f"⭕️ **Restored art**: {ctx.message.author.mention} restored art access to {member.mention} | {self.bot.help_command.remove_mentions(str(member))}"
+        await self.bot.channels['mod-logs'].send(msg)
+
+    @is_staff("HalfOP")
+    @commands.command()
+    async def noart(self, ctx, member: SafeMember, *, reason=""):
+        """Removes art-discussion access from a user. Staff only."""
+        await self.add_restriction(member.id, self.bot.roles['no-art'])
+        try:
+            await member.add_roles(self.bot.roles['no-art'])
+        except discord.Forbidden:
+            await ctx.send("💢 I don't have permission to do this.")
+        await ctx.send(f"{member.mention} can no longer access art-discussion.")
+        msg = f"🚫 **Removed art**: {ctx.message.author.mention} removed art access from {member.mention} | {self.bot.help_command.remove_mentions(str(member))}"
+        if reason != "":
+            msg += "\n✏️ __Reason__: " + reason
+        else:
+            msg += "\nPlease add an explanation below. In the future, it is recommended to use `.noart <user> [reason]` as the reason is automatically sent to the user."
+        await self.bot.channels['mod-logs'].send(msg)
+
+    @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
     async def elsewhere(self, ctx, member: SafeMember):
