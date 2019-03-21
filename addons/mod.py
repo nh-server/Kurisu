@@ -221,6 +221,41 @@ class Mod:
 
     @is_staff("HalfOP")
     @commands.command(pass_context=True)
+    async def art(self, ctx, member: converters.SafeMember):
+        """Restore art-discussion access for a user. Staff only."""
+        try:
+            await self.remove_restriction(member, "no-art")
+            await self.bot.remove_roles(member, self.bot.noart_role)
+            await self.bot.say("{} can access art-discussion again.".format(member.mention))
+            msg = "⭕️ **Restored art**: {} restored art access to {} | {}#{}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
+            await self.bot.send_message(self.bot.modlogs_channel, msg)
+        except discord.errors.Forbidden:
+            await self.bot.say("💢 I don't have permission to do this.")
+
+    @is_staff("HalfOP")
+    @commands.command(pass_context=True)
+    async def noart(self, ctx, member: converters.SafeMember, *, reason=""):
+        """Removes art-discussion access from a user. Staff only."""
+        try:
+            await self.add_restriction(member, "no-art")
+            roles = member.roles
+
+            roles = [x for x in roles if x != self.bot.art_role]
+            if self.bot.noart_role not in roles:
+                roles.append(self.bot.noart_role)
+            await self.bot.replace_roles(member, *roles)
+            await self.bot.say("{} can no longer access art-discussion.".format(member.mention))
+            msg = "🚫 **Removed art**: {} removed art access from {} | {}#{}".format(ctx.message.author.mention, member.mention, self.bot.escape_name(member.name), self.bot.escape_name(member.discriminator))
+            if reason != "":
+                msg += "\n✏️ __Reason__: " + reason
+            else:
+                msg += "\nPlease add an explanation below. In the future, it is recommended to use `.noart <user> [reason]` as the reason is automatically sent to the user."
+            await self.bot.send_message(self.bot.modlogs_channel, msg)
+        except discord.errors.Forbidden:
+            await self.bot.say("💢 I don't have permission to do this.")
+
+    @is_staff("HalfOP")
+    @commands.command(pass_context=True)
     async def elsewhere(self, ctx, member: converters.SafeMember):
         """Restore elsewhere access for a user. Staff only."""
         try:
