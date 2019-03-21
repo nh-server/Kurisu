@@ -289,7 +289,6 @@ class Mod:
         except discord.errors.Forbidden:
             await self.bot.say("💢 I don't have permission to do this.")
 
-
     @is_staff("HalfOP")
     @commands.command(pass_context=True, name="noembed")
     async def noembed(self, ctx, member: converters.SafeMember, *, reason=""):
