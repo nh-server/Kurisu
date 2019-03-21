@@ -1,7 +1,35 @@
-import sqlite3
+from datetime import datetime
 import time
-
 from discord.ext import commands
+from discord import utils
+import aiosqlite3
+import os
+
+
+class ConnectionHolder:
+    def __init__(self):
+        self.dbcon = None
+
+    async def load_db(self, database_name, loop):
+
+        if not os.path.isfile(database_name):
+            print(f'Creating database {database_name}')
+            with open('schema.sql', 'r', encoding='utf-8') as f:
+                schema = f.read()
+            self.dbcon = await aiosqlite3.connect(database_name, loop=loop)
+            await self.dbcon.executescript(schema)
+            await self.dbcon.commit()
+            print(f'{database_name} initialized')
+        print(f'Loaded {database_name}')
+
+    async def __aenter__(self):
+        self.dbcon.__enter__()
+        cursor = await self.dbcon.cursor()
+        return cursor
+
+    async def __aexit__(self, exc_class, exc, traceback):
+        self.dbcon.__exit__(exc_class, exc, traceback)
+        await self.dbcon.commit()
 
 
 class DatabaseCog(commands.Cog):
@@ -12,150 +40,159 @@ class DatabaseCog(commands.Cog):
         self.bot = bot
         print(f'Cog "{self.qualified_name}" loaded')
 
-    def add_restriction(self, user_id, role):
-        if self.bot.c.execute('SELECT user_id FROM permanent_roles WHERE user_id=? AND role_id=?', (user_id, role.id)).fetchone() is None:
-            self.bot.c.execute('INSERT INTO permanent_roles VALUES(?, ?)', (user_id, role.id))
-            self.bot.dbcon.commit()
-            return True
-        return False
+    async def add_restriction(self, user_id, role):
+        async with self.bot.holder as cur:
+            await cur.execute('SELECT user_id FROM permanent_roles WHERE user_id=? AND role_id=?', (user_id, role.id))
+            if await cur.fetchone() is None:
+                await cur.execute('INSERT INTO permanent_roles VALUES(?, ?)', (user_id, role.id))
+                return True
+            return False
 
-    def remove_restriction(self, user_id, role):
-        self.bot.c.execute('DELETE FROM permanent_roles WHERE user_id=? AND role_id=?', (user_id, role.id))
-        self.bot.dbcon.commit()
+    async def remove_restriction(self, user_id, role):
+        async with self.bot.holder as cur:
+            await cur.execute('DELETE FROM permanent_roles WHERE user_id=? AND role_id=?', (user_id, role.id))
 
-    def get_restrictions_roles_id(self, user_id):
-        rows = self.bot.c.execute('SELECT role_id FROM permanent_roles WHERE user_id=?', (user_id,)).fetchall()
-        if rows:
-            return [x[0] for x in rows]
-        return []
+    async def get_restrictions_roles_id(self, user_id):
+        async with self.bot.holder as cur:
+            await cur.execute('SELECT role_id FROM permanent_roles WHERE user_id=?', (user_id,))
+            rows = await cur.fetchall()
+            if rows:
+                return [x[0] for x in rows]
+            return []
 
-    def add_staff(self, user_id, position):
-        self.bot.c.execute(
-            'INSERT INTO staff VALUES(user_id=:id, position=:position) ON CONFLICT DO UPDATE SET position=:position ',
-            {"id": user_id, "position": position})
-        self.bot.dbcon.commit()
+    async def add_staff(self, user_id, position):
+        async with self.bot.holder as cur:
+            if await self.get_stafftrole(user_id) is None:
+                await cur.execute('INSERT INTO staff VALUES(?, ?)', (user_id, position))
+            else:
+                await cur.execute('UPDATE staff SET position=? WHERE user_id=? ', (position, user_id))
 
-    def remove_staff(self, user_id):
-        self.bot.c.execute('DELETE FROM staff WHERE user_id=?', (user_id,))
-        self.bot.dbcon.commit()
+    async def remove_staff(self, user_id):
+        async with self.bot.holder as cur:
+            await cur.execute('DELETE FROM staff WHERE user_id=?', (user_id,))
 
-    def get_staff(self):
-        rows = self.bot.c.execute(self.bot.c.execute('SELECT user_id FROM staff')).fetchall()
-        if rows:
-            return [x[0] for x in rows]
-        return []
+    async def get_staff(self):
+        async with self.bot.holder as cur:
+            await cur.execute('SELECT user_id FROM staff')
+            rows = await cur.fetchall()
+            if rows:
+                return [x[0] for x in rows]
+            return []
 
-    def get_helpers(self):
-        rows = self.bot.c.execute('SELECT user_id FROM helpers').fetchall()
-        if rows:
-            return [x[0] for x in rows]
-        return []
+    async def get_helpers(self):
+        async with self.bot.holder as cur:
+            await cur.execute('SELECT user_id FROM helpers')
+            rows = await cur.fetchall()
+            if rows:
+                return [x[0] for x in rows]
+            return []
 
-    def add_helper(self, user_id, console):
-        try:
-            self.bot.c.execute('INSERT INTO helpers VALUES(?, ?)', (user_id, console))
-        except sqlite3.IntegrityError:
-            self.bot.c.execute('UPDATE helpers SET console=? WHERE user_id=?', (console, user_id))
-        self.bot.dbcon.commit()
+    async def add_helper(self, user_id, console):
+        async with self.bot.holder as cur:
+            if await self.get_console(user_id):
+                await cur.execute('INSERT INTO helpers VALUES(?, ?)', (user_id, console))
+            else:
+                await cur.execute('UPDATE helpers SET console=? WHERE user_id=?', (console, user_id))
 
-    def remove_helper(self, user_id):
-        self.bot.c.execute('DELETE FROM helpers WHERE user_id=?', (user_id,))
-        self.bot.dbcon.commit()
+    async def remove_helper(self, user_id):
+        async with self.bot.holder as cur:
+            await cur.execute('DELETE FROM helpers WHERE user_id=?', (user_id,))
 
-    def get_console(self, user_id):
-        console = self.bot.c.execute('SELECT console FROM helpers WHERE user_id=?', (user_id,)).fetchone()
-        if console:
-            return console[0]
-        return None
+    async def get_console(self, user_id):
+        async with self.bot.holder as cur:
+            await cur.execute('SELECT console FROM helpers WHERE user_id=?', (user_id,))
+            row = await cur.fetchone()
+            if row:
+                return row[0]
+            return None
 
-    def get_stafftrole(self, user_id):
-        rank = self.bot.c.execute('SELECT position FROM staff WHERE user_id=?', (user_id,)).fetchone()
-        if rank:
-            return rank[0]
-        return None
+    async def get_stafftrole(self, user_id):
+        async with self.bot.holder as cur:
+            await cur.execute('SELECT position FROM staff WHERE user_id=?', (user_id,))
+            rank = await cur.fetchone()
+            if rank:
+                return rank[0]
+            return None
 
-    def add_warn(self, user_id, issuer_id, reason, timestamp):
-        self.bot.c.execute('INSERT INTO warns VALUES(?, ?, ?, ?)', (user_id, issuer_id, reason, timestamp))
-        self.bot.dbcon.commit()
+    async def add_warn(self, user_id, issuer_id, reason):
+        async with self.bot.holder as cur:
+            snowflake = utils.time_snowflake(datetime.now())
+            await cur.execute('INSERT INTO warns VALUES(?, ?, ?, ?)', (snowflake, user_id, issuer_id, reason))
 
-    def remove_warn_id(self, user_id, index):
+    async def remove_warn_id(self, user_id, index):
         # i dont feel so good
-        self.bot.c.execute('DELETE FROM warns WHERE rowid in (SELECT rowid FROM warns WHERE user_id=? LIMIT ?,1)', (user_id, index-1))
-        self.bot.dbcon.commit()
+        async with self.bot.holder as cur:
+            await cur.execute('DELETE FROM warns WHERE warn_id in (SELECT warn_id FROM warns WHERE user_id=? LIMIT ?,1)', (user_id, index-1))
 
-    def remove_warns(self, user_id):
-        self.bot.c.execute('DELETE FROM warns WHERE user_id=?', (user_id,))
-        self.bot.dbcon.commit()
+    async def remove_warns(self, user_id):
+        async with self.bot.holder as cur:
+            await cur.execute('DELETE FROM warns WHERE user_id=?', (user_id,))
 
-    def get_warns(self, user_id):
-        warns = self.bot.c.execute('SELECT * FROM warns WHERE user_id=?', (user_id,)).fetchall()
-        return warns
+    async def get_warns(self, user_id):
+        async with self.bot.holder as cur:
+            await cur.execute('SELECT * FROM warns WHERE user_id=?', (user_id,))
+            return await cur.fetchall()
 
-    def add_timed_restriction(self, user_id, end_date, type):
-        if self.bot.c.execute('SELECT 1 FROM timed_restrictions WHERE user_id=? AND type=?', (user_id, type)).fetchone() is not None:
-            self.bot.c.execute('UPDATE timed_restrictions SET timestamp=?, alert=0 WHERE user_id=? AND type=?', (user_id, type))
-        self.bot.c.execute('INSERT INTO timed_restrictions VALUES(?, ?, ?, ?)', (user_id, end_date, type, 0))
-        self.bot.dbcon.commit()
+    async def add_timed_restriction(self, user_id, end_date, type):
+        async with self.bot.holder as cur:
+            await cur.execute('SELECT 1 FROM timed_restrictions WHERE user_id=? AND type=?', (user_id, type))
+            if await cur.fetchone() is not None:
+                await cur.execute('UPDATE timed_restrictions SET timestamp=?, alert=0 WHERE user_id=? AND type=?', (user_id, type))
+            else:
+                await cur.execute('INSERT INTO timed_restrictions VALUES(?, ?, ?, ?)', (user_id, end_date, type, 0))
 
-    def remove_timed_restriction(self, user_id, type):
-        self.bot.c.execute('DELETE FROM timed_restrictions WHERE user_id=? AND type=?', (user_id, type))
-        self.bot.dbcon.commit()
+    async def remove_timed_restriction(self, user_id, type):
+        async with self.bot.holder as cur:
+            await cur.execute('DELETE FROM timed_restrictions WHERE user_id=? AND type=?', (user_id, type))
 
-    def get_time_restrictions_by_type(self, type):
-        return self.bot.c.execute('SELECT * from timed_restrictions WHERE type=?', (type,))
+    async def get_time_restrictions_by_type(self, type):
+        async with self.bot.holder as cur:
+            await cur.execute('SELECT * from timed_restrictions WHERE type=?', (type,))
+            return await cur.fetchall()
 
-    def set_time_restriction_alert(self, user_id, type):
-        self.bot.c.execute('UPDATE timed_restrictions SET alert=1 WHERE user_id=? AND type=?', (user_id, type))
-        self.bot.dbcon.commit()
+    async def set_time_restriction_alert(self, user_id, type):
+        async with self.bot.holder as cur:
+            await cur.execute('UPDATE timed_restrictions SET alert=1 WHERE user_id=? AND type=?', (user_id, type))
 
-    def add_softban(self, user_id, issuer_id, reason, timestamp=None):
+    async def add_softban(self, user_id, issuer_id, reason, timestamp=None):
         if not timestamp:
             timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        try:
-            self.bot.c.execute('INSERT INTO softbans VALUES(?, ? , ?, ?)', (user_id, issuer_id, reason, timestamp))
-            self.bot.dbcon.commit()
+        async with self.bot.holder as cur:
+            await cur.execute('INSERT INTO softbans VALUES(?, ? , ?, ?)', (user_id, issuer_id, reason, timestamp))
             return True
-        except sqlite3.IntegrityError:
-            return False
 
-    def remove_softban(self, user_id):
-        self.bot.c.execute('DELETE FROM softbans WHERE user_id = ?', (user_id,))
-        self.bot.dbcon.commit()
+    async def remove_softban(self, user_id):
+        async with self.bot.holder as cur:
+            await cur.execute('DELETE FROM softbans WHERE user_id = ?', (user_id,))
 
-    def get_softbans(self, user_id):
-        rows = self.bot.c.execute('SELECT * FROM softbans WHERE user_id=?', (user_id,)).fetchall()
-        return rows
+    async def get_softbans(self, user_id):
+        async with self.bot.holder as cur:
+            await cur.execute('SELECT * FROM softbans WHERE user_id=?', (user_id,))
+            return await cur.fetchall()
 
-    def add_watch(self, user_id):
-        try:
-            self.bot.c.execute('INSERT INTO watchlist VALUES(?)', (user_id,))
-            self.bot.dbcon.commit()
+    async def add_watch(self, user_id):
+        async with self.bot.holder as cur:
+            await cur.execute('INSERT INTO watchlist VALUES(?)', (user_id,))
             return True
-        except sqlite3.IntegrityError:
-            return False
 
-    def remove_watch(self, user_id):
-        self.bot.c.execute('DELETE FROM watchlist WHERE user_id=?', (user_id,))
-        self.bot.dbcon.commit()
+    async def remove_watch(self, user_id):
+        async with self.bot.holder as cur:
+            await cur.execute('DELETE FROM watchlist WHERE user_id=?', (user_id,))
 
-    def is_watched(self, user_id):
-        if self.bot.c.execute('SELECT user_id FROM watchlist WHERE user_id=?', (user_id,)).fetchone():
-            print(self.bot.c.execute('SELECT user_id FROM watchlist WHERE user_id=?', (user_id,)).fetchone())
-            return True
-        return False
+    async def is_watched(self, user_id):
+        async with self.bot.holder as cur:
+            await cur.execute('SELECT user_id FROM watchlist WHERE user_id=?', (user_id,))
+            return cur.fetchone() is not None
 
-    def add_nofilter(self, channel):
-        try:
-            self.bot.c.execute('INSERT INTO nofilter VALUES(?)', (channel.id,))
-            self.bot.dbcon.commit()
-            return True
-        except sqlite3.IntegrityError:
-            return False
+    async def add_nofilter(self, channel):
+        async with self.bot.holder as cur:
+            await cur.execute('INSERT INTO nofilter VALUES(?)', (channel.id,))
 
-    def remove_nofilter(self, channel):
-        self.bot.c.execute('DELETE FROM nofilter WHERE channel_id=?', (channel.id,))
-        self.bot.dbcon.commit()
+    async def remove_nofilter(self, channel):
+        async with self.bot.holder as cur:
+            await cur.execute('DELETE FROM nofilter WHERE channel_id=?', (channel.id,))
 
-    def check_nofilter(self, channel):
-        return self.bot.c.execute('SELECT channel_id FROM nofilter WHERE channel_id=?', (channel.id,)).fetchone()
-
+    async def check_nofilter(self, channel):
+        async with self.bot.holder as cur:
+            await cur.execute('SELECT channel_id FROM nofilter WHERE channel_id=?', (channel.id,))
+            return await cur.fetchone() is not None

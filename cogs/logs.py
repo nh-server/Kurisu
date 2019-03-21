@@ -27,12 +27,11 @@ Thanks for stopping by and have a good time!
     async def on_member_join(self, member):
         await self.bot.wait_until_all_ready()
         msg = f"✅ **Join**: {member.mention} | {member}\n🗓 __Creation__: {member.created_at}\n🏷 __User ID__: {member.id}"
-        softban = self.get_softbans(member.id)
+        softban = await self.get_softbans(member.id)
         if softban:
             message_sent = False
             try:
-                await member.send(
-                    f"This account has not been permitted to participate in {self.bot.server.name}. The reason is: {softban[3]}")
+                await member.send(f"This account has not been permitted to participate in {self.bot.guild.name}. The reason is: {softban[3]}")
                 message_sent = True
             except discord.errors.Forbidden:
                 pass
@@ -45,22 +44,22 @@ Thanks for stopping by and have a good time!
             embed.description = softban[3]
             await self.bot.channels['server-logs'].send(msg, embed=embed)
             return
-        rst = self.get_restrictions_roles_id(member.id)
+        rst = await self.get_restrictions_roles_id(member.id)
         if rst:
             roles = []
             for role in rst:
                 roles.append(member.guild.get_role(role))
             await member.add_roles(*roles)
 
-        warns = self.get_warns(member.id)
-
+        warns = await self.get_warns(member.id)
+        print(warns)
         if len(warns) == 0:
             await self.bot.channels['server-logs'].send(msg)
         else:
             embed = discord.Embed(color=discord.Color.dark_red())
             embed.set_author(name=f"Warns for {member}", icon_url=member.avatar_url)
             for idx, warn in enumerate(warns):
-                embed.add_field(name=f"{idx + 1}: {warn[3]}", value=f"Issuer: {(await self.bot.get_user_info(warn[1])).display_name}\nReason: {warn[2]}")
+                embed.add_field(name=f"{idx + 1}: {warn[3]}", value=f"Issuer: {(await self.bot.fetch_user(warn[1])).display_name}\nReason: {warn[2]}")
             await self.bot.channels['server-logs'].send(msg, embed=embed)
         try:
             await member.send(self.welcome_msg.format(self.bot.help_command.remove_mentions(member.name), member.guild.name, self.bot.channels['welcome-and-rules'].mention))
@@ -102,15 +101,15 @@ Thanks for stopping by and have a good time!
         await self.bot.channels['mod-logs'].send(msg)
 
     @commands.Cog.listener()
-    async def on_member_unban(self, server, user):
+    async def on_member_unban(self, guild, user):
         await self.bot.wait_until_all_ready()
         if "tbr:"+str(user.id) in self.bot.actions:
             self.bot.actions.remove("tbr:"+str(user.id))
             return
         msg = f"⚠️ **Unban**: {user.mention} | {user}"
-        if self.get_softbans(user.id):
+        if await self.get_softbans(user.id):
             msg += "\nTimeban removed."
-            self.remove_timed_restriction(user.id, 'timeban')
+            await self.remove_timed_restriction(user.id, 'timeban')
         await self.bot.channels['mod-logs'].send(msg)
 
     @commands.Cog.listener()
@@ -159,7 +158,7 @@ Thanks for stopping by and have a good time!
                 msg = "\n🏷 __Nickname removal__"
             else:
                 msg = "\n🏷 __Nickname change__"
-            msg += f": {self.bot.help_command.remove_mentions(member_after.nick)} → {self.bot.help_command.remove_mentions(member_after.nick)}"
+            msg += f": {self.bot.help_command.remove_mentions(str(member_before.nick))} → {self.bot.help_command.remove_mentions(str(member_after.nick))}"
         if do_log:
             msg = f"ℹ️ **Member update**: {member_after.mention} | {member_after} {msg}"
             await dest.send(msg)

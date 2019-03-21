@@ -33,7 +33,7 @@ class Assistance(commands.Cog):
     async def staffreq(self, ctx, *, msg_request: str = ""):
         """Request staff, with optional additional text. Trusted, Helpers, Staff, Retired Staff, Verified only."""
         author = ctx.author
-        if not check_staff_id(ctx, 'Helper', ctx.author.id) and (self.bot.verified_role not in author.roles) and (self.bot.trusted_role not in author.roles) and (self.bot.retired_role not in author.roles):
+        if not await check_staff_id(ctx, 'Helper', ctx.author.id) and (self.bot.verified_role not in author.roles) and (self.bot.trusted_role not in author.roles) and (self.bot.retired_role not in author.roles):
             msg = f"{author.mention} You cannot used this command at this time. Please ask individual staff members if you need help."
             await ctx.send(msg)
             return

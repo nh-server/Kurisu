@@ -6,9 +6,9 @@
 
 from asyncio import Event
 from configparser import ConfigParser
-import sqlite3
 from subprocess import check_output, CalledProcessError
 import os
+from cogs.database import ConnectionHolder
 from sys import exit, hexversion
 from traceback import format_exception, print_exc
 import discord
@@ -22,7 +22,7 @@ os.chdir(dir_path)
 config = ConfigParser()
 config.read("config.ini")
 
-DATABASE_NAME = 'data/kurisu.sqlite'
+database_name = 'data/kurisu.sqlite'
 
 # loads extensions
 cogs = [
@@ -100,22 +100,6 @@ class Kurisu(commands.Bot):
         os.makedirs("data", exist_ok=True)
         os.makedirs("data/ninupdates", exist_ok=True)
 
-        if not os.path.isfile(DATABASE_NAME):
-            # read schema, open db, init
-            print(f'Creating database {DATABASE_NAME}')
-            with open('schema.sql', 'r', encoding='utf-8') as f:
-                schema = f.read()
-            self.dbcon = sqlite3.connect(DATABASE_NAME)
-            self.dbcon.executescript(schema)
-            self.dbcon.commit()
-            self.c = self.dbcon.cursor()
-            print(f'{DATABASE_NAME} initialized')
-        else:
-            # just open db, no setup
-            self.dbcon = sqlite3.connect(DATABASE_NAME)
-            self.c = self.dbcon.cursor()
-        self.db_closed = False
-
     def load_cogs(self):
         for extension in cogs:
             try:
@@ -148,6 +132,9 @@ class Kurisu(commands.Bot):
                              "WiiU": self.roles['On-Duty Wii U'],
                              "Switch": self.roles['On-Duty Switch']}
 
+        self.holder = ConnectionHolder()
+        await self.holder.load_db(database_name, self.loop)
+
         startup_message = f'{self.user.name} has started! {self.guild} has {self.guild.member_count:,} members!'
         if len(self.failed_cogs) != 0:
             startup_message += "\n\nSome addons failed to load:\n"
@@ -179,14 +166,20 @@ class Kurisu(commands.Bot):
         elif isinstance(exc, commands.MissingRequiredArgument):
             await ctx.send(f'{author.mention} You are missing required arguments.\n')
             await ctx.send_help(ctx.command)
+
         elif isinstance(exc, commands.CommandInvokeError):
             await ctx.send(f'{author.mention} `{command}` raised an exception during usage')
-            await self.channels['bot-err'].send(f'```\n{"".join(format_exception(type(exc), exc, exc.__traceback__))}\n```')
+            msg = "".join(format_exception(type(exc), exc, exc.__traceback__))
+            print(msg)
+            #for chunk in [msg[i:i + 1800] for i in range(0, len(msg), 1800)]:
+                #await self.channels['bot-err'].send(f'```\n{chunk}\n```')
         else:
             if not isinstance(command, str):
                 command.reset_cooldown(ctx)
             await ctx.send(f'{author.mention} Unexpected exception occurred while using the command `{command}`')
-            await self.channels['bot-err'].send(f'```\n{"".join(format_exception(type(exc), exc, exc.__traceback__))}\n```')
+            msg = "".join(format_exception(type(exc), exc, exc.__traceback__))
+            for chunk in [msg[i:i + 1800] for i in range(0, len(msg), 1800)]:
+                await self.channels['bot-err'].send(f'```\n{chunk}\n```')
 
     async def on_error(self, event_method, *args, **kwargs):
         print(f'Exception occurred in {event_method}')
@@ -197,7 +190,7 @@ class Kurisu(commands.Bot):
 
     async def close(self):
         print('Kurisu is shutting down')
-        self.dbcon.close()
+        self.holder.dbcon.close()
         self.db_closed = True
         await super().close()
 

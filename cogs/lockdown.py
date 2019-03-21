@@ -70,7 +70,7 @@ class Lockdown(commands.Cog):
         if not channels:
             channels.append(ctx.channel)
         locked_down = []
-        ishelper = not check_staff_id(ctx, "HalfOP", id)
+        ishelper = not await check_staff_id(ctx, "HalfOP", id)
         for c in channels:
             if ishelper and (c not in self.bot.assistance_channels):
                 await ctx.send(f"{ctx.author.mention} {c.mention} can't be locked by a helper.")
@@ -96,7 +96,7 @@ class Lockdown(commands.Cog):
         author = ctx.author
         if not channels:
             channels.append(ctx.channel)
-        ishelper = not check_staff_id(ctx, "HalfOP", ctx.author.id)
+        ishelper = not await check_staff_id(ctx, "HalfOP", ctx.author.id)
         try:
             if len(ctx.channel_mentions) == 0:
                 channels = [ctx.channel]

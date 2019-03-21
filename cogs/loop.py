@@ -84,44 +84,43 @@ class Loop(DatabaseCog):
         while self.is_active:
             try:
                 timestamp = datetime.now()
-                for ban in self.get_time_restrictions_by_type('timeban'):
+                for ban in await self.get_time_restrictions_by_type('timeban'):
                     unban_time = datetime.strptime(ban[1], "%Y-%m-%d %H:%M:%S")
                     if timestamp > unban_time:
-                        user = await self.bot.get_user_info(ban[0])
+                        user = await self.bot.fetch_user(ban[0])
                         self.bot.actions.append("tbr:" + str(ban[0]))
                         await self.bot.guild.unban(user)
                         msg = f"⚠️ **Ban expired**: {user.mention} | {user}"
                         await self.bot.channels['mod-logs'].send(msg)
-                        self.remove_timed_restriction(user.id, 'timeban')
+                        await self.remove_timed_restriction(user.id, 'timeban')
                     elif not ban[3]:
                         warning_time = unban_time - self.warning_time_period_ban
                         if timestamp > warning_time:
-                            self.set_time_restriction_alert(ban[0], 'timeban')
-                            user = await self.bot.get_user_info(ban[0])
+                            await self.set_time_restriction_alert(ban[0], 'timeban')
+                            user = await self.bot.fetch_user(ban[0])
                             await self.bot.channels['mods'].send(f"**Note**: {user.name} will be unbanned in {((unban_time - timestamp).seconds // 60) + 1} minutes.")
-
-                for mute in self.get_time_restrictions_by_type('timemute'):
+                for mute in await self.get_time_restrictions_by_type('timemute'):
                     unmute_time = datetime.strptime(mute[1], "%Y-%m-%d %H:%M:%S")
                     if timestamp > unmute_time:
-                        self.remove_timed_restriction(mute[0], "timemute")
-                        self.remove_restriction(mute[0], self.bot.roles['Muted'])
+                        await self.remove_timed_restriction(mute[0], "timemute")
+                        await self.remove_restriction(mute[0], self.bot.roles['Muted'])
                         msg = f"🔈 **Mute expired**: <@{mute[0]}>"
                         await self.bot.channels['mod-logs'].send(msg)
-                        member = self.bot.guild.get_member(mute[0])
+                        member = await self.bot.guild.get_member(mute[0])
                         if member:
                             await member.remove_roles(self.bot.roles['Muted'])
                     elif not mute[3]:
                         warning_time = unmute_time - self.warning_time_period_mute
                         if timestamp > warning_time:
-                            self.set_time_restriction_alert(mute[0], 'timemute')
-                            user = await self.bot.get_user_info(mute[0])
+                            await self.set_time_restriction_alert(mute[0], 'timemute')
+                            user = await self.bot.fetch_user(mute[0])
                             await self.bot.channels['mods'].send(f"**Note**: <@{user.name}> will be unmuted in {((unmute_time - timestamp).seconds // 60) + 1} minutes.")
 
-                for nohelp in self.get_time_restrictions_by_type('timenohelp'):
+                for nohelp in await self.get_time_restrictions_by_type('timenohelp'):
                     help_time = datetime.strptime(nohelp[1], "%Y-%m-%d %H:%M:%S")
                     if timestamp > help_time:
-                        self.remove_timed_restriction(nohelp[0], "timenohelp")
-                        self.remove_restriction(nohelp[0], self.bot.roles['No-Help'])
+                        await self.remove_timed_restriction(nohelp[0], "timenohelp")
+                        await self.remove_restriction(nohelp[0], self.bot.roles['No-Help'])
                         msg = f"⭕️ **No-Help Restriction expired**: <@{nohelp[0]}>"
                         await self.bot.channels['mod-logs'].send(msg)
                         await self.bot.channels['helpers'].send(msg)
@@ -131,7 +130,7 @@ class Loop(DatabaseCog):
                     elif not nohelp[1][1]:
                         warning_time = help_time - self.warning_time_period_nohelp
                         if timestamp > warning_time:
-                            self.set_time_restriction_alert(nohelp[0], 'timenohelp')
+                            await self.set_time_restriction_alert(nohelp[0], 'timenohelp')
                             await self.bot.channels['helpers'].send(f"**Note**: <@{nohelp[0]}> no-help restriction will expire in {((help_time - timestamp).seconds // 60) + 1} minutes.")
 
                 if timestamp.minute == 0 and timestamp.hour != self.last_hour:

@@ -3,6 +3,7 @@ from configparser import ConfigParser
 import sqlite3
 from sys import exit
 import discord
+from datetime import datetime
 from discord.ext import commands
 import os
 
@@ -16,7 +17,7 @@ roles = {
     'no-elsewhere': None,
     'No-Memes': None,
     'No-Embed': None,
-    'Small Help': None,}
+    'Small Help': None}
 
 DATABASE_NAME = 'data/kurisu.sqlite'
 bot = commands.Bot(('.', '!'), description="Database Converter!")
@@ -41,7 +42,7 @@ async def on_ready():
 
     fccon = sqlite3.connect('data/fc.sqlite')
     fc = fccon.cursor()
-    rows =fc.execute('SELECT * FROM friend_codes').fetchall()
+    rows = fc .execute('SELECT * FROM friend_codes').fetchall()
     for row in rows:
         try:
             c.execute('INSERT INTO friend_codes VALUES(?, ?)', row)
@@ -74,15 +75,16 @@ async def on_ready():
     for id in rsts.keys():
         for rolename in rsts[id]:
             role = roles[rolename]
-            if c.execute ('SELECT user_id FROM permanent_roles WHERE user_id=? AND role_id=?',
+            if c.execute('SELECT user_id FROM permanent_roles WHERE user_id=? AND role_id=?',
                                   (id, role.id)).fetchone() is None:
                 c.execute ('INSERT INTO permanent_roles VALUES(?, ?)', (id, role.id))
 
     for id in warns.keys():
         for warn in warns[id]["warns"]:
-            if c.execute('SELECT * FROM warns WHERE user_id=? AND issuer_id=? AND reason=? AND TIMESTAMP = ?', (id, warn['issuer_id'], warn['reason'], warn['timestamp'])).fetchone():
+            snowflake = discord.utils.time_snowflake(datetime.strptime(warn['timestamp'],'%Y-%m-%d %H:%M:%S'))
+            if c.execute('SELECT * FROM warns WHERE warn_id=?', (snowflake,)).fetchone():
                 continue
-            c.execute('INSERT INTO warns VALUES(?, ?, ?, ?)', (id, warn['issuer_id'], warn['reason'], warn['timestamp']))
+            c.execute('INSERT INTO warns VALUES(?, ?, ?, ?)', (snowflake, id, warn['issuer_id'], warn['reason']))
 
     for id in helpers.keys():
         try:
@@ -117,10 +119,8 @@ async def on_ready():
 
     for id in timemutes:
         # assume old warns are older than the ones in the database
-        if c.execute ('SELECT 1 FROM timed_restrictions WHERE user_id=? AND type=?',
-                              (id, 'timemute')).fetchone() is None:
-            c.execute ('INSERT INTO timed_restrictions VALUES(?, ?, ?, ?)',
-                               (id, timemutes[id], 'timemute', 0))
+        if c.execute ('SELECT 1 FROM timed_restrictions WHERE user_id=? AND type=?',(id, 'timemute')).fetchone() is None:
+            c.execute ('INSERT INTO timed_restrictions VALUES(?, ?, ?, ?)',(id, timemutes[id], 'timemute', 0))
 
     for id in watch.keys():
         try:

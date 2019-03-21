@@ -188,7 +188,7 @@ class Events(DatabaseCog):
     async def scan_message(self, message, is_edit=False):
         embed = discord.Embed()
         embed.description = message.content
-        if self.is_watched(message.author.id):
+        if await self.is_watched(message.author.id):
             content = f"**Channel**:\n[#{message.channel.name}](https://discordapp.com/channels/{str(message.guild.id)}/{message.channel.id}/{message.id})\n"
             msg = message.author.mention
             if message.attachments:
@@ -338,10 +338,10 @@ class Events(DatabaseCog):
             except discord.errors.NotFound:
                 pass
             try:
-                await message.author.send(f"You were automatically placed under probation in {self.bot.server.name} for mass user mentions.")
+                await message.author.send(f"You were automatically placed under probation in {self.bot.guild.name} for mass user mentions.")
             except discord.errors.Forbidden:
                 pass
-            self.add_restriction(message.author, self.bot.roles['Probation'])
+            await self.add_restriction(message.author, self.bot.roles['Probation'])
             await message.author.add_roles(self.bot.roles['Probation'])
 
     async def user_spam_check(self, message):
@@ -450,7 +450,7 @@ class Events(DatabaseCog):
                 call(['git', 'pull'])
                 await self.bot.close()
             return
-        if message.author == message.guild.me or check_staff_id(self, 'Helper', message.author.id) or self.check_nofilter(message.channel):  # don't process messages by the bot or staff or in the helpers channel
+        if message.author == message.guild.me or await check_staff_id(self, 'Helper', message.author.id) or await self.check_nofilter(message.channel):  # don't process messages by the bot or staff or in the helpers channel
             return
         await self.bot.wait_until_all_ready()
         await self.scan_message(message)
@@ -463,10 +463,10 @@ class Events(DatabaseCog):
         if isinstance(message_before.channel, discord.abc.PrivateChannel):
             return
         try:
-            if self.check_nofilter(message_before.channel):
+            if await self.check_nofilter(message_before.channel):
                 return
             await self.bot.wait_until_all_ready()
-            if message_after.author == self.bot.guild.me or self.bot.roles['Staff'] in message_after.author.roles or self.check_nofilter(message_after.channel).id:  # don't process messages by the bot or staff or in the helpers channel
+            if message_after.author == self.bot.guild.me or self.bot.roles['Staff'] in message_after.author.roles or await self.check_nofilter(message_after.channel):  # don't process messages by the bot or staff or in the helpers channel
                 return
             if message_before.content == message_after.content:
                 return

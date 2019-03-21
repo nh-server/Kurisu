@@ -34,7 +34,7 @@ class Rules(commands.Cog, command_attrs=dict()):
         await ctx.send("🏷 ___Username/Nickname and Avatar policy___\n"
                        "Usernames are to be kept primarily alphanumeric, to keep them easy to tag and read. Excessively long usernames are not acceptable. Usernames and avatars that are annoying, offensive, inappropriate (\"nsfw\"), and/or disruptive to others are also not allowed.\n"
                        "Usernames that go against these rules will be assigned a nickname. Users can request a specific nickname that follows these rules by asking in <#270890866820775946> or by sending a direct message to <@333857992170536961>.\n"
-                        "Users with avatars against these rules will be asked to change them or be kicked from the server.")
+                       "Users with avatars against these rules will be asked to change them or be kicked from the server.")
 
     @commands.command(hidden=False)
     async def rules(self, ctx):

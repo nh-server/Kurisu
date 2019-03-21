@@ -1,3 +1,7 @@
+
+PRAGMA application_id = 0x4B757269;
+PRAGMA user_version = 0x55566572;
+
 create table friend_codes
 (
   user_id INTEGER PRIMARY KEY,
@@ -45,10 +49,10 @@ create table timed_restrictions
 
 create table warns
 (
+  warn_id   INTEGER PRIMARY KEY,  
   user_id   int,
   issuer_id int,
-  reason    text,
-  timestamp text
+  reason    text
 );
 
 create table watchlist

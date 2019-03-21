@@ -17,10 +17,10 @@ class Modwatch(DatabaseCog):
     @is_staff("HalfOP")
     @commands.command()
     async def watch(self, ctx, member: converters.SafeMember):
-        if self.is_watched(member.id):
+        if await self.is_watched(member.id):
             await ctx.send("User is already being watched!")
             return
-        self.add_watch(member.id)
+        await self.add_watch(member.id)
         await ctx.send(f"{member.mention} is being watched.")
         msg = f"👀 **Watch**: {ctx.author.mention} put {member.mention} on watch | {member}"
         await self.bot.channels['mod-logs'].send(msg)
@@ -29,10 +29,10 @@ class Modwatch(DatabaseCog):
     @is_staff("HalfOP")
     @commands.command()
     async def unwatch(self, ctx, member: converters.SafeMember):
-        if not self.is_watched(member.id):
+        if not await self.is_watched(member.id):
             await ctx.send("This user was not being watched.")
             return
-        self.remove_watch(member.id)
+        await self.remove_watch(member.id)
         await ctx.send(f"{member.mention} is no longer being watched.")
         msg = f"❌ **Unwatch**: {ctx.author.mention} removed {member.mention} from watch | {member}"
         await self.bot.channels['mod-logs'].send(msg)

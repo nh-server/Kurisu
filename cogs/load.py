@@ -2,7 +2,7 @@ from discord.ext import commands
 from cogs.checks import is_staff
 
 
-class Load(commands.Cog, command_attrs=dict(hidden=True)):
+class Load(commands.Cog):
     """
     Load commands.
     """
@@ -15,9 +15,8 @@ class Load(commands.Cog, command_attrs=dict(hidden=True)):
             raise commands.NoPrivateMessage()
         return True
 
-    # Load test
     @is_staff("OP")
-    @commands.command()
+    @commands.command(hidden=True)
     async def load(self, ctx, *, module: str):
         """Loads an Cog."""
         try:
@@ -29,7 +28,7 @@ class Load(commands.Cog, command_attrs=dict(hidden=True)):
             await ctx.send(f'💢 Failed!\n```\n{type(e).__name__}: {e}\n```')
 
     @is_staff("OP")
-    @commands.command()
+    @commands.command(hidden=True)
     async def unload(self, ctx, *, module: str):
         """Unloads an Cog."""
         try:

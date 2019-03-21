@@ -1,8 +1,7 @@
 import discord
-import time
 from discord.ext import commands
 from cogs.checks import is_staff, check_staff_id
-from cogs import converters
+from cogs.converters import SafeMember
 from cogs.database import DatabaseCog
 
 
@@ -18,19 +17,18 @@ class ModWarn(DatabaseCog):
 
     @is_staff('Helper')
     @commands.command()
-    async def warn(self, ctx, member: converters.SafeMember, *, reason=""):
+    async def warn(self, ctx, member: SafeMember, *, reason=""):
         """Warn a user. Staff and Helpers only."""
         issuer = ctx.author
-        if check_staff_id(ctx, "Helper", member.id):
+        if await check_staff_id(ctx, "Helper", member.id):
             await ctx.send("You can't warn another staffer with this command!")
             return
-        timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        self.add_warn(member.id, ctx.author.id, reason, timestamp)
+        await self.add_warn(member.id, ctx.author.id, reason)
         msg = f"You were warned on {ctx.guild.name}."
         if reason != "":
             # much \n
             msg += " The given reason is: " + reason
-        warn_count = len(self.get_warns(member.id))
+        warn_count = len(await self.get_warns(member.id))
         msg += f"\n\nPlease read the rules in <#196618637950451712>. This is warn #{warn_count}."
         if warn_count == 2:
             msg += " __The next warn will automatically kick.__"
@@ -51,7 +49,10 @@ class ModWarn(DatabaseCog):
             await member.kick(reason="Warn kicked.")
         if warn_count >= 5:  # just in case
             self.bot.actions.append("wb:"+str(member.id))
-            await member.ban(reason="Warn banned.")
+            try:
+                await member.ban(reason="5 warns.")
+            except discord.Forbidden:
+                await ctx.send("I can't ban this user!")
         await ctx.send(f"{member.mention} warned. User has {warn_count} warning(s)")
         msg = f"⚠️ **Warned**: {issuer.mention} warned {member.mention} (warn #{warn_count}) | {member}"
         if reason != "":
@@ -61,19 +62,18 @@ class ModWarn(DatabaseCog):
 
     @is_staff('OP')
     @commands.command()
-    async def softwarn(self, ctx, member: converters.SafeMember, *, reason=""):
+    async def softwarn(self, ctx, member: SafeMember, *, reason=""):
         """Warn a user without automated action. Staff only."""
         issuer = ctx.author
-        if check_staff_id(ctx, "Helper", member.id):
+        if await check_staff_id(ctx, "Helper", member.id):
             await ctx.send("You can't warn another staffer with this command!")
             return
-        warn_count = len(self.get_warns(member.id))
+        warn_count = len(await self.get_warns(member.id))
         if warn_count >= 5:
             await ctx.send("A user can't have more than 5 warns!")
             return
         warn_count += 1
-        timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-        self.add_warn(member.id, ctx.author.id, reason, timestamp)
+        await self.add_warn(member.id, ctx.author.id, reason)
         msg = f"You were warned on {ctx.guild}."
         if reason != "":
             # much \n
@@ -94,27 +94,26 @@ class ModWarn(DatabaseCog):
             "\nPlease add an explanation below. In the future, it is recommended to use `.warn <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
 
     @commands.command()
-    async def listwarns(self, ctx, user: discord.Member = None):
+    async def listwarns(self, ctx, member: SafeMember = None):
         """List warns for a user. Staff and Helpers only."""
-        if not user:  # If user is set to None, its a selfcheck
-            user = ctx.author
+        if not member:  # If user is set to None, its a selfcheck
+            member = ctx.author
         issuer = ctx.author
-        member = user  # A bit sloppy but its to reduce the amount of work needed to change below.
-        if not check_staff_id(ctx, "Helper", ctx.author.id) and (member != issuer):
+        if not await check_staff_id(ctx, "Helper", ctx.author.id) and (member != issuer):
                 msg = f"{issuer.mention} Using this command on others is limited to Staff and Helpers."
                 await ctx.send(msg)
                 return
         embed = discord.Embed(color=discord.Color.dark_red())
         embed.set_author(name=f"Warns for {member}", icon_url=member.avatar_url)
-        warns = self.get_warns(member.id)
+        warns = await self.get_warns(member.id)
         if warns:
             for idx, warn in enumerate(warns):
-                wissuer = await self.bot.get_user_info(warn[1])
+                issuer = await self.bot.fetch_user(warn[2])
                 value = ""
                 if ctx.channel == self.bot.channels['helpers'] or ctx.channel == self.bot.channels['mods']:
-                    value += "Issuer: " + wissuer.name + "\n"
-                value += "Reason: " + warn[2] + " "
-                embed.add_field(name=f"{idx + 1}: {warn[3]}", value=value)
+                    value += f"Issuer: {issuer.name}\n"
+                value += f"Reason: {warn[3]} "
+                embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn[0])}", value=value)
         else:
             embed.description = "There are none!"
             embed.color = discord.Color.green()
@@ -124,19 +123,19 @@ class ModWarn(DatabaseCog):
     @commands.command()
     async def listwarnsid(self, ctx, user_id: int):
         """List warns for a user based on ID. Staff and Helpers only."""
-        member = await self.bot.get_user_info(user_id)
+        member = await self.bot.fetch_user(user_id)
         embed = discord.Embed(color=discord.Color.dark_red())
         embed.set_author(name=f"Warns for {member}",
                          icon_url=member.avatar_url)
-        warns = self.get_warns(member.id)
+        warns = await self.get_warns(member.id)
         if warns:
             for idx, warn in enumerate(warns):
-                wissuer = await self.bot.get_user_info(warn[1])
+                issuer = await self.bot.fetch_user(warn[2])
                 value = ""
                 if ctx.channel == self.bot.channels['helpers'] or ctx.channel == self.bot.channels['mods']:
-                    value += "Issuer: " + wissuer.name + "\n"
-                value += "Reason: " + warn[2] + " "
-                embed.add_field(name=f"{idx + 1}: {warn[3]}", value=value)
+                    value += f"Issuer: {issuer.name}\n"
+                value += f"Reason: {warn[3]} "
+                embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn[0])}", value=value)
         else:
             embed.description = "There are none!"
             embed.color = discord.Color.green()
@@ -146,25 +145,24 @@ class ModWarn(DatabaseCog):
     @commands.command()
     async def copywarns_id2id(self, ctx, user_id1: int, user_id2: int):
         """Copy warns from one user ID to another. Overwrites all warns of the target user ID. Staff only."""
-        warns = self.get_warns(user_id1)
+        warns = await self.get_warns(user_id1)
         if not warns:
             await ctx.send(f"{user_id1} has no warns!")
             return
-
         for warn in warns:
-            self.add_warn(user_id2, warn[1], warn[2], warn[3])
+            await self.add_warn(user_id2, warn[1], warn[2])
         warn_count = len(warns)
-        user1 = await self.bot.get_user_info(user_id1)
-        user2 = await self.bot.get_user_info(user_id2)
+        user1 = await self.bot.fetch_user(user_id1)
+        user2 = await self.bot.fetch_user(user_id2)
         await ctx.send(f"{warn_count} warns were copied from {user1.name} to {user2.name}!")
         msg = f"📎 **Copied warns**: {ctx.author.mention} copied {warn_count} warns from {user1.name} ({user_id1}) to "
         await self.bot.channels['mod-logs'].send(msg)
 
     @is_staff("HalfOP")
     @commands.command()
-    async def delwarn(self, ctx, member: converters.SafeMember, idx: int):
+    async def delwarn(self, ctx, member: SafeMember, idx: int):
         """Remove a specific warn from a user. Staff only."""
-        warns = self.get_warns(member.id)
+        warns = await self.get_warns(member.id)
         if not warns:
             await ctx.send(f"{member.mention} has no warns!")
             return
@@ -178,7 +176,7 @@ class ModWarn(DatabaseCog):
         warn = warns[idx-1]
         embed = discord.Embed(color=discord.Color.dark_red(), title=f"Warn {idx} on {warn[3]}",
                               description=f"Issuer: {warn[1]}\nReason: {warn[2]}")
-        self.remove_warn_id(member.id, idx)
+        await self.remove_warn_id(member.id, idx)
         await ctx.send(f"{member.mention} has a warning removed!")
         msg = f"🗑 **Deleted warn**: {ctx.author.mention} removed warn {idx} from {member.mention} | {member}"
         await self.bot.channels['mod-logs'].send(msg, embed=embed)
@@ -187,7 +185,7 @@ class ModWarn(DatabaseCog):
     @commands.command()
     async def delwarnid(self, ctx, user_id: int, idx: int):
         """Remove a specific warn from a user based on ID. Staff only."""
-        warns = self.get_warns(user_id)
+        warns = await self.get_warns(user_id)
         if not warns:
             await ctx.send(f"{user_id} has no warns!")
             return
@@ -199,24 +197,26 @@ class ModWarn(DatabaseCog):
             await ctx.send("Warn index is below 1!")
             return
         warn = warns[idx-1]
-        embed = discord.Embed(color=discord.Color.dark_red(), title=f"Warn {idx} on {warn[3]}",
-                              description=f"Issuer: {warn[1]}\nReason: {warn[2]}")
-        self.remove_warn_id(user_id, idx)
-        member = await self.bot_get_user_info(user_id)
-        await ctx.send(f"{member.name} has a warning removed!")
-        msg = f"🗑 **Deleted warn**: {ctx.author.mention} removed warn {idx} from {member.mention} | {member}"
+        wuser = await self.bot.fetch_user(user_id)
+        issuer = await self.bot.fetch_user(warn[2])
+
+        embed = discord.Embed(color=discord.Color.dark_red(), title=f"Warn {idx} on {wuser}",
+                              description=f"Issuer: {issuer}\nReason: {warn[3]}")
+        await self.remove_warn_id(user_id, idx)
+        await ctx.send(f"{wuser.name} has a warning removed!")
+        msg = f"🗑 **Deleted warn**: {ctx.author.mention} removed warn {idx} from {wuser.mention} | {wuser}"
         await self.bot.channels['mod-logs'].send(msg, embed=embed)
 
     @is_staff("HalfOP")
     @commands.command()
-    async def clearwarns(self, ctx, member: converters.SafeMember):
+    async def clearwarns(self, ctx, member: SafeMember):
         """Clear all warns for a user. Staff only."""
-        warns = self.get_warns(member.id)
+        warns = await self.get_warns(member.id)
         if not warns:
             await ctx.send(f"{member.mention} has no warns!")
             return
         warn_count = len(warns)
-        self.remove_warns(member.id)
+        await self.remove_warns(member.id)
         await ctx.send(f"{member.mention} no longer has any warns!")
         msg = f"🗑 **Cleared warns**: {ctx.author.mention} cleared {warn_count} warns from {member.mention} | {member}"
         await self.bot.channels['mod-logs'].send(msg)
@@ -225,20 +225,16 @@ class ModWarn(DatabaseCog):
     @commands.command()
     async def clearwarnsid(self, ctx, user_id):
         """Clear all warns for a user based on ID. Staff only."""
-        member = await self.bot.get_user_info(user_id)
-        warns = self.get_warns(member.id)
+        member = await self.bot.fetch_user(user_id)
+        warns = await self.get_warns(member.id)
         if not warns:
             await ctx.send(f"{member.name} has no warns!")
             return
         warn_count = len(warns)
-        self.remove_warns(member.id)
+        await self.remove_warns(member.id)
         await ctx.send(f"{member.name} no longer has any warns!")
         msg = f"🗑 **Cleared warns**: {ctx.author.mention} cleared {warn_count} warns from {member.name} ({user_id})"
         await self.bot.channels['mod-logs'].send(msg)
-
-    async def cog_command_error(self, ctx, error):
-        if isinstance(error, commands.errors.CheckFailure):
-            await ctx.send(f"{ctx.author.mention} You don't have permission to use this command.")
 
 
 def setup(bot):

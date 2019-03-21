@@ -8,7 +8,6 @@ class HelperList(DatabaseCog):
     """
     Management of active helpers.
     """
-
     async def cog_check(self, ctx):
         if ctx.guild is None:
             raise commands.NoPrivateMessage()
@@ -21,7 +20,7 @@ class HelperList(DatabaseCog):
         if position not in self.bot.helper_roles:
             await ctx.send(f"💢 That's not a valid position. You can use __{'__, __'.join(self.bot.helper_roles.keys())}__")
             return
-        self.add_helper(member.id, position)
+        await self.add_helper(member.id, position)
         await member.add_roles(self.bot.roles['Helpers'])
         await ctx.send(f"{member.mention} is now a helper. Welcome to the party room!")
 
@@ -29,7 +28,7 @@ class HelperList(DatabaseCog):
     async def delhelper(self, ctx, member: SafeMember):
         """Remove user from helpers. Owners only."""
         await ctx.send(member.name)
-        self.remove_helper(member.id)
+        await self.remove_helper(member.id)
         await member.remove_roles(self.bot.roles['Helpers'])
         await ctx.send(f"{member.mention} is no longer a helper. Stop by some time!")
 
@@ -37,7 +36,7 @@ class HelperList(DatabaseCog):
     async def helpon(self, ctx):
         """Gain highlighted helping role. Only needed by Helpers."""
         author = ctx.author
-        console = self.get_console(ctx.author.id)
+        console = await self.get_console(ctx.author.id)
         if not console:
             await ctx.send("You are not listed as a helper, and can't use this.")
             return
@@ -50,7 +49,7 @@ class HelperList(DatabaseCog):
     async def helpoff(self, ctx):
         """Remove highlighted helping role. Only needed by Helpers."""
         author = ctx.author
-        console = self.get_console(ctx.author.id)
+        console = await self.get_console(ctx.author.id)
         if not console:
             await ctx.send("You are not listed as a helper, and can't use this.")
             return
