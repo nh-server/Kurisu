@@ -11,7 +11,6 @@ class ConnectionHolder:
         self.dbcon = None
 
     async def load_db(self, database_name, loop):
-
         if not os.path.isfile(database_name):
             print(f'Creating database {database_name}')
             with open('schema.sql', 'r', encoding='utf-8') as f:
@@ -185,7 +184,7 @@ class DatabaseCog(commands.Cog):
     async def is_watched(self, user_id):
         async with self.bot.holder as cur:
             await cur.execute('SELECT user_id FROM watchlist WHERE user_id=?', (user_id,))
-            return cur.fetchone() is not None
+            return await cur.fetchone() is not None
 
     async def add_nofilter(self, channel):
         async with self.bot.holder as cur:

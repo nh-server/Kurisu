@@ -179,9 +179,11 @@ class Extras(commands.Cog):
     @commands.command(hidden=True)
     async def togglechannel(self, ctx, channelname):
         """Enable or disable access to specific channels."""
-        author = self.bot.guild.get_member(ctx.author.id)
         if isinstance(ctx.channel, discord.abc.GuildChannel):
             await ctx.message.delete()
+            author = ctx.author
+        else:
+            author = self.bot.guild.get_member(ctx.author.id)
         try:
             if channelname == "elsewhere":
                 if self.bot.roles['#elsewhere'] in author.roles:
@@ -193,7 +195,7 @@ class Extras(commands.Cog):
                 else:
                     await author.send("Your access to elsewhere is restricted, contact staff to remove it.")
             else:
-                await ctx.send(f"{channelname} is not a valid toggleable channel.")
+                await author.send(f"{channelname} is not a valid toggleable channel.")
         except discord.errors.Forbidden:
             pass
 
@@ -203,7 +205,7 @@ class Extras(commands.Cog):
         """Colorful"""
         emoji = '🌈'
         month = datetime.date.today().month
-        if month == 3:
+        if month == 6:
             member = ctx.author
             if member.nick and member.nick[-1] == emoji:
                 await ctx.send("Your nickname already ends in a rainbow!")
