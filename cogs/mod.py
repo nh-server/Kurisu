@@ -463,7 +463,7 @@ class Mod(DatabaseCog):
     @commands.guild_only()
     @commands.command(hidden=True)
     async def filter(self, ctx, channel: discord.TextChannel):
-        """Adds nofilter to the channel"""
+        """Removes nofilter from the channel"""
         await self.remove_nofilter(channel)
         await self.bot.channels['mod-logs'].send(f"🚫 **Filter**: {ctx.author.mention} removed no filter from {channel.mention}")
 
