@@ -572,6 +572,7 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
                 await ctx.send("Please specify a console; valid options are: 3ds, wiiu")
                 return
         for x in consoleslist: 
+            if self.check_console(x, ctx.channel.name, ('3ds')):
                 embed = discord.Embed(title="Virtual Console Injects for 3DS", color=discord.Color.blue())
                 embed.set_author(name="Asdolo", url="https://gbatemp.net/members/asdolo.389539/")
                 embed.set_thumbnail(url="https://i.imgur.com/rHa76XM.png")
@@ -580,7 +581,7 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
                                  "Usage guide [here](http://3ds.eiphax.tech/nsui.html)")
                 await ctx.send(embed=embed)
 
-        if self.check_console(x, ctx.channel.name, ('wiiu', 'wii u')):
+            if self.check_console(x, ctx.channel.name, ('wiiu', 'wii u')):
                 embed1 = discord.Embed(title="Wii and GameCube games for WiiU", color=discord.Color.red())
                 embed1.set_author(name="TeconMoon")
                 embed1.set_thumbnail(url="https://gbatemp.net/data/avatars/m/300/300039.jpg")
