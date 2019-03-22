@@ -194,10 +194,19 @@ class Extras(commands.Cog):
                     await author.send("Access to #elsewhere granted.")
                 else:
                     await author.send("Your access to elsewhere is restricted, contact staff to remove it.")
+            elif channelname == "artswhere":
+                if self.bot.roles['#art-discussion'] in author.roles:
+                    await author.send(self.bot.roles['#art-discussion'])
+                    await author.send("Access to #art-discussion removed.")
+                elif self.bot.roles['no-art'] not in author.roles:
+                    await author.send(self.bot.roles['#art-discussion'])
+                    await author.send("Access to #art-discussion granted.")
+                else:
+                    await author.send("Your access to #art-discussion is restricted, contact staff to remove it.")
             else:
                 await author.send(f"{channelname} is not a valid toggleable channel.")
         except discord.errors.Forbidden:
-            pass
+            await self.bot.say("💢 I don't have permission to do this.")
 
     @commands.guild_only()
     @commands.command()

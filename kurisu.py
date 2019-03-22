@@ -70,6 +70,7 @@ class Kurisu(commands.Bot):
             'no-elsewhere': None,
             'No-Memes': None,
             'no-art': None,
+            '#art-discussion': None,
             'No-Embed': None,
             '#elsewhere': None,
             'Small Help': None,
