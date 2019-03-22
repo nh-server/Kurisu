@@ -558,31 +558,42 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def vc(self, ctx, *, console=""):
+    async def vc(self, ctx, *, consoles=""):
         """Link to Virtual Console Injects for 3DS/Wiiu."""
-        if self.check_console(console, ctx.channel.name, '3ds'):
-            embed = discord.Embed(title="Virtual Console Injects for 3DS", color=discord.Color.blue())
-            embed.set_author(name="Asdolo", url="https://gbatemp.net/members/asdolo.389539/")
-            embed.set_thumbnail(url="https://i.imgur.com/rHa76XM.png")
-            embed.url = "https://mega.nz/#!qnAE1YjC!q3FRHgIAVEo4nRI2IfANHJr-r7Sil3YpPYE4w8ZbUPY"
-            embed.description = ("The recommended way to play old classics on your 3DS.\n"
+        injects = ("3ds", "wiiu", "wii u")
+        consoleslist = []
+        for x in consoles.split():
+            if x in injects and x not in consoleslist:
+                consoleslist.append(x)
+        if not consoleslist:
+            if ctx.channel.name.startswith(injects):
+                consoleslist.append("None")
+            else:
+                await ctx.send("Please specify a console; valid options are: 3ds, wiiu")
+                return
+        for x in consoleslist: 
+                embed = discord.Embed(title="Virtual Console Injects for 3DS", color=discord.Color.blue())
+                embed.set_author(name="Asdolo", url="https://gbatemp.net/members/asdolo.389539/")
+                embed.set_thumbnail(url="https://i.imgur.com/rHa76XM.png")
+                embed.url = "https://mega.nz/#!qnAE1YjC!q3FRHgIAVEo4nRI2IfANHJr-r7Sil3YpPYE4w8ZbUPY"
+                embed.description = ("The recommended way to play old classics on your 3DS.\n"
                                  "Usage guide [here](http://3ds.eiphax.tech/nsui.html)")
-            await ctx.send(embed=embed)
+                await ctx.send(embed=embed)
 
-        if self.check_console(console, ctx.channel.name, ('wiiu', 'wii u')):
-            embed1 = discord.Embed(title="Wii and GameCube games for WiiU", color=discord.Color.red())
-            embed1.set_author(name="TeconMoon")
-            embed1.set_thumbnail(url="https://gbatemp.net/data/avatars/m/300/300039.jpg")
-            embed1.url = "https://gbatemp.net/threads/release-wiivc-injector-script-gc-wii-homebrew-support.483577/"
-            embed1.description = "The recommended way to play Wii and gamecube games on your WiiU"
-            await ctx.send(embed=embed1)
+            if self.check_console(x, ctx.channel.name, ('wiiu', 'wii u')):
+                embed1 = discord.Embed(title="Wii and GameCube games for WiiU", color=discord.Color.red())
+                embed1.set_author(name="TeconMoon")
+                embed1.set_thumbnail(url="https://gbatemp.net/data/avatars/m/300/300039.jpg")
+                embed1.url = "https://gbatemp.net/threads/release-wiivc-injector-script-gc-wii-homebrew-support.483577/"
+                embed1.description = "The recommended way to play Wii and gamecube games on your WiiU"
+                await ctx.send(embed=embed1)
 
-            embed2 = discord.Embed(title="Virtual Console Injects for WiiU", color=discord.Color.red())
-            embed2.set_author(name="CatmanFan")
-            embed2.set_thumbnail(url="https://gbatemp.net/data/avatars/m/398/398221.jpg")
-            embed2.url = "https://gbatemp.net/threads/release-injectiine-wii-u-virtual-console-injector.491386/"
-            embed2.description = "The recommended way to play old classics on your WiiU"
-            await ctx.send(embed=embed2)
+                embed2 = discord.Embed(title="Virtual Console Injects for WiiU", color=discord.Color.red())
+                embed2.set_author(name="CatmanFan")
+                embed2.set_thumbnail(url="https://gbatemp.net/data/avatars/m/398/398221.jpg")
+                embed2.url = "https://gbatemp.net/threads/release-injectiine-wii-u-virtual-console-injector.491386/"
+                embed2.description = "The recommended way to play old classics on your WiiU"
+                await ctx.send(embed=embed2)
 
     # Embed to Chroma Ryu's godmode9 guide
     @commands.command()
