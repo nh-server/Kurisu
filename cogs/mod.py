@@ -256,7 +256,7 @@ class Mod(DatabaseCog):
 
     @is_staff("Helper")
     @commands.guild_only()
-    @commands.command()
+    @commands.command(aliases=["nohelp"])
     async def takehelp(self, ctx, member: SafeMember, *, reason=""):
         """Remove access to help-and-questions. Staff and Helpers only."""
         await self.add_restriction(member.id, self.bot.roles['No-Help'])
@@ -294,7 +294,7 @@ class Mod(DatabaseCog):
 
     @is_staff("Helper")
     @commands.guild_only()
-    @commands.command()
+    @commands.command(aliases=["timenohelp"])
     async def timetakehelp(self, ctx, member: SafeMember, length, *, reason=""):
         """Restricts a user from Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
 
