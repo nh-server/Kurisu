@@ -36,7 +36,7 @@ class Mod(DatabaseCog):
     async def userinfo(self, ctx, u: discord.Member):
         """Gets user info. Staff and Helpers only."""
         role = u.top_role.name
-        await ctx.send(f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url}\ndefault_avatar = {u.default_avatar}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\ndisplay_name = {u.display_name}\njoined_at = {u.joined_at}\nstatus = {u.status}\ngame = {u.game}\ncolour = {u.colour}\ntop_role = {self.bot.help_command.remove_mentions(role)}\n")
+        await ctx.send(f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url}\ndefault_avatar = {u.default_avatar}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\ndisplay_name = {u.display_name}\njoined_at = {u.joined_at}\nstatus = {u.status}\nactivity = {u.activity.name}\ncolour = {u.colour}\ntop_role = {self.bot.help_command.remove_mentions(role)}\n")
 
     @is_staff("HalfOP")
     @commands.guild_only()
