@@ -52,7 +52,6 @@ Thanks for stopping by and have a good time!
             await member.add_roles(*roles)
 
         warns = await self.get_warns(member.id)
-        print(warns)
         if len(warns) == 0:
             await self.bot.channels['server-logs'].send(msg)
         else:

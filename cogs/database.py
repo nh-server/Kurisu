@@ -20,7 +20,9 @@ class ConnectionHolder:
             await self.dbcon.executescript(schema)
             await self.dbcon.commit()
             print(f'{database_name} initialized')
-        print(f'Loaded {database_name}')
+        else:
+            self.dbcon = await aiosqlite3.connect(database_name, loop=loop)
+            print(f'Loaded {database_name}')
 
     async def __aenter__(self):
         self.dbcon.__enter__()
@@ -29,7 +31,8 @@ class ConnectionHolder:
 
     async def __aexit__(self, exc_class, exc, traceback):
         self.dbcon.__exit__(exc_class, exc, traceback)
-        await self.dbcon.commit()
+        if self.dbcon.in_transaction:
+            await self.dbcon.commit()
 
 
 class DatabaseCog(commands.Cog):
@@ -196,3 +199,15 @@ class DatabaseCog(commands.Cog):
         async with self.bot.holder as cur:
             await cur.execute('SELECT channel_id FROM nofilter WHERE channel_id=?', (channel.id,))
             return await cur.fetchone() is not None
+
+    async def add_friendcode(self, user_id, fc):
+        async with self.bot.holder as cur:
+            await cur.execute('INSERT INTO friend_codes VALUES (?,?)', (user_id, fc))
+
+    async def get_friendcode(self, user_id):
+        async with self.bot.holder as cur:
+            return await cur.execute('SELECT * FROM friend_codes WHERE user_id = ?', (user_id,))
+
+    async def delete_friendcode(self, user_id):
+        async with self.bot.holder as cur:
+            await cur.execute('DELETE FROM friend_codes WHERE user_id = ?', (user_id,))

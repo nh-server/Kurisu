@@ -32,22 +32,21 @@ class FriendCode(DatabaseCog):
         if not fc:
             await ctx.send("This friend code is invalid.")
             return
-        rows = self.bot.c.execute('SELECT * FROM friend_codes WHERE user_id = ?', (ctx.author.id,))
+        rows = await self.get_friendcode(ctx.author.id)
         for row in rows:
             # if the user already has one, this prevents adding another
             await ctx.send("Please delete your current friend code with `.fcdelete` before adding another.")
             return
-        self.bot.c.execute('INSERT INTO friend_codes VALUES (?,?)', (ctx.author.id, fc))
+        await self.add_friendcode(ctx.author.id, fc)
         await ctx.send(f"{ctx.author.mention} Friend code inserted: {self.fc_to_string(fc)}")
-        self.bot.dbcon.commit()
 
     @commands.command()
-    async def fcquery(self, ctx, member:  SafeMember):
+    async def fcquery(self, ctx, member: SafeMember):
         """Get other user's friend code. You must have one yourself in the database."""
-        rows = self.bot.c.execute('SELECT * FROM friend_codes WHERE user_id = ?', (int(ctx.author.id),))
+        rows = await self.get_friendcode(ctx.author.id)
         for row in rows:
             # assuming there is only one, which there should be
-            rows_m = self.bot.c.execute('SELECT * FROM friend_codes WHERE user_id = ?', (int(member.id),))
+            rows_m = await self.get_friendcode(member.id)
             for row_m in rows_m:
                 await ctx.send(f"{member.mention} friend code is {self.fc_to_string(row_m[1])}")
                 try:
@@ -63,7 +62,7 @@ class FriendCode(DatabaseCog):
     async def fcdelete(self, ctx):
         """Delete your friend code."""
         c = self.bot.dbcon.cursor()
-        c.execute('DELETE FROM friend_codes WHERE user_id = ?', (ctx.author.id,))
+        await self.delete_friendcode(ctx.author.id)
         await ctx.send("Friend code removed from database.")
         self.bot.dbcon.commit()
 
