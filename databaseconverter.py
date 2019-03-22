@@ -15,6 +15,7 @@ roles = {
     'Muted': None,
     'No-Help': None,
     'no-elsewhere': None,
+    'no-art': None,
     'No-Memes': None,
     'No-Embed': None,
     'Small Help': None}
