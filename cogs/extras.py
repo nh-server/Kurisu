@@ -211,7 +211,7 @@ class Extras(commands.Cog):
             else:
                 await author.send(f"{channelname} is not a valid toggleable channel.")
         except discord.errors.Forbidden:
-            await self.bot.say("💢 I don't have permission to do this.")
+            await ctx.send("💢 I don't have permission to do this.")
 
     @commands.guild_only()
     @commands.command()

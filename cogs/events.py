@@ -235,7 +235,7 @@ class Events(DatabaseCog):
         for f in message.attachments:
             if not f.filename.lower().endswith(self.ignored_file_extensions):
                 embed2 = discord.Embed(description=f"Size: {f.size}\nMessage: [{message.channel.name}]({message.jump_url})\nDownload: [{self.bot.help_command.remove_mentions(f.filename)}]({f.url})")
-                await self.bot.channels['uploadlogs'].send(f"📎 **Attachment**: {message.author.mention} uploaded to {message.channel.mention}", embed=embed2)
+                await self.bot.channels['upload-logs'].send(f"📎 **Attachment**: {message.author.mention} uploaded to {message.channel.mention}", embed=embed2)
         if contains_invite_link:
             await self.bot.channels['message-logs'].send(f"✉️ **Invite posted**: {message.author.mention} posted an invite link in {message.channel.mention}\n------------------\n{self.bot.help_command.remove_mentions(message.content)}")
         if contains_misinformation_url_mention:
@@ -247,7 +247,7 @@ class Events(DatabaseCog):
                 await message.author.send(f"Please read {self.bot.channels['welcome-and-rules'].mention}. This site may be misinterpreted as legitimate and cause users harm, therefore your message was automatically deleted.", embed=embed)
             except discord.errors.Forbidden:
                 pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
-            await self.bot.send_message(self.bot.channels['message-logs'], f"**Bad site**: {message.author.mention} mentioned a blocked site in {message.channel.mention} (message deleted)", embed=embed)
+            await self.bot.channels['message-logs'].send(f"**Bad site**: {message.author.mention} mentioned a blocked site in {message.channel.mention} (message deleted)", embed=embed)
         if contains_drama_alert:
             await self.bot.channels['message-logs'].send(f"**Potential drama/heated debate Warning**: {message.author.mention} posted a blacklisted word in {message.channel.mention}", embed=embed)
         if contains_piracy_tool_mention:
