@@ -38,7 +38,7 @@ class Rules(commands.Cog, command_attrs=dict()):
 
     @commands.command(hidden=False)
     async def rules(self, ctx):
-        """Links to rules website."""
+        """Links to the welcome-and-rules channel."""
         await ctx.send(f"Please check {self.bot.channels['welcome-and-rules'].mention} for a full list of rules")
 
     @commands.command()
