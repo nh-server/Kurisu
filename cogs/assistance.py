@@ -34,7 +34,7 @@ class Assistance(commands.Cog):
         """Request staff, with optional additional text. Trusted, Helpers, Staff, Retired Staff, Verified only."""
         author = ctx.author
         if not await check_staff_id(ctx, 'Helper', ctx.author.id) and (self.bot.verified_role not in author.roles) and (self.bot.trusted_role not in author.roles) and (self.bot.retired_role not in author.roles):
-            msg = f"{author.mention} You cannot used this command at this time. Please ask individual staff members if you need help."
+            msg = f"{author.mention} You cannot use this command at this time. Please ask individual staff members if you need help."
             await ctx.send(msg)
             return
         await self.bot.delete_message(ctx.message)
@@ -359,6 +359,20 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
                                 Asking something that is on the guide will make everyone lose time, so please read and \
 re-read the guide steps 2 or 3 times before coming here.
                                 """, title="Please read the guide")
+
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def nxcfw(self, ctx):
+        """NX CFW alternatives"""
+        await self.simple_embed(ctx, """
+                                Alternative CFWs like SX OS and ReiNX are not recommended for the following reasons:
+                                
+                                * They are mostly based off Atmosphere
+                                * When Nintendo updates the firmware, they take a very long time to catch up
+                                * Most of the features they claim to offer can be enabled in Atmosphere with some \
+additional configuration
+                                * SX's famous "emuNAND" is not a real emuNAND, and Atmosphere's version will be significantly better
+                                """, title="Why Atmosphere?")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
