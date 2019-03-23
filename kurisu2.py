@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
-
 import logging
 import os
-import sqlite3
 from asyncio import Event
 from configparser import ConfigParser
 from datetime import datetime
@@ -15,71 +13,29 @@ from typing import TYPE_CHECKING
 import discord
 from discord.ext import commands
 
+from k2modules.data.names import *
+from k2modules.util import ActionsLogManager, ConfigurationManager, RestrictionsManager, UserLogManager, WarnsManager
+from k2modules.util.database import ConnectionManager
+
 if TYPE_CHECKING:
     from typing import Dict, Union
-
-DATABASE_NAME = 'kurisu2_data.sqlite'
-
-channel_names = {
-    # TODO: add more channel names
-    # staff channel
-    'staff': 'mods',
-    # helpers channel
-    'helpers': 'helpers',
-    # moderator logs
-    'moderator-logs': 'mod-logs',
-    # server logs
-    'server-logs': 'server-logs',
-    # watch logs
-    'user-watch-logs': 'watch-logs',
-    # upload logs
-    'user-upload-logs': 'upload-logs',
-    # mod mail, only used for private_channels
-    'mod-mail': 'mod-mail',
-}
-
-channel_alias_names = {y: x for x, y in channel_names.items()}
-
-# alias name
-startup_message_channel = 'helpers'
-
-# real names
-assistance_channels = {'3ds-assistance-1', '3ds-assistance-2', 'wiiu-assistance', 'switch-assistance',
-                       'legacy-systems'}
-
-# alias names
-private_channels = {'staff', 'helpers', 'mod-logs', 'mod-mail'}
-
-role_names = {
-    # TODO: add more role names
-    # helpers role
-    'helpers-role': 'Helpers',
-    # general staff role
-    'staff-role': 'Staff',
-    # staff levels
-    'halfop-role': 'HalfOP',
-    'op-role': 'OP',
-    'superop-role': 'SuperOP',
-    'owner-role': 'Owner',
-}
-
-staff_roles = {
-    'halfop': 'halfop-role',
-    'op': 'op-role',
-    'superop': 'superop-role',
-    'owner': 'owner-role',
-}
 
 
 class Kurisu2(commands.Bot):
     """Base class for Kurisu2."""
 
     _guild: discord.Guild = None
+    db_conn: 'ConnectionManager'
 
-    def __init__(self, command_prefix, logging_level=logging.WARNING, **options):
-        from k2modules.util import (ActionsLogManager, ConfigurationManager, RestrictionsManager, UserLogManager,
-                                    WarnsManager)
+    restrictions: RestrictionsManager
+    configuration: ConfigurationManager
+    warns: WarnsManager
+    actionslog: ActionsLogManager
+    userlog: UserLogManager
+
+    def __init__(self, command_prefix, dsn, logging_level=logging.WARNING, **options):
         super().__init__(command_prefix, **options)
+        self.dsn = dsn
 
         self._roles: Dict[str, discord.Role] = {}
         self._channels: Dict[str, discord.TextChannel] = {}
@@ -108,31 +64,25 @@ class Kurisu2(commands.Bot):
 
         self.debug = logging_level is logging.DEBUG
 
-        if not os.path.isfile(DATABASE_NAME):
-            # read schema, open db, init
-            self.log.info('Creating database %s', DATABASE_NAME)
-            with open('schema.sql', 'r', encoding='utf-8') as f:
-                schema = f.read()
-
-            self.dbcon = sqlite3.connect(DATABASE_NAME)
-            self.dbcon.executescript(schema)
-            self.dbcon.commit()
-
-            self.log.info('%s initialized', DATABASE_NAME)
-
-        else:
-            # just open db, no setup
-            self.dbcon = sqlite3.connect(DATABASE_NAME)
-
         self.db_closed = False
+
+        self.log.debug('Kurisu2 class initialized')
+
+    async def start(self, *args, **kwargs):
+        self.db_conn = ConnectionManager(self.dsn)
+        await self.db_conn.prepare()
 
         self.restrictions = RestrictionsManager(self)
         self.configuration = ConfigurationManager(self)
+        await self.configuration.load()
         self.warns = WarnsManager(self)
         self.actionslog = ActionsLogManager(self)
         self.userlog = UserLogManager(self)
 
-        self.log.debug('Kurisu2 class initialized')
+        self.log.debug('Kurisu2 database connection initialized')
+
+        self.load_extensions()
+        await super().start(*args, **kwargs)
 
     def load_extensions(self):
         blacklisted_cogs = ()
@@ -301,20 +251,20 @@ def main(*, debug=False, change_directory=False):
         print(f'Checking for git branch failed: {type(e).__name__}: {e}')
         branch = "<unknown>"
 
+    config = ConfigParser()
+    config.read('config.ini')
+    token: str = config['Main']['token']
+    dsn: str = config['Database']['dsn']
+
     # do not remove a command prefix unless it is demonstrably causing problems
-    bot = Kurisu2(('.', '!'), logging_level=logging.DEBUG if debug else logging.INFO,
+    bot = Kurisu2(('.', '!'), dsn, logging_level=logging.DEBUG if debug else logging.INFO,
                   description="Kurisu2, the bot for Nintendo Homebrew!", pm_help=None)
 
     bot.log.info('Starting Kurisu2 on commit %s on branch %s', commit, branch)
 
-    config = ConfigParser()
-    config.read('config.ini')
-    token: str = config['Main']['token']
-
-    bot.load_extensions()
-
     bot.log.debug('Running bot')
     # noinspection PyBroadException
+
     try:
         bot.run(token)
     except Exception as e:

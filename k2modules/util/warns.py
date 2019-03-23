@@ -46,7 +46,7 @@ class WarnsManager(BaseManager, db_manager=WarnsDatabaseManager):
     async def add_warning(self, user: 'Union[Member, User, OptionalMember]', issuer: 'Member', reason: str = None,
                           send_dm: bool = True, do_action: bool = True) -> 'Tuple[int, int]':
         """Add a warning to a user."""
-        warn_id, count = self.db.add_warning(user_id=user.id, issuer=issuer.id, reason=reason)
+        warn_id, count = await self.db.add_warning(user_id=user.id, issuer=issuer.id, reason=reason)
         if isinstance(user, Member):
             if send_dm:
                 guild = await self.bot.get_main_guild()
@@ -74,16 +74,15 @@ class WarnsManager(BaseManager, db_manager=WarnsDatabaseManager):
 
         return warn_id, count
 
-    def delete_warning(self, warn_id: int):
+    async def delete_warning(self, warn_id: int):
         """Remove a warning from a user."""
-        return self.db.delete_warning(warn_id=warn_id)
+        return await self.db.delete_warning(warn_id=warn_id)
 
-    def delete_all_warnings(self, user: 'Union[Member, User, OptionalMember]'):
+    async def delete_all_warnings(self, user: 'Union[Member, User, OptionalMember]'):
         """Remove all warnings from a user."""
-        return self.db.delete_all_warnings(user.id)
+        return await self.db.delete_all_warnings(user.id)
 
-    def get_warnings(self, user: 'Union[Member, User, OptionalMember]'):
+    async def get_warnings(self, user: 'Union[Member, User, OptionalMember]'):
         """Get warnings for a user."""
-        res = self.db.get_warnings(user_id=user.id)
-        for w in res:
+        async for w in self.db.get_warnings(user_id=user.id):
             yield w

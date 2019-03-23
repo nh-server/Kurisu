@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from kurisu2 import staff_roles
+from k2modules.data.names import staff_roles
 from .managerbase import BaseManager
 from .database import ConfigurationDatabaseManager
 
@@ -17,17 +17,21 @@ class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager)
     db: ConfigurationDatabaseManager
 
     _auto_probation = False
+    _staff: 'Dict[int, str]'
+    _nofilter_list: 'Set[int]'
 
     def __init__(self, bot: 'Kurisu2'):
         super().__init__(bot)
 
-        for k, v in self.db.get_all_flags():
+    async def load(self):
+        a = self.db.get_all_flags()
+        async for k, v in a:
             if k == 'auto_probation':
                 self._auto_probation = v
 
-        self._staff: 'Dict[int, str]' = dict(self.db.get_all_staff_levels())
+        self._staff = (await self.db.get_all_staff_levels())
 
-        self._nofilter_list: 'Set[int]' = set(self.db.get_all_nofilter_channels())
+        self._nofilter_list = set(await self.db.get_all_nofilter_channels())
 
     # auto-probation
     def set_auto_probation(self, status: bool):

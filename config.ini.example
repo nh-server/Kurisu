@@ -1,2 +1,6 @@
 [Main]
 token = <token for Discord bot>
+
+[Database]
+; https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING
+dsn = dbname=kurisu user=kurisu password=usiruk host=localhost port=5432

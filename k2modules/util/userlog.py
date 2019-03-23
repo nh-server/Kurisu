@@ -9,18 +9,18 @@ if TYPE_CHECKING:
     from k2modules.util import OptionalMember
 
 action_messages = {
-    'warn': ('\N{WARNING SIGN}', 'Warn', 'warned', {'mod-logs'}),
-    'ban': ('\N{NO ENTRY}', 'Ban', 'banned', {'mod-logs'}),
-    'kick': ('\N{WOMANS BOOTS}', 'Kick', 'kicked', {'mod-logs'}),
+    'warn': ('\N{WARNING SIGN}', 'Warn', 'warned', {'moderator-logs'}),
+    'ban': ('\N{NO ENTRY}', 'Ban', 'banned', {'moderator-logs'}),
+    'kick': ('\N{WOMANS BOOTS}', 'Kick', 'kicked', {'moderator-logs'}),
     # specific role changes
-    'mute': ('\N{SPEAKER WITH CANCELLATION STROKE}', 'Mute', 'muted', {'mod-logs'}),
-    'unmute': ('\N{SPEAKER}', 'Unmute', 'unmuted', {'mod-logs'}),
-    'take-help': ('\N{NO ENTRY SIGN}', 'Help access taken', 'took help access from', {'mod-logs', 'helpers'}),
-    'give-help': ('\N{HEAVY LARGE CIRCLE}', 'Help access restored', 'restored help access for', {'mod-logs', 'helpers'}),
+    'mute': ('\N{SPEAKER WITH CANCELLATION STROKE}', 'Mute', 'muted', {'moderator-logs'}),
+    'unmute': ('\N{SPEAKER}', 'Unmute', 'unmuted', {'moderator-logs'}),
+    'take-help': ('\N{NO ENTRY SIGN}', 'Help access taken', 'took help access from', {'moderator-logs', 'helpers'}),
+    'give-help': ('\N{HEAVY LARGE CIRCLE}', 'Help access restored', 'restored help access for', {'moderator-logs', 'helpers'}),
     # non-specific role changes
-    'add-perm-role': ('\N{BLACK QUESTION MARK ORNAMENT}', 'Add role', 'added a permanent role to', {'mod-logs'}),
-    'add-temp-role': ('\N{BLACK QUESTION MARK ORNAMENT}', 'Add role', 'added a temporary role to', {'mod-logs'}),
-    'remove-role': ('\N{BLACK QUESTION MARK ORNAMENT}', 'Remove role', 'removed a role from', {'mod-logs'}),
+    'add-perm-role': ('\N{BLACK QUESTION MARK ORNAMENT}', 'Add role', 'added a permanent role to', {'moderator-logs'}),
+    'add-temp-role': ('\N{BLACK QUESTION MARK ORNAMENT}', 'Add role', 'added a temporary role to', {'moderator-logs'}),
+    'remove-role': ('\N{BLACK QUESTION MARK ORNAMENT}', 'Remove role', 'removed a role from', {'moderator-logs'}),
     'test': ('\N{BLACK QUESTION MARK ORNAMENT}', 'Test action', 'performed a test action on', {'helpers'})
 }
 
@@ -51,4 +51,5 @@ class UserLogManager(BaseManager):
             msg.append(f'\N{HAMMER} __Action ID__: {action_id}')
         msg_final = '\n'.join(msg)
         for m in msg_meta[3]:
-            await (await self.bot.get_channel_by_name(m)).send(msg_final)
+            channel = await self.bot.get_channel_by_name(m)
+            await channel.send(msg_final)

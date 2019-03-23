@@ -1,53 +1,53 @@
+-- Designed for PostgreSQL 10
 -- This is still a work in progress and can change at any time!
 
-DROP TABLE IF EXISTS actions_log;
-DROP TABLE IF EXISTS attachments;
-DROP TABLE IF EXISTS flags;
-DROP TABLE IF EXISTS no_filter;
-DROP TABLE IF EXISTS restrictions;
-DROP TABLE IF EXISTS staff;
-DROP TABLE IF EXISTS warns;
+DROP TABLE IF EXISTS attachments, actions_log, flags, no_filter, permanent_roles, staff, warns;
 
-PRAGMA application_id = 0x6B756462; -- kudb
-PRAGMA user_version = 1;
-
-CREATE TABLE actions_log (
-  entry_id INTEGER PRIMARY KEY,
-  user_id INTEGER,
-  target_id INTEGER,
-  kind INTEGER,
+CREATE TABLE actions_log
+(
+  entry_id    BIGINT PRIMARY KEY,
+  created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  user_id     BIGINT,
+  target_id   BIGINT,
+  kind        INTEGER                  NOT NULL,
   description TEXT,
-  extra TEXT
+  extra       TEXT
 );
 
-CREATE TABLE attachments (
-  entry_id INTEGER,
-  url TEXT,
-  FOREIGN KEY (entry_id) REFERENCES actions_log(entry_id)
+CREATE TABLE attachments
+(
+  entry_id BIGINT REFERENCES actions_log (entry_id),
+  url      TEXT
 );
 
-CREATE TABLE flags (
-  key TEXT NOT NULL,
-  value INTEGER
+CREATE TABLE flags
+(
+  key   TEXT NOT NULL,
+  value BOOLEAN
 );
 
-CREATE TABLE no_filter (
-  channel_id INTEGER NOT NULL
+CREATE TABLE no_filter
+(
+  channel_id BIGINT NOT NULL
 );
 
-CREATE TABLE permanent_roles (
-  user_id INTEGER NOT NULL,
-  role_id INTEGER
+CREATE TABLE permanent_roles
+(
+  user_id BIGINT NOT NULL,
+  role_id BIGINT
 );
 
-CREATE TABLE staff (
-  user_id INTEGER NOT NULL,
-  level TEXT
+CREATE TABLE staff
+(
+  user_id BIGINT NOT NULL,
+  level   TEXT
 );
 
-CREATE TABLE warns (
-  warn_id INTEGER PRIMARY KEY,
-  user_id INTEGER NOT NULL,
-  issuer INTEGER,
-  reason TEXT
+CREATE TABLE warns
+(
+  warn_id    BIGINT PRIMARY KEY,
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  user_id    BIGINT                   NOT NULL,
+  issuer     BIGINT,
+  reason     TEXT
 )

@@ -19,8 +19,8 @@ class ActionsLogManager(BaseManager, db_manager=ActionsLogDatabaseManager):
                              extra: str = None, custom_entry_id: int = None, add_to_db: bool = True,
                              post_log: bool = True):
         if add_to_db:
-            entry_id = self.db.add_entry(user_id=author.id, target_id=target.id, kind=kind, description=description,
-                                         extra=extra, custom_entry_id=custom_entry_id)
+            entry_id = await self.db.add_entry(user_id=author.id, target_id=target.id, kind=kind,
+                                               description=description, extra=extra, custom_entry_id=custom_entry_id)
         else:
             entry_id = None
         # logging should be in a separate module

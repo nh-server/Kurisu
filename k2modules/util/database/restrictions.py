@@ -1,30 +1,31 @@
 from typing import Generator, Tuple
 
-from k2modules.util.tools import u2s
 from .common import BaseDatabaseManager
 
 
 class RestrictionsDatabaseManager(BaseDatabaseManager):
     """Manages the restrictions database."""
 
-    def add_restriction(self, user_id: int, restriction: str) -> bool:
+    async def add_restriction(self, user_id: int, role_id: str) -> bool:
         """Add a restriction to the user id."""
         # TODO: check if the role exists in this function
         assert isinstance(user_id, int)
-        res = self._insert('restrictions', user_id=u2s(user_id), restriction=restriction)
+        assert isinstance(role_id, int)
+        res = await self._insert('permanent_roles', user_id=user_id, restriction=role_id)
         if res:
-            self.log.info('Added restriction to user id %d: %s', user_id, restriction)
+            self.log.info('Added permanent role to user id %d: %s', user_id, role_id)
         return res
 
-    def remove_restriction(self, user_id: int, restriction: str) -> bool:
+    async def remove_restriction(self, user_id: int, role_id: int) -> bool:
         """Remove a restriction from the user id."""
         assert isinstance(user_id, int)
-        res = bool(self._delete('restrictions', user_id=u2s(user_id), restriction=restriction))
+        res = await self._delete('permanent_roles', user_id=user_id, restriction=role_id)
         if res:
-            self.log.info('Removed restriction from user id %d: %s', user_id, restriction)
-        return res
+            self.log.info('Removed permanent role from user id %d: %s', user_id, role_id)
+        return bool(res)
 
-    def get_restrictions(self, user_id: int) -> Generator[Tuple[int, str], None, None]:
+    async def get_restrictions(self, user_id: int) -> Generator[Tuple[int, int], None, None]:
         """Get restrictions for a user id."""""
         assert isinstance(user_id, int)
-        yield from self._select('restrictions', user_id=u2s(user_id))
+        async for r in self._select('permanent_roles', user_id=user_id):
+            yield r

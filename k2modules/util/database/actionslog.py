@@ -3,11 +3,10 @@ from typing import TYPE_CHECKING, NamedTuple
 
 from discord.utils import time_snowflake, snowflake_time
 
-from ..tools import u2s, s2u
 from .common import BaseDatabaseManager
 
 if TYPE_CHECKING:
-    from typing import Generator, Optional
+    from typing import AsyncGenerator, Optional
 
 
 class ActionEntry(NamedTuple):
@@ -20,46 +19,54 @@ class ActionEntry(NamedTuple):
     extra: 'Optional[str]'
 
 
+action_ids = [
+    'ban',   # 0
+    'kick',  # 1
+    'warn',  # 2
+]
+
+
 class ActionsLogDatabaseManager(BaseDatabaseManager):
     """Manages the actions_log database."""
 
-    def add_entry(self, user_id: int, target_id: int, kind: str, description: str = None, extra: str = None,
-                  custom_entry_id: int = None) -> int:
+    async def add_entry(self, user_id: int, target_id: int, kind: str, description: str = None, extra: str = None,
+                        custom_entry_id: int = None) -> int:
         """Add an action entry."""
         now = custom_entry_id or time_snowflake(datetime.now())
-        self._insert('actions_log', entry_id=u2s(now), user_id=u2s(user_id), target_id=u2s(target_id),
-                     kind=kind, description=description, extra=extra)
+        await self._insert('actions_log', entry_id=now, created_at=snowflake_time(now), user_id=user_id,
+                           target_id=target_id, kind=action_ids.index(kind), description=description, extra=extra)
         return now
 
-    def get_entries(self, *, entry_id: int = None, user_id: int = None, target_id: int = None,
-                    kind: str = None) -> 'Generator[ActionEntry, None, None]':
+    async def get_entries(self, *, entry_id: int = None, user_id: int = None, target_id: int = None,
+                          kind: str = None) -> 'AsyncGenerator[ActionEntry, None]':
         """Get action entries."""
         values = {}
         if entry_id:
-            values['entry_id'] = u2s(entry_id)
+            values['entry_id'] = entry_id
         if user_id:
-            values['user_id'] = u2s(user_id)
+            values['user_id'] = user_id
         if target_id:
-            values['target_id'] = u2s(target_id)
+            values['target_id'] = target_id
         if kind:
             values['kind'] = kind
-        for action_id, user_id, target_id, kind, description, extra in self._select('actions_log', **values):
-            yield ActionEntry(entry_id=s2u(action_id),
-                              user_id=s2u(user_id),
-                              target_id=s2u(target_id),
-                              date=snowflake_time(s2u(action_id)),
+        async for action_id, user_id, target_id, kind, description, extra in self._select('actions_log', **values):
+            yield ActionEntry(entry_id=(action_id),
+                              user_id=(user_id),
+                              target_id=(target_id),
+                              date=snowflake_time(action_id),
                               kind=kind,
                               description=description,
                               extra=extra)
 
-    def add_attachment(self, entry_id: int, url: str):
+    async def add_attachment(self, entry_id: int, url: str):
         """Add an attachment to an action entry."""
-        self._insert('attachments', entry_id=u2s(entry_id), url=url)
+        await self._insert('attachments', entry_id=entry_id, url=url)
 
-    def get_attachments(self, entry_id: int) -> 'Generator[str, None, None]':
+    async def get_attachments(self, entry_id: int) -> 'AsyncGenerator[str, None]':
         """Get attachments for an action entry."""
-        yield from (x[1] for x in self._select('attachments', entry_id=u2s(entry_id)))
+        async for x in self._select('attachments', entry_id=entry_id):
+            yield x[1]
 
-    def clear_attachments(self, entry_id: int):
+    async def clear_attachments(self, entry_id: int):
         """Clear attachments for an action entry."""
-        self._delete('attachments', entry_id=u2s(entry_id))
+        await self._delete('attachments', entry_id=entry_id)

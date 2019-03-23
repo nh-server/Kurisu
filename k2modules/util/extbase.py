@@ -2,6 +2,8 @@ from functools import wraps
 from typing import TYPE_CHECKING
 from . import OptionalMember
 
+from discord.ext.commands import Cog
+
 if TYPE_CHECKING:
     from discord import Member
     from discord.ext.commands import Context
@@ -29,7 +31,7 @@ def caller_id_as_default(func):
     return decorator
 
 
-class Extension:
+class Extension(Cog):
     """Base class for Kurisu2 extensions."""
 
     def __init__(self, bot: 'Kurisu2'):
