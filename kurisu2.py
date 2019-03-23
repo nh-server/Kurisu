@@ -222,13 +222,19 @@ class Kurisu2(commands.Bot):
             await ctx.send(f'{author.mention} You cannot use `{command}`.')
 
         elif isinstance(exc, commands.BadArgument):
-            formatter = commands.HelpFormatter()
-            help_text: str = (await formatter.format_help_for(ctx, command))[0]
+            formatter = commands.DefaultHelpCommand()
+            await formatter.prepare_help_command(ctx, command)
+            formatter.add_command_formatting(command)
+            formatter.paginator.close_page()
+            help_text = formatter.paginator.pages[0]
             await ctx.send(f'{author.mention} A bad argument was given: `{exc}`\n{help_text}')
 
         elif isinstance(exc, commands.MissingRequiredArgument):
-            formatter = commands.HelpFormatter()
-            help_text: str = (await formatter.format_help_for(ctx, command))[0]
+            formatter = commands.DefaultHelpCommand()
+            await formatter.prepare_help_command(ctx, command)
+            formatter.add_command_formatting(command)
+            formatter.paginator.close_page()
+            help_text = formatter.paginator.pages[0]
             await ctx.send(f'{author.mention} You are missing required arguments.\n{help_text}')
 
         elif isinstance(exc, commands.CommandInvokeError):
