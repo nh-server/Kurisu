@@ -365,13 +365,13 @@ re-read the guide steps 2 or 3 times before coming here.
     async def nxcfw(self, ctx):
         """NX CFW alternatives"""
         await self.simple_embed(ctx, """
-                                Alternative CFWs like SX OS and ReiNX are not recommended for the following reasons:
+                                Alternative CFWs like Kosmos and ReiNX are not recommended for the following reasons:
                                 
                                 * They are mostly based off Atmosphere
                                 * When Nintendo updates the firmware, they take a very long time to catch up
                                 * Most of the features they claim to offer can be enabled in Atmosphere with some \
 additional configuration
-                                * SX's famous "emuNAND" is not a real emuNAND, and Atmosphere's version will be significantly better
+                                * The current "emuNAND" is not a real emuNAND, and Atmosphere's version will be significantly better
                                 """, title="Why Atmosphere?")
 
     @commands.command()
