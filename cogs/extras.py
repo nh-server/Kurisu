@@ -35,6 +35,11 @@ class Extras(commands.Cog):
         """Prints the member count of the server."""
         await ctx.send(f"{ctx.guild.name} has {ctx.guild.member_count:,} members!")
 
+    @commands.command()
+    async def uptime(self, ctx):
+        """Print total uptime of the bot."""
+        await ctx.send(f"Uptime: {datetime.datetime.now() - self.bot.startup}")
+
     @commands.guild_only()
     @is_staff("SuperOP")
     @commands.command(hidden=True)

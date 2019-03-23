@@ -13,6 +13,7 @@ from sys import exit, hexversion
 from traceback import format_exception, print_exc
 import discord
 from discord.ext import commands
+from datetime import datetime
 
 # sets working directory to bot's folder
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -53,6 +54,8 @@ class Kurisu(commands.Bot):
     """Its him!!."""
     def __init__(self, command_prefix, description):
         super().__init__(command_prefix=command_prefix, description=description)
+
+        self.startup = datetime.now()
 
         self.roles = {
             'Helpers': None,
