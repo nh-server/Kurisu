@@ -67,6 +67,12 @@ class Memes(commands.Cog):
     async def inori(self, ctx):
         """Memes."""
         await self._meme(ctx, "https://i.imgur.com/WLncIsi.gif")
+        
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def inori2(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/V0uu99A.jpg")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
