@@ -106,7 +106,7 @@ class Loop(DatabaseCog):
                         await self.remove_restriction(mute[0], self.bot.roles['Muted'])
                         msg = f"🔈 **Mute expired**: <@{mute[0]}>"
                         await self.bot.channels['mod-logs'].send(msg)
-                        member = await self.bot.guild.get_member(mute[0])
+                        member = self.bot.guild.get_member(mute[0])
                         if member:
                             await member.remove_roles(self.bot.roles['Muted'])
                     elif not mute[3]:
