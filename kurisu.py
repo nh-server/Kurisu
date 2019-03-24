@@ -86,6 +86,12 @@ class Kurisu(commands.Bot):
         self.channels = {
             'announcements': None,
             'welcome-and-rules': None,
+            '3ds-assistance-1': None,
+            '3ds-assistance-2': None,
+            'wiiu-assistance': None,
+            'switch-assistance': None,
+            'hacking-general': None,
+            'legacy-systems': None,
             'mods': None,
             'helpers': None,
             'message-logs': None,
@@ -128,10 +134,21 @@ class Kurisu(commands.Bot):
             if not self.roles[n]:
                 print(f'Failed to find role {n}')
 
+        self.assistance_channels = {
+            self.channels['3ds-assistance-1'],
+            self.channels['3ds-assistance-2'],
+            self.channels['wiiu-assistance'],
+            self.channels['switch-assistance'],
+            self.channels['hacking-general'],
+            self.channels['legacy-systems'],
+        }
+
         self.staff_roles = {'Owner': self.roles['Owner'],
                             'SuperOP': self.roles['SuperOP'],
                             'OP': self.roles['OP'],
-                            'HalfOP': self.roles['HalfOP']}
+                            'HalfOP': self.roles['HalfOP'],
+                            'Staff' : self.roles['Staff'],
+                            }
 
         self.helper_roles = {"3DS": self.roles['On-Duty 3DS'],
                              "WiiU": self.roles['On-Duty Wii U'],

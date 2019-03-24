@@ -70,12 +70,12 @@ class Lockdown(commands.Cog):
         if not channels:
             channels.append(ctx.channel)
         locked_down = []
-        ishelper = not await check_staff_id(ctx, "HalfOP", id)
+        ishelper = not await check_staff_id(ctx, "HalfOP", author.id)
         for c in channels:
             if ishelper and (c not in self.bot.assistance_channels):
                 await ctx.send(f"{ctx.author.mention} {c.mention} can't be locked by a helper.")
                 continue
-            if c.overwrites_for(ctx.guild.default_role).send_message is False:
+            if c.overwrites_for(ctx.guild.default_role).send_messages is False:
                 await ctx.send(f"🔒 {c.mention} is already locked down. Use `.unlock` to unlock.")
                 continue
             try:
@@ -96,19 +96,11 @@ class Lockdown(commands.Cog):
         author = ctx.author
         if not channels:
             channels.append(ctx.channel)
-        ishelper = not await check_staff_id(ctx, "HalfOP", ctx.author.id)
+        ishelper = not await check_staff_id(ctx, "HalfOP", author.id)
         try:
-            if len(ctx.channel_mentions) == 0:
-                channels = [ctx.channel]
-                if ishelper and (ctx.channel not in self.bot.assistance_channels):
-                    msg = f"{ctx.author.mention} Helpers cannot use this command outside of the assistance channels."
-                    await ctx.send(msg)
-                    return
-            else:
-                channels = ctx.channel_mentions
             unlocked = []
             for c in channels:
-                if ishelper and (c not in self.bot.assistance_channels):
+                if ishelper and c not in self.bot.assistance_channels:
                     await ctx.send(f"{ctx.author.mention} {c.mention} can't be unlocked by a helper.")
                     return
                 overwrites_everyone = c.overwrites_for(ctx.guild.default_role)
