@@ -94,8 +94,8 @@ class Extras(commands.Cog):
             return
 
         msg = await ctx.send(f"I'm figuring this out!")
-        with ctx.channel.typing:
-            count = await ctx.guildestimate_pruned_members(days=days)
+        async with ctx.channel.typing():
+            count = await ctx.guild.estimate_pruned_members(days=days)
             await msg.edit(content=f"{count:,} members inactive for {days} day(s) would be kicked from {ctx.guild.name}!")
 
     @is_staff("HalfOP")
@@ -110,8 +110,8 @@ class Extras(commands.Cog):
             await ctx.send("Minimum 1 day")
             return
         msg = await ctx.send(f"I'm figuring this out!")
-        with ctx.channel.typing:
-            count = await ctx.guildestimate_pruned_members(days=days)
+        async with ctx.channel.typing():
+            count = await ctx.guild.estimate_pruned_members(days=days)
             if days == 1:
                 await msg.edit(content=f"{ctx.guild.member_count - count:,} members were active today in {ctx.guild.name}!")
             else:
