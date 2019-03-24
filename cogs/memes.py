@@ -283,7 +283,7 @@ class Memes(commands.Cog):
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def goose(self, ctx):
         """MEMES?"""
-        await self._meme(ctx, "https://a-whale.tried-to-do.science/i/i62x.jpg")
+        await self._meme(ctx, "https://i.imgur.com/pZUeBql.jpg")
     
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
@@ -301,7 +301,7 @@ class Memes(commands.Cog):
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def pbanj2(self, ctx):
         """pbanos"""
-        await self._meme(ctx, "https://a-whale.tried-to-do.science/i/q5a2.gif")
+        await self._meme(ctx, "https://i.imgur.com/oZx7Qid.gifv")
     
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
@@ -313,7 +313,7 @@ class Memes(commands.Cog):
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def cosmic(self, ctx):
         """Comsic ban"""
-        await self._meme(ctx, "https://imgur.com/V4TVpbC")
+        await self._meme(ctx, "https://i.imgur.com/V4TVpbC.gifv")
 
 
 def setup(bot):
