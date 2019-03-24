@@ -114,7 +114,7 @@ class Loop(DatabaseCog):
                         if timestamp > warning_time:
                             await self.set_time_restriction_alert(mute[0], 'timemute')
                             user = await self.bot.fetch_user(mute[0])
-                            await self.bot.channels['mods'].send(f"**Note**: <@{user.name}> will be unmuted in {((unmute_time - timestamp).seconds // 60) + 1} minutes.")
+                            await self.bot.channels['mods'].send(f"**Note**: <@{user.id}> will be unmuted in {((unmute_time - timestamp).seconds // 60) + 1} minutes.")
 
                 for nohelp in await self.get_time_restrictions_by_type('timenohelp'):
                     help_time = datetime.strptime(nohelp[1], "%Y-%m-%d %H:%M:%S")
