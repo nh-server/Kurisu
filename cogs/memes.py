@@ -313,7 +313,7 @@ class Memes(commands.Cog):
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def cosmic(self, ctx):
         """Comsic ban"""
-        await self._meme(ctx, "https://imgur.com/a/5IcfK6N")
+        await self._meme(ctx, "https://imgur.com/V4TVpbC")
 
 
 def setup(bot):
