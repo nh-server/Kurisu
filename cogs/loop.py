@@ -98,7 +98,7 @@ class Loop(DatabaseCog):
                         if timestamp > warning_time:
                             await self.set_time_restriction_alert(ban[0], 'timeban')
                             user = await self.bot.fetch_user(ban[0])
-                            await self.bot.channels['mods'].send(f"**Note**: {user.name} will be unbanned in {((unban_time - timestamp).seconds // 60) + 1} minutes.")
+                            await self.bot.channels['mods'].send(f"**Note**: {user.id} will be unbanned in {((unban_time - timestamp).seconds // 60) + 1} minutes.")
                 for mute in await self.get_time_restrictions_by_type('timemute'):
                     unmute_time = datetime.strptime(mute[1], "%Y-%m-%d %H:%M:%S")
                     if timestamp > unmute_time:
