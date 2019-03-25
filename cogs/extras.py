@@ -30,6 +30,7 @@ class Extras(commands.Cog):
         embed.description = "Kurisu, the Nintendo Homebrew Discord bot!"
         await ctx.send(embed=embed)
 
+    @commands.guild_only()
     @commands.command()
     async def membercount(self, ctx):
         """Prints the member count of the server."""
