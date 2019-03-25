@@ -390,22 +390,6 @@ class Err(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @commands.command()
-    async def err2(self, ctx, err: str):
-        if not err.startswith("0x") and not all(c in string.hexdigits for c in err):
-            return await ctx.send("Invalid error code.")
-
-        desc, mod, summ, level, rc = await self.convert_zerox(err)
- 
-        # garbage
-        embed = discord.Embed(title=f"0x{rc:X}")
-        value = self.get_name(self.modules, mod, 'module') + '\n'
-        value += self.get_name(self.descriptions, desc, 'description') + '\n'
-        value += self.get_name(self.summaries, summ, 'summary') + '\n'
-        value += self.get_name(self.levels, level, 'level')
-        embed.description = value
-        await ctx.send(embed=embed)
-
 
 def setup(bot):
     bot.add_cog(Err(bot))
