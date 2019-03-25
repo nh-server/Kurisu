@@ -297,7 +297,6 @@ class Memes(commands.Cog):
         """shhhh no one gives a shit!"""
         await self._meme(ctx, "https://imgur.com/a/5IcfK6N")
                        
-     
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def menuhax(self, ctx):
