@@ -453,6 +453,7 @@ class Events(DatabaseCog):
             if message.embeds[0].title.startswith('[Kurisu:port]'):
                 await self.bot.channels['helpers'].send("Automatically pulling changes!")
                 call(['git', 'pull'])
+                await self.bot.channels['helpers'].send("Restarting bot...")
                 await self.bot.close()
             return
         if message.author == message.guild.me or await check_staff_id(self, 'Helper', message.author.id) or await self.check_nofilter(message.channel):  # don't process messages by the bot or staff or in the helpers channel
