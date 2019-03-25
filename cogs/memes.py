@@ -320,6 +320,13 @@ class Memes(commands.Cog):
     async def cosmic(self, ctx):
         """Comsic ban"""
         await self._meme(ctx, "https://i.imgur.com/V4TVpbC.gifv")
+              
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def menuhax(self, ctx):
+        """menuhax 11.4 wen"""
+        await self._meme(ctx, "https://i.imgur.com/fUiZ2c3.png")
+
 
 
 def setup(bot):

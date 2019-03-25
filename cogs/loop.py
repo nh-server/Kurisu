@@ -98,7 +98,7 @@ class Loop(DatabaseCog):
                         if timestamp > warning_time:
                             await self.set_time_restriction_alert(ban[0], 'timeban')
                             user = await self.bot.fetch_user(ban[0])
-                            await self.bot.channels['mods'].send(f"**Note**: {user.name} will be unbanned in {((unban_time - timestamp).seconds // 60) + 1} minutes.")
+                            await self.bot.channels['mods'].send(f"**Note**: {user.id} will be unbanned in {((unban_time - timestamp).seconds // 60) + 1} minutes.")
                 for mute in await self.get_time_restrictions_by_type('timemute'):
                     unmute_time = datetime.strptime(mute[1], "%Y-%m-%d %H:%M:%S")
                     if timestamp > unmute_time:
@@ -106,7 +106,7 @@ class Loop(DatabaseCog):
                         await self.remove_restriction(mute[0], self.bot.roles['Muted'])
                         msg = f"🔈 **Mute expired**: <@{mute[0]}>"
                         await self.bot.channels['mod-logs'].send(msg)
-                        member = await self.bot.guild.get_member(mute[0])
+                        member = self.bot.guild.get_member(mute[0])
                         if member:
                             await member.remove_roles(self.bot.roles['Muted'])
                     elif not mute[3]:
@@ -114,7 +114,7 @@ class Loop(DatabaseCog):
                         if timestamp > warning_time:
                             await self.set_time_restriction_alert(mute[0], 'timemute')
                             user = await self.bot.fetch_user(mute[0])
-                            await self.bot.channels['mods'].send(f"**Note**: <@{user.name}> will be unmuted in {((unmute_time - timestamp).seconds // 60) + 1} minutes.")
+                            await self.bot.channels['mods'].send(f"**Note**: <@{user.id}> will be unmuted in {((unmute_time - timestamp).seconds // 60) + 1} minutes.")
 
                 for nohelp in await self.get_time_restrictions_by_type('timenohelp'):
                     help_time = datetime.strptime(nohelp[1], "%Y-%m-%d %H:%M:%S")
