@@ -18,7 +18,7 @@ class Blah(commands.Cog):
         await self.bot.channels['announcements'].send(inp)
 
     @is_staff("OP")
-    @commands.command(hidden=True)
+    @commands.command(aliases=["say", "talk"], hidden=True)
     async def speak(self, ctx, channel: discord.TextChannel, *, inp):
         await channel.send(inp)
 
