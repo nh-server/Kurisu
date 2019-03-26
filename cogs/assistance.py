@@ -511,6 +511,12 @@ the system can't check for an update.
         """Download link for 3DS Homebrew Launcher, boot.3dsx"""
         await self.simple_embed(ctx, "The 3DS Homebrew Launcher, [boot.3dsx](https://github.com/fincs/new-hbmenu/releases/download/v2.0.0/boot.3dsx)")
 
+    @commands.command(aliases=["greenscr"])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def b9stool(self, ctx):
+        """Download link for B9STool, boot.nds"""
+        await self.simple_embed(ctx, "The B9STool, [boot.nds](https://github.com/zoogie/b9sTool/releases).")
+
     # Intructions for deleting home menu Extdata
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
