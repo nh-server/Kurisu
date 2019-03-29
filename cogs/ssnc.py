@@ -28,7 +28,7 @@ class SwitchSerialNumberCheck(Cog):
         assembly_line = int(serial[3])
         checking_value = int(serial[3:10])
         print(f"{checking_value} : {len(str(checking_value))}")
-        safe_serial = serial[:9] + 'X'
+        safe_serial = serial[:9] + 'XXXX'
 
         if region == 'J':
             if assembly_line == 1:
