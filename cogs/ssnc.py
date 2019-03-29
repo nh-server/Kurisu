@@ -24,7 +24,6 @@
 # reasonable ways as different from the original version; or
 
 # Also licensed under the ISC license.
-import discord
 from discord.ext import commands
 from discord.ext.commands import Cog
 import re
