@@ -10,7 +10,7 @@ def is_staff(role):
         if isinstance(ctx.channel, discord.abc.GuildChannel):
             return await check_staff(ctx, role) if not ctx.author == ctx.guild.owner else True
         else:
-            return check_staff(ctx, role)
+            return await check_staff(ctx, role)
     return commands.check(predicate)
 
 
