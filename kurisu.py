@@ -47,6 +47,7 @@ cogs = [
     'cogs.mod',
     'cogs.nxerr',
     'cogs.rules',
+    'cogs.ssnc',
 ]
 
 
