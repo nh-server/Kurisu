@@ -696,7 +696,7 @@ class NXErr:
     # Attention: These need to be formatted -> <errcode>: "<game>: <description>" - Also Nintendo support codes
     nin_err = {
         #Splatoon 2
-        "2-AAB6A-3400": "Splatoon 2: A kick from online due to exefs edits.",
+        "2-AAB6A-3400": "Splatoon 2: A kick from online due to exefs/romfs edits.",
 
         #Youtube
         "2-ARVHA-0000": "Youtube: Unknown Error",
