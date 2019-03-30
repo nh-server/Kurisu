@@ -494,16 +494,16 @@ the system can't check for an update.
                                     """, color=discord.Color.blue())
 
     # Embed to broken TWL Troubleshooting
-    @commands.command()
+    @commands.command(aliases=["twlfix"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def twl(self, ctx):
         """Information on how to fix a broken TWL Partition"""
-        embed = discord.Embed(title="Fix broken TWL", color=discord.Color(0xA2BAE0))
-        embed.set_author(name="Plailect", url="https://3ds.hacks.guide/troubleshooting#dsi--ds-functionality-is-broken-after-completing-the-guide")
-        embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
-        embed.url = "https://3ds.hacks.guide/troubleshooting#dsi--ds-functionality-is-broken-after-completing-the-guide"
-        embed.description = "Instructions on how to fix a broken TWL after doing the guide"
-        await ctx.send(embed=embed)
+        await self.simple_embed(ctx, """
+                                If you already have CFW, use [TWLFix-CFW](https://github.com/MechanicalDragon0687/TWLFix-CFW/releases/)
+                                If you already have homebrew but not CFW, use [TWLFix-3DS](https://github.com/MechanicalDragon0687/TWLFix-3DS/releases/)
+                                If you have neither CFW nor homebrew, it is easier to get homebrew and use the previous option. You could also get a DSiWare app and follow: [TWLFix Stock](https://github.com/MechanicalDragon0687/TWLFix/wiki/Instructions/)
+                                Each of these instructions require that you perform a system update after running the apps or restoring the DSiWare
+                                """, "Fix broken TWL", color=discord.Color(0xA2BAE0))
 
     @commands.command(aliases=["redscr"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
