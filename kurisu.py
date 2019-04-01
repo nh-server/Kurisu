@@ -69,6 +69,9 @@ class Kurisu(commands.Bot):
             'On-Duty Wii U': None,
             'On-Duty Switch': None,
             'Probation': None,
+            'Retired Staff': None,
+            'Verified': None,
+            'Trusted' : None,
             'Muted': None,
             'No-Help': None,
             'no-elsewhere': None,
@@ -78,7 +81,6 @@ class Kurisu(commands.Bot):
             'No-Embed': None,
             '#elsewhere': None,
             'Small Help': None,
-
         }
 
         self.actions = []
@@ -91,18 +93,19 @@ class Kurisu(commands.Bot):
             '3ds-assistance-2': None,
             'wiiu-assistance': None,
             'switch-assistance': None,
+            'helpers': None,
+            'watch-logs': None,
+            'message-logs': None,
+            'upload-logs': None,
             'hacking-general': None,
+            'meta': None,
             'legacy-systems': None,
             'mods': None,
-            'helpers': None,
-            'message-logs': None,
-            'mod-logs': None,
-            'watch-logs': None,
-            'upload-logs': None,
             'mod-mail': None,
-            'bot-err': None,
+            'mod-logs': None,
             'server-logs': None,
-            'meta': None,
+            'bot-err': None,
+
         }
 
         self.failed_cogs = []

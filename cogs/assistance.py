@@ -33,18 +33,18 @@ class Assistance(commands.Cog):
     async def staffreq(self, ctx, *, msg_request: str = ""):
         """Request staff, with optional additional text. Trusted, Helpers, Staff, Retired Staff, Verified only."""
         author = ctx.author
-        if not await check_staff_id(ctx, 'Helper', ctx.author.id) and (self.bot.verified_role not in author.roles) and (self.bot.trusted_role not in author.roles) and (self.bot.retired_role not in author.roles):
+        if not await check_staff_id(ctx, 'Helper', ctx.author.id) and (self.bot.roles['Verified'] not in author.roles) and (self.bot.roles['Trusted'] not in author.roles) and (self.bot.roles['Retired Staff'] not in author.roles):
             msg = f"{author.mention} You cannot use this command at this time. Please ask individual staff members if you need help."
             await ctx.send(msg)
             return
-        await self.bot.delete_message(ctx.message)
+        await ctx.message.delete()
         # await ctx.send("Request sent.")
         msg = f"❗️ **Assistance requested**: {ctx.channel.mention} by {author.mention} | {ctx.author} @here"
         if msg_request != "":
             # msg += "\n✏️ __Additional text__: " + msg_request
             embed = discord.Embed(color=discord.Color.gold())
             embed.description = msg_request
-        await ctx.send(self.bot.channels['mods'], msg, embed=(embed if msg_request != "" else None))
+        await self.bot.channels['mods'].send(msg, embed=(embed if msg_request != "" else None))
         try:
             await author.send(f"✅ Online staff have been notified of your request in {ctx.channel.mention}.", embed=(embed if msg_request != "" else None))
         except discord.errors.Forbidden:
