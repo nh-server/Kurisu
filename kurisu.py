@@ -101,6 +101,8 @@ class Kurisu(commands.Bot):
             'meta': None,
             'legacy-systems': None,
             'off-topic': None,
+            'voice-and-music': None,
+            'bot-cmds': None,
             'mods': None,
             'mod-mail': None,
             'mod-logs': None,

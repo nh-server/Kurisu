@@ -142,7 +142,7 @@ class Rules(commands.Cog, command_attrs=dict()):
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r15(self, ctx):
         """Displays rule 15."""
-        await self.simple_embed(ctx, f"Voice and music commands and other random/contextless command usage belong in {self.bot.channels['voiceandmusic'].mention} and {self.bot.channels['bot-cmds'].mention} respectively.", title="Rule 15")
+        await self.simple_embed(ctx, f"Voice and music commands and other random/contextless command usage belong in {self.bot.channels['voice-and-music'].mention} and {self.bot.channels['bot-cmds'].mention} respectively.", title="Rule 15")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
