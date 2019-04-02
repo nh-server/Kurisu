@@ -4,7 +4,7 @@ import time
 from subprocess import call
 import discord
 from discord.ext import commands
-from cogs.checks import is_staff
+from cogs.checks import is_staff, check_staff_id
 from cogs.database import DatabaseCog
 from cogs.converters import SafeMember
 
@@ -289,6 +289,9 @@ class Mod(DatabaseCog):
     @commands.command(aliases=["nohelp"])
     async def takehelp(self, ctx, member: SafeMember, *, reason=""):
         """Remove access to help-and-questions. Staff and Helpers only."""
+        if await check_staff_id(ctx, 'Helper', member.id):
+            await ctx.send('You can\'t take a Helper/Staff\'s help access')
+            return
         await self.add_restriction(member.id, self.bot.roles['No-Help'])
         await member.add_roles(self.bot.roles['No-Help'])
         msg_user = "You lost access to help channels!"
@@ -327,6 +330,9 @@ class Mod(DatabaseCog):
     @commands.command(aliases=["timenohelp"])
     async def timetakehelp(self, ctx, member: SafeMember, length, *, reason=""):
         """Restricts a user from Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
+        if await check_staff_id(ctx, 'Helper', member.id):
+            await ctx.send('You can\'t take a Helper/Staff\'s help access')
+            return
 
         issuer = ctx.author
         # thanks Luc#5653
