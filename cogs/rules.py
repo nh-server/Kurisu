@@ -136,7 +136,7 @@ class Rules(commands.Cog, command_attrs=dict()):
     async def r14(self, ctx):
         """Displays rule 14."""
         await self.simple_embed(ctx,
-                                f"Off-topic content goes to {self.bot.offtopic_channel.mention}. Keep low-quality content like memes out.", title="Rule 14")
+                                f"Off-topic content goes to {self.bot.channels['off-topic'].mention}. Keep low-quality content like memes out.", title="Rule 14")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
