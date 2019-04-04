@@ -661,8 +661,8 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
     async def flashdrives(self, ctx):
         """Message on flash drives on the Wii U"""
         await self.simple_embed(ctx, """
-                                Some flash drives work with the Wii U, some don't. If you have read or write errors, \
-or games crash often, you might want to try a different flash drive or hard drive
+                                If you're having trouble getting your HDD to work with your WiiU, it might be due to the HDD not getting enough power. \
+One way to fix this is by using an y-cable to connect the HDD to two USB ports.
                                 """)
 
     # Information about pending Switch updates
