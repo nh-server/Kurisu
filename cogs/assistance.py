@@ -658,8 +658,8 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def flashdrives(self, ctx):
-        """Message on flash drives on the Wii U"""
+    async def wiiuhdd(self, ctx):
+        """Message on HDDs on the Wii U"""
         await self.simple_embed(ctx, """
                                 If you're having trouble getting your HDD to work with your WiiU, it might be due to the HDD not getting enough power. \
 One way to fix this is by using an y-cable to connect the HDD to two USB ports.
