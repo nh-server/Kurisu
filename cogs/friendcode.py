@@ -63,7 +63,6 @@ class FriendCode(DatabaseCog):
         """Delete your friend code."""
         await self.delete_friendcode(ctx.author.id)
         await ctx.send("Friend code removed from database.")
-        self.bot.dbcon.commit()
 
     @commands.command()
     async def fctest(self, ctx, fc):
