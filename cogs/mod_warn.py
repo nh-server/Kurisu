@@ -110,7 +110,7 @@ class ModWarn(DatabaseCog):
             for idx, warn in enumerate(warns):
                 issuer = await self.bot.fetch_user(warn[2])
                 value = ""
-                if ctx.channel == self.bot.channels['helpers'] or ctx.channel == self.bot.channels['mods']:
+                if ctx.channel == self.bot.channels['helpers'] or ctx.channel == self.bot.channels['mods'] or ctx.channel == self.bot.channels['mod-logs']:
                     value += f"Issuer: {issuer.name}\n"
                 value += f"Reason: {warn[3]} "
                 embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn[0])}", value=value)
@@ -132,7 +132,7 @@ class ModWarn(DatabaseCog):
             for idx, warn in enumerate(warns):
                 issuer = await self.bot.fetch_user(warn[2])
                 value = ""
-                if ctx.channel == self.bot.channels['helpers'] or ctx.channel == self.bot.channels['mods']:
+                if ctx.channel == self.bot.channels['helpers'] or ctx.channel == self.bot.channels['mods'] or ctx.channel == self.bot.channels['mod-logs']:
                     value += f"Issuer: {issuer.name}\n"
                 value += f"Reason: {warn[3]} "
                 embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn[0])}", value=value)
