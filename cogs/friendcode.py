@@ -40,6 +40,7 @@ class FriendCode(DatabaseCog):
         await self.add_friendcode(ctx.author.id, fc)
         await ctx.send(f"{ctx.author.mention} Friend code inserted: {self.fc_to_string(fc)}")
 
+    @commands.guild_only()
     @commands.command()
     async def fcquery(self, ctx, member: SafeMember):
         """Get other user's friend code. You must have one yourself in the database."""
