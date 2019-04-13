@@ -34,9 +34,21 @@ class Mod(DatabaseCog):
     @commands.guild_only()
     @commands.command(hidden=True)
     async def userinfo(self, ctx, u: discord.Member):
-        """Gets user info. Staff and Helpers only."""
+        """Gets member info. Staff and Helpers only."""
         role = u.top_role.name
         await ctx.send(f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url}\ndefault_avatar = {u.default_avatar}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\ndisplay_name = {u.display_name}\njoined_at = {u.joined_at}\nstatus = {u.status}\nactivity = {u.activity.name if u.activity else None}\ncolour = {u.colour}\ntop_role = {self.bot.help_command.remove_mentions(role)}\n")
+
+    @is_staff("Helper")
+    @commands.guild_only()
+    @commands.command(hidden=True)
+    async def userinfoid(self, ctx, id):
+        """Gets a user id info. Staff and Helpers only."""
+        try:
+            u = await self.bot.fetch_user(id)
+        except discord.NotFound:
+            await ctx.send(f"No user matching id `{id}`.")
+            return
+        await ctx.send(f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\ncolour = {u.colour}\n")
 
     @is_staff("HalfOP")
     @commands.guild_only()
