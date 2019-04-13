@@ -104,7 +104,7 @@ class Mod(DatabaseCog):
     @commands.command(aliases=["clear"])
     async def purge(self, ctx, limit: int):
         """Clears a given number of messages. Staff only."""
-        await ctx.channel.purge(limit=limit)
+        await ctx.channel.purge(limit=limit+1)
         msg = f"🗑 **Cleared**: {ctx.author.mention} cleared {limit} messages in {ctx.channel.mention}"
         await self.bot.channels['mod-logs'].send(msg)
 
