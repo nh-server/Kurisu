@@ -124,6 +124,7 @@ class Events(DatabaseCog):
         'freestore',
         'sxinstaller',
         'sxos',
+        'darksoftware',
     )
 
     # use the full ID, including capitalization and dashes
