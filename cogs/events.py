@@ -180,6 +180,7 @@ class Events(DatabaseCog):
         'romulation',
         'emulator.games',
         '3dscia',
+        'darksoftware',
     )
 
     # I hate naming variables sometimes
