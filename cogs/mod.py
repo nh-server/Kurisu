@@ -36,7 +36,7 @@ class Mod(DatabaseCog):
     async def userinfo(self, ctx, u: discord.Member):
         """Gets member info. Staff and Helpers only."""
         role = u.top_role.name
-        await ctx.send(f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url}\ndefault_avatar = {u.default_avatar}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\ndisplay_name = {u.display_name}\njoined_at = {u.joined_at}\nstatus = {u.status}\nactivity = {u.activity.name if u.activity else None}\ncolour = {u.colour}\ntop_role = {self.bot.help_command.remove_mentions(role)}\n")
+        await ctx.send(f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url}\ndefault_avatar = {u.default_avatar}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\ndisplay_name = {self.bot.escape_text(u.display_name)}\njoined_at = {u.joined_at}\nstatus = {u.status}\nactivity = {u.activity.name if u.activity else None}\ncolour = {u.colour}\ntop_role = {self.bot.escape_text(role)}\n")
 
     @is_staff("Helper")
     @commands.guild_only()
@@ -203,7 +203,7 @@ class Mod(DatabaseCog):
         except discord.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
         await ctx.send(f"{member.mention} can access art-discussion again.")
-        msg = f"⭕️ **Restored art**: {ctx.message.author.mention} restored art access to {member.mention} | {self.bot.help_command.remove_mentions(str(member))}"
+        msg = f"⭕️ **Restored art**: {ctx.message.author.mention} restored art access to {member.mention} | {member}"
         await self.bot.channels['mod-logs'].send(msg)
 
     @is_staff("HalfOP")
@@ -216,7 +216,7 @@ class Mod(DatabaseCog):
         except discord.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
         await ctx.send(f"{member.mention} can no longer access art-discussion.")
-        msg = f"🚫 **Removed art**: {ctx.message.author.mention} removed art access from {member.mention} | {self.bot.help_command.remove_mentions(str(member))}"
+        msg = f"🚫 **Removed art**: {ctx.message.author.mention} removed art access from {member.mention} | {member}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         else:

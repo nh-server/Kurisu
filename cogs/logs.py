@@ -59,10 +59,10 @@ Thanks for stopping by and have a good time!
             embed = discord.Embed(color=discord.Color.dark_red())
             embed.set_author(name=f"Warns for {member}", icon_url=member.avatar_url)
             for idx, warn in enumerate(warns):
-                embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn[0])}", value=f"Issuer: {(await self.bot.fetch_user(warn[2])).display_name}\nReason: {warn[3]}")
+                embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn[0])}", value=f"Issuer: {(self.bot.escape_text(await self.bot.fetch_user(warn[2])).display_name)}\nReason: {warn[3]}")
             await self.bot.channels['server-logs'].send(msg, embed=embed)
         try:
-            await member.send(self.welcome_msg.format(self.bot.help_command.remove_mentions(member.name), member.guild.name, self.bot.channels['welcome-and-rules'].mention))
+            await member.send(self.welcome_msg.format(member.name, member.guild.name, self.bot.channels['welcome-and-rules'].mention))
         except discord.errors.Forbidden:
             pass
 
@@ -146,10 +146,10 @@ Thanks for stopping by and have a good time!
                     else:
                         roles.append(role.name)
                 msg += ', '.join(roles)
-        if self.bot.help_command.remove_mentions(member_before.name) != self.bot.help_command.remove_mentions(member_after.name):
+        if member_before.name != member_after.name:
             do_log = True
             dest = self.bot.channels['server-logs']
-            msg = f"\n📝 __Username change__: {self.bot.help_command.remove_mentions(member_before.name)} → {self.bot.help_command.remove_mentions(member_after.name)}"
+            msg = f"\n📝 __Username change__: {member_before.name} → {member_after.name}"
         if member_before.nick != member_after.nick:
             do_log = True
             if member_before.nick is None:
@@ -158,7 +158,7 @@ Thanks for stopping by and have a good time!
                 msg = "\n🏷 __Nickname removal__"
             else:
                 msg = "\n🏷 __Nickname change__"
-            msg += f": {self.bot.help_command.remove_mentions(str(member_before.nick))} → {self.bot.help_command.remove_mentions(str(member_after.nick))}"
+            msg += f": {self.bot.escape_text(member_before.nick)} → {self.bot.escape_text(member_after.nick)}"
         if do_log:
             msg = f"ℹ️ **Member update**: {member_after.mention} | {member_after} {msg}"
             await dest.send(msg)

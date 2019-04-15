@@ -19,7 +19,7 @@ class Memes(commands.Cog):
             except discord.errors.Forbidden:
                 await ctx.send(f"{ctx.author.mention} Meme commands are disabled in this channel, or your privileges have been revoked.")
         else:
-            await ctx.send(self.bot.help_command.remove_mentions(ctx.author.display_name) + ": " + msg)
+            await ctx.send(self.bot.escape_text(ctx.author.display_name) + ": " + msg)
 
     # list memes
     @commands.command(name="listmemes")

@@ -235,10 +235,10 @@ class Events(DatabaseCog):
 
         for f in message.attachments:
             if not f.filename.lower().endswith(self.ignored_file_extensions):
-                embed2 = discord.Embed(description=f"Size: {f.size}\nMessage: [{message.channel.name}]({message.jump_url})\nDownload: [{self.bot.help_command.remove_mentions(f.filename)}]({f.url})")
+                embed2 = discord.Embed(description=f"Size: {f.size}\nMessage: [{message.channel.name}]({message.jump_url})\nDownload: [{f.filename}]({f.url})")
                 await self.bot.channels['upload-logs'].send(f"📎 **Attachment**: {message.author.mention} uploaded to {message.channel.mention}", embed=embed2)
         if contains_invite_link:
-            await self.bot.channels['message-logs'].send(f"✉️ **Invite posted**: {message.author.mention} posted an invite link in {message.channel.mention}\n------------------\n{self.bot.help_command.remove_mentions(message.content)}")
+            await self.bot.channels['message-logs'].send(f"✉️ **Invite posted**: {message.author.mention} posted an invite link in {message.channel.mention}\n------------------\n{self.bot.escape_text(message.content)}")
         if contains_misinformation_url_mention:
             try:
                 await message.delete()

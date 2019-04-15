@@ -126,6 +126,11 @@ class Kurisu(commands.Bot):
                 print(f'{extension} failed to load.', extension)
                 self.failed_cogs.append([extension, type(e).__name__, e])
 
+    @staticmethod
+    def escape_text(text):
+        text = str(text)
+        return discord.utils.escape_markdown(discord.utils.escape_mentions(text))
+
     async def on_ready(self):
         guilds = self.guilds
         assert len(guilds) == 1

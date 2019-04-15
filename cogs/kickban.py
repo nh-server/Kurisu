@@ -47,7 +47,7 @@ class KickBan(DatabaseCog):
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
             return
-        await ctx.send(f"{self.bot.help_command.remove_mentions(member.name)} is now gone. 👌")
+        await ctx.send(f"{member} is now gone. 👌")
         msg = f"👢 **Kick**: {ctx.author.mention} kicked {member.mention} | {member}\n🏷 __User ID__: {member.id}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
@@ -75,7 +75,7 @@ class KickBan(DatabaseCog):
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
             return
-        await ctx.send(f"{self.bot.help_command.remove_mentions(str(member))} is now b&. 👍")
+        await ctx.send(f"{member} is now b&. 👍")
         msg = f"⛔ **Ban**: {ctx.author.mention} banned {member.mention} | {member}\n🏷 __User ID__: {member.id}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
@@ -119,7 +119,7 @@ class KickBan(DatabaseCog):
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
             return
-        await ctx.send(f"{self.bot.help_command.remove_mentions(member)} is now b&. 👍")
+        await ctx.send(f"{member} is now b&. 👍")
         msg = f"⛔ **Silent ban**: {ctx.author.mention} banned {member.mention} | {member}\n🏷 __User ID__: {member.id}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
@@ -139,7 +139,7 @@ class KickBan(DatabaseCog):
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
             return
-        await ctx.send(f"{self.bot.help_command.remove_mentions(member)} is now b&. 👍")
+        await ctx.send(f"{member} is now b&. 👍")
         msg = f"⛔ **Delete ban**: {ctx.author.mention} banned {member.mention} | {member}\n🏷 __User ID__: {member.id}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
@@ -186,7 +186,7 @@ class KickBan(DatabaseCog):
             await ctx.send("💢 I don't have permission to do this.")
             return
         await self.add_timed_restriction(member.id, unban_time_string, 'timeban')
-        await ctx.send(f"{self.bot.help_command.remove_mentions(member)} is now b& until {unban_time_string} {time.tzname[0]}. 👍")
+        await ctx.send(f"{member} is now b& until {unban_time_string} {time.tzname[0]}. 👍")
         msg = f"⛔ **Time ban**: {ctx.author.mention} banned {member.mention} until {unban_time_string} | {member}\n🏷 __User ID__: {member.id}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
@@ -209,7 +209,7 @@ class KickBan(DatabaseCog):
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
             return
-        await ctx.send(f"{self.bot.help_command.remove_mentions(member)} is now b&. 👍")
+        await ctx.send(f"{member} is now b&. 👍")
         msg = f"⛔ **Soft-ban**: {ctx.author.mention} soft-banned {member.mention} | {member}\n🏷 __User ID__: {member.id}\n✏️ __Reason__: {reason}"
         await self.bot.channels['mod-logs'].send(msg)
         await self.bot.channels['server-logs'].send(msg)
@@ -236,8 +236,8 @@ class KickBan(DatabaseCog):
         """Un-soft-ban a user based on ID. OP+ only."""
         await self.remove_softban(user_id)
         user = await self.bot.fetch_user(user_id)
-        await ctx.send(f"{self.bot.help_command.remove_mentions(user.name)} has been unbanned!")
-        msg = f"⚠️ **Un-soft-ban**: {ctx.author.mention} un-soft-banned {self.bot.help_command.remove_mentions(user.name)}"
+        await ctx.send(f"{user} has been unbanned!")
+        msg = f"⚠️ **Un-soft-ban**: {ctx.author.mention} un-soft-banned {user}"
         await self.bot.channels['mod-logs'].send(msg)
 
 
