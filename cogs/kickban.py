@@ -2,6 +2,7 @@ import datetime
 import discord
 import re
 import time
+import typing
 
 from cogs import converters
 from cogs.checks import is_staff, check_staff_id
@@ -56,11 +57,15 @@ class KickBan(DatabaseCog):
 
     @is_staff("OP")
     @commands.command(name="ban")
-    async def ban_member(self, ctx, member: converters.SafeMember, *, reason=""):
+    async def ban_member(self, ctx, member: converters.SafeMember, days: typing.Optional[int] = 0, *, reason=""):
         """Bans a user from the server. OP+ only."""
         if await check_staff_id(ctx, 'Helper', member.id):
             await self.meme(ctx.author, member, "ban", ctx.channel, reason)
             return
+        if days > 7:
+            days = 7
+        elif days < 0:
+            days = 0
         msg = f"You were banned from {ctx.guild.name}."
         if reason != "":
             msg += " The given reason is: " + reason
@@ -71,7 +76,7 @@ class KickBan(DatabaseCog):
             pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
         try:
             self.bot.actions.append("ub:" + str(member.id))
-            await member.ban(delete_message_days=0)
+            await member.ban(delete_message_days=days)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
             return
@@ -108,14 +113,18 @@ class KickBan(DatabaseCog):
 
     @is_staff("OP")
     @commands.command(name="silentban", hidden=True)
-    async def silentban_member(self, ctx, member: converters.SafeMember, *, reason=""):
+    async def silentban_member(self, ctx, member: converters.SafeMember, days: typing.Optional[int] = 0, *, reason=""):
         """Bans a user from the server, without a notification. OP+ only."""
         if await check_staff_id(ctx, 'Helper', member.id):
             await self.meme(ctx.author, member, "ban", ctx.channel, reason)
             return
+        if days > 7:
+            days = 7
+        elif days < 0:
+            days = 0
         try:
             self.bot.actions.append("ub:" + str(member.id))
-            await member.ban(delete_message_days=0)
+            await member.ban(delete_message_days=days)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
             return
@@ -125,27 +134,6 @@ class KickBan(DatabaseCog):
             msg += "\n✏️ __Reason__: " + reason
         await self.bot.channels['server-logs'].send(msg)
         await self.bot.channels['mod-logs'].send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.silentban <user> [reason]`." if reason == "" else ""))
-
-    @is_staff("OP")
-    @commands.command(name="bandel")
-    async def bandelete_member(self, ctx, member: converters.SafeMember, *, reason=""):
-        """Bans a user from the server deleting messsage from last 7 days."""
-        if await check_staff_id(ctx, 'Helper', member.id):
-            await self.meme(ctx.author, member, "ban", ctx.channel, reason)
-            return
-        try:
-            self.bot.actions.append("ub:" + str(member.id))
-            await member.ban(delete_message_days=7)
-        except discord.errors.Forbidden:
-            await ctx.send("💢 I don't have permission to do this.")
-            return
-        await ctx.send(f"{member} is now b&. 👍")
-        msg = f"⛔ **Delete ban**: {ctx.author.mention} banned {member.mention} | {member}\n🏷 __User ID__: {member.id}"
-        if reason != "":
-            msg += "\n✏️ __Reason__: " + reason
-        await self.bot.channels['server-logs'].send(msg)
-        await self.bot.channels['mod-logs'].send(msg + (
-            "\nPlease add an explanation below. In the future, it is recommended to use `.silentban <user> [reason]`." if reason == "" else ""))
 
     @is_staff("OP")
     @commands.command(name="timeban")
