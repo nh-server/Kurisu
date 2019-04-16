@@ -138,6 +138,7 @@ class Events(DatabaseCog):
         'notabug',
         #'sx',
         #'tx',
+        'sxos',
     )
 
     drama_alert = ()
