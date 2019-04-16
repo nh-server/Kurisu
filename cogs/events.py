@@ -123,7 +123,7 @@ class Events(DatabaseCog):
         'stargate',
         'freestore',
         'sxinstaller',
-        'sxos',
+        #'sxos',
     )
 
     # use the full ID, including capitalization and dashes
