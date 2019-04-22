@@ -139,7 +139,7 @@ class DatabaseCog(commands.Cog):
         async with self.bot.holder as cur:
             await cur.execute('SELECT 1 FROM timed_restrictions WHERE user_id=? AND type=?', (user_id, type))
             if await cur.fetchone() is not None:
-                await cur.execute('UPDATE timed_restrictions SET timestamp=?, alert=0 WHERE user_id=? AND type=?', (user_id, type))
+                await cur.execute('UPDATE timed_restrictions SET timestamp=?, alert=0 WHERE user_id=? AND type=?', (end_date, user_id, type))
             else:
                 await cur.execute('INSERT INTO timed_restrictions VALUES(?, ?, ?, ?)', (user_id, end_date, type, 0))
 
