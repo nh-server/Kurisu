@@ -384,6 +384,9 @@ class Mod(DatabaseCog):
     @commands.command()
     async def takesmallhelp(self, ctx, members: commands.Greedy[SafeMember]):
         """Remove access to small help channel. Staff and Helpers only."""
+        if len(members) < 1:
+            await ctx.send("Mention at least one user")
+            return
         for member in members:
             await member.remove_roles(self.bot.roles['Small Help'])
         await ctx.send(f"{', '.join([x.mention for x in members])} can no longer access the small help channel.")
@@ -396,6 +399,9 @@ class Mod(DatabaseCog):
     @commands.command()
     async def givesmallhelp(self, ctx, members: commands.Greedy[SafeMember]):
         """Provide access to small help channel for 1-on-1 help. Staff and Helpers only."""
+        if len(members) < 1:
+            await ctx.send("Mention at least one user")
+            return
         for member in members:
             await member.add_roles(self.bot.roles['Small Help'])
         await ctx.send(f"{', '.join([x.mention for x in members])} can access the small help channel.")
