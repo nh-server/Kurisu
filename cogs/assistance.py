@@ -327,13 +327,13 @@ custom firmware on this version in the very far future.
                 await ctx.send(embed=embed)
 
 
-    @commands.command(aliases=["fuse-3ds", "fuse"])
+    @commands.command(aliases=["fuse-3ds", "fuse", "fuse3ds"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def fuse3ds(self, ctx):
-        """Link to fuse-3ds tutorial."""
-        embed = discord.Embed(title="Extract/Decrypt games, NAND backups, and SD contents with fuse-3ds", color=discord.Color(0xCE181E))
+    async def ninfs(self, ctx):
+        """Link to ninfs tutorial."""
+        embed = discord.Embed(title="Extract and Decrypt games, NAND backups, and SD contents with ninfs", color=discord.Color(0xCE181E))
         embed.description = cleandoc("""
-                            This is a tutorial that shows you how to use fuse-3ds to extract the contents of games, \
+                            This is a tutorial that shows you how to use ninfs to extract the contents of games, \
 NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
                             """)
         embed.url = "https://gbatemp.net/threads/499994/"
