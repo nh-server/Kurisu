@@ -76,7 +76,7 @@ class KickBan(DatabaseCog):
             pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
         try:
             self.bot.actions.append("ub:" + str(member.id))
-            await member.ban(delete_message_days=days)
+            await member.ban(reason=reason, delete_message_days=days)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
             return
@@ -124,7 +124,7 @@ class KickBan(DatabaseCog):
             days = 0
         try:
             self.bot.actions.append("ub:" + str(member.id))
-            await member.ban(delete_message_days=days)
+            await member.ban(reason=reason, delete_message_days=days)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
             return
@@ -169,7 +169,7 @@ class KickBan(DatabaseCog):
             pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
         try:
             self.bot.actions.append("ub:" + str(member.id))
-            await member.ban(reason=reason)
+            await member.ban(reason=reason, delete_message_days=0)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
             return
