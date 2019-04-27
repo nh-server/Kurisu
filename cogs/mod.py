@@ -244,8 +244,8 @@ class Mod(DatabaseCog):
         """Removes elsewhere access from a user. Staff only."""
         try:
             await self.add_restriction(member.id, self.bot.roles['no-elsewhere'])
-            member.add_roles(self.bot.roles['no-elsewhere'])
-            member.remove_roles(self.bot.roles['#elsewhere'])
+            await member.add_roles(self.bot.roles['no-elsewhere'])
+            await member.remove_roles(self.bot.roles['#elsewhere'])
             await ctx.send(f"{member.mention} can no longer access elsewhere.")
             msg = f"🚫 **Removed elsewhere**: {ctx.author.mention} removed elsewhere access from {member.mention} | {member}"
             if reason != "":
