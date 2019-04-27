@@ -58,7 +58,7 @@ class KickBan(DatabaseCog):
     @is_staff("OP")
     @commands.command(name="ban")
     async def ban_member(self, ctx, member: converters.SafeMember, days: typing.Optional[int] = 0, *, reason=""):
-        """Bans a user from the server. OP+ only."""
+        """Bans a user from the server. OP+ only. Optional: [days] Specify up to 7 days of messages to delete."""
         if await check_staff_id(ctx, 'Helper', member.id):
             await self.meme(ctx.author, member, "ban", ctx.channel, reason)
             return
@@ -114,7 +114,7 @@ class KickBan(DatabaseCog):
     @is_staff("OP")
     @commands.command(name="silentban", hidden=True)
     async def silentban_member(self, ctx, member: converters.SafeMember, days: typing.Optional[int] = 0, *, reason=""):
-        """Bans a user from the server, without a notification. OP+ only."""
+        """Bans a user from the server, without a notification. OP+ only.  Optional: [days] Specify up to 7 days of messages to delete."""
         if await check_staff_id(ctx, 'Helper', member.id):
             await self.meme(ctx.author, member, "ban", ctx.channel, reason)
             return
