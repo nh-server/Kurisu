@@ -371,7 +371,7 @@ re-read the guide steps 2 or 3 times before coming here.
                                 * When Nintendo updates the firmware, they take a very long time to catch up
                                 * Most of the features they claim to offer can be enabled in Atmosphere with some \
 additional configuration
-                                * The current "emuNAND" is not a real emuNAND, and Atmosphere's version will be significantly better
+                                * Atmosphere's emuNAND implementation will be completely free and open source
                                 """, title="Why Atmosphere?")
 
     @commands.command()
