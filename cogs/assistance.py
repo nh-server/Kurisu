@@ -441,7 +441,7 @@ just missing a file called boot.firm in the root of your SD card.
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def bfm4(self, ctx):
-        """are you sure you read the guide?"""
+        """Information about BruteforceMovable and how the friend code may not always be needed"""
         await self.simple_embed(ctx, """
                                 If BruteforceMovable is now at step 4, download your movable.sed and continue.\
 You do not need to do anything more related to movable_part1.sed, Python, or the\
