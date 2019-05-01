@@ -348,7 +348,7 @@ class Events(DatabaseCog):
                 await message.author.send(f"You were automatically placed under probation in {self.bot.guild.name} for mass user mentions.")
             except discord.errors.Forbidden:
                 pass
-            await self.add_restriction(message.author, self.bot.roles['Probation'])
+            await self.add_restriction(message.author.id, self.bot.roles['Probation'])
             await message.author.add_roles(self.bot.roles['Probation'])
 
     async def user_spam_check(self, message):
