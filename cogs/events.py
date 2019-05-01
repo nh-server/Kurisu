@@ -372,7 +372,7 @@ class Events(DatabaseCog):
             await self.bot.channels['mods'].send(log_msg + f"\nSee {self.bot.channels['mod-logs'].mention} for a list of deleted messages.")
             for msg in msgs_to_delete:
                 try:
-                    await self.bot.delete_message(msg)
+                    await msg.delete()
                 except discord.errors.NotFound:
                     pass  # don't fail if the message doesn't exist
         await asyncio.sleep(3)
