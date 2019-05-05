@@ -498,6 +498,8 @@ the system can't check for an update.
         """Download links for Luma versions"""
         if len(lumaversion) >= 3 and lumaversion[0].isdigit() and lumaversion[1] == "." and lumaversion[2].isdigit():
             await self.simple_embed(ctx, f"Luma v{lumaversion}\nhttps://github.com/AuroraWright/Luma3DS/releases/tag/v{lumaversion}", color=discord.Color.blue())
+        elif lumaversion == "latest"
+            await self.simple_embed(ctx, f"Latest Luma Version:\nhttps://github.com/AuroraWright/Luma3DS/releases/latest", color=discord.Color.blue())
         else:
             await self.simple_embed(ctx, """
                                     Download links for the most common Luma3DS releases:
