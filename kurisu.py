@@ -14,6 +14,7 @@ from traceback import format_exception, print_exc
 import discord
 from discord.ext import commands
 from datetime import datetime
+from cogs.checks import check_staff_id
 
 # sets working directory to bot's folder
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -198,11 +199,14 @@ class Kurisu(commands.Bot):
             await ctx.send(f'{author.mention} A bad argument was given: `{exc}`\n')
             await ctx.send_help(ctx.command)
         elif isinstance(exc, discord.ext.commands.errors.CommandOnCooldown):
-            try:
-                await ctx.message.delete()
-            except discord.errors.NotFound:
-                pass
-            await ctx.send(f"{ctx.message.author.mention} This command was used {exc.cooldown.per - exc.retry_after:.2f}s ago and is on cooldown. Try again in {exc.retry_after:.2f}s.", delete_after=10)
+            if not await check_staff_id(ctx, 'Helper', author.id):
+                try:
+                    await ctx.message.delete()
+                except discord.errors.NotFound:
+                    pass
+                await ctx.send(f"{ctx.message.author.mention} This command was used {exc.cooldown.per - exc.retry_after:.2f}s ago and is on cooldown. Try again in {exc.retry_after:.2f}s.", delete_after=10)
+            else:
+                await ctx.reinvoke()
         elif isinstance(exc, commands.MissingRequiredArgument):
             await ctx.send(f'{author.mention} You are missing required arguments.\n')
             await ctx.send_help(ctx.command)
