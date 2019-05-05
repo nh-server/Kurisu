@@ -496,7 +496,7 @@ the system can't check for an update.
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def luma(self, ctx, lumaversion=""):
         """Download links for Luma versions"""
-        if lumaversion != "":
+        if len(lumaversion) >= 3 and lumaversion[0].isdigit() and lumaversion[1] == "." and lumaversion[2].isdigit():
             await self.simple_embed(ctx, f"Luma v{lumaversion}\nhttps://github.com/AuroraWright/Luma3DS/releases/tag/v{lumaversion}", color=discord.Color.blue())
         else:
             await self.simple_embed(ctx, """
