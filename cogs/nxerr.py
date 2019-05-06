@@ -770,7 +770,11 @@ class NXErr(commands.Cog):
         else:
             if err.startswith("0x"):
                 err = err[2:]
-            errcode = int(err, 16)
+            try:
+                errcode = int(err, 16)
+            except ValueError:
+                await ctx.send(f"{err} is not a valid switch error code!")
+                return
             module = errcode & 0x1FF
             desc = (errcode >> 9) & 0x3FFF
         str_errcode = f'{module + 2000:04}-{desc:04}'
