@@ -59,7 +59,7 @@ Thanks for stopping by and have a good time!
             embed = discord.Embed(color=discord.Color.dark_red())
             embed.set_author(name=f"Warns for {member}", icon_url=member.avatar_url)
             for idx, warn in enumerate(warns):
-                embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn[0])}", value=f"Issuer: {(self.bot.escape_text(await self.bot.fetch_user(warn[2])).display_name)}\nReason: {warn[3]}")
+                embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn[0]).strftime('%Y-%m-%d %H:%M:%S')}", value=f"Issuer: {self.bot.escape_text((await self.bot.fetch_user(warn[2])).display_name)}\nReason: {warn[3]}")
             await self.bot.channels['server-logs'].send(msg, embed=embed)
         try:
             await member.send(self.welcome_msg.format(member.name, member.guild.name, self.bot.channels['welcome-and-rules'].mention))
