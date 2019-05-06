@@ -10,7 +10,7 @@ from subprocess import check_output, CalledProcessError
 import os
 from cogs.database import ConnectionHolder
 from sys import exit, hexversion
-from traceback import format_exception, print_exc
+from traceback import format_exception, format_exc
 import discord
 from discord.ext import commands
 from datetime import datetime
@@ -182,6 +182,7 @@ class Kurisu(commands.Bot):
     async def on_command_error(self, ctx: commands.Context, exc: commands.CommandInvokeError):
         author: discord.Member = ctx.author
         command: commands.Command = ctx.command or '<unknown cmd>'
+        exc = getattr(exc, 'original', exc)
 
         if isinstance(exc, commands.CommandNotFound):
             return
@@ -198,6 +199,7 @@ class Kurisu(commands.Bot):
         elif isinstance(exc, commands.BadArgument):
             await ctx.send(f'{author.mention} A bad argument was given: `{exc}`\n')
             await ctx.send_help(ctx.command)
+
         elif isinstance(exc, discord.ext.commands.errors.CommandOnCooldown):
             if not await check_staff_id(ctx, 'Helper', author.id):
                 try:
@@ -207,9 +209,14 @@ class Kurisu(commands.Bot):
                 await ctx.send(f"{ctx.message.author.mention} This command was used {exc.cooldown.per - exc.retry_after:.2f}s ago and is on cooldown. Try again in {exc.retry_after:.2f}s.", delete_after=10)
             else:
                 await ctx.reinvoke()
+
         elif isinstance(exc, commands.MissingRequiredArgument):
-            await ctx.send(f'{author.mention} You are missing required arguments.\n')
+            await ctx.send(f'{author.mention} You are missing required argument {exc.param.name}.\n')
             await ctx.send_help(ctx.command)
+
+        elif isinstance(exc, discord.NotFound):
+            await ctx.send(f"ID not found.")
+
         elif isinstance(exc, commands.CommandInvokeError):
             await ctx.send(f'{author.mention} `{command}` raised an exception during usage')
             msg = "".join(format_exception(type(exc), exc, exc.__traceback__))
@@ -224,8 +231,10 @@ class Kurisu(commands.Bot):
                 await self.channels['bot-err'].send(f'```\n{chunk}\n```')
 
     async def on_error(self, event_method, *args, **kwargs):
-        print(f'Exception occurred in {event_method}')
-        print_exc()
+        await self.channels['bot-err'].send(f'Error in {event_method}:')
+        msg = format_exc()
+        for chunk in [msg[i:i + 1800] for i in range(0, len(msg), 1800)]:
+            await self.channels['bot-err'].send(f'```\n{chunk}\n```')
 
     def add_cog(self, cog):
         super().add_cog(cog)
