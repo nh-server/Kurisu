@@ -191,7 +191,10 @@ class KickBan(DatabaseCog):
         if not await self.add_softban(member.id, ctx.author.id, reason):
             await ctx.send('User is already softbanned!')
         msg = f"This account is no longer permitted to participate in {ctx.guild.name}. The reason is: {reason}"
-        await member.send(msg)
+        try:
+            await member.send(msg)
+        except discord.errors.Forbidden:
+            pass
         try:
             await member.kick(reason=reason)
         except discord.errors.Forbidden:

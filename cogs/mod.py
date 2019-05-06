@@ -307,7 +307,10 @@ class Mod(DatabaseCog):
         if reason != "":
             msg_user += " The given reason is: " + reason
         msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
-        await member.send(msg_user)
+        try:
+            await member.send(msg_user)
+        except discord.errors.Forbidden:
+            pass
         await ctx.send(f"{member.mention} can no longer access the help channels.")
         msg = f"🚫 **Help access removed**: {ctx.author.mention} removed access to help channels from {member.mention} | {member}"
         if reason != "":
