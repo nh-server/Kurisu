@@ -161,7 +161,6 @@ class DatabaseCog(commands.Cog):
             timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         async with self.bot.holder as cur:
             await cur.execute('INSERT INTO softbans VALUES(?, ? , ?, ?)', (user_id, issuer_id, reason, timestamp))
-            return True
 
     async def remove_softban(self, user_id):
         async with self.bot.holder as cur:

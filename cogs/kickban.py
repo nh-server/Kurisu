@@ -213,9 +213,11 @@ class KickBan(DatabaseCog):
             await ctx.send("You can't softban another staffer with this command!")
             return
         user = await self.bot.fetch_user(user_id)
-        if not await self.add_softban(user_id, ctx.author.id, reason):
+        softban = await self.get_softbans(user_id)
+        if softban:
             await ctx.send('User is already softbanned!')
             return
+        await self.add_softban(user_id, ctx.author.id, reason)
         await ctx.send(f"ID {user_id} is now b&. 👍")
         msg = f"⛔ **Soft-ban**: {ctx.author.mention} soft-banned ID {user}\n✏️ __Reason__: {reason}"
         await self.bot.channels['mod-logs'].send(msg)
