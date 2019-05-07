@@ -174,8 +174,9 @@ class ModWarn(DatabaseCog):
             await ctx.send("Warn index is below 1!")
             return
         warn = warns[idx-1]
-        embed = discord.Embed(color=discord.Color.dark_red(), title=f"Warn {idx} on {warn[3]}",
-                              description=f"Issuer: {warn[1]}\nReason: {warn[2]}")
+        issuer = await self.bot.fetch_user(warn[2])
+        embed = discord.Embed(color=discord.Color.dark_red(), title=f"Warn {idx} on {discord.utils.snowflake_time(warn[0]).strftime('%Y-%m-%d %H:%M:%S')}",
+                              description=f"Issuer: {issuer}\nReason: {warn[3]}")
         await self.remove_warn_id(member.id, idx)
         await ctx.send(f"{member.mention} has a warning removed!")
         msg = f"🗑 **Deleted warn**: {ctx.author.mention} removed warn {idx} from {member.mention} | {member}"
@@ -197,10 +198,9 @@ class ModWarn(DatabaseCog):
             await ctx.send("Warn index is below 1!")
             return
         warn = warns[idx-1]
-        wuser = await self.bot.fetch_user(user_id)
         issuer = await self.bot.fetch_user(warn[2])
-
-        embed = discord.Embed(color=discord.Color.dark_red(), title=f"Warn {idx} on {wuser}",
+        wuser = await self.bot.fetch_user(user_id)
+        embed = discord.Embed(color=discord.Color.dark_red(), title=f"Warn {idx} on {discord.utils.snowflake_time(warn[0]).strftime('%Y-%m-%d %H:%M:%S')}",
                               description=f"Issuer: {issuer}\nReason: {warn[3]}")
         await self.remove_warn_id(user_id, idx)
         await ctx.send(f"{wuser.name} has a warning removed!")
