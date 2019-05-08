@@ -188,8 +188,6 @@ class KickBan(DatabaseCog):
         if await check_staff_id(ctx, 'Helper', member.id):
             await self.meme(ctx.author, member, "softban", ctx.channel, reason)
             return
-        if not await self.add_softban(member.id, ctx.author.id, reason):
-            await ctx.send('User is already softbanned!')
         msg = f"This account is no longer permitted to participate in {ctx.guild.name}. The reason is: {reason}"
         try:
             await member.send(msg)
