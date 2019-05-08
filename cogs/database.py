@@ -166,10 +166,10 @@ class DatabaseCog(commands.Cog):
         async with self.bot.holder as cur:
             await cur.execute('DELETE FROM softbans WHERE user_id = ?', (user_id,))
 
-    async def get_softbans(self, user_id):
+    async def get_softban(self, user_id):
         async with self.bot.holder as cur:
             await cur.execute('SELECT * FROM softbans WHERE user_id=?', (user_id,))
-            return await cur.fetchall()
+            return await cur.fetchone()
 
     async def add_watch(self, user_id):
         async with self.bot.holder as cur:

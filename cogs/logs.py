@@ -28,21 +28,21 @@ Thanks for stopping by and have a good time!
     async def on_member_join(self, member):
         await self.bot.wait_until_all_ready()
         msg = f"✅ **Join**: {member.mention} | {member}\n🗓 __Creation__: {member.created_at}\n🏷 __User ID__: {member.id}"
-        softban = await self.get_softbans(member.id)
+        softban = await self.get_softban(member.id)
         if softban:
             message_sent = False
             try:
-                await member.send(f"This account has not been permitted to participate in {self.bot.guild.name}. The reason is: {softban[3]}")
+                await member.send(f"This account has not been permitted to participate in {self.bot.guild.name}. The reason is: {softban[2]}")
                 message_sent = True
             except discord.errors.Forbidden:
                 pass
             self.bot.actions.append("sbk:"+str(member.id))
             await member.kick()
-            msg = f"🚨 **Attempted join**: {member.mention} is soft-banned by <@{softban[2]}> | {member}"
+            msg = f"🚨 **Attempted join**: {member.mention} is soft-banned by <@{softban[1]}> | {member}"
             if not message_sent:
                 msg += "\nThis message did not send to the user."
             embed = discord.Embed(color=discord.Color.red())
-            embed.description = softban[3]
+            embed.description = softban[2]
             await self.bot.channels['server-logs'].send(msg, embed=embed)
             return
         rst = await self.get_restrictions_roles_id(member.id)
@@ -107,7 +107,7 @@ Thanks for stopping by and have a good time!
             self.bot.actions.remove("tbr:"+str(user.id))
             return
         msg = f"⚠️ **Unban**: {user.mention} | {user}"
-        if await self.get_softbans(user.id):
+        if await self.get_softban(user.id):
             msg += "\nTimeban removed."
             await self.remove_timed_restriction(user.id, 'timeban')
         await self.bot.channels['mod-logs'].send(msg)

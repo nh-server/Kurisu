@@ -211,7 +211,7 @@ class KickBan(DatabaseCog):
             await ctx.send("You can't softban another staffer with this command!")
             return
         user = await self.bot.fetch_user(user_id)
-        softban = await self.get_softbans(user_id)
+        softban = await self.get_softban(user_id)
         if softban:
             await ctx.send('User is already softbanned!')
             return
