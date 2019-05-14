@@ -50,7 +50,7 @@ class ModWarn(DatabaseCog):
         if warn_count >= 5:  # just in case
             self.bot.actions.append("wb:"+str(member.id))
             try:
-                await member.ban(reason="5 warns.")
+                await member.ban(reason="5 warns.", delete_message_days=0)
             except discord.Forbidden:
                 await ctx.send("I can't ban this user!")
         await ctx.send(f"{member.mention} warned. User has {warn_count} warning(s)")
