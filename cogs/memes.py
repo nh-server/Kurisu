@@ -1,3 +1,5 @@
+import random
+import math
 import discord
 from discord.ext import commands
 
@@ -290,7 +292,28 @@ class Memes(commands.Cog):
     async def pbanj(self, ctx):
         """he has the power"""
         await self._meme(ctx, "https://i.imgur.com/EQy9pl3.png")
-    
+
+    #Begin code from https://github.com/reswitched/robocop-ng
+    def c_to_f(self, c):
+        """this is where we take memes too far"""
+        return math.floor(9.0 / 5.0 * c + 32)
+
+    def c_to_k(self, c):
+        """this is where we take memes REALLY far"""
+        return math.floor(c + 273.15)
+
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def warm(self, ctx, u: discord.Member):
+        """Warms a user :3"""
+        celsius = random.randint(38, 100)
+        fahrenheit = self.c_to_f(celsius)
+        kelvin = self.c_to_k(celsius)
+        await ctx.send(f"{u.mention} warmed."
+                       f" User is now {celsius}°C "
+                       f"({fahrenheit}°F, {kelvin}K).")
+    #End code from https://github.com/reswitched/robocop-ng
+
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def nogas(self, ctx):
