@@ -292,7 +292,7 @@ class Memes(commands.Cog):
     async def pbanj(self, ctx):
         """he has the power"""
         await self._meme(ctx, "https://i.imgur.com/EQy9pl3.png")
-    
+
     def c_to_f(self, c):
         """this is where we take memes too far"""
         return math.floor(9.0 / 5.0 * c + 32)
@@ -308,7 +308,7 @@ class Memes(commands.Cog):
         celsius = random.randint(15, 100)
         fahrenheit = self.c_to_f(celsius)
         kelvin = self.c_to_k(celsius)
-        await ctx.send(f"{user.mention} warmed."
+        await ctx.send(f"{u.mention} warmed."
                        f" User is now {celsius}°C "
                        f"({fahrenheit}°F, {kelvin}K).")
 
