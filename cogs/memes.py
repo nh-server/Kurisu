@@ -303,6 +303,11 @@ class Memes(commands.Cog):
         """menuhax 11.4 wen"""
         await self._meme(ctx, "https://i.imgur.com/fUiZ2c3.png")
 
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def magic(self, ctx):
+        """shrug.avi"""
+        await self._meme(ctx, "https://i.imgur.com/k9111dq.jpg")
 
 def setup(bot):
     bot.add_cog(Memes(bot))
