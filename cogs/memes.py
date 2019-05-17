@@ -305,7 +305,7 @@ class Memes(commands.Cog):
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def warm(self, ctx, u: discord.Member):
         """Warms a user :3"""
-        celsius = random.randint(15, 100)
+        celsius = random.randint(38, 100)
         fahrenheit = self.c_to_f(celsius)
         kelvin = self.c_to_k(celsius)
         await ctx.send(f"{u.mention} warmed."
