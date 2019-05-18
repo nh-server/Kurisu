@@ -278,7 +278,7 @@ def main():
         branch = "<unknown>"
 
     bot = Kurisu(('.', '!'), description="Kurisu, the bot for Nintendo Homebrew!")
-    bot.help_command.dm_help = None
+    bot.help_command.dm_help = True
     print(f'Starting Kurisu on commit {commit} on branch {branch}', commit, branch)
     bot.load_cogs()
     bot.run(config['Main']['token'])
