@@ -30,6 +30,7 @@ class Extras(commands.Cog):
         embed.description = "Kurisu, the Nintendo Homebrew Discord bot!"
         await ctx.send(embed=embed)
 
+    @commands.guild_only()
     @commands.command()
     async def membercount(self, ctx):
         """Prints the member count of the server."""
@@ -231,7 +232,7 @@ class Extras(commands.Cog):
                 except discord.errors.Forbidden:
                     await ctx.send("💢  I can't change your nickname!")
                     return
-                await ctx.send(f"Your nickname is now `{self.bot.help_command.remove_mentions(member.display_name)}`!")
+                await ctx.send(f"Your nickname is now `{member.display_name}`!")
         else:
             await ctx.send("This month is not colorful enough!")
 

@@ -697,7 +697,7 @@ class NXErr(commands.Cog):
     # Attention: These need to be formatted -> <errcode>: "<game>: <description>" - Also Nintendo support codes
     nin_err = {
         # Splatoon 2
-        "2-AAB6A-3400": "Splatoon 2: A kick from online due to exefs edits.",
+        "2-AAB6A-3400": "Splatoon 2: A kick from online due to exefs/romfs edits.",
 
         # Youtube
         "2-ARVHA-0000": "Youtube: Unknown Error",
@@ -770,7 +770,11 @@ class NXErr(commands.Cog):
         else:
             if err.startswith("0x"):
                 err = err[2:]
-            errcode = int(err, 16)
+            try:
+                errcode = int(err, 16)
+            except ValueError:
+                await ctx.send(f"{err} is not a valid switch error code!")
+                return
             module = errcode & 0x1FF
             desc = (errcode >> 9) & 0x3FFF
         str_errcode = f'{module + 2000:04}-{desc:04}'

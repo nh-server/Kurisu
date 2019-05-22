@@ -28,21 +28,21 @@ Thanks for stopping by and have a good time!
     async def on_member_join(self, member):
         await self.bot.wait_until_all_ready()
         msg = f"✅ **Join**: {member.mention} | {member}\n🗓 __Creation__: {member.created_at}\n🏷 __User ID__: {member.id}"
-        softban = await self.get_softbans(member.id)
+        softban = await self.get_softban(member.id)
         if softban:
             message_sent = False
             try:
-                await member.send(f"This account has not been permitted to participate in {self.bot.guild.name}. The reason is: {softban[3]}")
+                await member.send(f"This account has not been permitted to participate in {self.bot.guild.name}. The reason is: {softban[2]}")
                 message_sent = True
             except discord.errors.Forbidden:
                 pass
             self.bot.actions.append("sbk:"+str(member.id))
             await member.kick()
-            msg = f"🚨 **Attempted join**: {member.mention} is soft-banned by <@{softban[2]}> | {member}"
+            msg = f"🚨 **Attempted join**: {member.mention} is soft-banned by <@{softban[1]}> | {member}"
             if not message_sent:
                 msg += "\nThis message did not send to the user."
             embed = discord.Embed(color=discord.Color.red())
-            embed.description = softban[3]
+            embed.description = softban[2]
             await self.bot.channels['server-logs'].send(msg, embed=embed)
             return
         rst = await self.get_restrictions_roles_id(member.id)
@@ -59,10 +59,10 @@ Thanks for stopping by and have a good time!
             embed = discord.Embed(color=discord.Color.dark_red())
             embed.set_author(name=f"Warns for {member}", icon_url=member.avatar_url)
             for idx, warn in enumerate(warns):
-                embed.add_field(name=f"{idx + 1}: {warn[3]}", value=f"Issuer: {(await self.bot.fetch_user(warn[1])).display_name}\nReason: {warn[2]}")
+                embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn[0]).strftime('%Y-%m-%d %H:%M:%S')}", value=f"Issuer: {self.bot.escape_text((await self.bot.fetch_user(warn[2])).display_name)}\nReason: {warn[3]}")
             await self.bot.channels['server-logs'].send(msg, embed=embed)
         try:
-            await member.send(self.welcome_msg.format(self.bot.help_command.remove_mentions(member.name), member.guild.name, self.bot.channels['welcome-and-rules'].mention))
+            await member.send(self.welcome_msg.format(member.name, member.guild.name, self.bot.channels['welcome-and-rules'].mention))
         except discord.errors.Forbidden:
             pass
 
@@ -107,7 +107,7 @@ Thanks for stopping by and have a good time!
             self.bot.actions.remove("tbr:"+str(user.id))
             return
         msg = f"⚠️ **Unban**: {user.mention} | {user}"
-        if await self.get_softbans(user.id):
+        if await self.get_softban(user.id):
             msg += "\nTimeban removed."
             await self.remove_timed_restriction(user.id, 'timeban')
         await self.bot.channels['mod-logs'].send(msg)
@@ -146,10 +146,10 @@ Thanks for stopping by and have a good time!
                     else:
                         roles.append(role.name)
                 msg += ', '.join(roles)
-        if self.bot.help_command.remove_mentions(member_before.name) != self.bot.help_command.remove_mentions(member_after.name):
+        if member_before.name != member_after.name:
             do_log = True
             dest = self.bot.channels['server-logs']
-            msg = f"\n📝 __Username change__: {self.bot.help_command.remove_mentions(member_before.name)} → {self.bot.help_command.remove_mentions(member_after.name)}"
+            msg = f"\n📝 __Username change__: {member_before.name} → {member_after.name}"
         if member_before.nick != member_after.nick:
             do_log = True
             if member_before.nick is None:
@@ -158,7 +158,7 @@ Thanks for stopping by and have a good time!
                 msg = "\n🏷 __Nickname removal__"
             else:
                 msg = "\n🏷 __Nickname change__"
-            msg += f": {self.bot.help_command.remove_mentions(str(member_before.nick))} → {self.bot.help_command.remove_mentions(str(member_after.nick))}"
+            msg += f": {self.bot.escape_text(member_before.nick)} → {self.bot.escape_text(member_after.nick)}"
         if do_log:
             msg = f"ℹ️ **Member update**: {member_after.mention} | {member_after} {msg}"
             await dest.send(msg)

@@ -139,7 +139,7 @@ class DatabaseCog(commands.Cog):
         async with self.bot.holder as cur:
             await cur.execute('SELECT 1 FROM timed_restrictions WHERE user_id=? AND type=?', (user_id, type))
             if await cur.fetchone() is not None:
-                await cur.execute('UPDATE timed_restrictions SET timestamp=?, alert=0 WHERE user_id=? AND type=?', (user_id, type))
+                await cur.execute('UPDATE timed_restrictions SET timestamp=?, alert=0 WHERE user_id=? AND type=?', (end_date, user_id, type))
             else:
                 await cur.execute('INSERT INTO timed_restrictions VALUES(?, ?, ?, ?)', (user_id, end_date, type, 0))
 
@@ -161,16 +161,15 @@ class DatabaseCog(commands.Cog):
             timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         async with self.bot.holder as cur:
             await cur.execute('INSERT INTO softbans VALUES(?, ? , ?, ?)', (user_id, issuer_id, reason, timestamp))
-            return True
 
     async def remove_softban(self, user_id):
         async with self.bot.holder as cur:
             await cur.execute('DELETE FROM softbans WHERE user_id = ?', (user_id,))
 
-    async def get_softbans(self, user_id):
+    async def get_softban(self, user_id):
         async with self.bot.holder as cur:
             await cur.execute('SELECT * FROM softbans WHERE user_id=?', (user_id,))
-            return await cur.fetchall()
+            return await cur.fetchone()
 
     async def add_watch(self, user_id):
         async with self.bot.holder as cur:

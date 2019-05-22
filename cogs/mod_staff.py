@@ -19,7 +19,7 @@ class ModStaff(DatabaseCog):
     async def addstaff(self, ctx, member: converters.SafeMember, position):
         """Add user as staff. Owners only."""
         if position not in self.bot.staff_roles:
-            await ctx.send(f"💢 That's not a valid position. You can use __{'__, __'.join(self.bot.staff_ranks.keys())}__")
+            await ctx.send(f"💢 That's not a valid position. You can use __{'__, __'.join(self.bot.staff_roles.keys())}__")
             return
         await self.add_staff(member.id, position)
         # remove leftover staff roles

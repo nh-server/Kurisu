@@ -24,6 +24,7 @@ class HelperList(DatabaseCog):
         await member.add_roles(self.bot.roles['Helpers'])
         await ctx.send(f"{member.mention} is now a helper. Welcome to the party room!")
 
+    @is_staff(role='Owner')                       
     @commands.command()
     async def delhelper(self, ctx, member: SafeMember):
         """Remove user from helpers. Owners only."""

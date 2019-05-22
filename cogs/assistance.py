@@ -33,18 +33,18 @@ class Assistance(commands.Cog):
     async def staffreq(self, ctx, *, msg_request: str = ""):
         """Request staff, with optional additional text. Trusted, Helpers, Staff, Retired Staff, Verified only."""
         author = ctx.author
-        if not await check_staff_id(ctx, 'Helper', ctx.author.id) and (self.bot.verified_role not in author.roles) and (self.bot.trusted_role not in author.roles) and (self.bot.retired_role not in author.roles):
+        if not await check_staff_id(ctx, 'Helper', ctx.author.id) and (self.bot.roles['Verified'] not in author.roles) and (self.bot.roles['Trusted'] not in author.roles) and (self.bot.roles['Retired Staff'] not in author.roles):
             msg = f"{author.mention} You cannot use this command at this time. Please ask individual staff members if you need help."
             await ctx.send(msg)
             return
-        await self.bot.delete_message(ctx.message)
+        await ctx.message.delete()
         # await ctx.send("Request sent.")
         msg = f"❗️ **Assistance requested**: {ctx.channel.mention} by {author.mention} | {ctx.author} @here"
         if msg_request != "":
             # msg += "\n✏️ __Additional text__: " + msg_request
             embed = discord.Embed(color=discord.Color.gold())
             embed.description = msg_request
-        await ctx.send(self.bot.channels['mods'], msg, embed=(embed if msg_request != "" else None))
+        await self.bot.channels['mods'].send(msg, embed=(embed if msg_request != "" else None))
         try:
             await author.send(f"✅ Online staff have been notified of your request in {ctx.channel.mention}.", embed=(embed if msg_request != "" else None))
         except discord.errors.Forbidden:
@@ -327,13 +327,13 @@ custom firmware on this version in the very far future.
                 await ctx.send(embed=embed)
 
 
-    @commands.command(aliases=["fuse-3ds", "fuse"])
+    @commands.command(aliases=["fuse-3ds", "fuse", "fuse3ds"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def fuse3ds(self, ctx):
-        """Link to fuse-3ds tutorial."""
-        embed = discord.Embed(title="Extract/Decrypt games, NAND backups, and SD contents with fuse-3ds", color=discord.Color(0xCE181E))
+    async def ninfs(self, ctx):
+        """Link to ninfs tutorial."""
+        embed = discord.Embed(title="Extract and Decrypt games, NAND backups, and SD contents with ninfs", color=discord.Color(0xCE181E))
         embed.description = cleandoc("""
-                            This is a tutorial that shows you how to use fuse-3ds to extract the contents of games, \
+                            This is a tutorial that shows you how to use ninfs to extract the contents of games, \
 NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
                             """)
         embed.url = "https://gbatemp.net/threads/499994/"
@@ -371,7 +371,7 @@ re-read the guide steps 2 or 3 times before coming here.
                                 * When Nintendo updates the firmware, they take a very long time to catch up
                                 * Most of the features they claim to offer can be enabled in Atmosphere with some \
 additional configuration
-                                * The current "emuNAND" is not a real emuNAND, and Atmosphere's version will be significantly better
+                                * Atmosphere's emuNAND implementation will be completely free and open source
                                 """, title="Why Atmosphere?")
 
     @commands.command()
@@ -433,11 +433,24 @@ just missing a file called boot.firm in the root of your SD card.
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def troubleshoot(self, ctx, *, console=""):
         """Troubleshooting guides for common issues"""
-        if self.check_console(console, ctx.channel.name, '3ds'):
-            embed = discord.Embed(title="Troubleshooting guide for *miner methods", color=discord.Color(0xA2BAE0))
-            embed.url = "https://3ds.eiphax.tech/issues.html"
-            embed.description = "A simple troubleshooting guide for common CFW and homebrew installation issues \n when using seedminer-based methods."
-            await ctx.send(embed=embed)
+        embed = discord.Embed(title="Troubleshooting guide for *miner methods", color=discord.Color(0xA2BAE0))
+        embed.url = "https://3ds.eiphax.tech/issues.html"
+        embed.description = "A simple troubleshooting guide for common CFW and homebrew installation issues \n when using seedminer-based methods."
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def bfm4(self, ctx):
+        """Information about BruteforceMovable and how the friend code may not always be needed"""
+        await self.simple_embed(ctx, """
+                                If BruteforceMovable is now at step 4, download your `movable.sed` and continue. \
+You do not need to do anything more related to `movable_part1.sed`, Python, or the \
+command line. The `movable.sed` is the final product and requires no further processing.
+                                **You do not need to go back and get the friend code, or do anything more 
+                                with the friend code.
+                                It does not matter if the friend does not add you back.
+                                The bot already has your information and has removed you as a friend.**
+                                """, title="BruteforceMovable Advice")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -483,8 +496,10 @@ the system can't check for an update.
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def luma(self, ctx, lumaversion=""):
         """Download links for Luma versions"""
-        if lumaversion != "":
+        if len(lumaversion) >= 3 and lumaversion[0].isdigit() and lumaversion[1] == "." and lumaversion[2].isdigit():
             await self.simple_embed(ctx, f"Luma v{lumaversion}\nhttps://github.com/AuroraWright/Luma3DS/releases/tag/v{lumaversion}", color=discord.Color.blue())
+        elif lumaversion == "latest":
+            await self.simple_embed(ctx, "Latest Luma Version:\nhttps://github.com/AuroraWright/Luma3DS/releases/latest", color=discord.Color.blue())
         else:
             await self.simple_embed(ctx, """
                                     Download links for the most common Luma3DS releases:
@@ -494,22 +509,28 @@ the system can't check for an update.
                                     """, color=discord.Color.blue())
 
     # Embed to broken TWL Troubleshooting
-    @commands.command()
+    @commands.command(aliases=["twlfix"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def twl(self, ctx):
         """Information on how to fix a broken TWL Partition"""
-        embed = discord.Embed(title="Fix broken TWL", color=discord.Color(0xA2BAE0))
-        embed.set_author(name="Plailect", url="https://3ds.hacks.guide/troubleshooting#dsi--ds-functionality-is-broken-after-completing-the-guide")
-        embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
-        embed.url = "https://3ds.hacks.guide/troubleshooting#dsi--ds-functionality-is-broken-after-completing-the-guide"
-        embed.description = "Instructions on how to fix a broken TWL after doing the guide"
-        await ctx.send(embed=embed)
+        await self.simple_embed(ctx, """
+                                If you already have CFW, use [TWLFix-CFW](https://github.com/MechanicalDragon0687/TWLFix-CFW/releases/)
+                                If you already have homebrew but not CFW, use [TWLFix-3DS](https://github.com/MechanicalDragon0687/TWLFix-3DS/releases/)
+                                If you have neither CFW nor homebrew, it is easier to get homebrew and use the previous option. You could also get a DSiWare app and follow: [TWLFix Stock](https://github.com/MechanicalDragon0687/TWLFix/wiki/Instructions/)
+                                Each of these instructions require that you perform a system update after running the apps or restoring the DSiWare
+                                """, "Fix broken TWL", color=discord.Color(0xA2BAE0))
 
     @commands.command(aliases=["redscr"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def boot3dsx(self, ctx):
         """Download link for 3DS Homebrew Launcher, boot.3dsx"""
         await self.simple_embed(ctx, "The 3DS Homebrew Launcher, [boot.3dsx](https://github.com/fincs/new-hbmenu/releases/download/v2.0.0/boot.3dsx)")
+
+    @commands.command(aliases=["greenscr"])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def b9stool(self, ctx):
+        """Download link for B9STool, boot.nds"""
+        await self.simple_embed(ctx, "The B9S installation tool for DSiWare exploits.\nB9STool, [boot.nds](https://github.com/zoogie/b9sTool/releases)")
 
     # Intructions for deleting home menu Extdata
     @commands.command()
@@ -572,6 +593,7 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    @commands.guild_only()
     async def vc(self, ctx, *, consoles=""):
         """Link to Virtual Console Injects for 3DS/Wiiu."""
         injects = ("3ds", "wiiu", "wii u")
@@ -658,11 +680,11 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def flashdrives(self, ctx):
-        """Message on flash drives on the Wii U"""
+    async def wiiuhdd(self, ctx):
+        """Message on HDDs on the Wii U"""
         await self.simple_embed(ctx, """
-                                Some flash drives work with the Wii U, some don't. If you have read or write errors, \
-or games crash often, you might want to try a different flash drive or hard drive
+                                If you're having trouble getting your HDD to work with your WiiU, it might be due to the HDD not getting enough power. \
+One way to fix this is by using an y-cable to connect the HDD to two USB ports.
                                 """)
 
     # Information about pending Switch updates

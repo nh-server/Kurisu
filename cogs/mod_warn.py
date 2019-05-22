@@ -50,7 +50,7 @@ class ModWarn(DatabaseCog):
         if warn_count >= 5:  # just in case
             self.bot.actions.append("wb:"+str(member.id))
             try:
-                await member.ban(reason="5 warns.")
+                await member.ban(reason="5 warns.", delete_message_days=0)
             except discord.Forbidden:
                 await ctx.send("I can't ban this user!")
         await ctx.send(f"{member.mention} warned. User has {warn_count} warning(s)")
@@ -110,7 +110,7 @@ class ModWarn(DatabaseCog):
             for idx, warn in enumerate(warns):
                 issuer = await self.bot.fetch_user(warn[2])
                 value = ""
-                if ctx.channel == self.bot.channels['helpers'] or ctx.channel == self.bot.channels['mods']:
+                if ctx.channel == self.bot.channels['helpers'] or ctx.channel == self.bot.channels['mods'] or ctx.channel == self.bot.channels['mod-logs']:
                     value += f"Issuer: {issuer.name}\n"
                 value += f"Reason: {warn[3]} "
                 embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn[0])}", value=value)
@@ -132,7 +132,7 @@ class ModWarn(DatabaseCog):
             for idx, warn in enumerate(warns):
                 issuer = await self.bot.fetch_user(warn[2])
                 value = ""
-                if ctx.channel == self.bot.channels['helpers'] or ctx.channel == self.bot.channels['mods']:
+                if ctx.channel == self.bot.channels['helpers'] or ctx.channel == self.bot.channels['mods'] or ctx.channel == self.bot.channels['mod-logs']:
                     value += f"Issuer: {issuer.name}\n"
                 value += f"Reason: {warn[3]} "
                 embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn[0])}", value=value)
@@ -174,8 +174,9 @@ class ModWarn(DatabaseCog):
             await ctx.send("Warn index is below 1!")
             return
         warn = warns[idx-1]
-        embed = discord.Embed(color=discord.Color.dark_red(), title=f"Warn {idx} on {warn[3]}",
-                              description=f"Issuer: {warn[1]}\nReason: {warn[2]}")
+        issuer = await self.bot.fetch_user(warn[2])
+        embed = discord.Embed(color=discord.Color.dark_red(), title=f"Warn {idx} on {discord.utils.snowflake_time(warn[0]).strftime('%Y-%m-%d %H:%M:%S')}",
+                              description=f"Issuer: {issuer}\nReason: {warn[3]}")
         await self.remove_warn_id(member.id, idx)
         await ctx.send(f"{member.mention} has a warning removed!")
         msg = f"🗑 **Deleted warn**: {ctx.author.mention} removed warn {idx} from {member.mention} | {member}"
@@ -197,10 +198,9 @@ class ModWarn(DatabaseCog):
             await ctx.send("Warn index is below 1!")
             return
         warn = warns[idx-1]
-        wuser = await self.bot.fetch_user(user_id)
         issuer = await self.bot.fetch_user(warn[2])
-
-        embed = discord.Embed(color=discord.Color.dark_red(), title=f"Warn {idx} on {wuser}",
+        wuser = await self.bot.fetch_user(user_id)
+        embed = discord.Embed(color=discord.Color.dark_red(), title=f"Warn {idx} on {discord.utils.snowflake_time(warn[0]).strftime('%Y-%m-%d %H:%M:%S')}",
                               description=f"Issuer: {issuer}\nReason: {warn[3]}")
         await self.remove_warn_id(user_id, idx)
         await ctx.send(f"{wuser.name} has a warning removed!")

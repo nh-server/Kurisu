@@ -34,9 +34,21 @@ class Mod(DatabaseCog):
     @commands.guild_only()
     @commands.command(hidden=True)
     async def userinfo(self, ctx, u: discord.Member):
-        """Gets user info. Staff and Helpers only."""
+        """Gets member info. Staff and Helpers only."""
         role = u.top_role.name
-        await ctx.send(f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url}\ndefault_avatar = {u.default_avatar}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\ndisplay_name = {u.display_name}\njoined_at = {u.joined_at}\nstatus = {u.status}\nactivity = {u.activity.name if u.activity else None}\ncolour = {u.colour}\ntop_role = {self.bot.help_command.remove_mentions(role)}\n")
+        await ctx.send(f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url}\ndefault_avatar = {u.default_avatar}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\ndisplay_name = {self.bot.escape_text(u.display_name)}\njoined_at = {u.joined_at}\nstatus = {u.status}\nactivity = {u.activity.name if u.activity else None}\ncolour = {u.colour}\ntop_role = {self.bot.escape_text(role)}\n")
+
+    @is_staff("Helper")
+    @commands.guild_only()
+    @commands.command(hidden=True)
+    async def userinfoid(self, ctx, id):
+        """Gets a user id info. Staff and Helpers only."""
+        try:
+            u = await self.bot.fetch_user(id)
+        except discord.NotFound:
+            await ctx.send(f"No user matching id `{id}`.")
+            return
+        await ctx.send(f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\ncolour = {u.colour}\n")
 
     @is_staff("HalfOP")
     @commands.guild_only()
@@ -92,7 +104,7 @@ class Mod(DatabaseCog):
     @commands.command(aliases=["clear"])
     async def purge(self, ctx, limit: int):
         """Clears a given number of messages. Staff only."""
-        await ctx.channel.purge(limit=limit)
+        await ctx.channel.purge(limit=limit+1)
         msg = f"🗑 **Cleared**: {ctx.author.mention} cleared {limit} messages in {ctx.channel.mention}"
         await self.bot.channels['mod-logs'].send(msg)
 
@@ -191,7 +203,7 @@ class Mod(DatabaseCog):
         except discord.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
         await ctx.send(f"{member.mention} can access art-discussion again.")
-        msg = f"⭕️ **Restored art**: {ctx.message.author.mention} restored art access to {member.mention} | {self.bot.help_command.remove_mentions(str(member))}"
+        msg = f"⭕️ **Restored art**: {ctx.message.author.mention} restored art access to {member.mention} | {member}"
         await self.bot.channels['mod-logs'].send(msg)
 
     @is_staff("HalfOP")
@@ -204,7 +216,7 @@ class Mod(DatabaseCog):
         except discord.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
         await ctx.send(f"{member.mention} can no longer access art-discussion.")
-        msg = f"🚫 **Removed art**: {ctx.message.author.mention} removed art access from {member.mention} | {self.bot.help_command.remove_mentions(str(member))}"
+        msg = f"🚫 **Removed art**: {ctx.message.author.mention} removed art access from {member.mention} | {member}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         else:
@@ -232,8 +244,8 @@ class Mod(DatabaseCog):
         """Removes elsewhere access from a user. Staff only."""
         try:
             await self.add_restriction(member.id, self.bot.roles['no-elsewhere'])
-            member.add_roles(self.bot.roles['no-elsewhere'])
-            member.remove_roles(self.bot.roles['#elsewhere'])
+            await member.add_roles(self.bot.roles['no-elsewhere'])
+            await member.remove_roles(self.bot.roles['#elsewhere'])
             await ctx.send(f"{member.mention} can no longer access elsewhere.")
             msg = f"🚫 **Removed elsewhere**: {ctx.author.mention} removed elsewhere access from {member.mention} | {member}"
             if reason != "":
@@ -295,7 +307,10 @@ class Mod(DatabaseCog):
         if reason != "":
             msg_user += " The given reason is: " + reason
         msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
-        await member.send(msg_user)
+        try:
+            await member.send(msg_user)
+        except discord.errors.Forbidden:
+            pass
         await ctx.send(f"{member.mention} can no longer access the help channels.")
         msg = f"🚫 **Help access removed**: {ctx.author.mention} removed access to help channels from {member.mention} | {member}"
         if reason != "":
@@ -372,6 +387,9 @@ class Mod(DatabaseCog):
     @commands.command()
     async def takesmallhelp(self, ctx, members: commands.Greedy[SafeMember]):
         """Remove access to small help channel. Staff and Helpers only."""
+        if len(members) < 1:
+            await ctx.send("Mention at least one user")
+            return
         for member in members:
             await member.remove_roles(self.bot.roles['Small Help'])
         await ctx.send(f"{', '.join([x.mention for x in members])} can no longer access the small help channel.")
@@ -384,6 +402,9 @@ class Mod(DatabaseCog):
     @commands.command()
     async def givesmallhelp(self, ctx, members: commands.Greedy[SafeMember]):
         """Provide access to small help channel for 1-on-1 help. Staff and Helpers only."""
+        if len(members) < 1:
+            await ctx.send("Mention at least one user")
+            return
         for member in members:
             await member.add_roles(self.bot.roles['Small Help'])
         await ctx.send(f"{', '.join([x.mention for x in members])} can access the small help channel.")

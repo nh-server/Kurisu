@@ -123,7 +123,7 @@ class Events(DatabaseCog):
         'stargate',
         'freestore',
         'sxinstaller',
-        'sxos',
+        #'sxos',
     )
 
     # use the full ID, including capitalization and dashes
@@ -138,6 +138,7 @@ class Events(DatabaseCog):
         'notabug',
         #'sx',
         #'tx',
+        'sxos',
     )
 
     drama_alert = ()
@@ -180,6 +181,7 @@ class Events(DatabaseCog):
         'romulation',
         'emulator.games',
         '3dscia',
+        'darksoftware',
     )
 
     # I hate naming variables sometimes
@@ -234,10 +236,10 @@ class Events(DatabaseCog):
 
         for f in message.attachments:
             if not f.filename.lower().endswith(self.ignored_file_extensions):
-                embed2 = discord.Embed(description=f"Size: {f.size}\nMessage: [{message.channel.name}]({message.jump_url})\nDownload: [{self.bot.help_command.remove_mentions(f.filename)}]({f.url})")
+                embed2 = discord.Embed(description=f"Size: {f.size}\nMessage: [{message.channel.name}]({message.jump_url})\nDownload: [{f.filename}]({f.url})")
                 await self.bot.channels['upload-logs'].send(f"📎 **Attachment**: {message.author.mention} uploaded to {message.channel.mention}", embed=embed2)
         if contains_invite_link:
-            await self.bot.channels['message-logs'].send(f"✉️ **Invite posted**: {message.author.mention} posted an invite link in {message.channel.mention}\n------------------\n{self.bot.help_command.remove_mentions(message.content)}")
+            await self.bot.channels['message-logs'].send(f"✉️ **Invite posted**: {message.author.mention} posted an invite link in {message.channel.mention}\n------------------\n{self.bot.escape_text(message.content)}")
         if contains_misinformation_url_mention:
             try:
                 await message.delete()
@@ -346,7 +348,7 @@ class Events(DatabaseCog):
                 await message.author.send(f"You were automatically placed under probation in {self.bot.guild.name} for mass user mentions.")
             except discord.errors.Forbidden:
                 pass
-            await self.add_restriction(message.author, self.bot.roles['Probation'])
+            await self.add_restriction(message.author.id, self.bot.roles['Probation'])
             await message.author.add_roles(self.bot.roles['Probation'])
 
     async def user_spam_check(self, message):
@@ -370,7 +372,7 @@ class Events(DatabaseCog):
             await self.bot.channels['mods'].send(log_msg + f"\nSee {self.bot.channels['mod-logs'].mention} for a list of deleted messages.")
             for msg in msgs_to_delete:
                 try:
-                    await self.bot.delete_message(msg)
+                    await msg.delete()
                 except discord.errors.NotFound:
                     pass  # don't fail if the message doesn't exist
         await asyncio.sleep(3)
@@ -453,6 +455,7 @@ class Events(DatabaseCog):
             if message.embeds[0].title.startswith('[Kurisu:port]'):
                 await self.bot.channels['helpers'].send("Automatically pulling changes!")
                 call(['git', 'pull'])
+                await self.bot.channels['helpers'].send("Restarting bot...")
                 await self.bot.close()
             return
         if message.author == message.guild.me or await check_staff_id(self, 'Helper', message.author.id) or await self.check_nofilter(message.channel):  # don't process messages by the bot or staff or in the helpers channel
