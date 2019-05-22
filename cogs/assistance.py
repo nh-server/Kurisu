@@ -124,7 +124,7 @@ class Assistance(commands.Cog):
         await ctx.send(embed=embed)
 
     # dsp dumper command
-    @commands.command()
+    @commands.command(aliases=["dsp1"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def dsp(self, ctx):
         """Links to Dsp1."""
@@ -135,7 +135,7 @@ class Assistance(commands.Cog):
         embed.url = "https://github.com/zoogie/DSP1/releases"
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(aliases=["snickerstream"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def ntrstream(self, ctx):
         """Links to ntr streaming guide"""
@@ -403,7 +403,7 @@ additional configuration
 (Always choose "MS-DOS (FAT)" regardless of size, not ExFAT.)
                                 """, title="Big SD cards")
 
-    @commands.command()
+    @commands.command(aliases=["h2test"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def sderrors(self, ctx):
         """SD Error Guide"""
