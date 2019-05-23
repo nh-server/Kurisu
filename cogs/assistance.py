@@ -103,7 +103,7 @@ class Assistance(commands.Cog):
                 embed.description = "A complete Nintendo DSi homebrew guide, from stock to HiyaCFW"
                 await ctx.send(embed=embed)	
 
-    @commands.command()
+    @commands.command(aliases=['finalizing'])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def finalize(self, ctx):
         """Finalizing Setup"""
@@ -376,11 +376,25 @@ additional configuration
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def formatsd(self, ctx):
+        """Programs for formatting an SD card"""
+        await self.simple_embed(ctx, """
+                                Listed below are some utilities to format your SD card.
+                                • Windows: [guiformat](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm)
+                                • Linux: [gparted](http://gparted.org/download.php)
+                                • Mac: [Disk Utility](https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010) \
+(Always choose "MS-DOS (FAT)" regardless of size, not ExFAT.)
+                                """, title="Formatting your SD card")
+
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def bigsd(self, ctx):
         """SD bigger than 32GB"""
         await self.simple_embed(ctx, """
-                                If you want to change your SD card to one bigger than 32GB then you'll have to \
-format it to FAT32.
+                                If you want to change your SD card to one bigger than 32GB then you'll have to format it to FAT32.
+				Warning: Do not put the new SD card in the console BEFORE you copy and paste everything to it. 
+				This will cause all of your current data to “disappear” when you try to use it on the console. 
+				If you accidentally do this, ask us for help.
                                 You can do this with the tool of your preference.
                                 Formatter examples:
                                 • Windows: [guiformat](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm)
