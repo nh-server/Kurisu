@@ -391,10 +391,12 @@ additional configuration
     async def bigsd(self, ctx):
         """SD bigger than 32GB"""
         await self.simple_embed(ctx, """
-                                If you want to change your SD card to one bigger than 32GB then you'll have to format it to FAT32.
-				Warning: Do not put the new SD card in the console BEFORE you copy and paste everything to it. 
-				This will cause all of your current data to “disappear” when you try to use it on the console. 
-				If you accidentally do this, ask us for help.
+                                If you want to change your SD card to one bigger than 32GB, you'll have to format it to FAT32.
+                                Once it is FAT32, copy and paste ALL content from the old SD card to the new SD card.
+                                Afterwards, put the SD card in the console, turn the console on and check that your data is there.
+                                Warning: Do not put the new SD card in the console BEFORE you copy and paste everything to it. 
+                                This will cause all of your current data to “disappear” when you try to use it on the console. 
+                                If you accidentally do this, ask us for help.
                                 You can do this with the tool of your preference.
                                 Formatter examples:
                                 • Windows: [guiformat](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm)
