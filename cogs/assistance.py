@@ -138,15 +138,19 @@ class Assistance(commands.Cog):
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def ntrstream(self, ctx):
-        """Links to ntr streaming guide"""
-        embed = discord.Embed(title="3DS Streaming Guide", color=discord.Color.blue())
+        """Snickerstream/NTR streaming guide"""
+        embed = discord.Embed(title="Snickerstream: NTR Streaming Client", color=discord.Color.blue())
         embed.url = "https://gbatemp.net/threads/release-snickerstream-revived-a-proper-release-with-lots-of-improvements-and-new-features.488374/"
         embed.description = "How to use NTR CFW with Snickerstream to stream your 3DS' screen"
-        embed.add_field(name="4 common fixes", value=cleandoc("""
+        embed.add_field(name="Guide and Advice", value=cleandoc("""
+                Easy [install guide](https://github.com/RattletraPM/Snickerstream/wiki/Streaming-with-NTR) for streaming with Snickerstream.
+                Having issues? Check the following:
                 • Are you connected to the Internet?
                 • Is your antivirus program blocking the program?
                 • Make sure you typed the IP correctly.
-                • Make sure you are on the latest preview for NTR 3.6.
+                • Make sure you are using the latest BootNTR Selector with NTR 3.6.
+                More detailed troubleshooting [available here](https://github.com/RattletraPM/Snickerstream/wiki/Troubleshooting)
+                Other information about Snickerstream on [Snickerstream's GitHub Wiki](https://github.com/RattletraPM/Snickerstream/wiki)
                 """))
         await ctx.send(embed=embed)
 
