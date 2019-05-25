@@ -199,6 +199,7 @@ class Events(DatabaseCog):
         'thatisosite',
         'downloadroms.io',
         'vimm',
+        'edgeemu',
         
     )
 
