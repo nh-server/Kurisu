@@ -197,6 +197,7 @@ class Events(DatabaseCog):
         'romstorage',
         'enikon',
         'thatisosite',
+        'downloadroms.io',
         
     )
 
