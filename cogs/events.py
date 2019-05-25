@@ -198,6 +198,7 @@ class Events(DatabaseCog):
         'enikon',
         'thatisosite',
         'downloadroms.io',
+        'vimm',
         
     )
 
