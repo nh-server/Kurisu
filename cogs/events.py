@@ -158,6 +158,7 @@ class Events(DatabaseCog):
     # unbanning stuff
     unbanning_stuff = (
         'unbanmii',
+        'easymode9',
     )
 
     # piracy sites
@@ -195,6 +196,7 @@ class Events(DatabaseCog):
         'arcadepunks',
         'romstorage',
         'enikon',
+        'thatisosite',
         
     )
 
