@@ -123,9 +123,6 @@ class Events(DatabaseCog):
         'stargate',
         'freestore',
         'sxinstaller',
-        'nds passion',
-        'ndspassion',
-        'cd romance',
         
         #'sxos',
     )
@@ -192,7 +189,7 @@ class Events(DatabaseCog):
         'r/3dspiracy',
         'r/wiiupiracy',
         'pokemoner',
-        'nds-passion',
+        'ndspassion',
         'inmortalgamespro',
         'romsmode',
         'arcadepunks',
