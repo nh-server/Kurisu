@@ -123,6 +123,7 @@ class Events(DatabaseCog):
         'stargate',
         'freestore',
         'sxinstaller',
+        
         #'sxos',
     )
 
@@ -182,6 +183,19 @@ class Events(DatabaseCog):
         'emulator.games',
         '3dscia',
         'darksoftware',
+        'ziperto',
+        'cdromance',
+        'emurom',
+        'r/3dspiracy',
+        'r/wiiupiracy',
+        'pokemoner',
+        'ndspassion',
+        'inmortalgamespro',
+        'romsmode',
+        'arcadepunks',
+        'romstorage',
+        'enikon',
+        
     )
 
     # I hate naming variables sometimes
