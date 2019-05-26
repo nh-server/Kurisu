@@ -783,8 +783,8 @@ your device will refuse to write to it.
         """Links to 3DS VC and GBA bios Extraction Tutorial """
         embed = discord.Embed(title="3DS VC Extraction Tutorial", color=discord.Color.red())
         embed.set_thumbnail(url="https://i.imgur.com/TgdOPkG.png")
-        embed.url = "https://github.com/GlaZedBelmont/3DS-VC-Extraction-Tutorial"
-        embed.description = "Basic tutorial to extract a rom out of your VC titles"
+        embed.url = "https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/3DS-VC-and-GBA-bios-Extraction-Tutorial"
+        embed.description = "Basic tutorial to extract a rom or a GBA bios out of your VC titles"
         await ctx.send(embed=embed)  
 
     @tutorial.command(aliases=["twilightmenu", "dsimenu++", "srloader"])
