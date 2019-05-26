@@ -777,6 +777,15 @@ your device will refuse to write to it.
         embed.url = "https://3ds.eiphax.tech/acnl.html"
         embed.description = "Basic tutorial for AC:NL editing"
         await ctx.send(embed=embed)
+        
+    @tutorial.command(aliases=["3dsvcextract", "gbabios", "dumpbios"])
+    async def vcextract(self, ctx):
+        """Links to 3DS VC and GBA bios Extraction Tutorial """
+        embed = discord.Embed(title="3DS VC Extraction Tutorial", color=discord.Color.red())
+        embed.set_thumbnail(url="https://i.imgur.com/TgdOPkG.png")
+        embed.url = "https://github.com/GlaZedBelmont/3DS-VC-Extraction-Tutorial"
+        embed.description = "Basic tutorial to extract a rom out of your VC titles"
+        await ctx.send(embed=embed)  
 
     @tutorial.command(aliases=["twilightmenu", "dsimenu++", "srloader"])
     async def twlmenu(self, ctx):
