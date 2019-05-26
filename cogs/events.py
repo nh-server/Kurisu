@@ -488,7 +488,7 @@ class Events(DatabaseCog):
             if await self.check_nofilter(message_before.channel):
                 return
             await self.bot.wait_until_all_ready()
-            if message_after.author == self.bot.guild.me or self.bot.roles['Staff'] in message_after.author.roles or await self.check_nofilter(message_after.channel):  # don't process messages by the bot or staff or in the helpers channel
+            if message_after.author == self.bot.guild.me or await check_staff_id(self, 'Helper', message_after.author.id) or await self.check_nofilter(message_after.channel):  # don't process messages by the bot or staff or in the helpers channel
                 return
             if message_before.content == message_after.content:
                 return
