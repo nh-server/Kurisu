@@ -309,7 +309,7 @@ class Memes(commands.Cog):
         celsius = random.randint(38, 100)
         fahrenheit = self.c_to_f(celsius)
         kelvin = self.c_to_k(celsius)
-        await ctx.send(f"{u.mention} warmed."
+        await self._meme(ctx, f"{u.mention} warmed."
                        f" User is now {celsius}°C "
                        f"({fahrenheit}°F, {kelvin}K).")
     #End code from https://github.com/reswitched/robocop-ng
@@ -318,8 +318,7 @@ class Memes(commands.Cog):
     @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
     async def bean(self, ctx, u: discord.Member):
         """swing the beanhammer"""
-        await ctx.send(f"{u.mention} is now beaned."
-                       f" :bean:")
+        await self._meme(ctx, f"{u.mention} is now beaned. :bean:")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
