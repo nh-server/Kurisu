@@ -323,9 +323,9 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 embed = discord.Embed(title="Using a first-generation Switch?", color=0xe60012)
                 embed.description = cleandoc("""
                 Use [our guide](https://nh-server.github.io/switch-guide/user_guide/getting_started/) to determine if your Switch is a first-gen unit.
-                All firmware versions up to 7.0.1 are currently compatible with [Atmosphere](https://nh-server.github.io/switch-guide/).
-                "Second-generation" invulnerable systems should **not** update past 4.1.0, as these systems may have \
-custom firmware on this version in the very far future.
+                All firmware versions up to 8.0.1 are currently compatible with [Atmosphere](https://nh-server.github.io/switch-guide/).
+                "Second-generation" invulnerable systems should **not** update past 7.0.1, as these systems may have \
+custom firmware on this version (and versions below that) in the very far future.
                 Downgrading is **impossible** on patched consoles, and isn't worth your time on unpatched ones. 
                 """)
                 await ctx.send(embed=embed)
