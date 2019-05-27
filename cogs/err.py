@@ -217,6 +217,7 @@ class Err(commands.Cog):
         '002-0120': 'Title update required (outdated title version)',
         '002-0121': 'Local friend code SEED has invalid signature.\n\nThis should not happen unless it is modified. The only use case for modifying this file is for system unbanning, so you cannot ask how to fix this issue here.',
         '002-0123': 'System is generally banned by Nintendo. You cannot ask how to fix this issue here.',
+        '022-2502': 'Region settings between the console and Nintendo Network ID do not match. The console region must be fixed to use the NNID. If you want to use a different region, the NNID must be unlinked from the system or deleted.',
         '003-1099': 'Access point could not be found with the given SSID.',
         '003-2001': 'DNS error. If using a custom DNS server, make sure the settings are correct.',
         '005-2008': 'This error is caused by installing a game or game update from an unofficial source, as it contains a bad ticket.\nThe only solution is to delete the unofficial game or update as well as its ticket\nin FBI, and install the game or update legitimately. If the title was uninstalled\nalready, remove the ticket in FBI.',
