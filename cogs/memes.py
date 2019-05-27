@@ -14,7 +14,7 @@ class Memes(commands.Cog):
 
     async def _meme(self, ctx, msg):
         author = ctx.author
-        if isinstance(ctx.channel, discord.abc.GuildChannel) and (ctx.channel.name[0:5] == "help-" or "assistance" in ctx.channel.name or (self.bot.roles['No-Memes'] in author.roles)):
+        if isinstance(ctx.channel, discord.abc.GuildChannel) and (ctx.channel in self.bot.assistance_channels or (self.bot.roles['No-Memes'] in author.roles)):
             await ctx.message.delete()
             try:
                 await ctx.author.send("Meme commands are disabled in this channel, or your privileges have been revoked.")
@@ -306,10 +306,17 @@ class Memes(commands.Cog):
     @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
     async def warm(self, ctx, u: discord.Member):
         """Warms a user :3"""
+        if ctx.channel in self.bot.assistance_channels or self.bot.roles['No-Memes'] in ctx.author.roles:
+            await ctx.message.delete()
+            try:
+                await ctx.author.send("Meme commands are disabled in this channel, or your privileges have been revoked.")
+            except discord.errors.Forbidden:
+                await ctx.message.channel.send(f"{ctx.author.mention} Meme commands are disabled in this channel, or your privileges have been revoked.")    
+            return	
         celsius = random.randint(38, 100)
         fahrenheit = self.c_to_f(celsius)
         kelvin = self.c_to_k(celsius)
-        await self._meme(ctx, f"{u.mention} warmed."
+        await ctx.send(f"{u.mention} warmed."
                        f" User is now {celsius}°C "
                        f"({fahrenheit}°F, {kelvin}K).")
     #End code from https://github.com/reswitched/robocop-ng
@@ -318,7 +325,15 @@ class Memes(commands.Cog):
     @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
     async def bean(self, ctx, u: discord.Member):
         """swing the beanhammer"""
-        await self._meme(ctx, f"{u.mention} is now beaned. :bean:")
+        if ctx.channel in self.bot.assistance_channels or self.bot.roles['No-Memes'] in ctx.author.roles:
+            await ctx.message.delete()
+            try:
+                await ctx.author.send("Meme commands are disabled in this channel, or your privileges have been revoked.")
+            except discord.errors.Forbidden:
+                await ctx.message.channel.send(f"{ctx.author.mention} Meme commands are disabled in this channel, or your privileges have been revoked.")    
+            return	
+        bean = self.bot.get_emoji(462076812076384257)
+        await ctx.send(f"{u.mention} is now beaned. {bean}")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
