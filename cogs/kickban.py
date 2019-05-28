@@ -95,6 +95,7 @@ class KickBan(DatabaseCog):
             user = await self.bot.fetch_user(userid)
         except discord.errors.NotFound:
             await ctx.send(f"No user associated with ID {userid}.")
+            return
         if await check_staff_id(ctx, 'Helper', user.id):
             await ctx.send("You can't ban another staffer with this command!")
             return
