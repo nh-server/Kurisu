@@ -182,10 +182,22 @@ versions on 11.9 will cause a blackscreen until you update.
     async def update10(self, ctx):
         """11.10 update notice"""
         await self.simple_embed(ctx, """
-                                The latest 3DS family software update, 11.10, does not appear to break any \
-of the functions of custom firmware, such as Luma, Homebrew or the current exploits.
-                                We believe it is safe to update to 11.10.
-                                If anything changes, there will be an announcement.
+                                The latest 3DS family software update, 11.10, **currently breaks Homebrew-only access \
+on EU region consoles.**
+                                This means that:
+                                - if you currently have CFW and can access Homebrew via the Homebrew channel on your \
+home menu, **and** your Luma version is 9.1, you can update to 11.10 no matter your console's region.
+
+                                - if your console is EU region and you currently open Homebrew via Steel Diver \
+or another game-based exploit, you should **not** update.
+
+                                - if your console is EU region and you want to install CFW via Frogtool, Steelhax \
+is currently broken for EU region systems, so you cannot use Frogtool *unless you already have access to the Homebrew Launcher.*
+                                This means that, for now, there is *no free way to install CFW on a stock EU region console.*
+                                In the near future, this should change. Keep checking back with us.
+                                *(To check your region, open System Settings and look at the bottom right corner \
+of the top screen. The letter at the end is your region.
+                                To check your Luma version, power off your console, hold Select and power on.)*
                                 """, title="New 3DS Software Update?")
 
     @commands.command()
