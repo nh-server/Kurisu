@@ -309,7 +309,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             if ctx.message.channel.name.startswith(system):
                 consoleslist.append("None")
             else:
-                await ctx.send("Please specify a console; valid options are: 3ds, switch")
+                await ctx.send("Please specify a console. Valid options are: 3ds, switch")
                 return
         for x in consoleslist:
             if self.check_console(x, ctx.message.channel.name, '3ds'):
