@@ -176,7 +176,18 @@ versions on 11.9 will cause a blackscreen until you update.
                  
                 **To find out your Luma3DS version, hold select on bootup and look at the top left corner of the top screen**
                 """)
-        
+
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def update10(self, ctx):
+        """11.10 update notice"""
+        await self.simple_embed(ctx, """
+                                The latest 3DS family software update, 11.10, does not appear to break any \
+of the functions of custom firmware, such as Luma, Homebrew or the current exploits.
+                                We believe it is safe to update to 11.10.
+                                If anything changes, there will be an announcement.
+                                """, title="New 3DS Software Update?")
+
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def updateb9s(self, ctx):
