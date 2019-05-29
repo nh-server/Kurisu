@@ -275,7 +275,7 @@ class KickBan(DatabaseCog):
             return
         await self.remove_timed_restriction(user_id, 'timeban')
         await ctx.send(f"{user.mention}|{user} is now b& forever. 👍")
-        msg = f"⛔ **Ban Change**: {ctx.author.mention} changed {user} timeban to a indefinive ban.\n🏷 __User ID__: {user.id} \n✏️ __Reason__: {reason}"
+        msg = f"⛔ **Ban Change**: {ctx.author.mention} changed {user} timeban to an indefinite ban.\n🏷 __User ID__: {user.id} \n✏️ __Reason__: {reason}"
         await self.bot.channels['server-logs'].send(msg)
         await self.bot.channels['mod-logs'].send(msg)
 
