@@ -20,6 +20,26 @@ class KickBan(DatabaseCog):
             raise commands.NoPrivateMessage()
         return True
 
+    def parse_time(self, length):
+        # thanks Luc#5653
+        units = {
+            "d": 86400,
+            "h": 3600,
+            "m": 60,
+            "s": 1
+        }
+        seconds = 0
+        match = re.findall("([0-9]+[smhd])", length)  # Thanks to 3dshax server's former bot
+        if not match:
+            return None, None
+        for item in match:
+            seconds += int(item[:-1]) * units[item[-1]]
+        timestamp = datetime.datetime.now()
+        delta = datetime.timedelta(seconds=seconds)
+        unban_time = timestamp + delta
+        unban_time_string = unban_time.strftime("%Y-%m-%d %H:%M:%S")
+        return unban_time, unban_time_string
+
     async def meme(self, beaner: discord.Member, beaned: discord.Member, action: str, channel: discord.TextChannel, reason: str):
         await channel.send(f"Seriously? What makes you think it's okay to try and {action} another staff or helper like that?")
         msg = f"{beaner.mention} attempted to {action} {beaned.mention}|{beaned} in {channel.mention} "
@@ -143,23 +163,10 @@ class KickBan(DatabaseCog):
         if await check_staff_id(ctx, 'Helper', member.id):
             await self.meme(ctx.author, member, "timeban", ctx.channel, reason)
             return
-        # thanks Luc#5653
-        units = {
-            "d": 86400,
-            "h": 3600,
-            "m": 60,
-            "s": 1
-        }
-        seconds = 0
-        match = re.findall("([0-9]+[smhd])", length)  # Thanks to 3dshax server's former bot
-        if match is None:
-            return None
-        for item in match:
-            seconds += int(item[:-1]) * units[item[-1]]
-        timestamp = datetime.datetime.now()
-        delta = datetime.timedelta(seconds=seconds)
-        unban_time = timestamp + delta
-        unban_time_string = unban_time.strftime("%Y-%m-%d %H:%M:%S")
+        unban_time, unban_time_string = self.parse_time(length)
+        if unban_time_string is None:
+            await ctx.send("Invalid length for ban!")
+            return
         msg = f"You were banned from {ctx.guild.name}."
         if reason != "":
             msg += " The given reason is: " + reason
@@ -230,6 +237,46 @@ class KickBan(DatabaseCog):
         user = await self.bot.fetch_user(user_id)
         await ctx.send(f"{user} has been unbanned!")
         msg = f"⚠️ **Un-soft-ban**: {ctx.author.mention} un-soft-banned {user}"
+        await self.bot.channels['mod-logs'].send(msg)
+
+    @is_staff("SuperOP")
+    @commands.command(name="ban2time")
+    async def convert_ban(self, ctx, user_id: int, length="", *,reason):
+        """Converts a ban to timeban"""
+        user = await self.bot.fetch_user(user_id)
+        try:
+            await self.bot.guild.fetch_ban(user)
+        except discord.errors.NotFound:
+            await ctx.send(f"No ban found for ID {user_id}.")
+            return
+        print(await self.get_time_restrictions_by_user_type(user_id, 'timeban'))
+        if await self.get_time_restrictions_by_user_type(user_id, 'timeban') is not None:
+            await ctx.send(f"User is already timebanned.")
+            return
+        unban_time, unban_time_string = self.parse_time(length)
+        if not unban_time_string:
+            await ctx.send("Invalid length for ban!")
+            return
+        await self.add_timed_restriction(user_id, unban_time_string, "timeban")
+        await ctx.send(f"{user.mention}|{user} is now b& until {unban_time_string} {time.tzname[0]}. 👍")
+        msg = f"⛔ **Ban Change**: {ctx.author.mention} changed {user} ban to a timeban until {unban_time_string}\n🏷 __User ID__: {user.id} \n✏️ __Reason__: {reason}"
+        await self.bot.channels['server-logs'].send(msg)
+        await self.bot.channels['mod-logs'].send(msg)
+
+    @is_staff("SuperOP")
+    @commands.command(name="time2ban")
+    async def convert_timeban(self, ctx, user_id: int, *, reason):
+        """Converts a timeban to ban"""
+        user = await self.bot.fetch_user(user_id)
+        try:
+            await self.bot.guild.fetch_ban(user)
+        except discord.errors.NotFound:
+            await ctx.send(f"No ban found for ID {user_id}.")
+            return
+        await self.remove_timed_restriction(user_id, 'timeban')
+        await ctx.send(f"{user.mention}|{user} is now b& forever. 👍")
+        msg = f"⛔ **Ban Change**: {ctx.author.mention} changed {user} timeban to a indefinive ban.\n🏷 __User ID__: {user.id} \n✏️ __Reason__: {reason}"
+        await self.bot.channels['server-logs'].send(msg)
         await self.bot.channels['mod-logs'].send(msg)
 
 
