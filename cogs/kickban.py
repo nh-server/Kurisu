@@ -249,7 +249,6 @@ class KickBan(DatabaseCog):
         except discord.errors.NotFound:
             await ctx.send(f"No ban found for ID {user_id}.")
             return
-        print(await self.get_time_restrictions_by_user_type(user_id, 'timeban'))
         if await self.get_time_restrictions_by_user_type(user_id, 'timeban') is not None:
             await ctx.send(f"User is already timebanned.")
             return
