@@ -195,6 +195,7 @@ class Events(DatabaseCog):
         'arcadepunks',
         'romstorage',
         'enikon',
+        'kiwidev.xyz'
         
     )
 
