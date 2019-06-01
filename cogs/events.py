@@ -195,6 +195,8 @@ class Events(DatabaseCog):
         'arcadepunks',
         'romstorage',
         'enikon',
+        'qreeshop',
+        'qreeshop3ds',
         
     )
 
