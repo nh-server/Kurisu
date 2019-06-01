@@ -144,6 +144,7 @@ class Assistance(commands.Cog):
         embed.description = "How to use NTR CFW with Snickerstream to stream your 3DS' screen"
         embed.add_field(name="Guide and Advice", value=cleandoc("""
                 Easy [install guide](https://github.com/RattletraPM/Snickerstream/wiki/Streaming-with-NTR) for streaming with Snickerstream.
+                Snickerstream [app download](https://github.com/RattletraPM/Snickerstream/releases/latest)
                 Having issues? Check the following:
                 • Are you connected to the Internet?
                 • Is your antivirus program blocking the program?
