@@ -69,6 +69,7 @@ class Kurisu(commands.Bot):
             'On-Duty 3DS': None,
             'On-Duty Wii U': None,
             'On-Duty Switch': None,
+            'On-Duty Legacy': None,
             'Probation': None,
             'Retired Staff': None,
             'Verified': None,
@@ -165,7 +166,9 @@ class Kurisu(commands.Bot):
 
         self.helper_roles = {"3DS": self.roles['On-Duty 3DS'],
                              "WiiU": self.roles['On-Duty Wii U'],
-                             "Switch": self.roles['On-Duty Switch']}
+                             "Switch": self.roles['On-Duty Switch'],
+                             "Legacy": self.roles['On-Duty Legacy']
+                             }
 
         self.holder = ConnectionHolder()
         await self.holder.load_db(database_name, self.loop)

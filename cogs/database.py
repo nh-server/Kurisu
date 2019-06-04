@@ -91,7 +91,7 @@ class DatabaseCog(commands.Cog):
 
     async def add_helper(self, user_id, console):
         async with self.bot.holder as cur:
-            if await self.get_console(user_id):
+            if await self.get_console(user_id) is None:
                 await cur.execute('INSERT INTO helpers VALUES(?, ?)', (user_id, console))
             else:
                 await cur.execute('UPDATE helpers SET console=? WHERE user_id=?', (console, user_id))
@@ -104,17 +104,13 @@ class DatabaseCog(commands.Cog):
         async with self.bot.holder as cur:
             await cur.execute('SELECT console FROM helpers WHERE user_id=?', (user_id,))
             row = await cur.fetchone()
-            if row:
-                return row[0]
-            return None
+            return row[0] if row is not None else row
 
     async def get_stafftrole(self, user_id):
         async with self.bot.holder as cur:
             await cur.execute('SELECT position FROM staff WHERE user_id=?', (user_id,))
             rank = await cur.fetchone()
-            if rank:
-                return rank[0]
-            return None
+            return rank[0] if rank is not None else rank
 
     async def add_warn(self, user_id, issuer_id, reason):
         async with self.bot.holder as cur:
