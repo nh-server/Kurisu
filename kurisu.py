@@ -102,6 +102,7 @@ class Kurisu(commands.Bot):
             'hacking-general': None,
             'meta': None,
             'legacy-systems': None,
+            'dev': None,
             'off-topic': None,
             'voice-and-music': None,
             'bot-cmds': None,
