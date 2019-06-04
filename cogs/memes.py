@@ -225,7 +225,7 @@ class Memes(commands.Cog):
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def dev(self, ctx):
         """Reminds user where they are."""
-        await ctx.send(f"You {'do not ' if ctx.channel.name != 'dev' else ''}seem to be in <#196635781798952960>.")
+        await ctx.send(f"You {'do not ' if isinstance(ctx.channel, discord.abc.GuildChannel) and ctx.channel.name != 'dev' else ''}seem to be in <#196635781798952960>.")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
