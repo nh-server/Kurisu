@@ -208,7 +208,7 @@ class Kurisu(commands.Bot):
             if not await check_staff_id(ctx, 'Helper', author.id):
                 try:
                     await ctx.message.delete()
-                except discord.errors.NotFound:
+                except (discord.errors.NotFound, discord.errors.Forbidden):
                     pass
                 await ctx.send(f"{ctx.message.author.mention} This command was used {exc.cooldown.per - exc.retry_after:.2f}s ago and is on cooldown. Try again in {exc.retry_after:.2f}s.", delete_after=10)
             else:
