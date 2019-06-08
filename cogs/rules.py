@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from cogs.checks import is_staff
 
 
 class Rules(commands.Cog, command_attrs=dict()):
@@ -60,6 +61,7 @@ class Rules(commands.Cog, command_attrs=dict()):
         await self.simple_embed(ctx, "Keep 3DS and Wii U support questions to the assistance channels.\n"
                                      "• Don't ask how to bypass network restrictions in place by Nintendo or game developers. This includes bypassing console bans.", title="Rule 3")
 
+    @is_staff("Helper")
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r4(self, ctx):
