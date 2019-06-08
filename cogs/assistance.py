@@ -1,6 +1,6 @@
 import discord
 
-from cogs.checks import check_staff_id
+from cogs.checks import check_staff_id, is_staff
 from discord.ext import commands
 from inspect import cleandoc
 
@@ -246,6 +246,8 @@ versions on 11.10 will cause a blackscreen until you update.
 [Mod-Moon](https://github.com/Swiftloke/ModMoon/releases) is recommended. Instructions for use can be found on the page.
                                 """))
 
+    # TODO: Perhaps move this into mod.py and remove the cooldown?
+    @is_staff("Helper")
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def inoriwarn(self, ctx):
