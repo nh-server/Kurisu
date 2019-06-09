@@ -62,7 +62,7 @@ class Rules(commands.Cog, command_attrs=dict()):
                                      "• Don't ask how to bypass network restrictions in place by Nintendo or game developers. This includes bypassing console bans.", title="Rule 3")
 
     @is_staff("Helper")
-    @commands.command()
+    @commands.command(aliases=['inoriquest'])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r4(self, ctx):
         """Displays rule 4."""
