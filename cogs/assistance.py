@@ -554,7 +554,7 @@ the system can't check for an update.
         await self.simple_embed(ctx, "The B9S installation tool for DSiWare exploits.\nB9STool, [boot.nds](https://github.com/zoogie/b9sTool/releases)")
 
     # Intructions for deleting home menu Extdata
-    @commands.command()
+    @commands.command(aliases=["homeext"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def homext(self, ctx):
         """Deleting home menu extdata"""
