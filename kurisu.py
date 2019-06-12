@@ -49,6 +49,7 @@ cogs = [
     'cogs.nxerr',
     'cogs.rules',
     'cogs.ssnc',
+    'cogs.xkcdparse',
 ]
 
 
