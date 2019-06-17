@@ -376,7 +376,7 @@ re-read the guide steps 2 or 3 times before coming here.
                                 * When Nintendo updates the firmware, they take a very long time to catch up
                                 * Most of the features they claim to offer can be enabled in Atmosphere with some \
 additional configuration
-                                * Atmosphere's emuNAND implementation will be completely free and open source
+                                * Atmosphere's emuNAND/emuMMC implementation is completely free and open source
                                 """, title="Why Atmosphere?")
 
     @commands.command()
