@@ -222,6 +222,9 @@ class Kurisu(commands.Bot):
         elif isinstance(exc, discord.NotFound):
             await ctx.send(f"ID not found.")
 
+        elif isinstance(exc, discord.Forbidden):
+            await ctx.send(f"💢 I can't help you if you don't let me!\n`{exc.text}`.")
+
         elif isinstance(exc, commands.CommandInvokeError):
             await ctx.send(f'{author.mention} `{command}` raised an exception during usage')
             msg = "".join(format_exception(type(exc), exc, exc.__traceback__))
