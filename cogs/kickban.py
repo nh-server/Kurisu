@@ -76,7 +76,7 @@ class KickBan(DatabaseCog):
         await self.bot.channels['mod-logs'].send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.kick <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
 
     @is_staff("OP")
-    @commands.command(name="ban")
+    @commands.command(name="ban",aliases=["yeet"])
     async def ban_member(self, ctx, member: converters.SafeMember, days: typing.Optional[int] = 0, *, reason=""):
         """Bans a user from the server. OP+ only. Optional: [days] Specify up to 7 days of messages to delete."""
         if await check_staff_id(ctx, 'Helper', member.id):
@@ -108,7 +108,7 @@ class KickBan(DatabaseCog):
         await self.bot.channels['mod-logs'].send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.ban <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
 
     @is_staff("OP")
-    @commands.command(name="banid")
+    @commands.command(name="banid",aliases=["yeetid"])
     async def banid_member(self, ctx, userid: int, *, reason=""):
         """Bans a user id from the server. OP+ only."""
         try:
@@ -133,7 +133,7 @@ class KickBan(DatabaseCog):
         await self.bot.channels['mod-logs'].send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.banid <userid> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
 
     @is_staff("OP")
-    @commands.command(name="silentban", hidden=True)
+    @commands.command(name="silentban", hidden=True, aliases=["quietyeet"])
     async def silentban_member(self, ctx, member: converters.SafeMember, days: typing.Optional[int] = 0, *, reason=""):
         """Bans a user from the server, without a notification. OP+ only.  Optional: [days] Specify up to 7 days of messages to delete."""
         if await check_staff_id(ctx, 'Helper', member.id):
@@ -157,7 +157,7 @@ class KickBan(DatabaseCog):
         await self.bot.channels['mod-logs'].send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.silentban <user> [reason]`." if reason == "" else ""))
 
     @is_staff("OP")
-    @commands.command(name="timeban")
+    @commands.command(name="timeban",aliases=["timeyeet"])
     async def timeban_member(self, ctx, member: converters.SafeMember, length, *, reason=""):
         """Bans a user for a limited period of time. OP+ only.\n\nLength format: #d#h#m#s"""
         if await check_staff_id(ctx, 'Helper', member.id):
@@ -190,7 +190,7 @@ class KickBan(DatabaseCog):
         await self.bot.channels['mod-logs'].send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.timeban <user> <length> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
 
     @is_staff("OP")
-    @commands.command(name="softban")
+    @commands.command(name="softban",aliases=["gentleyeet"])
     async def softban_member(self, ctx, member: converters.SafeMember, *, reason):
         """Soft-ban a user. OP+ only.\n\nThis "bans" the user without actually doing a ban on Discord. The bot will instead kick the user every time they join. Discord bans are account- and IP-based."""
         if await check_staff_id(ctx, 'Helper', member.id):
@@ -212,7 +212,7 @@ class KickBan(DatabaseCog):
         await self.bot.channels['server-logs'].send(msg)
 
     @is_staff("OP")
-    @commands.command(name="softbanid")
+    @commands.command(name="softbanid",aliases=["gentleyeetid"])
     async def softbanid_member(self, ctx, user_id: int, *, reason):
         """Soft-ban a user based on ID. OP+ only.\n\nThis "bans" the user without actually doing a ban on Discord. The bot will instead kick the user every time they join. Discord bans are account- and IP-based."""
         if await check_staff_id(ctx, 'Helper', user_id):
