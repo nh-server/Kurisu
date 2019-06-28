@@ -545,7 +545,7 @@ the system can't check for an update.
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def boot3dsx(self, ctx):
         """Download link for 3DS Homebrew Launcher, boot.3dsx"""
-        await self.simple_embed(ctx, "The 3DS Homebrew Launcher, [boot.3dsx](https://github.com/fincs/new-hbmenu/releases/download/v2.0.0/boot.3dsx)")
+        await self.simple_embed(ctx, "The 3DS Homebrew Launcher, [boot.3dsx](https://github.com/fincs/new-hbmenu/releases/download/v2.1.0/boot.3dsx)")
 
     @commands.command(aliases=["greenscr"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
