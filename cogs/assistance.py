@@ -507,8 +507,8 @@ the system can't check for an update.
         """What to do if you delete all your SD card contents"""
         await self.simple_embed(ctx, """
                                 If you have lost the contents of your SD card with CFW, you will need in SD root:
-                                -Homebrew launcher executable [here](https://smealum.github.io/ninjhax2/boot.3dsx)
-                                -`boot.firm` from [luma3ds latest release 7z](https://github.com/AuroraWright/Luma3DS/releases/latest)
+                                -`boot.3dsx` from Homebrew launcher [here](https://github.com/fincs/new-hbmenu/releases/latest/)
+                                -`boot.firm` from [luma3ds latest release](https://github.com/AuroraWright/Luma3DS/releases/latest)
                                 Then repeat the [finalizing setup](https://3ds.hacks.guide/finalizing-setup) page.
                                 """, color=discord.Color.red())
 
