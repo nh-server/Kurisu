@@ -840,7 +840,7 @@ in the scene.
                                 You cannot ask about unbanning your console here.
                                 """, title="Switch Bans")
 
-    @commands.command()
+    @commands.command(name="90dns")
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def ninetydns(self, ctx):
         """90DNS IP adresses"""
