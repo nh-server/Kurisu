@@ -365,6 +365,13 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
 re-read the guide steps 2 or 3 times before coming here.
                                 """, title="Please read the guide")
 
+    @commands.command(aliases=["atmos", "ams"])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def atmosphere(self, ctx):
+        """Download link for the latest Atmosphere-version"""
+        await self.simple_embed(ctx, "Latest Atmosphere Version:\nhttps://github.com/Atmosphere-NX/Atmosphere/releases/latest", color=discord.Color.blue())
+
+
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def nxcfw(self, ctx):
