@@ -163,10 +163,11 @@ class Assistance(commands.Cog):
                 **Is it safe to update to 11.10?**
                 **To find out your Luma3DS version, hold select on bootup and look at the top left corner of the top screen**
                 
-                **Luma3DS 10.0**
+                **Luma3DS >= 9.1**
                 You can update to 11.10 safely.
+                To make sure that Luma3DS is updated to the latest version, run the Luma Updater from the HOME menu.
                 
-                **Luma3DS 8.0 - 9.1**
+                **Luma3DS 8.0 - 9.0**
                 Follow this guide: (https://bit.ly/2Q58acr), then update the console to 11.10. Being on these Luma3DS \
 versions on 11.10 may cause a blackscreen until you update.
                 
