@@ -849,7 +849,7 @@ in the scene.
                                 - `163.172.141.219`
                                 - `45.248.48.62`
                                 
-                                To set these go to System Settings -> Internet -> Connection Settings -> Your wifi Network -> DNS to Manual -> Set first and second IP to the previously listed IPs -> Save Settings.
+                                To set these go to System Settings -> Internet -> Connection Settings -> Your wifi Network -> DNS to Manual -> Set primary and secondary DNS to the previously listed IPs -> Save Settings.
                                 
                                 You will have to manually set these for each WiFi connection you have set up.
                                 """, title="90DNS IP adressses")
