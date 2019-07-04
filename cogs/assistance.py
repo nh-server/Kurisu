@@ -797,7 +797,17 @@ your device will refuse to write to it.
         embed.url = "http://tinydb.eiphax.tech"
         embed.description = "A Community-maintained homebrew database"
         await ctx.send(embed=embed)
-
+        
+    @commands.command(aliases=["appatch", "dsscene"])
+    async def ap(self, ctx):
+        """Anti-piracy patching guide"""
+        embed = discord.Embed(title="AP Guide", color=discord.Color.purple())
+        embed.set_author(name="Glazed_Belmont")
+        embed.set_thumbnail(url="https://i.imgur.com/TgdOPkG.png")
+        embed.url = "https://github.com/GlaZedBelmont/3DS-Tutorials/wiki/AP-Patching"
+        embed.description = "A AP-Patching guide"
+        await ctx.send(embed=embed)
+        
     # Information about autoRCM
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
