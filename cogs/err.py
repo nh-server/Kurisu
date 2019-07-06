@@ -221,6 +221,7 @@ class Err(commands.Cog):
         '022-2932': 'Unable to agree to the Nintendo Network Services Agreement. Usually found on region-changed devices.',
         '003-1099': 'Access point could not be found with the given SSID.',
         '003-2001': 'DNS error. If using a custom DNS server, make sure the settings are correct.',
+        '005-7000': 'Base error code for most other error codes. No error occured.',
         '005-2008': 'This error is caused by installing a game or game update from an unofficial source, as it contains a bad ticket.\nThe only solution is to delete the unofficial game or update as well as its ticket\nin FBI, and install the game or update legitimately. If the title was uninstalled\nalready, remove the ticket in FBI.',
         '005-4800': 'HTTP Status 500 (Internal Error), unknown cause(?). eShop servers might have issues.',
         '005-5602': 'Unable to connect to the eShop. This error is most likely the result of an incorrect region setting.\nMake sure your region is correctly set in System Settings. If you encounter this error after region-changing your system, make sure you followed all the steps properly.',
