@@ -840,6 +840,19 @@ in the scene.
                                 You cannot ask about unbanning your console here.
                                 """, title="Switch Bans")
 
+    @commands.command(name="90dns")
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def ninetydns(self, ctx):
+        """90DNS IP adresses"""
+        await self.simple_embed(ctx, """
+                                The public 90DNS IP adresses are:
+                                - `163.172.141.219`
+                                - `45.248.48.62`
+                                
+                                To set these go to System Settings -> Internet -> Connection Settings -> Your wifi Network -> DNS to Manual -> Set primary and secondary DNS to the previously listed IPs -> Save Settings.
+                                
+                                You will have to manually set these for each WiFi connection you have set up.
+                                """, title="90DNS IP adressses")
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
