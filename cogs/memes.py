@@ -69,6 +69,12 @@ class Memes(commands.Cog):
     async def inori(self, ctx):
         """Memes."""
         await self._meme(ctx, "https://i.imgur.com/WLncIsi.gif")
+        
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def inori2(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/V0uu99A.jpg")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
@@ -280,6 +286,12 @@ class Memes(commands.Cog):
     async def fuck(self, ctx):
         """MEMES?"""
         await self._meme(ctx, "https://i.imgur.com/4lNA5Ud.gif")
+                       
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def goose(self, ctx):
+        """MEMES?"""
+        await self._meme(ctx, "https://i.imgur.com/pZUeBql.jpg")
     
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
@@ -292,6 +304,12 @@ class Memes(commands.Cog):
     async def pbanj(self, ctx):
         """he has the power"""
         await self._meme(ctx, "https://i.imgur.com/EQy9pl3.png")
+                       
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def pbanj2(self, ctx):
+        """pbanos"""
+        await self._meme(ctx, "https://i.imgur.com/oZx7Qid.gifv")
 
     #Begin code from https://github.com/reswitched/robocop-ng
     def c_to_f(self, c):
@@ -343,6 +361,12 @@ class Memes(commands.Cog):
                        
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def cosmic(self, ctx):
+        """Comsic ban"""
+        await self._meme(ctx, "https://i.imgur.com/V4TVpbC.gifv")
+              
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def menuhax(self, ctx):
         """menuhax 11.4 wen"""
         await self._meme(ctx, "https://i.imgur.com/fUiZ2c3.png")
@@ -352,6 +376,7 @@ class Memes(commands.Cog):
     async def magic(self, ctx):
         """shrug.avi"""
         await self._meme(ctx, "https://i.imgur.com/k9111dq.jpg")
+
 
 def setup(bot):
     bot.add_cog(Memes(bot))
