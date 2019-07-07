@@ -292,7 +292,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
     async def ip(self, ctx):
         """How to check your IP"""
         embed = discord.Embed(title="Check your 3DSs IP (CFW)", color=discord.Color.dark_orange())
-        embed.description = "1. FBI\n2. Remote Install\n3. Recieve URLs over the network"
+        embed.description = "1. FBI\n2. Remote Install\n3. Receive URLs over the network"
         embed.add_field(name="Check your 3DSs IP (Homebrew)", value="1. Open Homebrew Launcher\n2. Press Y")
         await ctx.send(embed=embed)
 
