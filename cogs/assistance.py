@@ -368,9 +368,13 @@ re-read the guide steps 2 or 3 times before coming here.
     @commands.command(aliases=["atmos", "ams"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def atmosphere(self, ctx):
-        """Download link for the latest Atmosphere-version"""
-        await self.simple_embed(ctx, "Latest Atmosphere Version:\nhttps://github.com/Atmosphere-NX/Atmosphere/releases/latest", color=discord.Color.blue())
-
+        """Download link for the latest Atmosphère version"""
+        embed = discord.Embed(title="Atmosphère", color=discord.Color.blue())
+        embed.set_author(name="Atmosphère-NX Team", url="https://github.com/Atmosphere-NX")
+        embed.set_thumbnail(url="https://avatars2.githubusercontent.com/u/37918415?s=200&v=4")
+        embed.url = "https://github.com/Atmosphere-NX/Atmosphere/releases/latest"
+        embed.description = "Link to Atmosphère latest release"
+        await ctx.send(embed=embed)
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
