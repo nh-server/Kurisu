@@ -109,7 +109,7 @@ class SwitchSerialNumberCheck(Cog):
         if maybe:
             return await ctx.send("{}: Serial {} _might_ be patched. The only way you can know this for sure is by "
                                   "pushing the payload manually. You can find instructions to do so here: "
-                                  "https://nh-server.github.io/switch-guide/user_guide/sending_payload/".format(ctx.author.mention,
+                                  "https://switchgui.de/switch-guide/user_guide/emummc/sending_payload/".format(ctx.author.mention,
                                                                                                      safe_serial))
         elif patched:
             return await ctx.send("{}: Serial {} is patched.".format(ctx.author.mention, safe_serial))
