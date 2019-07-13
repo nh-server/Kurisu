@@ -198,6 +198,99 @@ class Events(DatabaseCog):
         
     )
 
+    known_key_begins = (
+        # switch master keys + keks
+        '374',
+        '9A3',
+        'ded',
+        'C2C',
+        '54E',
+        '4F6',
+        '84E',
+        'CFA',
+        'C1D',
+        '0AA',
+        '929',
+        '23c',
+        'D8A',
+
+        # switch titlekeks
+        '62A',
+        '882',
+        '5D1',
+        '1B3',
+        'E45',
+        'DDC',
+        'B15',
+        '81D',
+        '1ED',
+
+        # tsec keys
+        'E21',
+        '522',
+
+        # aes kek/key src
+        '4D8',
+        '896',
+
+        # header keys
+        '1F1',
+        'AEA',
+        '5A3',
+
+        # kak ocean/system/application
+        'EF9',
+        'CDE',
+        '757',
+        'F42',
+        '798',
+        'A57',
+        '2A6',
+        '322',
+        '7F5',
+        'B33',
+        'C54',
+        '306',
+        '06F',
+        'DC8',
+        '131',
+        '565',
+        '372',
+        '327',
+        '6DD',
+        '4AB',
+        'B7A',
+        'D5A',
+        '9B4',
+        '001', # this totally won't cause false positives..
+        '017',
+        'D0D',
+        '874',
+
+        # pkg1/2
+        'F4E',
+        'F8C',
+        'C58',
+        'C32',
+        'EDE',
+        '1A7',
+        'A35',
+        'A0D',
+        '7E5',
+        'BF0',
+        '09D',
+        '444',
+        '442',
+        '70C',
+        'FB8',
+
+        # wii u common/espresso/starbuck
+        'D7B',
+        '805',
+        'B5D',
+
+    )
+
     # I hate naming variables sometimes
     user_antispam = {}
     channel_antispam = {}
@@ -244,6 +337,7 @@ class Events(DatabaseCog):
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site',))
         contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub', 'strawpoii', 'hackinformer.com', 'console.guide', 'jacksorrell.co.uk', 'jacksorrell.tv', 'nintendobrew.com', 'reinx.guide', 'NxpeNwz', 'scenefolks.com'))
         contains_unbanning_stuff = any(x in msg_no_separators for x in self.unbanning_stuff)
+        contains_possible_key_begin = any(x in msg_no_separators for x in self.known_key_begins)
 
         # contains_guide_mirror_mention = any(x in msg for x in ('3ds-guide.b4k.co',))
         contains_drama_alert = any(x in msg_no_separators for x in self.drama_alert)
@@ -309,6 +403,8 @@ class Events(DatabaseCog):
                 except discord.errors.Forbidden:
                     pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
             await self.bot.channels['message-logs'].send(f"**Bad site**: {message.author.mention} mentioned a piracy site indirectly in {message.channel.mention}{' (message deleted)' if is_help_channel else ''}", embed=embed)
+        if contains_possible_key_begin:
+            await self.bot.channels['message-logs'].send(f"**Possible key**: {message.author.mention} likely sent a key in {message.channel.mention}", embed=embed)
         if contains_unbanning_stuff:
             try:
                 await message.delete()
