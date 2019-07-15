@@ -177,7 +177,27 @@ versions on 11.10 will cause a blackscreen until you update.
                  
                 **To find out your Luma3DS version, hold select on bootup and look at the top left corner of the top screen**
                 """)
-        
+
+    @commands.command()
+    @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
+    async def lumacheck(self, ctx):
+        """How to check Luma version"""
+        await ctx.send("Please check your Luma version. In order to do this, you will need to load the Luma Configuration screen.\n1. Turn your console off.\n2. Hold the SELECT button.\n3. While still holding SELECT, turn the console on.\n4. Provide a photo of your console's screens, or if you can see the version, tell us here.")
+
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def info3ds(self, ctx):
+        """Links to eiphax explain page"""
+        await self.simple_embed(ctx, "Want to learn more about the 3DS and CFW?
+                                <https://3ds.eiphax.tech/what.html>")
+
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def cfwuses(self, ctx):
+        """Links to eiphax cfw uses page"""
+        await self.simple_embed(ctx, "Want to know what CFW can be used for?
+                                <https://3ds.eiphax.tech/tips.html>")
+
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def updateb9s(self, ctx):
