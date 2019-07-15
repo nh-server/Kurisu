@@ -188,15 +188,13 @@ versions on 11.10 will cause a blackscreen until you update.
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def info3ds(self, ctx):
         """Links to eiphax explain page"""
-        await self.simple_embed(ctx, "Want to learn more about the 3DS and CFW?
-                                <https://3ds.eiphax.tech/what.html>")
+        await self.simple_embed(ctx, "Want to learn more about the 3DS and CFW? <https://3ds.eiphax.tech/what.html>")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def cfwuses(self, ctx):
         """Links to eiphax cfw uses page"""
-        await self.simple_embed(ctx, "Want to know what CFW can be used for?
-                                <https://3ds.eiphax.tech/tips.html>")
+        await self.simple_embed(ctx, "Want to know what CFW can be used for? <https://3ds.eiphax.tech/tips.html>")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
