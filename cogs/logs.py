@@ -92,7 +92,7 @@ Thanks for stopping by and have a good time!
         if "ub:"+str(member.id) in self.bot.actions:
             self.bot.actions.remove("ub:"+str(member.id))
             return
-        msg = "⛔ **'Auto-ban'" if 'wb:' + str(member.id) in self.bot.actions else f"⛔ **Ban**: {member.mention} | {member}\n🏷 __User ID__: {member.id}"
+        msg = f"{'⛔ **Auto-ban**' if 'wb:' + str(member.id) in self.bot.actions else '⛔ **Ban**'}: {member.mention} | {member}\n🏷 __User ID__: {member.id}"
         await self.bot.channels['server-logs'].send(msg)
         if "wb:"+str(member.id) in self.bot.actions:
             self.bot.actions.remove("wb:"+str(member.id))
