@@ -340,6 +340,41 @@ class Err(commands.Cog):
         level = (rc >> 27) & 0x1F
         return desc, mod, summ, level, rc
 
+    def nim_compacted_result_errors(err: str):
+        """
+        Parses nim error codes between the range of 005-7000 to 005-9999.
+        Non specific expected results are formatted to an error code in nim by taking result module and shifting right by 5, and taking the result description and masked with 0x1F, then added both together along with 57000.
+        """
+        if len(err) != 8:
+            return
+        try:
+            err_hi = int(err[:3])
+            err_lo = int(err[-4:])
+        except ValueError:
+            return
+        if err_hi != 5 or err_lo < 7000:
+            return
+        message = ""
+        if err_lo == 9999:
+            message += "NIM maximum compacted result to error code; or\n"
+        elif err_lo == 7000:
+            message += "NIM minimum compacted result to error code; or\n"
+        err_lo -= 7000
+        module = err_lo >> 5
+        short_desc = err_lo & 0x1F
+        message += f"Result module ({module}): {modules.get(module, 'Unknown')}\n"
+        message += "Possible known descriptions:\n "
+        known_desc = []
+        unknown_desc = []
+        for i in range(0+short_desc, 0x400+short_desc, 0x20):
+            if i not in descriptions:
+                unknown_desc += [str(i)]
+                continue
+            known_desc += [f"{i}: {descriptions[i]}"]
+        message += "\n ".join(known_desc)
+        message += "\nPossible unknown descriptions: " + ", ".join(unknown_desc)
+        return message
+
     @commands.command()
     async def err(self, ctx, err: str):
         """
@@ -353,7 +388,12 @@ class Err(commands.Cog):
             embed = discord.Embed(title=err + (": Nintendo 3DS" if err[0] == "0" else ": Wii U"))
             embed.url = f"http://www.nintendo.com/consumer/wfc/en_na/ds/results.jsp?error_code={err}&system={'3DS' if err[0] == '0' else 'Wiiu'}&locale=en_US"
             if err not in self.errcodes:
-                embed.description = "I don't know this one! Click the error code for details on Nintendo Support.\n\nIf you keep getting this issue and Nintendo Support does not help, or know how to fix it, you should report relevant details to <@78465448093417472> so it can be added to the bot."
+                nim_message = nim_compacted_result_errors(err)
+                if nim_message:
+                    embed.description = nim_message
+                    embed.color = Color(0xCE181E)
+                else:
+                    embed.description = "I don't know this one! Click the error code for details on Nintendo Support.\n\nIf you keep getting this issue and Nintendo Support does not help, or know how to fix it, you should report relevant details to <@78465448093417472> so it can be added to the bot."
             else:
                 embed.description = self.errcodes[err]
                 embed.color = (Color(0xCE181E) if err[0] == "0" else Color(0x009AC7))
