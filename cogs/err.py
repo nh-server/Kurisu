@@ -340,7 +340,7 @@ class Err(commands.Cog):
         level = (rc >> 27) & 0x1F
         return desc, mod, summ, level, rc
 
-    def nim_compacted_result_errors(err: str):
+    def nim_compacted_result_errors(self, err: str):
         """
         Parses nim error codes between the range of 005-7000 to 005-9999.
         Non specific expected results are formatted to an error code in nim by taking result module and shifting right by 5, and taking the result description and masked with 0x1F, then added both together along with 57000.
@@ -362,15 +362,15 @@ class Err(commands.Cog):
         err_lo -= 7000
         module = err_lo >> 5
         short_desc = err_lo & 0x1F
-        message += f"Result module ({module}): {modules.get(module, 'Unknown')}\n"
+        message += f"Result module ({module}): {self.modules.get(module, 'Unknown')}\n"
         message += "Possible known descriptions:\n "
         known_desc = []
         unknown_desc = []
         for i in range(0+short_desc, 0x400+short_desc, 0x20):
-            if i not in descriptions:
+            if i not in self.descriptions:
                 unknown_desc += [str(i)]
                 continue
-            known_desc += [f"{i}: {descriptions[i]}"]
+            known_desc += [f"{i}: {self.descriptions[i]}"]
         message += "\n ".join(known_desc)
         message += "\nPossible unknown descriptions: " + ", ".join(unknown_desc)
         return message
@@ -388,7 +388,7 @@ class Err(commands.Cog):
             embed = discord.Embed(title=err + (": Nintendo 3DS" if err[0] == "0" else ": Wii U"))
             embed.url = f"http://www.nintendo.com/consumer/wfc/en_na/ds/results.jsp?error_code={err}&system={'3DS' if err[0] == '0' else 'Wiiu'}&locale=en_US"
             if err not in self.errcodes:
-                nim_message = nim_compacted_result_errors(err)
+                nim_message = self.nim_compacted_result_errors(err)
                 if nim_message:
                     embed.description = nim_message
                     embed.color = Color(0xCE181E)
