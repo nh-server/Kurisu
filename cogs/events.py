@@ -141,7 +141,6 @@ class Events(DatabaseCog):
         #'tx',
         'sxos',
         'hbg',
-        'makis',
     )
 
     drama_alert = ()
