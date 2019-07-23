@@ -340,40 +340,46 @@ class Err(commands.Cog):
         level = (rc >> 27) & 0x1F
         return desc, mod, summ, level, rc
 
-    def nim_compacted_result_errors(self, err: str):
+    def nim_compacted_result_errors(self, err: str, embed):
         """
         Parses nim error codes between the range of 005-7000 to 005-9999.
         Non specific expected results are formatted to an error code in nim by taking result module and shifting right by 5, and taking the result description and masked with 0x1F, then added both together along with 57000.
         """
         if len(err) != 8:
-            return
+            return False
         try:
             err_hi = int(err[:3])
             err_lo = int(err[-4:])
         except ValueError:
-            return
+            return False
         if err_hi != 5 or err_lo < 7000:
-            return
-        message = ""
+            return False
+        embed_extra = None
         if err_lo == 9999:
-            message += "NIM maximum compacted result to error code; or\n"
+            embed_extra = "Also NIM's maximum compacted result to error code."
         elif err_lo == 7000:
-            message += "NIM minimum compacted result to error code; or\n"
+            embed_extra = "Also NIM's minimum compacted result to error code."
         err_lo -= 7000
         module = err_lo >> 5
         short_desc = err_lo & 0x1F
-        message += f"Result module ({module}): {self.modules.get(module, 'Unknown')}\n"
-        message += "Possible known descriptions:\n "
         known_desc = []
         unknown_desc = []
         for i in range(0+short_desc, 0x400+short_desc, 0x20):
             if i not in self.descriptions:
                 unknown_desc += [str(i)]
                 continue
-            known_desc += [f"{i}: {self.descriptions[i]}"]
-        message += "\n ".join(known_desc)
-        message += "\nPossible unknown descriptions: " + ", ".join(unknown_desc)
-        return message
+            known_desc += [self.get_name(self.descriptions, i)]
+        known_desc = "\n".join(known_desc)
+        unknown_desc = ", ".join(unknown_desc)
+        embed.add_field(name="Module", value=self.get_name(self.modules, module), inline=False)
+        if known_desc:
+            embed.add_field(name="Possible known descriptions", value=known_desc, inline=False)
+        if unknown_desc:
+            embed.add_field(name="Possible unknown descriptions", value=unknown_desc, inline=False)
+        if embed_extra:
+            embed.add_field(name="Extra Note", value=embed_extra, inline=False)
+        embed.color = Color(0xCE181E)
+        return True
 
     @commands.command()
     async def err(self, ctx, err: str):
@@ -387,16 +393,14 @@ class Err(commands.Cog):
         if re.match('[0-1][0-9][0-9]\-[0-9][0-9][0-9][0-9]', err):
             embed = discord.Embed(title=err + (": Nintendo 3DS" if err[0] == "0" else ": Wii U"))
             embed.url = f"http://www.nintendo.com/consumer/wfc/en_na/ds/results.jsp?error_code={err}&system={'3DS' if err[0] == '0' else 'Wiiu'}&locale=en_US"
-            if err not in self.errcodes:
-                nim_message = self.nim_compacted_result_errors(err)
-                if nim_message:
-                    embed.description = nim_message
-                    embed.color = Color(0xCE181E)
-                else:
-                    embed.description = "I don't know this one! Click the error code for details on Nintendo Support.\n\nIf you keep getting this issue and Nintendo Support does not help, or know how to fix it, you should report relevant details to <@78465448093417472> so it can be added to the bot."
-            else:
+            if err in self.errcodes:
                 embed.description = self.errcodes[err]
                 embed.color = (Color(0xCE181E) if err[0] == "0" else Color(0x009AC7))
+            elif self.nim_compacted_result_errors(err, embed):
+                pass
+            else:
+                embed.description = "I don't know this one! Click the error code for details on Nintendo Support.\n\nIf you keep getting this issue and Nintendo Support does not help, or know how to fix it, you should report relevant details to <@78465448093417472> so it can be added to the bot."
+
         # 0xE60012
         # Switch Error Codes (w/ website)
         # Switch Error Codes (w/o website)
