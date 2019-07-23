@@ -196,7 +196,7 @@ class Events(DatabaseCog):
         'arcadepunks',
         'romstorage',
         'enikon',
-        'invite/BUdfwxr',
+        'r/roms'.
         
     )
 
