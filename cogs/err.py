@@ -340,46 +340,120 @@ class Err(commands.Cog):
         level = (rc >> 27) & 0x1F
         return desc, mod, summ, level, rc
 
-    def nim_compacted_result_errors(self, err: str, embed):
+    def nim_3ds_errors(self, err: str, embed):
         """
-        Parses nim error codes between the range of 005-7000 to 005-9999.
-        Non specific expected results are formatted to an error code in nim by taking result module and shifting right by 5, and taking the result description and masked with 0x1F, then added both together along with 57000.
+        Parses 3ds nim error codes between the range of 005-2000 to 005-3023, 005-4200 to 005-4399, 005-4400 to 005-4999, 005-5000 to 005-6999 and 005-7000 to 005-9999.
+
+        005-2000 to 005-3023:
+         - NIM got a result of its own. Took description and added by 52000.
+
+        005-4200 to 005-4399:
+         - NIM got an HTTP result. Took description and added by 54200, cutting out at 54399 if it was beyond that.
+
+        005-4400 to 005-4999:
+         - Range of HTTP codes, however, can suffer collision.
+
+        005-5000 to 005-6999:
+         - SOAP Error Code range, when <ErrorCode> is not 0 on the SOAP responses.
+
+        005-7000 to 005-9999:
+         - Non specific expected results are formatted to an error code in nim by taking result module and shifting right by 5, and taking the result description and masked with 0x1F, then added both together along with 57000.
         """
+
         if len(err) != 8:
             return False
+
         try:
-            err_hi = int(err[:3])
-            err_lo = int(err[-4:])
+            err_hi = int(err[:3], 10)
+            err_lo = int(err[-4:], 10)
         except ValueError:
             return False
-        if err_hi != 5 or err_lo < 7000:
+
+        if err_hi != 5:
             return False
-        embed_extra = None
-        if err_lo == 9999:
-            embed_extra = "Also NIM's maximum compacted result to error code."
-        elif err_lo == 7000:
-            embed_extra = "Also NIM's minimum compacted result to error code."
-        err_lo -= 7000
-        module = err_lo >> 5
-        short_desc = err_lo & 0x1F
-        known_desc = []
-        unknown_desc = []
-        for i in range(0+short_desc, 0x400+short_desc, 0x20):
-            if i not in self.descriptions:
-                unknown_desc += [str(i)]
-                continue
-            known_desc += [self.get_name(self.descriptions, i)]
-        known_desc = "\n".join(known_desc)
-        unknown_desc = ", ".join(unknown_desc)
-        embed.add_field(name="Module", value=self.get_name(self.modules, module), inline=False)
-        if known_desc:
-            embed.add_field(name="Possible known descriptions", value=known_desc, inline=False)
-        if unknown_desc:
-            embed.add_field(name="Possible unknown descriptions", value=unknown_desc, inline=False)
-        if embed_extra:
-            embed.add_field(name="Extra Note", value=embed_extra, inline=False)
-        embed.color = Color(0xCE181E)
-        return True
+
+        if err_lo >= 2000 and err_lo < 3024:
+            err_lo -= 2000
+
+            embed.add_field(name="Module", value=self.get_name(self.modules, 52), inline=False)
+            embed.add_field(name="Description", value=self.get_name(self.descriptions, err_lo), inline=False)
+            return True
+
+        # this range is still a little mystified by another section in nim
+        # but this covers one section of it
+        elif err_lo >= 4200 and err_lo < 4400:
+            embed_extra = None
+            if err_lo == 4399:
+                embed_extra = "Or NIM's HTTP result description maximum."
+            err_lo -= 4200
+
+            embed.add_field(name="Module", value=self.get_name(self.modules, 40), inline=False)
+            embed.add_field(name="Description", value=self.get_name(self.descriptions, err_lo), inline=False)
+            if embed_extra:
+                embed.add_field(name="Extra Note", value=embed_extra, inline=False)
+            return True
+
+        elif err_lo >= 4400 and err_lo < 5000:
+            err_lo -= 4400
+            embed_extra = None
+            desc = ""
+            if err_lo < 100:
+                desc = f"{err_lo + 100}"
+            elif err_lo >= 100 and err_lo < 500:
+                desc = f"{err_lo + 100} or {err_lo}"
+                embed_extra = "Likely due to a programming mistake in NIM, this error code range suffers collision.\n"
+                embed_extra += "Real HTTP code will vary with what operation it came from."
+            else:
+                desc = f"{err_lo}"
+
+            embed.description = "HTTP error code"
+            embed.add_field(name="Code", value=desc, inline=False)
+            if embed_extra:
+                embed.add_field(name="Extra Note", value=embed_extra, inline=False)
+            return True
+
+        elif err_lo >= 5000 and err_lo < 7000:
+            err_lo -= 5000
+
+            desc = f"SOAP Message returned ErrorCode {err_lo} on a NIM operation."
+            if err_lo == 1999:
+                desc += "\nOr beyond 1999. It's maxed out at 005-6999."
+            embed.description = desc
+            return True
+
+        elif err_lo >= 7000:
+            embed_extra = None
+            if err_lo == 9999:
+                embed_extra = "Also NIM's maximum compacted result to error code."
+            elif err_lo == 7000:
+                embed_extra = "Also NIM's minimum compacted result to error code."
+            err_lo -= 7000
+
+            module = err_lo >> 5
+            short_desc = err_lo & 0x1F
+
+            known_desc = []
+            unknown_desc = []
+
+            for i in range(0+short_desc, 0x400+short_desc, 0x20):
+                if i not in self.descriptions:
+                    unknown_desc += [str(i)]
+                    continue
+                known_desc += [self.get_name(self.descriptions, i)]
+
+            known_desc = "\n".join(known_desc)
+            unknown_desc = ", ".join(unknown_desc)
+
+            embed.add_field(name="Module", value=self.get_name(self.modules, module), inline=False)
+            if known_desc:
+                embed.add_field(name="Possible known descriptions", value=known_desc, inline=False)
+            if unknown_desc:
+                embed.add_field(name="Possible unknown descriptions", value=unknown_desc, inline=False)
+            if embed_extra:
+                embed.add_field(name="Extra Note", value=embed_extra, inline=False)
+            return True
+
+        return False
 
     @commands.command()
     async def err(self, ctx, err: str):
@@ -396,8 +470,8 @@ class Err(commands.Cog):
             if err in self.errcodes:
                 embed.description = self.errcodes[err]
                 embed.color = (Color(0xCE181E) if err[0] == "0" else Color(0x009AC7))
-            elif self.nim_compacted_result_errors(err, embed):
-                pass
+            elif self.nim_3ds_errors(err, embed):
+                embed.color = Color(0xCE181E)
             else:
                 embed.description = "I don't know this one! Click the error code for details on Nintendo Support.\n\nIf you keep getting this issue and Nintendo Support does not help, or know how to fix it, you should report relevant details to <@78465448093417472> so it can be added to the bot."
 
