@@ -225,7 +225,7 @@ class Events(DatabaseCog):
             if is_edit:
                 msg += " (edited)"
             await self.bot.channels['watch-logs'].send(msg, embed=embed)
-        is_help_channel = "assistance" in message.channel.name
+        is_help_channel = message.channel in self.bot.assistance_channels
         msg = ''.join(char for char in message.content.lower() if char in printable)
         msg_no_separators = re.sub('[ \*_\-~]', '', msg)
 
