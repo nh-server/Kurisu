@@ -162,7 +162,7 @@ class Assistance(commands.Cog):
         await self.simple_embed(ctx, """
                 **Is it safe to update to 11.10?**
                 
-                **Luma3DS 9.1**
+                **Luma3DS 9.1=>**
                 You can update to 11.10 safely.
                 
                 **Luma3DS 8.0 - 9.0**
