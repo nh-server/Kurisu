@@ -14,7 +14,10 @@ class FriendCode(DatabaseCog):
 
     # based on https://github.com/megumisonoda/SaberBot/blob/master/lib/saberbot/valid_fc.rb
     def verify_fc(self, fc):
-        fc = int(fc.replace('-', ''))
+        try:
+            fc = int(fc.replace('-', ''))
+        except ValueError:
+            return None
         if fc > 0x7FFFFFFFFF:
             return None
         principal_id = fc & 0xFFFFFFFF
