@@ -865,5 +865,14 @@ in the scene.
                                 You will have to manually set these for each WiFi connection you have set up.
                                 """, title="90DNS IP adressses")
 
+    @commands.command(aliases=['missingco'])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def missingconfig(self, ctx):
+        """No main boot entries found solution"""
+        await self.simple_embed(ctx, """
+                                You forgot to copy the "hekate_ipl.ini" file to the bootloader folder on your sd card, or forgot to insert your sd card before booting hekate.
+
+                                Note that if hekate can't find a config, it'll create one. So likely you now have a hekate_ipl.ini in your bootloader folder, replace it with the one from the guide
+                                """, title="Getting the \"No main boot entries found\" error in hekate?")
 def setup(bot):
     bot.add_cog(Assistance(bot))
