@@ -93,7 +93,7 @@ class SwitchSerialNumberCheck(Cog):
                 elif 7001780 <= checking_value < 7003000:
                     maybe = True
                 elif checking_value >= 7003000:
-                    patched = True
+                    maybe = True
 
             elif assembly_line == 9:
                 maybe = True
