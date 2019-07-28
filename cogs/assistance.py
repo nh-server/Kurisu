@@ -162,7 +162,7 @@ class Assistance(commands.Cog):
         await self.simple_embed(ctx, """
                 **Is it safe to update to 11.10?**
                 
-                **Luma3DS 9.1**
+                **Luma3DS 9.1 and above**
                 You can update to 11.10 safely.
                 
                 **Luma3DS 8.0 - 9.0**
@@ -172,7 +172,7 @@ versions on 11.10 will cause a blackscreen until you update.
                 **Luma3DS 7.1** 
                 Follow the [B9S upgrade guide](https://3ds.hacks.guide/updating-b9s)
                 
-                **Luma3DS <=7.0.5**
+                **Luma3DS 7.0.5 and below**
                 Follow the [a9lh-to-b9s guide](https://3ds.hacks.guide/a9lh-to-b9s)
                  
                 **To find out your Luma3DS version, hold select on bootup and look at the top left corner of the top screen**
