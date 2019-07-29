@@ -33,13 +33,13 @@ class SwitchSerialNumberCheck(Cog):
         removed."""
         serial = serial.split()[0].upper()
         mariko = False
-        if not re.match("XA[JWK][1479][0-9]{6}", serial):
+        if not re.match("XA[JKW][1479][0-9]{6}", serial):
 
             # This should catch serials from the new "mariko" units
             # XKW10000000000, XKJ10000000000 = HAC-001-01, the "New Switch"
             # XJW01000000000, XWW01000000000 = HOH-001, the Switch Lite
             # As not much about the assembly line is known yet every digit will count for the filter
-            if re.match("X[KW][WJ][0-9]{7}", serial):
+            if re.match("X[KW][JW][0-9]{7}", serial):
                 mariko = True
             else:
                 return await ctx.send("This is not a valid serial number!\n"
@@ -117,7 +117,7 @@ class SwitchSerialNumberCheck(Cog):
 
         if mariko:
             return await ctx.send("{}: Serial {} seems to be a \"mariko\" Switch or Switch Lite.\n" 
-                                      "These are currently not hackable or vulnerable to any known exploits".format(ctx.author.mention, safe_serial))
+                                  "These are currently not hackable or vulnerable to any known exploits".format(ctx.author.mention, safe_serial))
         elif maybe:
             return await ctx.send("{}: Serial {} _might_ be patched. The only way you can know this for sure is by "
                                   "pushing the payload manually. You can find instructions to do so here: "
