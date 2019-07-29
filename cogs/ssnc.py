@@ -32,6 +32,7 @@ class SwitchSerialNumberCheck(Cog):
         """Check the given Switch serial to see if it is patched or not. For safety reasons, the invoking message is
         removed."""
         serial = serial.split()[0].upper()
+        mariko = False
         if not re.match("XA[JWK][1479][0-9]{6}", serial):
 
             # This should catch serials from the new "mariko" units
@@ -39,8 +40,7 @@ class SwitchSerialNumberCheck(Cog):
             # XJW01000000000, XWW01000000000 = HOH-001, the Switch Lite
             # As not much about the assembly line is known yet every digit will count for the filter
             if re.match("X[KW][WJ][0-9]{7}", serial):
-                return await ctx.send("This seems to be a \"mariko\" Switch or Switch Lite.\n" 
-                                      "These are currently not hackable or vulnerable to any known exploits")
+                mariko = True
             else:
                 return await ctx.send("This is not a valid serial number!\n"
                                       "If you believe this to be an error, contact staff.")
@@ -115,7 +115,10 @@ class SwitchSerialNumberCheck(Cog):
         except:
             pass
 
-        if maybe:
+        if mariko:
+            return await ctx.send("{}: Serial {} seems to be a \"mariko\" Switch or Switch Lite.\n" 
+                                      "These are currently not hackable or vulnerable to any known exploits".format(ctx.author.mention, safe_serial))
+        elif maybe:
             return await ctx.send("{}: Serial {} _might_ be patched. The only way you can know this for sure is by "
                                   "pushing the payload manually. You can find instructions to do so here: "
                                   "https://switchgui.de/switch-guide/user_guide/emummc/sending_payload/".format(ctx.author.mention,
