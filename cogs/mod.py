@@ -491,7 +491,7 @@ class Mod(DatabaseCog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(hidden=True)
-    async def approve(self, ctx, invite: discord.Invite, times: int):
+    async def approve(self, ctx, invite: discord.Invite, times: int=1):
         """Removes nofilter from the channel"""
         code = invite.code
         self.bot.temp_guilds[code] = times
