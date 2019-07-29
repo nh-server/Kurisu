@@ -16,6 +16,10 @@ class Events(DatabaseCog):
     Special event handling.
     """
 
+    def __init__(self, bot):
+        super().__init__(bot)
+        self.bot.temp_guilds = {}
+
     # don't add spaces or dashes to words
     piracy_tools = (
         'freeshop',
@@ -123,7 +127,7 @@ class Events(DatabaseCog):
         'stargate',
         'freestore',
         'sxinstaller',
-        
+
         #'sxos',
     )
 
@@ -198,6 +202,14 @@ class Events(DatabaseCog):
         
     )
 
+    approved_guilds = (
+        'C29hYvh',  # Nintendo Homebrew
+        'ZdqEhed',  # Reswitched
+        'qgEeK3E',  # Famicomunnity
+        'yqSut8c',  # TWL Mode Hacking!
+        'EZSxqRr',  # ACNL Modding
+    )
+
     # I hate naming variables sometimes
     user_antispam = {}
     channel_antispam = {}
@@ -239,6 +251,10 @@ class Events(DatabaseCog):
         contains_video = any(res)
         contains_piracy_video_id = False if not contains_video else any(x or y for x, y in res if x in self.piracy_video_ids or y in self.piracy_video_ids)
 
+        res = re.findall('(?:discordapp\.com/invite|discord\.gg)/([\w]+)', message.content)
+        temp_guilds = [x for x in res if x in self.bot.temp_guilds]
+        contains_non_approved_invite = not all(x in self.approved_guilds for x in res)
+
         contains_piracy_tool_alert_mention = any(x in msg_no_separators for x in self.piracy_tools_alert)
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site',))
         contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub', 'strawpoii', 'hackinformer.com', 'console.guide', 'jacksorrell.co.uk', 'jacksorrell.tv', 'nintendobrew.com', 'reinx.guide', 'NxpeNwz', 'scenefolks.com'))
@@ -253,6 +269,25 @@ class Events(DatabaseCog):
                 await self.bot.channels['upload-logs'].send(f"📎 **Attachment**: {message.author.mention} uploaded to {message.channel.mention}", embed=embed2)
         if contains_invite_link:
             await self.bot.channels['message-logs'].send(f"✉️ **Invite posted**: {message.author.mention} posted an invite link in {message.channel.mention}\n------------------\n{self.bot.escape_text(message.content)}")
+            if contains_non_approved_invite:
+                try:
+                    await message.delete()
+                except discord.NotFound:
+                    pass
+
+                try:
+                    await message.author.send(f"Please read {self.bot.channels['welcome-and-rules'].mention}. Server invites must be approved by staff. To contact staff send a message to <@333857992170536961>.")
+                except discord.errors.Forbidden:
+                    pass
+            if temp_guilds:
+                for guild in temp_guilds:
+                    try:
+                        self.bot.temp_guilds[guild] -= 1
+                    except KeyError:
+                        continue
+                    if self.bot.temp_guilds[guild] <= 0:
+                        del self.bot.temp_guilds[guild]
+
         if contains_misinformation_url_mention:
             try:
                 await message.delete()
