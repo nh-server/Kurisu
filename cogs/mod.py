@@ -488,6 +488,16 @@ class Mod(DatabaseCog):
         await self.remove_nofilter(channel)
         await self.bot.channels['mod-logs'].send(f"🚫 **Filter**: {ctx.author.mention} removed no filter from {channel.mention}")
 
+    @is_staff("Helper")
+    @commands.guild_only()
+    @commands.command(hidden=True)
+    async def approve(self, ctx, invite: discord.Invite, times: int=1):
+        """Approves a server invite for a number of times"""
+        code = invite.code
+        self.bot.temp_guilds[code] = times
+        await ctx.send(f"Approved an invite to {invite.guild}({code}) for posting {times} times")
+        await self.bot.channels['mod-logs'].send(f"🚫 **Approved**: {ctx.author.mention} approved server {invite.guild}({code}) to be posted {times} times")
+
 
 def setup(bot):
     bot.add_cog(Mod(bot))
