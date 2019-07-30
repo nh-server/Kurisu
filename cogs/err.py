@@ -333,6 +333,8 @@ class Err(commands.Cog):
         if err.startswith("0x"):
             err = err[2:]
         rc = int(err, 16)
+        if not rc & 0x80000000:
+            await ctx.send('This is likely not a CTR error code.')
         await self.aaaa(ctx, rc)
         desc = rc & 0x3FF
         mod = (rc >> 10) & 0xFF
