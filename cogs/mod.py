@@ -492,7 +492,7 @@ class Mod(DatabaseCog):
     @commands.guild_only()
     @commands.command(hidden=True)
     async def approve(self, ctx, invite: discord.Invite, times: int=1):
-        """Removes nofilter from the channel"""
+        """Approves a server invite for a number of times"""
         code = invite.code
         self.bot.temp_guilds[code] = times
         await ctx.send(f"Approved an invite to {invite.guild}({code}) for posting {times} times")
