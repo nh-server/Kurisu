@@ -805,7 +805,7 @@ your device will refuse to write to it.
         embed = discord.Embed(title="3DS VC Extraction Tutorial", color=discord.Color.red())
         embed.set_author(name="Glazed_Belmont")
         embed.set_thumbnail(url="https://i.imgur.com/TgdOPkG.png")
-        embed.url = "https://github.com/GlaZedBelmont/3DS-Tutorials/blob/master/3DS-VC-and-GBA-bios-Extraction-Tutorial.md"
+        embed.url = "https://github.com/GlaZedBelmont/3DS-Tutorials/wiki/3DS-VC-and-GBA-bios-Extraction-Tutorial"
         embed.description = "Basic tutorial to extract a rom out of your VC titles"
         await ctx.send(embed=embed)  
         
