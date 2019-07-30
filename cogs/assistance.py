@@ -799,6 +799,16 @@ your device will refuse to write to it.
         embed.description = "Basic tutorial for TWiLightMenu++"
         await ctx.send(embed=embed)
 
+    @tutorial.command(aliases=["3dsvcextract", "gbabios", "dumpbios"])
+    async def vcextract(self, ctx):
+        """Links to 3DS VC and GBA bios Extraction Tutorial"""
+        embed = discord.Embed(title="3DS VC Extraction Tutorial", color=discord.Color.red())
+        embed.set_author(name="Glazed_Belmont")
+        embed.set_thumbnail(url="https://i.imgur.com/TgdOPkG.png")
+        embed.url = "https://github.com/GlaZedBelmont/3DS-Tutorials/blob/master/3DS-VC-and-GBA-bios-Extraction-Tutorial.md"
+        embed.description = "Basic tutorial to extract a rom out of your VC titles"
+        await ctx.send(embed=embed)  
+        
     @commands.command()
     async def tinydb(self, ctx):
         """Community-maintained homebrew database"""
@@ -809,6 +819,16 @@ your device will refuse to write to it.
         embed.description = "A Community-maintained homebrew database"
         await ctx.send(embed=embed)
 
+    @commands.command(aliases=["appatch", "dsscene"])
+    async def ap(self, ctx):
+        """Anti-piracy patching guide"""
+        embed = discord.Embed(title="AP Guide", color=discord.Color.purple())
+        embed.set_author(name="Glazed_Belmont")
+        embed.set_thumbnail(url="https://i.imgur.com/TgdOPkG.png")
+        embed.url = "https://github.com/GlaZedBelmont/3DS-Tutorials/wiki/AP-Patching"
+        embed.description = "An AP-Patching guide"
+        await ctx.send(embed=embed)
+        
     # Information about autoRCM
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
