@@ -803,6 +803,7 @@ your device will refuse to write to it.
     async def vcextract(self, ctx):
         """Links to 3DS VC and GBA bios Extraction Tutorial"""
         embed = discord.Embed(title="3DS VC Extraction Tutorial", color=discord.Color.red())
+        embed.set_author(name="Glazed_Belmont")
         embed.set_thumbnail(url="https://i.imgur.com/TgdOPkG.png")
         embed.url = "https://github.com/GlaZedBelmont/3DS-Tutorials/blob/master/3DS-VC-and-GBA-bios-Extraction-Tutorial.md"
         embed.description = "Basic tutorial to extract a rom out of your VC titles"
@@ -825,7 +826,7 @@ your device will refuse to write to it.
         embed.set_author(name="Glazed_Belmont")
         embed.set_thumbnail(url="https://i.imgur.com/TgdOPkG.png")
         embed.url = "https://github.com/GlaZedBelmont/3DS-Tutorials/wiki/AP-Patching"
-        embed.description = "A AP-Patching guide"
+        embed.description = "An AP-Patching guide"
         await ctx.send(embed=embed)
         
     # Information about autoRCM
