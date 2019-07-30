@@ -196,7 +196,6 @@ class Events(DatabaseCog):
         'arcadepunks',
         'romstorage',
         'enikon',
-        'thatisosite',
         'downloadroms.io',
         'vimm',
         'edgeemu',
