@@ -506,9 +506,9 @@ class Events(DatabaseCog):
                 await self.bot.channels['helpers'].send("Restarting bot...")
                 await self.bot.close()
             return
+        await self.bot.wait_until_all_ready()
         if message.author == message.guild.me or await check_staff_id(self, 'Helper', message.author.id) or await self.check_nofilter(message.channel):  # don't process messages by the bot or staff or in the helpers channel
             return
-        await self.bot.wait_until_all_ready()
         await self.scan_message(message)
         self.bot.loop.create_task(self.user_ping_check(message))
         self.bot.loop.create_task(self.user_spam_check(message))
@@ -518,10 +518,10 @@ class Events(DatabaseCog):
     async def on_message_edit(self, message_before, message_after):
         if isinstance(message_before.channel, discord.abc.PrivateChannel):
             return
+        await self.bot.wait_until_all_ready()
         try:
             if await self.check_nofilter(message_before.channel):
                 return
-            await self.bot.wait_until_all_ready()
             if message_after.author == self.bot.guild.me or await check_staff_id(self, 'Helper', message_after.author.id) or await self.check_nofilter(message_after.channel):  # don't process messages by the bot or staff or in the helpers channel
                 return
             if message_before.content == message_after.content:
