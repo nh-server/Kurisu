@@ -253,7 +253,7 @@ class Events(DatabaseCog):
 
         res = re.findall('(?:discordapp\.com/invite|discord\.gg)/([\w]+)', message.content)
         temp_guilds = [x for x in res if x in self.bot.temp_guilds]
-        contains_non_approved_invite = not all(x in self.approved_guilds for x in res)
+        contains_non_approved_invite = not all(x in self.approved_guilds or x in self.bot.temp_guilds for x in res)
 
         contains_piracy_tool_alert_mention = any(x in msg_no_separators for x in self.piracy_tools_alert)
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site',))
