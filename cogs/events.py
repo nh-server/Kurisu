@@ -268,7 +268,7 @@ class Events(DatabaseCog):
                 embed2 = discord.Embed(description=f"Size: {f.size}\nMessage: [{message.channel.name}]({message.jump_url})\nDownload: [{f.filename}]({f.url})")
                 await self.bot.channels['upload-logs'].send(f"📎 **Attachment**: {message.author.mention} uploaded to {message.channel.mention}", embed=embed2)
         if contains_invite_link:
-            await self.bot.channels['message-logs'].send(f"✉️ **Invite posted**: {message.author.mention} posted an invite link in {message.channel.mention}\n------------------\n{self.bot.escape_text(message.content)}")
+            await self.bot.channels['message-logs'].send(f"✉️ **Invite posted**: {message.author.mention} posted an invite link in {message.channel.mention} {'(message deleted)' if contains_non_approved_invite else ''}\n------------------\n{self.bot.escape_text(message.content)}")
             if contains_non_approved_invite:
                 try:
                     await message.delete()
