@@ -248,16 +248,6 @@ versions on 11.10 will cause a blackscreen until you update.
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def inoriquest(self, ctx):
-        """Tells user to be descriptive"""
-        await self.simple_embed(ctx, """
-                                > Reminder: if you would like someone to help you, please be as descriptive as \
-possible, of your situation, things you have done, as little as they may seem, \
-aswell as assisting materials. Asking to ask wont expedite your process, and may delay assistance.
-                                """)
-
-    @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def inoriwarn(self, ctx):
         """Warns users to keep the channels on-topic - Staff & Helper Declaration Only"""
         await self.simple_embed(ctx, """
