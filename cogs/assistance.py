@@ -780,6 +780,15 @@ your device will refuse to write to it.
         embed.description = "Basic tutorial for AC:NL editing"
         await ctx.send(embed=embed)
 
+    @tutorial.command(aliases=["CTGP-7", "MK7_custom_tracks"])
+    async def ctgp7(self, ctx):
+        """Custom Tracks Grand Prix - 7 installation guide"""
+        embed = discord.Embed(title="CTGP-7 installation guide", color=discord.Color.red())
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/337379618157887489/505455012474781697/ctgp___7_by_gameonion-d8z360t_edited.png")
+        embed.url = "https://github.com/mariohackandglitch/CTGP-7updates/blob/master/CTGP-7_Intallation_Guide_EN.pdf"
+        embed.description = "Installation tutorial for CTGP-7 (Mario Kart 7)"
+        await ctx.send(embed=embed)
+
     @tutorial.command(aliases=["twilightmenu", "dsimenu++", "srloader"])
     async def twlmenu(self, ctx):
         """Links to twlmenu tutorial"""
