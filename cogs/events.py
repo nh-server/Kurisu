@@ -351,7 +351,7 @@ class Events(DatabaseCog):
                 pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
             await self.bot.channels['message-logs'].send(f"**Bad site**: {message.author.mention} mentioned an unbanning site/service/program directly in {message.channel.mention} (message deleted)", embed=embed)
         if contains_video and message.channel in self.bot.assistance_channels:
-            await self.bot.channels['message-logs'].send(f"▶️ **Video posted**: {message.author.mention} posted a video in {message.channel.mention}\n------------------\n{message.content.clear_content}")
+            await self.bot.channels['message-logs'].send(f"▶️ **Video posted**: {message.author.mention} posted a video in {message.channel.mention}\n------------------\n{message.clean_content}")
 
         # check for guide mirrors and post the actual link
         urls = re.findall(r'(https?://\S+)', msg)
