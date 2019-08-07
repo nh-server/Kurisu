@@ -215,9 +215,6 @@ class Events(DatabaseCog):
     channel_antispam = {}
     help_notice_anti_repeat = []
 
-    # this is not a good idea, but i'll make a better implementation later
-    channels_to_watch_for_videos = ['196635695958196224', '247557068490276864', '279783073497874442', '439933093118476289']
-
     async def scan_message(self, message, is_edit=False):
         embed = discord.Embed()
         embed.description = message.content
@@ -353,7 +350,7 @@ class Events(DatabaseCog):
             except discord.errors.Forbidden:
                 pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
             await self.bot.channels['message-logs'].send(f"**Bad site**: {message.author.mention} mentioned an unbanning site/service/program directly in {message.channel.mention} (message deleted)", embed=embed)
-        if contains_video and message.channel.id in self.channels_to_watch_for_videos:
+        if contains_video and message.channel in self.bot.assistance_channels:
             await self.bot.channels['message-logs'].send(f"▶️ **Video posted**: {message.author.mention} posted a video in {message.channel.mention}\n------------------\n{message.content.clear_content}")
 
         # check for guide mirrors and post the actual link
