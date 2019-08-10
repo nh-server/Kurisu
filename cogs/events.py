@@ -199,7 +199,7 @@ class Events(DatabaseCog):
         'arcadepunks',
         'romstorage',
         'enikon',
-        
+        'xecuterrocks',
     )
 
     approved_guilds = (
