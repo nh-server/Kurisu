@@ -672,6 +672,19 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
                 embed2.description = "The recommended way to play old classics on your WiiU"
                 await ctx.send(embed=embed2)
 
+    # Embed to Chroma Ryu's cartinstall guide
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def cartinstall(self, ctx):
+        """How to install 3DS cartridges to the SD card"""
+        embed = discord.Embed(title="3DS Cart Install Guide", color=discord.Color(0x66FFFF))
+        embed.set_author(name="Chroma Ryu", url="https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/CartInstall-guide")
+        embed.set_thumbnail(url="https://i.imgur.com/U8NA9lx.png")
+        embed.url = "https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/CartInstall-guide"
+        embed.description = "How to install 3DS cartridges to the SD card"
+        await ctx.send(embed=embed)
+
+
     # Embed to Chroma Ryu's godmode9 guide
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
