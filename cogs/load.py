@@ -18,7 +18,7 @@ class Load(commands.Cog):
     @is_staff("OP")
     @commands.command(hidden=True)
     async def load(self, ctx, *, module: str):
-        """Loads an Cog."""
+        """Loads a Cog."""
         try:
             if module[0:7] != "cogs.":
                 module = "cogs." + module
@@ -30,7 +30,7 @@ class Load(commands.Cog):
     @is_staff("OP")
     @commands.command(hidden=True)
     async def unload(self, ctx, *, module: str):
-        """Unloads an Cog."""
+        """Unloads a Cog."""
         try:
             if module[0:7] != "cogs.":
                 module = "cogs." + module
@@ -45,7 +45,7 @@ class Load(commands.Cog):
     @is_staff("OP")
     @commands.command(name='reload')
     async def _reload(self, ctx, *, module: str):
-        """Reloads an Cog."""
+        """Reloads a Cog."""
         try:
             if module[0:7] != "cogs.":
                 module = "cogs." + module

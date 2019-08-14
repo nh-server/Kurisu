@@ -144,6 +144,7 @@ class Assistance(commands.Cog):
         embed.description = "How to use NTR CFW with Snickerstream to stream your 3DS' screen"
         embed.add_field(name="Guide and Advice", value=cleandoc("""
                 Easy [install guide](https://github.com/RattletraPM/Snickerstream/wiki/Streaming-with-NTR) for streaming with Snickerstream.
+                Snickerstream [app download](https://github.com/RattletraPM/Snickerstream/releases/latest)
                 Having issues? Check the following:
                 • Are you connected to the Internet?
                 • Is your antivirus program blocking the program?
@@ -159,24 +160,42 @@ class Assistance(commands.Cog):
     async def update(self, ctx):
         """Explains how to safely prepare for an update if you have boot9strap installed"""
         await self.simple_embed(ctx, """
-                **Is it safe to update to 11.9?**
+                **Is it safe to update to 11.10?**
                 
-                **Luma3DS 9.1**
-                You can update to 11.9 safely.
+                **Luma3DS 9.1 and above**
+                You can update to 11.10 safely.
                 
                 **Luma3DS 8.0 - 9.0**
-                Follow this guide: (https://bit.ly/2Q58acr), then you can update to 11.9. Being on these Luma3DS \
-versions on 11.9 will cause a blackscreen until you update.
+                Follow this guide: (https://bit.ly/2Q58acr), then you can update to 11.10. Being on these Luma3DS \
+versions on 11.10 will cause a blackscreen until you update.
                 
                 **Luma3DS 7.1** 
                 Follow the [B9S upgrade guide](https://3ds.hacks.guide/updating-b9s)
                 
-                **Luma3DS <=7.0.5**
+                **Luma3DS 7.0.5 and below**
                 Follow the [a9lh-to-b9s guide](https://3ds.hacks.guide/a9lh-to-b9s)
                  
                 **To find out your Luma3DS version, hold select on bootup and look at the top left corner of the top screen**
                 """)
-        
+
+    @commands.command()
+    @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
+    async def lumacheck(self, ctx):
+        """How to check Luma version"""
+        await ctx.send("Please check your Luma version. In order to do this, you will need to load the Luma Configuration screen.\n1. Turn your console off.\n2. Hold the SELECT button.\n3. While still holding SELECT, turn the console on.\n4. Provide a photo of your console's screens, or if you can see the version, tell us here.")
+
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def info3ds(self, ctx):
+        """Links to eiphax explain page"""
+        await self.simple_embed(ctx, "Want to learn more about the 3DS and CFW? <https://3ds.eiphax.tech/what.html>")
+
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def cfwuses(self, ctx):
+        """Links to eiphax cfw uses page"""
+        await self.simple_embed(ctx, "Want to know what CFW can be used for? <https://3ds.eiphax.tech/tips.html>")
+
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def updateb9s(self, ctx):
@@ -247,16 +266,6 @@ versions on 11.9 will cause a blackscreen until you update.
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def inoriquest(self, ctx):
-        """Tells user to be descriptive"""
-        await self.simple_embed(ctx, """
-                                > Reminder: if you would like someone to help you, please be as descriptive as \
-possible, of your situation, things you have done, as little as they may seem, \
-aswell as assisting materials. Asking to ask wont expedite your process, and may delay assistance.
-                                """)
-
-    @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def inoriwarn(self, ctx):
         """Warns users to keep the channels on-topic - Staff & Helper Declaration Only"""
         await self.simple_embed(ctx, """
@@ -291,7 +300,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
     async def ip(self, ctx):
         """How to check your IP"""
         embed = discord.Embed(title="Check your 3DSs IP (CFW)", color=discord.Color.dark_orange())
-        embed.description = "1. FBI\n2. Remote Install\n3. Recieve URLs over the network"
+        embed.description = "1. FBI\n2. Remote Install\n3. Receive URLs over the network"
         embed.add_field(name="Check your 3DSs IP (Homebrew)", value="1. Open Homebrew Launcher\n2. Press Y")
         await ctx.send(embed=embed)
 
@@ -309,13 +318,13 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             if ctx.message.channel.name.startswith(system):
                 consoleslist.append("None")
             else:
-                await ctx.send("Please specify a console; valid options are: 3ds, switch")
+                await ctx.send("Please specify a console. Valid options are: 3ds, switch")
                 return
         for x in consoleslist:
             if self.check_console(x, ctx.message.channel.name, '3ds'):
                 embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
                 embed.add_field(name="NTRBoot", value="Requires a compatible NDS flashcart and maybe an additional DS(i) or hacked 3DS console depending on the flashcart (All versions, all hardware). [Guide](https://3ds.hacks.guide/ntrboot)", inline=False)
-                embed.add_field(name="Seedminer", value="Requires a DSiWare game from the eshop (free or paid) or Steel Diver: Sub Wars (free from eshop) [Guide](https://3ds.hacks.guide/seedminer)", inline=False)
+                embed.add_field(name="Seedminer", value="Requires a working NDS mode or Steel Diver: Sub Wars (free from eshop) [Guide](https://3ds.hacks.guide/seedminer)", inline=False)
                 embed.add_field(name="Hardmod", value="Requires soldering **Not for beginners!**. [Guide](https://git.io/fhQk9)", inline=False)
                 await ctx.send(embed=embed)
                 continue
@@ -323,9 +332,9 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 embed = discord.Embed(title="Using a first-generation Switch?", color=0xe60012)
                 embed.description = cleandoc("""
                 Use [our guide](https://nh-server.github.io/switch-guide/user_guide/getting_started/) to determine if your Switch is a first-gen unit.
-                All firmware versions up to 7.0.1 are currently compatible with [Atmosphere](https://nh-server.github.io/switch-guide/).
-                "Second-generation" invulnerable systems should **not** update past 4.1.0, as these systems may have \
-custom firmware on this version in the very far future.
+                All firmware versions up to 8.1.0 are currently compatible with [Atmosphere](https://nh-server.github.io/switch-guide/).
+                "Second-generation" invulnerable systems should **not** update past 7.0.1, as these systems may have \
+custom firmware on this version (and versions below that) in the very far future.
                 Downgrading is **impossible** on patched consoles, and isn't worth your time on unpatched ones. 
                 """)
                 await ctx.send(embed=embed)
@@ -364,6 +373,17 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
 re-read the guide steps 2 or 3 times before coming here.
                                 """, title="Please read the guide")
 
+    @commands.command(aliases=["atmos", "ams"])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def atmosphere(self, ctx):
+        """Download link for the latest Atmosphère version"""
+        embed = discord.Embed(title="Atmosphère", color=discord.Color.blue())
+        embed.set_author(name="Atmosphère-NX Team", url="https://github.com/Atmosphere-NX")
+        embed.set_thumbnail(url="https://avatars2.githubusercontent.com/u/37918415?s=200&v=4")
+        embed.url = "https://github.com/Atmosphere-NX/Atmosphere/releases/latest"
+        embed.description = "Link to Atmosphère latest release"
+        await ctx.send(embed=embed)
+
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def nxcfw(self, ctx):
@@ -375,7 +395,7 @@ re-read the guide steps 2 or 3 times before coming here.
                                 * When Nintendo updates the firmware, they take a very long time to catch up
                                 * Most of the features they claim to offer can be enabled in Atmosphere with some \
 additional configuration
-                                * Atmosphere's emuNAND implementation will be completely free and open source
+                                * Atmosphere's emuNAND/emuMMC implementation is completely free and open source
                                 """, title="Why Atmosphere?")
 
     @commands.command()
@@ -506,8 +526,8 @@ the system can't check for an update.
         """What to do if you delete all your SD card contents"""
         await self.simple_embed(ctx, """
                                 If you have lost the contents of your SD card with CFW, you will need in SD root:
-                                -Homebrew launcher executable [here](https://smealum.github.io/ninjhax2/boot.3dsx)
-                                -`boot.firm` from [luma3ds latest release 7z](https://github.com/AuroraWright/Luma3DS/releases/latest)
+                                -`boot.3dsx` from Homebrew launcher [here](https://github.com/fincs/new-hbmenu/releases/latest/)
+                                -`boot.firm` from [luma3ds latest release](https://github.com/AuroraWright/Luma3DS/releases/latest)
                                 Then repeat the [finalizing setup](https://3ds.hacks.guide/finalizing-setup) page.
                                 """, color=discord.Color.red())
 
@@ -544,7 +564,7 @@ the system can't check for an update.
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def boot3dsx(self, ctx):
         """Download link for 3DS Homebrew Launcher, boot.3dsx"""
-        await self.simple_embed(ctx, "The 3DS Homebrew Launcher, [boot.3dsx](https://github.com/fincs/new-hbmenu/releases/download/v2.0.0/boot.3dsx)")
+        await self.simple_embed(ctx, "The 3DS Homebrew Launcher, [boot.3dsx](https://github.com/fincs/new-hbmenu/releases/download/v2.1.0/boot.3dsx)")
 
     @commands.command(aliases=["greenscr"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -651,6 +671,19 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
                 embed2.url = "https://gbatemp.net/threads/release-injectiine-wii-u-virtual-console-injector.491386/"
                 embed2.description = "The recommended way to play old classics on your WiiU"
                 await ctx.send(embed=embed2)
+
+    # Embed to Chroma Ryu's cartinstall guide
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def cartinstall(self, ctx):
+        """How to install 3DS cartridges to the SD card"""
+        embed = discord.Embed(title="3DS Cart Install Guide", color=discord.Color(0x66FFFF))
+        embed.set_author(name="Chroma Ryu", url="https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/CartInstall-guide")
+        embed.set_thumbnail(url="https://i.imgur.com/U8NA9lx.png")
+        embed.url = "https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/CartInstall-guide"
+        embed.description = "How to install 3DS cartridges to the SD card"
+        await ctx.send(embed=embed)
+
 
     # Embed to Chroma Ryu's godmode9 guide
     @commands.command()
@@ -787,6 +820,16 @@ your device will refuse to write to it.
         embed.description = "Basic tutorial for TWiLightMenu++"
         await ctx.send(embed=embed)
 
+    @tutorial.command(aliases=["3dsvcextract", "gbabios", "dumpbios"])
+    async def vcextract(self, ctx):
+        """Links to 3DS VC and GBA bios Extraction Tutorial"""
+        embed = discord.Embed(title="3DS VC Extraction Tutorial", color=discord.Color.red())
+        embed.set_author(name="Glazed_Belmont")
+        embed.set_thumbnail(url="https://i.imgur.com/TgdOPkG.png")
+        embed.url = "https://github.com/GlaZedBelmont/3DS-Tutorials/wiki/3DS-VC-and-GBA-bios-Extraction-Tutorial"
+        embed.description = "Basic tutorial to extract a rom out of your VC titles"
+        await ctx.send(embed=embed)  
+        
     @commands.command()
     async def tinydb(self, ctx):
         """Community-maintained homebrew database"""
@@ -797,6 +840,16 @@ your device will refuse to write to it.
         embed.description = "A Community-maintained homebrew database"
         await ctx.send(embed=embed)
 
+    @commands.command(aliases=["appatch", "dsscene"])
+    async def ap(self, ctx):
+        """Anti-piracy patching guide"""
+        embed = discord.Embed(title="AP Guide", color=discord.Color.purple())
+        embed.set_author(name="Glazed_Belmont")
+        embed.set_thumbnail(url="https://i.imgur.com/TgdOPkG.png")
+        embed.url = "https://github.com/GlaZedBelmont/3DS-Tutorials/wiki/AP-Patching"
+        embed.description = "An AP-Patching guide"
+        await ctx.send(embed=embed)
+        
     # Information about autoRCM
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -839,6 +892,28 @@ in the scene.
                                 You cannot ask about unbanning your console here.
                                 """, title="Switch Bans")
 
+    @commands.command(name="90dns")
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def ninetydns(self, ctx):
+        """90DNS IP adresses"""
+        await self.simple_embed(ctx, """
+                                The public 90DNS IP adresses are:
+                                - `163.172.141.219`
+                                - `45.248.48.62`
+                                
+                                To set these go to System Settings -> Internet -> Connection Settings -> Your wifi Network -> DNS to Manual -> Set primary and secondary DNS to the previously listed IPs -> Save Settings.
+                                
+                                You will have to manually set these for each WiFi connection you have set up.
+                                """, title="90DNS IP adressses")
 
+    @commands.command(aliases=['missingco'])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def missingconfig(self, ctx):
+        """No main boot entries found solution"""
+        await self.simple_embed(ctx, """
+                                You forgot to copy the "hekate_ipl.ini" file to the bootloader folder on your sd card, or forgot to insert your sd card before booting hekate.
+
+                                Note that if hekate can't find a config, it'll create one. So likely you now have a hekate_ipl.ini in your bootloader folder, replace it with the one from the guide
+                                """, title="Getting the \"No main boot entries found\" error in hekate?")
 def setup(bot):
     bot.add_cog(Assistance(bot))

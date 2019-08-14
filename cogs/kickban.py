@@ -20,6 +20,26 @@ class KickBan(DatabaseCog):
             raise commands.NoPrivateMessage()
         return True
 
+    def parse_time(self, length):
+        # thanks Luc#5653
+        units = {
+            "d": 86400,
+            "h": 3600,
+            "m": 60,
+            "s": 1
+        }
+        seconds = 0
+        match = re.findall("([0-9]+[smhd])", length)  # Thanks to 3dshax server's former bot
+        if not match:
+            return None, None
+        for item in match:
+            seconds += int(item[:-1]) * units[item[-1]]
+        timestamp = datetime.datetime.now()
+        delta = datetime.timedelta(seconds=seconds)
+        unban_time = timestamp + delta
+        unban_time_string = unban_time.strftime("%Y-%m-%d %H:%M:%S")
+        return unban_time, unban_time_string
+
     async def meme(self, beaner: discord.Member, beaned: discord.Member, action: str, channel: discord.TextChannel, reason: str):
         await channel.send(f"Seriously? What makes you think it's okay to try and {action} another staff or helper like that?")
         msg = f"{beaner.mention} attempted to {action} {beaned.mention}|{beaned} in {channel.mention} "
@@ -56,7 +76,7 @@ class KickBan(DatabaseCog):
         await self.bot.channels['mod-logs'].send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.kick <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
 
     @is_staff("OP")
-    @commands.command(name="ban")
+    @commands.command(name="ban",aliases=["yeet"])
     async def ban_member(self, ctx, member: converters.SafeMember, days: typing.Optional[int] = 0, *, reason=""):
         """Bans a user from the server. OP+ only. Optional: [days] Specify up to 7 days of messages to delete."""
         if await check_staff_id(ctx, 'Helper', member.id):
@@ -88,13 +108,14 @@ class KickBan(DatabaseCog):
         await self.bot.channels['mod-logs'].send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.ban <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
 
     @is_staff("OP")
-    @commands.command(name="banid")
+    @commands.command(name="banid",aliases=["yeetid"])
     async def banid_member(self, ctx, userid: int, *, reason=""):
         """Bans a user id from the server. OP+ only."""
         try:
             user = await self.bot.fetch_user(userid)
         except discord.errors.NotFound:
             await ctx.send(f"No user associated with ID {userid}.")
+            return
         if await check_staff_id(ctx, 'Helper', user.id):
             await ctx.send("You can't ban another staffer with this command!")
             return
@@ -112,7 +133,7 @@ class KickBan(DatabaseCog):
         await self.bot.channels['mod-logs'].send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.banid <userid> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
 
     @is_staff("OP")
-    @commands.command(name="silentban", hidden=True)
+    @commands.command(name="silentban", hidden=True, aliases=["quietyeet"])
     async def silentban_member(self, ctx, member: converters.SafeMember, days: typing.Optional[int] = 0, *, reason=""):
         """Bans a user from the server, without a notification. OP+ only.  Optional: [days] Specify up to 7 days of messages to delete."""
         if await check_staff_id(ctx, 'Helper', member.id):
@@ -136,29 +157,16 @@ class KickBan(DatabaseCog):
         await self.bot.channels['mod-logs'].send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.silentban <user> [reason]`." if reason == "" else ""))
 
     @is_staff("OP")
-    @commands.command(name="timeban")
+    @commands.command(name="timeban",aliases=["timeyeet"])
     async def timeban_member(self, ctx, member: converters.SafeMember, length, *, reason=""):
         """Bans a user for a limited period of time. OP+ only.\n\nLength format: #d#h#m#s"""
         if await check_staff_id(ctx, 'Helper', member.id):
             await self.meme(ctx.author, member, "timeban", ctx.channel, reason)
             return
-        # thanks Luc#5653
-        units = {
-            "d": 86400,
-            "h": 3600,
-            "m": 60,
-            "s": 1
-        }
-        seconds = 0
-        match = re.findall("([0-9]+[smhd])", length)  # Thanks to 3dshax server's former bot
-        if match is None:
-            return None
-        for item in match:
-            seconds += int(item[:-1]) * units[item[-1]]
-        timestamp = datetime.datetime.now()
-        delta = datetime.timedelta(seconds=seconds)
-        unban_time = timestamp + delta
-        unban_time_string = unban_time.strftime("%Y-%m-%d %H:%M:%S")
+        unban_time, unban_time_string = self.parse_time(length)
+        if unban_time_string is None:
+            await ctx.send("Invalid length for ban!")
+            return
         msg = f"You were banned from {ctx.guild.name}."
         if reason != "":
             msg += " The given reason is: " + reason
@@ -182,7 +190,7 @@ class KickBan(DatabaseCog):
         await self.bot.channels['mod-logs'].send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.timeban <user> <length> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
 
     @is_staff("OP")
-    @commands.command(name="softban")
+    @commands.command(name="softban",aliases=["gentleyeet"])
     async def softban_member(self, ctx, member: converters.SafeMember, *, reason):
         """Soft-ban a user. OP+ only.\n\nThis "bans" the user without actually doing a ban on Discord. The bot will instead kick the user every time they join. Discord bans are account- and IP-based."""
         if await check_staff_id(ctx, 'Helper', member.id):
@@ -204,7 +212,7 @@ class KickBan(DatabaseCog):
         await self.bot.channels['server-logs'].send(msg)
 
     @is_staff("OP")
-    @commands.command(name="softbanid")
+    @commands.command(name="softbanid",aliases=["gentleyeetid"])
     async def softbanid_member(self, ctx, user_id: int, *, reason):
         """Soft-ban a user based on ID. OP+ only.\n\nThis "bans" the user without actually doing a ban on Discord. The bot will instead kick the user every time they join. Discord bans are account- and IP-based."""
         if await check_staff_id(ctx, 'Helper', user_id):
@@ -229,6 +237,45 @@ class KickBan(DatabaseCog):
         user = await self.bot.fetch_user(user_id)
         await ctx.send(f"{user} has been unbanned!")
         msg = f"⚠️ **Un-soft-ban**: {ctx.author.mention} un-soft-banned {user}"
+        await self.bot.channels['mod-logs'].send(msg)
+
+    @is_staff("SuperOP")
+    @commands.command(name="ban2time")
+    async def convert_ban(self, ctx, user_id: int, length="", *,reason):
+        """Converts a ban to timeban"""
+        user = await self.bot.fetch_user(user_id)
+        try:
+            await self.bot.guild.fetch_ban(user)
+        except discord.errors.NotFound:
+            await ctx.send(f"No ban found for ID {user_id}.")
+            return
+        if await self.get_time_restrictions_by_user_type(user_id, 'timeban') is not None:
+            await ctx.send(f"User is already timebanned.")
+            return
+        unban_time, unban_time_string = self.parse_time(length)
+        if not unban_time_string:
+            await ctx.send("Invalid length for ban!")
+            return
+        await self.add_timed_restriction(user_id, unban_time_string, "timeban")
+        await ctx.send(f"{user.mention}|{user} is now b& until {unban_time_string} {time.tzname[0]}. 👍")
+        msg = f"⛔ **Ban Change**: {ctx.author.mention} changed {user} ban to a timeban until {unban_time_string}\n🏷 __User ID__: {user.id} \n✏️ __Reason__: {reason}"
+        await self.bot.channels['server-logs'].send(msg)
+        await self.bot.channels['mod-logs'].send(msg)
+
+    @is_staff("SuperOP")
+    @commands.command(name="time2ban")
+    async def convert_timeban(self, ctx, user_id: int, *, reason):
+        """Converts a timeban to ban"""
+        user = await self.bot.fetch_user(user_id)
+        try:
+            await self.bot.guild.fetch_ban(user)
+        except discord.errors.NotFound:
+            await ctx.send(f"No ban found for ID {user_id}.")
+            return
+        await self.remove_timed_restriction(user_id, 'timeban')
+        await ctx.send(f"{user.mention}|{user} is now b& forever. 👍")
+        msg = f"⛔ **Ban Change**: {ctx.author.mention} changed {user} timeban to an indefinite ban.\n🏷 __User ID__: {user.id} \n✏️ __Reason__: {reason}"
+        await self.bot.channels['server-logs'].send(msg)
         await self.bot.channels['mod-logs'].send(msg)
 
 

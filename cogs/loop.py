@@ -137,8 +137,8 @@ class Loop(DatabaseCog):
                     await self.bot.channels['helpers'].send(f"{self.bot.guild.name} has {self.bot.guild.member_count:,} members at this hour!")
                     self.last_hour = timestamp.hour
 
-                if timestamp.minute % 30 == 0 and timestamp.second == 0:
-                    self.bot.loop.create_task(self.update_netinfo())
+                # if timestamp.minute % 30 == 0 and timestamp.second == 0:
+                #    self.bot.loop.create_task(self.update_netinfo())
 
             except Exception as e:
                 print('Ignoring exception in start_update_loop', file=sys.stderr)
