@@ -144,6 +144,7 @@ class Events(DatabaseCog):
         #'sx',
         #'tx',
         'sxos',
+        'hbg',
     )
 
     drama_alert = ()
@@ -199,6 +200,7 @@ class Events(DatabaseCog):
         'arcadepunks',
         'romstorage',
         'enikon',
+        'r/roms',
         'xecuterrocks',
     )
 
