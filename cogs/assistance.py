@@ -162,7 +162,7 @@ class Assistance(commands.Cog):
         await self.simple_embed(ctx, """
                 **Is it safe to update to 11.10?**
                 
-                **Luma3DS 9.1**
+                **Luma3DS 9.1 and above**
                 You can update to 11.10 safely.
                 
                 **Luma3DS 8.0 - 9.0**
@@ -172,12 +172,30 @@ versions on 11.10 will cause a blackscreen until you update.
                 **Luma3DS 7.1** 
                 Follow the [B9S upgrade guide](https://3ds.hacks.guide/updating-b9s)
                 
-                **Luma3DS <=7.0.5**
+                **Luma3DS 7.0.5 and below**
                 Follow the [a9lh-to-b9s guide](https://3ds.hacks.guide/a9lh-to-b9s)
                  
                 **To find out your Luma3DS version, hold select on bootup and look at the top left corner of the top screen**
                 """)
-        
+
+    @commands.command()
+    @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
+    async def lumacheck(self, ctx):
+        """How to check Luma version"""
+        await ctx.send("Please check your Luma version. In order to do this, you will need to load the Luma Configuration screen.\n1. Turn your console off.\n2. Hold the SELECT button.\n3. While still holding SELECT, turn the console on.\n4. Provide a photo of your console's screens, or if you can see the version, tell us here.")
+
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def info3ds(self, ctx):
+        """Links to eiphax explain page"""
+        await self.simple_embed(ctx, "Want to learn more about the 3DS and CFW? <https://3ds.eiphax.tech/what.html>")
+
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def cfwuses(self, ctx):
+        """Links to eiphax cfw uses page"""
+        await self.simple_embed(ctx, "Want to know what CFW can be used for? <https://3ds.eiphax.tech/tips.html>")
+
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def updateb9s(self, ctx):
@@ -248,16 +266,6 @@ versions on 11.10 will cause a blackscreen until you update.
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def inoriquest(self, ctx):
-        """Tells user to be descriptive"""
-        await self.simple_embed(ctx, """
-                                > Reminder: if you would like someone to help you, please be as descriptive as \
-possible, of your situation, things you have done, as little as they may seem, \
-aswell as assisting materials. Asking to ask wont expedite your process, and may delay assistance.
-                                """)
-
-    @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def inoriwarn(self, ctx):
         """Warns users to keep the channels on-topic - Staff & Helper Declaration Only"""
         await self.simple_embed(ctx, """
@@ -316,7 +324,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             if self.check_console(x, ctx.message.channel.name, '3ds'):
                 embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
                 embed.add_field(name="NTRBoot", value="Requires a compatible NDS flashcart and maybe an additional DS(i) or hacked 3DS console depending on the flashcart (All versions, all hardware). [Guide](https://3ds.hacks.guide/ntrboot)", inline=False)
-                embed.add_field(name="Seedminer", value="Requires a DSiWare game from the eshop (free or paid) or Steel Diver: Sub Wars (free from eshop) [Guide](https://3ds.hacks.guide/seedminer)", inline=False)
+                embed.add_field(name="Seedminer", value="Requires a working NDS mode or Steel Diver: Sub Wars (free from eshop) [Guide](https://3ds.hacks.guide/seedminer)", inline=False)
                 embed.add_field(name="Hardmod", value="Requires soldering **Not for beginners!**. [Guide](https://git.io/fhQk9)", inline=False)
                 await ctx.send(embed=embed)
                 continue
@@ -664,6 +672,19 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
                 embed2.description = "The recommended way to play old classics on your WiiU"
                 await ctx.send(embed=embed2)
 
+    # Embed to Chroma Ryu's cartinstall guide
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def cartinstall(self, ctx):
+        """How to install 3DS cartridges to the SD card"""
+        embed = discord.Embed(title="3DS Cart Install Guide", color=discord.Color(0x66FFFF))
+        embed.set_author(name="Chroma Ryu", url="https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/CartInstall-guide")
+        embed.set_thumbnail(url="https://i.imgur.com/U8NA9lx.png")
+        embed.url = "https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/CartInstall-guide"
+        embed.description = "How to install 3DS cartridges to the SD card"
+        await ctx.send(embed=embed)
+
+
     # Embed to Chroma Ryu's godmode9 guide
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -799,6 +820,16 @@ your device will refuse to write to it.
         embed.description = "Basic tutorial for TWiLightMenu++"
         await ctx.send(embed=embed)
 
+    @tutorial.command(aliases=["3dsvcextract", "gbabios", "dumpbios"])
+    async def vcextract(self, ctx):
+        """Links to 3DS VC and GBA bios Extraction Tutorial"""
+        embed = discord.Embed(title="3DS VC Extraction Tutorial", color=discord.Color.red())
+        embed.set_author(name="Glazed_Belmont")
+        embed.set_thumbnail(url="https://i.imgur.com/TgdOPkG.png")
+        embed.url = "https://github.com/GlaZedBelmont/3DS-Tutorials/wiki/3DS-VC-and-GBA-bios-Extraction-Tutorial"
+        embed.description = "Basic tutorial to extract a rom out of your VC titles"
+        await ctx.send(embed=embed)  
+        
     @commands.command()
     async def tinydb(self, ctx):
         """Community-maintained homebrew database"""
@@ -809,6 +840,16 @@ your device will refuse to write to it.
         embed.description = "A Community-maintained homebrew database"
         await ctx.send(embed=embed)
 
+    @commands.command(aliases=["appatch", "dsscene"])
+    async def ap(self, ctx):
+        """Anti-piracy patching guide"""
+        embed = discord.Embed(title="AP Guide", color=discord.Color.purple())
+        embed.set_author(name="Glazed_Belmont")
+        embed.set_thumbnail(url="https://i.imgur.com/TgdOPkG.png")
+        embed.url = "https://github.com/GlaZedBelmont/3DS-Tutorials/wiki/AP-Patching"
+        embed.description = "An AP-Patching guide"
+        await ctx.send(embed=embed)
+        
     # Information about autoRCM
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -865,5 +906,14 @@ in the scene.
                                 You will have to manually set these for each WiFi connection you have set up.
                                 """, title="90DNS IP adressses")
 
+    @commands.command(aliases=['missingco'])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def missingconfig(self, ctx):
+        """No main boot entries found solution"""
+        await self.simple_embed(ctx, """
+                                You forgot to copy the "hekate_ipl.ini" file to the bootloader folder on your sd card, or forgot to insert your sd card before booting hekate.
+
+                                Note that if hekate can't find a config, it'll create one. So likely you now have a hekate_ipl.ini in your bootloader folder, replace it with the one from the guide
+                                """, title="Getting the \"No main boot entries found\" error in hekate?")
 def setup(bot):
     bot.add_cog(Assistance(bot))

@@ -127,7 +127,7 @@ class Kurisu(commands.Bot):
             try:
                 self.load_extension(extension)
             except BaseException as e:
-                print(f'{extension} failed to load.', extension)
+                print(f'{extension} failed to load.')
                 self.failed_cogs.append([extension, type(e).__name__, e])
 
     @staticmethod

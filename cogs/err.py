@@ -281,7 +281,9 @@ class Err(commands.Cog):
         '106-0346': 'NNID is permanently banned from a/multiple games (preferably Splatoon) online multiplayer. You cannot ask how to fix this issue here.',
         '115-1009': 'System is permanently banned from Miiverse.',
         '121-0902': 'Permissions missing for the action you are trying to perfrom (Miiverse error).',
+        '126-9622': 'Error when attempting to add funds. Maybe try again after a while, or make sure there is no issue with the payment method.',
         '150-1031': 'Disc could not be read. Either the disc is dirty, the lens is dirty, or the disc is unsupported (i.e. not a Wii or Wii U game).',
+        '150-2031': 'Disc could not be read. Either the disc is dirty, the lens is dirty, or the disc is unsupported (i.e. not a Wii or Wii U game).',
         '160-0101': '"Generic error". Can happen when formatting a system with CBHC.',
         '160-0102': 'Error in SLC/MLC or USB.',
         '160-0103': '"The system memory is corrupted (MLC)."',
@@ -333,12 +335,129 @@ class Err(commands.Cog):
         if err.startswith("0x"):
             err = err[2:]
         rc = int(err, 16)
+        if not rc & 0x80000000:
+            await ctx.send('This is likely not a CTR error code.')
         await self.aaaa(ctx, rc)
         desc = rc & 0x3FF
         mod = (rc >> 10) & 0xFF
         summ = (rc >> 21) & 0x3F
         level = (rc >> 27) & 0x1F
         return desc, mod, summ, level, rc
+
+    def nim_3ds_errors(self, err: str, embed):
+        """
+        Parses 3ds nim error codes between the range of 005-2000 to 005-3023, 005-4200 to 005-4399, 005-4400 to 005-4999, 005-5000 to 005-6999 and 005-7000 to 005-9999.
+
+        005-2000 to 005-3023:
+         - NIM got a result of its own. Took description and added by 52000.
+
+        005-4200 to 005-4399:
+         - NIM got an HTTP result. Took description and added by 54200, cutting out at 54399 if it was beyond that.
+
+        005-4400 to 005-4999:
+         - Range of HTTP codes, however, can suffer collision.
+
+        005-5000 to 005-6999:
+         - SOAP Error Code range, when <ErrorCode> is not 0 on the SOAP responses.
+
+        005-7000 to 005-9999:
+         - Non specific expected results are formatted to an error code in nim by taking result module and shifting right by 5, and taking the result description and masked with 0x1F, then added both together along with 57000.
+        """
+
+        if len(err) != 8:
+            return False
+
+        try:
+            err_hi = int(err[:3], 10)
+            err_lo = int(err[-4:], 10)
+        except ValueError:
+            return False
+
+        if err_hi != 5:
+            return False
+
+        if err_lo >= 2000 and err_lo < 3024:
+            err_lo -= 2000
+
+            embed.add_field(name="Module", value=self.get_name(self.modules, 52), inline=False)
+            embed.add_field(name="Description", value=self.get_name(self.descriptions, err_lo), inline=False)
+            return True
+
+        # this range is still a little mystified by another section in nim
+        # but this covers one section of it
+        elif err_lo >= 4200 and err_lo < 4400:
+            embed_extra = None
+            if err_lo == 4399:
+                embed_extra = "Or NIM's HTTP result description maximum."
+            err_lo -= 4200
+
+            embed.add_field(name="Module", value=self.get_name(self.modules, 40), inline=False)
+            embed.add_field(name="Description", value=self.get_name(self.descriptions, err_lo), inline=False)
+            if embed_extra:
+                embed.add_field(name="Extra Note", value=embed_extra, inline=False)
+            return True
+
+        elif err_lo >= 4400 and err_lo < 5000:
+            err_lo -= 4400
+            embed_extra = None
+            desc = ""
+            if err_lo < 100:
+                desc = f"{err_lo + 100}"
+            elif err_lo >= 100 and err_lo < 500:
+                desc = f"{err_lo + 100} or {err_lo}"
+                embed_extra = "Likely due to a programming mistake in NIM, this error code range suffers collision.\n"
+                embed_extra += "Real HTTP code will vary with what operation it came from."
+            else:
+                desc = f"{err_lo}"
+
+            embed.description = "HTTP error code"
+            embed.add_field(name="Code", value=desc, inline=False)
+            if embed_extra:
+                embed.add_field(name="Extra Note", value=embed_extra, inline=False)
+            return True
+
+        elif err_lo >= 5000 and err_lo < 7000:
+            err_lo -= 5000
+
+            desc = f"SOAP Message returned ErrorCode {err_lo} on a NIM operation."
+            if err_lo == 1999:
+                desc += "\nOr beyond 1999. It's maxed out at 005-6999."
+            embed.description = desc
+            return True
+
+        elif err_lo >= 7000:
+            embed_extra = None
+            if err_lo == 9999:
+                embed_extra = "Also NIM's maximum compacted result to error code."
+            elif err_lo == 7000:
+                embed_extra = "Also NIM's minimum compacted result to error code."
+            err_lo -= 7000
+
+            module = err_lo >> 5
+            short_desc = err_lo & 0x1F
+
+            known_desc = []
+            unknown_desc = []
+
+            for i in range(0+short_desc, 0x400+short_desc, 0x20):
+                if i not in self.descriptions:
+                    unknown_desc += [str(i)]
+                    continue
+                known_desc += [self.get_name(self.descriptions, i)]
+
+            known_desc = "\n".join(known_desc)
+            unknown_desc = ", ".join(unknown_desc)
+
+            embed.add_field(name="Module", value=self.get_name(self.modules, module), inline=False)
+            if known_desc:
+                embed.add_field(name="Possible known descriptions", value=known_desc, inline=False)
+            if unknown_desc:
+                embed.add_field(name="Possible unknown descriptions", value=unknown_desc, inline=False)
+            if embed_extra:
+                embed.add_field(name="Extra Note", value=embed_extra, inline=False)
+            return True
+
+        return False
 
     @commands.command()
     async def err(self, ctx, err: str):
@@ -352,11 +471,14 @@ class Err(commands.Cog):
         if re.match('[0-1][0-9][0-9]\-[0-9][0-9][0-9][0-9]', err):
             embed = discord.Embed(title=err + (": Nintendo 3DS" if err[0] == "0" else ": Wii U"))
             embed.url = f"http://www.nintendo.com/consumer/wfc/en_na/ds/results.jsp?error_code={err}&system={'3DS' if err[0] == '0' else 'Wiiu'}&locale=en_US"
-            if err not in self.errcodes:
-                embed.description = "I don't know this one! Click the error code for details on Nintendo Support.\n\nIf you keep getting this issue and Nintendo Support does not help, or know how to fix it, you should report relevant details to <@78465448093417472> so it can be added to the bot."
-            else:
+            if err in self.errcodes:
                 embed.description = self.errcodes[err]
                 embed.color = (Color(0xCE181E) if err[0] == "0" else Color(0x009AC7))
+            elif self.nim_3ds_errors(err, embed):
+                embed.color = Color(0xCE181E)
+            else:
+                embed.description = "I don't know this one! Click the error code for details on Nintendo Support.\n\nIf you keep getting this issue and Nintendo Support does not help, or know how to fix it, you should report relevant details to <@78465448093417472> so it can be added to the bot."
+
         # 0xE60012
         # Switch Error Codes (w/ website)
         # Switch Error Codes (w/o website)
