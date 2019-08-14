@@ -49,6 +49,7 @@ cogs = [
     'cogs.nxerr',
     'cogs.rules',
     'cogs.ssnc',
+    'cogs.xkcdparse',
 ]
 
 
@@ -69,6 +70,7 @@ class Kurisu(commands.Bot):
             'On-Duty 3DS': None,
             'On-Duty Wii U': None,
             'On-Duty Switch': None,
+            'On-Duty Legacy': None,
             'Probation': None,
             'Retired Staff': None,
             'Verified': None,
@@ -101,6 +103,7 @@ class Kurisu(commands.Bot):
             'hacking-general': None,
             'meta': None,
             'legacy-systems': None,
+            'dev': None,
             'off-topic': None,
             'voice-and-music': None,
             'bot-cmds': None,
@@ -124,7 +127,7 @@ class Kurisu(commands.Bot):
             try:
                 self.load_extension(extension)
             except BaseException as e:
-                print(f'{extension} failed to load.', extension)
+                print(f'{extension} failed to load.')
                 self.failed_cogs.append([extension, type(e).__name__, e])
 
     @staticmethod
@@ -165,7 +168,9 @@ class Kurisu(commands.Bot):
 
         self.helper_roles = {"3DS": self.roles['On-Duty 3DS'],
                              "WiiU": self.roles['On-Duty Wii U'],
-                             "Switch": self.roles['On-Duty Switch']}
+                             "Switch": self.roles['On-Duty Switch'],
+                             "Legacy": self.roles['On-Duty Legacy']
+                             }
 
         self.holder = ConnectionHolder()
         await self.holder.load_db(database_name, self.loop)
@@ -204,7 +209,7 @@ class Kurisu(commands.Bot):
             if not await check_staff_id(ctx, 'Helper', author.id):
                 try:
                     await ctx.message.delete()
-                except discord.errors.NotFound:
+                except (discord.errors.NotFound, discord.errors.Forbidden):
                     pass
                 await ctx.send(f"{ctx.message.author.mention} This command was used {exc.cooldown.per - exc.retry_after:.2f}s ago and is on cooldown. Try again in {exc.retry_after:.2f}s.", delete_after=10)
             else:
@@ -216,6 +221,9 @@ class Kurisu(commands.Bot):
 
         elif isinstance(exc, discord.NotFound):
             await ctx.send(f"ID not found.")
+
+        elif isinstance(exc, discord.Forbidden):
+            await ctx.send(f"💢 I can't help you if you don't let me!\n`{exc.text}`.")
 
         elif isinstance(exc, commands.CommandInvokeError):
             await ctx.send(f'{author.mention} `{command}` raised an exception during usage')

@@ -92,7 +92,7 @@ Thanks for stopping by and have a good time!
         if "ub:"+str(member.id) in self.bot.actions:
             self.bot.actions.remove("ub:"+str(member.id))
             return
-        msg = "⛔ **'Auto-ban'" if 'wb:' + str(member.id) in self.bot.actions else f"⛔ **Ban**: {member.mention} | {member}\n🏷 __User ID__: {member.id}"
+        msg = f"{'⛔ **Auto-ban**' if 'wb:' + str(member.id) in self.bot.actions else '⛔ **Ban**'}: {member.mention} | {member}\n🏷 __User ID__: {member.id}"
         await self.bot.channels['server-logs'].send(msg)
         if "wb:"+str(member.id) in self.bot.actions:
             self.bot.actions.remove("wb:"+str(member.id))
@@ -146,10 +146,6 @@ Thanks for stopping by and have a good time!
                     else:
                         roles.append(role.name)
                 msg += ', '.join(roles)
-        if member_before.name != member_after.name:
-            do_log = True
-            dest = self.bot.channels['server-logs']
-            msg = f"\n📝 __Username change__: {member_before.name} → {member_after.name}"
         if member_before.nick != member_after.nick:
             do_log = True
             if member_before.nick is None:
@@ -159,6 +155,21 @@ Thanks for stopping by and have a good time!
             else:
                 msg = "\n🏷 __Nickname change__"
             msg += f": {self.bot.escape_text(member_before.nick)} → {self.bot.escape_text(member_after.nick)}"
+        if do_log:
+            msg = f"ℹ️ **Member update**: {member_after.mention} | {member_after} {msg}"
+            await dest.send(msg)
+
+    @commands.Cog.listener()
+    async def on_user_update(self, member_before, member_after):
+        await self.bot.wait_until_all_ready()
+        do_log = False  # only usernames and discriminators should be logged
+        dest = self.bot.channels['server-logs']
+        if member_before.name != member_after.name:
+            do_log = True
+            msg = f"\n📝 __Username change__: {member_before.name} → {member_after.name}"
+        elif member_before.discriminator != member_after.discriminator:
+            do_log = True
+            msg = f"\n🔢 __Discriminator change__: {member_before} → {member_after}"
         if do_log:
             msg = f"ℹ️ **Member update**: {member_after.mention} | {member_after} {msg}"
             await dest.send(msg)

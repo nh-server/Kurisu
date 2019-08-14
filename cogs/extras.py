@@ -474,7 +474,7 @@ class Extras(commands.Cog):
             await ctx.send("This day is not filled with enough Jameson Irish Whiskey [PAID PROMOTION]!")
 
     @commands.guild_only()
-    @commands.command(pass_context=True)
+    @commands.command()
     async def noshamrock(self, ctx):
         """Tired of it."""
         member = ctx.message.author

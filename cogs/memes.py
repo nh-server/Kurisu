@@ -12,26 +12,23 @@ class Memes(commands.Cog):
         self.bot = bot
         print(f'Cog "{self.qualified_name}" loaded')
 
-    async def _meme(self, ctx, msg):
+    async def _meme(self, ctx, msg, directed: bool = False):
         author = ctx.author
-        if isinstance(ctx.channel, discord.abc.GuildChannel) and (ctx.channel.name[0:5] == "help-" or "assistance" in ctx.channel.name or (self.bot.roles['No-Memes'] in author.roles)):
+        if isinstance(ctx.channel, discord.abc.GuildChannel) and (ctx.channel in self.bot.assistance_channels or (self.bot.roles['No-Memes'] in author.roles)):
             await ctx.message.delete()
             try:
                 await ctx.author.send("Meme commands are disabled in this channel, or your privileges have been revoked.")
             except discord.errors.Forbidden:
                 await ctx.send(f"{ctx.author.mention} Meme commands are disabled in this channel, or your privileges have been revoked.")
         else:
-            await ctx.send(self.bot.escape_text(ctx.author.display_name) + ": " + msg)
+            await ctx.send(f"{self.bot.escape_text(ctx.author.display_name) + ':' if not directed else ''} {msg}")
 
     # list memes
     @commands.command(name="listmemes")
     async def _listmemes(self, ctx):
         """List meme commands."""
-        # this feels good..
-        msg = "```"
-        msg += ", ".join([x.name for x in self.get_commands() if x != self._listmemes])
-        msg += "```"
-        await self._meme(ctx, msg)
+        cmds = ", ".join([x.name for x in self.get_commands()][1:])
+        await self._meme(ctx, f"```{cmds}```")
 
     # 3dshacks memes
     @commands.command(hidden=True)
@@ -69,6 +66,12 @@ class Memes(commands.Cog):
     async def inori(self, ctx):
         """Memes."""
         await self._meme(ctx, "https://i.imgur.com/WLncIsi.gif")
+        
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def inori2(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "http://i.imgur.com/V0uu99A.jpg")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
@@ -225,7 +228,7 @@ class Memes(commands.Cog):
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def dev(self, ctx):
         """Reminds user where they are."""
-        await ctx.send(f"You {'do not ' if ctx.channel.name != 'dev' else ''}seem to be in <#196635781798952960>.")
+        await self._meme(ctx, f"You {'do not ' if ctx.channel != self.bot.channels['dev'] else ''}seem to be in {self.bot.channels['dev'].mention}.", True)
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
@@ -238,6 +241,12 @@ class Memes(commands.Cog):
     async def blackalabi(self, ctx):
         """Memes."""
         await self._meme(ctx, "http://i.imgur.com/JzFem4y.png")
+
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def whoops(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "https://i.imgur.com/caF9KHk.gif")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
@@ -280,6 +289,12 @@ class Memes(commands.Cog):
     async def fuck(self, ctx):
         """MEMES?"""
         await self._meme(ctx, "https://i.imgur.com/4lNA5Ud.gif")
+                       
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def goose(self, ctx):
+        """MEMES?"""
+        await self._meme(ctx, "https://i.imgur.com/pZUeBql.jpg")
     
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
@@ -292,27 +307,39 @@ class Memes(commands.Cog):
     async def pbanj(self, ctx):
         """he has the power"""
         await self._meme(ctx, "https://i.imgur.com/EQy9pl3.png")
+                       
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def pbanj2(self, ctx):
+        """pbanos"""
+        await self._meme(ctx, "https://i.imgur.com/oZx7Qid.gifv")
 
-    #Begin code from https://github.com/reswitched/robocop-ng
-    def c_to_f(self, c):
+    # Begin code from https://github.com/reswitched/robocop-ng
+    @staticmethod
+    def c_to_f(c):
         """this is where we take memes too far"""
         return math.floor(9.0 / 5.0 * c + 32)
 
-    def c_to_k(self, c):
+    @staticmethod
+    def c_to_k(c):
         """this is where we take memes REALLY far"""
         return math.floor(c + 273.15)
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
     async def warm(self, ctx, u: discord.Member):
         """Warms a user :3"""
         celsius = random.randint(38, 100)
         fahrenheit = self.c_to_f(celsius)
         kelvin = self.c_to_k(celsius)
-        await ctx.send(f"{u.mention} warmed."
-                       f" User is now {celsius}°C "
-                       f"({fahrenheit}°F, {kelvin}K).")
-    #End code from https://github.com/reswitched/robocop-ng
+        await self._meme(ctx, f"{u.mention} warmed. User is now {celsius}°C ({fahrenheit}°F, {kelvin}K).", True)
+    # End code from https://github.com/reswitched/robocop-ng
+
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
+    async def bean(self, ctx, u: discord.Member):
+        """swing the beanhammer"""
+        await self._meme(ctx, f"{u.mention} is now beaned. <a:bean:462076812076384257>", True)
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
@@ -320,6 +347,12 @@ class Memes(commands.Cog):
         """shhhh no one gives a shit!"""
         await self._meme(ctx, "https://imgur.com/a/5IcfK6N")
                        
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def cosmic(self, ctx):
+        """Cosmic ban"""
+        await self._meme(ctx, "https://i.imgur.com/V4TVpbC.gifv")
+              
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def menuhax(self, ctx):
@@ -332,5 +365,12 @@ class Memes(commands.Cog):
         """shrug.avi"""
         await self._meme(ctx, "https://i.imgur.com/k9111dq.jpg")
 
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def mouse(self, ctx):
+        """Whaaaa"""
+        await self._meme(ctx, "https://i.imgur.com/0YHBP7l.png")
+
+                       
 def setup(bot):
     bot.add_cog(Memes(bot))
