@@ -144,6 +144,7 @@ class Events(DatabaseCog):
         #'sx',
         #'tx',
         'sxos',
+        'operationidroid',
         'hbg',
     )
 
