@@ -25,8 +25,7 @@ class Assistance(commands.Cog):
             return True
         elif ("wii" not in consoles or channel.startswith("legacy")) and channel.startswith(consoles) and message not in self.systems:
             return True
-        else:
-            return False
+        return False
 
     @commands.guild_only()
     @commands.command(aliases=["sr", "Sr", "sR", "SR"], hidden=True)
@@ -53,17 +52,15 @@ class Assistance(commands.Cog):
     @commands.guild_only()
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def guide(self, ctx, *, consoles="None"):
+    async def guide(self, ctx, *, consoles=""):
         """Links to the recommended guides."""
         consoleslist = []
-        for x in consoles.split():
-            if x in self.systems and x not in consoleslist:
-                consoleslist.append(x)
+        consoleslist = [x for x in consoles.split() if x in self.systems and x not in consoleslist]
         if not consoleslist:
             if ctx.channel.name.startswith(self.systems):
-                consoleslist.append("None")
+                consoleslist = ['auto']
             else:
-                await ctx.send("Please specify console(s). Valid options: 3ds, wiiu, switch, wii, dsi.")
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in self.systems])}.")
                 return
         for x in consoleslist:
             if self.check_console(x, ctx.channel.name, '3ds'):
@@ -309,16 +306,14 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def stock(self, ctx, consoles=""):
         """Advisory for various Nintendo systems on stock firmware"""
-        system = ("3ds", "nx", "ns", "switch")
+        systems = ("3ds", "nx", "ns", "switch")
         consoleslist = []
-        for x in consoles.split():
-            if x in system and x not in consoleslist:
-                consoleslist.append(x)
+        consoleslist = [x for x in consoles.split() if x in systems and x not in consoleslist]
         if not consoleslist:
-            if ctx.message.channel.name.startswith(system):
-                consoleslist.append("None")
+            if ctx.channel.name.startswith(systems):
+                consoleslist = ['auto']
             else:
-                await ctx.send("Please specify a console. Valid options are: 3ds, switch")
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
                 return
         for x in consoleslist:
             if self.check_console(x, ctx.message.channel.name, '3ds'):
@@ -636,18 +631,16 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
     @commands.guild_only()
     async def vc(self, ctx, *, consoles=""):
         """Link to Virtual Console Injects for 3DS/Wiiu."""
-        injects = ("3ds", "wiiu", "wii u")
+        injects = ("3ds", "wiiu")
         consoleslist = []
-        for x in consoles.split():
-            if x in injects and x not in consoleslist:
-                consoleslist.append(x)
+        consoleslist = [x for x in consoles.split() if x in injects and x not in consoleslist]
         if not consoleslist:
             if ctx.channel.name.startswith(injects):
-                consoleslist.append("None")
+                consoleslist = ['auto']
             else:
-                await ctx.send("Please specify a console; valid options are: 3ds, wiiu")
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in injects])}.")
                 return
-        for x in consoleslist: 
+        for x in consoleslist:
             if self.check_console(x, ctx.channel.name, ('3ds')):
                 embed = discord.Embed(title="Virtual Console Injects for 3DS", color=discord.Color.blue())
                 embed.set_author(name="Asdolo", url="https://gbatemp.net/members/asdolo.389539/")
@@ -676,18 +669,16 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
     @commands.guild_only()
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def dump(self, ctx, consoles="None"):
+    async def dump(self, ctx, consoles=""):
         """How to dump games and data for CFW consoles"""
         dumps = ("3ds", "nx", "switch")
         consoleslist = []
-        for x in consoles.split():
-            if x in dumps and x not in consoleslist:
-                consoleslist.append(x)
+        consoleslist = [x for x in consoles.split() if x in dumps and x not in consoleslist]
         if not consoleslist:
             if ctx.channel.name.startswith(dumps):
-                consoleslist.append("None")
+                consoleslist = ['auto']
             else:
-                await ctx.send("Please specify a console; valid options are: 3ds, switch")
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in dumps])}.")
                 return
         for x in consoleslist:
             if self.check_console(x, ctx.channel.name, '3ds'):
