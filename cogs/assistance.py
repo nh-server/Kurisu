@@ -672,6 +672,42 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
                 embed2.description = "The recommended way to play old classics on your WiiU"
                 await ctx.send(embed=embed2)
 
+    # Embed to Console Dump Guides
+    @commands.guild_only()
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def dump(self, ctx, consoles="None"):
+        """How to dump games and data for CFW consoles"""
+        dumps = ("3ds", "nx", "switch")
+        consoleslist = []
+        for x in consoles.split():
+            if x in dumps and x not in consoleslist:
+                consoleslist.append(x)
+        if not consoleslist:
+            if ctx.channel.name.startswith(dumps):
+                consoleslist.append("None")
+            else:
+                await ctx.send("Please specify a console; valid options are: 3ds, switch")
+                return
+        for x in consoleslist:
+            if self.check_console(x, ctx.channel.name, '3ds'):
+                embed = discord.Embed(title="GodMode9 dump/build Guide", color=discord.Color(0x66FFFF))
+                embed.set_author(name="Chroma Ryu", url="https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Godmode9-CIA-Dumping-and-Building")
+                embed.set_thumbnail(url="https://i.imgur.com/U8NA9lx.png")
+                embed.url = "https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Godmode9-CIA-Dumping-and-Building"
+                embed.description = "How to dump/build CIAs and Files using GodMode9"
+                await ctx.send(embed=embed)
+                continue
+            if self.check_console(x, ctx.channel.name, ('switch', 'nx')):
+                embed = discord.Embed(title="Switch dump/build Guide", color=discord.Color(0xCB0004))
+                embed.set_author(name="SuchMeme", url="https://suchmememanyskill.github.io/guides/switchdumpguide/")
+                embed.set_thumbnail(url="https://i.imgur.com/FkKB0er.png")
+                embed.url = "https://suchmememanyskill.github.io/guides/switchdumpguide/"
+                embed.description = ("How to dump/build NSPs using NXDumpTool\n"
+                                     "BAN Warning: only for use using offline emummc" );
+                await ctx.send(embed=embed)
+
+
     # Embed to Chroma Ryu's cartinstall guide
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -682,19 +718,6 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
         embed.set_thumbnail(url="https://i.imgur.com/U8NA9lx.png")
         embed.url = "https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/CartInstall-guide"
         embed.description = "How to install 3DS cartridges to the SD card"
-        await ctx.send(embed=embed)
-
-
-    # Embed to Chroma Ryu's godmode9 guide
-    @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def dump(self, ctx):
-        """How to dump/build CIAs and Files using GodMode9"""
-        embed = discord.Embed(title="GodMode9 dump/build Guide", color=discord.Color(0x66FFFF))
-        embed.set_author(name="Chroma Ryu", url="https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Godmode9-CIA-Dumping-and-Building")
-        embed.set_thumbnail(url="https://i.imgur.com/U8NA9lx.png")
-        embed.url = "https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Godmode9-CIA-Dumping-and-Building"
-        embed.description = "How to dump/build CIAs and Files using GodMode9"
         await ctx.send(embed=embed)
 
     # Embed to Chroma Ryu's layeredfs guide
