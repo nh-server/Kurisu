@@ -79,7 +79,7 @@ class Assistance(commands.Cog):
                 embed.description = "FlimFlam69 and Plailect's Wii U custom firmware + coldboothax guide"
                 await ctx.send(embed=embed)
                 continue
-            if self.check_console(x, ctx.channel.name, ('switch', 'nx')):
+            if self.check_console(x, ctx.channel.name, ('switch', 'nx', 'ns')):
                 embed = discord.Embed(title="Guide", color=discord.Color(0xCB0004))
                 embed.set_author(name="NH Discord Server", url="https://nh-server.github.io/switch-guide/")
                 embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
@@ -671,7 +671,7 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def dump(self, ctx, consoles=""):
         """How to dump games and data for CFW consoles"""
-        dumps = ("3ds", "nx", "switch")
+        dumps = ("3ds", "nx", "ns", "switch")
         consoleslist = []
         consoleslist = [x for x in consoles.split() if x in dumps and x not in consoleslist]
         if not consoleslist:
@@ -689,7 +689,7 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
                 embed.description = "How to dump/build CIAs and Files using GodMode9"
                 await ctx.send(embed=embed)
                 continue
-            if self.check_console(x, ctx.channel.name, ('switch', 'nx')):
+            if self.check_console(x, ctx.channel.name, ('switch', 'nx', 'ns')):
                 embed = discord.Embed(title="Switch dump/build Guide", color=discord.Color(0xCB0004))
                 embed.set_author(name="SuchMeme", url="https://suchmememanyskill.github.io/guides/switchdumpguide/")
                 embed.set_thumbnail(url="https://i.imgur.com/FkKB0er.png")
