@@ -1,7 +1,6 @@
 import discord
 import json
 import aiohttp
-import asyncio
 from cogs.checks import check_staff_id
 from discord.ext import commands
 from inspect import cleandoc
