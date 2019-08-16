@@ -1,3 +1,4 @@
+import aiohttp
 import discord
 
 from cogs.checks import check_staff_id
@@ -853,6 +854,26 @@ your device will refuse to write to it.
         embed.url = "http://tinydb.eiphax.tech"
         embed.description = "A Community-maintained homebrew database"
         await ctx.send(embed=embed)
+
+    @commands.command(aliases=["tinydbsearch"])
+    @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
+    async def tinysearch(self, ctx, app: str = ""):
+        """Search for your favorite homebrew app in tinydb"""
+        if not app:
+            return await ctx.send("Enter a app name to search!")
+        async with aiohttp.ClientSession() as session:
+            try:
+                async with session.get(f"https://tinydb.eiphax.tech/api/search/{app}", timeout=2) as resp:
+                    response = await resp.json()
+            except aiohttp.ClientConnectionError:
+                return await ctx.send("I can't connect to tinydb 💢")
+        if response['success']:
+            release = response['result']['newest_release']
+            embed = discord.Embed(title=release['name'], image=release['qr_url'], description=f"{release['description']}\n [[Download]({release['download_url']})] [[Source]({response['result']['github_url']})]")
+            embed.set_image(url=release['qr_url'])
+            embed.set_footer(text=f"by {release['author']}")
+            return await ctx.send(embed=embed)
+        return await ctx.send(f"Couldnt find {app} in tinydb!")
 
     @commands.command(aliases=["appatch", "dsscene"])
     async def ap(self, ctx):
