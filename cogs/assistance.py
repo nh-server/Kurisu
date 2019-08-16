@@ -1,7 +1,7 @@
 import discord
 import json
-import asyncio
 import aiohttp
+import asyncio
 from cogs.checks import check_staff_id
 from discord.ext import commands
 from inspect import cleandoc
@@ -871,11 +871,11 @@ your device will refuse to write to it.
             ApiResponse = json.loads(ApiResponse)
             #Trying to find a app
             try:
-            	#testing another app
                 i2 =0
                 AppDictionary = ApiResponse[i2]
                 AppName = AppDictionary.get("name")
                 while AppName.lower().startswith(name.lower()) == False:
+                	#Seeing if the next app start with what the user inputted.
                     i2+=1
                     AppDictionary = ApiResponse[i2]
                     #Skipping a dictionary in the api that return None everywhere, can cause issue if we dont.
