@@ -1,5 +1,7 @@
 import discord
-
+import json
+import asyncio
+import aiohttp
 from cogs.checks import check_staff_id
 from discord.ext import commands
 from inspect import cleandoc
@@ -853,6 +855,99 @@ your device will refuse to write to it.
         embed.url = "http://tinydb.eiphax.tech"
         embed.description = "A Community-maintained homebrew database"
         await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def tinysearch(self, ctx, name: str="Null", qr: str="1",ver: str="-1"):
+        """Search title on tinydb."""
+        if name != "Null" and (qr == "1" or qr == "0"):
+            #Qr code variable is now a int
+            qr = int(qr)
+            #Getting the app list
+            async with aiohttp.ClientSession() as session:
+                async with session.get('https://tinydb.eiphax.tech/api/apps') as resp:
+                    ApiResponse = await resp.text()
+            #Converting it
+            ApiResponse = json.loads(ApiResponse)
+            #Trying to find a app
+            try:
+            	#testing another app
+                i2 =0
+                AppDictionary = ApiResponse[i2]
+                AppName = AppDictionary.get("name")
+                while AppName.lower().startswith(name.lower()) == False:
+                    i2+=1
+                    AppDictionary = ApiResponse[i2]
+                    #Skipping a dictionary in the api that return None everywhere, can cause issue if we dont.
+                    if AppDictionary == {'id': 254, 'name': None, 'author': None, 'headline': None, 'categories': [0], 'cia': [], 'tdsx': []}:
+                        i2+=1
+                        #Getting another app's dictionary
+                        AppDictionary=ApiResponse[i2]
+                    try:
+                            #Getting the app name
+                            AppName = AppDictionary.get("name")
+                    except:
+                                #Just in case something goes wrong
+                                AppName = ""
+            except IndexError:
+                #Couldn't find the correct app
+                title = "-1"
+            #Title is the same as AppDictionary
+            try:
+                title = ApiResponse[i2]
+            except:
+             	title = "-1"
+            if title !="-1":
+                #Transforming the dictionary into a array.
+                AppInfo =[title.get("id"), title.get("name"),title.get("author"),title.get("headline"),[]]
+                i3=0
+                while i3 !=len(title.get("cia")):
+                    #adding the download link and version to the array
+                    AppInfo[4].append([title.get("cia")[i3].get("version"),title.get("cia")[i3].get("download_url"), title.get("cia")[i3].get("id")])
+                    i3+=1
+            else:
+                #This mean that we couldnt find the app.
+                AppInfo = -1
+                 
+            #Testing if the app was found
+            if AppInfo != -1:
+                embed=discord.Embed(title=AppInfo[1], description=AppInfo[3])
+                embed.set_author(name=AppInfo[2])
+                #Version = lastest
+                if ver == "-1":
+                    #Sending the embed
+                    embed.set_thumbnail(url="https://tinydb.eiphax.tech/qr/{}/{}/QR.png".format(AppInfo[0], AppInfo[4][len(AppInfo[4]) - 1][2]))
+                    embed.add_field(name=AppInfo[4][len(AppInfo[4]) - 1][0], value=AppInfo[4][len(AppInfo[4] ) - 1][1], inline=False)
+                    await ctx.send(embed=embed)
+                    #if the user want the qr code, sending the link to it
+                    if qr ==1:
+                        await ctx.send("https://tinydb.eiphax.tech/qr/{}/{}/QR.png".format(AppInfo[0], AppInfo[4][len(AppInfo[4]) - 1][2]))
+                    #Using a specific version
+                else:
+                        i=0
+                        #Trying to fing the correct ver
+                        while i != len(AppInfo[4]):
+                            if ver == AppInfo[4][i][0]:
+                                #the version was found, sending the embed
+                                embed.set_thumbnail(url="https://tinydb.eiphax.tech/qr/{}/{}/QR.png".format(AppInfo[0], AppInfo[4][i][2]))
+                                embed.add_field(name=AppInfo[4][i][0], value=AppInfo[4][i][1], inline=False)
+                                await ctx.send(embed=embed)
+                                #if the user want the qr code, sending the link to it
+                                if qr ==1:
+                                    await ctx.send("https://tinydb.eiphax.tech/qr/{}/{}/QR.png".format(AppInfo[0], AppInfo[4][i][2]))
+                                break
+                            else:
+                                #The version wasnt found
+                                if i + 1 >= len(AppInfo[4]):
+                                    await ctx.send("Error: Version not found.")
+                                    break
+                            i+=1
+            else:
+                #The title wasnt found
+                await ctx.send("Error: Title not found")
+        else:
+            #sending the usage.
+            await ctx.send("```Usage: .tinysearch [name] {QR code: [1| 0]} [version]```")
 
     @commands.command(aliases=["appatch", "dsscene"])
     async def ap(self, ctx):
