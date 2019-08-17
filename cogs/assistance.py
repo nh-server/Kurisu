@@ -12,7 +12,7 @@ class Assistance(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        self.systems = ("3ds", "wiiu", "switch", "nx", "ns", "wii", "dsi", "legacy")
+        self.systems = ("3ds", "wiiu", "vwii, "switch", "nx", "ns", "wii", "dsi", "legacy")
         print(f'Cog "{self.qualified_name}" loaded')
 
     async def simple_embed(self, ctx, text, title="", color=discord.Color.default()):
@@ -80,6 +80,14 @@ class Assistance(commands.Cog):
                 embed.description = "FlimFlam69 and Plailect's Wii U custom firmware + coldboothax guide"
                 await ctx.send(embed=embed)
                 continue
+            if self.check_console(x, ctx.channel.name, ('vwii', 'virtual wii')):
+                embed = discord.Embed(title="Guide", color=discord.Color(0xFFFFFF))
+                embed.set_author(name="FlimFlam69 & Plailect", url="https://wiiu.hacks.guide/vwii-modding")
+                embed.set_thumbnail(url="https://i.imgur.com/FclGzNz.png")
+                embed.url = "https://wiiu.hacks.guide/vwii-modding"
+                embed.description = "FlimFlam69 and Plailect's vWii modding guide"
+                await ctx.send(embed=embed)
+                continue
             if self.check_console(x, ctx.channel.name, ('switch', 'nx', 'ns')):
                 embed = discord.Embed(title="Guide", color=discord.Color(0xCB0004))
                 embed.set_author(name="NH Discord Server", url="https://nh-server.github.io/switch-guide/")
@@ -91,12 +99,14 @@ class Assistance(commands.Cog):
             if self.check_console(x, ctx.channel.name, ('legacy', 'wii')):
                 embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
                 embed.set_author(name="tj_cool", url="https://sites.google.com/site/completesg/")
+                embed.set_thumbnail(url="https://i.imgur.com/KI6IXmm.png")
                 embed.url = "https://sites.google.com/site/completesg/"
                 embed.description = "A complete original Wii softmod guide"
                 await ctx.send(embed=embed)
             if self.check_console(x, ctx.channel.name, ('legacy', 'dsi')):
                 embed = discord.Embed(title="Guide", color=discord.Color(0xCB0004))
                 embed.set_author(name="jerbear64 & emiyl", url="https://dsi.cfw.guide/")
+                embed.set_thumbnail(url="https://i.imgur.com/zCIbU1W.png")
                 embed.url = "https://dsi.cfw.guide/"
                 embed.description = "A complete Nintendo DSi homebrew guide, from stock to HiyaCFW"
                 await ctx.send(embed=embed)	
