@@ -861,7 +861,7 @@ your device will refuse to write to it.
         """Search for your favorite homebrew app in tinydb"""
         if app == ():
             return await ctx.send("Enter a app name to search!")
-        app = "_".join(app).replace(" ", "_").replace("..", "_").replace("/", "_")
+        app = "_".join(app).replace(" ", "_").replace("..", "_")
         async with aiohttp.ClientSession() as session:
             try:
                 async with session.get(f"https://tinydb.eiphax.tech/api/search/{app}", timeout=2) as resp:
