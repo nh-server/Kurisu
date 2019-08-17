@@ -12,7 +12,7 @@ class Assistance(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        self.systems = ("3ds", "wiiu", "vwii, "switch", "nx", "ns", "wii", "dsi", "legacy")
+        self.systems = ("3ds", "wiiu", "vwii", "switch", "nx", "ns", "wii", "dsi", "legacy")
         print(f'Cog "{self.qualified_name}" loaded')
 
     async def simple_embed(self, ctx, text, title="", color=discord.Color.default()):
