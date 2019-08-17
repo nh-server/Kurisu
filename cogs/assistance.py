@@ -873,7 +873,7 @@ your device will refuse to write to it.
             embed.set_image(url=release['qr_url'])
             embed.set_footer(text=f"by {release['author']}")
             return await ctx.send(embed=embed)
-        return await ctx.send(f"Couldnt find {app} in tinydb!")
+        return await ctx.send(f"Couldnt find {self.bot.escape_text(app)} in tinydb!")
 
     @commands.command(aliases=["appatch", "dsscene"])
     async def ap(self, ctx):
