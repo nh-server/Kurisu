@@ -861,7 +861,7 @@ your device will refuse to write to it.
     async def tinysearch(self, ctx, *app):
         """Search for your favorite homebrew app in tinydb"""
         if app == ():
-            return await ctx.send("Enter a app name to search!")
+            return await ctx.send("Enter a search term to search for applications.")
         app = " ".join(app)
         async with aiohttp.ClientSession() as session:
             try:
