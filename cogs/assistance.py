@@ -863,9 +863,11 @@ your device will refuse to write to it.
         if app == ():
             return await ctx.send("Enter a search term to search for applications.")
         app = " ".join(app)
+        appurlencode= urllib.parse.quote(app.replace("..", "/"))
         async with aiohttp.ClientSession() as session:
+        	
             try:
-                async with session.get(f"https://tinydb.eiphax.tech/api/search/{urllib.parse.quote(app)}", timeout=2) as resp:
+                async with session.get(f"https://tinydb.eiphax.tech/api/search/{appurlencode}", timeout=2) as resp:
                     response = await resp.json()
             except aiohttp.ClientConnectionError:
                 return await ctx.send("I can't connect to tinydb 💢")
