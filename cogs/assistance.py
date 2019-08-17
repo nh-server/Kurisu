@@ -1,5 +1,6 @@
 import aiohttp
 import discord
+import urllib.parse
 
 from cogs.checks import check_staff_id
 from discord.ext import commands
@@ -861,10 +862,10 @@ your device will refuse to write to it.
         """Search for your favorite homebrew app in tinydb"""
         if app == ():
             return await ctx.send("Enter a app name to search!")
-        app = "_".join(app).replace(" ", "_").replace("..", "_")
+        app = " ".join(app)
         async with aiohttp.ClientSession() as session:
             try:
-                async with session.get(f"https://tinydb.eiphax.tech/api/search/{app}", timeout=2) as resp:
+                async with session.get(f"https://tinydb.eiphax.tech/api/search/{urllib.parse.quote(app)}", timeout=2) as resp:
                     response = await resp.json()
             except aiohttp.ClientConnectionError:
                 return await ctx.send("I can't connect to tinydb 💢")
