@@ -80,7 +80,7 @@ class Assistance(commands.Cog):
                 embed.description = "FlimFlam69 and Plailect's Wii U custom firmware + coldboothax guide"
                 await ctx.send(embed=embed)
                 continue
-            if self.check_console(x, ctx.channel.name, ('vwii', 'virtual wii')):
+            if self.check_console(x, ctx.channel.name, ('vwii',)):
                 embed = discord.Embed(title="Guide", color=discord.Color(0xFFFFFF))
                 embed.set_author(name="FlimFlam69 & Plailect", url="https://wiiu.hacks.guide/vwii-modding")
                 embed.set_thumbnail(url="https://i.imgur.com/FclGzNz.png")
