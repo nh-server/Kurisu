@@ -858,16 +858,14 @@ your device will refuse to write to it.
 
     @commands.command(aliases=["tinydbsearch"])
     @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
-    async def tinysearch(self, ctx, *app):
+    async def tinysearch(self, ctx, *, app=""):
         """Search for your favorite homebrew app in tinydb"""
-        if app == ():
+        if not app or app.startswith(".."):
             return await ctx.send("Enter a search term to search for applications.")
-        app = " ".join(app)
-        appurlencode= urllib.parse.quote(app.replace("..", "/"))
+        encodedapp = urllib.parse.quote(app)
         async with aiohttp.ClientSession() as session:
-        	
             try:
-                async with session.get(f"https://tinydb.eiphax.tech/api/search/{appurlencode}", timeout=2) as resp:
+                async with session.get(f"https://tinydb.eiphax.tech/api/search/{encodedapp}", timeout=2) as resp:
                     response = await resp.json()
             except aiohttp.ClientConnectionError:
                 return await ctx.send("I can't connect to tinydb 💢")
