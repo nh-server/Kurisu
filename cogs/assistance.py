@@ -72,7 +72,7 @@ class Assistance(commands.Cog):
                 embed.description = "A complete guide to 3DS custom firmware, from stock to boot9strap."
                 await ctx.send(embed=embed)
                 continue
-            if self.check_console(x, ctx.channel.name, ('wiiu', 'wii u')):
+            if self.check_console(x, ctx.channel.name, ('wiiu',)):
                 embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
                 embed.set_author(name="FlimFlam69 & Plailect", url="https://wiiu.hacks.guide/")
                 embed.set_thumbnail(url="http://i.imgur.com/CpF12I4.png")
