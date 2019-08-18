@@ -860,7 +860,7 @@ your device will refuse to write to it.
     @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
     async def tinysearch(self, ctx, *, app=""):
         """Search for your favorite homebrew app in tinydb"""
-        if not app or app.startswith(".."):
+        if not app or app.startswith("..") or "/.." in app:
             return await ctx.send("Enter a search term to search for applications.")
         encodedapp = urllib.parse.quote(app)
         async with aiohttp.ClientSession() as session:
