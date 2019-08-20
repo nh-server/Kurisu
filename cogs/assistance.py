@@ -187,7 +187,7 @@ versions on 11.10 will cause a blackscreen until you update.
                 **To find out your Luma3DS version, hold select on bootup and look at the top left corner of the top screen**
                 """)
 
-   @commands.command(aliases=["checkluma"])
+    @commands.command(aliases=["checkluma"])
     @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
     async def lumacheck(self, ctx):
         """How to check Luma version"""
