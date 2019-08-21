@@ -107,7 +107,7 @@ class Assistance(commands.Cog):
             if self.check_console(x, ctx.channel.name, ('legacy', 'dsi')):
                 embed = discord.Embed(title="Guide", color=discord.Color(0xCB0004))
                 embed.set_author(name="jerbear64 & emiyl", url="https://dsi.cfw.guide/")
-                embed.set_thumbnail(url="https://i.imgur.com/zCIbU1W.png")
+                embed.set_thumbnail(url="https://i.imgur.com/T227BW0.png")
                 embed.url = "https://dsi.cfw.guide/"
                 embed.description = "A complete Nintendo DSi homebrew guide, from stock to HiyaCFW"
                 await ctx.send(embed=embed)	
