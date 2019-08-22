@@ -333,6 +333,15 @@ class Memes(commands.Cog):
         fahrenheit = self.c_to_f(celsius)
         kelvin = self.c_to_k(celsius)
         await self._meme(ctx, f"{u.mention} warmed. User is now {celsius}°C ({fahrenheit}°F, {kelvin}K).", True)
+
+    @commands.command(hidden=True, aliases=["cool"])
+    @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
+    async def chill(self, ctx, u: discord.Member):  #adding it here cause its pretty much the same code
+        """Cools a user :3"""
+        celsius = random.randint(-273, 34)
+        fahrenheit = self.c_to_f(celsius)
+        kelvin = self.c_to_k(celsius)
+        await self._meme(ctx, f"{u.mention} cooled. User is now {celsius}°C ({fahrenheit}°F, {kelvin}K).", True)
     # End code from https://github.com/reswitched/robocop-ng
 
     @commands.command(hidden=True)
