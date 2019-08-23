@@ -187,11 +187,19 @@ versions on 11.10 will cause a blackscreen until you update.
                 **To find out your Luma3DS version, hold select on bootup and look at the top left corner of the top screen**
                 """)
 
-    @commands.command()
+    @commands.command(aliases=["checkluma"])
     @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
     async def lumacheck(self, ctx):
         """How to check Luma version"""
-        await ctx.send("Please check your Luma version. In order to do this, you will need to load the Luma Configuration screen.\n1. Turn your console off.\n2. Hold the SELECT button.\n3. While still holding SELECT, turn the console on.\n4. Provide a photo of your console's screens, or if you can see the version, tell us here.")
+        embed = discord.Embed(title="Please check your Luma version.", color=discord.Color.blue())
+        embed.description = "In order to do this, you will need to load the Luma Configuration screen."
+        embed.add_field(name="Steps to open Luma Configuration", value=cleandoc("""
+                1. Turn your console off.
+                2. Hold the SELECT button.
+                3. While still holding SELECT, turn the console on.
+                4. Provide a photo of your console's screens, or if you can see the version, tell us here.
+                """))
+        await ctx.send(embed=embed)
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
