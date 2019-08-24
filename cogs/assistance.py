@@ -175,7 +175,7 @@ class Assistance(commands.Cog):
                 You can update to 11.10 safely.
                 
                 **Luma3DS 8.0 - 9.0**
-                Follow this guide: (https://bit.ly/2Q58acr), then you can update to 11.10. Being on these Luma3DS \
+                Follow the [manual Luma3DS update guide](https://gist.github.com/chenzw95/3b5b953c9c913e89fdda3c4c4d98d086), then you can update to 11.10. Being on these Luma3DS \
 versions on 11.10 will cause a blackscreen until you update.
                 
                 **Luma3DS 7.1** 
