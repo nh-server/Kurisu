@@ -169,7 +169,7 @@ class Assistance(commands.Cog):
     async def update(self, ctx):
         """Explains how to safely prepare for an update if you have boot9strap installed"""
         await self.simple_embed(ctx, """
-                **Is it safe to update to 11.11 (EUR) or 11.10(U/J/K)?**
+                **Is it safe to update to current 3DS firmware?**
                 
                 **Luma3DS 9.1 and above**
                 You can update safely.
