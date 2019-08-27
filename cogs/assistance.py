@@ -169,14 +169,14 @@ class Assistance(commands.Cog):
     async def update(self, ctx):
         """Explains how to safely prepare for an update if you have boot9strap installed"""
         await self.simple_embed(ctx, """
-                **Is it safe to update to 11.10?**
+                **Is it safe to update to 11.11 (EUR) or 11.10(U/J/K)?**
                 
                 **Luma3DS 9.1 and above**
-                You can update to 11.10 safely.
+                You can update safely.
                 
                 **Luma3DS 8.0 - 9.0**
-                Follow the [manual Luma3DS update guide](https://gist.github.com/chenzw95/3b5b953c9c913e89fdda3c4c4d98d086), then you can update to 11.10. Being on these Luma3DS \
-versions on 11.10 will cause a blackscreen until you update.
+                Follow the [manual Luma3DS update guide](https://gist.github.com/chenzw95/3b5b953c9c913e89fdda3c4c4d98d086), then you can update safely. Being on these Luma3DS \
+versions on 11.8+ will cause a blackscreen until you update.
                 
                 **Luma3DS 7.1** 
                 Follow the [B9S upgrade guide](https://3ds.hacks.guide/updating-b9s)
