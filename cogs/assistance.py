@@ -339,7 +339,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             if self.check_console(x, ctx.message.channel.name, '3ds'):
                 embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
                 embed.add_field(name="NTRBoot", value="Requires a compatible NDS flashcart and maybe an additional DS(i) or hacked 3DS console depending on the flashcart (All versions, all hardware). [Guide](https://3ds.hacks.guide/ntrboot)", inline=False)
-                embed.add_field(name="Seedminer", value="Requires a working NDS mode or Pokemon Picross (free from eshop) [Guide](https://3ds.hacks.guide/seedminer)", inline=False)
+                embed.add_field(name="Seedminer", value="Requires a working NDS mode or Pokémon Picross (free from eshop) [Guide](https://3ds.hacks.guide/seedminer)", inline=False)
                 embed.add_field(name="Hardmod", value="Requires soldering **Not for beginners!**. [Guide](https://git.io/fhQk9)", inline=False)
                 await ctx.send(embed=embed)
                 continue
