@@ -905,11 +905,11 @@ your device will refuse to write to it.
         embed.description = "An AP-Patching guide"
         await ctx.send(embed=embed)
                              
-    @commands.command(aliases=["rootsd", "wtfisroot", "wtfissdroot"])
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def sdroot(self, ctx):
-        """Picture to understand what the root is"""
-        embed.url = " https://i.imgur.com/pVS2Lc6.png"
-        await ctx.send(embed=embed)                    
+        """Picture to say what the heck is the root"""                     
+        await self.embed(ctx, "https://i.imgur.com/pVS2Lc6.png")                    
                       
     # Information about autoRCM
     @commands.command()
