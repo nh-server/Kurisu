@@ -904,7 +904,14 @@ your device will refuse to write to it.
         embed.url = "https://github.com/GlaZedBelmont/3DS-Tutorials/wiki/AP-Patching"
         embed.description = "An AP-Patching guide"
         await ctx.send(embed=embed)
-        
+                             
+    @commands.command()
+    async def sdroot(self, ctx):
+        """Picture to say what the heck is the root""" 
+        embed = discord.Embed()
+        embed.set_image(url="https://i.imgur.com/pVS2Lc6.png")
+        await ctx.send(embed=embed)             
+                             
     # Information about autoRCM
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
