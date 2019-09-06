@@ -107,7 +107,6 @@ class Events(DatabaseCog):
         'jnustool',
         'nusgrabber',
         'fr33$h0p',
-        'fshop',  # common outright bypass, but not sure if it will interact with legitimate words
         'free.shop',
         'fréeshop',
         'freéshop',
@@ -141,6 +140,7 @@ class Events(DatabaseCog):
         'freshop',
         'feeshop',
         'notabug',
+        'fshop',
         #'sx',
         #'tx',
         'sxos',
