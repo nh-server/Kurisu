@@ -67,6 +67,7 @@ class Lockdown(commands.Cog):
     async def softlock(self, ctx, channels: commands.Greedy[discord.TextChannel]):
         """Lock message sending in the channel, without the "disciplinary action" note. Staff and Helpers only."""
         author = ctx.author
+        elsewhere = self.bot.channels['elsewhere']
         if not channels:
             channels.append(ctx.channel)
         locked_down = []
@@ -75,11 +76,11 @@ class Lockdown(commands.Cog):
             if ishelper and (c not in self.bot.assistance_channels):
                 await ctx.send(f"{ctx.author.mention} {c.mention} can't be locked by a helper.")
                 continue
-            if c.overwrites_for(ctx.guild.default_role).send_messages is False:
+            if c.overwrites_for(ctx.guild.default_role).send_messages is False and c != elsewhere:
                 await ctx.send(f"🔒 {c.mention} is already locked down. Use `.unlock` to unlock.")
                 continue
             try:
-                await c.set_permissions(ctx.guild.default_role, send_messages=False)
+                await c.set_permissions(ctx.guild.default_role if c != elsewhere else self.bot.roles['#elsewhere'], send_messages=False)
                 await c.set_permissions(self.bot.roles['Helpers'], send_messages=ishelper)
             except discord.errors.Forbidden:
                 await ctx.send("💢 I don't have permission to do this.")
@@ -94,6 +95,7 @@ class Lockdown(commands.Cog):
     async def unlock(self, ctx, channels: commands.Greedy[discord.TextChannel]):
         """Unlock message sending in the channel. Staff only and Helpers only."""
         author = ctx.author
+        elsewhere = self.bot.channels['elsewhere']
         if not channels:
             channels.append(ctx.channel)
         ishelper = not await check_staff_id(ctx, "HalfOP", author.id)
@@ -112,9 +114,9 @@ class Lockdown(commands.Cog):
                 overwrites_everyone.send_messages = None
                 overwrites_staff.send_messages = True
                 overwrites_helpers.send_messages = None
-                await c.set_permissions(ctx.guild.default_role, send_messages=None)
+                await c.set_permissions(ctx.guild.default_role if c != elsewhere else self.bot.roles['#elsewhere'], send_messages=None if c != elsewhere else True)
                 await c.set_permissions(self.bot.roles['Helpers'], send_messages=True)
-                await c.set_permissions(self.bot.roles['Staff'], send_messages=None)
+                await c.set_permissions(self.bot.roles['Staff'], send_messages=True)
                 await c.send("🔓 Channel unlocked.")
                 unlocked.append(c)
             if unlocked:
