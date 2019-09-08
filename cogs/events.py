@@ -126,6 +126,7 @@ class Events(DatabaseCog):
         'stargate',
         'freestore',
         'sxinstaller',
+        'hbgstore',
 
         #'sxos',
     )
