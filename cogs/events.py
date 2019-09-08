@@ -185,6 +185,7 @@ class Events(DatabaseCog):
         'doperoms',
         'freeroms',
         'portableroms',
+        'portalrom',
         'portalroms',
         'romulation',
         'emulator.games',
