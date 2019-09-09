@@ -213,6 +213,7 @@ class Events(DatabaseCog):
         'qgEeK3E',  # Famicomunnity
         'yqSut8c',  # TWL Mode Hacking!
         'EZSxqRr',  # ACNL Modding
+        'bGKEyfY',  # FlagBrew
     )
 
     # I hate naming variables sometimes
