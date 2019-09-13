@@ -209,6 +209,7 @@ class Events(DatabaseCog):
 
     approved_guilds = (
         'C29hYvh',  # Nintendo Homebrew
+        'nintendohomebrew', # Nintendo Homebrew's vanity invite
         'ZdqEhed',  # Reswitched
         'qgEeK3E',  # Famicomunnity
         'yqSut8c',  # TWL Mode Hacking!
