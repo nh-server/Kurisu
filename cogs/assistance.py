@@ -213,7 +213,7 @@ versions on 11.8+ will cause a blackscreen until you update.
         """Links to eiphax cfw uses page"""
         await self.simple_embed(ctx, "Want to know what CFW can be used for? <https://3ds.eiphax.tech/tips.html>")
     
-         @commands.command()
+    @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def signpost(self, ctx):
         """Links to eiphax signpost page"""
