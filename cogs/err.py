@@ -470,7 +470,7 @@ class Err(commands.Cog):
         """
         if re.match('[0-1][0-9][0-9]\-[0-9][0-9][0-9][0-9]', err):
             embed = discord.Embed(title=err + (": Nintendo 3DS" if err[0] == "0" else ": Wii U"))
-            embed.url = f"http://www.nintendo.com/consumer/wfc/en_na/ds/results.jsp?error_code={err}&system={'3DS' if err[0] == '0' else 'Wiiu'}&locale=en_US"
+            embed.url = f"https://en-americas-support.nintendo.com/app/answers/list/kw/{err}"
             if err in self.errcodes:
                 embed.description = self.errcodes[err]
                 embed.color = (Color(0xCE181E) if err[0] == "0" else Color(0x009AC7))
