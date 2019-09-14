@@ -212,7 +212,13 @@ versions on 11.8+ will cause a blackscreen until you update.
     async def cfwuses(self, ctx):
         """Links to eiphax cfw uses page"""
         await self.simple_embed(ctx, "Want to know what CFW can be used for? <https://3ds.eiphax.tech/tips.html>")
-
+    
+         @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def signpost(self, ctx):
+        """Links to eiphax signpost page"""
+        await self.simple_embed(ctx, "Need to know something about CFW (i.e. how to make a nand backup without enough SD space)? <https://3ds.eiphax.tech/signpost.html>")                             
+                            
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def updateb9s(self, ctx):
