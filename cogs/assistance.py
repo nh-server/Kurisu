@@ -272,19 +272,19 @@ versions on 11.8+ will cause a blackscreen until you update.
         embed.description = "How to do the 11.5.0-38 ctrtransfer"
         await ctx.send(embed=embed)
 
-        @commands.command(aliases=['region'])
-        @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-        async def regionchange(self, ctx):
+    @commands.command(aliases=['region'])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def regionchange(self, ctx):
         """Region Changing Guide"""
         await self.simple_embed(ctx, """
                     3DS Hacks Guide's [Region Changing guide](https://3ds.hacks.guide/region-changing)
                     WARNING: This can break the eShop!""", title="Region Changing")
                            
-        @commands.command()
-        @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-         async def modmoon(self, ctx):
-        """Links to a tool for a mod manager"""
-        await self.simple_embed(ctx, cleandoc("""
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def modmoon(self, ctx):
+    """Links to a tool for a mod manager"""
+    await self.simple_embed(ctx, cleandoc("""
                                 To install mods for Smash 3DS, and to manage other LayeredFS mods, \
 [Mod-Moon](https://github.com/Swiftloke/ModMoon/releases) is recommended. Instructions for use can be found on the page.
                                 """))
