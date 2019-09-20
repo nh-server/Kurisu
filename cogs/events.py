@@ -126,6 +126,7 @@ class Events(DatabaseCog):
         'stargate',
         'freestore',
         'sxinstaller',
+        'rajnx2',
 
         #'sxos',
     )
@@ -146,6 +147,9 @@ class Events(DatabaseCog):
         'sxos',
         'operationidroid',
         'hbg',
+        'blawar',
+        'mercury',
+        'vertigo',
     )
 
     drama_alert = ()
@@ -210,7 +214,8 @@ class Events(DatabaseCog):
     approved_guilds = (
         'C29hYvh',  # Nintendo Homebrew
         'nintendohomebrew', # Nintendo Homebrew's vanity invite
-        'ZdqEhed',  # Reswitched
+        'ZdqEhed',  # ReSwitched
+        'DThbZ7z',  # ReSwitched, not sure why two permanent invites exist but they do
         'qgEeK3E',  # Famicomunnity
         'yqSut8c',  # TWL Mode Hacking!
         'EZSxqRr',  # ACNL Modding
