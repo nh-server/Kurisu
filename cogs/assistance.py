@@ -405,7 +405,7 @@ re-read the guide steps 2 or 3 times before coming here.
         """Download link for the latest Hekate version"""
         embed = discord.Embed(title="Hekate", color=discord.Color.red())
         embed.set_author(name="CTCaer", url="https://github.com/CTCaer")
-        embed.set_thumbnail(url="https://imgur.com/kFEZyuC")
+        embed.set_thumbnail(url="https://imgur.com/kFEZyuC.png")
         embed.url = "https://github.com/CTCaer/hekate/releases/latest"
         embed.description = "Link to Hekate's latest release"
         await ctx.send(embed=embed)
