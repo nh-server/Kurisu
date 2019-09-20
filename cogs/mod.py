@@ -496,7 +496,7 @@ class Mod(DatabaseCog):
         code = invite.code
         self.bot.temp_guilds[code] = times
         await ctx.send(f"Approved an invite to {invite.guild}({code}) for posting {times} times")
-        await self.bot.channels['mod-logs'].send(f"🚫 **Approved**: {ctx.author.mention} approved server {invite.guild}({code}) to be posted {times} times")
+        await self.bot.channels['mod-logs'].send(f"⭕ **Approved**: {ctx.author.mention} approved server {invite.guild}({code}) to be posted {times} times")
 
 
 def setup(bot):
