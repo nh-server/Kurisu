@@ -220,6 +220,7 @@ class Events(DatabaseCog):
         'yqSut8c',  # TWL Mode Hacking!
         'EZSxqRr',  # ACNL Modding
         'bGKEyfY',  # FlagBrew
+        '9d66FYg',  # switchroot
     )
 
     # I hate naming variables sometimes
