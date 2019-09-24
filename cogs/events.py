@@ -63,7 +63,7 @@ class Events(DatabaseCog):
         'makifbi',
         'utikdownloadhelper',
         'usbh3lper',
-        'nusdownloader'
+        'wupdownloader'
         'funkii',
         'funkey',
         'funk11',
