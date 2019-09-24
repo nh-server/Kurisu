@@ -221,6 +221,7 @@ class Events(DatabaseCog):
         'EZSxqRr',  # ACNL Modding
         'bGKEyfY',  # FlagBrew
         '9d66FYg',  # switchroot
+        '2hUQwXz',  # Theme Plaza
     )
 
     # I hate naming variables sometimes
