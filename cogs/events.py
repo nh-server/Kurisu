@@ -147,9 +147,7 @@ class Events(DatabaseCog):
         'sxos',
         'operationidroid',
         'hbg',
-        'blawar',
         'mercury',
-        'vertigo',
     )
 
     drama_alert = ()
