@@ -916,7 +916,7 @@ your device will refuse to write to it.
         embed.description = "An AP-Patching guide"
         await ctx.send(embed=embed)
 
-   @commands.command()
+    @commands.command()
     async def cios(self, ctx):
         """cIOS installation guide"""
         embed = discord.Embed(title="cIOS Guide", color=discord.Color.green())
