@@ -915,7 +915,7 @@ your device will refuse to write to it.
         embed.url = "https://github.com/GlaZedBelmont/3DS-Tutorials/wiki/AP-Patching"
         embed.description = "An AP-Patching guide"
         await ctx.send(embed=embed)
-                             
+
    @commands.command()
     async def cios(self, ctx):
         """cIOS installation guide"""
