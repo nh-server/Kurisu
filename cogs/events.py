@@ -94,6 +94,7 @@ class Events(DatabaseCog):
         'vi1lian3ds',
         'vil1ian3ds',
         'cdnfx',
+        'squidroms',
         'exhop',
         'exshop',
         'enxhop',
