@@ -126,7 +126,7 @@ class Mod(DatabaseCog):
             await ctx.channel.edit(slowmode_delay=seconds)
         except discord.errors.Forbidden:
             return await ctx.send("💢 I don't have permission to do this.")
-        msg = f"🕙 **Slowmode**: {ctx.author.mention} set a slowmode delay for {time} ({seconds}) in {ctx.channel.mention}"
+        msg = f"🕙 **Slowmode**: {ctx.author.mention} set a slowmode delay of {time} ({seconds}) in {ctx.channel.mention}"
         await self.bot.channels["mod_logs"].send(msg)
 
     @is_staff("HalfOP")
