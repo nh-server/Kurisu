@@ -104,7 +104,7 @@ class Mod(DatabaseCog):
     async def slowmode(self, ctx, time, channel: discord.TextChannel=None):
         """Apply a given slowmode time to a channel.
         
-        The time format is identical to that used for timed kicks/bans/takehelps (except for the days parameter which is removed.)
+        The time format is identical to that used for timed kicks/bans/takehelps.)
 
         It is not possible to set a slowmode longer than 6 hours.
         
