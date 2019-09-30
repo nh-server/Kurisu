@@ -8,7 +8,6 @@ from cogs.checks import is_staff
 from cogs.database import DatabaseCog
 from cogs.converters import SafeMember
 
-
 class Mod(DatabaseCog):
     """
     Staff commands.
@@ -98,6 +97,37 @@ class Mod(DatabaseCog):
                 pass
         msg += "```"
         await author.send(msg)
+
+    @is_staff("OP")
+    @commands.guild_only()
+    @commands.command()
+    async def slowmode(self, ctx, channel, time):
+        """Apply a given slowmode time to a channel.
+        
+        The time format is identical to that used for timed kicks/bans/takehelps (except for the days parameter which is removed.)
+
+        It is not possible to set a slowmode longer than 6 hours.
+        
+        Staff only."""
+        units = { # This bit is copied from kickban, removed days since it's not needed.
+            "h": 3600,
+            "m": 60,
+            "s": 1
+        }
+        seconds = 0
+        match = re.findall("([0-9]+[smh])", time)
+        if not match:
+            return await ctx.send("💢 I don't understand your time format.")
+        for item in match:
+            seconds += int(item[:-1]) * units[item[-1]]
+        if seconds < 21600:
+            return await ctx.send("💢 You can't slowmode a channel for longer than 6 hours!")
+        try:
+            await ctx.channel.edit(slowmode_delay=seconds)
+        except discord.errors.Forbidden:
+            return await ctx.send("💢 I don't have permission to do this.")
+        msg = f"🕙 **Slowmode**: {ctx.author.mention} set a slowmode delay for {time} ({seconds}) in {ctx.channel.mention}"
+        await self.bot.channels["mod_logs"].send(msg)
 
     @is_staff("HalfOP")
     @commands.guild_only()
