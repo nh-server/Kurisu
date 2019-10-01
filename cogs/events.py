@@ -148,6 +148,7 @@ class Events(DatabaseCog):
         'operationidroid',
         'hbg',
         'mercury',
+        'lithium',
     )
 
     drama_alert = ()
