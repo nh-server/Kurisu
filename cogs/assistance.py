@@ -150,7 +150,7 @@ class Assistance(commands.Cog):
         """Snickerstream/NTR streaming guide"""
         embed = discord.Embed(title="Snickerstream: NTR Streaming Client", color=discord.Color.blue())
         embed.url = "https://gbatemp.net/threads/release-snickerstream-revived-a-proper-release-with-lots-of-improvements-and-new-features.488374/"
-        embed.description = "How to use NTR CFW with Snickerstream to stream your 3DS' screen\n**Requires [Luma3DS 9.1](https://github.com/AuroraWright/Luma3DS/releases/tag/v9.1)**"
+        embed.description = "How to use NTR CFW with Snickerstream to stream your 3DS' screen"
         embed.add_field(name="Guide and Advice", value=cleandoc("""
                 Easy [install guide](https://github.com/RattletraPM/Snickerstream/wiki/Streaming-with-NTR) for streaming with Snickerstream.
                 Snickerstream [app download](https://github.com/RattletraPM/Snickerstream/releases/latest)
