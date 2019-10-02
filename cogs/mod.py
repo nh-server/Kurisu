@@ -320,7 +320,7 @@ class Mod(DatabaseCog):
     @commands.guild_only()
     @commands.command()
     async def embed(self, ctx, member: SafeMember):
-        """Restore embed permissios for a user. Staff only."""
+        """Restore embed permissions for a user. Staff only."""
         try:
             await self.remove_restriction(member.id, self.bot.roles["No-Embed"])
             await member.remove_roles(self.bot.roles['No-Embed'])
