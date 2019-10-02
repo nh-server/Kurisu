@@ -981,8 +981,8 @@ in the scene.
         """90DNS IP adresses"""
         await self.simple_embed(ctx, """
                                 The public 90DNS IP adresses are:
-                                - `207.246.121.77`
-                                - `163.172.141.219`
+                                - `207.246.121.77` (USA)
+                                - `163.172.141.219`(France)
                                 
                                 To set these go to System Settings -> Internet -> Connection Settings -> Your wifi Network -> DNS to Manual -> Set primary and secondary DNS to the previously listed IPs -> Save Settings.
 
