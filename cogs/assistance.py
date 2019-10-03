@@ -424,46 +424,13 @@ additional configuration
                                 * Atmosphere's emuNAND/emuMMC implementation is completely free and open source
                                 """, title="Why Atmosphere?")
 
-    @commands.command()
+    @commands.command(aliases=["sderror", "sderrors", "bigsd", "formatsd", "sdformat", "sd"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def formatsd(self, ctx):
-        """Programs for formatting an SD card"""
+    async def sdguide(self, ctx):
+        """SD Troubleshooter"""
         await self.simple_embed(ctx, """
-                                Listed below are some utilities to format your SD card.
-                                • Windows: [guiformat](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm)
-                                • Linux: [gparted](http://gparted.org/download.php)
-                                • Mac: [Disk Utility](https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010) \
-(Always choose "MS-DOS (FAT)" regardless of size, not ExFAT.)
-                                """, title="Formatting your SD card")
-
-    @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def bigsd(self, ctx):
-        """SD bigger than 32GB"""
-        await self.simple_embed(ctx, """
-                                If you want to change your SD card to one bigger than 32GB, you'll have to format it to FAT32.
-                                Once it is FAT32, copy and paste ALL content from the old SD card to the new SD card.
-                                Afterwards, put the SD card in the console, turn the console on and check that your data is there.
-                                Warning: Do not put the new SD card in the console BEFORE you copy and paste everything to it. 
-                                This will cause all of your current data to “disappear” when you try to use it on the console. 
-                                If you accidentally do this, ask us for help.
-                                You can do this with the tool of your preference.
-                                Formatter examples:
-                                • Windows: [guiformat](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm)
-                                • Linux: [gparted](http://gparted.org/download.php)
-                                • Mac: [Disk Utility](https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010) \
-(Always choose "MS-DOS (FAT)" regardless of size, not ExFAT.)
-                                """, title="Big SD cards")
-
-    @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def sderrors(self, ctx):
-        """SD Error Guide"""
-        await self.simple_embed(ctx, """
-                                Guide For Checking SD Card For Errors
-                                http://3ds.eiphax.tech/sderrors.html
-                                This covers Windows, Linux and Mac.
-                                """, title="SD Card Errors")
+                    Got a problem with your SD card? Find solutions in [this guide](https://3ds.eiphax.tech/sd.html)
+                    """, title="SD Troubleshooter")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
