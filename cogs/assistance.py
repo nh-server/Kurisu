@@ -954,8 +954,9 @@ your device will refuse to write to it.
                                 
                                 While the Switch supports exFAT through an additional update from Nintendo, here are reasons not to use it:
                                 
+                                * CFW may fail to boot due to a missing exFAT update in Horizon
                                 * This filesystem is prone to corruption.
-                                * Nintendo does not use files larger than 4GB even while exFAT is used.
+                                * Nintendo doesn't use files larger than 4GB, even with large games and exFAT. 
                                 """, title="exFAT on Switch: Why you shouldn't use it")
         
     @commands.command()
