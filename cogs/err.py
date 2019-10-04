@@ -310,6 +310,7 @@ class Err(commands.Cog):
         '2168-0003': ['Memory access must be 4 bytes aligned. (No known support page)', None],
         '2181-4008': ['System is permanently banned by Nintendo. You cannot ask how to fix this issue here.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/42061'],
         '2811-5001': ['General connection error.', 'http://en-americas-support.nintendo.com/app/answers/detail/a_id/22392/p/897'],
+        '2124-4517': ['Console banned due a breach of the user agreements. You cannot ask how to fix this issue here.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/43652/kw/2124-4517'],
     }
 
     def get_name(self, d, k, show_unknown=False):
