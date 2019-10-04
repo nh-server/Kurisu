@@ -888,7 +888,7 @@ your device will refuse to write to it.
         """cIOS installation guide"""
         embed = discord.Embed(title="cIOS Guide", color=discord.Color.green())
         embed.set_author(name="tj_cool")
-        embed.set_thumbnail(url="https://i.imgur.com/sXSNYyV.jpg")
+        embed.set_thumbnail(url="https://i.imgur.com/7PIvVjJ.png")
         embed.url = "https://sites.google.com/site/completesg/backup-launchers/installation"
         embed.description = "A cIOS installation guide"
         await ctx.send(embed=embed)
