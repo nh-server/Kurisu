@@ -897,7 +897,7 @@ your device will refuse to write to it.
     async def sdroot(self, ctx):
         """Picture to say what the heck is the root""" 
         embed = discord.Embed()
-        embed.set_image(url="https://i.imgur.com/pVS2Lc6.png")
+        embed.set_image(url="https://i.imgur.com/7PIvVjJ.png")
         await ctx.send(embed=embed)             
                              
     # Information about autoRCM
