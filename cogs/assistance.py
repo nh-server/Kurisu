@@ -986,7 +986,7 @@ in the scene.
                                 
                                 To set these go to System Settings -> Internet -> Connection Settings -> Your wifi Network -> DNS to Manual -> Set primary and secondary DNS to the previously listed IPs -> Save Settings.
 
-                                If you’re not from the USA, make sure to set the second IP address as your primary DNS and the first IP address as your secondary DNS.
+                                Set the primary DNS server to the IP that is closest to you and the other as your secondary DNS.
                                 
                                 You will have to manually set these for each WiFi connection you have set up.
                                 """, title="90DNS IP adressses")
