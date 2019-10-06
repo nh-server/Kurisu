@@ -382,7 +382,7 @@ class Memes(commands.Cog):
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
-    async def gooseanna(self, ctx):
+    async def bananoose(self, ctx):
         """:)"""
         await self._meme(ctx, "https://i.imgur.com/VUmkXDd.jpg")
 
