@@ -380,6 +380,11 @@ class Memes(commands.Cog):
         """Whaaaa"""
         await self._meme(ctx, "https://i.imgur.com/0YHBP7l.png")
 
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def politcatoo(self, ctx):
+        """praise him"""
+        await self._meme(ctx, "https://i.imgur.com/1nQSMLM.png")
                        
 def setup(bot):
     bot.add_cog(Memes(bot))
