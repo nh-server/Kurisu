@@ -112,7 +112,7 @@ class Mod(DatabaseCog):
             channel = ctx.channel
             
         if channel not in self.bot.assistance_channels and not check_staff_id(ctx, "OP", ctx.author.id):
-             return ctx.send("You cannot use this command outside of assistance channels.")
+             return await ctx.send("You cannot use this command outside of assistance channels.")
             
         units = { # This bit is copied from kickban, removed days since it's not needed.
             "d": 86400,
