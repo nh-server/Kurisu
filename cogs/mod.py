@@ -98,20 +98,20 @@ class Mod(DatabaseCog):
         msg += "```"
         await author.send(msg)
 
-    @is_staff("OP")
+@is_staff("Helper")
     @commands.guild_only()
     @commands.command()
     async def slowmode(self, ctx, time, channel: discord.TextChannel=None):
         """Apply a given slowmode time to a channel.
         
         The time format is identical to that used for timed kicks/bans/takehelps.
-
         It is not possible to set a slowmode longer than 6 hours.
         
-        Staff only."""
+        Helpers in assistance channels and Staff only."""
         if not channel:
             channel = ctx.channel
-
+        if channel not in self.bot.assistance_channels and not check_staff_id(ctx.author.id, "OP"):
+             return ctx.send("You cannot use this command outside of assistance channels.")
         units = { # This bit is copied from kickban, removed days since it's not needed.
             "d": 86400,
             "h": 3600,
