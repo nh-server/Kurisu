@@ -4,7 +4,7 @@ import time
 from subprocess import call
 import discord
 from discord.ext import commands
-from cogs.checks import is_staff
+from cogs.checks import is_staff, check_staff_id
 from cogs.database import DatabaseCog
 from cogs.converters import SafeMember
 
