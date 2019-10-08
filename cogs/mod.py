@@ -110,8 +110,10 @@ class Mod(DatabaseCog):
         Helpers in assistance channels and Staff only."""
         if not channel:
             channel = ctx.channel
+            
         if channel not in self.bot.assistance_channels and not check_staff_id(ctx.author.id, "OP"):
              return ctx.send("You cannot use this command outside of assistance channels.")
+            
         units = { # This bit is copied from kickban, removed days since it's not needed.
             "d": 86400,
             "h": 3600,
