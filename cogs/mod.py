@@ -98,7 +98,7 @@ class Mod(DatabaseCog):
         msg += "```"
         await author.send(msg)
 
-@is_staff("Helper")
+    @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
     async def slowmode(self, ctx, time, channel: discord.TextChannel=None):
