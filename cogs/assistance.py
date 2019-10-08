@@ -344,13 +344,18 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 await ctx.send(embed=embed)
                 continue
             if self.check_console(x, ctx.message.channel.name, ('nx', 'switch', 'ns')):
-                embed = discord.Embed(title="Using a first-generation Switch?", color=0xe60012)
+                embed = discord.Embed(title="Looking to hack your Switch?", color=0xe60012)
                 embed.description = cleandoc("""
                 Use [our guide](https://nh-server.github.io/switch-guide/user_guide/getting_started/) to determine if your Switch is a first-gen unit.
-                All firmware versions up to 8.1.0 are currently compatible with [Atmosphere](https://nh-server.github.io/switch-guide/).
-                "Second-generation" invulnerable systems should **not** update past 7.0.1, as these systems may have \
-custom firmware on this version (and versions below that) in the very far future.
-                Downgrading is **impossible** on patched consoles, and isn't worth your time on unpatched ones. 
+                **First generation consoles (RCM exploitable)**
+                All of these can run [Atmosphere](https://nh-server.github.io/switch-guide/). Make sure that Atmosphere is compatible with the latest firmware version before you update.
+
+                **Second generation consoles ("patched" units, Switch Lite, Mariko, etc.)**
+                "Old" Patched Switch (HAC-001): Do NOT update past 7.0.1. Units on 7.0.1 and below will eventually get CFW. Units on 8.1.0 and higher are not expected to be hacked and can be updated.
+                "New" Switch (HAC-001-01): Do NOT update past 8.0.1. Units on 8.0.1 and below will likely get homebrew. Units on 8.1.0 and higher are not expected to be hacked and can be updated.
+                Switch Lite (HDH-001): Do NOT update past 8.0.1. Units on 8.0.1 and below will likely get homebrew. Units on 8.1.0 and higher are not expected to be hacked and can be updated.
+
+                Downgrading is **impossible** on patched consoles, and isn't worth your time on unpatched ones.
                 """)
                 await ctx.send(embed=embed)
 
