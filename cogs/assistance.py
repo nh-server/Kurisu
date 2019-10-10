@@ -758,10 +758,38 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
 One way to fix this is by using an y-cable to connect the HDD to two USB ports.
                                 """)
 
-    # Information about pending Switch updates
-    @commands.command(aliases=["nxupdate"])
+
+    # Information about how to prep for Switch updates
+    @commands.command(aliases=["updateprep", "nxupdate"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def nsupdate(self, ctx):
+        """What you should do before updating a Nintendo Switch"""
+        await self.simple_embed(ctx, cleandoc("""
+                                     **Make sure your version of Atmosphere is up to date and that it supports the latest firmware**
+
+                                     **Atmosphere 0.9.4 (latest release)**
+                                     Supports up to firmware 9.0.1.
+
+                                     *To find Atmosphere's version information, while booted into CFW, go into System Settings -> System, and look at \
+the text under the System Update button. If it says that a system update is ready instead of displaying the CFW version, type .pendingupdate to learn \
+how to delete it.*
+
+                                     **Make sure your version of Hekate is up to date and that it supports the latest firmware**
+                                     
+                                     **Hekate 5.0.2 (latest release)**
+                                     Supports up to firmware 9.0.1.
+                                     
+                                     *To find Hekate's version information, once Hekate starts, look in the top left corner of the screen. If you use auto-boot, hold `volume -` to stop it.*
+                                     
+                                     **If you use a custom theme**
+                                     Delete or rename /atmosphere/titles/0100000000001000 on your SD card prior to updating, \
+as custom themes must be reinstalled for most firmware updates.
+                                """), title="What do I need to do before updating my system firmware when running CFW?")
+
+    # Information about pending Switch updates
+    @commands.command(aliases=["pendingupdate"])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def delupdate(self, ctx):
         """Erase pending updates on Nintendo Switch"""
         await self.simple_embed(ctx, """
                                 When an update is downloaded, but not installed, the console will not display the \
