@@ -765,10 +765,6 @@ One way to fix this is by using an y-cable to connect the HDD to two USB ports.
     async def nsupdate(self, ctx):
         """What you should do before updating a Nintendo Switch"""
         await ctx.simple_embed(ctx, cleandoc(ctx, """
-                                     **If you use a custom theme**
-                                     Delete or rename /atmosphere/titles/0100000000001000 on your SD card prior to updating, \
-as custom themes must be reinstalled for most firmware updates.
-
                                      **Make sure your version of Atmosphere is up to date and that it supports the latest firmware**
 
                                      **Atmosphere 0.9.4 (latest release)**
@@ -784,6 +780,10 @@ how to delete it.*
                                      Supports up to firmware 9.0.1.
                                      
                                      *To find Hekate's version information, once Hekate starts, look in the top left corner of the screen. If you use auto-boot, hold `volume -` to stop it.*
+                                     
+                                     **If you use a custom theme**
+                                     Delete or rename /atmosphere/titles/0100000000001000 on your SD card prior to updating, \
+as custom themes must be reinstalled for most firmware updates.
                                 """, title="What do I need to do before updating my system firmware when running CFW?"))
 
     # Information about pending Switch updates
