@@ -147,6 +147,44 @@ class Mod(DatabaseCog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
+    async def metamute(self, ctx, member: SafeMember, *, reason=""):
+        """Mutes a user so they can't speak in meta. Staff only."""
+        if not await self.add_restriction(member.id, self.bot.roles['meta-mute']):
+            await ctx.send("User is already meta muted!")
+            return
+        await member.add_roles(self.bot.roles['meta-mute'])
+        msg_user = "You were meta muted!"
+        if reason != "":
+            msg_user += " The given reason is: " + reason
+        try:
+            await member.send(msg_user)
+        except discord.errors.Forbidden:
+            pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
+        await ctx.send(f"{member.mention} can no longer speak in meta.")
+        msg = f"🔇 **Meta muted**: {ctx.author.mention} meta muted {member.mention} | {member}"
+        if reason != "":
+            msg += "\n✏️ __Reason__: " + reason
+        else:
+            msg += "\nPlease add an explanation below. In the future, it is recommended to use `.metamute <user> [reason]` as the reason is automatically sent to the user."
+        await self.bot.channels['mod-logs'].send(msg)
+        
+    @is_staff("HalfOP")
+    @commands.guild_only()
+    @commands.command()
+    async def metaunmute(self, ctx, member: SafeMember):
+        """Unmutes a user so they can speak in meta. Staff only."""
+        try:
+            await self.remove_restriction(member.id, self.bot.roles["meta-mute"])
+            await member.remove_roles(self.bot.roles['meta-mute'])
+            await ctx.send(f"{member.mention} can now speak in meta again.")
+            msg = f"🔈 **Meta unmuted**: {ctx.author.mention} meta unmuted {member.mention} | {member}"
+            await self.bot.channels['mod-logs'].send(msg)
+        except discord.errors.Forbidden:
+            await ctx.send("💢 I don't have permission to do this.")
+
+    @is_staff("HalfOP")
+    @commands.guild_only()
+    @commands.command()
     async def mute(self, ctx, member: SafeMember, *, reason=""):
         """Mutes a user so they can't speak. Staff only."""
         if not await self.add_restriction(member.id, self.bot.roles['Muted']):

@@ -84,6 +84,7 @@ class Kurisu(commands.Bot):
             'No-Embed': None,
             '#elsewhere': None,
             'Small Help': None,
+            'meta-mute': None,
         }
 
         self.actions = []
