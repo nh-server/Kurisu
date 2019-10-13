@@ -127,6 +127,7 @@ class Events(DatabaseCog):
         'freestore',
         'sxinstaller',
         'rajnx2',
+        'poyoshop',
 
         #'sxos',
     )
