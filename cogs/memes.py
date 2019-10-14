@@ -397,6 +397,10 @@ class Memes(commands.Cog):
     async def goosenana(self, ctx):
         """:)"""
         await self._meme(ctx, "https://i.imgur.com/dLZOK5c.jpg")
-                       
+
+    async def eel(self, ctx, u: discord.Member):
+        """eel"""
+        await self._meme(ctx, f"{u.mention} has been eel slapped. https://i.imgur.com/QXF2Pcn.gif", True)
+
 def setup(bot):
     bot.add_cog(Memes(bot))
