@@ -398,6 +398,8 @@ class Memes(commands.Cog):
         """:)"""
         await self._meme(ctx, "https://i.imgur.com/dLZOK5c.jpg")
 
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def eel(self, ctx, u: discord.Member):
         """eel"""
         await self._meme(ctx, f"{u.mention} has been eel slapped. https://i.imgur.com/QXF2Pcn.gif", True)
