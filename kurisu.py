@@ -84,6 +84,7 @@ class Kurisu(commands.Bot):
             'No-Embed': None,
             '#elsewhere': None,
             'Small Help': None,
+            'meta-mute': None,
         }
 
         self.actions = []
@@ -112,7 +113,7 @@ class Kurisu(commands.Bot):
             'mod-logs': None,
             'server-logs': None,
             'bot-err': None,
-
+            'elsewhere': None, #I'm a bit worried about how often this changes, shouldn't be a problem tho
         }
 
         self.failed_cogs = []

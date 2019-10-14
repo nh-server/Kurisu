@@ -344,13 +344,19 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 await ctx.send(embed=embed)
                 continue
             if self.check_console(x, ctx.message.channel.name, ('nx', 'switch', 'ns')):
-                embed = discord.Embed(title="Using a first-generation Switch?", color=0xe60012)
+                embed = discord.Embed(title="Looking to hack your Switch?", color=0xe60012)
                 embed.description = cleandoc("""
                 Use [our guide](https://nh-server.github.io/switch-guide/user_guide/getting_started/) to determine if your Switch is a first-gen unit.
-                All firmware versions up to 8.1.0 are currently compatible with [Atmosphere](https://nh-server.github.io/switch-guide/).
-                "Second-generation" invulnerable systems should **not** update past 7.0.1, as these systems may have \
-custom firmware on this version (and versions below that) in the very far future.
-                Downgrading is **impossible** on patched consoles, and isn't worth your time on unpatched ones. 
+                **First generation consoles (RCM exploitable)**
+                All of these can run [Atmosphere](https://nh-server.github.io/switch-guide/). Make sure that Atmosphere is compatible with the latest firmware version before you update.
+
+                **Second generation consoles ("patched" units, Switch Lite, Mariko, etc.)**
+
+                **"Old" Patched Switch (HAC-001)**: Do NOT update past 7.0.1. Units on 7.0.1 and below will eventually get CFW. Units on 8.0.0 and higher are not expected to be hacked and can be updated.
+                **"New" Switch (HAC-001-01)**: Do NOT update past 8.0.1. Units on 8.0.1 and below will likely get homebrew. Units on 8.1.0 and higher are not expected to be hacked and can be updated.
+                **Switch Lite (HDH-001)**: Do NOT update past 8.0.1. Units on 8.0.1 and below will likely get homebrew. Units on 8.1.0 and higher are not expected to be hacked and can be updated.
+
+                Downgrading is **impossible** on patched consoles, and isn't worth your time on unpatched ones.
                 """)
                 await ctx.send(embed=embed)
 
@@ -398,6 +404,17 @@ re-read the guide steps 2 or 3 times before coming here.
         embed.url = "https://github.com/Atmosphere-NX/Atmosphere/releases/latest"
         embed.description = "Link to Atmosphère latest release"
         await ctx.send(embed=embed)
+    
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def hekate(self, ctx):
+        """Download link for the latest Hekate version"""
+        embed = discord.Embed(title="Hekate", color=discord.Color.red())
+        embed.set_author(name="CTCaer", url="https://github.com/CTCaer")
+        embed.set_thumbnail(url="https://imgur.com/kFEZyuC.png")
+        embed.url = "https://github.com/CTCaer/hekate/releases/latest"
+        embed.description = "Link to Hekate's latest release"
+        await ctx.send(embed=embed)
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -413,46 +430,13 @@ additional configuration
                                 * Atmosphere's emuNAND/emuMMC implementation is completely free and open source
                                 """, title="Why Atmosphere?")
 
-    @commands.command()
+    @commands.command(aliases=["sderror", "sderrors", "bigsd", "formatsd", "sdformat", "sd"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def formatsd(self, ctx):
-        """Programs for formatting an SD card"""
+    async def sdguide(self, ctx):
+        """SD Troubleshooter"""
         await self.simple_embed(ctx, """
-                                Listed below are some utilities to format your SD card.
-                                • Windows: [guiformat](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm)
-                                • Linux: [gparted](http://gparted.org/download.php)
-                                • Mac: [Disk Utility](https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010) \
-(Always choose "MS-DOS (FAT)" regardless of size, not ExFAT.)
-                                """, title="Formatting your SD card")
-
-    @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def bigsd(self, ctx):
-        """SD bigger than 32GB"""
-        await self.simple_embed(ctx, """
-                                If you want to change your SD card to one bigger than 32GB, you'll have to format it to FAT32.
-                                Once it is FAT32, copy and paste ALL content from the old SD card to the new SD card.
-                                Afterwards, put the SD card in the console, turn the console on and check that your data is there.
-                                Warning: Do not put the new SD card in the console BEFORE you copy and paste everything to it. 
-                                This will cause all of your current data to “disappear” when you try to use it on the console. 
-                                If you accidentally do this, ask us for help.
-                                You can do this with the tool of your preference.
-                                Formatter examples:
-                                • Windows: [guiformat](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm)
-                                • Linux: [gparted](http://gparted.org/download.php)
-                                • Mac: [Disk Utility](https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010) \
-(Always choose "MS-DOS (FAT)" regardless of size, not ExFAT.)
-                                """, title="Big SD cards")
-
-    @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def sderrors(self, ctx):
-        """SD Error Guide"""
-        await self.simple_embed(ctx, """
-                                Guide For Checking SD Card For Errors
-                                http://3ds.eiphax.tech/sderrors.html
-                                This covers Windows, Linux and Mac.
-                                """, title="SD Card Errors")
+                    Got a problem with your SD card? Find solutions in [this guide](https://3ds.eiphax.tech/sd.html)
+                    """, title="SD Troubleshooter")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -484,7 +468,7 @@ just missing a file called boot.firm in the root of your SD card.
         embed.add_field(name="Checking your SD for errors or corruption", value="https://3ds.eiphax.tech/sderrors.html \n Please read the instructions carefully.", inline=False)
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(aliases=["troubleshooting"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def troubleshoot(self, ctx, *, console=""):
         """Troubleshooting guides for common issues"""
@@ -774,10 +758,38 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
 One way to fix this is by using an y-cable to connect the HDD to two USB ports.
                                 """)
 
-    # Information about pending Switch updates
-    @commands.command(aliases=["nxupdate"])
+
+    # Information about how to prep for Switch updates
+    @commands.command(aliases=["updateprep", "nxupdate"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def nsupdate(self, ctx):
+        """What you should do before updating a Nintendo Switch"""
+        await self.simple_embed(ctx, cleandoc("""
+                                     **Make sure your version of Atmosphere is up to date and that it supports the latest firmware**
+
+                                     **Atmosphere 0.9.4 (latest release)**
+                                     Supports up to firmware 9.0.1.
+
+                                     *To find Atmosphere's version information, while booted into CFW, go into System Settings -> System, and look at \
+the text under the System Update button. If it says that a system update is ready instead of displaying the CFW version, type .pendingupdate to learn \
+how to delete it.*
+
+                                     **Make sure your version of Hekate is up to date and that it supports the latest firmware**
+                                     
+                                     **Hekate 5.0.2 (latest release)**
+                                     Supports up to firmware 9.0.1.
+                                     
+                                     *To find Hekate's version information, once Hekate starts, look in the top left corner of the screen. If you use auto-boot, hold `volume -` to stop it.*
+                                     
+                                     **If you use a custom theme**
+                                     Delete or rename /atmosphere/titles/0100000000001000 on your SD card prior to updating, \
+as custom themes must be reinstalled for most firmware updates.
+                                """), title="What do I need to do before updating my system firmware when running CFW?")
+
+    # Information about pending Switch updates
+    @commands.command(aliases=["pendingupdate"])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def delupdate(self, ctx):
         """Erase pending updates on Nintendo Switch"""
         await self.simple_embed(ctx, """
                                 When an update is downloaded, but not installed, the console will not display the \
@@ -787,8 +799,7 @@ firmware version in System Settings.
 ***Hold*** Volume Down and Volume Up, then Power. When you see Maintenance Mode, you \
 may reboot, and check System Settings.
                                 
-                                *To block automatic update downloads, enter 163.172.141.219 as your primary DNS and \
-45.248.48.62 as your secondary DNS for your home network.*
+                                *To block automatic update downloads, type .90dns in this chat for further information.*
                                  """, title="How to delete pending Switch Updates")
 
     @commands.command()
@@ -904,12 +915,22 @@ your device will refuse to write to it.
         embed.url = "https://github.com/GlaZedBelmont/3DS-Tutorials/wiki/AP-Patching"
         embed.description = "An AP-Patching guide"
         await ctx.send(embed=embed)
+
+    @commands.command()
+    async def cios(self, ctx):
+        """cIOS installation guide"""
+        embed = discord.Embed(title="cIOS Guide", color=discord.Color.green())
+        embed.set_author(name="tj_cool")
+        embed.set_thumbnail(url="https://i.imgur.com/sXSNYyV.jpg")
+        embed.url = "https://sites.google.com/site/completesg/backup-launchers/installation"
+        embed.description = "A cIOS installation guide"
+        await ctx.send(embed=embed)
                              
     @commands.command()
     async def sdroot(self, ctx):
         """Picture to say what the heck is the root""" 
         embed = discord.Embed()
-        embed.set_image(url="https://i.imgur.com/pVS2Lc6.png")
+        embed.set_image(url="https://i.imgur.com/7PIvVjJ.png")
         await ctx.send(embed=embed)             
                              
     # Information about autoRCM
@@ -933,8 +954,9 @@ your device will refuse to write to it.
                                 
                                 While the Switch supports exFAT through an additional update from Nintendo, here are reasons not to use it:
                                 
+                                * CFW may fail to boot due to a missing exFAT update in Horizon
                                 * This filesystem is prone to corruption.
-                                * Nintendo does not use files larger than 4GB even while exFAT is used.
+                                * Nintendo doesn't use files larger than 4GB, even with large games and exFAT. 
                                 """, title="exFAT on Switch: Why you shouldn't use it")
         
     @commands.command()
@@ -960,10 +982,12 @@ in the scene.
         """90DNS IP adresses"""
         await self.simple_embed(ctx, """
                                 The public 90DNS IP adresses are:
-                                - `163.172.141.219`
-                                - `45.248.48.62`
+                                - `207.246.121.77` (USA)
+                                - `163.172.141.219`(France)
                                 
                                 To set these go to System Settings -> Internet -> Connection Settings -> Your wifi Network -> DNS to Manual -> Set primary and secondary DNS to the previously listed IPs -> Save Settings.
+
+                                Set the primary DNS server to the IP that is closest to you and the other as your secondary DNS.
                                 
                                 You will have to manually set these for each WiFi connection you have set up.
                                 """, title="90DNS IP adressses")

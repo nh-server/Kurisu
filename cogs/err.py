@@ -310,6 +310,7 @@ class Err(commands.Cog):
         '2168-0003': ['Memory access must be 4 bytes aligned. (No known support page)', None],
         '2181-4008': ['System is permanently banned by Nintendo. You cannot ask how to fix this issue here.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/42061'],
         '2811-5001': ['General connection error.', 'http://en-americas-support.nintendo.com/app/answers/detail/a_id/22392/p/897'],
+        '2124-4517': ['Console banned due a breach of the user agreements. You cannot ask how to fix this issue here.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/43652/kw/2124-4517'],
     }
 
     def get_name(self, d, k, show_unknown=False):
@@ -470,7 +471,7 @@ class Err(commands.Cog):
         """
         if re.match('[0-1][0-9][0-9]\-[0-9][0-9][0-9][0-9]', err):
             embed = discord.Embed(title=err + (": Nintendo 3DS" if err[0] == "0" else ": Wii U"))
-            embed.url = f"http://www.nintendo.com/consumer/wfc/en_na/ds/results.jsp?error_code={err}&system={'3DS' if err[0] == '0' else 'Wiiu'}&locale=en_US"
+            embed.url = f"https://en-americas-support.nintendo.com/app/answers/list/kw/{err}"
             if err in self.errcodes:
                 embed.description = self.errcodes[err]
                 embed.color = (Color(0xCE181E) if err[0] == "0" else Color(0x009AC7))

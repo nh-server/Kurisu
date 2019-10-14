@@ -107,7 +107,6 @@ class Events(DatabaseCog):
         'jnustool',
         'nusgrabber',
         'fr33$h0p',
-        'fshop',  # common outright bypass, but not sure if it will interact with legitimate words
         'free.shop',
         'fréeshop',
         'freéshop',
@@ -127,6 +126,8 @@ class Events(DatabaseCog):
         'stargate',
         'freestore',
         'sxinstaller',
+        'rajnx2',
+        'poyoshop',
 
         #'sxos',
     )
@@ -141,11 +142,13 @@ class Events(DatabaseCog):
         'freshop',
         'feeshop',
         'notabug',
+        'fshop',
         #'sx',
         #'tx',
         'sxos',
         'operationidroid',
         'hbg',
+        'mercury',
     )
 
     drama_alert = ()
@@ -209,10 +212,15 @@ class Events(DatabaseCog):
 
     approved_guilds = (
         'C29hYvh',  # Nintendo Homebrew
-        'ZdqEhed',  # Reswitched
+        'nintendohomebrew', # Nintendo Homebrew's vanity invite
+        'ZdqEhed',  # ReSwitched
+        'DThbZ7z',  # ReSwitched, not sure why two permanent invites exist but they do
         'qgEeK3E',  # Famicomunnity
         'yqSut8c',  # TWL Mode Hacking!
         'EZSxqRr',  # ACNL Modding
+        'bGKEyfY',  # FlagBrew
+        '9d66FYg',  # switchroot
+        '2hUQwXz',  # Theme Plaza
     )
 
     # I hate naming variables sometimes

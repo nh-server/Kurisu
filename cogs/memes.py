@@ -38,6 +38,12 @@ class Memes(commands.Cog):
         await self._meme(ctx, "**ALL HAIL BRITANNIA!**")
 
     @commands.command(hidden=True)
+    @commands.cooldown(rate=5, per=30.0, type=commands.BucketType.channel)
+    async def honk(self, ctx):
+        """honk"""
+        await self._meme(ctx, "`R A K E  I N  T H E  L A K E`")
+
+    @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def screams(self, ctx):
         """Memes."""
@@ -382,9 +388,19 @@ class Memes(commands.Cog):
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def bananoose(self, ctx):
+        """:)"""
+        await self._meme(ctx, "https://i.imgur.com/VUmkXDd.jpg")
+                         
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def goosenana(self, ctx):
+        """:)"""
+        await self._meme(ctx, "https://i.imgur.com/dLZOK5c.jpg")
+
     async def eel(self, ctx, u: discord.Member):
-        """Eeel slap timeeee?????"""
+        """eel"""
         await self._meme(ctx, f"{u.mention} has been eel slapped. https://i.imgur.com/QXF2Pcn.gif", True)
-                       
+
 def setup(bot):
     bot.add_cog(Memes(bot))

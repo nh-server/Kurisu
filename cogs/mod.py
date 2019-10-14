@@ -4,10 +4,9 @@ import time
 from subprocess import call
 import discord
 from discord.ext import commands
-from cogs.checks import is_staff
+from cogs.checks import is_staff, check_staff_id
 from cogs.database import DatabaseCog
 from cogs.converters import SafeMember
-
 
 class Mod(DatabaseCog):
     """
@@ -99,6 +98,43 @@ class Mod(DatabaseCog):
         msg += "```"
         await author.send(msg)
 
+    @is_staff("Helper")
+    @commands.guild_only()
+    @commands.command()
+    async def slowmode(self, ctx, time, channel: discord.TextChannel=None):
+        """Apply a given slowmode time to a channel.
+        
+        The time format is identical to that used for timed kicks/bans/takehelps.
+        It is not possible to set a slowmode longer than 6 hours.
+        
+        Helpers in assistance channels and Staff only."""
+        if not channel:
+            channel = ctx.channel
+            
+        if channel not in self.bot.assistance_channels and not await check_staff_id(ctx, "OP", ctx.author.id):
+             return await ctx.send("You cannot use this command outside of assistance channels.")
+            
+        units = { # This bit is copied from kickban, removed days since it's not needed.
+            "d": 86400,
+            "h": 3600,
+            "m": 60,
+            "s": 1
+        }
+        seconds = 0
+        match = re.findall("([0-9]+[smhd])", time)
+        if not match:
+            return await ctx.send("💢 I don't understand your time format.")
+        for item in match:
+            seconds += int(item[:-1]) * units[item[-1]]
+        if seconds > 21600:
+            return await ctx.send("💢 You can't slowmode a channel for longer than 6 hours!")
+        try:
+            await channel.edit(slowmode_delay=seconds)
+        except discord.errors.Forbidden:
+            return await ctx.send("💢 I don't have permission to do this.")
+        msg = f"🕙 **Slowmode**: {ctx.author.mention} set a slowmode delay of {time} ({seconds}) in {ctx.channel.mention}"
+        await self.bot.channels["mod-logs"].send(msg)
+
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command(aliases=["clear"])
@@ -107,6 +143,44 @@ class Mod(DatabaseCog):
         await ctx.channel.purge(limit=limit+1)
         msg = f"🗑 **Cleared**: {ctx.author.mention} cleared {limit} messages in {ctx.channel.mention}"
         await self.bot.channels['mod-logs'].send(msg)
+
+    @is_staff("HalfOP")
+    @commands.guild_only()
+    @commands.command()
+    async def metamute(self, ctx, member: SafeMember, *, reason=""):
+        """Mutes a user so they can't speak in meta. Staff only."""
+        if not await self.add_restriction(member.id, self.bot.roles['meta-mute']):
+            await ctx.send("User is already meta muted!")
+            return
+        await member.add_roles(self.bot.roles['meta-mute'])
+        msg_user = "You were meta muted!"
+        if reason != "":
+            msg_user += " The given reason is: " + reason
+        try:
+            await member.send(msg_user)
+        except discord.errors.Forbidden:
+            pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
+        await ctx.send(f"{member.mention} can no longer speak in meta.")
+        msg = f"🔇 **Meta muted**: {ctx.author.mention} meta muted {member.mention} | {member}"
+        if reason != "":
+            msg += "\n✏️ __Reason__: " + reason
+        else:
+            msg += "\nPlease add an explanation below. In the future, it is recommended to use `.metamute <user> [reason]` as the reason is automatically sent to the user."
+        await self.bot.channels['mod-logs'].send(msg)
+        
+    @is_staff("HalfOP")
+    @commands.guild_only()
+    @commands.command()
+    async def metaunmute(self, ctx, member: SafeMember):
+        """Unmutes a user so they can speak in meta. Staff only."""
+        try:
+            await self.remove_restriction(member.id, self.bot.roles["meta-mute"])
+            await member.remove_roles(self.bot.roles['meta-mute'])
+            await ctx.send(f"{member.mention} can now speak in meta again.")
+            msg = f"🔈 **Meta unmuted**: {ctx.author.mention} meta unmuted {member.mention} | {member}"
+            await self.bot.channels['mod-logs'].send(msg)
+        except discord.errors.Forbidden:
+            await ctx.send("💢 I don't have permission to do this.")
 
     @is_staff("HalfOP")
     @commands.guild_only()
@@ -286,7 +360,7 @@ class Mod(DatabaseCog):
     @commands.guild_only()
     @commands.command()
     async def embed(self, ctx, member: SafeMember):
-        """Restore embed permissios for a user. Staff only."""
+        """Restore embed permissions for a user. Staff only."""
         try:
             await self.remove_restriction(member.id, self.bot.roles["No-Embed"])
             await member.remove_roles(self.bot.roles['No-Embed'])
@@ -492,11 +566,11 @@ class Mod(DatabaseCog):
     @commands.guild_only()
     @commands.command(hidden=True)
     async def approve(self, ctx, invite: discord.Invite, times: int=1):
-        """Approves a server invite for a number of times"""
+        """Approves a server invite for a number of times. Staff and Helpers only."""
         code = invite.code
         self.bot.temp_guilds[code] = times
         await ctx.send(f"Approved an invite to {invite.guild}({code}) for posting {times} times")
-        await self.bot.channels['mod-logs'].send(f"🚫 **Approved**: {ctx.author.mention} approved server {invite.guild}({code}) to be posted {times} times")
+        await self.bot.channels['mod-logs'].send(f"⭕ **Approved**: {ctx.author.mention} approved server {invite.guild}({code}) to be posted {times} times")
 
 
 def setup(bot):
