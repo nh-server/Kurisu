@@ -945,6 +945,14 @@ your device will refuse to write to it.
         embed.description = "Guide and Warnings about AutoRCM"
         await ctx.send(embed=embed)
 
+   @commands.command(aliases=['switchserial'])
+   async def serial(self, ctx):
+        """Picture to show what the hell a serial is""" 
+        embed = discord.Embed(title="Don't know where your Switch's serial is?")
+        embed.description = "This is where the serial is located. Use this number to check if you are patched."
+        embed.set_image(url="https://i.imgur.com/03NfeFN.png")
+        await ctx.send(embed=embed)
+                              
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def exfat(self, ctx):
