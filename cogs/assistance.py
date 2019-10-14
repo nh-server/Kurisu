@@ -945,8 +945,8 @@ your device will refuse to write to it.
         embed.description = "Guide and Warnings about AutoRCM"
         await ctx.send(embed=embed)
 
-   @commands.command(aliases=['switchserial'])
-   async def serial(self, ctx):
+    @commands.command(aliases=['switchserial'])
+    async def serial(self, ctx):
         """Picture to show what the hell a serial is""" 
         embed = discord.Embed(title="Don't know where your Switch's serial is?", color=discord.Color.red())
         embed.description = "This is where the serial is located. Use this number to check if you are patched."
