@@ -946,6 +946,7 @@ your device will refuse to write to it.
         await ctx.send(embed=embed)
 
     @commands.command(aliases=['switchserial'])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def serial(self, ctx):
         """Picture to show what the hell a serial is""" 
         embed = discord.Embed(title="Don't know where your Switch's serial is?", color=discord.Color.red())
