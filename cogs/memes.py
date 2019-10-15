@@ -407,7 +407,7 @@ class Memes(commands.Cog):
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def eel(self, ctx, u: discord.Member):
         """eel"""
-        await self._meme(ctx, f"{self.bot.escape_text(u.name)} has been eel slapped.", True, "https://i.imgur.com/QXF2Pcn.gif")
+        await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has been eel slapped.", True, "https://i.imgur.com/QXF2Pcn.gif")
 
 def setup(bot):
     bot.add_cog(Memes(bot))
