@@ -712,6 +712,7 @@ class NXErr(commands.Cog):
         "2618-0513": "This error code generally indicates that your network is not optimal for peer to peer connections, this may be due to the ISP, Internet connection speeds, or due to your network's NAT type. (https://en-americas-support.nintendo.com/app/answers/detail/a_id/25980/p/897)",
         "2618-0201": "This error may be the result your connection timing out due to a slow Internet service or a poor wireless environment. (https://en-americas-support.nintendo.com/app/answers/detail/a_id/25866/p/897)",
         "2002-0001": "An error code is received when powering up the Nintendo Switch console, or when coming out of sleep mode. (https://en-americas-support.nintendo.com/app/answers/detail/a_id/27167/p/897)",
+        "2124-4517": "Console banned due a breach of the user agreements. You cannot ask how to fix this issue here. (https://en-americas-support.nintendo.com/app/answers/detail/a_id/43652/kw/2124-4517)",
         "2813-1470": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/26362/p/897",
         "2124-4007": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/28046/p/897",
         "2811-5001": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/22392/p/897",
