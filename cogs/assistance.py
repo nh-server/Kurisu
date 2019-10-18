@@ -585,12 +585,24 @@ the system can't check for an update.
                                   JPN: `00000082`
                                   KOR: `000000A9`
                                   """, title="How to clear Home Menu extdata")
-
+                               
+    @commands.guild_only()
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def deltheme(self, ctx):
+    async def deltheme(self, ctx, consoles = ""):
         """Deleting home menu theme data"""
-        await self.simple_embed(ctx, """
+        systems = ("3ds", "nx", "ns", "switch")
+        consolelist = []
+        consolelist = [x for x in consoles.split() if x in systems and x not in consolelist]
+        if not consolelist:
+            if ctx.channel.name.startswith(systems):
+                consolelist = ['auto']
+            else:
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+                return
+        for x in consolelist:
+            if self.check_console(x, ctx.message.channel.name, '3ds'):
+                await self.simple_embed(ctx, """
                                 1. Navigate to the following folder on your SD card: \
 `/Nintendo 3DS/(32 Character ID)/(32 Character ID)/extdata/00000000/`
                                 2. Delete the corresponding folder for your region:
@@ -598,6 +610,13 @@ the system can't check for an update.
                                   EUR: `000002ce`
                                   JPN: `000002cc`
                                   """, title="How to delete Home Menu Theme Data")
+            if self.check_console(x, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+                await self.simple_embed(ctx, """
+                                1. Navigate to the following folder on your SD card: \
+                                    `/atmosphere/titles`           
+                                2. Delete the folder with the name `0100000000001000`
+                                  """, title="How to delete Home Menu Theme Data")
+          
 
     @commands.command(aliases=['godmode9'])
     async def gm9(self, ctx):
