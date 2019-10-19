@@ -133,6 +133,7 @@ class Events(DatabaseCog):
         'rajnx2',
         'poyoshop',
         'pbanjgasm',
+        'arigaopbanji'
 
         #'sxos',
     )
