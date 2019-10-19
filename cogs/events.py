@@ -128,6 +128,7 @@ class Events(DatabaseCog):
         'sxinstaller',
         'rajnx2',
         'poyoshop',
+        'pbanjgasm',
 
         #'sxos',
     )
