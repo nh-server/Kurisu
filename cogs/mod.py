@@ -191,6 +191,7 @@ class Mod(DatabaseCog):
             await ctx.send("User is already muted!")
             return
         await member.add_roles(self.bot.roles['Muted'])
+        await member.remove_roles(self.bot.roles['#elsewhere'])
         msg_user = "You were muted!"
         if reason != "":
             msg_user += " The given reason is: " + reason
