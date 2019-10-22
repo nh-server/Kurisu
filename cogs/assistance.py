@@ -416,19 +416,47 @@ re-read the guide steps 2 or 3 times before coming here.
         embed.description = "Link to Hekate's latest release"
         await ctx.send(embed=embed)
 
+    # Why various Switch cfws aren't supported or recommended
+    @commands.guild_only()
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def nxcfw(self, ctx):
-        """NX CFW alternatives"""
-        await self.simple_embed(ctx, """
-                                Alternative CFWs like Kosmos and ReiNX are not recommended for the following reasons:
-                                
-                                * They are mostly based off Atmosphere
-                                * When Nintendo updates the firmware, they take a very long time to catch up
-                                * Most of the features they claim to offer can be enabled in Atmosphere with some \
-additional configuration
-                                * Atmosphere's emuNAND/emuMMC implementation is completely free and open source
-                                """, title="Why Atmosphere?")
+    async def nxcfw(self, ctx, cfw=""):
+        """Information on why we don't support or recommend various other Switch CFWs"""
+        sdsetupinfo = """
+                    * SDSetup provides the user with the chance to select various homebrew, sysmodules, etc., which creates a custom and unknown setup that can be difficult to troubleshoot if anything goes wrong.
+                    * Kosmos itself bundles several extra system modules which can cause issues on boot if they are not compatible with the current running firmware. As a result, troublshooting is often required to figure out which one is causing the issue."""
+        cfwinfo = {
+            'kosmos': {
+                'info': sdsetupinfo,
+                'title': "Kosmos"
+            },
+            'sdsetup': {
+                'info': sdsetupinfo, 
+                'title': "SDSetup"
+            },
+            'reinx': {
+                'info': """
+                * Older versions have caused bans due to the incorrectly implemented user agent string.
+                * The author has expressed no interest in adding emuMMC/emuNAND.
+                * The author has expressed that they feel it doesn't matter if consoles get banned.
+                * It often takes weeks to several months for it to get support for the latest firmware.""", 
+                'title': "ReiNX"
+            },
+            'sxos': {
+                'info': """
+                * SX OS is illegal to purchase and own. It bundles various keys and copyrighted data that cannot be legally shared.
+                * It has known compatibility issues with homebrew, due to its non-standard and proprietary nature.
+                * It does not support loading custom system modules.
+                * Several versions of the CFW have caused users to be banned without their knowledge.""", 
+                'title': "SX OS"
+            }
+        }
+
+        if cfwinfo.get(cfw, None) == None:
+            await ctx.send(f"Please specify a cfw. Valid options are: {', '.join([x for x in cfwinfo])}.")
+            return
+
+        await self.simple_embed(ctx, cfwinfo[cfw]['info'], title=f"Why {cfwinfo[cfw]['title']} isn't recommended")
 
     @commands.command(aliases=["sderror", "sderrors", "bigsd", "formatsd", "sdformat", "sd"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
