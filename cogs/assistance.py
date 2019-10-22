@@ -427,7 +427,7 @@ re-read the guide steps 2 or 3 times before coming here.
             'kosmos': {
                 'info': """
                         * Kosmos bundles several extras, including system modules which can cause issues with booting if they are not compatible \
-                        with the current running firmware. As a result, troubleshooting is often required to figure out which one is causing the issue.""",
+                        with the currently running firmware. As a result, troubleshooting is often required to figure out which one is causing the issue.""",
                 'title': "Kosmos"
             },
             'reinx': {
