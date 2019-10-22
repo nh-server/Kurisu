@@ -436,18 +436,18 @@ re-read the guide steps 2 or 3 times before coming here.
             },
             'reinx': {
                 'info': """
-                * Older versions have caused bans due to the incorrectly implemented user agent string.
-                * The author has expressed no interest in adding emuMMC/emuNAND.
-                * The author has expressed that they feel it doesn't matter if consoles get banned.
-                * It often takes weeks to several months for it to get support for the latest firmware.""", 
+                        * Older versions have caused bans due to the incorrectly implemented user agent string.
+                        * The author has expressed no interest in adding emuMMC/emuNAND.
+                        * The author has expressed that they feel it doesn't matter if consoles get banned.
+                        * It often takes weeks to several months for it to get support for the latest firmware.""", 
                 'title': "ReiNX"
             },
             'sxos': {
                 'info': """
-                * SX OS is illegal to purchase and own. It bundles various keys and copyrighted data that cannot be legally shared.
-                * It has known compatibility issues with homebrew, due to its non-standard and proprietary nature.
-                * It does not support loading custom system modules.
-                * Several versions of the CFW have caused users to be banned without their knowledge.""", 
+                        * SX OS is illegal to purchase and own. It bundles various keys and copyrighted data that cannot be legally shared.
+                        * It has known compatibility issues with homebrew, due to its non-standard and proprietary nature.
+                        * It does not support loading custom system modules.
+                        * Several versions of the CFW have caused users to be banned without their knowledge.""", 
                 'title': "SX OS"
             }
         }
