@@ -217,6 +217,7 @@ class Mod(DatabaseCog):
 
         await self.add_restriction(member.id, self.bot.roles['Muted'])
         await member.add_roles(self.bot.roles['Muted'])
+        await member.remove_roles(self.bot.roles['#elsewhere'])
         issuer = ctx.author
         # thanks Luc#5653
         units = {
