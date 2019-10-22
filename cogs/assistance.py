@@ -422,17 +422,12 @@ re-read the guide steps 2 or 3 times before coming here.
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def nxcfw(self, ctx, cfw=""):
         """Information on why we don't support or recommend various other Switch CFWs"""
-        sdsetupinfo = """
-                    * SDSetup provides the user with the chance to select various homebrew, system modules, etc., which creates a custom and unknown setup that can be difficult to troubleshoot if anything goes wrong.
-                    * Kosmos itself bundles several extra system modules which can cause issues on boot if they are not compatible with the current running firmware. As a result, troubleshooting is often required to figure out which one is causing the issue."""
+
         cfwinfo = {
             'kosmos': {
-                'info': sdsetupinfo,
+                'info': """
+                        * Kosmos bundles several extras, including system modules which can cause issues with booting if they are not compatible with the current running firmware. As a result, troubleshooting is often required to figure out which one is causing the issue.""",
                 'title': "Kosmos"
-            },
-            'sdsetup': {
-                'info': sdsetupinfo, 
-                'title': "SDSetup"
             },
             'reinx': {
                 'info': """
