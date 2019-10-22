@@ -189,6 +189,8 @@ class Extras(commands.Cog):
         if isinstance(ctx.channel, discord.abc.GuildChannel):
             await ctx.message.delete()
             author = ctx.author
+            if ctx.channel != self.bot.channels['bot-cmds']:
+                return await ctx.send(f"{ctx.author.mention}: .togglechannel can only be used in <#261581918653513729>.")
         else:
             author = self.bot.guild.get_member(ctx.author.id)
         try:
