@@ -612,7 +612,7 @@ the system can't check for an update.
                                   """, title="How to delete Home Menu Theme Data")
             if self.check_console(x, ctx.message.channel.name, ('nx', 'switch', 'ns')):
                 await self.simple_embed(ctx, """
-                                1. Navigate to the following folder on your SD card: \
+                                1. Navigate to the following folder on your SD card:
                                     `/atmosphere/titles`           
                                 2. Delete the folder with the name `0100000000001000`
                                   """, title="How to delete Home Menu Theme Data")
