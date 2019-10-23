@@ -376,7 +376,7 @@ class Mod(DatabaseCog):
     @commands.guild_only()
     @commands.command(aliases=["nohelp"])
     async def takehelp(self, ctx, member: SafeMember, *, reason=""):
-        """Remove access to help-and-questions. Staff and Helpers only."""
+        """Remove access to Assistance Channels. Staff and Helpers only."""
         await self.add_restriction(member.id, self.bot.roles['No-Help'])
         await member.add_roles(self.bot.roles['No-Help'])
         msg_user = "You lost access to help channels!"
@@ -399,9 +399,38 @@ class Mod(DatabaseCog):
 
     @is_staff("Helper")
     @commands.guild_only()
+    @commands.command(aliases=["nohelpid"])
+    async def takehelpid(self, ctx, userid: int, *, reason=""):
+        """Remove access to Assistance Channels. Staff and Helpers only."""
+        try:
+            user = await self.bot.fetch_user(userid)
+        except discord.errors.NotFound:
+            await ctx.send(f"No user associated with ID {userid}.")
+            return
+        try:
+            self.bot.actions.append("ub:" + str(user.id))
+            await self.add_restriction(userid, self.bot.roles['No-Help'])
+        except discord.errors.Forbidden:
+            await ctx.send("💢 I don't have permission to do this.")
+            return
+        try:
+            member = ctx.guild.get_member(user.id)
+            await member.add_roles(self.bot.roles['No-Help'])
+        except AttributeError:
+            pass
+        await ctx.send(f"User {user.id} | {user.name} can no longer access the help channels.")
+        msg = f"🚫 **Help access removed**: {ctx.author.mention} removed access to help channels from ID {user.id}"
+        if reason != "":
+            msg += "\n✏️ __Reason__: " + reason
+        await self.bot.channels['server-logs'].send(msg)
+        await self.bot.channels['mod-logs'].send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.takehelpid <userid> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
+        await self.remove_timed_restriction(userid, 'timenohelp')
+
+    @is_staff("Helper")
+    @commands.guild_only()
     @commands.command()
     async def givehelp(self, ctx, member: SafeMember):
-        """Restore access to help-and-questions. Staff and Helpers only."""
+        """Restore access to Assistance Channels. Staff and Helpers only."""
         try:
             await self.remove_restriction(member.id, self.bot.roles["No-Help"])
             await member.remove_roles(self.bot.roles['No-Help'])
@@ -413,6 +442,35 @@ class Mod(DatabaseCog):
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
 
+    @is_staff("Helper")
+    @commands.guild_only()
+    @commands.command()
+    async def givehelpid(self, ctx, userid: int, *, reason=""):
+        """Restore access to Assistance Channels. Staff and Helpers only."""
+        try:
+            user = await self.bot.fetch_user(userid)
+        except discord.errors.NotFound:
+            await ctx.send(f"No user associated with ID {userid}.")
+            return
+        try:
+            self.bot.actions.append("ub:" + str(user.id))
+            await self.remove_restriction(userid, self.bot.roles["No-Help"])
+        except discord.errors.Forbidden:
+            await ctx.send("💢 I don't have permission to do this.")
+            return
+        try:
+            member = ctx.guild.get_member(user.id)
+            await member.remove_roles(self.bot.roles['No-Help'])
+        except AttributeError:
+            pass
+        await ctx.send(f"User {user.id} | {user.name} can access the help channels again.")
+        msg = f"⭕️ **Help access restored**: {ctx.author.mention} restored access to help channels to ID {user.id}"
+        if reason != "":
+            msg += "\n✏️ __Reason__: " + reason
+        await self.bot.channels['server-logs'].send(msg)
+        await self.bot.channels['mod-logs'].send(msg)
+        await self.remove_timed_restriction(userid, 'timenohelp')
+ 
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["timenohelp"])
