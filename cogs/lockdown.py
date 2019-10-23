@@ -115,7 +115,7 @@ class Lockdown(commands.Cog):
 
             overwrites_everyone = c.overwrites_for(everyone_role)
             overwrites_helpers = c.overwrites_for(self.bot.roles['Helpers'])
-            if not overwrites_everyone.send_messages:
+            if overwrites_everyone.send_messages is False:
                 await ctx.send(f"🔒 {c.mention} is already locked down. Use `.unlock` to unlock.")
                 continue
 
