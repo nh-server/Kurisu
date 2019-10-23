@@ -422,7 +422,7 @@ class Mod(DatabaseCog):
         msg = f"🚫 **Help access removed**: {ctx.author.mention} removed access to help channels from ID {user.id}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
-        await self.bot.channels['server-logs'].send(msg)
+        await self.bot.channels['helpers'].send(msg)
         await self.bot.channels['mod-logs'].send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.takehelpid <userid> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
         await self.remove_timed_restriction(userid, 'timenohelp')
 
@@ -467,7 +467,7 @@ class Mod(DatabaseCog):
         msg = f"⭕️ **Help access restored**: {ctx.author.mention} restored access to help channels to ID {user.id}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
-        await self.bot.channels['server-logs'].send(msg)
+        await self.bot.channels['helpers'].send(msg)
         await self.bot.channels['mod-logs'].send(msg)
         await self.remove_timed_restriction(userid, 'timenohelp')
  
