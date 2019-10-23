@@ -33,15 +33,15 @@ class Lockdown(commands.Cog):
             else:
                 everyone_role = ctx.guild.default_role
 
-            overwrites = c.overwrites_for(everyone_role)
-            if overwrites.send_messages is False:
+            overwrites_everyone = c.overwrites_for(everyone_role)
+            if overwrites_everyone.send_messages is False:
                 await ctx.send(f"🔒 {c.mention} is already locked down. Use `.unlock` to unlock.")
                 continue
 
             overwrites_everyone.send_messages = False
 
             try:
-                await c.set_permissions(everyone_role, overwrite=overwrites)
+                await c.set_permissions(everyone_role, overwrite=overwrites_everyone)
             except discord.errors.Forbidden:
                 await ctx.send(f"💢 I don't have permission to do this for {c.mention}.")
                 continue
