@@ -167,7 +167,7 @@ class Lockdown(commands.Cog):
 
             overwrites_everyone.send_messages = perm
             overwrites_staff.send_messages = True
-            overwrites_helpers.send_messages = None
+            overwrites_helpers.send_messages = True
 
             try:
                 await c.set_permissions(everyone_role, overwrite=overwrites_everyone)
