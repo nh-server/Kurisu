@@ -418,6 +418,14 @@ class Mod(DatabaseCog):
             await member.add_roles(self.bot.roles['No-Help'])
         except AttributeError:
             pass
+        msg_user = "You lost access to help channels!"
+        if reason != "":
+            msg_user += " The given reason is: " + reason
+        msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
+        try:
+            await member.send(msg_user)
+        except (discord.errors.Forbidden, AttributeError):
+            pass
         await ctx.send(f"User {user.id} | {user.name} can no longer access the help channels.")
         msg = f"🚫 **Help access removed**: {ctx.author.mention} removed access to help channels from ID {user.id}"
         if reason != "":
