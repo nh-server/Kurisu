@@ -6,7 +6,8 @@ import discord
 from discord.ext import commands
 from cogs.checks import is_staff, check_staff_id
 from cogs.database import DatabaseCog
-from cogs.converters import SafeMember
+from cogs.converters import SafeMember, FetchMember
+
 
 class Mod(DatabaseCog):
     """
@@ -375,18 +376,19 @@ class Mod(DatabaseCog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["nohelp"])
-    async def takehelp(self, ctx, member: SafeMember, *, reason=""):
+    async def takehelp(self, ctx, member: FetchMember, *, reason=""):
         """Remove access to help-and-questions. Staff and Helpers only."""
         await self.add_restriction(member.id, self.bot.roles['No-Help'])
-        await member.add_roles(self.bot.roles['No-Help'])
         msg_user = "You lost access to help channels!"
-        if reason != "":
-            msg_user += " The given reason is: " + reason
-        msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
-        try:
-            await member.send(msg_user)
-        except discord.errors.Forbidden:
-            pass
+        if isinstance(member, discord.Member):
+            await member.add_roles(self.bot.roles['No-Help'])
+            if reason != "":
+                msg_user += " The given reason is: " + reason
+            msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
+            try:
+                await member.send(msg_user)
+            except discord.errors.Forbidden:
+                pass
         await ctx.send(f"{member.mention} can no longer access the help channels.")
         msg = f"🚫 **Help access removed**: {ctx.author.mention} removed access to help channels from {member.mention} | {member}"
         if reason != "":
@@ -400,18 +402,19 @@ class Mod(DatabaseCog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def givehelp(self, ctx, member: SafeMember):
+    async def givehelp(self, ctx, member: FetchMember):
         """Restore access to help-and-questions. Staff and Helpers only."""
-        try:
-            await self.remove_restriction(member.id, self.bot.roles["No-Help"])
-            await member.remove_roles(self.bot.roles['No-Help'])
-            await ctx.send(f"{member.mention} can access the help channels again.")
-            msg = f"⭕️ **Help access restored**: {ctx.author.mention} restored access to help channels to {member.mention} | {member}"
-            await self.bot.channels['mod-logs'].send(msg)
-            await self.bot.channels['helpers'].send(msg)
-            await self.remove_timed_restriction(member.id, 'timenohelp')
-        except discord.errors.Forbidden:
-            await ctx.send("💢 I don't have permission to do this.")
+        await self.remove_restriction(member.id, self.bot.roles["No-Help"])
+        if isinstance(member, discord.Member):
+            try:
+                await member.remove_roles(self.bot.roles['No-Help'])
+            except discord.errors.Forbidden:
+                await ctx.send("💢 I don't have permission to do this.")
+        await ctx.send(f"{member.mention} can access the help channels again.")
+        msg = f"⭕️ **Help access restored**: {ctx.author.mention} restored access to help channels to {member.mention} | {member}"
+        await self.bot.channels['mod-logs'].send(msg)
+        await self.bot.channels['helpers'].send(msg)
+        await self.remove_timed_restriction(member.id, 'timenohelp')
 
     @is_staff("Helper")
     @commands.guild_only()
