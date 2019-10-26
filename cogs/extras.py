@@ -186,11 +186,10 @@ class Extras(commands.Cog):
     @commands.command(hidden=True)
     async def togglechannel(self, ctx, channelname):
         """Enable or disable access to specific channels."""
-        if isinstance(ctx.channel, discord.abc.GuildChannel):
-            await ctx.message.delete()
-            author = ctx.author
-        else:
-            author = self.bot.guild.get_member(ctx.author.id)
+        await ctx.message.delete()
+        author = ctx.author
+        if ctx.channel != self.bot.channels['bot-cmds']:
+            return await ctx.send(f"{ctx.author.mention}: .togglechannel can only be used in <#261581918653513729>.")
         try:
             if channelname == "elsewhere":
                 if self.bot.roles['#elsewhere'] in author.roles:
