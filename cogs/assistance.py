@@ -200,6 +200,19 @@ versions on 11.8+ will cause a blackscreen until you update.
                 4. Provide a photo of your console's screens, or if you can see the version, tell us here.
                 """))
         await ctx.send(embed=embed)
+        
+    @commands.command(aliases=["sdnand"])
+    @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
+    async def nospace(self, ctx):
+        """Low space NAND Backup"""
+        embed = discord.Embed(title="How to create a 3DS NAND backup without enough space on the SD card", color=discord.Color.blue())
+        embed.add_field(name="Steps to open Luma Configuration", value=cleandoc("""
+                1. Copy the Nintendo 3DS folder from the root of your SD card to your computer then delete it from *the SD card.*
+                2. Boot GodMode9 by holding START on boot then preform a normal NAND backup. After that, power off the system.
+                3. Copy the files in gm9/out on your SD card to a safe spot on your computer. Then, delete the files from *the SD card.*
+                4. Copy the Nintendo 3DS folder to your SD card root then delete it *from your computer.*
+                """))
+        await ctx.send(embed=embed)                        
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
