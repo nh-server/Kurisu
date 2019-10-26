@@ -448,7 +448,7 @@ re-read the guide steps 2 or 3 times before coming here.
             }
         }
 
-        if cfwinfo.get(cfw, None) == None:
+        if cfwinfo.get(cfw) == None:
             await ctx.send(f"Please specify a cfw. Valid options are: {', '.join([x for x in cfwinfo])}.")
             return
 
