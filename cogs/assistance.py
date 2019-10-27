@@ -212,7 +212,7 @@ versions on 11.8+ will cause a blackscreen until you update.
                 3. Copy the files in gm9/out on your SD card to a safe spot on your computer. Then, delete the files from *the SD card.*
                 4. Copy the Nintendo 3DS folder to your SD card root then delete it *from your computer.*
                 """))
-        await ctx.send(embed=embed)                        
+        await ctx.send(embed=embed)                       
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
