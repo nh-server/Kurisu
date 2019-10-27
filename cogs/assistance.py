@@ -201,7 +201,7 @@ versions on 11.8+ will cause a blackscreen until you update.
                 """))
         await ctx.send(embed=embed)
         
-    @commands.command(aliases=["sdnand"])
+    @commands.command(aliases=["lowspace", "lowbackup"])
     @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
     async def nospace(self, ctx):
         """Low space NAND Backup"""
