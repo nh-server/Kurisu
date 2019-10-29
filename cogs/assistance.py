@@ -1055,7 +1055,7 @@ in the scene.
                                 
                                 You will have to manually set these for each WiFi connection you have set up.
                                 
-                                Follow these steps to ensure that the connection is safe and is not blocked by your ISP:
+                                Follow these steps to ensure that the connection is safe and not blocked by your ISP:
 
                                 await self.simple_embed(ctx, f"Testing connectivity"\nhttps://nh-server.github.io/switch-guide/extras/blocking_updates/", color=discord.Color.blue())
                                 """, title="90DNS IP adressses")
