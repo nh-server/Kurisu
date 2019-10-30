@@ -306,7 +306,7 @@ class Mod(DatabaseCog):
     async def elsewhere(self, ctx, member: SafeMember):
         """Restore elsewhere access for a user. Staff only."""
         try:
-            await self.remove_restriction(member.id, self.bot.roles["no-elsewhere"])
+            await self.remove_restriction(member.id, self.bot.roles["No-elsewhere"])
             await member.remove_roles(self.bot.roles['No-elsewhere'])
             await ctx.send(f"{member.mention} can access elsewhere again.")
             msg = f"⭕️ **Restored elsewhere**: {ctx.author.mention} restored elsewhere access to {member.mention} | {member}"

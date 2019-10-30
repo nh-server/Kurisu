@@ -195,7 +195,7 @@ class Extras(commands.Cog):
                 if self.bot.roles['#elsewhere'] in author.roles:
                     await author.remove_roles(self.bot.roles['#elsewhere'])
                     await author.send("Access to #elsewhere removed.")
-                elif self.bot.roles['no-elsewhere'] not in author.roles:
+                elif self.bot.roles['No-elsewhere'] not in author.roles:
                     await author.add_roles(self.bot.roles['#elsewhere'])
                     await author.send("Access to #elsewhere granted.")
                 else:
