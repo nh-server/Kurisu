@@ -204,7 +204,7 @@ class Extras(commands.Cog):
                 if self.bot.roles['#art-discussion'] in author.roles:
                     await author.remove_roles(self.bot.roles['#art-discussion'])
                     await author.send("Access to #art-discussion removed.")
-                elif self.bot.roles['no-art'] not in author.roles:
+                elif self.bot.roles['No-art'] not in author.roles:
                     await author.add_roles(self.bot.roles['#art-discussion'])
                     await author.send("Access to #art-discussion granted.")
                 else:

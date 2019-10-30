@@ -274,9 +274,9 @@ class Mod(DatabaseCog):
     @commands.command()
     async def art(self, ctx, member: SafeMember):
         """Restore art-discussion access for a user. Staff only."""
-        await self.remove_restriction(member.id , self.bot.roles['no-art'])
+        await self.remove_restriction(member.id , self.bot.roles['No-art'])
         try:
-            await member.remove_roles(self.bot.roles['no-art'])
+            await member.remove_roles(self.bot.roles['No-art'])
         except discord.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
         await ctx.send(f"{member.mention} can access art-discussion again.")
@@ -287,9 +287,9 @@ class Mod(DatabaseCog):
     @commands.command()
     async def noart(self, ctx, member: SafeMember, *, reason=""):
         """Removes art-discussion access from a user. Staff only."""
-        await self.add_restriction(member.id, self.bot.roles['no-art'])
+        await self.add_restriction(member.id, self.bot.roles['No-art'])
         try:
-            await member.add_roles(self.bot.roles['no-art'])
+            await member.add_roles(self.bot.roles['No-art'])
         except discord.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
         await ctx.send(f"{member.mention} can no longer access art-discussion.")
@@ -307,7 +307,7 @@ class Mod(DatabaseCog):
         """Restore elsewhere access for a user. Staff only."""
         try:
             await self.remove_restriction(member.id, self.bot.roles["no-elsewhere"])
-            await member.remove_roles(self.bot.roles['no-elsewhere'])
+            await member.remove_roles(self.bot.roles['No-elsewhere'])
             await ctx.send(f"{member.mention} can access elsewhere again.")
             msg = f"⭕️ **Restored elsewhere**: {ctx.author.mention} restored elsewhere access to {member.mention} | {member}"
             await self.bot.channels['mod-logs'].send(msg)
@@ -320,8 +320,8 @@ class Mod(DatabaseCog):
     async def noelsewhere(self, ctx, member: SafeMember, *, reason=""):
         """Removes elsewhere access from a user. Staff only."""
         try:
-            await self.add_restriction(member.id, self.bot.roles['no-elsewhere'])
-            await member.add_roles(self.bot.roles['no-elsewhere'])
+            await self.add_restriction(member.id, self.bot.roles['No-elsewhere'])
+            await member.add_roles(self.bot.roles['No-elsewhere'])
             await member.remove_roles(self.bot.roles['#elsewhere'])
             await ctx.send(f"{member.mention} can no longer access elsewhere.")
             msg = f"🚫 **Removed elsewhere**: {ctx.author.mention} removed elsewhere access from {member.mention} | {member}"
