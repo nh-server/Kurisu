@@ -1055,7 +1055,7 @@ in the scene.
                                 
                                 You will have to manually set these for each WiFi connection you have set up.
                                 
-                                [Follow these steps](https://nh-server.github.io/switch-guide/extras/blocking_updates/) to ensure that the connection is safe and not blocked by your ISP:
+                                [Follow these steps](https://nh-server.github.io/switch-guide/extras/blocking_updates/) to ensure that the connection is safe and not blocked by your ISP.
                                 """, title="90DNS IP adressses")
 
     @commands.command(aliases=['missingco'])
