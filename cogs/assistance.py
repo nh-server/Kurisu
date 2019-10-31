@@ -467,13 +467,25 @@ re-read the guide steps 2 or 3 times before coming here.
 
         await self.simple_embed(ctx, cfwinfo[cfw]['info'], title=f"Why {cfwinfo[cfw]['title']} isn't recommended")
 
-    @commands.command(aliases=["sderror", "sderrors", "bigsd", "formatsd", "sdformat", "sd"])
+    @commands.command(aliases=["sderror", "sderrors", "bigsd", "sd"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def sdguide(self, ctx):
         """SD Troubleshooter"""
         await self.simple_embed(ctx, """
-                    Got a problem with your SD card? Find solutions in [this guide](https://3ds.eiphax.tech/sd.html)
+                    Need to do something with your SD card? Find advice in [this guide](https://3ds.eiphax.tech/sd.html)
                     """, title="SD Troubleshooter")
+					
+    @commands.command(aliases=["sdformat"])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def formatsd(self, ctx):
+        """SD Format Tools"""
+        await self.simple_embed(ctx, """
+                    Here are some links to common formatting tools.
+					
+					• [GUIFormat](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm) (Windows)
+					• [gparted](https://gparted.org/download.php) (Linux)
+					• [Disk Utility](https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010) (MacOS)
+                    """, title="SD Formatting Tools")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
