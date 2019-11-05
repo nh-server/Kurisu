@@ -396,7 +396,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 
                 If you currently have CFW installed (boot9strap/Luma):
                 Is your Luma version up to date? If your Luma version is 9.1 or above, **updating is safe**.
-                If it is 9.0 or below, please type `.update` in #bot-cmds and follow the information there.
+                If it is 9.0 or below, please type `.update` in <#261581918653513729> and follow the information there.
                 
                 If you DO NOT currently have CFW installed (stock console):
                 11.12.0-44 can be hacked with current methods. **Updating is safe**.
