@@ -374,6 +374,51 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 await ctx.send(embed=embed)
 
 
+    @commands.guild_only()
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def newver(self, ctx, consoles=""):
+        """Quick advice for new versions"""
+        systems = ("3ds", "nx", "ns", "switch")
+        consoleslist = []
+        consoleslist = [x for x in consoles.split() if x in systems and x not in consoleslist]
+        if not consoleslist:
+            if ctx.channel.name.startswith(systems):
+                consoleslist = ['auto']
+            else:
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+                return
+        for x in consoleslist:
+            if self.check_console(x, ctx.message.channel.name, '3ds'):
+                embed = discord.Embed(title="Is the new 3DS update safe?", color=0xe60012)
+                embed.description = cleandoc("""
+                Currently, the latest 3DS system firmware is `11.12.0-44`.
+                
+                If you currently have CFW installed (boot9strap/Luma):
+                Is your Luma version up to date? If your Luma version is 9.1 or above, **updating is safe**.
+                If it is 9.0 or below, please type `.update` in #bot-cmds and follow the information there.
+                
+                If you DO NOT currently have CFW installed (stock console):
+                11.12.0-44 can be hacked with current methods. **Updating is safe**.
+                *Last edited: November 5, 2019*
+                """)
+                await ctx.send(embed=embed)
+                continue
+            if self.check_console(x, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+                embed = discord.Embed(title="Is the new Switch update safe?", color=0xe60012)
+                embed.description = cleandoc("""
+                Currently, the latest Switch system firmware is `9.0.1`.
+                
+                If your Switch is **unpatched and can access RCM**:
+                Atmosphere currently supports 9.0.1, and unpatched units will always be hackable.
+                
+                If your Switch is **hardware patched and cannot access RCM**:
+                Stay on the lowest possible firmware version. Any Switch that is patched and above 7.0.1 is unlikely to be hackable.
+                *Last edited: November 5, 2019*
+                """)
+                await ctx.send(embed=embed)
+
+
     @commands.command(aliases=["fuse-3ds", "fuse", "fuse3ds"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def ninfs(self, ctx):
