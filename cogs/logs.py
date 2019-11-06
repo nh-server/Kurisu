@@ -148,7 +148,10 @@ Thanks for boosting and have a good time!
                 msg = "\n👑 __Role addition__: "
                 roles = []
                 if self.bot.roles["Nitro Booster"] in diff:
-                    await member_after.send(self.nitro_msg)
+                    try:
+                        await member_after.send(self.nitro_msg)
+                    except discord.Forbidden:
+                        pass
                 for role in roles_after:
                     if role.name == "@everyone":
                         continue
