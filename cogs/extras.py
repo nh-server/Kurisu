@@ -508,7 +508,7 @@ class Extras(commands.Cog):
     @commands.dm_only()
     @commands.cooldown(rate=1, per=21600.0, type=commands.BucketType.member)
     @commands.command()
-    async def nickme(self, ctx, nickname):
+    async def nickme(self, ctx, *, nickname):
         """Change your nickname. Nitro Booster only. 6 Hours Cooldown."""
         member = self.bot.guild.get_member(ctx.author.id)
         if self.bot.roles['Nitro Booster'] not in member.roles:
