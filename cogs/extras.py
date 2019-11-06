@@ -16,9 +16,16 @@ class Extras(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
+        self.nick_pattern = re.compile("^[a-z]{2,}.*$", re.RegexFlag.IGNORECASE)
         print(f'Cog "{self.qualified_name}" loaded')
 
     prune_key = "nokey"
+
+    def check_nickname(self, nickname):
+        if match := self.nick_pattern.fullmatch(nickname):
+            return len(nickname) <= 32
+        else:
+            return match
 
     @commands.command(aliases=['about'])
     async def kurisu(self, ctx):
@@ -497,6 +504,24 @@ class Extras(commands.Cog):
             await ctx.send("Your username is the one with the shamrock!")
         else:
             await ctx.send("You don't have a shamrock!")
+
+    @commands.dm_only()
+    @commands.cooldown(rate=1, per=21600.0, type=commands.BucketType.member)
+    @commands.command()
+    async def nickme(self, ctx, nickname):
+        """Change your nickname. Nitro Booster only. 6 Hours Cooldown."""
+        member = self.bot.guild.get_member(ctx.author.id)
+        if self.bot.roles['Nitro Booster'] not in member.roles:
+            return await ctx.send("This command can only be used by Nitro Boosters!")
+        if self.check_nickname(nickname):
+            try:
+                await member.edit(nick=nickname)
+                await ctx.send(f"Your nickname is now `{nickname}`!")
+            except discord.errors.Forbidden:
+                await ctx.send("💢  I can't change your nickname!")
+        else:
+            await ctx.send("The nickname doesn't comply with our nickname policy or it's too long!")
+            ctx.command.reset_cooldown(ctx)
 
 
 def setup(bot):
