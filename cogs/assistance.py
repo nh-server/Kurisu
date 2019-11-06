@@ -977,6 +977,15 @@ your device will refuse to write to it.
         embed.description = "Basic tutorial for TWiLightMenu++"
         await ctx.send(embed=embed)
 
+    @tutorial.command(aliases=["forwarders", "forwarder" "twlforwarders"])
+    async def ndsforwarders(self, ctx):
+        """Links to nds forwarders"""
+        embed = discord.Embed(title="NDS Forwarder Guide", color=discord.Color.purple())
+        embed.set_thumbnail(url="https://avatars3.githubusercontent.com/u/16110127?s=400&v=4")
+        embed.url = "https://gbatemp.net/threads/nds-forwarder-cias-for-your-home-menu.426174/"
+        embed.description = "Tutorial for NDS Forwarders"
+        await ctx.send(embed=embed)
+                                                     
     @tutorial.command(aliases=["3dsvcextract", "gbabios", "dumpbios"])
     async def vcextract(self, ctx):
         """Links to 3DS VC and GBA bios Extraction Tutorial"""
