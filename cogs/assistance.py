@@ -977,7 +977,7 @@ your device will refuse to write to it.
         embed.description = "Basic tutorial for TWiLightMenu++"
         await ctx.send(embed=embed)
 
-    @tutorial.command(aliases=["forwarders", "forwarder" "twlforwarders"])
+    @tutorial.command(aliases=["forwarders", "forwarder", "twlforwarders"])
     async def ndsforwarders(self, ctx):
         """Links to nds forwarders"""
         embed = discord.Embed(title="NDS Forwarder Guide", color=discord.Color.purple())
