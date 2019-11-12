@@ -992,7 +992,7 @@ your device will refuse to write to it.
         embed = discord.Embed(title="3DS VC Extraction Tutorial", color=discord.Color.red())
         embed.set_author(name="Glazed_Belmont")
         embed.set_thumbnail(url="https://i.imgur.com/TgdOPkG.png")
-        embed.url = "https://github.com/GlaZedBelmont/3DS-Tutorials/wiki/3DS-VC-and-GBA-bios-Extraction-Tutorial"
+        embed.url = "https://github.com/aspargas2/3DS-Tutorials/wiki/3DS-VC-and-GBA-bios-Extraction-Tutorial"
         embed.description = "Basic tutorial to extract a rom out of your VC titles"
         await ctx.send(embed=embed)  
         
@@ -1033,7 +1033,7 @@ your device will refuse to write to it.
         embed = discord.Embed(title="AP Guide", color=discord.Color.purple())
         embed.set_author(name="Glazed_Belmont")
         embed.set_thumbnail(url="https://i.imgur.com/TgdOPkG.png")
-        embed.url = "https://github.com/GlaZedBelmont/3DS-Tutorials/wiki/AP-Patching"
+        embed.url = "https://github.com/aspargas2/3DS-Tutorials/wiki/AP-Patching"
         embed.description = "An AP-Patching guide"
         await ctx.send(embed=embed)
 
