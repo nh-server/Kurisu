@@ -81,6 +81,12 @@ class DatabaseCog(commands.Cog):
                 return [x[0] for x in rows]
             return []
 
+    async def get_staff_role(self):
+        async with self.bot.holder as cur:
+            await cur.execute('SELECT * FROM staff')
+            rows = await cur.fetchall()
+            return rows
+
     async def get_helpers(self):
         async with self.bot.holder as cur:
             await cur.execute('SELECT user_id FROM helpers')
@@ -88,6 +94,12 @@ class DatabaseCog(commands.Cog):
             if rows:
                 return [x[0] for x in rows]
             return []
+
+    async def get_helpers_role(self):
+        async with self.bot.holder as cur:
+            await cur.execute('SELECT * FROM helpers')
+            rows = await cur.fetchall()
+            return rows
 
     async def add_helper(self, user_id, console):
         async with self.bot.holder as cur:
