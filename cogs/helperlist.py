@@ -68,10 +68,8 @@ class HelperList(DatabaseCog):
         consoles = dict.fromkeys(self.bot.helper_roles.keys())
         embed = discord.Embed()
         for console in consoles:
-            print(console)
             consoles[console] = []
             for helper in helper_list:
-                print(f"{console} in {helper}?")
                 if console in helper:
                     consoles[console].append(helper[0])
             if consoles[console]:
