@@ -1,6 +1,8 @@
+import discord
+
 from discord.ext import commands
 from cogs import converters
-from cogs.checks import is_staff
+from cogs.checks import is_staff, staff_ranks
 from cogs.database import DatabaseCog
 
 
@@ -94,6 +96,21 @@ class ModStaff(DatabaseCog):
             await ctx.send(msg)
             modmsg = f"🛠 **Updated Staff list**: {ctx.author.mention} updated the staff list.\n:pencil: __Users removed__: {', '.join([f'{x.id} | {x}'for x in removed])}"
             await self.bot.channels['mod-logs'].send(modmsg)
+
+    @commands.command()
+    async def liststaff(self, ctx):
+        """List staff members per rank."""
+        staff_list = await self.get_staff_role()
+        ranks = dict.fromkeys(staff_ranks.keys())
+        embed = discord.Embed()
+        for rank in ranks:
+            ranks[rank] = []
+            for staff in staff_list:
+                if rank in staff:
+                    ranks[rank].append(staff[0])
+            if ranks[rank]:
+                embed.add_field(name=rank, value="".join([f"<@{x}>\n" for x in ranks[rank]]), inline=False)
+        await ctx.send("Here is a list of our staff members:", embed=embed)
 
 
 def setup(bot):

@@ -1,3 +1,5 @@
+import discord
+
 from cogs.database import DatabaseCog
 from cogs.converters import SafeMember
 from cogs.checks import is_staff
@@ -58,6 +60,23 @@ class HelperList(DatabaseCog):
         await ctx.send(f"{author.mention} is no longer actively helping!")
         msg = f"👎🏻 **De-Elevated: -Help**: {author.mention} | {author}"
         await self.bot.channels['mod-logs'].send(msg)
+
+    @commands.command()
+    async def listhelpers(self, ctx):
+        """List helpers per console."""
+        helper_list = await self.get_helpers_role()
+        consoles = dict.fromkeys(self.bot.helper_roles.keys())
+        embed = discord.Embed()
+        for console in consoles:
+            print(console)
+            consoles[console] = []
+            for helper in helper_list:
+                print(f"{console} in {helper}?")
+                if console in helper:
+                    consoles[console].append(helper[0])
+            if consoles[console]:
+                embed.add_field(name=console, value="".join([f"<@{x}>\n" for x in consoles[console]]), inline=False)
+        await ctx.send("Here is a list of our helpers:", embed=embed)
 
 
 def setup(bot):
