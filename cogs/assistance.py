@@ -585,14 +585,42 @@ command line. The `movable.sed` is the final product and requires no further pro
                                 The bot already has your information and has removed you as a friend.**
                                 """, title="BruteforceMovable Advice")
 
+    @commands.guild_only()
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def emureco(self, ctx):
-        """Recommendation about EmuNAND"""
-        await self.simple_embed(ctx, """
-                                If you want to set up an EmuNAND the first thing to know is that you probably don't \
-need it; if you don't know what an EmuNAND is, you don't need one.
-                                """, title="EmuNAND Recommendation")
+    async def emureco(self, ctx, consoles=""):
+        """Quick advice for emunands"""
+        systems = ("3ds", "nx", "ns", "switch")
+        consoleslist = []
+        consoleslist = [x for x in consoles.split() if x in systems and x not in consoleslist]
+        if not consoleslist:
+            if ctx.channel.name.startswith(systems):
+                consoleslist = ['auto']
+            else:
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+                return
+        for x in consoleslist:
+            if self.check_console(x, ctx.message.channel.name, '3ds'):
+                embed = discord.Embed(title="EmuNAND for 3DS", color=0xe60012)
+                embed.description = cleandoc("""
+                With the recent advances in hacking methods and safety, it is no longer recommended to use an emuNAND on a 3DS/2DS system.
+                Generally, for most users, there is no reason or benefit to using an emuNAND on a 3DS/2DS system.
+                If you do not know what an emuNAND is, or is used for, you do not need one.
+                """)
+                await ctx.send(embed=embed)
+                continue
+            if self.check_console(x, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+                embed = discord.Embed(title="EmuMMC/EmuNAND for Switch", color=0xe60012)
+                embed.description = cleandoc("""
+                On the Switch system, it is recommended to use an emuMMC/emuNAND.
+                An emuMMC/emuNAND will take up approximately 30GB on your SD card, so the SD card must be 64GB or above.
+                The purpose of an emuMMC/emuNAND is to give you a safe place to use custom firmware functions.
+                This will allow you to keep your sysMMC/sysNAND clean, so you can use it online.
+                Following the default NH server guide (type `.guide` for a link) will set you up with an emuMMC/emuNAND.
+                """)
+                await ctx.send(embed=embed)
+
+
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
