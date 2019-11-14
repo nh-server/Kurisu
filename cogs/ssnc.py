@@ -37,9 +37,9 @@ class SwitchSerialNumberCheck(Cog):
 
             # This should catch serials from the new "mariko" units
             # XKW10000000000, XKJ10000000000 = HAC-001-01, the "New Switch"
-            # XJW01000000000, XWW01000000000 = HOH-001, the Switch Lite
+            # XJW01000000000, XWW01000000000 = HDH-001, the Switch Lite
             # As not much about the assembly line is known yet every digit will count for the filter
-            if re.match("X[KW][JW][0-9]{7}", serial):
+            if re.match("X[KJW][JW][0-9]{7}", serial):
                 mariko = True
             else:
                 return await ctx.send("This is not a valid serial number!\n"
