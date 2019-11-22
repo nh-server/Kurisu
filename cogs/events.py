@@ -104,7 +104,6 @@ class Events(DatabaseCog):
         'wareznext',
         'softcobra',
         'uwizard',
-        'jnustool',
         'nusgrabber',
         'fr33$h0p',
         'free.shop',
@@ -140,6 +139,7 @@ class Events(DatabaseCog):
 
     # terms that should cause a notice but not auto-delete
     piracy_tools_alert = (
+        'jnustool',
         'freshop',
         'feeshop',
         'notabug',
