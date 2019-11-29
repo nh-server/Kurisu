@@ -31,6 +31,12 @@ class SwitchSerialNumberCheck(Cog):
     async def check_nx_serial(self, ctx, serial):
         """Check the given Switch serial to see if it is patched or not. For safety reasons, the invoking message is
         removed."""
+
+        try:
+            await ctx.message.delete()
+        except:
+            pass
+
         serial = serial.split()[0].upper()
         mariko = False
         if not re.match("XA[JKW][1479][0-9]{6}", serial):
@@ -109,11 +115,6 @@ class SwitchSerialNumberCheck(Cog):
 
         elif region == 'K':
             maybe = True
-
-        try:
-            await ctx.message.delete()
-        except:
-            pass
 
         if mariko:
             return await ctx.send("{}: Serial {} seems to be a \"mariko\" Switch or Switch Lite.\n" 
