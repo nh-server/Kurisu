@@ -23,6 +23,9 @@ class ModWarn(DatabaseCog):
         if await check_staff_id(ctx, "Helper", member.id):
             await ctx.send("You can't warn another staffer with this command!")
             return
+        if member.bot:
+            await ctx.send("You can't warn a bot with this command!")
+            return
         await self.add_warn(member.id, ctx.author.id, reason)
         msg = f"You were warned on {ctx.guild.name}."
         if reason != "":
@@ -67,6 +70,9 @@ class ModWarn(DatabaseCog):
         issuer = ctx.author
         if await check_staff_id(ctx, "Helper", member.id):
             await ctx.send("You can't warn another staffer with this command!")
+            return
+        if member.bot:
+            await ctx.send("You can't warn a bot with this command!")
             return
         warn_count = len(await self.get_warns(member.id))
         if warn_count >= 5:
