@@ -54,6 +54,9 @@ class KickBan(DatabaseCog):
         if await check_staff_id(ctx, 'Helper', member.id):
             await self.meme(ctx.author, member, "kick", ctx.channel, reason)
             return
+        if member.bot:
+            await ctx.send("You can't kick a bot with this command!")
+            return
         msg = f"You were kicked from {ctx.guild.name}."
         if reason != "":
             msg += " The given reason is: " + reason
@@ -81,6 +84,9 @@ class KickBan(DatabaseCog):
         """Bans a user from the server. OP+ only. Optional: [days] Specify up to 7 days of messages to delete."""
         if await check_staff_id(ctx, 'Helper', member.id):
             await self.meme(ctx.author, member, "ban", ctx.channel, reason)
+            return
+        if member.bot:
+            await ctx.send("You can't ban a bot with this command!")
             return
         if days > 7:
             days = 7
@@ -119,6 +125,9 @@ class KickBan(DatabaseCog):
         if await check_staff_id(ctx, 'Helper', user.id):
             await ctx.send("You can't ban another staffer with this command!")
             return
+        if user.bot:
+            await ctx.send("You can't ban a bot with this command!")
+            return
         try:
             self.bot.actions.append("ub:" + str(user.id))
             await ctx.guild.ban(user, delete_message_days=0)
@@ -138,6 +147,9 @@ class KickBan(DatabaseCog):
         """Bans a user from the server, without a notification. OP+ only.  Optional: [days] Specify up to 7 days of messages to delete."""
         if await check_staff_id(ctx, 'Helper', member.id):
             await self.meme(ctx.author, member, "ban", ctx.channel, reason)
+            return
+        if member.bot:
+            await ctx.send("You can't ban a bot with this command!")
             return
         if days > 7:
             days = 7
@@ -162,6 +174,9 @@ class KickBan(DatabaseCog):
         """Bans a user for a limited period of time. OP+ only.\n\nLength format: #d#h#m#s"""
         if await check_staff_id(ctx, 'Helper', member.id):
             await self.meme(ctx.author, member, "timeban", ctx.channel, reason)
+            return
+        if member.bot:
+            await ctx.send("You can't ban a bot with this command!")
             return
         unban_time, unban_time_string = self.parse_time(length)
         if unban_time_string is None:
@@ -196,6 +211,9 @@ class KickBan(DatabaseCog):
         if await check_staff_id(ctx, 'Helper', member.id):
             await self.meme(ctx.author, member, "softban", ctx.channel, reason)
             return
+        if member.bot:
+            await ctx.send("You can't softban a bot with this command!")
+            return
         msg = f"This account is no longer permitted to participate in {ctx.guild.name}. The reason is: {reason}"
         try:
             await member.send(msg)
@@ -219,6 +237,9 @@ class KickBan(DatabaseCog):
             await ctx.send("You can't softban another staffer with this command!")
             return
         user = await self.bot.fetch_user(user_id)
+        if user.bot:
+            await ctx.send("You can't softban a bot with this command!")
+            return
         softban = await self.get_softban(user_id)
         if softban:
             await ctx.send('User is already softbanned!')
