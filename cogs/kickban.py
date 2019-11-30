@@ -116,7 +116,7 @@ class KickBan(DatabaseCog):
         except discord.errors.NotFound:
             await ctx.send(f"No user associated with ID {userid}.")
             return
-        if await check_bot_or_staff(ctx, member, "ban"):
+        if await check_bot_or_staff(ctx, user, "ban"):
             return
         try:
             self.bot.actions.append("ub:" + str(user.id))
@@ -215,7 +215,7 @@ class KickBan(DatabaseCog):
     async def softbanid_member(self, ctx, user_id: int, *, reason):
         """Soft-ban a user based on ID. OP+ only.\n\nThis "bans" the user without actually doing a ban on Discord. The bot will instead kick the user every time they join. Discord bans are account- and IP-based."""
         user = await self.bot.fetch_user(user_id)
-        if await check_bot_or_staff(ctx, member, "softban"):
+        if await check_bot_or_staff(ctx, user, "softban"):
             return
         softban = await self.get_softban(user_id)
         if softban:
