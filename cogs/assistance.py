@@ -164,11 +164,23 @@ class Assistance(commands.Cog):
                 """))
         await ctx.send(embed=embed)
 
+    @commands.guild_only()
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def update(self, ctx):
-        """Explains how to safely prepare for an update if you have boot9strap installed"""
-        await self.simple_embed(ctx, """
+    async def update(self, ctx, *, consoles=""):
+        wanted_consoles = list(set(consoles.split()))
+        systems = ('3ds', 'nx', 'ns', 'switch')
+
+        if not wanted_consoles:
+            if ctx.channel.name.startswith(systems):
+                wanted_consoles.append("auto")
+            else:
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}")
+                return
+
+        for console in wanted_consoles:
+            if self.check_console(console, ctx.channel.name, "3ds"):
+                await self.simple_embed(ctx, """
                 **Is it safe to update to current 3DS firmware?**
                 
                 **Luma3DS 9.1 and above**
@@ -186,6 +198,14 @@ versions on 11.8+ will cause a blackscreen until you update.
                  
                 **To find out your Luma3DS version, hold select on bootup and look at the top left corner of the top screen**
                 """)
+
+            elif self.check_console(console, ctx.channel.name, ("switch", "nx", "ns")):
+                embed = discord.Embed(title="Updating Guide", color=discord.Color(0xCB0004))
+                embed.set_author(name="NH Discord Server", url="https://nh-server.github.io/switch-guide/")
+                embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
+                embed.url = "https://nh-server.github.io/switch-guide/extras/updating/"
+                embed.description = "A guide and general recommendations for updating your switch with emuMMC."
+                await ctx.send(embed=embed)
 
     @commands.command(aliases=["checkluma"])
     @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
