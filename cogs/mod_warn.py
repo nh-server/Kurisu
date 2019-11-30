@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from cogs.checks import is_staff, check_staff_id
+from cogs.checks import is_staff, check_staff_id, check_bot_or_staff
 from cogs.converters import SafeMember
 from cogs.database import DatabaseCog
 
@@ -20,11 +20,7 @@ class ModWarn(DatabaseCog):
     async def warn(self, ctx, member: SafeMember, *, reason=""):
         """Warn a user. Staff and Helpers only."""
         issuer = ctx.author
-        if await check_staff_id(ctx, "Helper", member.id):
-            await ctx.send("You can't warn another staffer with this command!")
-            return
-        if member.bot:
-            await ctx.send("You can't warn a bot with this command!")
+        if await check_bot_or_staff(ctx, member, "warn"):
             return
         await self.add_warn(member.id, ctx.author.id, reason)
         msg = f"You were warned on {ctx.guild.name}."
@@ -68,11 +64,7 @@ class ModWarn(DatabaseCog):
     async def softwarn(self, ctx, member: SafeMember, *, reason=""):
         """Warn a user without automated action. Staff only."""
         issuer = ctx.author
-        if await check_staff_id(ctx, "Helper", member.id):
-            await ctx.send("You can't warn another staffer with this command!")
-            return
-        if member.bot:
-            await ctx.send("You can't warn a bot with this command!")
+        if await check_bot_or_staff(ctx, member, "warn"):
             return
         warn_count = len(await self.get_warns(member.id))
         if warn_count >= 5:

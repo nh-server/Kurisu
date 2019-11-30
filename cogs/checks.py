@@ -32,3 +32,10 @@ async def check_staff_id(ctx, role, id):
     if rank:
         return staff_ranks[rank] <= staff_ranks[role]
     return False
+
+async def check_bot_or_staff(ctx, target: discord.user, action: str):
+    if target.bot:
+        return await ctx.send(f"You can't {action} a bot with this command!")
+    if check_staff_id(ctx, "Helper", target.id):
+        return await ctx.send(f"You can't {action} another staffer with this command!")
+
