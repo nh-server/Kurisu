@@ -52,7 +52,6 @@ class KickBan(DatabaseCog):
     async def kick_member(self, ctx, member: converters.SafeMember, *, reason=""):
         """Kicks a user from the server. Staff only."""
         if await check_bot_or_staff(ctx, member, "kick"):
-            await self.meme(ctx.author, member, "kick", ctx.channel, reason)
             return
         msg = f"You were kicked from {ctx.guild.name}."
         if reason != "":
@@ -80,7 +79,6 @@ class KickBan(DatabaseCog):
     async def ban_member(self, ctx, member: converters.SafeMember, days: typing.Optional[int] = 0, *, reason=""):
         """Bans a user from the server. OP+ only. Optional: [days] Specify up to 7 days of messages to delete."""
         if await check_bot_or_staff(ctx, member, "ban"):
-            await self.meme(ctx.author, member, "ban", ctx.channel, reason)
             return
         if days > 7:
             days = 7
@@ -136,7 +134,6 @@ class KickBan(DatabaseCog):
     async def silentban_member(self, ctx, member: converters.SafeMember, days: typing.Optional[int] = 0, *, reason=""):
         """Bans a user from the server, without a notification. OP+ only.  Optional: [days] Specify up to 7 days of messages to delete."""
         if await check_bot_or_staff(ctx, member, "ban"):
-            await self.meme(ctx.author, member, "ban", ctx.channel, reason)
             return
         if days > 7:
             days = 7
@@ -160,7 +157,6 @@ class KickBan(DatabaseCog):
     async def timeban_member(self, ctx, member: converters.SafeMember, length, *, reason=""):
         """Bans a user for a limited period of time. OP+ only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "timeban"):
-            await self.meme(ctx.author, member, "timeban", ctx.channel, reason)
             return
         unban_time, unban_time_string = self.parse_time(length)
         if unban_time_string is None:
@@ -193,7 +189,6 @@ class KickBan(DatabaseCog):
     async def softban_member(self, ctx, member: converters.SafeMember, *, reason):
         """Soft-ban a user. OP+ only.\n\nThis "bans" the user without actually doing a ban on Discord. The bot will instead kick the user every time they join. Discord bans are account- and IP-based."""
         if await check_bot_or_staff(ctx, member, "softban"):
-            await self.meme(ctx.author, member, "softban", ctx.channel, reason)
             return
         msg = f"This account is no longer permitted to participate in {ctx.guild.name}. The reason is: {reason}"
         try:
