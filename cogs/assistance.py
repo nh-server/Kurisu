@@ -414,15 +414,15 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             if self.check_console(x, ctx.message.channel.name, '3ds'):
                 embed = discord.Embed(title="Is the new 3DS update safe?", color=0xe60012)
                 embed.description = cleandoc("""
-                Currently, the latest 3DS system firmware is `11.12.0-44`.
+                Currently, the latest 3DS system firmware is `11.13.0-45`.
                 
                 If you currently have CFW installed (boot9strap/Luma):
                 Is your Luma version up to date? If your Luma version is 9.1 or above, **updating is safe**.
                 If it is 9.0 or below, please type `.update` in <#261581918653513729> and follow the information there.
                 
                 If you DO NOT currently have CFW installed (stock console):
-                11.12.0-44 can be hacked with current methods. **Updating is safe**.
-                *Last edited: November 5, 2019*
+                11.13.0-45 can be hacked with current methods. **Updating is safe**.
+                *Last edited: December 3, 2019*
                 """)
                 await ctx.send(embed=embed)
                 continue
