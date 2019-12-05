@@ -429,14 +429,14 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             if self.check_console(x, ctx.message.channel.name, ('nx', 'switch', 'ns')):
                 embed = discord.Embed(title="Is the new Switch update safe?", color=0xe60012)
                 embed.description = cleandoc("""
-                Currently, the latest Switch system firmware is `9.0.1`.
+                Currently, the latest Switch system firmware is `9.1.0`.
                 
                 If your Switch is **unpatched and can access RCM**:
-                Atmosphere currently supports 9.0.1, and unpatched units will always be hackable.
+                Atmosphere currently supports 9.0.1 (note: **not** 9.1.0), and unpatched units will always be hackable.
                 
                 If your Switch is **hardware patched and cannot access RCM**:
                 Stay on the lowest possible firmware version. Any Switch that is patched and above 7.0.1 is unlikely to be hackable.
-                *Last edited: November 5, 2019*
+                *Last edited: December 4, 2019*
                 """)
                 await ctx.send(embed=embed)
 
