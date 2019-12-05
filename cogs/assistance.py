@@ -961,7 +961,7 @@ firmware version in System Settings.
                                 • To reset on a stock system,  *power the console off* (hold the power button, follow on-screen prompts).\
 __Hold__ Volume - and Volume +, then Power. When you see Maintenance Mode, you \
 can reboot, and check System Settings.
-                                • If using CFW, launch Hekate, select your boot option, then immediately\
+                                • If you're using CFW, launch Hekate, select your boot option, then immediately\
 __Hold__ Volume - and Volume +. When you see Maintenance Mode, you \
 can reboot, and check System Settings.
                                 
