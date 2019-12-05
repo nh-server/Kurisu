@@ -1184,5 +1184,15 @@ in the scene.
 
                                 Note that if hekate can't find a config, it'll create one. So likely you now have a hekate_ipl.ini in your bootloader folder, replace it with the one from the guide
                                 """, title="Getting the \"No main boot entries found\" error in hekate?")
+
+    @commands.command(aliases=['ntrboot', 'ntrcartlist', 'ntrbootcartlist'])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def ntrcart(self, ctx):
+        imagelink = "https://i.imgur.com/nvnObqz.png"
+        title = "Which flashcarts work with NTRBoot?"		
+        embed = discord.Embed(title=title, color=discord.Color.default())
+        embed.set_image(url=imagelink)
+        await ctx.send(embed=embed)
+
 def setup(bot):
     bot.add_cog(Assistance(bot))
