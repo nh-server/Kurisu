@@ -958,9 +958,12 @@ as custom themes must be reinstalled for most firmware updates.
                                 When an update is downloaded, but not installed, the console will not display the \
 firmware version in System Settings.
                                 
-                                • To fix this, *power the console off* (hold the power button, follow on-screen prompts).\
-***Hold*** Volume Down and Volume Up, then Power. When you see Maintenance Mode, you \
-may reboot, and check System Settings.
+                                • To reset on sysNAND,  *power the console off* (hold the power button, follow on-screen prompts).\
+__Hold__ Volume - and Volume +, then Power. When you see Maintenance Mode, you \
+can reboot, and check System Settings.
+                                • On emuMMC, launch Hekate, select your emuMMC boot option, then immediately\
+__Hold__ Volume - and Volume +. When you see Maintenance Mode, you \
+can reboot emuMMC, and check System Settings.
                                 
                                 *To block automatic update downloads, type .90dns in this chat for further information.*
                                  """, title="How to delete pending Switch Updates")
