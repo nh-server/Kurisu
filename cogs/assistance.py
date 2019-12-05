@@ -543,11 +543,11 @@ re-read the guide steps 2 or 3 times before coming here.
                     """, title="SD Troubleshooter")
 
     SDFORMAT_TEXT = """
-Here are some links to common FAT32 formatting tools:
-• [GUIFormat](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm) (Windows)
-• [gparted](https://gparted.org/download.php) (Linux)
-• [Disk Utility](https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010) (MacOS)
-MacOS: Always select "MS-DOS (FAT)", even if the card is larger than 32GB."""
+                Here are some links to common FAT32 formatting tools:
+                • [GUIFormat](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm) (Windows)
+                • [gparted](https://gparted.org/download.php) (Linux)
+                • [Disk Utility](https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010) (MacOS)
+                MacOS: Always select "MS-DOS (FAT)", even if the card is larger than 32GB."""
 
     @commands.command(aliases=["sdformat"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -1130,15 +1130,18 @@ your device will refuse to write to it.
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def exfat(self, ctx):
         """exFAT on Switch: why not to use it"""
-        await self.simple_embed(ctx, """
-                                The recommended filesystem format for the Switch is FAT32. 
-                                
-                                While the Switch supports exFAT through an additional update from Nintendo, here are reasons not to use it:
-                                
-                                * CFW may fail to boot due to a missing exFAT update in Horizon
-                                * This filesystem is prone to corruption.
-                                * Nintendo doesn't use files larger than 4GB, even with large games and exFAT. 
-                                """ + self.SDFORMAT_TEXT, title="exFAT on Switch: Why you shouldn't use it")
+        reasons = """
+                The recommended filesystem format for the Switch is FAT32. 
+                
+                While the Switch supports exFAT through an additional update from Nintendo, here are reasons not to use it:
+                
+                * CFW may fail to boot due to a missing exFAT update in Horizon
+                * This filesystem is prone to corruption.
+                * Nintendo doesn't use files larger than 4GB, even with large games and exFAT.
+                
+                """
+
+        await self.simple_embed(ctx, f"{reasons}{self.SDFORMAT_TEXT}", title="exFAT on Switch: Why you shouldn't use it")
         
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
