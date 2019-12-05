@@ -541,18 +541,19 @@ re-read the guide steps 2 or 3 times before coming here.
         await self.simple_embed(ctx, """
                     Need to do something with your SD card? Find advice in [this guide](https://3ds.eiphax.tech/sd.html)
                     """, title="SD Troubleshooter")
-					
+
+    SDFORMAT_TEXT = """
+Here are some links to common FAT32 formatting tools:
+• [GUIFormat](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm) (Windows)
+• [gparted](https://gparted.org/download.php) (Linux)
+• [Disk Utility](https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010) (MacOS)
+MacOS: Always select "MS-DOS (FAT)", even if the card is larger than 32GB."""
+
     @commands.command(aliases=["sdformat"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def formatsd(self, ctx):
         """SD Format Tools"""
-        await self.simple_embed(ctx, """
-                    Here are some links to common formatting tools.
-• [GUIFormat](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm) (Windows)
-• [gparted](https://gparted.org/download.php) (Linux)
-• [Disk Utility](https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010) (MacOS)
-MacOS: Always select "MS-DOS (FAT)", even if the card is larger than 32GB.
-                    """, title="SD Formatting Tools")
+        await self.simple_embed(ctx, self.SDFORMAT_TEXT, title="SD Formatting Tools")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -1137,7 +1138,7 @@ your device will refuse to write to it.
                                 * CFW may fail to boot due to a missing exFAT update in Horizon
                                 * This filesystem is prone to corruption.
                                 * Nintendo doesn't use files larger than 4GB, even with large games and exFAT. 
-                                """, title="exFAT on Switch: Why you shouldn't use it")
+                                """ + self.SDFORMAT_TEXT, title="exFAT on Switch: Why you shouldn't use it")
         
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
