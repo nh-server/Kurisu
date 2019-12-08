@@ -131,6 +131,7 @@ class Mod(DatabaseCog):
             return await ctx.send("💢 You can't slowmode a channel for longer than 6 hours!")
         try:
             await channel.edit(slowmode_delay=seconds)
+            await ctx.send(f"Slowmode delay for {channel.mention} is now {time} ({seconds}), set by {ctx.author.mention}")
         except discord.errors.Forbidden:
             return await ctx.send("💢 I don't have permission to do this.")
         msg = f"🕙 **Slowmode**: {ctx.author.mention} set a slowmode delay of {time} ({seconds}) in {channel.mention}"
