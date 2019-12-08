@@ -757,7 +757,7 @@ the system can't check for an update.
                                   """, title="How to delete Home Menu Theme Data")
             if self.check_console(x, ctx.message.channel.name, ('nx', 'switch', 'ns')):
                 await self.simple_embed(ctx, """
-                                1. Navigate to the following folder on your SD card: `/atmosphere/titles`
+                                1. Navigate to the following folder on your SD card: `/atmosphere/contents`
                                 2. Delete the folder with the name `0100000000001000`
                                   """, title="How to delete Home Menu Theme Data")
           
@@ -945,7 +945,7 @@ how to delete it.*
                                      *To find Hekate's version information, once Hekate starts, look in the top left corner of the screen. If you use auto-boot, hold `volume -` to stop it.*
                                      
                                      **If you use a custom theme**
-                                     Delete or rename /atmosphere/titles/0100000000001000 on your SD card prior to updating, \
+                                     Delete or rename /atmosphere/contents/0100000000001000 on your SD card prior to updating, \
 as custom themes must be reinstalled for most firmware updates.
                                 """), title="What do I need to do before updating my system firmware when running CFW?")
 
