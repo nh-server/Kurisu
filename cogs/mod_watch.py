@@ -14,7 +14,7 @@ class Modwatch(DatabaseCog):
             raise commands.NoPrivateMessage()
         return True
 
-    @is_staff("HalfOP")
+    @is_staff("Helper")
     @commands.command()
     async def watch(self, ctx, member: converters.SafeMember):
         if await self.is_watched(member.id):
@@ -26,7 +26,7 @@ class Modwatch(DatabaseCog):
         await self.bot.channels['mod-logs'].send(msg)
         await self.bot.channels['watch-logs'].send(msg)
 
-    @is_staff("HalfOP")
+    @is_staff("Helper")
     @commands.command()
     async def unwatch(self, ctx, member: converters.SafeMember):
         if not await self.is_watched(member.id):
