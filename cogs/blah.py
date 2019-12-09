@@ -11,6 +11,11 @@ class Blah(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         print(f'Cog "{self.qualified_name}" loaded')
+
+    speak_blacklist = [
+        647348710602178560,  # #minecraft-console
+        225556031428755456   # #announcements
+    ]
     
     @is_staff("OP")
     @commands.command(hidden=True)
@@ -20,11 +25,17 @@ class Blah(commands.Cog):
     @is_staff("OP")
     @commands.command(hidden=True)
     async def speak(self, ctx, channel: discord.TextChannel, *, inp):
+        if channel.id in speak_blacklist:
+            await ctx.send(f'You cannot send a message to {channel.mention}.')
+            return
         await channel.send(inp)
 
     @is_staff("OP")
     @commands.command(hidden=True)
     async def sendtyping(self, ctx, channel: discord.TextChannel = None):
+        if channel.id in speak_blacklist:
+            await ctx.send(f'You cannot send a message to {channel.mention}.')
+            return
         if channel is None:
             channel = ctx.channel
         await channel.trigger_typing()
