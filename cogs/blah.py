@@ -25,7 +25,7 @@ class Blah(commands.Cog):
     @is_staff("OP")
     @commands.command(hidden=True)
     async def speak(self, ctx, channel: discord.TextChannel, *, inp):
-        if channel.id in speak_blacklist:
+        if channel.id in self.speak_blacklist:
             await ctx.send(f'You cannot send a message to {channel.mention}.')
             return
         await channel.send(inp)
@@ -33,7 +33,7 @@ class Blah(commands.Cog):
     @is_staff("OP")
     @commands.command(hidden=True)
     async def sendtyping(self, ctx, channel: discord.TextChannel = None):
-        if channel.id in speak_blacklist:
+        if channel.id in self.speak_blacklist:
             await ctx.send(f'You cannot send a message to {channel.mention}.')
             return
         if channel is None:
