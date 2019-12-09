@@ -760,6 +760,7 @@ the system can't check for an update.
                 await self.simple_embed(ctx, """
                                 1. Navigate to the following folder on your SD card: `/atmosphere/contents`
                                 2. Delete the folder with the name `0100000000001000`
+                                **Note: On Atmosphere 0.9.4 or below, `contents` is called `titles`.**
                                   """, title="How to delete Home Menu Theme Data")
           
 
@@ -947,7 +948,7 @@ how to delete it.*
                                      
                                      **If you use a custom theme (Atmosphere 0.10.0 and above)**
                                      Delete or rename `/atmosphere/content/0100000000001000` on your SD card prior to updating, \
-as custom themes must be reinstalled for most firmware updates. **Note: On Atmosphere 0.9.4 or below, `content` is called `titles`.**
+as custom themes must be reinstalled for most firmware updates. **Note: On Atmosphere 0.9.4 or below, `contents` is called `titles`.**
                                 """), title="What do I need to do before updating my system firmware when running CFW?")
 
     # Information about pending Switch updates
