@@ -433,11 +433,11 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 Currently, the latest Switch system firmware is `9.1.0`.
                 
                 If your Switch is **unpatched and can access RCM**:
-                Atmosphere currently supports 9.0.1 (note: **not** 9.1.0), and unpatched units will always be hackable.
+                Atmosphere currently supports 9.1.0, and unpatched units will always be hackable.
                 
                 If your Switch is **hardware patched and cannot access RCM**:
                 Stay on the lowest possible firmware version. Any Switch that is patched and above 7.0.1 is unlikely to be hackable.
-                *Last edited: December 4, 2019*
+                *Last edited: December 8, 2019*
                 """)
                 await ctx.send(embed=embed)
 
@@ -760,6 +760,7 @@ the system can't check for an update.
                 await self.simple_embed(ctx, """
                                 1. Navigate to the following folder on your SD card: `/atmosphere/contents`
                                 2. Delete the folder with the name `0100000000001000`
+                                **Note: On Atmosphere 0.9.4 or below, `contents` is called `titles`.**
                                   """, title="How to delete Home Menu Theme Data")
           
 
@@ -931,8 +932,8 @@ One way to fix this is by using an y-cable to connect the HDD to two USB ports.
         await self.simple_embed(ctx, cleandoc("""
                                      **Make sure your version of Atmosphere is up to date and that it supports the latest firmware**
 
-                                     **Atmosphere 0.9.4 (latest release)**
-                                     Supports up to firmware 9.0.1.
+                                     **Atmosphere 0.10.0 (latest release)**
+                                     Supports up to firmware 9.1.0.
 
                                      *To find Atmosphere's version information, while booted into CFW, go into System Settings -> System, and look at \
 the text under the System Update button. If it says that a system update is ready instead of displaying the CFW version, type .pendingupdate to learn \
@@ -940,14 +941,14 @@ how to delete it.*
 
                                      **Make sure your version of Hekate is up to date and that it supports the latest firmware**
                                      
-                                     **Hekate 5.0.2 (latest release)**
-                                     Supports up to firmware 9.0.1.
+                                     **Hekate 5.1.0 (latest release)**
+                                     Supports up to firmware 9.1.0.
                                      
                                      *To find Hekate's version information, once Hekate starts, look in the top left corner of the screen. If you use auto-boot, hold `volume -` to stop it.*
                                      
-                                     **If you use a custom theme**
-                                     Delete or rename /atmosphere/contents/0100000000001000 on your SD card prior to updating, \
-as custom themes must be reinstalled for most firmware updates.
+                                     **If you use a custom theme (Atmosphere 0.10.0 and above)**
+                                     Delete or rename `/atmosphere/contents/0100000000001000` on your SD card prior to updating, \
+as custom themes must be reinstalled for most firmware updates. **Note: On Atmosphere 0.9.4 or below, `contents` is called `titles`.**
                                 """), title="What do I need to do before updating my system firmware when running CFW?")
 
     # Information about pending Switch updates
