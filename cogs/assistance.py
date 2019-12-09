@@ -170,35 +170,36 @@ class Assistance(commands.Cog):
     async def update(self, ctx, *, consoles=""):
         """Explains how to safely prepare for an update for a hacked console"""
         
-        wanted_consoles = list(set(consoles.split()))
         systems = ('3ds', 'nx', 'ns', 'switch')
+        wanted_consoles = list(set(x for x in consoles.split() if x in systems))
 
         if not wanted_consoles:
             if ctx.channel.name.startswith(systems):
-                wanted_consoles.append("auto")
+                wanted_consoles = ["auto"]
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}")
                 return
+
         for console in wanted_consoles:
             if self.check_console(console, ctx.channel.name, "3ds"):
-                await self.simple_embed(ctx, """
-                **Is it safe to update to current 3DS firmware?**
+                await self.simple_embed(ctx,
+                    "**Is it safe to update to current 3DS firmware?**\n\n"
+
+                    "**Luma3DS 9.1 and above**\n"
+                    "You can update safely.\n\n"
                 
-                **Luma3DS 9.1 and above**
-                You can update safely.
+                    "**Luma3DS 8.0 - 9.0**\n"
+                    "Follow the [manual Luma3DS update guide](https://gist.github.com/chenzw95/3b5b953c9c913e89fdda3c4c4d98d086), then you can update safely. Being on these Luma3DS"
+                    "versions on 11.8+ will cause a blackscreen until you update.\n\n"
                 
-                **Luma3DS 8.0 - 9.0**
-                Follow the [manual Luma3DS update guide](https://gist.github.com/chenzw95/3b5b953c9c913e89fdda3c4c4d98d086), then you can update safely. Being on these Luma3DS \
-versions on 11.8+ will cause a blackscreen until you update.
+                    "**Luma3DS 7.1**\n"
+                    "Follow the [B9S upgrade guide](https://3ds.hacks.guide/updating-b9s)\n\n"
                 
-                **Luma3DS 7.1** 
-                Follow the [B9S upgrade guide](https://3ds.hacks.guide/updating-b9s)
-                
-                **Luma3DS 7.0.5 and below**
-                Follow the [a9lh-to-b9s guide](https://3ds.hacks.guide/a9lh-to-b9s)
+                    "**Luma3DS 7.0.5 and below**\n"
+                    "Follow the [a9lh-to-b9s guide](https://3ds.hacks.guide/a9lh-to-b9s)\n\n"
                  
-                **To find out your Luma3DS version, hold select on bootup and look at the top left corner of the top screen**
-                """)
+                    "**To find out your Luma3DS version, hold select on bootup and look at the top left corner of the top screen**\n"
+                )
             
             elif self.check_console(console, ctx.channel.name, ("switch", "nx", "ns")):
                 embed = discord.Embed(title="Updating Guide", color=discord.Color(0xCB0004))
