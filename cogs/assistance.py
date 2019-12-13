@@ -369,117 +369,106 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
     @commands.guild_only()
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def stock(self, ctx, consoles=""):
+    async def stock(self, ctx, console=None):
         """Advisory for various Nintendo systems on stock firmware"""
         systems = ("3ds", "nx", "ns", "switch")
-        consoleslist = []
-        consoleslist = [x for x in consoles.split() if x in systems and x not in consoleslist]
-        if not consoleslist:
+        if console not in systems:
             if ctx.channel.name.startswith(systems):
-                consoleslist = ['auto']
+                console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
                 return
-        for x in consoleslist:
-            if self.check_console(x, ctx.message.channel.name, '3ds'):
-                embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
-                embed.add_field(name="NTRBoot", value="Requires a compatible NDS flashcart and maybe an additional DS(i) or hacked 3DS console depending on the flashcart (All versions, all hardware). [Guide](https://3ds.hacks.guide/ntrboot)", inline=False)
-                embed.add_field(name="Seedminer", value="Requires a working NDS mode or Pokémon Picross (free from eshop) [Guide](https://3ds.hacks.guide/seedminer)", inline=False)
-                embed.add_field(name="Hardmod", value="Requires soldering **Not for beginners!**. [Guide](https://git.io/fhQk9)", inline=False)
-                await ctx.send(embed=embed)
-                continue
-            if self.check_console(x, ctx.message.channel.name, ('nx', 'switch', 'ns')):
-                embed = discord.Embed(title="Looking to hack your Switch?", color=0xe60012)
-                embed.description = cleandoc("""
-                Use [our guide](https://nh-server.github.io/switch-guide/user_guide/getting_started/) to determine if your Switch is a first-gen unit.
-                **First generation consoles (RCM exploitable)**
-                All of these can run [Atmosphere](https://nh-server.github.io/switch-guide/). Make sure that Atmosphere is compatible with the latest firmware version before you update.
+        if self.check_console(console, ctx.message.channel.name, '3ds'):
+            embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
+            embed.add_field(name="NTRBoot", value="Requires a compatible NDS flashcart and maybe an additional DS(i) or hacked 3DS console depending on the flashcart (All versions, all hardware). [Guide](https://3ds.hacks.guide/ntrboot)", inline=False)
+            embed.add_field(name="Seedminer", value="Requires a working NDS mode or Pokémon Picross (free from eshop) [Guide](https://3ds.hacks.guide/seedminer)", inline=False)
+            embed.add_field(name="Hardmod", value="Requires soldering **Not for beginners!**. [Guide](https://git.io/fhQk9)", inline=False)
+            await ctx.send(embed=embed)
+        elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+            embed = discord.Embed(title="Looking to hack your Switch?", color=0xe60012)
+            embed.description = cleandoc("""
+            Use [our guide](https://nh-server.github.io/switch-guide/user_guide/getting_started/) to determine if your Switch is a first-gen unit.
+            **First generation consoles (RCM exploitable)**
+            All of these can run [Atmosphere](https://nh-server.github.io/switch-guide/). Make sure that Atmosphere is compatible with the latest firmware version before you update.
 
-                **Second generation consoles ("patched" units, Switch Lite, Mariko, etc.)**
+            **Second generation consoles ("patched" units, Switch Lite, Mariko, etc.)**
 
-                **"Old" Patched Switch (HAC-001)**: Do NOT update past 7.0.1. Units on 7.0.1 and below will eventually get CFW. Units on 8.0.0 and higher are not expected to be hacked and can be updated.
-                **"New" Switch (HAC-001-01)**: Do NOT update past 8.0.1. Units on 8.0.1 and below will likely get homebrew. Units on 8.1.0 and higher are not expected to be hacked and can be updated.
-                **Switch Lite (HDH-001)**: Do NOT update past 8.0.1. Units on 8.0.1 and below will likely get homebrew. Units on 8.1.0 and higher are not expected to be hacked and can be updated.
+            **"Old" Patched Switch (HAC-001)**: Do NOT update past 7.0.1. Units on 7.0.1 and below will eventually get CFW. Units on 8.0.0 and higher are not expected to be hacked and can be updated.
+            **"New" Switch (HAC-001-01)**: Do NOT update past 8.0.1. Units on 8.0.1 and below will likely get homebrew. Units on 8.1.0 and higher are not expected to be hacked and can be updated.
+            **Switch Lite (HDH-001)**: Do NOT update past 8.0.1. Units on 8.0.1 and below will likely get homebrew. Units on 8.1.0 and higher are not expected to be hacked and can be updated.
 
-                Downgrading is **impossible** on patched consoles, and isn't worth your time on unpatched ones.
-                """)
-                await ctx.send(embed=embed)
-
+            Downgrading is **impossible** on patched consoles, and isn't worth your time on unpatched ones.
+            """)
+            await ctx.send(embed=embed)
 
     @commands.guild_only()
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def newver(self, ctx, consoles=""):
+    async def newver(self, ctx, console=None):
         """Quick advice for new versions"""
         systems = ("3ds", "nx", "ns", "switch")
-        consoleslist = []
-        consoleslist = [x for x in consoles.split() if x in systems and x not in consoleslist]
-        if not consoleslist:
+        if console not in systems:
             if ctx.channel.name.startswith(systems):
-                consoleslist = ['auto']
+                console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
                 return
-        for x in consoleslist:
-            if self.check_console(x, ctx.message.channel.name, '3ds'):
-                embed = discord.Embed(title="Is the new 3DS update safe?", color=0xe60012)
-                embed.description = cleandoc("""
-                Currently, the latest 3DS system firmware is `11.13.0-45`.
-                
-                If you currently have CFW installed (boot9strap/Luma):
-                Is your Luma version up to date? If your Luma version is 9.1 or above, **updating is safe**.
-                If it is 9.0 or below, please type `.update` in <#261581918653513729> and follow the information there.
-                
-                If you DO NOT currently have CFW installed (stock console):
-                11.13.0-45 can be hacked with current methods. **Updating is safe**.
-                *Last edited: December 3, 2019*
-                """)
-                await ctx.send(embed=embed)
-                continue
-            if self.check_console(x, ctx.message.channel.name, ('nx', 'switch', 'ns')):
-                embed = discord.Embed(title="Is the new Switch update safe?", color=0xe60012)
-                embed.description = cleandoc("""
-                Currently, the latest Switch system firmware is `9.1.0`.
-                
-                If your Switch is **unpatched and can access RCM**:
-                Atmosphere currently supports 9.1.0, and unpatched units will always be hackable.
-                
-                If your Switch is **hardware patched and cannot access RCM**:
-                Stay on the lowest possible firmware version. Any Switch that is patched and above 7.0.1 is unlikely to be hackable.
-                *Last edited: December 8, 2019*
-                """)
-                await ctx.send(embed=embed)
+
+        if self.check_console(console, ctx.message.channel.name, '3ds'):
+            embed = discord.Embed(title="Is the new 3DS update safe?", color=0xe60012)
+            embed.description = cleandoc("""
+            Currently, the latest 3DS system firmware is `11.13.0-45`.
+            
+            If you currently have CFW installed (boot9strap/Luma):
+            Is your Luma version up to date? If your Luma version is 9.1 or above, **updating is safe**.
+            If it is 9.0 or below, please type `.update` in <#261581918653513729> and follow the information there.
+            
+            If you DO NOT currently have CFW installed (stock console):
+            11.13.0-45 can be hacked with current methods. **Updating is safe**.
+            *Last edited: December 3, 2019*
+            """)
+            await ctx.send(embed=embed)
+
+        elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+            embed = discord.Embed(title="Is the new Switch update safe?", color=0xe60012)
+            embed.description = cleandoc("""
+            Currently, the latest Switch system firmware is `9.1.0`.
+            
+            If your Switch is **unpatched and can access RCM**:
+            Atmosphere currently supports 9.1.0, and unpatched units will always be hackable.
+            
+            If your Switch is **hardware patched and cannot access RCM**:
+            Stay on the lowest possible firmware version. Any Switch that is patched and above 7.0.1 is unlikely to be hackable.
+            *Last edited: December 8, 2019*
+            """)
+            await ctx.send(embed=embed)
 
     @commands.guild_only()
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def catalyst(self, ctx, consoles=""):
+    async def catalyst(self, ctx, console=None):
         """Link to problem solvers"""
         systems = ("3ds", "nx", "ns", "switch")
-        consoleslist = []
-        consoleslist = [x for x in consoles.split() if x in systems and x not in consoleslist]
-        if not consoleslist:
+        if not console:
             if ctx.channel.name.startswith(systems):
-                consoleslist = ['auto']
+                console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
                 return
-        for x in consoleslist:
-            if self.check_console(x, ctx.message.channel.name, '3ds'):
-                embed = discord.Embed(title="eip's problem solver packs", color=0xe60012)
-                embed.description = cleandoc("""
-                Please visit the following page and read the information provided.
-                https://3ds.eiphax.tech/catalyst.html
-                """)
-                await ctx.send(embed=embed)
-                continue
-            if self.check_console(x, ctx.message.channel.name, ('nx', 'switch', 'ns')):
-                embed = discord.Embed(title="eip's problem solver pack", color=0xe60012)
-                embed.description = cleandoc("""
-                Please visit the following page and read the information provided.
-                https://nx.eiphax.tech/catalyst.html
-                """)
-                await ctx.send(embed=embed)
+        if self.check_console(console, ctx.message.channel.name, '3ds'):
+            embed = discord.Embed(title="eip's problem solver packs", color=0xe60012)
+            embed.description = cleandoc("""
+            Please visit the following page and read the information provided.
+            https://3ds.eiphax.tech/catalyst.html
+            """)
+            await ctx.send(embed=embed)
+        elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+            embed = discord.Embed(title="eip's problem solver pack", color=0xe60012)
+            embed.description = cleandoc("""
+            Please visit the following page and read the information provided.
+            https://nx.eiphax.tech/catalyst.html
+            """)
+            await ctx.send(embed=embed)
 
     @commands.command(aliases=["fuse-3ds", "fuse", "fuse3ds"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -650,37 +639,33 @@ command line. The `movable.sed` is the final product and requires no further pro
     @commands.guild_only()
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def emureco(self, ctx, consoles=""):
+    async def emureco(self, ctx, console=None):
         """Quick advice for emunands"""
         systems = ("3ds", "nx", "ns", "switch")
-        consoleslist = []
-        consoleslist = [x for x in consoles.split() if x in systems and x not in consoleslist]
-        if not consoleslist:
+        if console not in systems:
             if ctx.channel.name.startswith(systems):
-                consoleslist = ['auto']
+                console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
                 return
-        for x in consoleslist:
-            if self.check_console(x, ctx.message.channel.name, '3ds'):
-                embed = discord.Embed(title="EmuNAND for 3DS", color=0xe60012)
-                embed.description = cleandoc("""
-                With the recent advances in hacking methods and safety, it is no longer recommended to use an emuNAND on a 3DS/2DS system.
-                Generally, for most users, there is no reason or benefit to using an emuNAND on a 3DS/2DS system.
-                If you do not know what an emuNAND is, or is used for, you do not need one.
-                """)
-                await ctx.send(embed=embed)
-                continue
-            if self.check_console(x, ctx.message.channel.name, ('nx', 'switch', 'ns')):
-                embed = discord.Embed(title="EmuMMC/EmuNAND for Switch", color=0xe60012)
-                embed.description = cleandoc("""
-                On the Switch system, it is recommended to use an emuMMC/emuNAND.
-                An emuMMC/emuNAND will take up approximately 30GB on your SD card, so the SD card must be 64GB or above.
-                The purpose of an emuMMC/emuNAND is to give you a safe place to use custom firmware functions.
-                This will allow you to keep your sysMMC/sysNAND clean, so you can use it online.
-                Following the default NH server guide (type `.guide` for a link) will set you up with an emuMMC/emuNAND.
-                """)
-                await ctx.send(embed=embed)
+        if self.check_console(console, ctx.message.channel.name, '3ds'):
+            embed = discord.Embed(title="EmuNAND for 3DS", color=0xe60012)
+            embed.description = cleandoc("""
+            With the recent advances in hacking methods and safety, it is no longer recommended to use an emuNAND on a 3DS/2DS system.
+            Generally, for most users, there is no reason or benefit to using an emuNAND on a 3DS/2DS system.
+            If you do not know what an emuNAND is, or is used for, you do not need one.
+            """)
+            await ctx.send(embed=embed)
+        elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+            embed = discord.Embed(title="EmuMMC/EmuNAND for Switch", color=0xe60012)
+            embed.description = cleandoc("""
+            On the Switch system, it is recommended to use an emuMMC/emuNAND.
+            An emuMMC/emuNAND will take up approximately 30GB on your SD card, so the SD card must be 64GB or above.
+            The purpose of an emuMMC/emuNAND is to give you a safe place to use custom firmware functions.
+            This will allow you to keep your sysMMC/sysNAND clean, so you can use it online.
+            Following the default NH server guide (type `.guide` for a link) will set you up with an emuMMC/emuNAND.
+            """)
+            await ctx.send(embed=embed)
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -777,34 +762,30 @@ the system can't check for an update.
     @commands.guild_only()
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def deltheme(self, ctx, consoles = ""):
+    async def deltheme(self, ctx, console=None):
         """Deleting home menu theme data"""
         systems = ("3ds", "nx", "ns", "switch")
-        consolelist = []
-        consolelist = [x for x in consoles.split() if x in systems and x not in consolelist]
-        if not consolelist:
+        if console not in systems:
             if ctx.channel.name.startswith(systems):
-                consolelist = ['auto']
+                console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
                 return
-        for x in consolelist:
-            if self.check_console(x, ctx.message.channel.name, '3ds'):
-                await self.simple_embed(ctx, """
-                                1. Navigate to the following folder on your SD card: \
+        if self.check_console(console, ctx.message.channel.name, '3ds'):
+            await self.simple_embed(ctx, """
+                            1. Navigate to the following folder on your SD card: \
 `/Nintendo 3DS/(32 Character ID)/(32 Character ID)/extdata/00000000/`
-                                2. Delete the corresponding folder for your region:
-                                  USA: `000002cd`
-                                  EUR: `000002ce`
-                                  JPN: `000002cc`
-                                  """, title="How to delete Home Menu Theme Data")
-            if self.check_console(x, ctx.message.channel.name, ('nx', 'switch', 'ns')):
-                await self.simple_embed(ctx, """
-                                1. Navigate to the following folder on your SD card: `/atmosphere/contents`
-                                2. Delete the folder with the name `0100000000001000`
-                                **Note: On Atmosphere 0.9.4 or below, `contents` is called `titles`.**
-                                  """, title="How to delete Home Menu Theme Data")
-          
+                            2. Delete the corresponding folder for your region:
+                              USA: `000002cd`
+                              EUR: `000002ce`
+                              JPN: `000002cc`
+                              """, title="How to delete Home Menu Theme Data")
+        elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+            await self.simple_embed(ctx, """
+                            1. Navigate to the following folder on your SD card: `/atmosphere/contents`
+                            2. Delete the folder with the name `0100000000001000`
+                            **Note: On Atmosphere 0.9.4 or below, `contents` is called `titles`.**
+                              """, title="How to delete Home Menu Theme Data")
 
     @commands.command(aliases=['godmode9'])
     async def gm9(self, ctx):
@@ -852,7 +833,7 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in injects])}.")
                 return
         for x in consoleslist:
-            if self.check_console(x, ctx.channel.name, ('3ds')):
+            if self.check_console(x, ctx.channel.name, ('3ds',)):
                 embed = discord.Embed(title="Virtual Console Injects for 3DS", color=discord.Color.blue())
                 embed.set_author(name="Asdolo", url="https://gbatemp.net/members/asdolo.389539/")
                 embed.set_thumbnail(url="https://i.imgur.com/rHa76XM.png")
@@ -880,34 +861,30 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
     @commands.guild_only()
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def dump(self, ctx, consoles=""):
+    async def dump(self, ctx, console=None):
         """How to dump games and data for CFW consoles"""
-        dumps = ("3ds", "nx", "ns", "switch")
-        consoleslist = []
-        consoleslist = [x for x in consoles.split() if x in dumps and x not in consoleslist]
-        if not consoleslist:
-            if ctx.channel.name.startswith(dumps):
-                consoleslist = ['auto']
+        systems = ("3ds", "nx", "ns", "switch")
+        if console not in systems:
+            if ctx.channel.name.startswith(systems):
+                console = "auto"
             else:
-                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in dumps])}.")
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
                 return
-        for x in consoleslist:
-            if self.check_console(x, ctx.channel.name, '3ds'):
-                embed = discord.Embed(title="GodMode9 dump/build Guide", color=discord.Color(0x66FFFF))
-                embed.set_author(name="Chroma Ryu", url="https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Godmode9-CIA-Dumping-and-Building")
-                embed.set_thumbnail(url="https://i.imgur.com/U8NA9lx.png")
-                embed.url = "https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Godmode9-CIA-Dumping-and-Building"
-                embed.description = "How to dump/build CIAs and Files using GodMode9"
-                await ctx.send(embed=embed)
-                continue
-            if self.check_console(x, ctx.channel.name, ('switch', 'nx', 'ns')):
-                embed = discord.Embed(title="Switch dump/build Guide", color=discord.Color(0xCB0004))
-                embed.set_author(name="SuchMeme", url="https://suchmememanyskill.github.io/guides/switchdumpguide/")
-                embed.set_thumbnail(url="https://i.imgur.com/FkKB0er.png")
-                embed.url = "https://suchmememanyskill.github.io/guides/switchdumpguide/"
-                embed.description = ("How to dump/build NSPs using NXDumpTool\n"
-                                     "BAN Warning: only for use using offline emummc")
-                await ctx.send(embed=embed)
+        if self.check_console(console, ctx.channel.name, '3ds'):
+            embed = discord.Embed(title="GodMode9 dump/build Guide", color=discord.Color(0x66FFFF))
+            embed.set_author(name="Chroma Ryu", url="https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Godmode9-CIA-Dumping-and-Building")
+            embed.set_thumbnail(url="https://i.imgur.com/U8NA9lx.png")
+            embed.url = "https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Godmode9-CIA-Dumping-and-Building"
+            embed.description = "How to dump/build CIAs and Files using GodMode9"
+            await ctx.send(embed=embed)
+        elif self.check_console(console, ctx.channel.name, ('switch', 'nx', 'ns')):
+            embed = discord.Embed(title="Switch dump/build Guide", color=discord.Color(0xCB0004))
+            embed.set_author(name="SuchMeme", url="https://suchmememanyskill.github.io/guides/switchdumpguide/")
+            embed.set_thumbnail(url="https://i.imgur.com/FkKB0er.png")
+            embed.url = "https://suchmememanyskill.github.io/guides/switchdumpguide/"
+            embed.description = ("How to dump/build NSPs using NXDumpTool\n"
+                                 "BAN Warning: only for use using offline emummc")
+            await ctx.send(embed=embed)
 
     # Embed to Chroma Ryu's cartinstall guide
     @commands.command()
