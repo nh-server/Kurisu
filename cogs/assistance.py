@@ -839,8 +839,9 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
                 embed.set_thumbnail(url="https://i.imgur.com/rHa76XM.png")
                 embed.url = "https://mega.nz/#!qnAE1YjC!q3FRHgIAVEo4nRI2IfANHJr-r7Sil3YpPYE4w8ZbUPY"
                 embed.description = ("The recommended way to play old classics on your 3DS.\n"
-                                 "Usage guide [here](http://3ds.eiphax.tech/nsui.html)")
+                                     "Usage guide [here](http://3ds.eiphax.tech/nsui.html)")
                 await ctx.send(embed=embed)
+                continue
 
             if self.check_console(x, ctx.channel.name, ('wiiu', 'wii u')):
                 embed1 = discord.Embed(title="Wii and GameCube games for WiiU", color=discord.Color.red())
