@@ -209,7 +209,6 @@ class Assistance(commands.Cog):
                 embed.description = "A guide and general recommendations for updating your switch with emuMMC."
                 await ctx.send(embed=embed)
 
-
     @commands.command(aliases=["checkluma"])
     @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
     async def lumacheck(self, ctx):
@@ -482,7 +481,6 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 """)
                 await ctx.send(embed=embed)
 
-
     @commands.command(aliases=["fuse-3ds", "fuse", "fuse3ds"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def ninfs(self, ctx):
@@ -684,8 +682,6 @@ command line. The `movable.sed` is the final product and requires no further pro
                 Following the default NH server guide (type `.guide` for a link) will set you up with an emuMMC/emuNAND.
                 """)
                 await ctx.send(embed=embed)
-
-
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -911,9 +907,8 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
                 embed.set_thumbnail(url="https://i.imgur.com/FkKB0er.png")
                 embed.url = "https://suchmememanyskill.github.io/guides/switchdumpguide/"
                 embed.description = ("How to dump/build NSPs using NXDumpTool\n"
-                                     "BAN Warning: only for use using offline emummc" );
+                                     "BAN Warning: only for use using offline emummc")
                 await ctx.send(embed=embed)
-
 
     # Embed to Chroma Ryu's cartinstall guide
     @commands.command()
@@ -969,7 +964,6 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
                                 If you're having trouble getting your HDD to work with your WiiU, it might be due to the HDD not getting enough power. \
 One way to fix this is by using an y-cable to connect the HDD to two USB ports.
                                 """)
-
 
     # Information about how to prep for Switch updates
     @commands.command(aliases=["updateprep", "nxupdate"])
@@ -1248,6 +1242,7 @@ in the scene.
         embed = discord.Embed(title=title, color=discord.Color.default())
         embed.set_image(url=imagelink)
         await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
