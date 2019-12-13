@@ -627,7 +627,7 @@ just missing a file called boot.firm in the root of your SD card.
 
     @commands.command(aliases=["troubleshooting"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def troubleshoot(self, ctx, *, console=""):
+    async def troubleshoot(self, ctx):
         """Troubleshooting guides for common issues"""
         embed = discord.Embed(title="Troubleshooting guide for most Seedminer-based methods", color=discord.Color(0xA2BAE0))
         embed.url = "https://3ds.eiphax.tech/issues.html"
