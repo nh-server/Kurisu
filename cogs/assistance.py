@@ -249,6 +249,16 @@ class Assistance(commands.Cog):
         """Links to eiphax cfw uses page"""
         await self.simple_embed(ctx, "Want to know what CFW can be used for? <https://3ds.eiphax.tech/tips.html>")
 
+    @commands.command(aliases=["nutshell"])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def nxwhat(self, ctx):
+        """Links to eiphax nx nutshell"""
+        embed = discord.Embed(title="The NX Nutshell", color=discord.Color.purple())
+        embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/250051871962562562/e87f77d2fc2011a9ff6fddeec7095eba.webp?size=1024")
+        embed.url = "https://nx.eiphax.tech/nutshell.html"
+        embed.description = "Basic things about the Switch"
+        await ctx.send(embed=embed)
+
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def updateb9s(self, ctx):
@@ -438,6 +448,37 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 If your Switch is **hardware patched and cannot access RCM**:
                 Stay on the lowest possible firmware version. Any Switch that is patched and above 7.0.1 is unlikely to be hackable.
                 *Last edited: December 8, 2019*
+                """)
+                await ctx.send(embed=embed)
+
+    @commands.guild_only()
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def catalyst(self, ctx, consoles=""):
+        """Link to problem solvers"""
+        systems = ("3ds", "nx", "ns", "switch")
+        consoleslist = []
+        consoleslist = [x for x in consoles.split() if x in systems and x not in consoleslist]
+        if not consoleslist:
+            if ctx.channel.name.startswith(systems):
+                consoleslist = ['auto']
+            else:
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+                return
+        for x in consoleslist:
+            if self.check_console(x, ctx.message.channel.name, '3ds'):
+                embed = discord.Embed(title="eip's problem solver packs", color=0xe60012)
+                embed.description = cleandoc("""
+                Please visit the following page and read the information provided.
+                https://3ds.eiphax.tech/catalyst.html
+                """)
+                await ctx.send(embed=embed)
+                continue
+            if self.check_console(x, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+                embed = discord.Embed(title="eip's problem solver pack", color=0xe60012)
+                embed.description = cleandoc("""
+                Please visit the following page and read the information provided.
+                https://nx.eiphax.tech/catalyst.html
                 """)
                 await ctx.send(embed=embed)
 
@@ -716,6 +757,12 @@ the system can't check for an update.
     async def b9stool(self, ctx):
         """Download link for B9STool, boot.nds"""
         await self.simple_embed(ctx, "The B9S installation tool for DSiWare exploits.\nB9STool, [boot.nds](https://github.com/zoogie/b9sTool/releases)")
+
+    @commands.command(aliases=["faketiks"])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def faketik(self, ctx):
+        """Download link for faketik"""
+        await self.simple_embed(ctx, "ihaveamac's 3ds ticket spoofing utility, Faketik: [faketik.3dsx](https://github.com/ihaveamac/faketik/releases)")
 
     # Intructions for deleting home menu Extdata
     @commands.command()
