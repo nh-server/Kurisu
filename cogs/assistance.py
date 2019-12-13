@@ -189,7 +189,7 @@ class Assistance(commands.Cog):
                     "You can update safely.\n\n"
                 
                     "**Luma3DS 8.0 - 9.0**\n"
-                    "Follow the [manual Luma3DS update guide](https://gist.github.com/chenzw95/3b5b953c9c913e89fdda3c4c4d98d086), then you can update safely. Being on these Luma3DS"
+                    "Follow the [manual Luma3DS update guide](https://gist.github.com/chenzw95/3b5b953c9c913e89fdda3c4c4d98d086), then you can update safely. Being on these Luma3DS "
                     "versions on 11.8+ will cause a blackscreen until you update.\n\n"
                 
                     "**Luma3DS 7.1**\n"
