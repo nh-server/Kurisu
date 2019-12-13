@@ -568,11 +568,10 @@ re-read the guide steps 2 or 3 times before coming here.
             }
         }
 
-        if cfwinfo.get(cfw) == None:
+        if not (info := cfwinfo.get(cfw)):
             await ctx.send(f"Please specify a cfw. Valid options are: {', '.join([x for x in cfwinfo])}.")
             return
-
-        await self.simple_embed(ctx, cfwinfo[cfw]['info'], title=f"Why {cfwinfo[cfw]['title']} isn't recommended")
+        await self.simple_embed(ctx, info['info'], title=f"Why {info['title']} isn't recommended")
 
     @commands.command(aliases=["sderror", "sderrors", "bigsd", "sd"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
