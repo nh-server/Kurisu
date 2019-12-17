@@ -229,15 +229,16 @@ class Extras(commands.Cog):
         month = datetime.date.today().month
         if month == 6:
             member = ctx.author
-            if member.nick and member.nick[-1] == emoji:
-                await ctx.send("Your nickname already ends in a rainbow!")
-            elif member.name[-1] == emoji and not member.nick:
-                await ctx.send("Your name already ends in a rainbow!")
+            nick = f"{member.display_name} {emoji}"
+            if member.display_name[-1] == emoji:
+                await ctx.send("Your shown name already ends in a rainbow!")
+            elif len(nick) > 32:
+                await ctx.send("💢 Your name is too long! (nickname longer than 32 chars)")
             else:
                 try:
                     await ctx.author.edit(nick=f"{member.display_name} {emoji}")
                 except discord.errors.Forbidden:
-                    await ctx.send("💢  I can't change your nickname!")
+                    await ctx.send("💢  I can't change your nickname! (Permission Error)")
                     return
                 await ctx.send(f"Your nickname is now `{member.display_name}`!")
         else:
@@ -259,7 +260,7 @@ class Extras(commands.Cog):
                 try:
                     await ctx.author.edit(nick=nick)
                 except discord.errors.Forbidden:
-                    await ctx.send("💢  I can't change your nickname!")
+                    await ctx.send("💢  I can't change your nickname! (Permission Error)")
                     return
                 await ctx.send(f"Your nickname is now `{nick}`!")
             else:
@@ -277,15 +278,16 @@ class Extras(commands.Cog):
         month = datetime.date.today().month
         if month == 10:
             member = ctx.author
-            if member.nick and member.nick[-1] == emoji:
-                await ctx.send("Your nickname already ends in a pumpkin!")
-            elif member.name[-1] == emoji and not member.nick:
-                await ctx.send("Your name already ends in a pumpkin!")
+            nick = f"{member.display_name} {emoji}"
+            if member.display_name[-1] == emoji:
+                await ctx.send("Your shown name already ends in a pumpkin!")
+            elif len(nick) > 32:
+                await ctx.send("💢 Your name is too long! (nickname longer than 32 chars)")
             else:
                 try:
                     await ctx.author.edit(nick=f"{member.display_name} {emoji}")
                 except discord.errors.Forbidden:
-                    await ctx.send("💢  I can't change your nickname!")
+                    await ctx.send("💢  I can't change your nickname! (Permission Error)")
                     return
                 await ctx.send(f"Your nickname is now `{member.display_name}`!")
         else:
@@ -306,7 +308,7 @@ class Extras(commands.Cog):
                 try:
                     await ctx.author.edit(nick=nick)
                 except discord.errors.Forbidden:
-                    await ctx.send("💢  I can't change your nickname!")
+                    await ctx.send("💢  I can't change your nickname! (Permission Error)")
                     return
             else:
                 await ctx.send("You don't have a pumpkin!!")
@@ -323,15 +325,16 @@ class Extras(commands.Cog):
         month = datetime.date.today().month
         if month == 11:
             member = ctx.author
-            if member.nick and member.nick[-1] == emoji:
-                await ctx.send("Your nickname already ends in a turkey!")
-            elif member.name[-1] == emoji and not member.nick:
-                await ctx.send("Your name already ends in a turkey!")
+            nick = f"{member.display_name} {emoji}"
+            if member.display_name[-1] == emoji:
+                await ctx.send("Your shown name already ends in a turkey!")
+            elif len(nick) > 32:
+                await ctx.send("💢 Your name is too long! (nickname longer than 32 chars)")
             else:
                 try:
                     await ctx.author.edit(nick=f"{member.display_name} {emoji}")
                 except discord.errors.Forbidden:
-                    await ctx.send("💢  I can't change your nickname!")
+                    await ctx.send("💢  I can't change your nickname! (Permission Error)")
                     return
                 await ctx.send(f"Your nickname is now `{member.display_name}`!")
         else:
@@ -352,7 +355,7 @@ class Extras(commands.Cog):
                 try:
                     await ctx.author.edit(nick=nick)
                 except discord.errors.Forbidden:
-                    await ctx.send("💢  I can't change your nickname!")
+                    await ctx.send("💢  I can't change your nickname! (Permission Error)")
                     return
                 await ctx.send(f"Your nickname is now `{nick}`!")
             else:
@@ -370,15 +373,16 @@ class Extras(commands.Cog):
         month = datetime.date.today().month
         if month == 12:
             member = ctx.author
-            if member.nick and member.nick[-1] == emoji:
-                await ctx.send("Your nickname already ends in an xmas tree!")
-            elif member.name[-1] == emoji and not member.nick:
-                await ctx.send("Your name already ends in an xmas tree!")
+            nick = f"{member.display_name} {emoji}"
+            if member.display_name[-1] == emoji:
+                await ctx.send("Your shown name already ends in a xmas tree!")
+            elif len(nick) > 32:
+                await ctx.send("💢 Your name is too long! (nickname longer than 32 chars)")
             else:
                 try:
                     await ctx.author.edit(nick=f"{member.display_name} {emoji}")
                 except discord.errors.Forbidden:
-                    await ctx.send("💢  I can't change your nickname!")
+                    await ctx.send("💢  I can't change your nickname! (Permission Error)")
                     return
                 await ctx.send(f"Your nickname is now `{member.display_name}`!")
         else:
@@ -399,7 +403,7 @@ class Extras(commands.Cog):
                 try:
                     await ctx.author.edit(nick=nick)
                 except discord.errors.Forbidden:
-                    await ctx.send("💢  I can't change your nickname!")
+                    await ctx.send("💢  I can't change your nickname! (Permission Error)")
                     return
                 await ctx.send(f"Your nickname is now `{nick}`!")
             else:
@@ -418,15 +422,16 @@ class Extras(commands.Cog):
         day = datetime.date.today().day
         if month == 12 and day == 31 or month == 1 and day == 1:
             member = ctx.author
-            if member.nick and member.nick[-1] == emoji:
-                await ctx.send("Your nickname already ends in fireworks!")
-            elif member.name[-1] == emoji and not member.nick:
-                await ctx.send("Your name already ends in fireworks!")
+            nick = f"{member.display_name} {emoji}"
+            if member.display_name[-1] == emoji:
+                await ctx.send("Your shown name already ends in fireworks!")
+            elif len(nick) > 32:
+                await ctx.send("💢 Your name is too long! (nickname longer than 32 chars)")
             else:
                 try:
                     await ctx.author.edit(nick=f"{member.display_name} {emoji}")
                 except discord.errors.Forbidden:
-                    await ctx.send("💢  I can't change your nickname!")
+                    await ctx.send("💢  I can't change your nickname! (Permission Error)")
                     return
                 await ctx.send(f"Your nickname is now `{member.display_name}`!")
         else:
@@ -447,7 +452,7 @@ class Extras(commands.Cog):
                 try:
                     await ctx.author.edit(nick=nick)
                 except discord.errors.Forbidden:
-                    await ctx.send("💢  I can't change your nickname!")
+                    await ctx.send("💢  I can't change your nickname! (Permission Error)")
                     return
                 await ctx.send(f"Your nickname is now `{nick}`!")
             else:
@@ -466,15 +471,16 @@ class Extras(commands.Cog):
         day = datetime.date.today().day
         if month == 3 and day == 16 or month == 3 and day == 17:
             member = ctx.author
-            if member.nick and member.nick[-1] == emoji:
-                await ctx.send("Your nickname already ends in a shamrock!")
-            elif member.name[-1] == emoji and not member.nick:
-                await ctx.send("Your name already ends in fireworks!")
+            nick = f"{member.display_name} {emoji}"
+            if member.display_name[-1] == emoji:
+                await ctx.send("Your shown name already ends in a shamrock!")
+            elif len(nick) > 32:
+                await ctx.send("💢 Your name is too long! (nickname longer than 32 chars)")
             else:
                 try:
                     await ctx.author.edit(nick=f"{member.display_name} {emoji}")
                 except discord.errors.Forbidden:
-                    await ctx.send("💢  I can't change your nickname!")
+                    await ctx.send("💢  I can't change your nickname! (Permission Error)")
                     return
                 await ctx.send(f"Your nickname is now `{member.display_name}`!")
         else:
@@ -495,7 +501,7 @@ class Extras(commands.Cog):
                 try:
                     await ctx.author.edit(nick=nick)
                 except discord.errors.Forbidden:
-                    await ctx.send("💢  I can't change your nickname!")
+                    await ctx.send("💢  I can't change your nickname! (Permission Error)")
                     return
                 await ctx.send(f"Your nickname is now `{nick}`!")
             else:
@@ -518,7 +524,7 @@ class Extras(commands.Cog):
                 await member.edit(nick=nickname)
                 await ctx.send(f"Your nickname is now `{nickname}`!")
             except discord.errors.Forbidden:
-                await ctx.send("💢  I can't change your nickname!")
+                await ctx.send("💢  I can't change your nickname! (Permission Error)")
         else:
             await ctx.send("The nickname doesn't comply with our nickname policy or it's too long!")
             ctx.command.reset_cooldown(ctx)
