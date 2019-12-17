@@ -20,7 +20,7 @@ class Memes(commands.Cog):
                 await ctx.author.send("Meme commands are disabled in this channel, or your privileges have been revoked.")
             except discord.errors.Forbidden:
                 await ctx.send(f"{ctx.author.mention} Meme commands are disabled in this channel, or your privileges have been revoked.")
-        elif imagelink != None:  
+        elif imagelink is not None:
             title = f"{self.bot.escape_text(ctx.author.display_name) + ':' if not directed else ''} {msg}"		
             embed = discord.Embed(title=title, color=discord.Color.default())
             embed.set_image(url=imagelink)
@@ -345,9 +345,10 @@ class Memes(commands.Cog):
         kelvin = self.c_to_k(celsius)
         await self._meme(ctx, f"{u.mention} warmed. User is now {celsius}°C ({fahrenheit}°F, {kelvin}K).", True)
 
+    # adding it here cause its pretty much the same code
     @commands.command(hidden=True, aliases=["cool"])
     @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
-    async def chill(self, ctx, u: discord.Member):  #adding it here cause its pretty much the same code
+    async def chill(self, ctx, u: discord.Member):
         """Cools a user :3"""
         celsius = random.randint(-273, 34)
         fahrenheit = self.c_to_f(celsius)
@@ -408,6 +409,7 @@ class Memes(commands.Cog):
     async def eel(self, ctx, u: discord.Member):
         """eel"""
         await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has been eel slapped.", True, "https://i.imgur.com/QXF2Pcn.gif")
+
 
 def setup(bot):
     bot.add_cog(Memes(bot))
