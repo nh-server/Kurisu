@@ -298,16 +298,9 @@ class Assistance(commands.Cog):
         embed = discord.Embed(title="A9LH Detected! Brick Avoided!", color=discord.Color.blue())
         embed.description = "A9LH bypass information"
         embed.add_field(name="Guide and Advice", value=cleandoc("""
-                If you have already checked for an existing Luma installation,
-                and have checked with someone here for other troubleshooting steps,
-                and we are now sure that A9LH appears to be uninstalled, there is
-                a way to bypass the check. This usually results in the safe
-                installation of boot9strap. However, there is a small chance
-                the console will brick if we proceed.
-                It can be unbricked with a compatible NTRBoot cartridge.
-                If you choose not to proceed, NTRBoot will be the only
-                way you can hack your console. Most people do not brick
-                and can safely proceed, but the choice is yours.
+                If you have already checked for an existing Luma installation, and have checked with someone here for other troubleshooting steps, and we are now sure that A9LH appears to be uninstalled, there is a way to bypass the check.
+                This usually results in the safe installation of boot9strap. However, there is a small chance the console will brick if we proceed. If it bricks, it can be unbricked with a compatible NTRBoot cartridge.
+                If you choose not to proceed, NTRBoot will be the only way you can hack your console. Most people do not brick and can safely proceed, but the choice is yours.
                 """))
         await ctx.send(embed=embed)
 
