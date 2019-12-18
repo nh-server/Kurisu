@@ -291,6 +291,26 @@ class Assistance(commands.Cog):
         embed.description = "A guide for upgrading your device from arm9loaderhax to boot9strap."
         await ctx.send(embed=embed)
 
+    @commands.command(aliases=["atobwhat", "a9lhhow"])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def a9lhrec(self, ctx):
+        """Advice for b9s install with a9lh conflict"""
+        embed = discord.Embed(title="A9LH Detected! Brick Avoided!", color=discord.Color.blue())
+        embed.description = "A9LH bypass information"
+        embed.add_field(name="Guide and Advice", value=cleandoc("""
+                If you have already checked for an existing Luma installation,
+                and have checked with someone here for other troubleshooting steps,
+                and we are now sure that A9LH appears to be uninstalled, there is
+                a way to bypass the check. This usually results in the safe
+                installation of boot9strap. However, there is a small chance
+                the console will brick if we proceed.
+                It can be unbricked with a compatible NTRBoot cartridge.
+                If you choose not to proceed, NTRBoot will be the only
+                way you can hack your console. Most people do not brick
+                and can safely proceed, but the choice is yours.
+                """))
+        await ctx.send(embed=embed)
+
     # Gateway h&s troubleshooting command
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
