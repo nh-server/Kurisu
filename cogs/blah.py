@@ -14,7 +14,6 @@ class Blah(commands.Cog):
 
     speak_blacklist = [
         647348710602178560,  # #minecraft-console
-        225556031428755456   # #announcements
     ]
     
     @is_staff("OP")
