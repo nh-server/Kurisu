@@ -1232,7 +1232,17 @@ in the scene.
         embed = discord.Embed(title=title, color=discord.Color.default())
         embed.set_image(url=imagelink)
         await ctx.send(embed=embed)
-
+     
+    @commands.command(aliases=['cpc'])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def checkpointcheats(self, ctx):
+        """Checkpoint cheating guide for 3ds"""
+        embed = discord.Embed(title="Checkpoint Cheating Guide", color=discord.Color.green())
+        embed.set_author(name="Krieg")
+        embed.set_thumbnail(url="https://i.imgur.com/ZZVVbWH.png")
+        embed.url = "https://3ds.eiphax.tech/cpcheats.html"
+        embed.description = "A guide to use cheats with Checkpoint on 3ds"
+        await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
