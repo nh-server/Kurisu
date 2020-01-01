@@ -1261,6 +1261,15 @@ in the scene.
         embed.set_image(url=imagelink)
         await ctx.send(embed=embed)
 
+    @commands.command(aliases=['injector'])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def injectors(self, ctx):
+        embed = discord.Embed(title="List of switch payload injectors", color=discord.Color(0xCE181E))
+        embed.set_author(name="NH Discord Server", url="https://nh-server.github.io/switch-guide/extras/rcm_injectors/")
+        embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
+        embed.url = "https://nh-server.github.io/switch-guide/extras/rcm_injectors/"
+        embed.description = "A list of portable payload injectors for the Nintendo Switch"
+        await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
