@@ -483,6 +483,18 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             """)
             await ctx.send(embed=embed)
 
+    @commands.command(aliases=["fuse-3ds", "fuse", "fuse3ds"])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def ninfs(self, ctx):
+        """Link to ninfs tutorial."""
+        embed = discord.Embed(title="Extract and Decrypt games, NAND backups, and SD contents with ninfs", color=discord.Color(0xCE181E))
+        embed.description = cleandoc("""
+                            This is a tutorial that shows you how to use ninfs to extract the contents of games, \
+NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
+                            """)
+        embed.url = "https://gbatemp.net/threads/499994/"
+        await ctx.send(embed=embed)
+
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def hbl(self, ctx):
@@ -583,7 +595,18 @@ re-read the guide steps 2 or 3 times before coming here.
     async def formatsd(self, ctx):
         """SD Format Tools"""
         await self.simple_embed(ctx, self.SDFORMAT_TEXT, title="SD Formatting Tools")
+    
+    TORRENT_TEXT = """
+                Here are some links to common torrent clients:
+                • [qBittorrent](https://www.qbittorrent.org/download.php) (MacOS & Windows)
+                • [Deluge](https://dev.deluge-torrent.org/wiki/Download) (Linux)"""
 
+    @commands.command(aliases=["torrentclients","torrentclient"])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def torrent(self, ctx):
+        """Torrent Clients"""
+        await self.simple_embed(ctx, self.TORRENT_TEXT, title="Torrent Clients")
+    
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def lumabug(self, ctx):
@@ -1069,58 +1092,8 @@ your device will refuse to write to it.
         embed.set_thumbnail(url="https://i.imgur.com/TgdOPkG.png")
         embed.url = "https://github.com/aspargas2/3DS-Tutorials/wiki/3DS-VC-and-GBA-bios-Extraction-Tutorial"
         embed.description = "Basic tutorial to extract a rom out of your VC titles"
-        await ctx.send(embed=embed)
-
-    @tutorial.command(aliases=["fuse-3ds", "fuse", "fuse3ds"])
-    async def ninfs(self, ctx):
-        """Link to ninfs tutorial."""
-        embed = discord.Embed(title="Extract and Decrypt games, NAND backups, and SD contents with ninfs", color=discord.Color(0xCE181E))
-        embed.description = cleandoc("""
-                            This is a tutorial that shows you how to use ninfs to extract the contents of games, \
-NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
-                            """)
-        embed.url = "https://gbatemp.net/threads/499994/"
-        await ctx.send(embed=embed)
-
-    @tutorial.command(aliases=["appatch", "dsscene"])
-    async def ap(self, ctx):
-        """Anti-piracy patching guide"""
-        embed = discord.Embed(title="AP Guide", color=discord.Color.purple())
-        embed.set_author(name="Glazed_Belmont")
-        embed.set_thumbnail(url="https://i.imgur.com/TgdOPkG.png")
-        embed.url = "https://github.com/aspargas2/3DS-Tutorials/wiki/AP-Patching"
-        embed.description = "An AP-Patching guide"
-        await ctx.send(embed=embed)
-
-    @tutorial.command(aliases=["cheats", "3dscheats"])
-    async def cpcheats(self, ctx):
-        """Checkpoint/Rosalina cheat guide"""
-        embed = discord.Embed(title="3DS Cheats Guide", color=discord.Color.purple())
-        embed.set_author(name="Krieg")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/259143575361552384/8ce236c40fce0ac7badbf113e3dd3d64.webp?size=1024")
-        embed.url = "https://3ds.eiphax.tech/cpcheats.html"
-        embed.description = "A guide to using cheats with Checkpoint and Rosalina"
-        await ctx.send(embed=embed)
-
-    @tutorial.command(aliases=["ftpd", "3dsftp"])
-    async def ftp(self, ctx):
-        """FTPD/WinSCP ftp guide"""
-        embed = discord.Embed(title="3DS FTP Guide", color=discord.Color.purple())
-        embed.set_author(name="Krieg")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/259143575361552384/8ce236c40fce0ac7badbf113e3dd3d64.webp?size=1024")
-        embed.url = "https://3ds.eiphax.tech/ftp.html"
-        embed.description = "A guide to using ftp with FTPD and WinSCP"
-        await ctx.send(embed=embed)
-
-    @tutorial.command()
-    async def gbadump(self, ctx):
-        """Links to GBA Dump guide"""
-        embed = discord.Embed(title="Dumping GBA games", color=discord.Color.purple())
-        embed.set_thumbnail(url="https://wiki.no-intro.org/resources/assets/wiki.png")
-        embed.url = "https://wiki.no-intro.org/index.php?title=Game_Boy_Advance_Dumping_Guide"
-        embed.description = "How to dump GBA cartridges"
-        await ctx.send(embed=embed)
-
+        await ctx.send(embed=embed)  
+        
     @commands.command()
     async def tinydb(self, ctx):
         """Community-maintained homebrew database"""
@@ -1151,6 +1124,16 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
             embed.set_footer(text=f"by {release['author']}")
             return await ctx.send(embed=embed)
         return await ctx.send(f"Couldnt find {self.bot.escape_text(app)} in tinydb!")
+
+    @commands.command(aliases=["appatch", "dsscene"])
+    async def ap(self, ctx):
+        """Anti-piracy patching guide"""
+        embed = discord.Embed(title="AP Guide", color=discord.Color.purple())
+        embed.set_author(name="Glazed_Belmont")
+        embed.set_thumbnail(url="https://i.imgur.com/TgdOPkG.png")
+        embed.url = "https://github.com/aspargas2/3DS-Tutorials/wiki/AP-Patching"
+        embed.description = "An AP-Patching guide"
+        await ctx.send(embed=embed)
 
     @commands.command()
     async def cios(self, ctx):
