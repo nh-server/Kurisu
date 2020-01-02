@@ -3,8 +3,9 @@ import re
 import time
 from subprocess import call
 import discord
+
 from discord.ext import commands
-from cogs.checks import is_staff, check_staff_id
+from cogs.checks import is_staff, check_staff_id, check_bot_or_staff
 from cogs.database import DatabaseCog
 from cogs.converters import SafeMember, FetchMember
 
@@ -379,6 +380,8 @@ class Mod(DatabaseCog):
     @commands.command(aliases=["nohelp"])
     async def takehelp(self, ctx, member: FetchMember, *, reason=""):
         """Remove access to help-and-questions. Staff and Helpers only."""
+        if await check_bot_or_staff(ctx, member, "takehelp"):
+            return
         await self.add_restriction(member.id, self.bot.roles['No-Help'])
         msg_user = "You lost access to help channels!"
         if isinstance(member, discord.Member):
@@ -422,7 +425,8 @@ class Mod(DatabaseCog):
     @commands.command(aliases=["timenohelp"])
     async def timetakehelp(self, ctx, member: SafeMember, length, *, reason=""):
         """Restricts a user from Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
-
+        if await check_bot_or_staff(ctx, member, "takehelp"):
+            return
         issuer = ctx.author
         # thanks Luc#5653
         units = {
@@ -495,17 +499,20 @@ class Mod(DatabaseCog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(name="probate")
-    async def probate(self, ctx, member: SafeMember, *, reason=""):
+    async def probate(self, ctx, member: FetchMember, *, reason=""):
         """Probate a user. Staff and Helpers only."""
+        if await check_bot_or_staff(ctx, member, "probate"):
+            return
         await self.add_restriction(member.id, self.bot.roles['Probation'])
-        await member.add_roles(self.bot.roles['Probation'])
-        msg_user = "You are under probation!"
-        if reason != "":
-            msg_user += " The given reason is: " + reason
-        try:
-            await member.send(msg_user)
-        except discord.errors.Forbidden:
-            pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
+        if isinstance(member, discord.Member):
+            await member.add_roles(self.bot.roles['Probation'])
+            msg_user = "You are under probation!"
+            if reason != "":
+                msg_user += " The given reason is: " + reason
+            try:
+                await member.send(msg_user)
+            except discord.errors.Forbidden:
+                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
         await ctx.send(f"{member.mention} is now in probation.")
         msg = f"🚫 **Probated**: {ctx.author.mention} probated {member.mention} | {member}"
         if reason != "":
@@ -517,10 +524,11 @@ class Mod(DatabaseCog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def unprobate(self, ctx, member: SafeMember):
+    async def unprobate(self, ctx, member: FetchMember):
         """Unprobate a user. Staff and Helpers only."""
         await self.remove_restriction(member.id, self.bot.roles["Probation"])
-        await member.remove_roles(self.bot.roles['Probation'])
+        if isinstance(member, discord.Member):
+            await member.remove_roles(self.bot.roles['Probation'])
         await ctx.send(f"{member.mention} is out of probation.")
         msg = f"⭕️ **Un-probated**: {ctx.author.mention} un-probated {member.mention} | {member}"
         await self.bot.channels['mod-logs'].send(msg)
