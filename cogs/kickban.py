@@ -75,7 +75,7 @@ class KickBan(DatabaseCog):
         await self.bot.channels['mod-logs'].send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.kick <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
 
     @is_staff("OP")
-    @commands.command(name="ban",aliases=["yeet"])
+    @commands.command(name="ban", aliases=["yeet"])
     async def ban_member(self, ctx, member: converters.SafeMember, days: typing.Optional[int] = 0, *, reason=""):
         """Bans a user from the server. OP+ only. Optional: [days] Specify up to 7 days of messages to delete."""
         if await check_bot_or_staff(ctx, member, "ban"):
