@@ -410,6 +410,12 @@ class Memes(commands.Cog):
         """eel"""
         await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has been eel slapped.", True, "https://i.imgur.com/QXF2Pcn.gif")
 
+    @commands.command(hidden=True, aliases=["bruh", "yolo", "swag"])
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def dab(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "No. I might be controlled by you idiots, but I have *some* self respect, baka...")
+
 
 def setup(bot):
     bot.add_cog(Memes(bot))
