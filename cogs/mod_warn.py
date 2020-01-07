@@ -59,7 +59,7 @@ class ModWarn(DatabaseCog):
             msg += "\n✏️ __Reason__: " + reason
         await self.bot.channels['mod-logs'].send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.warn <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
 
-    @is_staff('OP')
+    @is_staff('Helper')
     @commands.command()
     async def softwarn(self, ctx, member: SafeMember, *, reason=""):
         """Warn a user without automated action. Staff only."""
