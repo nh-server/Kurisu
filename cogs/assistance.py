@@ -296,7 +296,7 @@ class Assistance(commands.Cog):
     async def a9lhrec(self, ctx):
         """Advice for b9stool with a9lh conflict"""
         embed = discord.Embed(title="arm9loaderhax Detected!", color=discord.Color.blue())
-        embed.description = "A9LH + b9stool"
+        embed.description = "A9LH + b9stool information"
         embed.add_field(name="Guide and Advice", value=cleandoc("""
                 If you are seeing an "arm9loaderhax detected!" message in b9stool, you should attempt to boot into the luma configuration menu before simply pressing A. If you can access the config, you should follow the normal a9lh-to-b9s guide instead of using b9stool.
                 
@@ -305,13 +305,6 @@ class Assistance(commands.Cog):
                 If you're seeing an "a9lh detected! brick avoided!" error, you are on an old version of b9stool and should update your boot.nds to the latest.
                 """))
         await ctx.send(embed=embed)
-
-    # Gateway h&s troubleshooting command
-    @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def gwhs(self, ctx):
-        """Links to gateway health and safety inject troubleshooting"""
-        await ctx.send("https://3ds.hacks.guide/troubleshooting#gw_fbi")
 
     # Hardmodder pastebin list
     @commands.command()
