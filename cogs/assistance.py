@@ -294,24 +294,17 @@ class Assistance(commands.Cog):
     @commands.command(aliases=["atobwhat", "a9lhhow"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def a9lhrec(self, ctx):
-        """Advice for b9s install with a9lh conflict"""
-        embed = discord.Embed(title="A9LH Detected! Brick Avoided!", color=discord.Color.blue())
-        embed.description = "A9LH bypass information"
+        """Advice for b9stool with a9lh conflict"""
+        embed = discord.Embed(title="arm9loaderhax Detected!", color=discord.Color.blue())
+        embed.description = "A9LH + b9stool information"
         embed.add_field(name="Guide and Advice", value=cleandoc("""
-                If you have already checked for an existing Luma installation, and have checked with someone here for other troubleshooting steps, and we are now sure that A9LH appears to be uninstalled, there is a way to bypass the check.
+                If you are seeing an "arm9loaderhax detected!" message in b9stool, you should attempt to boot into the luma configuration menu before simply pressing A. If you can access the config, you should follow the normal a9lh-to-b9s guide instead of using b9stool.
                 
-                This usually results in the safe installation of boot9strap. However, there is a small chance the console will brick if we proceed. If it bricks, it can be unbricked with a compatible NTRBoot cartridge.
+                If you appear to not actually have a9lh installed, you may press A to continue in b9stool. Once you do so and unlock NAND writing, one of two things will happen. If you reboot into an installer and then a luma config, you did actually have a9lh and it was successfully replaced with b9s. If you reboot to the home menu normally, you did not have a9lh and you should run b9stool again once.
                 
-                If you choose not to proceed, NTRBoot will be the only way you can hack your console. Most people do not brick and can safely proceed, but the choice is yours.
+                If you're seeing an "a9lh detected! brick avoided!" error, you are on an old version of b9stool and should update your boot.nds to the latest.
                 """))
         await ctx.send(embed=embed)
-
-    # Gateway h&s troubleshooting command
-    @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def gwhs(self, ctx):
-        """Links to gateway health and safety inject troubleshooting"""
-        await ctx.send("https://3ds.hacks.guide/troubleshooting#gw_fbi")
 
     # Hardmodder pastebin list
     @commands.command()
