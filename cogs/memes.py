@@ -415,6 +415,12 @@ class Memes(commands.Cog):
     async def dab(self, ctx):
         """Memes."""
         await self._meme(ctx, "No. I might be controlled by you idiots, but I have *some* self respect, baka...")
+    
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=5, per=30.0, type=commands.BucketType.channel)
+    async def nobrain(self, ctx):
+        """h a c c"""
+        await self._meme(ctx, "`I have no brain and I must h a c c`")
 
 
 def setup(bot):
