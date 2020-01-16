@@ -1056,16 +1056,26 @@ your device will refuse to write to it.
         embed.description = "Tutorial for NDS Forwarders"
         await ctx.send(embed=embed)
                                                      
-    @tutorial.command(aliases=["3dsvcextract", "gbabios", "dumpbios"])
+    @tutorial.command(aliases=["3dsvcextract"])
     async def vcextract(self, ctx):
-        """Links to 3DS VC and GBA bios Extraction Tutorial"""
+        """Links to 3DS Virtual Console Extraction Tutorial"""
         embed = discord.Embed(title="3DS VC Extraction Tutorial", color=discord.Color.red())
         embed.set_author(name="Glazed_Belmont")
         embed.set_thumbnail(url="https://i.imgur.com/TgdOPkG.png")
-        embed.url = "https://github.com/aspargas2/3DS-Tutorials/wiki/3DS-VC-and-GBA-bios-Extraction-Tutorial"
+        embed.url = "https://glazedbelmont.github.io/vcextract/"
         embed.description = "Basic tutorial to extract a rom out of your VC titles"
         await ctx.send(embed=embed)
-
+                               
+    @tutorial.command(aliases=["gbabios"])
+    async def gbabiosdump(self, ctx):
+        """Links to GBA Bios Extraction Tutorial"""
+        embed = discord.Embed(title="GBA Bios Extraction Tutorial", color=discord.Color.red())
+        embed.set_author(name="Glazed_Belmont")
+        embed.set_thumbnail(url="https://i.imgur.com/TgdOPkG.png")
+        embed.url = "https://glazedbelmont.github.io/gbabiosdump/"
+        embed.description = "Basic tutorial to extract a GBA bios out of your 3DS VC titles"
+        await ctx.send(embed=embed)
+                               
     @tutorial.command(aliases=["fuse-3ds", "fuse", "fuse3ds"])
     async def ninfs(self, ctx):
         """Link to ninfs tutorial."""
@@ -1083,7 +1093,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         embed = discord.Embed(title="AP Guide", color=discord.Color.purple())
         embed.set_author(name="Glazed_Belmont")
         embed.set_thumbnail(url="https://i.imgur.com/TgdOPkG.png")
-        embed.url = "https://github.com/aspargas2/3DS-Tutorials/wiki/AP-Patching"
+        embed.url = "https://glazedbelmont.github.io/appatching/"
         embed.description = "An AP-Patching guide"
         await ctx.send(embed=embed)
 
