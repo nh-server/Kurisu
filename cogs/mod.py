@@ -191,6 +191,8 @@ class Mod(DatabaseCog):
     @commands.command()
     async def mute(self, ctx, member: SafeMember, *, reason=""):
         """Mutes a user so they can't speak. Staff only."""
+        if await check_bot_or_staff(ctx, member, "mute"):
+            return
         if not await self.add_restriction(member.id, self.bot.roles['Muted']):
             await ctx.send("User is already muted!")
             return
@@ -218,7 +220,8 @@ class Mod(DatabaseCog):
     @commands.command()
     async def timemute(self, ctx, member: SafeMember, length, *, reason=""):
         """Mutes a user for a limited period of time so they can't speak. Staff only.\n\nLength format: #d#h#m#s"""
-
+        if await check_bot_or_staff(ctx, member, "mute"):
+            return
         await member.add_roles(self.bot.roles['Muted'])
         await member.remove_roles(self.bot.roles['#elsewhere'])
         issuer = ctx.author
