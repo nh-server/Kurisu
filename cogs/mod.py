@@ -177,7 +177,8 @@ class Mod(DatabaseCog):
     async def metaunmute(self, ctx, member: SafeMember):
         """Unmutes a user so they can speak in meta. Staff only."""
         try:
-            await self.remove_restriction(member.id, self.bot.roles["meta-mute"])
+            if not await self.remove_restriction(member.id, self.bot.roles["meta-mute"]):
+                return await ctx.send("This user is not meta muted!")
             await member.remove_roles(self.bot.roles['meta-mute'])
             await ctx.send(f"{member.mention} can now speak in meta again.")
             msg = f"🔈 **Meta unmuted**: {ctx.author.mention} meta unmuted {member.mention} | {member}"
@@ -218,7 +219,6 @@ class Mod(DatabaseCog):
     async def timemute(self, ctx, member: SafeMember, length, *, reason=""):
         """Mutes a user for a limited period of time so they can't speak. Staff only.\n\nLength format: #d#h#m#s"""
 
-        await self.add_restriction(member.id, self.bot.roles['Muted'])
         await member.add_roles(self.bot.roles['Muted'])
         await member.remove_roles(self.bot.roles['#elsewhere'])
         issuer = ctx.author
@@ -239,7 +239,7 @@ class Mod(DatabaseCog):
         delta = datetime.timedelta(seconds=seconds)
         unmute_time = timestamp + delta
         unmute_time_string = unmute_time.strftime("%Y-%m-%d %H:%M:%S")
-        await self.add_timed_restriction(member.id, unmute_time_string, 'timemute')
+        old_timestamp = await self.add_timed_restriction(member.id, unmute_time_string, 'timemute')
         await self.add_restriction(member.id, self.bot.roles['Muted'])
         msg_user = "You were muted!"
         if reason != "":
@@ -249,8 +249,12 @@ class Mod(DatabaseCog):
             await member.send(msg_user)
         except discord.errors.Forbidden:
             pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
-        await ctx.send(f"{member.mention} can no longer speak.")
-        msg = f"🔇 **Timed mute**: {issuer.mention} muted {member.mention} until {unmute_time_string} | {member}"
+        if not old_timestamp:
+            await ctx.send(f"{member.mention} can no longer speak.")
+            msg = f"🔇 **Timed mute**: {issuer.mention} muted {member.mention}| {member} until {unmute_time_string} "
+        else:
+            await ctx.send(f"{member.mention} mute was updated.")
+            msg = f"🔇 **Timed mute**: {issuer.mention} updated {member.mention}| {member} time mute from {old_timestamp} until {unmute_time_string}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         else:
@@ -263,7 +267,8 @@ class Mod(DatabaseCog):
     async def unmute(self, ctx, member: SafeMember):
         """Unmutes a user so they can speak. Staff only."""
         try:
-            await self.remove_restriction(member.id, self.bot.roles["Muted"])
+            if not await self.remove_restriction(member.id, self.bot.roles["Muted"]):
+                return await ctx.send("This user is not muted")
             await member.remove_roles(self.bot.roles['Muted'])
             await ctx.send(f"{member.mention} can now speak again.")
             msg = f"🔈 **Unmuted**: {ctx.author.mention} unmuted {member.mention} | {member}"
@@ -276,7 +281,8 @@ class Mod(DatabaseCog):
     @commands.command()
     async def art(self, ctx, member: SafeMember):
         """Restore art-discussion access for a user. Staff only."""
-        await self.remove_restriction(member.id , self.bot.roles['No-art'])
+        if not await self.remove_restriction(member.id, self.bot.roles['No-art']):
+            return await ctx.send("This user is not restricted from art channels.")
         try:
             await member.remove_roles(self.bot.roles['No-art'])
         except discord.Forbidden:
@@ -289,7 +295,8 @@ class Mod(DatabaseCog):
     @commands.command()
     async def noart(self, ctx, member: SafeMember, *, reason=""):
         """Removes art-discussion access from a user. Staff only."""
-        await self.add_restriction(member.id, self.bot.roles['No-art'])
+        if not await self.add_restriction(member.id, self.bot.roles['No-art']):
+            return await ctx.send("This user is already restricted from art channels.")
         try:
             await member.add_roles(self.bot.roles['No-art'])
         except discord.Forbidden:
@@ -308,7 +315,8 @@ class Mod(DatabaseCog):
     async def elsewhere(self, ctx, member: SafeMember):
         """Restore elsewhere access for a user. Staff only."""
         try:
-            await self.remove_restriction(member.id, self.bot.roles["No-elsewhere"])
+            if not await self.remove_restriction(member.id, self.bot.roles["No-elsewhere"]):
+                return await ctx.send("This user is not restricted from elsewhere!")
             await member.remove_roles(self.bot.roles['No-elsewhere'])
             await ctx.send(f"{member.mention} can access elsewhere again.")
             msg = f"⭕️ **Restored elsewhere**: {ctx.author.mention} restored elsewhere access to {member.mention} | {member}"
@@ -322,7 +330,8 @@ class Mod(DatabaseCog):
     async def noelsewhere(self, ctx, member: SafeMember, *, reason=""):
         """Removes elsewhere access from a user. Staff only."""
         try:
-            await self.add_restriction(member.id, self.bot.roles['No-elsewhere'])
+            if not await self.add_restriction(member.id, self.bot.roles['No-elsewhere']):
+                return await ctx.send("This user is already restricted from elsewhere!")
             await member.add_roles(self.bot.roles['No-elsewhere'])
             await member.remove_roles(self.bot.roles['#elsewhere'])
             await ctx.send(f"{member.mention} can no longer access elsewhere.")
@@ -382,7 +391,8 @@ class Mod(DatabaseCog):
         """Remove access to help-and-questions. Staff and Helpers only."""
         if await check_bot_or_staff(ctx, member, "takehelp"):
             return
-        await self.add_restriction(member.id, self.bot.roles['No-Help'])
+        if not await self.add_restriction(member.id, self.bot.roles['No-Help']):
+            return await ctx.send("This user's help is already taken!")
         msg_user = "You lost access to help channels!"
         if isinstance(member, discord.Member):
             await member.add_roles(self.bot.roles['No-Help'])
@@ -408,7 +418,8 @@ class Mod(DatabaseCog):
     @commands.command()
     async def givehelp(self, ctx, member: FetchMember):
         """Restore access to help-and-questions. Staff and Helpers only."""
-        await self.remove_restriction(member.id, self.bot.roles["No-Help"])
+        if not await self.remove_restriction(member.id, self.bot.roles["No-Help"]):
+            return await ctx.send("This user is not take-helped!")
         if isinstance(member, discord.Member):
             try:
                 await member.remove_roles(self.bot.roles['No-Help'])
@@ -503,7 +514,8 @@ class Mod(DatabaseCog):
         """Probate a user. Staff and Helpers only."""
         if await check_bot_or_staff(ctx, member, "probate"):
             return
-        await self.add_restriction(member.id, self.bot.roles['Probation'])
+        if not await self.add_restriction(member.id, self.bot.roles['Probation']):
+            return await ctx.send("This user is already probated!")
         if isinstance(member, discord.Member):
             await member.add_roles(self.bot.roles['Probation'])
             msg_user = "You are under probation!"
@@ -526,7 +538,8 @@ class Mod(DatabaseCog):
     @commands.command()
     async def unprobate(self, ctx, member: FetchMember):
         """Unprobate a user. Staff and Helpers only."""
-        await self.remove_restriction(member.id, self.bot.roles["Probation"])
+        if not await self.remove_restriction(member.id, self.bot.roles["Probation"]):
+            return await ctx.send("This user is not probated!")
         if isinstance(member, discord.Member):
             await member.remove_roles(self.bot.roles['Probation'])
         await ctx.send(f"{member.mention} is out of probation.")
@@ -565,6 +578,8 @@ class Mod(DatabaseCog):
     @commands.command(hidden=True)
     async def nofilter(self, ctx, channel: discord.TextChannel):
         """Adds nofilter to the channel"""
+        if await self.check_nofilter(channel):
+            return await ctx.send("This channel is already no filtered!")
         await self.add_nofilter(channel)
         await self.bot.channels['mod-logs'].send(f"⭕ **No filter**: {ctx.author.mention} added no filter to {channel.mention}")
 
@@ -573,6 +588,8 @@ class Mod(DatabaseCog):
     @commands.command(hidden=True)
     async def filter(self, ctx, channel: discord.TextChannel):
         """Removes nofilter from the channel"""
+        if not await self.check_nofilter(channel):
+            return await ctx.send("This channel is already filtered!")
         await self.remove_nofilter(channel)
         await self.bot.channels['mod-logs'].send(f"🚫 **Filter**: {ctx.author.mention} removed no filter from {channel.mention}")
 
