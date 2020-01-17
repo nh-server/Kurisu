@@ -1275,7 +1275,8 @@ in the scene.
         embed.url = "https://nh-server.github.io/switch-guide/extras/rcm_injectors/"
         embed.description = "A list of portable payload injectors for the Nintendo Switch"
         await ctx.send(embed=embed)
-    
+        
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def safemode(self, ctx):
         """How to boot into safemode on the 3ds"""
         await self.simple_embed(ctx, """
@@ -1284,5 +1285,14 @@ in the scene.
         If you did it correctly you should be prompted with a system update.
         """, title="Safemode/Recovery mode on the 3ds")
 
+    @commands.command(aliases=["torrentclients","torrentclient"])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def torrent(self, ctx):
+        """Torrent Clients"""
+        await self.simple_embed(ctx, """
+        Here are links to some good torrent clients:
+        • [qBittorrent](https://www.qbittorrent.org/download.php) (MacOS & Windows)
+        • [Deluge](https://dev.deluge-torrent.org/wiki/Download) (Linux)""", title="Torrent Clients")
+    
 def setup(bot):
     bot.add_cog(Assistance(bot))
