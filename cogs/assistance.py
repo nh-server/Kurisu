@@ -1275,6 +1275,14 @@ in the scene.
         embed.url = "https://nh-server.github.io/switch-guide/extras/rcm_injectors/"
         embed.description = "A list of portable payload injectors for the Nintendo Switch"
         await ctx.send(embed=embed)
+    
+    async def safemode(self, ctx):
+        """How to boot into safemode on the 3ds"""
+        await self.simple_embed(ctx, """
+        To boot into safemode on the 3ds you need to power off your device and power it back on while holding A+R+L+Up(DPad).
+        
+        If you did it correctly you should be prompted with a system update.
+        """, title="Safemode/Recovery mode on the 3ds")
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
