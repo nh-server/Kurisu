@@ -49,7 +49,13 @@ class Mod(DatabaseCog):
         except discord.NotFound:
             await ctx.send(f"No user matching id `{id}`.")
             return
-        await ctx.send(f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\ncolour = {u.colour}\n")
+
+        try:
+            ban = await ctx.guild.fetch_ban(u)
+        except discord.NotFound: #NotFound is raised if the user isn't banned
+            ban = None
+
+        await ctx.send(f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\ncolour = {u.colour}\n{f'**Banned**, reason: {ban.reason}' if ban is not None else ''}\n")
 
     @is_staff("HalfOP")
     @commands.guild_only()
