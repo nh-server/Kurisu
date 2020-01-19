@@ -218,7 +218,8 @@ class Events(DatabaseCog):
         'ZdqEhed',  # ReSwitched
         'DThbZ7z',  # ReSwitched, not sure why two permanent invites exist but they do
         'qgEeK3E',  # Famicomunnity
-        'yqSut8c',  # TWL Mode Hacking!
+        'yqSut8c',  # TWL Mode Hacking! (old invite)
+        'yD3spjv',  # TWL Mode Hacking!
         'EZSxqRr',  # ACNL Modding
         'bGKEyfY',  # FlagBrew
         '9d66FYg',  # switchroot
