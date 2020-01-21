@@ -1282,7 +1282,8 @@ in the scene.
         embed.url = "https://nh-server.github.io/switch-guide/extras/rcm_injectors/"
         embed.description = "A list of portable payload injectors for the Nintendo Switch"
         await ctx.send(embed=embed)
-        
+    
+    @commands.command()                         
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def safemode(self, ctx):
         """How to boot into safemode on the 3ds"""
