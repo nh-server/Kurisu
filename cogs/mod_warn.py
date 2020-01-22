@@ -62,7 +62,7 @@ class ModWarn(DatabaseCog):
     @is_staff('Helper')
     @commands.command()
     async def softwarn(self, ctx, member: SafeMember, *, reason=""):
-        """Warn a user without automated action. Staff only."""
+        """Warn a user without automated action. Staff and Helpers only."""
         issuer = ctx.author
         if await check_bot_or_staff(ctx, member, "warn"):
             return
