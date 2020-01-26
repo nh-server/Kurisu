@@ -1282,26 +1282,26 @@ in the scene.
         embed.url = "https://nh-server.github.io/switch-guide/extras/rcm_injectors/"
         embed.description = "A list of portable payload injectors for the Nintendo Switch"
         await ctx.send(embed=embed)
-    
+
     @commands.command()                         
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def safemode(self, ctx):
-        """How to boot into safemode on the 3ds"""
+        """How to boot into Safe Mode on the 3DS"""
         await self.simple_embed(ctx, """
-        To boot into safemode on the 3ds you need to power off your device and power it back on while holding A+R+L+Up(DPad).
-        
-        If you did it correctly you should be prompted with a system update.
-        """, title="Safemode/Recovery mode on the 3ds")
-     
+        To boot into Safe Mode on the 3DS, you need to power off your device and power it back on while holding <:3ds_button_a:295004457098543104>+<:3ds_button_r:295004508294086656>+<:3ds_button_l:295004499511214080>+<:3ds_dpad_up:295004548916051981>.
+
+        If you did it correctly, you should be prompted with a system update.
+        """, title="Safe Mode on the 3DS")
+
     @commands.command(aliases=["torrentclients","torrentclient"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def torrent(self, ctx):
         """Torrent Clients"""
         await self.simple_embed(ctx, """
         Here are links to some good torrent clients:
-        • [qBittorrent](https://www.qbittorrent.org/download.php) (MacOS & Windows)
-        • [Deluge](https://dev.deluge-torrent.org/wiki/Download) (Linux)""", title="Torrent Clients")
-                             
+        • [qBittorrent](https://www.qbittorrent.org/download.php)
+        • [Deluge](https://dev.deluge-torrent.org/wiki/Download)""", title="Torrent Clients")
+
     @commands.command(aliases=['wiiubrowserfreeze'])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def fixwiiuexploit(self, ctx):
