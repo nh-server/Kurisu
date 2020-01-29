@@ -75,18 +75,18 @@ class Assistance(commands.Cog):
                 continue
             if self.check_console(x, ctx.channel.name, ('wiiu',)):
                 embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
-                embed.set_author(name="FlimFlam69 & Plailect", url="https://wiiu.hacks.guide/")
-                embed.set_thumbnail(url="http://i.imgur.com/CpF12I4.png")
-                embed.url = "https://wiiu.hacks.guide/"
-                embed.description = "FlimFlam69 and Plailect's Wii U custom firmware + coldboothax guide"
+                embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/")
+                embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
+                embed.url = "https://wiiuguide.xyz/"
+                embed.description = "A complete Wii U custom firmware + coldboothax guide"
                 await ctx.send(embed=embed)
                 continue
             if self.check_console(x, ctx.channel.name, ('vwii',)):
                 embed = discord.Embed(title="Guide", color=discord.Color(0xFFFFFF))
-                embed.set_author(name="FlimFlam69 & Plailect", url="https://wiiu.hacks.guide/vwii-modding")
+                embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/vwii/vwii-modding")
                 embed.set_thumbnail(url="https://i.imgur.com/FclGzNz.png")
-                embed.url = "https://wiiu.hacks.guide/vwii-modding"
-                embed.description = "FlimFlam69 and Plailect's vWii modding guide"
+                embed.url = "https://wiiuguide.xyz/#/vwii/vwii-modding"
+                embed.description = "A complete vWii modding guide"
                 await ctx.send(embed=embed)
                 continue
             if self.check_console(x, ctx.channel.name, ('switch', 'nx', 'ns')):
@@ -860,7 +860,7 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def dump(self, ctx, console=None):
         """How to dump games and data for CFW consoles"""
-        systems = ("3ds", "nx", "ns", "switch")
+        systems = ("3ds", "nx", "ns", "switch", "wiiu")
         if console not in systems:
             if ctx.channel.name.startswith(systems):
                 console = "auto"
@@ -881,6 +881,13 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
             embed.url = "https://suchmememanyskill.github.io/guides/switchdumpguide/"
             embed.description = ("How to dump/build NSPs using NXDumpTool\n"
                                  "BAN Warning: only for use using offline emummc")
+            await ctx.send(embed=embed)
+        elif self.check_console(console, ctx.channel.name, ('wiiu',)):
+            embed = discord.Embed(title="Wii U dump/install Guide", color=discord.Color(0x009AC7))
+            embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/extras/dump-games")
+            embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
+            embed.url = "https://wiiuguide.xyz/#/extras/dump-games"
+            embed.description = ("How to dump/install Wii U game discs using disc2app and WUP Installer GX2")
             await ctx.send(embed=embed)
 
     # Embed to Chroma Ryu's cartinstall guide
@@ -1275,6 +1282,60 @@ in the scene.
         embed.url = "https://nh-server.github.io/switch-guide/extras/rcm_injectors/"
         embed.description = "A list of portable payload injectors for the Nintendo Switch"
         await ctx.send(embed=embed)
+
+    @commands.command()                         
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def safemode(self, ctx):
+        """How to boot into Safe Mode on the 3DS"""
+        await self.simple_embed(ctx, """
+        To boot into Safe Mode on the 3DS, you need to power off your device and power it back on while holding <:3ds_button_a:295004457098543104>+<:3ds_button_r:295004508294086656>+<:3ds_button_l:295004499511214080>+<:3ds_dpad_up:295004548916051981>.
+
+        If you did it correctly, you should be prompted with a system update.
+        """, title="Safe Mode on the 3DS")
+
+    @commands.command(aliases=["torrentclients","torrentclient"])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def torrent(self, ctx):
+        """Torrent Clients"""
+        await self.simple_embed(ctx, """
+        Here are links to some good torrent clients:
+        • [qBittorrent](https://www.qbittorrent.org/download.php)
+        • [Deluge](https://dev.deluge-torrent.org/wiki/Download)""", title="Torrent Clients")
+
+    @commands.command(aliases=['wiiubrowserfreeze'])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def fixwiiuexploit(self, ctx):
+        """Quick fix for the web browser exploit on the Wii U"""
+        embed = discord.Embed(title="How to Reset the Internet Browser Save Data", color=discord.Color(0x009AC7))
+        embed.set_author(name="Nintendo", url="https://en-americas-support.nintendo.com/app/answers/detail/a_id/1507/~/how-to-delete-the-internet-browser-history")
+        embed.set_thumbnail(url="https://i.imgur.com/28menlj.png")
+        embed.url = "https://en-americas-support.nintendo.com/app/answers/detail/a_id/1507/~/how-to-delete-the-internet-browser-history"
+        embed.description = "A common fix for those whose web browser keeps freezing their Wii U while attempting the exploit."
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def recover(self, ctx, console=None):
+        """Troubleshooting guides for vWii"""
+        systems = ("miichannel", "vios")
+        if console not in systems:
+            await ctx.send(f"Please specify an option. Valid options are: {', '.join([x for x in systems])}.")
+            return
+        if self.check_console(console, ctx.message.channel.name, ('miichannel',)):
+            embed = discord.Embed(title="Recover a Lost Mii Channel on vWii", color=0xe60012)
+            embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/vwii/recover-mii-channel")
+            embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
+            embed.url = "https://wiiuguide.xyz/#/vwii/recover-mii-channel"
+            embed.description = "A complete guide to recover a lost or corrupted Mii Channel on vWii"
+            await ctx.send(embed=embed)
+        elif self.check_console(console, ctx.message.channel.name, ('vios',)):
+            embed = discord.Embed(title="Recover a Corrupted IOS on vWii", color=0xe60012)
+            embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/vwii/recover-ios")
+            embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
+            embed.url = "https://wiiuguide.xyz/#/vwii/recover-ios"
+            embed.description = "A complete guide to recover a lost or corrupted IOS on vWii"
+            await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Assistance(bot))

@@ -118,7 +118,7 @@ class Memes(commands.Cog):
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def rusure(self, ctx):
         """Memes."""
-        await self._meme(ctx, "", imagelink="http://i.imgur.com/dqh3fNi.png")
+        await self._meme(ctx, "", imagelink="https://imgur.com/sXnVRLw.gif")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)

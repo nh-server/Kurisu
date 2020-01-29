@@ -118,7 +118,7 @@ class KickBan(DatabaseCog):
             return
         try:
             self.bot.actions.append("ub:" + str(user.id))
-            await ctx.guild.ban(user, delete_message_days=0)
+            await ctx.guild.ban(user, reason=reason, delete_message_days=0)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
             return
