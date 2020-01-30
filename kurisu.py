@@ -86,6 +86,7 @@ class Kurisu(commands.Bot):
             'Small Help': None,
             'meta-mute': None,
             'Nitro Booster': None,
+            'crc': None,
         }
 
         self.actions = []
