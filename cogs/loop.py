@@ -39,7 +39,7 @@ class Loop(DatabaseCog):
 
     async def update_netinfo(self):
         r = requests.get('https://www.nintendo.co.jp/netinfo/en_US/status.json?callback=getJSON')
-        j = json.loads(r.text[8:-2])
+        j = json.loads(r.text)
         now = datetime.now(self.tz)
         embed = discord.Embed(title="Network Maintenance Information / Online Status",
                               url="https://www.nintendo.co.jp/netinfo/en_US/index.html",
