@@ -1323,16 +1323,16 @@ in the scene.
             return
         if self.check_console(console, ctx.message.channel.name, ('miichannel',)):
             embed = discord.Embed(title="Recover a Lost Mii Channel on vWii", color=0xe60012)
-            embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/vwii/recover-mii-channel")
+            embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/troubleshooting/recover-mii-channel")
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
-            embed.url = "https://wiiuguide.xyz/#/vwii/recover-mii-channel"
+            embed.url = "https://wiiuguide.xyz/#/troubleshooting/recover-mii-channel"
             embed.description = "A complete guide to recover a lost or corrupted Mii Channel on vWii"
             await ctx.send(embed=embed)
         elif self.check_console(console, ctx.message.channel.name, ('vios',)):
             embed = discord.Embed(title="Recover a Corrupted IOS on vWii", color=0xe60012)
-            embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/vwii/recover-ios")
+            embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/troubleshooting/recover-ios")
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
-            embed.url = "https://wiiuguide.xyz/#/vwii/recover-ios"
+            embed.url = "https://wiiuguide.xyz/#/troubleshooting/recover-ios"
             embed.description = "A complete guide to recover a lost or corrupted IOS on vWii"
             await ctx.send(embed=embed)
 
