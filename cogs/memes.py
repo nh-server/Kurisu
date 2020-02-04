@@ -422,7 +422,7 @@ class Memes(commands.Cog):
         """h a c c"""
         await self._meme(ctx, "`I have no brain and I must h a c c`")
 
-    @commands.command(hidden=True, aliases=["wheresource", "sauce", "github"]
+    @commands.command(hidden=True, aliases=["wheresource", "sauce", "github"])
     @commands.cooldown(rate=5, per=30.0, type=commands.BucketType.channel)
     async def source(self, ctx):
         """You *did* read the GPL, *right?*"""
