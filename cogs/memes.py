@@ -426,7 +426,7 @@ class Memes(commands.Cog):
     @commands.cooldown(rate=5, per=30.0, type=commands.BucketType.channel)
     async def source(self, ctx):
         """You *did* read the GPL, *right?*"""
-        await self._meme(ctx, "", imagelink="https://cdn.discordapp.com/attachments/468930145546403870/674211901562945568/where-is-the-source.mp4")
+        await self._meme(ctx, "", imagelink="https://i.imgur.com/ceLGvc4.gif")
 
 
 def setup(bot):
