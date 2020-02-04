@@ -422,6 +422,12 @@ class Memes(commands.Cog):
         """h a c c"""
         await self._meme(ctx, "`I have no brain and I must h a c c`")
 
+    @commands.command(hidden=True, aliases=["wheresource", "sauce", "github")
+    @commands.cooldown(rate=5, per=30.0, type=commands.BucketType.channel)
+    async def source(self, ctx):
+        """You *did* read the GPL, *right?*"""
+        await self._meme(ctx, "", imagelink="https://cdn.discordapp.com/attachments/468930145546403870/674211901562945568/where-is-the-source.mp4")
+
 
 def setup(bot):
     bot.add_cog(Memes(bot))
