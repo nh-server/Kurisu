@@ -39,7 +39,7 @@ class Loop(DatabaseCog):
 
     async def update_netinfo(self):
         r = requests.get('https://www.nintendo.co.jp/netinfo/en_US/status.json?callback=getJSON')
-        j = json.loads(r.text[8:-2])
+        j = json.loads(r.text)
         now = datetime.now(self.tz)
         embed = discord.Embed(title="Network Maintenance Information / Online Status",
                               url="https://www.nintendo.co.jp/netinfo/en_US/index.html",
@@ -76,6 +76,7 @@ class Loop(DatabaseCog):
     @commands.command()
     @commands.cooldown(rate=1, per=60.0, type=commands.BucketType.channel)
     async def netinfo(self, ctx):
+        await self.update_netinfo()
         await ctx.send(embed=self.netinfo_embed)
 
     async def start_update_loop(self):
@@ -137,9 +138,8 @@ class Loop(DatabaseCog):
                     await self.bot.channels['helpers'].send(f"{self.bot.guild.name} has {self.bot.guild.member_count:,} members at this hour!")
                     self.last_hour = timestamp.hour
 
-                # if timestamp.minute % 30 == 0 and timestamp.second == 0:
-                #    self.bot.loop.create_task(self.update_netinfo())
-
+                if timestamp.minute % 30 == 0 and timestamp.second == 0:
+                    self.bot.loop.create_task(self.update_netinfo())
             except Exception as e:
                 print('Ignoring exception in start_update_loop', file=sys.stderr)
                 traceback.print_tb(e.__traceback__)
