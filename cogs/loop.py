@@ -76,12 +76,12 @@ class Loop(DatabaseCog):
     @commands.command()
     @commands.cooldown(rate=1, per=60.0, type=commands.BucketType.channel)
     async def netinfo(self, ctx):
-        await self.update_netinfo()
         await ctx.send(embed=self.netinfo_embed)
 
     async def start_update_loop(self):
         # thanks Luc#5653
         await self.bot.wait_until_all_ready()
+        await self.update_netinfo() #Run once so it will always be available after restart
         while self.is_active:
             try:
                 timestamp = datetime.now()
