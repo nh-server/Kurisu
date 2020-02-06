@@ -196,7 +196,7 @@ class Extras(commands.Cog):
         await ctx.message.delete()
         author = ctx.author
         if ctx.channel != self.bot.channels['bot-cmds']:
-            return await ctx.send(f"{ctx.author.mention}: .togglechannel can only be used in <#261581918653513729>.")
+            return await ctx.send(f"{ctx.author.mention}: .togglechannel can only be used in <#261581918653513729>.", delete_after=10)
         try:
             if channelname == "elsewhere":
                 if self.bot.roles['#elsewhere'] in author.roles:
