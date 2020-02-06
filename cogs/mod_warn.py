@@ -142,18 +142,18 @@ class ModWarn(DatabaseCog):
     @is_staff("SuperOP")
     @commands.command()
     async def copywarns_id2id(self, ctx, user_id1: int, user_id2: int):
-        """Copy warns from one user ID to another. Overwrites all warns of the target user ID. Staff only."""
+        """Copy warns from one user ID to another. Overwrites all warns of the target user ID. SOP+ only."""
         warns = await self.get_warns(user_id1)
         if not warns:
             await ctx.send(f"{user_id1} has no warns!")
             return
         for warn in warns:
-            await self.add_warn(user_id2, warn[1], warn[2])
+            await self.add_warn(user_id2, warn[2], warn[3])
         warn_count = len(warns)
         user1 = await self.bot.fetch_user(user_id1)
         user2 = await self.bot.fetch_user(user_id2)
         await ctx.send(f"{warn_count} warns were copied from {user1.name} to {user2.name}!")
-        msg = f"📎 **Copied warns**: {ctx.author.mention} copied {warn_count} warns from {user1.name} ({user_id1}) to "
+        msg = f"📎 **Copied warns**: {ctx.author.mention} copied {warn_count} warns from {user1.name} ({user_id1}) to {user2.name} ({user_id2})"
         await self.bot.channels['mod-logs'].send(msg)
 
     @is_staff("HalfOP")
