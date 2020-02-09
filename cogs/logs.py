@@ -170,7 +170,7 @@ Thanks for boosting and have a good time!
                 msg = "\n🏷 __Nickname change__"
             msg += f": {self.bot.escape_text(member_before.nick)} → {self.bot.escape_text(member_after.nick)}"
         if do_log:
-            msg = f"ℹ️ **Member update**: {member_after.mention} | {member_after} {msg}"
+            msg = f"ℹ️ **Member update**: {member_after.mention} | {self.bot.escape_text(member_after)} {msg}"
             await dest.send(msg)
 
     @commands.Cog.listener()
