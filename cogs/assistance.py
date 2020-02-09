@@ -1109,7 +1109,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         """Checkpoint/Rosalina cheat guide"""
         embed = discord.Embed(title="3DS Cheats Guide", color=discord.Color.purple())
         embed.set_author(name="Krieg")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/259143575361552384/8ce236c40fce0ac7badbf113e3dd3d64.webp?size=1024")
+        embed.set_thumbnail(url="https://i.imgur.com/yfsUIs3.png")
         embed.url = "https://3ds.eiphax.tech/cpcheats.html"
         embed.description = "A guide to using cheats with Checkpoint and Rosalina"
         await ctx.send(embed=embed)
@@ -1119,7 +1119,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         """FTPD/WinSCP ftp guide"""
         embed = discord.Embed(title="3DS FTP Guide", color=discord.Color.purple())
         embed.set_author(name="Krieg")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/259143575361552384/8ce236c40fce0ac7badbf113e3dd3d64.webp?size=1024")
+        embed.set_thumbnail(url="https://i.imgur.com/yfsUIs3.png")
         embed.url = "https://3ds.eiphax.tech/ftp.html"
         embed.description = "A guide to using ftp with FTPD and WinSCP"
         await ctx.send(embed=embed)
