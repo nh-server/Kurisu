@@ -135,7 +135,7 @@ async def on_ready():
 
 
 def main():
-    print(f'Starting Database Converter')
+    print('Starting Database Converter')
     bot.run(config['Main']['token'])
 
 
