@@ -60,6 +60,12 @@ Thanks for boosting and have a good time!
             for role in rst:
                 roles.append(member.guild.get_role(role))
             await member.add_roles(*roles)
+        timedrst = await self.get_time_restrictions_by_user(member.id)
+        if timedrst:
+            roles = []
+            for role in timedrst:
+                roles.append(member.guild.get_role(role))
+            await member.add_roles(*roles)
 
         warns = await self.get_warns(member.id)
         if len(warns) == 0:
