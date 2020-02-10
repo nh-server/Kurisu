@@ -200,8 +200,13 @@ class Mod(DatabaseCog):
         if await check_bot_or_staff(ctx, member, "mute"):
             return
         if not await self.add_restriction(member.id, self.bot.roles['Muted']):
-            await ctx.send("User is already muted!")
-            return
+            # Check if the user has a timed restriction.
+            # If there is one, this will convert it to a permanent one.
+            # If not, it will display that it was already taken.
+            if not self.get_time_restrictions_by_user_type(member.id, 'timemute'):
+                return await ctx.send("User is already muted!")
+            else:
+                await self.remove_timed_restriction(member.id, 'timemute')
         await member.add_roles(self.bot.roles['Muted'])
         await member.remove_roles(self.bot.roles['#elsewhere'])
         msg_user = "You were muted!"
@@ -219,7 +224,6 @@ class Mod(DatabaseCog):
             msg += "\nPlease add an explanation below. In the future, it is recommended to use `.mute <user> [reason]` as the reason is automatically sent to the user."
         await self.bot.channels['mod-logs'].send(msg)
         # change to permanent mute
-        await self.remove_timed_restriction(member.id, 'timemute')
 
     @is_staff("HalfOP")
     @commands.guild_only()
@@ -401,7 +405,13 @@ class Mod(DatabaseCog):
         if await check_bot_or_staff(ctx, member, "takehelp"):
             return
         if not await self.add_restriction(member.id, self.bot.roles['No-Help']):
-            return await ctx.send("This user's help is already taken!")
+            # Check if the user has a timed restriction.
+            # If there is one, this will convert it to a permanent one.
+            # If not, it will display that it was already taken.
+            if not self.get_time_restrictions_by_user_type(member.id, 'timenohelp'):
+                return await ctx.send("This user's help is already taken!")
+            else:
+                await self.remove_timed_restriction(member.id, 'timenohelp')
         msg_user = "You lost access to help channels!"
         if isinstance(member, discord.Member):
             await member.add_roles(self.bot.roles['No-Help'])
@@ -420,7 +430,6 @@ class Mod(DatabaseCog):
             msg += "\nPlease add an explanation below. In the future, it is recommended to use `.takehelp <user> [reason]` as the reason is automatically sent to the user."
         await self.bot.channels['mod-logs'].send(msg)
         await self.bot.channels['helpers'].send(msg)
-        await self.remove_timed_restriction(member.id, 'timenohelp')
 
     @is_staff("Helper")
     @commands.guild_only()
