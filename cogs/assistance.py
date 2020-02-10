@@ -1109,7 +1109,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         """Checkpoint/Rosalina cheat guide"""
         embed = discord.Embed(title="3DS Cheats Guide", color=discord.Color.purple())
         embed.set_author(name="Krieg")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/259143575361552384/8ce236c40fce0ac7badbf113e3dd3d64.webp?size=1024")
+        embed.set_thumbnail(url="https://i.imgur.com/yfsUIs3.png")
         embed.url = "https://3ds.eiphax.tech/cpcheats.html"
         embed.description = "A guide to using cheats with Checkpoint and Rosalina"
         await ctx.send(embed=embed)
@@ -1119,7 +1119,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         """FTPD/WinSCP ftp guide"""
         embed = discord.Embed(title="3DS FTP Guide", color=discord.Color.purple())
         embed.set_author(name="Krieg")
-        embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/259143575361552384/8ce236c40fce0ac7badbf113e3dd3d64.webp?size=1024")
+        embed.set_thumbnail(url="https://i.imgur.com/yfsUIs3.png")
         embed.url = "https://3ds.eiphax.tech/ftp.html"
         embed.description = "A guide to using ftp with FTPD and WinSCP"
         await ctx.send(embed=embed)
@@ -1323,16 +1323,16 @@ in the scene.
             return
         if self.check_console(console, ctx.message.channel.name, ('miichannel',)):
             embed = discord.Embed(title="Recover a Lost Mii Channel on vWii", color=0xe60012)
-            embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/vwii/recover-mii-channel")
+            embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/troubleshooting/recover-mii-channel")
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
-            embed.url = "https://wiiuguide.xyz/#/vwii/recover-mii-channel"
+            embed.url = "https://wiiuguide.xyz/#/troubleshooting/recover-mii-channel"
             embed.description = "A complete guide to recover a lost or corrupted Mii Channel on vWii"
             await ctx.send(embed=embed)
         elif self.check_console(console, ctx.message.channel.name, ('vios',)):
             embed = discord.Embed(title="Recover a Corrupted IOS on vWii", color=0xe60012)
-            embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/vwii/recover-ios")
+            embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/troubleshooting/recover-ios")
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
-            embed.url = "https://wiiuguide.xyz/#/vwii/recover-ios"
+            embed.url = "https://wiiuguide.xyz/#/troubleshooting/recover-ios"
             embed.description = "A complete guide to recover a lost or corrupted IOS on vWii"
             await ctx.send(embed=embed)
 

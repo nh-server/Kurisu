@@ -5,7 +5,7 @@ import time
 import typing
 
 from cogs import converters
-from cogs.checks import is_staff, check_staff_id, check_bot_or_staff
+from cogs.checks import is_staff, check_bot_or_staff
 from cogs.database import DatabaseCog
 from discord.ext import commands
 
@@ -243,7 +243,7 @@ class KickBan(DatabaseCog):
             await ctx.send(f"No ban found for ID {user_id}.")
             return
         if await self.get_time_restrictions_by_user_type(user_id, 'timeban') is not None:
-            await ctx.send(f"User is already timebanned.")
+            await ctx.send("User is already timebanned.")
             return
         unban_time, unban_time_string = self.parse_time(length)
         if not unban_time_string:

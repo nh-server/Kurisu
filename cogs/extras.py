@@ -101,7 +101,7 @@ class Extras(commands.Cog):
             await ctx.send("Minimum 1 day")
             return
 
-        msg = await ctx.send(f"I'm figuring this out!")
+        msg = await ctx.send("I'm figuring this out!")
         async with ctx.channel.typing():
             count = await ctx.guild.estimate_pruned_members(days=days)
             await msg.edit(content=f"{count:,} members inactive for {days} day(s) would be kicked from {ctx.guild.name}!")
@@ -117,7 +117,7 @@ class Extras(commands.Cog):
         if days < 1:
             await ctx.send("Minimum 1 day")
             return
-        msg = await ctx.send(f"I'm figuring this out!")
+        msg = await ctx.send("I'm figuring this out!")
         async with ctx.channel.typing():
             count = await ctx.guild.estimate_pruned_members(days=days)
             if days == 1:
@@ -196,7 +196,7 @@ class Extras(commands.Cog):
         await ctx.message.delete()
         author = ctx.author
         if ctx.channel != self.bot.channels['bot-cmds']:
-            return await ctx.send(f"{ctx.author.mention}: .togglechannel can only be used in <#261581918653513729>.")
+            return await ctx.send(f"{ctx.author.mention}: .togglechannel can only be used in <#261581918653513729>.", delete_after=10)
         try:
             if channelname == "elsewhere":
                 if self.bot.roles['#elsewhere'] in author.roles:

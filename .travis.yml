@@ -8,7 +8,7 @@ python:
 # currently only checking basic things like syntax
 # remind me to add a requirements.txt later
 install:
-  - pip install pyflakes
+  - pip install https://github.com/PyCQA/pyflakes/archive/master.zip
 
 script:
   - pyflakes .

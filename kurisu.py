@@ -225,7 +225,7 @@ class Kurisu(commands.Bot):
             await ctx.send_help(ctx.command)
 
         elif isinstance(exc, discord.NotFound):
-            await ctx.send(f"ID not found.")
+            await ctx.send("ID not found.")
 
         elif isinstance(exc, discord.Forbidden):
             await ctx.send(f"💢 I can't help you if you don't let me!\n`{exc.text}`.")
