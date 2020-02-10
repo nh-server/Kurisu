@@ -159,6 +159,11 @@ class DatabaseCog(commands.Cog):
         async with self.bot.holder as cur:
             await cur.execute('DELETE FROM timed_restrictions WHERE user_id=? AND type=?', (user_id, type))
 
+    async def get_time_restrictions_by_user(self, userid, type):
+        async with self.bot.holder as cur:
+            await cur.execute('SELECT * from timed_restrictions WHERE user_id=?', (userid,))
+            return await cur.fetchone()
+
     async def get_time_restrictions_by_user_type(self, userid, type):
         async with self.bot.holder as cur:
             await cur.execute('SELECT * from timed_restrictions WHERE user_id=? AND type=?', (userid,type))
