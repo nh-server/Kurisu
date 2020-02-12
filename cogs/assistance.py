@@ -1,4 +1,5 @@
 import aiohttp
+import asyncio
 import discord
 import urllib.parse
 
@@ -1154,7 +1155,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
             try:
                 async with session.get(f"https://tinydb.eiphax.tech/api/search/{encodedapp}", timeout=2) as resp:
                     response = await resp.json()
-            except aiohttp.ClientConnectionError:
+            except asyncio.TimeoutError:
                 return await ctx.send("I can't connect to tinydb 💢")
         if response['success']:
             release = response['result']['newest_release']
