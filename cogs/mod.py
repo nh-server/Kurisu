@@ -109,7 +109,7 @@ class Mod(DatabaseCog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def slowmode(self, ctx, time, channel: discord.TextChannel=None):
+    async def slowmode(self, ctx, channel: discord.TextChannel=None, time):
         """Apply a given slowmode time to a channel.
         
         The time format is identical to that used for timed kicks/bans/takehelps.
