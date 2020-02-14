@@ -556,7 +556,7 @@ class Mod(DatabaseCog):
     @commands.command()
     async def unprobate(self, ctx, member: FetchMember):
         """Unprobate a user. Staff and Helpers only."""
-        if not await self.remove_restriction(member.id, self.bot.roles["Probation"]):
+        if not await self.remove_restriction(member.id, self.bot.roles["Probation"]) and self.bot.roles["Probation"] not in member.roles:
             return await ctx.send("This user is not probated!")
         if isinstance(member, discord.Member):
             await member.remove_roles(self.bot.roles['Probation'])
