@@ -235,29 +235,13 @@ class Assistance(commands.Cog):
                 3. Copy the files in gm9/out on your SD card to a safe spot on your computer. Then, delete the files from **the SD card.**
                 4. Copy the Nintendo 3DS folder to your SD card root then delete it **from your computer.**
                 """))
-        await ctx.send(embed=embed)                       
-
-    @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def info3ds(self, ctx):
-        """Links to eiphax explain page"""
-        await self.simple_embed(ctx, "Want to learn more about the 3DS and CFW? <https://3ds.eiphax.tech/what.html>")
+        await ctx.send(embed=embed)
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def cfwuses(self, ctx):
         """Links to eiphax cfw uses page"""
         await self.simple_embed(ctx, "Want to know what CFW can be used for? <https://3ds.eiphax.tech/tips.html>")
-
-    @commands.command(aliases=["nutshell"])
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def nxwhat(self, ctx):
-        """Links to eiphax nx nutshell"""
-        embed = discord.Embed(title="The NX Nutshell", color=discord.Color.purple())
-        embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/250051871962562562/e87f77d2fc2011a9ff6fddeec7095eba.webp?size=1024")
-        embed.url = "https://nx.eiphax.tech/nutshell.html"
-        embed.description = "Basic things about the Switch"
-        await ctx.send(embed=embed)
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -450,6 +434,33 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             Stay on the lowest possible firmware version. Any Switch that is patched and above 7.0.1 is unlikely to be hackable.
             *Last edited: December 8, 2019*
             """)
+            await ctx.send(embed=embed)
+
+    @commands.guild_only()
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def what(self, ctx, console=None):
+        """Links to 'what' style pages"""
+        systems = ("3ds", "nx", "ns", "switch")
+        if console not in systems:
+            if ctx.channel.name.startswith(systems):
+                console = "auto"
+            else:
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+                return
+
+        if self.check_console(console, ctx.message.channel.name, '3ds'):
+            embed = discord.Embed(title="what?", color=discord.Color.purple())
+            embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/250051871962562562/e87f77d2fc2011a9ff6fddeec7095eba.webp?size=1024")
+            embed.url = "https://3ds.eiphax.tech/what.html"
+            embed.description = "Basic things about the 3DS and CFW"
+            await ctx.send(embed=embed)
+
+        elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+            embed = discord.Embed(title="The NX Nutshell", color=discord.Color.purple())
+            embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/250051871962562562/e87f77d2fc2011a9ff6fddeec7095eba.webp?size=1024")
+            embed.url = "https://nx.eiphax.tech/nutshell.html"
+            embed.description = "Basic things about the Switch and CFW"
             await ctx.send(embed=embed)
 
     @commands.guild_only()
