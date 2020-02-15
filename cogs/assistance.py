@@ -1180,8 +1180,15 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         """Picture to say what the heck is the root""" 
         embed = discord.Embed()
         embed.set_image(url="https://i.imgur.com/7PIvVjJ.png")
-        await ctx.send(embed=embed)             
-                             
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def whatisid0(self, ctx):
+        """Picture to say what the heck is the id0"""
+        embed = discord.Embed()
+        embed.set_image(url="https://media.discordapp.net/attachments/196635695958196224/677996125034250280/unknown-76.png")
+        await ctx.send(embed=embed)
+
     # Information about autoRCM
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
