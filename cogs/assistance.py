@@ -1092,7 +1092,7 @@ your device will refuse to write to it.
         embed.set_author(name="Glazed_Belmont")
         embed.set_thumbnail(url="https://i.imgur.com/TgdOPkG.png")
         embed.url = "https://glazedbelmont.github.io/gbabiosdump/"
-        embed.description = "Basic tutorial to extract a GBA bios out of your 3DS VC titles"
+        embed.description = "Basic tutorial to extract a GBA bios"
         await ctx.send(embed=embed)
                                
     @tutorial.command(aliases=["fuse-3ds", "fuse", "fuse3ds"])
