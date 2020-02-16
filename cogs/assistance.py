@@ -145,7 +145,7 @@ class Assistance(commands.Cog):
         embed.url = "https://github.com/zoogie/DSP1/releases"
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(aliases=['snickerstream'])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def ntrstream(self, ctx):
         """Snickerstream/NTR streaming guide"""
