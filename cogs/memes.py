@@ -418,7 +418,7 @@ class Memes(commands.Cog):
     
     @commands.command(hidden=True)
     @commands.cooldown(rate=5, per=30.0, type=commands.BucketType.channel)
-    async def nobrain(self, ctx, action="hacc"):
+    async def nobrain(self, ctx, *, action="hacc"):
         """h a c c"""
         await self._meme(ctx, f'`I have no brain and I must {" ".join(action)}`')
 
