@@ -210,6 +210,7 @@ class Events(DatabaseCog):
         'vimm',
         'r/roms',
         'xecuterrocks',
+        'darthsternie',
     )
 
     approved_guilds = (
