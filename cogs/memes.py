@@ -416,7 +416,7 @@ class Memes(commands.Cog):
         """Memes."""
         await self._meme(ctx, "No. I might be controlled by you idiots, but I have *some* self respect, baka...")
     
-    @commands.command(hidden=True)
+    @commands.command(hidden=True, aliases=["hacc"])
     @commands.cooldown(rate=5, per=30.0, type=commands.BucketType.channel)
     async def nobrain(self, ctx, *, action="hacc"):
         """h a c c"""
