@@ -1192,7 +1192,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         embed.set_image(url="https://i.imgur.com/7PIvVjJ.png")
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(aliases=["id0"])
     async def whatisid0(self, ctx):
         """Picture to say what the heck is the id0"""
         embed = discord.Embed()
