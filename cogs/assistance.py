@@ -1186,6 +1186,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         await ctx.send(embed=embed)
                              
     @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def sdroot(self, ctx):
         """Picture to say what the heck is the root""" 
         embed = discord.Embed()
