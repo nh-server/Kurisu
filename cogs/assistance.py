@@ -1355,5 +1355,40 @@ in the scene.
             await ctx.send(embed=embed)
 
 
+    @commands.command()
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def invite(self, ctx, code: str):
+        invites = {
+            'twl':'yD3spjv',
+            'switchroot': '9d66FYg',
+            'acnl':'EZSxqRr',
+            'flagbrew': 'bGKEyfY',
+            'themeplaza': '2hUQwXz',
+            'smash': 'ASJyTrZ',
+            'ndsbrew': 'XRXjzY5',
+            'citra': 'FAXfZV9',
+            'homebrew': 'C29hYvh',
+            'skyrimnx': 'FhhfvVj',
+            'pkhexautolegality': 'tDMvSRv',
+            'reswitched': 'ZdqEhed',
+            'cemu': '5psYsup',
+            'dragoninjector': 'HdSFXbh',
+            'vita': 'JXEKeg6',
+            'henkaku': 'm7MwpKA',
+            'universal': 'KDJCfGF',
+            'r3DS': '3ds'
+        }
+
+        success = False
+        for x in invites:
+            if code == x:
+                await ctx.send(f"https://discord.gg/{invites[x]}")
+                success = True
+        if success == False:
+            help_message = f"Invalid invite code, valid invite codes are: ```"
+            for x in invites:
+                help_message += x + " "
+            help_message += "```"
+            await ctx.send(help_message)
 def setup(bot):
     bot.add_cog(Assistance(bot))
