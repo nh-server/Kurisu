@@ -1354,6 +1354,28 @@ in the scene.
             embed.description = "A complete guide to recover a lost or corrupted IOS on vWii"
             await ctx.send(embed=embed)
 
+    @commands.guild_only()
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def db(self, ctx, console=None):
+        """Links to the relevant games database"""
+        systems = ("3ds", "nx", "ns", "switch")
+        if console not in systems:
+            if ctx.channel.name.startswith(systems):
+                console = "auto"
+            else:
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+                return
+        if self.check_console(console, ctx.message.channel.name, '3ds'):
+            embed = discord.Embed(title="3DS Database", color=discord.Color.dark_orange())
+            embed.url = "http://3dsdb.com/"
+            embed.description = "3DS database for game releases."
+            await ctx.send(embed=embed)
+        elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+            embed = discord.Embed(title="Nintendo Switch Database", color=discord.Color.dark_orange())
+            embed.url = "http://nswdb.com/"
+            embed.description = "Nintendo Switch database for game releases."
+            await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
