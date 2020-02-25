@@ -144,11 +144,13 @@ class Mod(DatabaseCog):
         msg = f"🕙 **Slowmode**: {ctx.author.mention} set a slowmode delay of {time} ({seconds}) in {channel.mention}"
         await self.bot.channels["mod-logs"].send(msg)
 
-    @is_staff("HalfOP")
+    @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["clear"])
     async def purge(self, ctx, limit: int):
-        """Clears a given number of messages. Staff only."""
+        """Clears a given number of messages. Helpers in assistance channels and Staff only."""
+        if ctx.channel not in self.bot.assistance_channels and not await check_staff_id(ctx, "OP", ctx.author.id):
+            return await ctx.send("You cannot use this command outside of assistance channels.")
         await ctx.channel.purge(limit=limit+1)
         msg = f"🗑 **Cleared**: {ctx.author.mention} cleared {limit} messages in {ctx.channel.mention}"
         await self.bot.channels['mod-logs'].send(msg)
