@@ -1186,13 +1186,15 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         await ctx.send(embed=embed)
                              
     @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def sdroot(self, ctx):
         """Picture to say what the heck is the root""" 
         embed = discord.Embed()
         embed.set_image(url="https://i.imgur.com/7PIvVjJ.png")
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(aliases=['whatsid0','id0'])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def whatisid0(self, ctx):
         """Picture to say what the heck is the id0"""
         embed = discord.Embed()
@@ -1354,6 +1356,9 @@ in the scene.
             embed.description = "A complete guide to recover a lost or corrupted IOS on vWii"
             await ctx.send(embed=embed)
 
-
+        @commands.command(aliases=['masterkey', 'parentalpin'])
+        async def mkey(self, ctx):
+            """Master Key(mkey) generator for parental controls"""
+            await self.simple_embed(ctx, """[Master key generator](https://mkey.salthax.org/) to remove the parental controls pin on Nintendo Consoles""")
 def setup(bot):
     bot.add_cog(Assistance(bot))
