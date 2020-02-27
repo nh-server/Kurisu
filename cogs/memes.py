@@ -420,7 +420,16 @@ class Memes(commands.Cog):
     @commands.cooldown(rate=5, per=30.0, type=commands.BucketType.channel)
     async def nobrain(self, ctx, *, action="hacc"):
         """h a c c"""
-        await self._meme(ctx, f'`I have no brain and I must {" ".join(action)}`')
+        def check(message):
+            return message == ctx.message
+
+        try:
+            message = await self.bot.wait_for('message_delete', check=check, timeout=0.2) # Timeout can be changed but keep it under 1.0 because otherwise the reply is delayed
+
+        except asyncio.TimeoutError:
+            await self._meme(ctx, f'`I have no brain and I must {" ".join(action.split()).replace("`", "")}`')
+        else: # Filter is tripped basically
+            return
 
     @commands.command(hidden=True, aliases=["wheresource", "sauce", "github"])
     @commands.cooldown(rate=5, per=30.0, type=commands.BucketType.channel)
