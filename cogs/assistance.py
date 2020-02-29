@@ -58,7 +58,6 @@ class Assistance(commands.Cog):
     async def guide(self, ctx, *, consoles=""):
         """Links to the recommended guides."""
         consoleslist = {x for x in consoles.split() if x in self.systems}
-        await ctx.send(str(consoleslist))
         if not consoleslist:
             if ctx.channel.name.startswith(self.systems):
                 consoleslist = ['auto']
