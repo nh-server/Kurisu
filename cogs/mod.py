@@ -37,7 +37,7 @@ class Mod(DatabaseCog):
     async def userinfo(self, ctx, u: discord.Member):
         """Gets member info. Staff and Helpers only."""
         role = u.top_role.name
-        await ctx.send(f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url}\ndefault_avatar = {u.default_avatar}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\ndisplay_name = {self.bot.escape_text(u.display_name)}\njoined_at = {u.joined_at}\nstatus = {u.status}\nactivity = {u.activity.name if u.activity else None}\ncolour = {u.colour}\ntop_role = {self.bot.escape_text(role)}\n")
+        await ctx.send(f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url_as(static_format='png')}\ndefault_avatar = {u.default_avatar}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\ndisplay_name = {self.bot.escape_text(u.display_name)}\njoined_at = {u.joined_at}\nstatus = {u.status}\nactivity = {u.activity.name if u.activity else None}\ncolour = {u.colour}\ntop_role = {self.bot.escape_text(role)}\n")
 
     @is_staff("Helper")
     @commands.guild_only()
@@ -55,7 +55,7 @@ class Mod(DatabaseCog):
         except discord.NotFound: #NotFound is raised if the user isn't banned
             ban = None
 
-        await ctx.send(f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\ncolour = {u.colour}\n{f'**Banned**, reason: {ban.reason}' if ban is not None else ''}\n")
+        await ctx.send(f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url_as(static_format='png')}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\ncolour = {u.colour}\n{f'**Banned**, reason: {ban.reason}' if ban is not None else ''}\n")
 
     @is_staff("HalfOP")
     @commands.guild_only()
