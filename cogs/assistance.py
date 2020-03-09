@@ -749,7 +749,7 @@ the system can't check for an update.
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def faketik(self, ctx):
         """Download link for faketik"""
-        await self.simple_embed(ctx, "ihaveamac's 3ds ticket spoofing utility, Faketik: [faketik.3dsx](https://github.com/ihaveamac/faketik/releases)")
+        await self.simple_embed(ctx, "3DS ticket spoofing utility, faketik: [faketik.3dsx](https://github.com/ihaveamac/faketik/releases)")
 
     # Intructions for deleting home menu Extdata
     @commands.command()
