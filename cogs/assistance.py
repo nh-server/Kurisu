@@ -1320,7 +1320,8 @@ in the scene.
         await self.simple_embed(ctx, """
         Here are links to some good torrent clients:
         • [qBittorrent](https://www.qbittorrent.org/download.php)
-        • [Deluge](https://dev.deluge-torrent.org/wiki/Download)""", title="Torrent Clients")
+        • [Deluge](https://dev.deluge-torrent.org/wiki/Download)
+        • [Flud](https://play.google.com/store/apps/details?id=com.delphicoder.flud&hl=en_US)""", title="Torrent Clients")
 
     @commands.command(aliases=['wiiubrowserfreeze'])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
