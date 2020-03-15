@@ -540,6 +540,9 @@ re-read the guide steps 2 or 3 times before coming here.
     async def nxcfw(self, ctx, cfw=""):
         """Information on why we don't support or recommend various other Switch CFWs"""
 
+        if cfw == "sx": #Alias for sxos
+            cfw = "sxos"
+
         cfwinfo = {
             'kosmos': {
                 'info': """
