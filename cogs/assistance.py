@@ -15,7 +15,6 @@ class Assistance(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.systems = ("3ds", "wiiu", "vwii", "switch", "nx", "ns", "wii", "dsi", "legacy")
-        print(f'Cog "{self.qualified_name}" loaded')
 
     async def simple_embed(self, ctx, text, title="", color=discord.Color.default()):
         embed = discord.Embed(title=title, color=color)
@@ -41,7 +40,7 @@ class Assistance(commands.Cog):
             return
         await ctx.message.delete()
         # await ctx.send("Request sent.")
-        msg = f"❗️ **Assistance requested**: {ctx.channel.mention} by {author.mention} | {ctx.author} @here"
+        msg = f"❗️ **Assistance requested**: {ctx.channel.mention} by {author.mention} | {str(author)} @here"
         if msg_request != "":
             # msg += "\n✏️ __Additional text__: " + msg_request
             embed = discord.Embed(color=discord.Color.gold())

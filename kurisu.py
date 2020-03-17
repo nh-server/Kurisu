@@ -216,7 +216,7 @@ class Kurisu(commands.Bot):
                     await ctx.message.delete()
                 except (discord.errors.NotFound, discord.errors.Forbidden):
                     pass
-                await ctx.send(f"{ctx.message.author.mention} This command was used {exc.cooldown.per - exc.retry_after:.2f}s ago and is on cooldown. Try again in {exc.retry_after:.2f}s.", delete_after=10)
+                await ctx.send(f"{author.mention} This command was used {exc.cooldown.per - exc.retry_after:.2f}s ago and is on cooldown. Try again in {exc.retry_after:.2f}s.", delete_after=10)
             else:
                 await ctx.reinvoke()
 
@@ -251,6 +251,7 @@ class Kurisu(commands.Bot):
 
     def add_cog(self, cog):
         super().add_cog(cog)
+        print(f'Cog "{cog.qualified_name}" loaded')
 
     async def close(self):
         print('Kurisu is shutting down')

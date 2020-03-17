@@ -10,7 +10,6 @@ class Memes(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        print(f'Cog "{self.qualified_name}" loaded')
 
     async def _meme(self, ctx, msg, directed: bool = False, imagelink=None):
         author = ctx.author

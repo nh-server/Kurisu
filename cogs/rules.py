@@ -8,7 +8,6 @@ class Rules(commands.Cog, command_attrs=dict()):
     """
     def __init__(self, bot):
         self.bot = bot
-        print(f'Cog "{self.qualified_name}" loaded')
 
     async def simple_embed(self, ctx, text, title="", color=discord.Color.default()):
         embed = discord.Embed(title=title, color=color)

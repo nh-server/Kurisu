@@ -10,12 +10,11 @@ class Blah(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        print(f'Cog "{self.qualified_name}" loaded')
 
     speak_blacklist = [
         647348710602178560,  # #minecraft-console
     ]
-    
+
     @is_staff("OP")
     @commands.command(hidden=True)
     async def announce(self, ctx, *, inp):

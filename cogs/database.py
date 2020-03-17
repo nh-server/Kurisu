@@ -40,7 +40,6 @@ class DatabaseCog(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        print(f'Cog "{self.qualified_name}" loaded')
 
     async def add_restriction(self, user_id, role):
         async with self.bot.holder as cur:
