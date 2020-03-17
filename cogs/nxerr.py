@@ -774,7 +774,7 @@ class NXErr(commands.Cog):
             try:
                 errcode = int(err, 16)
             except ValueError:
-                await ctx.send(f"{err} is not a valid switch error code!")
+                await ctx.send("Invalid Switch error code!")
                 return
             module = errcode & 0x1FF
             desc = (errcode >> 9) & 0x3FFF
