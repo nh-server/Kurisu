@@ -1,9 +1,8 @@
 import asyncio
+import aiohttp
 import discord
 import sys
 import traceback
-import json
-import requests
 import pytz
 from datetime import datetime, timedelta
 from discord.ext import commands
@@ -38,8 +37,14 @@ class Loop(DatabaseCog):
         return datetime.strptime(' '.join(timestr.split()), '%A, %B %d, %Y %I :%M %p').replace(tzinfo=self.tz)
 
     async def update_netinfo(self):
-        r = requests.get('https://www.nintendo.co.jp/netinfo/en_US/status.json?callback=getJSON')
-        j = json.loads(r.text)
+        async with aiohttp.ClientSession() as session:
+            r = await session.get('https://www.nintendo.co.jp/netinfo/en_US/status.json?callback=getJSON')
+            if r.status == 200:
+                j = await r.json()
+            else:
+                # No logging setup :/
+                print(f"Netinfo: {r.status} while trying to update netinfo.")
+                return
         now = datetime.now(self.tz)
         embed = discord.Embed(title="Network Maintenance Information / Online Status",
                               url="https://www.nintendo.co.jp/netinfo/en_US/index.html",
