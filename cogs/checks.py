@@ -42,3 +42,9 @@ async def check_bot_or_staff(ctx, target: discord.user, action: str):
         return False
 
     return await ctx.send(f"You can't {action} {who} with this command!")
+
+async def check_if_user_can_sr(ctx):
+    author = ctx.author
+    if not await check_staff_id(ctx, 'Helper', author.id) and (ctx.bot.roles['Verified'] not in author.roles) and (ctx.bot.roles['Trusted'] not in author.roles) and (ctx.bot.roles['Retired Staff'] not in author.roles):
+        return False
+    return True
