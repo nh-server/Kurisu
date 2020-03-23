@@ -432,7 +432,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             
             If your Switch is **hardware patched and cannot access RCM**:
             Stay on the lowest possible firmware version. Any Switch that is patched and above 7.0.1 is unlikely to be hackable.
-            *Last edited: March 3, 2020*
+            *Last edited: March 24, 2020*
             """)
             await ctx.send(embed=embed)
 
@@ -451,14 +451,14 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
 
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="what?", color=discord.Color.purple())
-            embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/250051871962562562/e87f77d2fc2011a9ff6fddeec7095eba.webp?size=1024")
+            embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/250051871962562562/726ae27792fc496755805397722c1e8e.png?size=1024")
             embed.url = "https://3ds.eiphax.tech/what.html"
             embed.description = "Basic things about the 3DS and CFW"
             await ctx.send(embed=embed)
 
         elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="The NX Nutshell", color=discord.Color.purple())
-            embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/250051871962562562/e87f77d2fc2011a9ff6fddeec7095eba.webp?size=1024")
+            embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/250051871962562562/726ae27792fc496755805397722c1e8e.png?size=1024")
             embed.url = "https://nx.eiphax.tech/nutshell.html"
             embed.description = "Basic things about the Switch and CFW"
             await ctx.send(embed=embed)
@@ -976,7 +976,7 @@ how to delete it.*
 
                                      **Make sure your version of Hekate is up to date and that it supports the latest firmware**
                                      
-                                     **Hekate 5.1.2 (latest release)**
+                                     **Hekate 5.1.3 (latest release)**
                                      Supports up to firmware 9.2.0.
                                      
                                      *To find Hekate's version information, once Hekate starts, look in the top left corner of the screen. If you use auto-boot, hold `volume -` to stop it.*
