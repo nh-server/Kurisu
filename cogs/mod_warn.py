@@ -22,7 +22,7 @@ class ModWarn(DatabaseCog):
         issuer = ctx.author
         if await check_bot_or_staff(ctx, member, "warn"):
             return
-        await self.add_warn(member.id, ctx.author.id, reason)
+        await self.add_warn(member.id, issuer.id, reason)
         msg = f"You were warned on {ctx.guild.name}."
         if reason != "":
             # much \n
@@ -50,6 +50,58 @@ class ModWarn(DatabaseCog):
             self.bot.actions.append("wb:"+str(member.id))
             try:
                 await member.ban(reason="5 warns.", delete_message_days=0)
+            except discord.Forbidden:
+                await ctx.send("I can't ban this user!")
+        await ctx.send(f"{member.mention} warned. User has {warn_count} warning(s)")
+        msg = f"⚠️ **Warned**: {issuer.mention} warned {member.mention} (warn #{warn_count}) | {member}"
+        if reason != "":
+            # much \n
+            msg += "\n✏️ __Reason__: " + reason
+        await self.bot.channels['mod-logs'].send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.warn <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
+
+    @is_staff('HalfOP')
+    @commands.command()
+    async def warnid(self, ctx, userid: int, *, reason=""):
+        """Warn a user using their id, even if they're not in the server. Staff only."""
+        issuer = ctx.author
+        try:
+            member = await self.bot.fetch_user(userid)
+        except discord.errors.NotFound:
+            await ctx.send(f"No user associated with ID {userid}.")
+            return
+        if await check_bot_or_staff(ctx, member, "warn"):
+            return
+        await self.add_warn(member.id, issuer.id, reason)
+        msg = f"You were warned on {ctx.guild.name}."
+        if reason != "":
+            # much \n
+            msg += " The given reason is: " + reason
+        warn_count = len(await self.get_warns(member.id))
+        msg += f"\n\nPlease read the rules in <#196618637950451712>. This is warn #{warn_count}."
+        if warn_count == 2:
+            msg += " __The next warn will automatically kick.__"
+        if warn_count == 3:
+            msg += "\n\nYou were kicked because of this warning. You can join again right away. Two more warnings will result in an automatic ban."
+        if warn_count == 4:
+            msg += "\n\nYou were kicked because of this warning. This is your final warning. You can join again, but **one more warn will result in a ban**."
+        if warn_count == 5:
+            msg += "\n\nYou were automatically banned due to five warnings."
+        try:
+            await member.send(msg)
+        except discord.errors.Forbidden:
+            pass
+        except discord.errors.HTTPException:
+            pass  # don't fail in case user has DMs disabled for this server, is not on the server, or blocked the bot
+        if warn_count == 3 or warn_count == 4:
+            self.bot.actions.append("wk:"+str(member.id))
+            try:
+                await member.kick(reason="Warn kicked.")
+            except:
+                pass
+        if warn_count >= 5:  # just in case
+            self.bot.actions.append("wb:"+str(member.id))
+            try:
+                await ctx.guild.ban(member, reason="5 warns.", delete_message_days=0)
             except discord.Forbidden:
                 await ctx.send("I can't ban this user!")
         await ctx.send(f"{member.mention} warned. User has {warn_count} warning(s)")
