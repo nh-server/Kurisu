@@ -56,7 +56,11 @@ class Loop(DatabaseCog):
                 m_desc += '\nBegins: ' + begin.strftime('%A, %B %d, %Y %I:%M %p')
                 if end.year != 2099:
                     m_desc += '\nEnds: ' + end.strftime('%A, %B %d, %Y %I:%M %p')
-                embed.add_field(name=f'Current Status: {m["software_title"].replace(" <br /> ", ", ")}, {", ".join(m["services"])}',
+                if "services" in m:
+                    embed.add_field(name=f'Current Status: {m["software_title"].replace(" <br /> ", ", ")}, {", ".join(m["services"])}',
+                                value=m_desc, inline=False)
+                else:
+                    embed.add_field(name=f'Current Status: {m["software_title"].replace(" <br /> ", ", ")}',
                                 value=m_desc, inline=False)
         for m in j["temporary_maintenances"]:
             begin = self.netinfo_parse_time(m["begin"])
@@ -69,7 +73,11 @@ class Loop(DatabaseCog):
                 m_desc += '\nBegins: ' + begin.strftime('%A, %B %d, %Y %I:%M %p')
                 if end.year != 2099:
                     m_desc += '\nEnds: ' + end.strftime('%A, %B %d, %Y %I:%M %p')
-                embed.add_field(name='Current Maintenance: {}, {}'.format(m["software_title"].replace(' <br />\r\n', ', '), ', '.join(m["services"])),
+                if "services" in m:
+                    embed.add_field(name='Current Maintenance: {}, {}'.format(m["software_title"].replace(' <br />\r\n', ', '), ', '.join(m["services"])),
+                                value=m_desc, inline=False)
+                else:
+                    embed.add_field(name=f'Current Status: {m["software_title"].replace(" <br /> ", ", ")}',
                                 value=m_desc, inline=False)
         self.netinfo_embed = embed
 
@@ -77,6 +85,14 @@ class Loop(DatabaseCog):
     @commands.cooldown(rate=1, per=60.0, type=commands.BucketType.channel)
     async def netinfo(self, ctx):
         await ctx.send(embed=self.netinfo_embed)
+
+    @commands.command()
+    @commands.cooldown(rate=1, per=60.0, type=commands.BucketType.channel)
+    async def netinfo_refresh(self, ctx):
+        await self.update_netinfo()
+        embed = discord.Embed(title="Netinfo Refresh", color=discord.Color.blue())
+        embed.description = "Refresh complete."
+        await ctx.send(embed=embed)
 
     async def start_update_loop(self):
         # thanks Luc#5653

@@ -57,8 +57,7 @@ class Assistance(commands.Cog):
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def guide(self, ctx, *, consoles=""):
         """Links to the recommended guides."""
-        consoleslist = []
-        consoleslist = [x for x in consoles.split() if x in self.systems and x not in consoleslist]
+        consoleslist = {x for x in consoles.split() if x in self.systems}
         if not consoleslist:
             if ctx.channel.name.startswith(self.systems):
                 consoleslist = ['auto']
@@ -425,14 +424,15 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
         elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Is the new Switch update safe?", color=0xe60012)
             embed.description = cleandoc("""
-            Currently, the latest Switch system firmware is `9.1.0`.
+            Currently, the latest Switch system firmware is `9.2.0`.
             
             If your Switch is **unpatched and can access RCM**:
-            Atmosphere currently supports 9.1.0, and unpatched units will always be hackable.
+            Atmosphere and Hekate currently support 9.2.0, and unpatched units will always be hackable.
+            You should follow the precautions in our update guide, and always update Atmosphere and Hekate before updating the system firmware.
             
             If your Switch is **hardware patched and cannot access RCM**:
             Stay on the lowest possible firmware version. Any Switch that is patched and above 7.0.1 is unlikely to be hackable.
-            *Last edited: December 8, 2019*
+            *Last edited: March 24, 2020*
             """)
             await ctx.send(embed=embed)
 
@@ -451,14 +451,14 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
 
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="what?", color=discord.Color.purple())
-            embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/250051871962562562/e87f77d2fc2011a9ff6fddeec7095eba.webp?size=1024")
+            embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/250051871962562562/726ae27792fc496755805397722c1e8e.png?size=1024")
             embed.url = "https://3ds.eiphax.tech/what.html"
             embed.description = "Basic things about the 3DS and CFW"
             await ctx.send(embed=embed)
 
         elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="The NX Nutshell", color=discord.Color.purple())
-            embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/250051871962562562/e87f77d2fc2011a9ff6fddeec7095eba.webp?size=1024")
+            embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/250051871962562562/726ae27792fc496755805397722c1e8e.png?size=1024")
             embed.url = "https://nx.eiphax.tech/nutshell.html"
             embed.description = "Basic things about the Switch and CFW"
             await ctx.send(embed=embed)
@@ -539,6 +539,9 @@ re-read the guide steps 2 or 3 times before coming here.
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def nxcfw(self, ctx, cfw=""):
         """Information on why we don't support or recommend various other Switch CFWs"""
+
+        if cfw == "sx": #Alias for sxos
+            cfw = "sxos"
 
         cfwinfo = {
             'kosmos': {
@@ -739,7 +742,7 @@ the system can't check for an update.
         """Download link for 3DS Homebrew Launcher, boot.3dsx"""
         await self.simple_embed(ctx, "The 3DS Homebrew Launcher, [boot.3dsx](https://github.com/fincs/new-hbmenu/releases/download/v2.1.0/boot.3dsx)")
 
-    @commands.command(aliases=["greenscr"])
+    @commands.command(aliases=["greenscr", "bootnds"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def b9stool(self, ctx):
         """Download link for B9STool, boot.nds"""
@@ -749,7 +752,7 @@ the system can't check for an update.
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def faketik(self, ctx):
         """Download link for faketik"""
-        await self.simple_embed(ctx, "ihaveamac's 3ds ticket spoofing utility, Faketik: [faketik.3dsx](https://github.com/ihaveamac/faketik/releases)")
+        await self.simple_embed(ctx, "3DS ticket spoofing utility, faketik: [faketik.3dsx](https://github.com/ihaveamac/faketik/releases)")
 
     # Intructions for deleting home menu Extdata
     @commands.command()
@@ -964,8 +967,8 @@ One way to fix this is by using an y-cable to connect the HDD to two USB ports.
         await self.simple_embed(ctx, cleandoc("""
                                      **Make sure your version of Atmosphere is up to date and that it supports the latest firmware**
 
-                                     **Atmosphere 0.10.2 (latest release)**
-                                     Supports up to firmware 9.1.0.
+                                     **Atmosphere 0.10.5 (latest release)**
+                                     Supports up to firmware 9.2.0.
 
                                      *To find Atmosphere's version information, while booted into CFW, go into System Settings -> System, and look at \
 the text under the System Update button. If it says that a system update is ready instead of displaying the CFW version, type .pendingupdate to learn \
@@ -973,8 +976,8 @@ how to delete it.*
 
                                      **Make sure your version of Hekate is up to date and that it supports the latest firmware**
                                      
-                                     **Hekate 5.1.1 (latest release)**
-                                     Supports up to firmware 9.1.0.
+                                     **Hekate 5.1.3 (latest release)**
+                                     Supports up to firmware 9.2.0.
                                      
                                      *To find Hekate's version information, once Hekate starts, look in the top left corner of the screen. If you use auto-boot, hold `volume -` to stop it.*
                                      
@@ -1186,13 +1189,15 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         await ctx.send(embed=embed)
                              
     @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def sdroot(self, ctx):
         """Picture to say what the heck is the root""" 
         embed = discord.Embed()
         embed.set_image(url="https://i.imgur.com/7PIvVjJ.png")
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(aliases=['whatsid0','id0'])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def whatisid0(self, ctx):
         """Picture to say what the heck is the id0"""
         embed = discord.Embed()
@@ -1318,7 +1323,8 @@ in the scene.
         await self.simple_embed(ctx, """
         Here are links to some good torrent clients:
         • [qBittorrent](https://www.qbittorrent.org/download.php)
-        • [Deluge](https://dev.deluge-torrent.org/wiki/Download)""", title="Torrent Clients")
+        • [Deluge](https://dev.deluge-torrent.org/wiki/Download)
+        • [Flud](https://play.google.com/store/apps/details?id=com.delphicoder.flud&hl=en_US)""", title="Torrent Clients")
 
     @commands.command(aliases=['wiiubrowserfreeze'])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -1382,6 +1388,34 @@ in the scene.
             await ctx.send(f"https://discord.gg/{invites[code]}")
         else
             await ctx.send(f"Invalid invite code. Valid codes: {', '.join(invites.keys())}")
+
+    @commands.guild_only()
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def db(self, ctx, console=None):
+        """Links to the relevant games database"""
+        systems = ("3ds", "nx", "ns", "switch")
+        if console not in systems:
+            if ctx.channel.name.startswith(systems):
+                console = "auto"
+            else:
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+                return
+        if self.check_console(console, ctx.message.channel.name, '3ds'):
+            embed = discord.Embed(title="3DS Database", color=discord.Color.dark_orange())
+            embed.url = "http://3dsdb.com/"
+            embed.description = "3DS database for game releases."
+            await ctx.send(embed=embed)
+        elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+            embed = discord.Embed(title="Nintendo Switch Database", color=discord.Color.dark_orange())
+            embed.url = "http://nswdb.com/"
+            embed.description = "Nintendo Switch database for game releases."
+            await ctx.send(embed=embed)
+
+    @commands.command(aliases=['masterkey', 'parentalpin'])
+    async def mkey(self, ctx):
+        """Master Key(mkey) generator for parental controls"""
+        await self.simple_embed(ctx, """[Master key generator](https://mkey.salthax.org/) to remove the parental controls pin on Nintendo Consoles""")
 
 def setup(bot):
     bot.add_cog(Assistance(bot))

@@ -255,7 +255,7 @@ class Events(DatabaseCog):
         msg = ''.join(char for char in message.content.lower() if char in printable)
         msg_no_separators = re.sub('[ \*_\-~]', '', msg)
 
-        contains_invite_link = "discordapp.com/invite" in msg or "discord.gg" in msg or "join.skype.com" in msg
+        contains_skype_link = "join.skype.com" in msg
         contains_piracy_site_mention = any(x in msg for x in self.piracy_sites)
         contains_piracy_url_mention = any(x in msg for x in ('3ds.titlekeys', 'wiiu.titlekeys', 'titlekeys.com', '95.183.50.10',))
         contains_piracy_tool_mention = any(x in msg_no_separators for x in self.piracy_tools)
@@ -273,7 +273,7 @@ class Events(DatabaseCog):
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site',))
         contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub', 'strawpoii', 'hackinformer.com', 'console.guide', 'jacksorrell.co.uk', 'jacksorrell.tv', 'nintendobrew.com', 'reinx.guide', 'NxpeNwz', 'scenefolks.com'))
         contains_unbanning_stuff = any(x in msg_no_separators for x in self.unbanning_stuff)
-
+        contains_invite_link = contains_non_approved_invite or temp_guilds or contains_skype_link
         # contains_guide_mirror_mention = any(x in msg for x in ('3ds-guide.b4k.co',))
         contains_drama_alert = any(x in msg_no_separators for x in self.drama_alert)
 

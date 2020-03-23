@@ -712,9 +712,14 @@ class NXErr(commands.Cog):
         "2618-0513": "This error code generally indicates that your network is not optimal for peer to peer connections, this may be due to the ISP, Internet connection speeds, or due to your network's NAT type. (https://en-americas-support.nintendo.com/app/answers/detail/a_id/25980/kw/2618-0513)",
         "2618-0201": "This error may be the result your connection timing out due to a slow Internet service or a poor wireless environment. (https://en-americas-support.nintendo.com/app/answers/detail/a_id/25866/kw/2618-0201)",
         "2002-0001": "An error code is received when powering up the Nintendo Switch console, or when coming out of sleep mode. (https://en-americas-support.nintendo.com/app/answers/detail/a_id/27167/kw/2002-0001)",
-        "2124-4517": "Console banned due a breach of the user agreements. You cannot ask how to fix this issue here. (https://en-americas-support.nintendo.com/app/answers/detail/a_id/43652/kw/2124-4517)",
+        "2124-4517": "Console banned due to a breach of the user agreements. You cannot ask how to fix this issue here. (https://en-americas-support.nintendo.com/app/answers/detail/a_id/43652/kw/2124-4517)",
+        "2181-4017": "Console banned due to a breach of the user agreements. You cannot ask how to fix this issue here. (https://en-americas-support.nintendo.com/app/answers/detail/a_id/43653/kw/2181-4017)",
+        "2147-4508": "Console permanently banned due to a breach of the user agreements. You cannot ask how to fix this issue here. (https://en-americas-support.nintendo.com/app/answers/detail/a_id/28046/kw/2147-4508)",
+        "2147-4007": "Console permanently banned due to a breach of the user agreements. You cannot ask how to fix this issue here. (https://en-americas-support.nintendo.com/app/answers/detail/a_id/28046/kw/2147-4007)",
+        "2181-4008": "Console permanently banned due to a breach of the user agreements. You cannot ask how to fix this issue here. (https://en-americas-support.nintendo.com/app/answers/detail/a_id/42061/kw/2181-4008)",
+        "2124-4007": "Console permanently banned due to a breach of the user agreements. You cannot ask how to fix this issue here. (https://en-americas-support.nintendo.com/app/answers/detail/a_id/28046/kw/2124-4007)",
+        "2124-4508": "Console permanently banned due to a breach of the user agreements. You cannot ask how to fix this issue here. (https://en-americas-support.nintendo.com/app/answers/detail/a_id/28046/kw/2124-4508)", #I have no clue why there are so many of these
         "2813-1470": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/26362/kw/2813-1470",
-        "2124-4007": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/28046/kw/2124-4007",
         "2811-5001": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/22392/kw/2811-5001",
         "2110-3127": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/22567/kw/2110-3127",
         "9001-0026": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/27311/kw/9001-0026",
@@ -724,7 +729,6 @@ class NXErr(commands.Cog):
         "2155-8007": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/42264/kw/2155-8007",
         "2811-1006": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/25859/kw/2811-1006",
         "2813-0055": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/27056/kw/2813-0055",
-        "2181-4008": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/42061/kw/2181-4008",
         "2137-8056": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/28910/kw/2137-8056",
         "2618-0502": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/25865/kw/2618-0502",
         "2618-0501": "https://en-americas-support.nintendo.com/app/answers/detail/a_id/25865/kw/2618-0501",
@@ -774,7 +778,7 @@ class NXErr(commands.Cog):
             try:
                 errcode = int(err, 16)
             except ValueError:
-                await ctx.send(f"{err} is not a valid switch error code!")
+                await ctx.send("Invalid Switch error code!")
                 return
             module = errcode & 0x1FF
             desc = (errcode >> 9) & 0x3FFF
