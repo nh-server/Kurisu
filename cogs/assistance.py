@@ -1386,7 +1386,7 @@ in the scene.
         #Rewrite thanks to Dax#5790
         if code in invites:
             await ctx.send(f"https://discord.gg/{invites[code]}")
-        else
+        else:
             await ctx.send(f"Invalid invite code. Valid codes: {', '.join(invites.keys())}")
 
     @commands.guild_only()
