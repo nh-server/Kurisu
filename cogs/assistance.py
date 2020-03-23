@@ -1417,5 +1417,6 @@ in the scene.
         """Master Key(mkey) generator for parental controls"""
         await self.simple_embed(ctx, """[Master key generator](https://mkey.salthax.org/) to remove the parental controls pin on Nintendo Consoles""")
 
+
 def setup(bot):
     bot.add_cog(Assistance(bot))
