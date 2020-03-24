@@ -325,11 +325,13 @@ class Mod(DatabaseCog):
         except discord.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
         await ctx.send(f"{member.mention} can no longer access art-discussion.")
-        msg = f"🚫 **Removed art**: {ctx.message.author.mention} removed art access from {member.mention} | {member}"
+        msg = f"🚫 **Removed art**: {ctx.message.author.mention} removed art access from {member.mention} | {self.bot.escape_text(member)}"
+        reason = self.bot.escape_text(reason)
+        signature = utils.command_signature(ctx.command)
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         else:
-            msg += "\nPlease add an explanation below. In the future, it is recommended to use `.noart <user> [reason]` as the reason is automatically sent to the user."
+            msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
         await self.bot.channels['mod-logs'].send(msg)
 
     @is_staff("HalfOP")
@@ -342,7 +344,7 @@ class Mod(DatabaseCog):
                 return await ctx.send("This user is not restricted from elsewhere!")
             await member.remove_roles(self.bot.roles['No-elsewhere'])
             await ctx.send(f"{member.mention} can access elsewhere again.")
-            msg = f"⭕️ **Restored elsewhere**: {ctx.author.mention} restored elsewhere access to {member.mention} | {member}"
+            msg = f"⭕️ **Restored elsewhere**: {ctx.author.mention} restored elsewhere access to {member.mention} | {self.bot.escape_text(member)}"
             await self.bot.channels['mod-logs'].send(msg)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
@@ -358,11 +360,13 @@ class Mod(DatabaseCog):
             await member.add_roles(self.bot.roles['No-elsewhere'])
             await member.remove_roles(self.bot.roles['#elsewhere'])
             await ctx.send(f"{member.mention} can no longer access elsewhere.")
-            msg = f"🚫 **Removed elsewhere**: {ctx.author.mention} removed elsewhere access from {member.mention} | {member}"
+            msg = f"🚫 **Removed elsewhere**: {ctx.author.mention} removed elsewhere access from {member.mention} | {self.bot.escape_text(member)}"
+            reason = self.bot.escape_text(reason)
+            signature = utils.command_signature(ctx.command)
             if reason != "":
                 msg += "\n✏️ __Reason__: " + reason
             else:
-                msg += "\nPlease add an explanation below. In the future, it is recommended to use `.noelsewhere <user> [reason]` as the reason is automatically sent to the user."
+                msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
             await self.bot.channels['mod-logs'].send(msg)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
@@ -379,13 +383,15 @@ class Mod(DatabaseCog):
             if reason != "":
                 msg_user += " The given reason is: " + reason
             msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
-            await mem
+            await utils.send_dm_message(member, msg_user)
             await ctx.send(f"{member.mention} can no longer embed links or attach files.")
-            msg = f"🚫 **Removed Embed**: {ctx.author.mention} removed embed from {member.mention} | {member}"
+            msg = f"🚫 **Removed Embed**: {ctx.author.mention} removed embed from {member.mention} | {self.bot.escape_text(member)}"
+            reason = self.bot.escape_text(reason)
+            signature = utils.command_signature(ctx.command)
             if reason != "":
                 msg += "\n✏️ __Reason__: " + reason
             else:
-                msg += "\nPlease add an explanation below. In the future, it is recommended to use `.noembed <user> [reason]` as the reason is automatically sent to the user."
+                msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
             await self.bot.channels['mod-logs'].send(msg)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
@@ -399,7 +405,7 @@ class Mod(DatabaseCog):
             await self.remove_restriction(member.id, self.bot.roles["No-Embed"])
             await member.remove_roles(self.bot.roles['No-Embed'])
             await ctx.send(f"{member.mention} can now embed links and attach files again.")
-            msg = f"⭕️ **Restored Embed**: {ctx.author.mention} restored embed to {member.mention} | {member}"
+            msg = f"⭕️ **Restored Embed**: {ctx.author.mention} restored embed to {member.mention} | {self.bot.escape_text(member)}"
             await self.bot.channels['mod-logs'].send(msg)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
@@ -425,16 +431,15 @@ class Mod(DatabaseCog):
             if reason != "":
                 msg_user += " The given reason is: " + reason
             msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
-            try:
-                await member.send(msg_user)
-            except discord.errors.Forbidden:
-                pass
+            await utils.send_dm_message(member, msg_user)
         await ctx.send(f"{member.mention} can no longer access the help channels.")
-        msg = f"🚫 **Help access removed**: {ctx.author.mention} removed access to help channels from {member.mention} | {member}"
+        msg = f"🚫 **Help access removed**: {ctx.author.mention} removed access to help channels from {member.mention} | {self.bot.escape_text(member)}"
+        reason = self.bot.escape_text(reason)
+        signature = utils.command_signature(ctx.command)
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         else:
-            msg += "\nPlease add an explanation below. In the future, it is recommended to use `.takehelp <user> [reason]` as the reason is automatically sent to the user."
+            msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
         await self.bot.channels['mod-logs'].send(msg)
         await self.bot.channels['helpers'].send(msg)
 
@@ -492,11 +497,12 @@ class Mod(DatabaseCog):
         await utils.send_dm_message(member, msg_user)
         await ctx.send(f"{member.mention} can no longer speak in Assistance Channels.")
         reason = self.bot.escape_text(reason)
-        msg = f"🚫 **Timed No-Help**: {issuer.mention} restricted {member.mention} until {unnohelp_time_string} | {member}"
+        signature = utils.command_signature(ctx.command)
+        msg = f"🚫 **Timed No-Help**: {issuer.mention} restricted {member.mention} until {unnohelp_time_string} | {self.bot.escape_text(member)}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         else:
-            msg += "\nPlease add an explanation below. In the future, it is recommended to use `.timetakehelp <user> <length> [reason]` as the reason is automatically sent to the user."
+            msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
         await self.bot.channels['mod-logs'].send(msg)
         await self.bot.channels['helpers'].send(msg)
 
