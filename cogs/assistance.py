@@ -944,10 +944,10 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def p7zip(self, ctx):
         """Download a .7z file extractor"""
-        embed = discord.Embed(title="Download 7-Zip or The Unarchiver", color=discord.Color(0x0000ff))
+        embed = discord.Embed(title="Download 7-Zip", color=discord.Color(0x0000ff))
         embed.description = ("To be able to extract .7z files, you will need an extractor that supports this format.\n"
                              "• Windows: [7-Zip](https://www.7-zip.org)\n"
-                             "• Mac: [The Unarchiver](https://theunarchiver.com)")
+                             "• Mac (Before 10.15 Catalina): [Keka](https://www.keka.io/en/)")
         await ctx.send(embed=embed)
 
     @commands.command()
