@@ -31,7 +31,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
 
     @commands.guild_only()
     @check_if_user_can_sr()
-    @commands.command(aliases=["sr", "Sr", "sR", "SR"])
+    @commands.command(aliases=["sr", "Sr", "sR", "SR"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def staffreq(self, ctx, *, msg_request: str = ""):
         """Request staff, with optional additional text. Trusted, Helpers, Staff, Retired Staff, Verified only."""
         author = ctx.author
@@ -959,20 +959,19 @@ your device will refuse to write to it.
         await ctx.send(embed=embed)
 
     # Creates tutorial command group
-    @commands.group()
+    @commands.group(cooldown=commands.Cooldown(0, 0, commands.BucketType.channel), invoke_without_command=True)
     async def tutorial(self, ctx):
         """Links to one of multiple guides"""
-        if ctx.invoked_subcommand is None:
-            await ctx.send_help(ctx.command)
+        await ctx.send_help(ctx.command)
 
-    @tutorial.command()
+    @tutorial.command(cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def pokemon(self, ctx):
         """Displays different guides for Pokemon"""
         embed = discord.Embed(title="Possible guides for **Pokemon**:", color=discord.Color.red())
         embed.description = "**pkhex**|**pkhax**|**pkgen** Links to PKHeX tutorial\n**randomize** Links to layeredfs randomizing tutorial"
         await ctx.send(embed=embed)
 
-    @tutorial.command(aliases=["pkhax", "pkgen"])
+    @tutorial.command(aliases=["pkhax", "pkgen"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def pkhex(self, ctx):
         """Links to PKHeX tutorial"""
         embed = discord.Embed(title="PKHeX tutorial", color=discord.Color.red())
@@ -981,7 +980,7 @@ your device will refuse to write to it.
         embed.description = "Basic tutorial for PKHeX"
         await ctx.send(embed=embed)
 
-    @tutorial.command()
+    @tutorial.command(cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def randomize(self, ctx):
         """Links to layeredfs randomizing tutorial"""
         embed = discord.Embed(title="Randomizing with LayeredFS", color=discord.Color.red())
@@ -990,7 +989,7 @@ your device will refuse to write to it.
         embed.description = "Basic tutorial for randomizing with LayeredFS"
         await ctx.send(embed=embed)
 
-    @tutorial.command(aliases=["Animal_crossing"])
+    @tutorial.command(aliases=["Animal_crossing"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def acnl(self, ctx):
         """Links to AC:NL editing tutorial"""
         embed = discord.Embed(title="AC:NL editing tutorial", color=discord.Color.green())
@@ -999,7 +998,7 @@ your device will refuse to write to it.
         embed.description = "Basic tutorial for AC:NL editing"
         await ctx.send(embed=embed)
 
-    @tutorial.command(aliases=["twilightmenu", "dsimenu++", "srloader"])
+    @tutorial.command(aliases=["twilightmenu", "dsimenu++", "srloader"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def twlmenu(self, ctx):
         """Links to twlmenu tutorial"""
         embed = discord.Embed(title="TWiLightMenu++ tutorial", color=discord.Color.purple())
@@ -1008,7 +1007,7 @@ your device will refuse to write to it.
         embed.description = "Basic tutorial for TWiLightMenu++"
         await ctx.send(embed=embed)
 
-    @tutorial.command(aliases=["forwarders", "forwarder", "twlforwarders"])
+    @tutorial.command(aliases=["forwarders", "forwarder", "twlforwarders"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def ndsforwarders(self, ctx):
         """Links to nds forwarders"""
         embed = discord.Embed(title="NDS Forwarder Guide", color=discord.Color.purple())
@@ -1017,7 +1016,7 @@ your device will refuse to write to it.
         embed.description = "Tutorial for NDS Forwarders"
         await ctx.send(embed=embed)
 
-    @tutorial.command(aliases=["3dsvcextract"])
+    @tutorial.command(aliases=["3dsvcextract"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def vcextract(self, ctx):
         """Links to 3DS Virtual Console Extraction Tutorial"""
         embed = discord.Embed(title="3DS VC Extraction Tutorial", color=discord.Color.red())
@@ -1027,7 +1026,7 @@ your device will refuse to write to it.
         embed.description = "Basic tutorial to extract a rom out of your VC titles"
         await ctx.send(embed=embed)
 
-    @tutorial.command(aliases=["gbabios"])
+    @tutorial.command(aliases=["gbabios"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def gbabiosdump(self, ctx):
         """Links to GBA Bios Extraction Tutorial"""
         embed = discord.Embed(title="GBA Bios Extraction Tutorial", color=discord.Color.red())
@@ -1037,7 +1036,7 @@ your device will refuse to write to it.
         embed.description = "Basic tutorial to extract a GBA bios"
         await ctx.send(embed=embed)
 
-    @tutorial.command(aliases=["fuse-3ds", "fuse", "fuse3ds"])
+    @tutorial.command(aliases=["fuse-3ds", "fuse", "fuse3ds"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def ninfs(self, ctx):
         """Link to ninfs tutorial."""
         embed = discord.Embed(title="Extract and Decrypt games, NAND backups, and SD contents with ninfs", color=discord.Color(0xCE181E))
@@ -1048,7 +1047,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         embed.url = "https://gbatemp.net/threads/499994/"
         await ctx.send(embed=embed)
 
-    @tutorial.command(aliases=["appatch", "dsscene"])
+    @tutorial.command(aliases=["appatch", "dsscene"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def ap(self, ctx):
         """Anti-piracy patching guide"""
         embed = discord.Embed(title="AP Guide", color=discord.Color.purple())
@@ -1058,7 +1057,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         embed.description = "An AP-Patching guide"
         await ctx.send(embed=embed)
 
-    @tutorial.command(aliases=["cheats", "3dscheats"])
+    @tutorial.command(aliases=["cheats", "3dscheats"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def cpcheats(self, ctx):
         """Checkpoint/Rosalina cheat guide"""
         embed = discord.Embed(title="3DS Cheats Guide", color=discord.Color.purple())
@@ -1068,7 +1067,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         embed.description = "A guide to using cheats with Checkpoint and Rosalina"
         await ctx.send(embed=embed)
 
-    @tutorial.command(aliases=["ftpd", "3dsftp"])
+    @tutorial.command(aliases=["ftpd", "3dsftp"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def ftp(self, ctx):
         """FTPD/WinSCP ftp guide"""
         embed = discord.Embed(title="3DS FTP Guide", color=discord.Color.purple())
@@ -1078,7 +1077,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         embed.description = "A guide to using ftp with FTPD and WinSCP"
         await ctx.send(embed=embed)
 
-    @tutorial.command()
+    @tutorial.command(cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def gbadump(self, ctx):
         """Links to GBA Dump guide"""
         embed = discord.Embed(title="Dumping GBA games", color=discord.Color.purple())
