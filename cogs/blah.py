@@ -2,6 +2,7 @@ import discord
 
 from cogs.checks import is_staff
 from discord.ext import commands
+from cogs.utils import send_dm_message
 
 
 class Blah(commands.Cog):
@@ -10,19 +11,18 @@ class Blah(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        print(f'Cog "{self.qualified_name}" loaded')
 
     speak_blacklist = [
         647348710602178560,  # #minecraft-console
     ]
-    
+
     @is_staff("OP")
-    @commands.command(hidden=True)
+    @commands.command()
     async def announce(self, ctx, *, inp):
         await self.bot.channels['announcements'].send(inp)
 
     @is_staff("OP")
-    @commands.command(hidden=True)
+    @commands.command()
     async def speak(self, ctx, channel: discord.TextChannel, *, inp):
         if channel.id in self.speak_blacklist:
             await ctx.send(f'You cannot send a message to {channel.mention}.')
@@ -30,7 +30,7 @@ class Blah(commands.Cog):
         await channel.send(inp)
 
     @is_staff("OP")
-    @commands.command(hidden=True)
+    @commands.command()
     async def sendtyping(self, ctx, channel: discord.TextChannel = None):
         if channel.id in self.speak_blacklist:
             await ctx.send(f'You cannot send a message to {channel.mention}.')
@@ -40,12 +40,13 @@ class Blah(commands.Cog):
         await channel.trigger_typing()
 
     @is_staff("Owner")
-    @commands.command(hidden=True)
+    @commands.command()
     async def dm(self, ctx, member: discord.Member, *, inp):
-        try:
-            await member.send(inp)
-        except (discord.HTTPException, discord.Forbidden):
-            await ctx.send("Failed to send dm!")
+        status = await send_dm_message(member, inp)
+        if not status:
+            await ctx.send("Failed to send DM!")
+        else:
+            await ctx.send("Successfully sent DM!")
 
 
 def setup(bot):

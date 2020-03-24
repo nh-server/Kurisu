@@ -7,7 +7,6 @@ class AutoProbation(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        print(f'Cog "{self.qualified_name}" loaded')
 
     @commands.Cog.listener()
     async def on_member_join(self, member):

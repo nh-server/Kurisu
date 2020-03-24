@@ -10,7 +10,6 @@ class NXErr(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        print(f'Cog "{self.qualified_name}" loaded')
 
     # Modules
     modules = {
@@ -765,7 +764,7 @@ class NXErr(commands.Cog):
           .serr 2005-0110
         """
         # Normal Errors that follow the standard guidelines
-        if re.match('[0-9][0-9][0-9][0-9]\-[0-9][0-9][0-9][0-9]', err):
+        if re.match(r'[0-9][0-9][0-9][0-9]\-[0-9][0-9][0-9][0-9]', err):
             module = int(err[0:4]) - 2000
             desc = int(err[5:9])
             errcode = (desc << 9) + module
@@ -804,7 +803,7 @@ class NXErr(commands.Cog):
 
     @commands.command()
     async def err2hex(self, ctx, err: str):
-        if not re.match('[0-9][0-9][0-9][0-9]\-[0-9][0-9][0-9][0-9]', err):
+        if not re.match(r'[0-9][0-9][0-9][0-9]\-[0-9][0-9][0-9][0-9]', err):
             await ctx.send('Does not follow XXXX-XXXX format')
         else:
             module = int(err[0:4]) - 2000

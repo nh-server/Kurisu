@@ -17,7 +17,6 @@ class Extras(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.nick_pattern = re.compile("^[a-z]{2,}.*$", re.RegexFlag.IGNORECASE)
-        print(f'Cog "{self.qualified_name}" loaded')
 
     prune_key = "nokey"
 

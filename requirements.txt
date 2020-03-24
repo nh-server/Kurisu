@@ -1,5 +1,5 @@
-discord>=1.0.0
+discord.py
 aiosqlite3
+Pillow
 xkcd
-pillow
 pytz

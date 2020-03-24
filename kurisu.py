@@ -53,6 +53,15 @@ cogs = [
 ]
 
 
+class CustomContext(commands.Context):
+    async def safe_send(self, content, **kwargs):
+        """Same as send except it escapes mentions.
+
+        Note: This does not escape channel mentions"""
+        content = discord.utils.escape_mentions(content)
+        return await self.send(content, **kwargs)
+
+
 class Kurisu(commands.Bot):
     """Its him!!."""
     def __init__(self, command_prefix, description):
@@ -125,6 +134,9 @@ class Kurisu(commands.Bot):
 
         os.makedirs("data", exist_ok=True)
         os.makedirs("data/ninupdates", exist_ok=True)
+
+    async def get_context(self, message, *, cls=CustomContext):
+        return await super().get_context(message, cls=cls)
 
     def load_cogs(self):
         for extension in cogs:
@@ -216,7 +228,7 @@ class Kurisu(commands.Bot):
                     await ctx.message.delete()
                 except (discord.errors.NotFound, discord.errors.Forbidden):
                     pass
-                await ctx.send(f"{ctx.message.author.mention} This command was used {exc.cooldown.per - exc.retry_after:.2f}s ago and is on cooldown. Try again in {exc.retry_after:.2f}s.", delete_after=10)
+                await ctx.send(f"{author.mention} This command was used {exc.cooldown.per - exc.retry_after:.2f}s ago and is on cooldown. Try again in {exc.retry_after:.2f}s.", delete_after=10)
             else:
                 await ctx.reinvoke()
 
@@ -251,6 +263,7 @@ class Kurisu(commands.Bot):
 
     def add_cog(self, cog):
         super().add_cog(cog)
+        print(f'Cog "{cog.qualified_name}" loaded')
 
     async def close(self):
         print('Kurisu is shutting down')
