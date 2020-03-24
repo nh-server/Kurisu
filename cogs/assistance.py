@@ -408,7 +408,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             
             If your Switch is **hardware patched and cannot access RCM**:
             Stay on the lowest possible firmware version. Any Switch that is patched and above 7.0.1 is unlikely to be hackable.
-            *Last edited: March 3, 2020*
+            *Last edited: March 24, 2020*
             """)
             await ctx.send(embed=embed)
 
@@ -426,14 +426,14 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
 
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="what?", color=discord.Color.purple())
-            embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/250051871962562562/e87f77d2fc2011a9ff6fddeec7095eba.webp?size=1024")
+            embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/250051871962562562/726ae27792fc496755805397722c1e8e.png?size=1024")
             embed.url = "https://3ds.eiphax.tech/what.html"
             embed.description = "Basic things about the 3DS and CFW"
             await ctx.send(embed=embed)
 
         elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="The NX Nutshell", color=discord.Color.purple())
-            embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/250051871962562562/e87f77d2fc2011a9ff6fddeec7095eba.webp?size=1024")
+            embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/250051871962562562/726ae27792fc496755805397722c1e8e.png?size=1024")
             embed.url = "https://nx.eiphax.tech/nutshell.html"
             embed.description = "Basic things about the Switch and CFW"
             await ctx.send(embed=embed)
@@ -698,7 +698,12 @@ the system can't check for an update.
         """Download link for 3DS Homebrew Launcher, boot.3dsx"""
         await self.simple_embed(ctx, "The 3DS Homebrew Launcher, [boot.3dsx](https://github.com/fincs/new-hbmenu/releases/download/v2.1.0/boot.3dsx)")
 
+<<<<<<< HEAD
     @commands.command(aliases=["greenscr"])
+=======
+    @commands.command(aliases=["greenscr", "bootnds"])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+>>>>>>> upstream/port
     async def b9stool(self, ctx):
         """Download link for B9STool, boot.nds"""
         await self.simple_embed(ctx, "The B9S installation tool for DSiWare exploits.\nB9STool, [boot.nds](https://github.com/zoogie/b9sTool/releases)")
@@ -888,10 +893,10 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
     @commands.command(name="7zip")
     async def p7zip(self, ctx):
         """Download a .7z file extractor"""
-        embed = discord.Embed(title="Download 7-Zip or The Unarchiver", color=discord.Color(0x0000ff))
+        embed = discord.Embed(title="Download 7-Zip", color=discord.Color(0x0000ff))
         embed.description = ("To be able to extract .7z files, you will need an extractor that supports this format.\n"
                              "• Windows: [7-Zip](https://www.7-zip.org)\n"
-                             "• Mac: [The Unarchiver](https://theunarchiver.com)")
+                             "• Mac (Before 10.15 Catalina): [Keka](https://www.keka.io/en/)")
         await ctx.send(embed=embed)
 
     @commands.command()
@@ -909,7 +914,7 @@ One way to fix this is by using an y-cable to connect the HDD to two USB ports.
         await self.simple_embed(ctx, cleandoc("""
                                      **Make sure your version of Atmosphere is up to date and that it supports the latest firmware**
 
-                                     **Atmosphere 0.10.3 (latest release)**
+                                     **Atmosphere 0.10.5 (latest release)**
                                      Supports up to firmware 9.2.0.
 
                                      *To find Atmosphere's version information, while booted into CFW, go into System Settings -> System, and look at \
@@ -918,7 +923,7 @@ how to delete it.*
 
                                      **Make sure your version of Hekate is up to date and that it supports the latest firmware**
                                      
-                                     **Hekate 5.1.2 (latest release)**
+                                     **Hekate 5.1.3 (latest release)**
                                      Supports up to firmware 9.2.0.
                                      
                                      *To find Hekate's version information, once Hekate starts, look in the top left corner of the screen. If you use auto-boot, hold `volume -` to stop it.*
@@ -1092,7 +1097,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         """Community-maintained homebrew database"""
         embed = discord.Embed(title="Tinydb", color=discord.Color.green())
         embed.set_author(name="DeadPhoenix")
-        embed.set_thumbnail(url="https://files.frozenchen.me/kNJz8.png")
+        embed.set_thumbnail(url="https://files.frozenchen.cl/kNJz8.png")
         embed.url = "http://tinydb.eiphax.tech"
         embed.description = "A Community-maintained homebrew database"
         await ctx.send(embed=embed)
@@ -1284,6 +1289,58 @@ in the scene.
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
             embed.url = "https://wiiuguide.xyz/#/troubleshooting/recover-ios"
             embed.description = "A complete guide to recover a lost or corrupted IOS on vWii"
+            await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def invite(self, ctx, code: str):
+        invites = {
+            'twl':'yD3spjv',
+            'switchroot': '9d66FYg',
+            'acnl':'EZSxqRr',
+            'flagbrew': 'bGKEyfY',
+            'themeplaza': '2hUQwXz',
+            'smash': 'ASJyTrZ',
+            'ndsbrew': 'XRXjzY5',
+            'citra': 'FAXfZV9',
+            'homebrew': 'C29hYvh',
+            'skyrimnx': 'FhhfvVj',
+            'pkhexautolegality': 'tDMvSRv',
+            'reswitched': 'ZdqEhed',
+            'cemu': '5psYsup',
+            'dragoninjector': 'HdSFXbh',
+            'vita': 'JXEKeg6',
+            'henkaku': 'm7MwpKA',
+            'universal': 'KDJCfGF',
+            'r3DS': '3ds'
+        }
+        #Rewrite thanks to Dax#5790
+        if code in invites:
+            await ctx.send(f"https://discord.gg/{invites[code]}")
+        else:
+            await ctx.send(f"Invalid invite code. Valid codes: {', '.join(invites.keys())}")
+
+    @commands.guild_only()
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def db(self, ctx, console=None):
+        """Links to the relevant games database"""
+        systems = ("3ds", "nx", "ns", "switch")
+        if console not in systems:
+            if ctx.channel.name.startswith(systems):
+                console = "auto"
+            else:
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+                return
+        if self.check_console(console, ctx.message.channel.name, '3ds'):
+            embed = discord.Embed(title="3DS Database", color=discord.Color.dark_orange())
+            embed.url = "http://3dsdb.com/"
+            embed.description = "3DS database for game releases."
+            await ctx.send(embed=embed)
+        elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+            embed = discord.Embed(title="Nintendo Switch Database", color=discord.Color.dark_orange())
+            embed.url = "http://nswdb.com/"
+            embed.description = "Nintendo Switch database for game releases."
             await ctx.send(embed=embed)
 
     @commands.command(aliases=['masterkey', 'parentalpin'])
