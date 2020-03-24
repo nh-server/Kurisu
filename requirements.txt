@@ -1,0 +1,5 @@
+discord>=1.0.0
+aiosqlite3
+xkcd
+pillow
+pytz
