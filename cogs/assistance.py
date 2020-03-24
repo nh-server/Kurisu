@@ -698,12 +698,7 @@ the system can't check for an update.
         """Download link for 3DS Homebrew Launcher, boot.3dsx"""
         await self.simple_embed(ctx, "The 3DS Homebrew Launcher, [boot.3dsx](https://github.com/fincs/new-hbmenu/releases/download/v2.1.0/boot.3dsx)")
 
-<<<<<<< HEAD
-    @commands.command(aliases=["greenscr"])
-=======
     @commands.command(aliases=["greenscr", "bootnds"])
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
->>>>>>> upstream/port
     async def b9stool(self, ctx):
         """Download link for B9STool, boot.nds"""
         await self.simple_embed(ctx, "The B9S installation tool for DSiWare exploits.\nB9STool, [boot.nds](https://github.com/zoogie/b9sTool/releases)")
@@ -1294,6 +1289,7 @@ in the scene.
     @commands.command()
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def invite(self, ctx, code: str):
+        code = code.lower()
         invites = {
             'twl':'yD3spjv',
             'switchroot': '9d66FYg',
@@ -1322,7 +1318,6 @@ in the scene.
 
     @commands.guild_only()
     @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def db(self, ctx, console=None):
         """Links to the relevant games database"""
         systems = ("3ds", "nx", "ns", "switch")

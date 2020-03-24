@@ -84,12 +84,7 @@ class ModWarn(DatabaseCog):
             msg += "\n\nYou were kicked because of this warning. This is your final warning. You can join again, but **one more warn will result in a ban**."
         if warn_count == 5:
             msg += "\n\nYou were automatically banned due to five warnings."
-        try:
-            await member.send(msg)
-        except discord.errors.Forbidden:
-            pass
-        except discord.errors.HTTPException:
-            pass  # don't fail in case user has DMs disabled for this server, is not on the server, or blocked the bot
+        await utils.send_dm_message(userid, msg)
         if warn_count == 3 or warn_count == 4:
             self.bot.actions.append("wk:"+str(member.id))
             try:
@@ -103,11 +98,13 @@ class ModWarn(DatabaseCog):
             except discord.Forbidden:
                 await ctx.send("I can't ban this user!")
         await ctx.send(f"{member.mention} warned. User has {warn_count} warning(s)")
+        reason = self.bot.escape_text(reason)
+        signature = utils.command_signature(self.warn)
         msg = f"⚠️ **Warned**: {issuer.mention} warned {member.mention} (warn #{warn_count}) | {member}"
         if reason != "":
             # much \n
             msg += "\n✏️ __Reason__: " + reason
-        await self.bot.channels['mod-logs'].send(msg + ("\nPlease add an explanation below. In the future, it is recommended to use `.warn <user> [reason]` as the reason is automatically sent to the user." if reason == "" else ""))
+        await self.bot.channels['mod-logs'].send(msg + (f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user." if reason == "" else ""))
 
     @is_staff('Helper')
     @commands.command()
