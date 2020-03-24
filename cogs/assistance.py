@@ -3,7 +3,7 @@ import asyncio
 import discord
 import urllib.parse
 
-from cogs.checks import check_staff_id, check_if_user_can_sr
+from cogs.checks import check_if_user_can_sr
 from discord.ext import commands
 from inspect import cleandoc
 
