@@ -1152,7 +1152,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         """Community-maintained homebrew database"""
         embed = discord.Embed(title="Tinydb", color=discord.Color.green())
         embed.set_author(name="DeadPhoenix")
-        embed.set_thumbnail(url="https://files.frozenchen.me/kNJz8.png")
+        embed.set_thumbnail(url="https://files.frozenchen.cl/kNJz8.png")
         embed.url = "http://tinydb.eiphax.tech"
         embed.description = "A Community-maintained homebrew database"
         await ctx.send(embed=embed)
