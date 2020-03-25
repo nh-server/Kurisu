@@ -194,7 +194,7 @@ class Mod(DatabaseCog):
     async def metaunmute(self, ctx, member: SafeMember):
         """Unmutes a user so they can speak in meta. Staff only."""
         try:
-            if not await self.remove_restriction(member.id, self.bot.roles["meta-mute"]):
+            if not await self.remove_restriction(member.id, self.bot.roles["meta-mute"]) and self.bot.roles['meta-mute'] not in member.roles:
                 return await ctx.send("This user is not meta muted!")
             await member.remove_roles(self.bot.roles['meta-mute'])
             await ctx.send(f"{member.mention} can now speak in meta again.")
