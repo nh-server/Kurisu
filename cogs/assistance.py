@@ -1288,6 +1288,9 @@ in the scene.
     @commands.command()
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def invite(self, ctx, code: str):
+        """Available codes are:
+        twl, switchroot, acnl, flagbrew, themeplaza, smash, ndsbrew, citra, homebrew, skyrimnx, pkhexautolegality, reswitched, cemu, dragoninjector, vita, henkaku, universal, r3DS"""
+        
         code = code.lower()
         invites = {
             'twl':'yD3spjv',
