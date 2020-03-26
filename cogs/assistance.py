@@ -1086,6 +1086,14 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         embed.description = "How to dump GBA cartridges"
         await ctx.send(embed=embed)
 
+    @tutorial.command(aliases=["carttodigitalsave","ctdsave"])
+    async def transfersave(self, ctx):
+        """Links to cart to digital version save transfer tutorial"""
+        embed = discord.Embed(title="Cart to digital version save transfer tutorial", color=discord.Color.purple())
+        embed.url = "https://github.com/redkerry135/tutorials/wiki/Moving-a-save-from-a-cart-to-a-digital-game"
+        embed.description = "A tutorial about how to transfer a save from the cart version of a game to a digital version of that game."
+        await ctx.send(embed=embed)
+
     @commands.command()
     async def tinydb(self, ctx):
         """Community-maintained homebrew database"""
