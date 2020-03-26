@@ -83,7 +83,7 @@ class Kurisu(commands.Bot):
             'Probation': None,
             'Retired Staff': None,
             'Verified': None,
-            'Trusted' : None,
+            'Trusted': None,
             'Muted': None,
             'No-Help': None,
             'No-elsewhere': None,
@@ -304,8 +304,8 @@ def main():
         branch = "<unknown>"
 
     bot = Kurisu(('.', '!'), description="Kurisu, the bot for Nintendo Homebrew!")
-    bot.help_command = commands.DefaultHelpCommand(dm_help = None)
-    print(f'Starting Kurisu on commit {commit} on branch {branch}', commit, branch)
+    bot.help_command = commands.DefaultHelpCommand(dm_help=None)
+    print(f'Starting Kurisu on commit {commit} on branch {branch}')
     bot.load_cogs()
     bot.run(config['Main']['token'])
 
