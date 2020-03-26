@@ -1251,7 +1251,7 @@ in the scene.
         Here are links to some good torrent clients:
         • [qBittorrent](https://www.qbittorrent.org/download.php)
         • [Deluge](https://dev.deluge-torrent.org/wiki/Download)
-        • [Flud](https://play.google.com/store/apps/details?id=com.delphicoder.flud&hl=en_US)""", title="Torrent Clients")
+        • [Flud](https://play.google.com/store/apps/details?id=com.delphicoder.flud&hl=en_US) (Android)""", title="Torrent Clients")
 
     @commands.command(aliases=['wiiubrowserfreeze'])
     async def fixwiiuexploit(self, ctx):
@@ -1342,6 +1342,21 @@ in the scene.
         """Master Key(mkey) generator for parental controls"""
         await self.simple_embed(ctx, """[Master key generator](https://mkey.salthax.org/) to remove the parental controls pin on Nintendo Consoles""")
 
+    @commands.command(aliases=['noessential'])
+    async def noexefs(self, ctx):
+        """Instructions on what to do if essential.exefs is missing"""
+        embed = discord.Embed(title="What to do if essential.exefs is missing", color=discord.Color.magenta())
+        embed.description = "In order to do this, you will need to boot back into GodMode9"
+        embed.add_field(name="Steps to obtain essential.exefs", value=cleandoc("""
+                1. Reinsert your SD card into your console
+                2. Boot back into GodMode9 by holding start while powering on
+                3. Navigate to SysNAND Virtual
+                4. Select `essential.exefs`
+                5. Select `copy to 0:/gm9/out`
+                6. Power off your console and insert your SD card into your computer
+                7. Navigate to `/gm9/out` on your SD, `essential.exefs` should be there
+            """))
+        await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
