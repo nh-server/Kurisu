@@ -29,8 +29,8 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
             return True
         return False
 
-    @commands.guild_only()
     @check_if_user_can_sr()
+    @commands.guild_only()
     @commands.command(aliases=["sr", "Sr", "sR", "SR"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def staffreq(self, ctx, *, msg_request: str = ""):
         """Request staff, with optional additional text. Trusted, Helpers, Staff, Retired Staff, Verified only."""
