@@ -1228,7 +1228,7 @@ in the scene.
 
     @commands.command(aliases=['ntrboot', 'ntrcartlist', 'ntrbootcartlist'])
     async def ntrcart(self, ctx):
-        imagelink = "https://i.imgur.com/nvnObqz.png"
+        imagelink = "https://i.imgur.com/362bH8k.png"
         title = "Which flashcarts work with NTRBoot?"		
         embed = discord.Embed(title=title, color=discord.Color.default())
         embed.set_image(url=imagelink)
