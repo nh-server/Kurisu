@@ -1094,6 +1094,27 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         embed.description = "A tutorial about how to transfer a save from the cart version of a game to a digital version of that game."
         await ctx.send(embed=embed)
 
+    @tutorial.command(aliases=["theme"])
+    async def themes(self, ctx, console=None):
+        """Links to the relevant games database"""
+        systems = ("3ds", "nx", "ns", "switch")
+        if console not in systems:
+            if ctx.channel.name.startswith(systems):
+                console = "auto"
+            else:
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+                return
+        if self.check_console(console, ctx.message.channel.name, '3ds'):
+            embed = discord.Embed(title="3DS Themes Tutorial", color=discord.Color.dark_orange())
+            embed.url = "https://itspizzatime1501.github.io/guides/themes/"
+            embed.description = "Tutorial for installing themes on the 3DS"
+            await ctx.send(embed=embed)
+        elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+            embed = discord.Embed(title="Switch Themes Tutorial", color=discord.Color.dark_orange())
+            embed.url = "https://nh-server.github.io/switch-guide/extras/theming/"
+            embed.description = "Tutorial for installing themes on the Switch"
+            await ctx.send(embed=embed)
+
     @commands.command()
     async def tinydb(self, ctx):
         """Community-maintained homebrew database"""
