@@ -427,6 +427,11 @@ class Memes(commands.Cog):
         """You *did* read the GPL, *right?*"""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/ceLGvc4.gif")
 
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def pirate2(self, ctx):
+        """stop right there, criminal scum"""
+        await self._meme(ctx, "", imagelink="https://cdn.discordapp.com/attachments/508390946753216528/695752500179107910/giphy.gif")
 
 def setup(bot):
     bot.add_cog(Memes(bot))
