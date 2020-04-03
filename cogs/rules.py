@@ -24,7 +24,7 @@ class Rules(commands.Cog, command_attrs=dict()):
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def pirate(self, ctx):
         """Hey! You can't steal another trainer's Pokémon!"""
-        await ctx.send("Please refrain from asking or giving assistance with installing, using, or obtaining pirated software.")
+        await ctx.send("Please refrain from asking for or giving assistance with installing, using, or obtaining pirated software.")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
