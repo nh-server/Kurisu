@@ -1094,6 +1094,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         embed.description = "A tutorial about how to transfer a save from the cart version of a game to a digital version of that game."
         await ctx.send(embed=embed)
 
+    @commands.guild_only()
     @tutorial.command(aliases=["theme"])
     async def themes(self, ctx, console=None):
         """Links to the relevant games database"""
