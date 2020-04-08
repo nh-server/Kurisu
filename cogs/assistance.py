@@ -1342,7 +1342,7 @@ in the scene.
             'r3ds': '3ds'
         }
         casefolded = name.casefold()
-        if casefolded in invites.keys():
+        if casefolded in invites:
             await ctx.send(f"https://discord.gg/{invites[casefolded]}")
         else:
             await ctx.send(f"Invalid invite code. Valid server names are: {', '.join(invites.keys())}")
