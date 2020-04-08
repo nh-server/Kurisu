@@ -1321,6 +1321,7 @@ in the scene.
         """Available servers are:
         twl, switchroot, acnl, flagbrew, themeplaza, smash, ndsbrew, citra, homebrew, skyrimnx, pkhexautolegality, reswitched, cemu, dragoninjector, vita, henkaku, universal, r3DS"""
         name = name.casefold()
+
         # When adding invites, make sure the keys are lowercase, or the command will not find it when invoked!
         invites = {
             'twl':'yD3spjv',
