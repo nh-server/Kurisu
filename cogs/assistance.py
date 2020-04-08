@@ -1345,7 +1345,7 @@ in the scene.
           if name.casefold() == key.casefold():
             return await ctx.send(f"https://discord.gg/{invite}")
         else:
-          await ctx.send(f"Invalid invite code. Valid codes: {', '.join(invites.keys())}")
+            await ctx.send(f"Invalid invite code. Valid codes: {', '.join(invites.keys())}")
 
     @commands.guild_only()
     @commands.command()
