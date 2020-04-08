@@ -1342,8 +1342,8 @@ in the scene.
             'r3ds': '3ds'
         }
         for key, invite in invites.items():
-          if name.casefold() == key.casefold():
-            return await ctx.send(f"https://discord.gg/{invite}")
+            if name.casefold() == key.casefold():
+                return await ctx.send(f"https://discord.gg/{invite}")
         else:
             await ctx.send(f"Invalid invite code. Valid codes: {', '.join(invites.keys())}")
 
