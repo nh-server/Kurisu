@@ -1320,7 +1320,7 @@ in the scene.
     async def invite(self, ctx, name: str):
         """Available servers are:
         twl, switchroot, acnl, flagbrew, themeplaza, smash, ndsbrew, citra, homebrew, skyrimnx, pkhexautolegality, reswitched, cemu, dragoninjector, vita, henkaku, universal, r3DS"""
-
+        # When adding invites, make sure the keys are lowercase, or the command will not find it when invoked!
         invites = {
             'twl':'yD3spjv',
             'switchroot': '9d66FYg',
@@ -1341,11 +1341,11 @@ in the scene.
             'universal': 'KDJCfGF',
             'r3ds': '3ds'
         }
-        for key, invite in invites.items():
-            if name.casefold() == key.casefold():
-                return await ctx.send(f"https://discord.gg/{invite}")
-
-        await ctx.send(f"Invalid invite code. Valid server names are: {', '.join(invites.keys())}")
+        casefolded = name.casefold()
+        if casefolded in invites.keys():
+            await ctx.send(f"https://discord.gg/{invites[casefolded]}")
+        else:
+            await ctx.send(f"Invalid invite code. Valid server names are: {', '.join(invites.keys())}")
 
     @commands.guild_only()
     @commands.command()
