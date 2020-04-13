@@ -1343,7 +1343,7 @@ in the scene.
             'smash4': 'EUZJhUJ',
             'switchlan': 'SbxDMER',
             'ctgp7': '0uTPwYv3SPQww54l',
-            'retronx': 'vgvZN9W'
+            'retronx': 'vgvZN9W',
             'r3DS': '3ds'
         }
         #Rewrite thanks to Dax#5790
