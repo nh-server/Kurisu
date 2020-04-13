@@ -1319,7 +1319,7 @@ in the scene.
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def invite(self, ctx, name: str):
         """Available servers are:
-        twl, switchroot, acnl, flagbrew, themeplaza, smash, ndsbrew, citra, homebrew, skyrimnx, pkhexautolegality, reswitched, cemu, dragoninjector, vita, henkaku, universal, r3DS"""
+        twl, switchroot, acnl, flagbrew, themeplaza, smashultimate, ndsbrew, citra, homebrew, skyrimnx, pkhexautolegality, reswitched, cemu, dragoninjector, vita, henkaku, universal, r3ds, smash4, switchlan, ctgp7, retronx"""
         
         name = name.lower()
         invites = {
@@ -1328,7 +1328,7 @@ in the scene.
             'acnl':'EZSxqRr',
             'flagbrew': 'bGKEyfY',
             'themeplaza': '2hUQwXz',
-            'smash': 'ASJyTrZ',
+            'smashultimate': 'ASJyTrZ',
             'ndsbrew': 'XRXjzY5',
             'citra': 'FAXfZV9',
             'homebrew': 'C29hYvh',
@@ -1340,6 +1340,10 @@ in the scene.
             'vita': 'JXEKeg6',
             'henkaku': 'm7MwpKA',
             'universal': 'KDJCfGF',
+            'smash4': 'EUZJhUJ',
+            'switchlan': 'SbxDMER',
+            'ctgp7': '0uTPwYv3SPQww54l',
+            'retronx': 'vgvZN9W'
             'r3DS': '3ds'
         }
         #Rewrite thanks to Dax#5790
