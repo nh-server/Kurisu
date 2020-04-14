@@ -400,15 +400,15 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
         elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Is the new Switch update safe?", color=0xe60012)
             embed.description = cleandoc("""
-            Currently, the latest Switch system firmware is `9.2.0`.
-            
+            Currently, the latest Switch system firmware is `10.0.0`     
             If your Switch is **unpatched and can access RCM**:
-            Atmosphere and Hekate currently support 9.2.0, and unpatched units will always be hackable.
-            You should follow the precautions in our update guide, and always update Atmosphere and Hekate before updating the system firmware.
+            Atmosphere and Hekate currently **DO NOT** support 10.0.0, but unpatched units will always be hackable once they do.
+            If your console is 9.2.0 or below, you are able to access CFW at the moment.
+            When Atmosphere and Hekate update, update them before updating the system firmware.
             
             If your Switch is **hardware patched and cannot access RCM**:
             Stay on the lowest possible firmware version. Any Switch that is patched and above 7.0.1 is unlikely to be hackable.
-            *Last edited: March 24, 2020*
+            *Last edited: April 14, 2020*
             """)
             await ctx.send(embed=embed)
 
