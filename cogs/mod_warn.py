@@ -21,6 +21,7 @@ class ModWarn(DatabaseCog):
     async def warn(self, ctx, member: SafeMember, *, reason=""):
         """Warn a user. Staff and Helpers only."""
         issuer = ctx.author
+        channel = ctx.channel
         if await check_bot_or_staff(ctx, member, "warn"):
             return
         await self.add_warn(member.id, issuer.id, reason)
@@ -49,7 +50,7 @@ class ModWarn(DatabaseCog):
             except discord.Forbidden:
                 await ctx.send("I can't ban this user!")
         await ctx.send(f"{member.mention} warned. User has {warn_count} warning(s)")
-        msg = f"⚠️ **Warned**: {issuer.mention} warned {member.mention} (warn #{warn_count}) | {self.bot.escape_text(member)}"
+        msg = f"⚠️ **Warned**: {issuer.mention} warned {member.mention} in {channel.mention} ({self.bot.escape_text(channel)}) (warn #{warn_count}) | {self.bot.escape_text(member)}"
         reason = self.bot.escape_text(reason)
         signature = utils.command_signature(ctx.command)
         if reason != "":
@@ -111,6 +112,7 @@ class ModWarn(DatabaseCog):
     async def softwarn(self, ctx, member: SafeMember, *, reason=""):
         """Warn a user without automated action. Staff and Helpers only."""
         issuer = ctx.author
+        channel = ctx.channel
         if await check_bot_or_staff(ctx, member, "warn"):
             return
         warn_count = len(await self.get_warns(member.id))
@@ -128,7 +130,7 @@ class ModWarn(DatabaseCog):
         await utils.send_dm_message(member, msg)
 
         await ctx.send(f"{member.mention} softwarned. User has {warn_count} warning(s)")
-        msg = f"⚠️ **Warned**: {issuer.mention} softwarned {member.mention} (warn #{warn_count}) | {self.bot.escape_text(member)}"
+        msg = f"⚠️ **Warned**: {issuer.mention} softwarned {member.mention} in {channel.mention} ({self.bot.escape_text(channel)}) (warn #{warn_count}) | {self.bot.escape_text(member)}"
         reason = self.bot.escape_text(reason)
         signature = utils.command_signature(self.warn)
         if reason != "":
