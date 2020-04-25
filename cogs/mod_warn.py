@@ -131,7 +131,6 @@ class ModWarn(DatabaseCog):
 
         await ctx.send(f"{member.mention} softwarned. User has {warn_count} warning(s)")
         msg = f"⚠️ **Warned**: {issuer.mention} softwarned {member.mention} in {channel.mention} ({self.bot.escape_text(channel)}) (warn #{warn_count}) | {self.bot.escape_text(member)}"
-        msg = f"⚠️ **Warned**: {issuer.mention} softwarned {member.mention} (warn #{warn_count}) | {self.bot.escape_text(member)}"
         reason = self.bot.escape_text(reason)
         signature = utils.command_signature(self.warn)
         if reason != "":
