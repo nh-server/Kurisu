@@ -13,7 +13,6 @@ class Err(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        print(f'Cog "{self.qualified_name}" loaded')
 
     # CTR Error Codes
     summaries = {
@@ -279,6 +278,7 @@ class Err(commands.Cog):
         '102-2816': 'System is banned for a/multiple game(s) (preferably Splatoon) for an unknown duration, by attempting to use modified static.pack/+ game files online. You cannot ask how to fix this issue here.',
         '106-0306': 'NNID is temporarily banned from a/multiple games (preferably Splatoon) online multiplayer. You cannot ask how to fix this issue here.',
         '106-0346': 'NNID is permanently banned from a/multiple games (preferably Splatoon) online multiplayer. You cannot ask how to fix this issue here.',
+        '112-1037': 'Incorrect permissions for the default index.html file which prevents the Internet Browser from reading it. This can be fixed by following [this guide](https://wiiuguide.xyz/#/troubleshooting/fix-errcode-112-1037).',
         '115-1009': 'System is permanently banned from Miiverse.',
         '121-0902': 'Permissions missing for the action you are trying to perfrom (Miiverse error).',
         '126-9622': 'Error when attempting to add funds. Maybe try again after a while, or make sure there is no issue with the payment method.',
@@ -298,6 +298,7 @@ class Err(commands.Cog):
         '2001-0125': ['Executed svcCloseHandle on main-thread handle (No known support page)', None],
         '2002-6063': ['Attempted to read eMMC CID from browser? (No known support page)', None],
         '2005-0003': ['You are unable to download software.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/22393/kw/2005-0003'],
+        '2016-2101': ['Inserted Tencent-Nintendo (Chinese model) cartridge into regular Switch, which is region locked.', 'https://nintendoswitch.com.cn/support/'],
         '2110-3400': ['This error code indicates the Internet connection you are attempting to use likely requires some type of authentication through a web browser (such as agreeing to terms of service or entering a username and password).', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/22569/kw/2110-3400'],
         '2124-4007': ['System + Nintendo Account are permanently banned by Nintendo. You cannot ask how to fix this issue here.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/28046/kw/2124-4007'],
         '2124-4025': ['Game Card is banned, this "COULD" happen to legal users if so contact Nintendo to allow them to whitelist the Game Card. Otherwise, You cannot ask how to fix this issue here.', None],

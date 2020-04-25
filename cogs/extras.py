@@ -17,7 +17,6 @@ class Extras(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.nick_pattern = re.compile("^[a-z]{2,}.*$", re.RegexFlag.IGNORECASE)
-        print(f'Cog "{self.qualified_name}" loaded')
 
     prune_key = "nokey"
 
@@ -101,7 +100,7 @@ class Extras(commands.Cog):
             await ctx.send("Minimum 1 day")
             return
 
-        msg = await ctx.send(f"I'm figuring this out!")
+        msg = await ctx.send("I'm figuring this out!")
         async with ctx.channel.typing():
             count = await ctx.guild.estimate_pruned_members(days=days)
             await msg.edit(content=f"{count:,} members inactive for {days} day(s) would be kicked from {ctx.guild.name}!")
@@ -117,7 +116,7 @@ class Extras(commands.Cog):
         if days < 1:
             await ctx.send("Minimum 1 day")
             return
-        msg = await ctx.send(f"I'm figuring this out!")
+        msg = await ctx.send("I'm figuring this out!")
         async with ctx.channel.typing():
             count = await ctx.guild.estimate_pruned_members(days=days)
             if days == 1:
@@ -196,7 +195,7 @@ class Extras(commands.Cog):
         await ctx.message.delete()
         author = ctx.author
         if ctx.channel != self.bot.channels['bot-cmds']:
-            return await ctx.send(f"{ctx.author.mention}: .togglechannel can only be used in <#261581918653513729>.")
+            return await ctx.send(f"{ctx.author.mention}: .togglechannel can only be used in <#261581918653513729>.", delete_after=10)
         try:
             if channelname == "elsewhere":
                 if self.bot.roles['#elsewhere'] in author.roles:
@@ -515,10 +514,10 @@ class Extras(commands.Cog):
     @commands.cooldown(rate=1, per=21600.0, type=commands.BucketType.member)
     @commands.command()
     async def nickme(self, ctx, *, nickname):
-        """Change your nickname. Nitro Booster only. 6 Hours Cooldown."""
+        """Change your nickname. Nitro Booster and crc only. 6 Hours Cooldown."""
         member = self.bot.guild.get_member(ctx.author.id)
-        if self.bot.roles['Nitro Booster'] not in member.roles:
-            return await ctx.send("This command can only be used by Nitro Boosters!")
+        if self.bot.roles['crc'] not in member.roles and self.bot.roles['Nitro Booster'] not in member.roles:
+            return await ctx.send("This command can only be used by Nitro Boosters and members of crc!")
         if self.check_nickname(nickname):
             try:
                 await member.edit(nick=nickname)

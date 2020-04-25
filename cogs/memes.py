@@ -10,7 +10,6 @@ class Memes(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        print(f'Cog "{self.qualified_name}" loaded')
 
     async def _meme(self, ctx, msg, directed: bool = False, imagelink=None):
         author = ctx.author
@@ -118,7 +117,7 @@ class Memes(commands.Cog):
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def rusure(self, ctx):
         """Memes."""
-        await self._meme(ctx, "", imagelink="http://i.imgur.com/dqh3fNi.png")
+        await self._meme(ctx, "", imagelink="https://imgur.com/sXnVRLw.gif")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
@@ -410,6 +409,29 @@ class Memes(commands.Cog):
         """eel"""
         await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has been eel slapped.", True, "https://i.imgur.com/QXF2Pcn.gif")
 
+    @commands.command(hidden=True, aliases=["bruh", "yolo", "swag"])
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def dab(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "No. I might be controlled by you idiots, but I have *some* self respect, baka...")
+    
+    @commands.command(hidden=True, aliases=["hacc"])
+    @commands.cooldown(rate=5, per=30.0, type=commands.BucketType.channel)
+    async def nobrain(self, ctx, *, action="hacc"):
+        """h a c c"""
+        await self._meme(ctx, f'`I have no brain and I must {" ".join(action.replace("`",""))}`')
+
+    @commands.command(hidden=True, aliases=["wheresource", "sauce", "github"])
+    @commands.cooldown(rate=5, per=30.0, type=commands.BucketType.channel)
+    async def source(self, ctx):
+        """You *did* read the GPL, *right?*"""
+        await self._meme(ctx, "", imagelink="https://i.imgur.com/ceLGvc4.gif")
+
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def pirate2(self, ctx):
+        """stop right there, criminal scum"""
+        await self._meme(ctx, "", imagelink="https://cdn.discordapp.com/attachments/508390946753216528/695752500179107910/giphy.gif")
 
 def setup(bot):
     bot.add_cog(Memes(bot))

@@ -40,19 +40,21 @@ class DatabaseCog(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        print(f'Cog "{self.qualified_name}" loaded')
 
     async def add_restriction(self, user_id, role):
         async with self.bot.holder as cur:
             await cur.execute('SELECT user_id FROM permanent_roles WHERE user_id=? AND role_id=?', (user_id, role.id))
-            if await cur.fetchone() is None:
+            if not await cur.fetchone():
                 await cur.execute('INSERT INTO permanent_roles VALUES(?, ?)', (user_id, role.id))
                 return True
             return False
 
     async def remove_restriction(self, user_id, role):
         async with self.bot.holder as cur:
-            await cur.execute('DELETE FROM permanent_roles WHERE user_id=? AND role_id=?', (user_id, role.id))
+            await cur.execute('SELECT user_id FROM permanent_roles WHERE user_id=? AND role_id=?', (user_id, role.id))
+            if await cur.fetchone():
+                await cur.execute('DELETE FROM permanent_roles WHERE user_id=? AND role_id=?', (user_id, role.id))
+                return True
 
     async def get_restrictions_roles_id(self, user_id):
         async with self.bot.holder as cur:
@@ -145,9 +147,10 @@ class DatabaseCog(commands.Cog):
 
     async def add_timed_restriction(self, user_id, end_date, type):
         async with self.bot.holder as cur:
-            await cur.execute('SELECT 1 FROM timed_restrictions WHERE user_id=? AND type=?', (user_id, type))
-            if await cur.fetchone() is not None:
+            await cur.execute('SELECT timestamp FROM timed_restrictions WHERE user_id=? AND type=?', (user_id, type))
+            if (timestamp := await cur.fetchone()) is not None:
                 await cur.execute('UPDATE timed_restrictions SET timestamp=?, alert=0 WHERE user_id=? AND type=?', (end_date, user_id, type))
+                return timestamp[0]
             else:
                 await cur.execute('INSERT INTO timed_restrictions VALUES(?, ?, ?, ?)', (user_id, end_date, type, 0))
 

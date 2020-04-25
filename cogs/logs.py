@@ -16,7 +16,7 @@ Please review all of the rules in {2} before asking for help or chatting. In par
 You can find a list of staff and helpers in {2}.
 
 Do you simply need a place to start hacking your 3DS system? Check out **<https://3ds.hacks.guide>**!
-Do you simply need a place to start hacking your Wii U system? Check out **<https://wiiu.hacks.guide/>**!
+Do you simply need a place to start hacking your Wii U system? Check out **<https://wiiuguide.xyz>**!
 Do you simply need a place to start hacking your Switch system? Check out **<https://nh-server.github.io/switch-guide/>**!
 
 By participating in this server, you acknowledge that user data (including messages, user IDs, user tags) will be collected and logged for moderation purposes. If you disagree with this collection, please leave the server immediately.
@@ -30,13 +30,13 @@ As a Nitro Booster you have the following bonuses:
     - React permissions in <#314856589716750346>, <#485138525885431808>, and <#300388576451887104>.
     - Able to use the `.nickme` command in DMs with Kurisu to change your nickname every 6 hours.
     - Able to stream in the <#623015122473975818> voice channel.
-Thanks for boosting and have a good time! 
+Thanks for boosting and have a good time!
     """
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
         await self.bot.wait_until_all_ready()
-        msg = f"✅ **Join**: {member.mention} | {member}\n🗓 __Creation__: {member.created_at}\n🏷 __User ID__: {member.id}"
+        msg = f"✅ **Join**: {member.mention} | {self.bot.escape_text(member)}\n🗓 __Creation__: {member.created_at}\n🏷 __User ID__: {member.id}"
         softban = await self.get_softban(member.id)
         if softban:
             message_sent = False
@@ -47,7 +47,7 @@ Thanks for boosting and have a good time!
                 pass
             self.bot.actions.append("sbk:"+str(member.id))
             await member.kick()
-            msg = f"🚨 **Attempted join**: {member.mention} is soft-banned by <@{softban[1]}> | {member}"
+            msg = f"🚨 **Attempted join**: {member.mention} is soft-banned by <@{softban[1]}> | {self.bot.escape_text(member)}"
             if not message_sent:
                 msg += "\nThis message did not send to the user."
             embed = discord.Embed(color=discord.Color.red())
@@ -89,7 +89,7 @@ Thanks for boosting and have a good time!
             if self.bot.pruning == 0:
                 await self.bot.channels['mods'].send("Pruning finished!")
             return
-        msg = f"{'👢 **Auto-kick**' if 'wk:' + str(member.id) in self.bot.actions else '⬅️ **Leave**'}: {member.mention} | {member}\n🏷 __User ID__: {member.id}"
+        msg = f"{'👢 **Auto-kick**' if 'wk:' + str(member.id) in self.bot.actions else '⬅️ **Leave**'}: {member.mention} | {self.bot.escape_text(member)}\n🏷 __User ID__: {member.id}"
         await self.bot.channels['server-logs'].send(msg)
         if "wk:"+str(member.id) in self.bot.actions:
             self.bot.actions.remove("wk:"+str(member.id))
@@ -101,7 +101,7 @@ Thanks for boosting and have a good time!
         if "ub:"+str(member.id) in self.bot.actions:
             self.bot.actions.remove("ub:"+str(member.id))
             return
-        msg = f"{'⛔ **Auto-ban**' if 'wb:' + str(member.id) in self.bot.actions else '⛔ **Ban**'}: {member.mention} | {member}\n🏷 __User ID__: {member.id}"
+        msg = f"{'⛔ **Auto-ban**' if 'wb:' + str(member.id) in self.bot.actions else '⛔ **Ban**'}: {member.mention} | {self.bot.escape_text(member)}\n🏷 __User ID__: {member.id}"
         await self.bot.channels['server-logs'].send(msg)
         if "wb:"+str(member.id) in self.bot.actions:
             self.bot.actions.remove("wb:"+str(member.id))
@@ -115,7 +115,7 @@ Thanks for boosting and have a good time!
         if "tbr:"+str(user.id) in self.bot.actions:
             self.bot.actions.remove("tbr:"+str(user.id))
             return
-        msg = f"⚠️ **Unban**: {user.mention} | {user}"
+        msg = f"⚠️ **Unban**: {user.mention} | {self.bot.escape_text(user)}"
         if await self.get_softban(user.id):
             msg += "\nTimeban removed."
             await self.remove_timed_restriction(user.id, 'timeban')
@@ -138,10 +138,11 @@ Thanks for boosting and have a good time!
                 for role in roles_before:
                     if role.name == "@everyone":
                         continue
+                    role_name = self.bot.escape_text(role.name)
                     if role not in roles_after:
-                        roles.append("_~~" + role.name + "~~_")
+                        roles.append("_~~" + role_name + "~~_")
                     else:
-                        roles.append(role.name)
+                        roles.append(role_name)
                 msg += ', '.join(roles)
             # role addition
             elif diff := roles_after - roles_before:
@@ -155,10 +156,11 @@ Thanks for boosting and have a good time!
                 for role in roles_after:
                     if role.name == "@everyone":
                         continue
+                    role_name = self.bot.escape_text(role.name)
                     if role not in roles_before:
-                        roles.append("__**" + role.name + "**__")
+                        roles.append("__**" + role_name + "**__")
                     else:
-                        roles.append(role.name)
+                        roles.append(role_name)
                 msg += ', '.join(roles)
         if member_before.nick != member_after.nick:
             do_log = True
@@ -170,7 +172,7 @@ Thanks for boosting and have a good time!
                 msg = "\n🏷 __Nickname change__"
             msg += f": {self.bot.escape_text(member_before.nick)} → {self.bot.escape_text(member_after.nick)}"
         if do_log:
-            msg = f"ℹ️ **Member update**: {member_after.mention} | {member_after} {msg}"
+            msg = f"ℹ️ **Member update**: {member_after.mention} | {self.bot.escape_text(member_after)} {msg}"
             await dest.send(msg)
 
     @commands.Cog.listener()
@@ -180,12 +182,12 @@ Thanks for boosting and have a good time!
         dest = self.bot.channels['server-logs']
         if member_before.name != member_after.name:
             do_log = True
-            msg = f"\n📝 __Username change__: {member_before.name} → {member_after.name}"
+            msg = f"\n📝 __Username change__: {self.bot.escape_text(member_before.name)} → {self.bot.escape_text(member_after.name)}"
         elif member_before.discriminator != member_after.discriminator:
             do_log = True
-            msg = f"\n🔢 __Discriminator change__: {member_before} → {member_after}"
+            msg = f"\n🔢 __Discriminator change__: {self.bot.escape_text(member_before)} → {self.bot.escape_text(member_after)}"
         if do_log:
-            msg = f"ℹ️ **Member update**: {member_after.mention} | {member_after} {msg}"
+            msg = f"ℹ️ **Member update**: {member_after.mention} | {self.bot.escape_text(member_after)} {msg}"
             await dest.send(msg)
 
 

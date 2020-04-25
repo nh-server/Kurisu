@@ -8,7 +8,6 @@ class Rules(commands.Cog, command_attrs=dict()):
     """
     def __init__(self, bot):
         self.bot = bot
-        print(f'Cog "{self.qualified_name}" loaded')
 
     async def simple_embed(self, ctx, text, title="", color=discord.Color.default()):
         embed = discord.Embed(title=title, color=color)
@@ -25,7 +24,7 @@ class Rules(commands.Cog, command_attrs=dict()):
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def pirate(self, ctx):
         """Hey! You can't steal another trainer's Pokémon!"""
-        await ctx.send("Please refrain from asking for or giving assistance with installing or using illegitimately obtained software.")
+        await ctx.send("Please refrain from asking for or giving assistance with installing, using, or obtaining pirated software.")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)

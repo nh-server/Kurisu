@@ -1,9 +1,8 @@
 import asyncio
+import aiohttp
 import discord
 import sys
 import traceback
-import json
-import requests
 import pytz
 from datetime import datetime, timedelta
 from discord.ext import commands
@@ -38,8 +37,14 @@ class Loop(DatabaseCog):
         return datetime.strptime(' '.join(timestr.split()), '%A, %B %d, %Y %I :%M %p').replace(tzinfo=self.tz)
 
     async def update_netinfo(self):
-        r = requests.get('https://www.nintendo.co.jp/netinfo/en_US/status.json?callback=getJSON')
-        j = json.loads(r.text[8:-2])
+        async with aiohttp.ClientSession() as session:
+            r = await session.get('https://www.nintendo.co.jp/netinfo/en_US/status.json?callback=getJSON')
+            if r.status == 200:
+                j = await r.json()
+            else:
+                # No logging setup :/
+                print(f"Netinfo: {r.status} while trying to update netinfo.")
+                return
         now = datetime.now(self.tz)
         embed = discord.Embed(title="Network Maintenance Information / Online Status",
                               url="https://www.nintendo.co.jp/netinfo/en_US/index.html",
@@ -56,7 +61,11 @@ class Loop(DatabaseCog):
                 m_desc += '\nBegins: ' + begin.strftime('%A, %B %d, %Y %I:%M %p')
                 if end.year != 2099:
                     m_desc += '\nEnds: ' + end.strftime('%A, %B %d, %Y %I:%M %p')
-                embed.add_field(name=f'Current Status: {m["software_title"].replace(" <br /> ", ", ")}, {", ".join(m["services"])}',
+                if "services" in m:
+                    embed.add_field(name=f'Current Status: {m["software_title"].replace(" <br /> ", ", ")}, {", ".join(m["services"])}',
+                                value=m_desc, inline=False)
+                else:
+                    embed.add_field(name=f'Current Status: {m["software_title"].replace(" <br /> ", ", ")}',
                                 value=m_desc, inline=False)
         for m in j["temporary_maintenances"]:
             begin = self.netinfo_parse_time(m["begin"])
@@ -69,7 +78,11 @@ class Loop(DatabaseCog):
                 m_desc += '\nBegins: ' + begin.strftime('%A, %B %d, %Y %I:%M %p')
                 if end.year != 2099:
                     m_desc += '\nEnds: ' + end.strftime('%A, %B %d, %Y %I:%M %p')
-                embed.add_field(name='Current Maintenance: {}, {}'.format(m["software_title"].replace(' <br />\r\n', ', '), ', '.join(m["services"])),
+                if "services" in m:
+                    embed.add_field(name='Current Maintenance: {}, {}'.format(m["software_title"].replace(' <br />\r\n', ', '), ', '.join(m["services"])),
+                                value=m_desc, inline=False)
+                else:
+                    embed.add_field(name=f'Current Status: {m["software_title"].replace(" <br /> ", ", ")}',
                                 value=m_desc, inline=False)
         self.netinfo_embed = embed
 
@@ -78,9 +91,18 @@ class Loop(DatabaseCog):
     async def netinfo(self, ctx):
         await ctx.send(embed=self.netinfo_embed)
 
+    @commands.command()
+    @commands.cooldown(rate=1, per=60.0, type=commands.BucketType.channel)
+    async def netinfo_refresh(self, ctx):
+        await self.update_netinfo()
+        embed = discord.Embed(title="Netinfo Refresh", color=discord.Color.blue())
+        embed.description = "Refresh complete."
+        await ctx.send(embed=embed)
+
     async def start_update_loop(self):
         # thanks Luc#5653
         await self.bot.wait_until_all_ready()
+        await self.update_netinfo() #Run once so it will always be available after restart
         while self.is_active:
             try:
                 timestamp = datetime.now()
@@ -137,9 +159,8 @@ class Loop(DatabaseCog):
                     await self.bot.channels['helpers'].send(f"{self.bot.guild.name} has {self.bot.guild.member_count:,} members at this hour!")
                     self.last_hour = timestamp.hour
 
-                # if timestamp.minute % 30 == 0 and timestamp.second == 0:
-                #    self.bot.loop.create_task(self.update_netinfo())
-
+                if timestamp.minute % 30 == 0 and timestamp.second == 0:
+                    self.bot.loop.create_task(self.update_netinfo())
             except Exception as e:
                 print('Ignoring exception in start_update_loop', file=sys.stderr)
                 traceback.print_tb(e.__traceback__)

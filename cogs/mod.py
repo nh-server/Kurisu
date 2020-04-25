@@ -8,7 +8,7 @@ from discord.ext import commands
 from cogs.checks import is_staff, check_staff_id, check_bot_or_staff
 from cogs.database import DatabaseCog
 from cogs.converters import SafeMember, FetchMember
-
+from cogs import utils
 
 class Mod(DatabaseCog):
     """
@@ -33,15 +33,20 @@ class Mod(DatabaseCog):
 
     @is_staff("Helper")
     @commands.guild_only()
-    @commands.command(hidden=True)
+    @commands.command()
     async def userinfo(self, ctx, u: discord.Member):
         """Gets member info. Staff and Helpers only."""
         role = u.top_role.name
-        await ctx.send(f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url}\ndefault_avatar = {u.default_avatar}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\ndisplay_name = {self.bot.escape_text(u.display_name)}\njoined_at = {u.joined_at}\nstatus = {u.status}\nactivity = {u.activity.name if u.activity else None}\ncolour = {u.colour}\ntop_role = {self.bot.escape_text(role)}\n")
+        await ctx.safe_send(f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}"
+                            f"\nbot = {u.bot}\navatar_url = {u.avatar_url_as(static_format='png')}\ndefault_avatar "
+                            f"= {u.default_avatar}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = "
+                            f"{u.created_at}\ndisplay_name = {u.display_name}\njoined_at = {u.joined_at}\nstatus = "
+                            f"{u.status}\nactivity = {u.activity.name if u.activity else None}\ncolour = {u.colour}"
+                            f"\ntop_role = {role}\n")
 
     @is_staff("Helper")
     @commands.guild_only()
-    @commands.command(hidden=True)
+    @commands.command()
     async def userinfoid(self, ctx, id):
         """Gets a user id info. Staff and Helpers only."""
         try:
@@ -49,11 +54,17 @@ class Mod(DatabaseCog):
         except discord.NotFound:
             await ctx.send(f"No user matching id `{id}`.")
             return
-        await ctx.send(f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\ncolour = {u.colour}\n")
+
+        try:
+            ban = await ctx.guild.fetch_ban(u)
+        except discord.NotFound:  # NotFound is raised if the user isn't banned
+            ban = None
+
+        await ctx.safe_send(f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url_as(static_format='png')}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\ncolour = {u.colour}\n{f'**Banned**, reason: {ban.reason}' if ban is not None else ''}\n")
 
     @is_staff("HalfOP")
     @commands.guild_only()
-    @commands.command(hidden=True)
+    @commands.command()
     async def matchuser(self, ctx, *, rgx: str):
         """Match users by regex."""
         author = ctx.author
@@ -66,7 +77,7 @@ class Mod(DatabaseCog):
 
     @is_staff("Owner")
     @commands.guild_only()
-    @commands.command(hidden=True)
+    @commands.command()
     async def multiban(self, ctx, users: commands.Greedy[SafeMember]):
         """Multi-ban users."""
         author = ctx.author
@@ -82,7 +93,8 @@ class Mod(DatabaseCog):
 
     @is_staff("Owner")
     @commands.guild_only()
-    @commands.command(hidden=True)
+    @commands.bot_has_permissions(ban_members=True)
+    @commands.command()
     async def multibanre(self, ctx, *, rgx: str):
         """Multi-ban users by regex."""
         author = ctx.author
@@ -98,24 +110,25 @@ class Mod(DatabaseCog):
             except discord.errors.NotFound:
                 pass
         msg += "```"
-        await author.send(msg)
+        await utils.send_dm_message(author, msg)
 
     @is_staff("Helper")
+    @commands.bot_has_permissions(manage_channels=True)
     @commands.guild_only()
     @commands.command()
     async def slowmode(self, ctx, time, channel: discord.TextChannel=None):
         """Apply a given slowmode time to a channel.
-        
+
         The time format is identical to that used for timed kicks/bans/takehelps.
         It is not possible to set a slowmode longer than 6 hours.
-        
+
         Helpers in assistance channels and Staff only."""
         if not channel:
             channel = ctx.channel
-            
+
         if channel not in self.bot.assistance_channels and not await check_staff_id(ctx, "OP", ctx.author.id):
              return await ctx.send("You cannot use this command outside of assistance channels.")
-            
+
         units = { # This bit is copied from kickban, removed days since it's not needed.
             "d": 86400,
             "h": 3600,
@@ -138,11 +151,13 @@ class Mod(DatabaseCog):
         msg = f"🕙 **Slowmode**: {ctx.author.mention} set a slowmode delay of {time} ({seconds}) in {channel.mention}"
         await self.bot.channels["mod-logs"].send(msg)
 
-    @is_staff("HalfOP")
+    @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["clear"])
     async def purge(self, ctx, limit: int):
-        """Clears a given number of messages. Staff only."""
+        """Clears a given number of messages. Helpers in assistance channels and Staff only."""
+        if ctx.channel not in self.bot.assistance_channels and not await check_staff_id(ctx, "OP", ctx.author.id):
+            return await ctx.send("You cannot use this command outside of assistance channels.")
         await ctx.channel.purge(limit=limit+1)
         msg = f"🗑 **Cleared**: {ctx.author.mention} cleared {limit} messages in {ctx.channel.mention}"
         await self.bot.channels['mod-logs'].send(msg)
@@ -164,61 +179,70 @@ class Mod(DatabaseCog):
         except discord.errors.Forbidden:
             pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
         await ctx.send(f"{member.mention} can no longer speak in meta.")
-        msg = f"🔇 **Meta muted**: {ctx.author.mention} meta muted {member.mention} | {member}"
+        msg = f"🔇 **Meta muted**: {ctx.author.mention} meta muted {member.mention} | {self.bot.escape_text(member)}"
+        signature = utils.command_signature(ctx.command)
         if reason != "":
-            msg += "\n✏️ __Reason__: " + reason
+            msg += "\n✏️ __Reason__: " + self.bot.escape_text(reason)
         else:
-            msg += "\nPlease add an explanation below. In the future, it is recommended to use `.metamute <user> [reason]` as the reason is automatically sent to the user."
+            msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
         await self.bot.channels['mod-logs'].send(msg)
-        
+
     @is_staff("HalfOP")
     @commands.guild_only()
+    @commands.bot_has_permissions(manage_roles=True)
     @commands.command()
     async def metaunmute(self, ctx, member: SafeMember):
         """Unmutes a user so they can speak in meta. Staff only."""
         try:
-            await self.remove_restriction(member.id, self.bot.roles["meta-mute"])
+            if not await self.remove_restriction(member.id, self.bot.roles["meta-mute"]) and self.bot.roles['meta-mute'] not in member.roles:
+                return await ctx.send("This user is not meta muted!")
             await member.remove_roles(self.bot.roles['meta-mute'])
             await ctx.send(f"{member.mention} can now speak in meta again.")
-            msg = f"🔈 **Meta unmuted**: {ctx.author.mention} meta unmuted {member.mention} | {member}"
+            msg = f"🔈 **Meta unmuted**: {ctx.author.mention} meta unmuted {member.mention} | {self.bot.escape_text(member)}"
             await self.bot.channels['mod-logs'].send(msg)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
 
     @is_staff("HalfOP")
     @commands.guild_only()
+    @commands.bot_has_permissions(manage_roles=True)
     @commands.command()
     async def mute(self, ctx, member: SafeMember, *, reason=""):
         """Mutes a user so they can't speak. Staff only."""
-        if not await self.add_restriction(member.id, self.bot.roles['Muted']):
-            await ctx.send("User is already muted!")
+        if await check_bot_or_staff(ctx, member, "mute"):
             return
+        if not await self.add_restriction(member.id, self.bot.roles['Muted']):
+            # Check if the user has a timed restriction.
+            # If there is one, this will convert it to a permanent one.
+            # If not, it will display that it was already taken.
+            if not self.get_time_restrictions_by_user_type(member.id, 'timemute'):
+                return await ctx.send("User is already muted!")
+            else:
+                await self.remove_timed_restriction(member.id, 'timemute')
         await member.add_roles(self.bot.roles['Muted'])
         await member.remove_roles(self.bot.roles['#elsewhere'])
         msg_user = "You were muted!"
         if reason != "":
             msg_user += " The given reason is: " + reason
-        try:
-            await member.send(msg_user)
-        except discord.errors.Forbidden:
-            pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
+        await utils.send_dm_message(member, msg_user)
         await ctx.send(f"{member.mention} can no longer speak.")
-        msg = f"🔇 **Muted**: {ctx.author.mention} muted {member.mention} | {member}"
+        msg = f"🔇 **Muted**: {ctx.author.mention} muted {member.mention} | {self.bot.escape_text(member)}"
         if reason != "":
-            msg += "\n✏️ __Reason__: " + reason
+            msg += "\n✏️ __Reason__: " + self.bot.escape_text(reason)
         else:
-            msg += "\nPlease add an explanation below. In the future, it is recommended to use `.mute <user> [reason]` as the reason is automatically sent to the user."
+            signature = utils.command_signature(ctx.command)
+            msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
         await self.bot.channels['mod-logs'].send(msg)
         # change to permanent mute
-        await self.remove_timed_restriction(member.id, 'timemute')
 
     @is_staff("HalfOP")
+    @commands.bot_has_permissions(manage_roles=True)
     @commands.guild_only()
     @commands.command()
     async def timemute(self, ctx, member: SafeMember, length, *, reason=""):
         """Mutes a user for a limited period of time so they can't speak. Staff only.\n\nLength format: #d#h#m#s"""
-
-        await self.add_restriction(member.id, self.bot.roles['Muted'])
+        if await check_bot_or_staff(ctx, member, "mute"):
+            return
         await member.add_roles(self.bot.roles['Muted'])
         await member.remove_roles(self.bot.roles['#elsewhere'])
         issuer = ctx.author
@@ -230,7 +254,7 @@ class Mod(DatabaseCog):
             "s": 1
         }
         seconds = 0
-        match = re.findall("([0-9]+[smhd])", length)  # Thanks to 3dshax server's former bot
+        match = re.findall(r"([0-9]+[smhd])", length)  # Thanks to 3dshax server's former bot
         if match is None:
             return None
         for item in match:
@@ -239,22 +263,25 @@ class Mod(DatabaseCog):
         delta = datetime.timedelta(seconds=seconds)
         unmute_time = timestamp + delta
         unmute_time_string = unmute_time.strftime("%Y-%m-%d %H:%M:%S")
-        await self.add_timed_restriction(member.id, unmute_time_string, 'timemute')
+        old_timestamp = await self.add_timed_restriction(member.id, unmute_time_string, 'timemute')
         await self.add_restriction(member.id, self.bot.roles['Muted'])
         msg_user = "You were muted!"
         if reason != "":
             msg_user += " The given reason is: " + reason
         msg_user += f"\n\nThis mute expires {unmute_time_string} {time.tzname[0]}."
-        try:
-            await member.send(msg_user)
-        except discord.errors.Forbidden:
-            pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
-        await ctx.send(f"{member.mention} can no longer speak.")
-        msg = f"🔇 **Timed mute**: {issuer.mention} muted {member.mention} until {unmute_time_string} | {member}"
+        await utils.send_dm_message(member, msg_user)
+        reason = self.bot.escape_text(reason)
+        signature = utils.command_signature(ctx.command)
+        if not old_timestamp:
+            await ctx.send(f"{member.mention} can no longer speak.")
+            msg = f"🔇 **Timed mute**: {issuer.mention} muted {member.mention}| {self.bot.escape_text(member)} until {unmute_time_string} "
+        else:
+            await ctx.send(f"{member.mention} mute was updated.")
+            msg = f"🔇 **Timed mute**: {issuer.mention} updated {member.mention}| {self.bot.escape_text(member)} time mute from {old_timestamp} until {unmute_time_string}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         else:
-            msg += "\nPlease add an explanation below. In the future, it is recommended to use `.timemute <user> <length> [reason]` as the reason is automatically sent to the user."
+            msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
         await self.bot.channels['mod-logs'].send(msg)
 
     @is_staff("HalfOP")
@@ -263,10 +290,11 @@ class Mod(DatabaseCog):
     async def unmute(self, ctx, member: SafeMember):
         """Unmutes a user so they can speak. Staff only."""
         try:
-            await self.remove_restriction(member.id, self.bot.roles["Muted"])
+            if not await self.remove_restriction(member.id, self.bot.roles["Muted"]):
+                return await ctx.send("This user is not muted")
             await member.remove_roles(self.bot.roles['Muted'])
             await ctx.send(f"{member.mention} can now speak again.")
-            msg = f"🔈 **Unmuted**: {ctx.author.mention} unmuted {member.mention} | {member}"
+            msg = f"🔈 **Unmuted**: {ctx.author.mention} unmuted {member.mention} | {self.bot.escape_text(member)}"
             await self.bot.channels['mod-logs'].send(msg)
             await self.remove_timed_restriction(member.id, 'timemute')
         except discord.errors.Forbidden:
@@ -276,30 +304,34 @@ class Mod(DatabaseCog):
     @commands.command()
     async def art(self, ctx, member: SafeMember):
         """Restore art-discussion access for a user. Staff only."""
-        await self.remove_restriction(member.id , self.bot.roles['No-art'])
+        if not await self.remove_restriction(member.id, self.bot.roles['No-art']):
+            return await ctx.send("This user is not restricted from art channels.")
         try:
             await member.remove_roles(self.bot.roles['No-art'])
         except discord.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
         await ctx.send(f"{member.mention} can access art-discussion again.")
-        msg = f"⭕️ **Restored art**: {ctx.message.author.mention} restored art access to {member.mention} | {member}"
+        msg = f"⭕️ **Restored art**: {ctx.message.author.mention} restored art access to {member.mention} | {self.bot.escape_text(member)}"
         await self.bot.channels['mod-logs'].send(msg)
 
     @is_staff("HalfOP")
     @commands.command()
     async def noart(self, ctx, member: SafeMember, *, reason=""):
         """Removes art-discussion access from a user. Staff only."""
-        await self.add_restriction(member.id, self.bot.roles['No-art'])
+        if not await self.add_restriction(member.id, self.bot.roles['No-art']):
+            return await ctx.send("This user is already restricted from art channels.")
         try:
             await member.add_roles(self.bot.roles['No-art'])
         except discord.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
         await ctx.send(f"{member.mention} can no longer access art-discussion.")
-        msg = f"🚫 **Removed art**: {ctx.message.author.mention} removed art access from {member.mention} | {member}"
+        msg = f"🚫 **Removed art**: {ctx.message.author.mention} removed art access from {member.mention} | {self.bot.escape_text(member)}"
+        reason = self.bot.escape_text(reason)
+        signature = utils.command_signature(ctx.command)
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         else:
-            msg += "\nPlease add an explanation below. In the future, it is recommended to use `.noart <user> [reason]` as the reason is automatically sent to the user."
+            msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
         await self.bot.channels['mod-logs'].send(msg)
 
     @is_staff("HalfOP")
@@ -308,10 +340,11 @@ class Mod(DatabaseCog):
     async def elsewhere(self, ctx, member: SafeMember):
         """Restore elsewhere access for a user. Staff only."""
         try:
-            await self.remove_restriction(member.id, self.bot.roles["No-elsewhere"])
+            if not await self.remove_restriction(member.id, self.bot.roles["No-elsewhere"]):
+                return await ctx.send("This user is not restricted from elsewhere!")
             await member.remove_roles(self.bot.roles['No-elsewhere'])
             await ctx.send(f"{member.mention} can access elsewhere again.")
-            msg = f"⭕️ **Restored elsewhere**: {ctx.author.mention} restored elsewhere access to {member.mention} | {member}"
+            msg = f"⭕️ **Restored elsewhere**: {ctx.author.mention} restored elsewhere access to {member.mention} | {self.bot.escape_text(member)}"
             await self.bot.channels['mod-logs'].send(msg)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
@@ -322,15 +355,18 @@ class Mod(DatabaseCog):
     async def noelsewhere(self, ctx, member: SafeMember, *, reason=""):
         """Removes elsewhere access from a user. Staff only."""
         try:
-            await self.add_restriction(member.id, self.bot.roles['No-elsewhere'])
+            if not await self.add_restriction(member.id, self.bot.roles['No-elsewhere']):
+                return await ctx.send("This user is already restricted from elsewhere!")
             await member.add_roles(self.bot.roles['No-elsewhere'])
             await member.remove_roles(self.bot.roles['#elsewhere'])
             await ctx.send(f"{member.mention} can no longer access elsewhere.")
-            msg = f"🚫 **Removed elsewhere**: {ctx.author.mention} removed elsewhere access from {member.mention} | {member}"
+            msg = f"🚫 **Removed elsewhere**: {ctx.author.mention} removed elsewhere access from {member.mention} | {self.bot.escape_text(member)}"
+            reason = self.bot.escape_text(reason)
+            signature = utils.command_signature(ctx.command)
             if reason != "":
                 msg += "\n✏️ __Reason__: " + reason
             else:
-                msg += "\nPlease add an explanation below. In the future, it is recommended to use `.noelsewhere <user> [reason]` as the reason is automatically sent to the user."
+                msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
             await self.bot.channels['mod-logs'].send(msg)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
@@ -347,16 +383,15 @@ class Mod(DatabaseCog):
             if reason != "":
                 msg_user += " The given reason is: " + reason
             msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
-            try:
-                await member.send(msg_user)
-            except discord.errors.Forbidden:
-                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
+            await utils.send_dm_message(member, msg_user)
             await ctx.send(f"{member.mention} can no longer embed links or attach files.")
-            msg = f"🚫 **Removed Embed**: {ctx.author.mention} removed embed from {member.mention} | {member}"
+            msg = f"🚫 **Removed Embed**: {ctx.author.mention} removed embed from {member.mention} | {self.bot.escape_text(member)}"
+            reason = self.bot.escape_text(reason)
+            signature = utils.command_signature(ctx.command)
             if reason != "":
                 msg += "\n✏️ __Reason__: " + reason
             else:
-                msg += "\nPlease add an explanation below. In the future, it is recommended to use `.noembed <user> [reason]` as the reason is automatically sent to the user."
+                msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
             await self.bot.channels['mod-logs'].send(msg)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
@@ -370,7 +405,7 @@ class Mod(DatabaseCog):
             await self.remove_restriction(member.id, self.bot.roles["No-Embed"])
             await member.remove_roles(self.bot.roles['No-Embed'])
             await ctx.send(f"{member.mention} can now embed links and attach files again.")
-            msg = f"⭕️ **Restored Embed**: {ctx.author.mention} restored embed to {member.mention} | {member}"
+            msg = f"⭕️ **Restored Embed**: {ctx.author.mention} restored embed to {member.mention} | {self.bot.escape_text(member)}"
             await self.bot.channels['mod-logs'].send(msg)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
@@ -379,43 +414,49 @@ class Mod(DatabaseCog):
     @commands.guild_only()
     @commands.command(aliases=["nohelp"])
     async def takehelp(self, ctx, member: FetchMember, *, reason=""):
-        """Remove access to help-and-questions. Staff and Helpers only."""
+        """Remove access to the assistance channels. Staff and Helpers only."""
         if await check_bot_or_staff(ctx, member, "takehelp"):
             return
-        await self.add_restriction(member.id, self.bot.roles['No-Help'])
+        if not await self.add_restriction(member.id, self.bot.roles['No-Help']):
+            # Check if the user has a timed restriction.
+            # If there is one, this will convert it to a permanent one.
+            # If not, it will display that it was already taken.
+            if not self.get_time_restrictions_by_user_type(member.id, 'timenohelp'):
+                return await ctx.send("This user's help is already taken!")
+            else:
+                await self.remove_timed_restriction(member.id, 'timenohelp')
         msg_user = "You lost access to help channels!"
         if isinstance(member, discord.Member):
             await member.add_roles(self.bot.roles['No-Help'])
             if reason != "":
                 msg_user += " The given reason is: " + reason
             msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
-            try:
-                await member.send(msg_user)
-            except discord.errors.Forbidden:
-                pass
+            await utils.send_dm_message(member, msg_user)
         await ctx.send(f"{member.mention} can no longer access the help channels.")
-        msg = f"🚫 **Help access removed**: {ctx.author.mention} removed access to help channels from {member.mention} | {member}"
+        msg = f"🚫 **Help access removed**: {ctx.author.mention} removed access to help channels from {member.mention} | {self.bot.escape_text(member)}"
+        reason = self.bot.escape_text(reason)
+        signature = utils.command_signature(ctx.command)
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         else:
-            msg += "\nPlease add an explanation below. In the future, it is recommended to use `.takehelp <user> [reason]` as the reason is automatically sent to the user."
+            msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
         await self.bot.channels['mod-logs'].send(msg)
         await self.bot.channels['helpers'].send(msg)
-        await self.remove_timed_restriction(member.id, 'timenohelp')
 
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
     async def givehelp(self, ctx, member: FetchMember):
-        """Restore access to help-and-questions. Staff and Helpers only."""
-        await self.remove_restriction(member.id, self.bot.roles["No-Help"])
+        """Restore access to the assistance channels. Staff and Helpers only."""
+        if not await self.remove_restriction(member.id, self.bot.roles["No-Help"]):
+            return await ctx.send("This user is not take-helped!")
         if isinstance(member, discord.Member):
             try:
                 await member.remove_roles(self.bot.roles['No-Help'])
             except discord.errors.Forbidden:
                 await ctx.send("💢 I don't have permission to do this.")
         await ctx.send(f"{member.mention} can access the help channels again.")
-        msg = f"⭕️ **Help access restored**: {ctx.author.mention} restored access to help channels to {member.mention} | {member}"
+        msg = f"⭕️ **Help access restored**: {ctx.author.mention} restored access to help channels to {member.mention} | {self.bot.escape_text(member)}"
         await self.bot.channels['mod-logs'].send(msg)
         await self.bot.channels['helpers'].send(msg)
         await self.remove_timed_restriction(member.id, 'timenohelp')
@@ -453,16 +494,15 @@ class Mod(DatabaseCog):
             msg_user += " The given reason is: " + reason
         msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
         msg_user += f"\n\nThis restriction expires {unnohelp_time_string} {time.tzname[0]}."
-        try:
-            await member.send(msg_user)
-        except discord.errors.Forbidden:
-            pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
+        await utils.send_dm_message(member, msg_user)
         await ctx.send(f"{member.mention} can no longer speak in Assistance Channels.")
-        msg = f"🚫 **Timed No-Help**: {issuer.mention} restricted {member.mention} until {unnohelp_time_string} | {member}"
+        reason = self.bot.escape_text(reason)
+        signature = utils.command_signature(ctx.command)
+        msg = f"🚫 **Timed No-Help**: {issuer.mention} restricted {member.mention} until {unnohelp_time_string} | {self.bot.escape_text(member)}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         else:
-            msg += "\nPlease add an explanation below. In the future, it is recommended to use `.timetakehelp <user> <length> [reason]` as the reason is automatically sent to the user."
+            msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
         await self.bot.channels['mod-logs'].send(msg)
         await self.bot.channels['helpers'].send(msg)
 
@@ -480,7 +520,7 @@ class Mod(DatabaseCog):
         msg = f"⭕️ **Small help access revoked**: {ctx.author.mention} revoked access to small help channel from {', '.join([f'{x.mention} | {x}'for x in members])}"
         await self.bot.channels['mod-logs'].send(msg)
         await self.bot.channels['helpers'].send(msg)
-       
+
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
@@ -495,30 +535,31 @@ class Mod(DatabaseCog):
         msg = f"⭕️ **Small help access granted**: {ctx.author.mention} granted access to small help channel to {', '.join([f'{x.mention} | {x}'for x in members])}"
         await self.bot.channels['mod-logs'].send(msg)
         await self.bot.channels['helpers'].send(msg)
-            
+
     @is_staff("Helper")
     @commands.guild_only()
-    @commands.command(name="probate")
-    async def probate(self, ctx, member: FetchMember, *, reason=""):
+    @commands.command()
+    async def probate(self, ctx, member: FetchMember, *, reason = ""):
         """Probate a user. Staff and Helpers only."""
         if await check_bot_or_staff(ctx, member, "probate"):
             return
-        await self.add_restriction(member.id, self.bot.roles['Probation'])
+        if not await self.add_restriction(member.id, self.bot.roles['Probation']):
+            return await ctx.send("This user is already probated!")
         if isinstance(member, discord.Member):
             await member.add_roles(self.bot.roles['Probation'])
             msg_user = "You are under probation!"
             if reason != "":
                 msg_user += " The given reason is: " + reason
-            try:
-                await member.send(msg_user)
-            except discord.errors.Forbidden:
-                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
+            await utils.send_dm_message(member, msg_user)
         await ctx.send(f"{member.mention} is now in probation.")
-        msg = f"🚫 **Probated**: {ctx.author.mention} probated {member.mention} | {member}"
+        reason = self.bot.escape_text(reason)
+        msg = f"🚫 **Probated**: {ctx.author.mention} probated {member.mention} | {self.bot.escape_text(member)}"
+        signature = utils.command_signature(ctx.command)
+        reason = self.bot.escape_text(reason)
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         else:
-            msg += "\nPlease add an explanation below. In the future, it is recommended to use `.probate <user> [reason]` as the reason is automatically sent to the user."
+            msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
         await self.bot.channels['mod-logs'].send(msg)
 
     @is_staff("Helper")
@@ -526,18 +567,19 @@ class Mod(DatabaseCog):
     @commands.command()
     async def unprobate(self, ctx, member: FetchMember):
         """Unprobate a user. Staff and Helpers only."""
-        await self.remove_restriction(member.id, self.bot.roles["Probation"])
+        if not await self.remove_restriction(member.id, self.bot.roles["Probation"]) and self.bot.roles["Probation"] not in member.roles:
+            return await ctx.send("This user is not probated!")
         if isinstance(member, discord.Member):
             await member.remove_roles(self.bot.roles['Probation'])
         await ctx.send(f"{member.mention} is out of probation.")
-        msg = f"⭕️ **Un-probated**: {ctx.author.mention} un-probated {member.mention} | {member}"
+        msg = f"⭕️ **Un-probated**: {ctx.author.mention} un-probated {member.mention} | {self.bot.escape_text(member)}"
         await self.bot.channels['mod-logs'].send(msg)
 
     @is_staff("OP")
     @commands.command()
-    async def playing(self, ctx, *gamename):
+    async def playing(self, ctx, *, gamename):
         """Sets playing message. Staff only."""
-        await self.bot.change_presence(activity=discord.Game(name=f'{" ".join(gamename)}'))
+        await self.bot.change_presence(activity=discord.Game(name=gamename))
 
     @is_staff("OP")
     @commands.command()
@@ -555,42 +597,48 @@ class Mod(DatabaseCog):
             await self.bot.change_presence(status=discord.Status.invisible)
 
     @is_staff("OP")
-    @commands.command(hidden=True)
+    @commands.command()
     async def username(self, ctx, *, username):
         """Sets bot name. Staff only."""
-        await self.bot.user.edit(username=f'{username}')
+        await self.bot.user.edit(username=username)
 
     @is_staff("SuperOP")
     @commands.guild_only()
-    @commands.command(hidden=True)
+    @commands.command()
     async def nofilter(self, ctx, channel: discord.TextChannel):
         """Adds nofilter to the channel"""
+        if await self.check_nofilter(channel):
+            return await ctx.send("This channel is already no filtered!")
         await self.add_nofilter(channel)
         await self.bot.channels['mod-logs'].send(f"⭕ **No filter**: {ctx.author.mention} added no filter to {channel.mention}")
 
     @is_staff("SuperOP")
     @commands.guild_only()
-    @commands.command(hidden=True)
+    @commands.command()
     async def filter(self, ctx, channel: discord.TextChannel):
         """Removes nofilter from the channel"""
+        if not await self.check_nofilter(channel):
+            return await ctx.send("This channel is already filtered!")
         await self.remove_nofilter(channel)
         await self.bot.channels['mod-logs'].send(f"🚫 **Filter**: {ctx.author.mention} removed no filter from {channel.mention}")
 
     @is_staff("Helper")
     @commands.guild_only()
-    @commands.command(hidden=True)
+    @commands.command()
     async def approve(self, ctx, invite: discord.Invite, times: int=1):
         """Approves a server invite for a number of times(0 to delete approved invites). Staff and Helpers only."""
         code = invite.code
         if times == 0:
             try:
                 del self.bot.temp_guilds[code]
-                return await ctx.send(f"Removed {invite.guild}({code}) from approved invite list!")
+                return await ctx.safe_send(f"Removed {invite.guild}({code}) from approved invite list!")
             except KeyError:
                 return await ctx.send("This invite is not in the approved invite list!")
         self.bot.temp_guilds[code] = times
-        await ctx.send(f"Approved an invite to {invite.guild}({code}) for posting {times} times")
-        await self.bot.channels['mod-logs'].send(f"⭕ **Approved**: {ctx.author.mention} approved server {invite.guild}({code}) to be posted {times} times")
+        await ctx.safe_send(f"Approved an invite to {invite.guild}({code}) for posting {times} times")
+        # You can ping @everyone with a guild name
+        guild = self.bot.escape_text(invite.guild)
+        await self.bot.channels['mod-logs'].send(f"⭕ **Approved**: {ctx.author.mention} approved server {guild}({code}) to be posted {times} times")
 
 
 def setup(bot):

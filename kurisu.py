@@ -53,6 +53,15 @@ cogs = [
 ]
 
 
+class CustomContext(commands.Context):
+    async def safe_send(self, content, **kwargs):
+        """Same as send except it escapes mentions.
+
+        Note: This does not escape channel mentions"""
+        content = discord.utils.escape_mentions(content)
+        return await self.send(content, **kwargs)
+
+
 class Kurisu(commands.Bot):
     """Its him!!."""
     def __init__(self, command_prefix, description):
@@ -74,7 +83,7 @@ class Kurisu(commands.Bot):
             'Probation': None,
             'Retired Staff': None,
             'Verified': None,
-            'Trusted' : None,
+            'Trusted': None,
             'Muted': None,
             'No-Help': None,
             'No-elsewhere': None,
@@ -86,6 +95,7 @@ class Kurisu(commands.Bot):
             'Small Help': None,
             'meta-mute': None,
             'Nitro Booster': None,
+            'crc': None,
         }
 
         self.actions = []
@@ -124,6 +134,9 @@ class Kurisu(commands.Bot):
 
         os.makedirs("data", exist_ok=True)
         os.makedirs("data/ninupdates", exist_ok=True)
+
+    async def get_context(self, message, *, cls=CustomContext):
+        return await super().get_context(message, cls=cls)
 
     def load_cogs(self):
         for extension in cogs:
@@ -215,7 +228,7 @@ class Kurisu(commands.Bot):
                     await ctx.message.delete()
                 except (discord.errors.NotFound, discord.errors.Forbidden):
                     pass
-                await ctx.send(f"{ctx.message.author.mention} This command was used {exc.cooldown.per - exc.retry_after:.2f}s ago and is on cooldown. Try again in {exc.retry_after:.2f}s.", delete_after=10)
+                await ctx.send(f"{author.mention} This command was used {exc.cooldown.per - exc.retry_after:.2f}s ago and is on cooldown. Try again in {exc.retry_after:.2f}s.", delete_after=10)
             else:
                 await ctx.reinvoke()
 
@@ -224,7 +237,7 @@ class Kurisu(commands.Bot):
             await ctx.send_help(ctx.command)
 
         elif isinstance(exc, discord.NotFound):
-            await ctx.send(f"ID not found.")
+            await ctx.send("ID not found.")
 
         elif isinstance(exc, discord.Forbidden):
             await ctx.send(f"💢 I can't help you if you don't let me!\n`{exc.text}`.")
@@ -250,6 +263,7 @@ class Kurisu(commands.Bot):
 
     def add_cog(self, cog):
         super().add_cog(cog)
+        print(f'Cog "{cog.qualified_name}" loaded')
 
     async def close(self):
         print('Kurisu is shutting down')
@@ -272,8 +286,8 @@ def main():
         print(f'discord.py is not at least 1.0.0x. (current version: {discord.__version__})')
         return 2
 
-    if not hexversion >= 0x030701F0:  # 3.7.1
-        print('Kurisu requires 3.7.1 or later.')
+    if not hexversion >= 0x30800f0:  # 3.8
+        print('Kurisu requires 3.8 or later.')
         return 2
 
     # attempt to get current git information
@@ -290,8 +304,8 @@ def main():
         branch = "<unknown>"
 
     bot = Kurisu(('.', '!'), description="Kurisu, the bot for Nintendo Homebrew!")
-    bot.help_command = commands.DefaultHelpCommand(dm_help = None)
-    print(f'Starting Kurisu on commit {commit} on branch {branch}', commit, branch)
+    bot.help_command = commands.DefaultHelpCommand(dm_help=None)
+    print(f'Starting Kurisu on commit {commit} on branch {branch}')
     bot.load_cogs()
     bot.run(config['Main']['token'])
 
