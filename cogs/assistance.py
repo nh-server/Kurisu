@@ -78,9 +78,9 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 continue
             if self.check_console(x, ctx.channel.name, ('vwii',)):
                 embed = discord.Embed(title="Guide", color=discord.Color(0xFFFFFF))
-                embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/vwii/vwii-modding")
+                embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/vwii-modding")
                 embed.set_thumbnail(url="https://i.imgur.com/FclGzNz.png")
-                embed.url = "https://wiiuguide.xyz/#/vwii/vwii-modding"
+                embed.url = "https://wiiuguide.xyz/#/vwii-modding"
                 embed.description = "A complete vWii modding guide"
                 await ctx.send(embed=embed)
                 continue
@@ -400,15 +400,15 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
         elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Is the new Switch update safe?", color=0xe60012)
             embed.description = cleandoc("""
-            Currently, the latest Switch system firmware is `9.2.0`.
-            
+            Currently, the latest Switch system firmware is `10.0.0`     
             If your Switch is **unpatched and can access RCM**:
-            Atmosphere and Hekate currently support 9.2.0, and unpatched units will always be hackable.
-            You should follow the precautions in our update guide, and always update Atmosphere and Hekate before updating the system firmware.
+            Atmosphere and Hekate currently **DO NOT** support 10.0.0, but unpatched units will always be hackable once they do.
+            If your console is 9.2.0 or below, you are able to access CFW at the moment.
+            When Atmosphere and Hekate update, update them before updating the system firmware.
             
             If your Switch is **hardware patched and cannot access RCM**:
             Stay on the lowest possible firmware version. Any Switch that is patched and above 7.0.1 is unlikely to be hackable.
-            *Last edited: March 24, 2020*
+            *Last edited: April 14, 2020*
             """)
             await ctx.send(embed=embed)
 
@@ -846,9 +846,9 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
             await ctx.send(embed=embed)
         elif self.check_console(console, ctx.channel.name, ('wiiu',)):
             embed = discord.Embed(title="Wii U dump/install Guide", color=discord.Color(0x009AC7))
-            embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/extras/dump-games")
+            embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/dump-games")
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
-            embed.url = "https://wiiuguide.xyz/#/extras/dump-games"
+            embed.url = "https://wiiuguide.xyz/#/dump-games"
             embed.description = ("How to dump/install Wii U game discs using disc2app and WUP Installer GX2")
             await ctx.send(embed=embed)
 
@@ -1302,16 +1302,16 @@ in the scene.
             return
         if self.check_console(console, ctx.message.channel.name, ('miichannel',)):
             embed = discord.Embed(title="Recover a Lost Mii Channel on vWii", color=0xe60012)
-            embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/troubleshooting/recover-mii-channel")
+            embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/recover-mii-channel")
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
-            embed.url = "https://wiiuguide.xyz/#/troubleshooting/recover-mii-channel"
+            embed.url = "https://wiiuguide.xyz/#/recover-mii-channel"
             embed.description = "A complete guide to recover a lost or corrupted Mii Channel on vWii"
             await ctx.send(embed=embed)
         elif self.check_console(console, ctx.message.channel.name, ('vios',)):
             embed = discord.Embed(title="Recover a Corrupted IOS on vWii", color=0xe60012)
-            embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/troubleshooting/recover-ios")
+            embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/recover-ios")
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
-            embed.url = "https://wiiuguide.xyz/#/troubleshooting/recover-ios"
+            embed.url = "https://wiiuguide.xyz/#/recover-ios"
             embed.description = "A complete guide to recover a lost or corrupted IOS on vWii"
             await ctx.send(embed=embed)
 
@@ -1319,9 +1319,10 @@ in the scene.
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def invite(self, ctx, name: str):
         """Available servers are:
-        twl, switchroot, acnl, flagbrew, themeplaza, smashultimate, ndsbrew, citra, homebrew, skyrimnx, pkhexautolegality, reswitched, cemu, dragoninjector, vita, henkaku, universal, r3ds, smash4, switchlan, ctgp7, retronx"""
-        
-        name = name.lower()
+        twl, switchroot, acnl, flagbrew, themeplaza, smashultimate, ndsbrew, citra, homebrew, skyrimnx, pkhexautolegality, reswitched, cemu, dragoninjector, vita, henkaku, universal, r3DS, smash4, switchlan, ctgp7, retronx"""
+        name = name.casefold()
+
+        # When adding invites, make sure the keys are lowercase, or the command will not find it when invoked!
         invites = {
             'twl':'yD3spjv',
             'switchroot': '9d66FYg',
@@ -1344,9 +1345,9 @@ in the scene.
             'switchlan': 'SbxDMER',
             'ctgp7': '0uTPwYv3SPQww54l',
             'retronx': 'vgvZN9W',
-            'r3DS': '3ds'
+            'r3ds': '3ds'
         }
-        #Rewrite thanks to Dax#5790
+
         if name in invites:
             await ctx.send(f"https://discord.gg/{invites[name]}")
         else:

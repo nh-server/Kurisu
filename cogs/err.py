@@ -298,6 +298,7 @@ class Err(commands.Cog):
         '2001-0125': ['Executed svcCloseHandle on main-thread handle (No known support page)', None],
         '2002-6063': ['Attempted to read eMMC CID from browser? (No known support page)', None],
         '2005-0003': ['You are unable to download software.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/22393/kw/2005-0003'],
+        '2016-2101': ['Inserted Tencent-Nintendo (Chinese model) cartridge into regular Switch, which is region locked.', 'https://nintendoswitch.com.cn/support/'],
         '2110-3400': ['This error code indicates the Internet connection you are attempting to use likely requires some type of authentication through a web browser (such as agreeing to terms of service or entering a username and password).', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/22569/kw/2110-3400'],
         '2124-4007': ['System + Nintendo Account are permanently banned by Nintendo. You cannot ask how to fix this issue here.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/28046/kw/2124-4007'],
         '2124-4025': ['Game Card is banned, this "COULD" happen to legal users if so contact Nintendo to allow them to whitelist the Game Card. Otherwise, You cannot ask how to fix this issue here.', None],
