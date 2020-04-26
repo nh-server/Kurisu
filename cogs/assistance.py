@@ -1229,15 +1229,11 @@ in the scene.
                                 The public 90DNS IP adresses are:
                                 - `207.246.121.77` (USA)
                                 - `163.172.141.219`(France)
-                                
-                                To set these go to System Settings -> Internet -> Connection Settings -> Your wifi Network -> DNS to Manual -> Set primary and secondary DNS to the previously listed IPs -> Save Settings.
 
-                                Set the primary DNS server to the IP that is closest to you and the other as your secondary DNS.
-                                
-                                You will have to manually set these for each WiFi connection you have set up.
-                                
-                                [Follow these steps](https://nh-server.github.io/switch-guide/extras/blocking_updates/#testing-if-your-90dns-connection-is-working) to ensure that the connection is safe and not blocked by your ISP.
-                                """, title="90DNS IP adressses")
+                                To set these [follow these steps](https://nh-server.github.io/switch-guide/extras/blocking_updates/)
+
+                                You will have to manually set these for each WiFi connection you have set up.""",
+                                title="90DNS IP adressses")
 
     @commands.command(aliases=['missingco'])
     async def missingconfig(self, ctx):
