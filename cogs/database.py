@@ -168,6 +168,11 @@ class DatabaseCog(commands.Cog):
             await cur.execute('SELECT * from timed_restrictions WHERE type=?', (type,))
             return await cur.fetchall()
 
+    async def get_time_restrictions_by_user(self, userid):
+        async with self.bot.holder as cur:
+            await cur.execute('SELECT type,timestamp from timed_restrictions WHERE user_id=?', (userid,))
+            return await cur.fetchall()
+
     async def set_time_restriction_alert(self, user_id, type):
         async with self.bot.holder as cur:
             await cur.execute('UPDATE timed_restrictions SET alert=1 WHERE user_id=? AND type=?', (user_id, type))

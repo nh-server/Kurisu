@@ -65,6 +65,43 @@ class Mod(DatabaseCog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
+    async def getinfo(self, ctx, user: FetchMember):
+        """Gets all restriction information about a user. Staff Only."""
+        
+        embed = discord.Embed()
+
+        res_roles = await self.get_restrictions_roles_id(user.id)
+        timed_res = await self.get_time_restrictions_by_user(user.id)
+
+        try:
+            ban = await ctx.guild.fetch_ban(user)
+        except discord.NotFound:
+            ban = None
+
+        softban = await self.get_softban(user.id)
+            
+        roles = []
+
+        for res in res_roles:
+            r = self.bot.guild.get_role(res)
+            roles.append(r.name if r else "'Deleted Role'")
+
+        res_text = '\n'.join(roles)
+        tres_text = '\n'.join([f"{r[0]} until {r[1]}" for r in timed_res])
+
+        embed.add_field(name="User", value=f"{user.mention} | {self.bot.escape_text(user)}\n{f'**Banned**, reason: {ban.reason}' if ban is not None else ''}\n{f'**Softbanned**, reason: {softban[2]}' if softban is not None else ''}", inline=False)
+        embed.add_field(name="Information", value=f"Created {user.created_at}\n{f'Joined   {user.joined_at}' if isinstance(user, discord.Member) else 'Not in Server'}", inline=False)
+        
+        if res_roles:
+            embed.add_field(name="Restrictions", value=res_text, inline=False)
+        if roles:
+            embed.add_field(name="Timed Restrictions", value=tres_text, inline=False)
+        await ctx.send(embed=embed)
+        
+
+    @is_staff("HalfOP")
+    @commands.guild_only()
+    @commands.command()
     async def matchuser(self, ctx, *, rgx: str):
         """Match users by regex."""
         author = ctx.author
