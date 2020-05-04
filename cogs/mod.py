@@ -98,7 +98,6 @@ class Mod(DatabaseCog):
             embed.add_field(name="Timed Restrictions", value=tres_text, inline=False)
         await ctx.send(embed=embed)
         
-
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
