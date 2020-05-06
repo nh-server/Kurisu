@@ -70,17 +70,17 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 continue
             if self.check_console(x, ctx.channel.name, ('wiiu',)):
                 embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
-                embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/")
+                embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/")
                 embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
-                embed.url = "https://wiiuguide.xyz/"
+                embed.url = "https://wiiu.hacks.guide/"
                 embed.description = "A complete Wii U custom firmware + coldboothax guide"
                 await ctx.send(embed=embed)
                 continue
             if self.check_console(x, ctx.channel.name, ('vwii',)):
                 embed = discord.Embed(title="Guide", color=discord.Color(0xFFFFFF))
-                embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/vwii-modding")
+                embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/vwii-modding")
                 embed.set_thumbnail(url="https://i.imgur.com/FclGzNz.png")
-                embed.url = "https://wiiuguide.xyz/#/vwii-modding"
+                embed.url = "https://wiiu.hacks.guide/#/vwii-modding"
                 embed.description = "A complete vWii modding guide"
                 await ctx.send(embed=embed)
                 continue
@@ -846,9 +846,9 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
             await ctx.send(embed=embed)
         elif self.check_console(console, ctx.channel.name, ('wiiu',)):
             embed = discord.Embed(title="Wii U dump/install Guide", color=discord.Color(0x009AC7))
-            embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/dump-games")
+            embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/dump-games")
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
-            embed.url = "https://wiiuguide.xyz/#/dump-games"
+            embed.url = "https://wiiu.hacks.guide/#/dump-games"
             embed.description = ("How to dump/install Wii U game discs using disc2app and WUP Installer GX2")
             await ctx.send(embed=embed)
 
@@ -1302,16 +1302,16 @@ in the scene.
             return
         if self.check_console(console, ctx.message.channel.name, ('miichannel',)):
             embed = discord.Embed(title="Recover a Lost Mii Channel on vWii", color=0xe60012)
-            embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/recover-mii-channel")
+            embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/recover-mii-channel")
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
-            embed.url = "https://wiiuguide.xyz/#/recover-mii-channel"
+            embed.url = "https://wiiu.hacks.guide/#/recover-mii-channel"
             embed.description = "A complete guide to recover a lost or corrupted Mii Channel on vWii"
             await ctx.send(embed=embed)
         elif self.check_console(console, ctx.message.channel.name, ('vios',)):
             embed = discord.Embed(title="Recover a Corrupted IOS on vWii", color=0xe60012)
-            embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/recover-ios")
+            embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/recover-ios")
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
-            embed.url = "https://wiiuguide.xyz/#/recover-ios"
+            embed.url = "https://wiiu.hacks.guide/#/recover-ios"
             embed.description = "A complete guide to recover a lost or corrupted IOS on vWii"
             await ctx.send(embed=embed)
 
