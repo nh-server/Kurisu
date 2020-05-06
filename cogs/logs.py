@@ -16,7 +16,7 @@ Please review all of the rules in {2} before asking for help or chatting. In par
 You can find a list of staff and helpers in {2}.
 
 Do you simply need a place to start hacking your 3DS system? Check out **<https://3ds.hacks.guide>**!
-Do you simply need a place to start hacking your Wii U system? Check out **<https://wiiuguide.xyz>**!
+Do you simply need a place to start hacking your Wii U system? Check out **<https://wiiu.hacks.guide>**!
 Do you simply need a place to start hacking your Switch system? Check out **<https://nh-server.github.io/switch-guide/>**!
 
 By participating in this server, you acknowledge that user data (including messages, user IDs, user tags) will be collected and logged for moderation purposes. If you disagree with this collection, please leave the server immediately.
