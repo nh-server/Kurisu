@@ -107,7 +107,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 embed.description = "A complete Nintendo DSi homebrew guide, from stock to HiyaCFW"
                 await ctx.send(embed=embed)	
 
-    @commands.command(aliases=['finalizing'])
+    @commands.command(aliases=['finalizing', 'finalising', 'finalise'])
     async def finalize(self, ctx):
         """Finalizing Setup"""
         await self.simple_embed(ctx, """
