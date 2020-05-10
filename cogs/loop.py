@@ -55,7 +55,10 @@ class Loop(DatabaseCog):
 
         for status_type in ("operational_statuses", "temporary_maintenances"):
             for entry in j[status_type]:
-                entry_desc = ', '.join(entry["platform"]).replace("nintendo", "Nintendo").replace("web", "Web")
+                if "platform" in entry:
+                    entry_desc = ', '.join(entry["platform"]).replace("nintendo", "Nintendo").replace("web", "Web")
+                else:
+                    entry_desc = 'No console specified.'
 
                 begin = datetime(year=2000, month=1, day=1, tzinfo=self.tz)
                 end = datetime(year=2099, month=1, day=1, tzinfo=self.tz)
@@ -66,7 +69,7 @@ class Loop(DatabaseCog):
                     end = self.netinfo_parse_time(entry["end"])
                     entry_desc += '\nEnds: ' + end.strftime('%A, %B %d, %Y %I:%M %p')
 
-                descriptor = "Status" if status_type == "operational_statuses" else "Maintenance"
+                descriptor = "Maintenance" if status_type == "temporary_maintenances" else "Status"
 
                 if begin <= now < end or True:
                     entry_name = 'Current {}: {}'.format(descriptor, entry["software_title"].replace(' <br />\r\n', ', '))
