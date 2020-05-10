@@ -585,7 +585,7 @@ already tried the Luma black screen process.
                             If your power LED turns on and off after you installed b9s, you are not bricked and are \
 just missing a file called boot.firm in the root of your SD card.
                             """)
-        embed.add_field(name="How to fix the issue", value="1. Check you inserted the SD card in your console\n 2. Place/replace the file, downloading it from https://github.com/AuroraWright/Luma3DS/releases", inline=False)
+        embed.add_field(name="How to fix the issue", value="1. Check you inserted the SD card in your console\n 2. Place/replace the file, downloading it from https://github.com/LumaTeam/Luma3DS/releases", inline=False)
         embed.add_field(name="Checking your SD for errors or corruption", value="https://3ds.eiphax.tech/sderrors.html \n Please read the instructions carefully.", inline=False)
         await ctx.send(embed=embed)
 
@@ -662,7 +662,7 @@ the system can't check for an update.
         """What to do if you delete all your SD card contents"""
         await self.simple_embed(ctx, """
                                 If you have lost the contents of your SD card with CFW, you will need in SD root:
-                                -`boot.firm` and `boot.3dsx` from [luma3ds latest release](https://github.com/AuroraWright/Luma3DS/releases/latest)
+                                -`boot.firm` and `boot.3dsx` from [luma3ds latest release](https://github.com/LumaTeam/Luma3DS/releases/latest)
                                 Then repeat the [finalizing setup](https://3ds.hacks.guide/finalizing-setup) page.
                                 """, color=discord.Color.red())
 
@@ -671,15 +671,15 @@ the system can't check for an update.
     async def luma(self, ctx, lumaversion=""):
         """Download links for Luma versions"""
         if len(lumaversion) >= 3 and lumaversion[0].isdigit() and lumaversion[1] == "." and lumaversion[2].isdigit():
-            await self.simple_embed(ctx, f"Luma v{lumaversion}\nhttps://github.com/AuroraWright/Luma3DS/releases/tag/v{lumaversion}", color=discord.Color.blue())
+            await self.simple_embed(ctx, f"Luma v{lumaversion}\nhttps://github.com/LumaTeam/Luma3DS/releases/tag/v{lumaversion}", color=discord.Color.blue())
         elif lumaversion == "latest":
-            await self.simple_embed(ctx, "Latest Luma Version:\nhttps://github.com/AuroraWright/Luma3DS/releases/latest", color=discord.Color.blue())
+            await self.simple_embed(ctx, "Latest Luma Version:\nhttps://github.com/LumaTeam/Luma3DS/releases/latest", color=discord.Color.blue())
         else:
             await self.simple_embed(ctx, """
                                     Download links for the most common Luma3DS releases:
-                                    [Latest Luma](https://github.com/AuroraWright/Luma3DS/releases/latest)
-                                    [Luma v7.0.5](https://github.com/AuroraWright/Luma3DS/releases/tag/v7.0.5)
-                                    [Luma v7.1](https://github.com/AuroraWright/Luma3DS/releases/tag/v7.1)
+                                    [Latest Luma](https://github.com/LumaTeam/Luma3DS/releases/latest)
+                                    [Luma v7.0.5](https://github.com/LumaTeam/Luma3DS/releases/tag/v7.0.5)
+                                    [Luma v7.1](https://github.com/LumaTeam/Luma3DS/releases/tag/v7.1)
                                     """, color=discord.Color.blue())
 
     # Embed to broken TWL Troubleshooting
