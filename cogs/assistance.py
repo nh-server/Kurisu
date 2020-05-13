@@ -1345,7 +1345,8 @@ in the scene.
             'switchlan': 'SbxDMER',
             'ctgp7': '0uTPwYv3SPQww54l',
             'retronx': 'vgvZN9W',
-            'r3ds': '3ds'
+            'r3ds': '3ds',
+            'lovepotion' : 'ggbKkhc',
         }
 
         if name in invites:
