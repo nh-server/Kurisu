@@ -71,9 +71,9 @@ class Loop(DatabaseCog):
 
                 descriptor = "Maintenance" if status_type == "temporary_maintenances" else "Status"
 
-                if begin <= now:
+                if now < end:
                     entry_name = "{} {}: {}".format(
-                        "Current" if now < end else "Upcoming",
+                        "Current" if begin <= now else "Upcoming",
                         descriptor, 
                         entry["software_title"].replace(' <br />\r\n', ', ')
                     )
