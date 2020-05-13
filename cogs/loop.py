@@ -71,8 +71,12 @@ class Loop(DatabaseCog):
 
                 descriptor = "Maintenance" if status_type == "temporary_maintenances" else "Status"
 
-                if begin <= now < end:
-                    entry_name = 'Current {}: {}'.format(descriptor, entry["software_title"].replace(' <br />\r\n', ', '))
+                if now < end:
+                    entry_name = "{} {}: {}".format(
+                        "Current" if begin <= now else "Upcoming",
+                        descriptor, 
+                        entry["software_title"].replace(' <br />\r\n', ', ')
+                    )
                     if "services" in entry:
                         entry_name += ", " + ', '.join(entry["services"])
                     embed.add_field(name=entry_name, value=entry_desc, inline=False)
