@@ -1396,7 +1396,7 @@ in the scene.
             """))
         await ctx.send(embed=embed)
 	
-	@commands.command(aliases=['systransfer'])
+    @commands.command(aliases=['systransfer'])
     async def transfer(self, ctx):
         """If you want to keep homebrew apps when doing a system transfer:"""
         embed = discord.Embed(title="What to do if you want to keep homebrew apps during a system transfer", color=discord.Color.magenta())
