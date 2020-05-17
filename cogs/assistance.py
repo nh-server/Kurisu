@@ -1403,11 +1403,11 @@ in the scene.
         embed = discord.Embed(title="What to do if you want to keep homebrew apps during a system transfer", color=discord.Color.magenta())
         embed.description = "Keeping Homebrew Apps after system transfer"
         embed.add_field(name="Steps to system transfer", value=cleandoc("""
-                1. Install CFW on the new console using [3ds.hacks.guide] (https://3ds.hacks.guide/)
+                1. Install CFW on the new console using [3ds.hacks.guide](https://3ds.hacks.guide/)
                 2. Do a system transfer by navigating to system settings, other settings, system transfer.
                 3. If prompted, choose a PC-Based Transfer.
-                4. To access the Homebrew Launcher on the new console, do `Section III - Homebrew Launcher` in [Finalizing Setup] (https://3ds.hacks.guide/finalizing-setup)
-                5. On the console you transfered to, run [faketik] (https://github.com/ihaveamac/faketik/releases) in the Homebrew Launcher.
+                4. To access the Homebrew Launcher on the new console, do `Section III - Homebrew Launcher` in [Finalizing Setup](https://3ds.hacks.guide/finalizing-setup)
+                5. On the console you transfered to, run [faketik](https://github.com/ihaveamac/faketik/releases) in the Homebrew Launcher.
                 6. Your Homebrew apps should appear on the homescreen!
             """))
         await ctx.send(embed=embed)
