@@ -1097,7 +1097,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
     @commands.guild_only()
     @tutorial.command(aliases=["theme"])
     async def themes(self, ctx, console=None):
-        """Links to the relevant tutorial for installing a theme."""
+        """Links to tutorials for installing themes"""
         systems = ("3ds", "nx", "ns", "switch")
         if console not in systems:
             if ctx.channel.name.startswith(systems):
