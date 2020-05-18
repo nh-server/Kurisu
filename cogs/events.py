@@ -136,6 +136,7 @@ class Events(DatabaseCog):
     # use the full ID, including capitalization and dashes
     piracy_video_ids = (
         'VWFe_n7AhKs',
+        'y9x6EijXHpA', # SDBoot video (illegal because it uses stuff from the leaks)
     )
 
     # terms that should cause a notice but not auto-delete
@@ -153,7 +154,6 @@ class Events(DatabaseCog):
         'mercury',
         'nxbrew',
         'cia3ds',
-        'y9x6EijXHpA', # SDBoot video (illegal because it uses stuff from the leaks)
     )
 
     drama_alert = ()
