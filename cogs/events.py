@@ -153,6 +153,7 @@ class Events(DatabaseCog):
         'mercury',
         'nxbrew',
         'cia3ds',
+        'y9x6EijXHpA', # SDBoot video (illegal because it uses stuff from the leaks)
     )
 
     drama_alert = ()
