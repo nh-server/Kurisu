@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from cogs.database import DatabaseCog
+from utils.database import DatabaseCog
 
 
 class Logs(DatabaseCog):

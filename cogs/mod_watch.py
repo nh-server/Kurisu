@@ -1,7 +1,7 @@
-from cogs.database import DatabaseCog
+from utils.database import DatabaseCog
 from discord.ext import commands
-from cogs.checks import is_staff
-from cogs import converters, utils
+from utils.checks import is_staff
+from utils import utils, converters
 
 
 class Modwatch(DatabaseCog):

@@ -3,8 +3,8 @@ import discord
 import re
 
 from collections import deque
-from cogs.checks import check_staff_id
-from cogs.database import DatabaseCog
+from utils.checks import check_staff_id
+from utils.database import DatabaseCog
 from discord.ext import commands
 from subprocess import call
 from string import printable

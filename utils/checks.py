@@ -1,4 +1,4 @@
-from cogs.database import DatabaseCog
+from utils.database import DatabaseCog
 from discord.ext import commands
 import discord
 

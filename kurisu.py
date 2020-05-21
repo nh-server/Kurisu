@@ -8,13 +8,13 @@ from asyncio import Event
 from configparser import ConfigParser
 from subprocess import check_output, CalledProcessError
 import os
-from cogs.database import ConnectionHolder
+from utils.database import ConnectionHolder
 from sys import exit, hexversion
 from traceback import format_exception, format_exc
 import discord
 from discord.ext import commands
 from datetime import datetime
-from cogs.checks import check_staff_id
+from utils.checks import check_staff_id
 
 # sets working directory to bot's folder
 dir_path = os.path.dirname(os.path.realpath(__file__))

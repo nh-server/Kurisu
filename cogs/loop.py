@@ -6,7 +6,7 @@ import traceback
 import pytz
 from datetime import datetime, timedelta
 from discord.ext import commands
-from cogs.database import DatabaseCog
+from utils.database import DatabaseCog
 
 
 class Loop(DatabaseCog):

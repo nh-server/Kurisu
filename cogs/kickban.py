@@ -4,10 +4,10 @@ import re
 import time
 import typing
 
-from cogs import utils
-from cogs.checks import is_staff, check_bot_or_staff
-from cogs.converters import FetchMember, SafeMember
-from cogs.database import DatabaseCog
+from utils.converters import SafeMember, FetchMember
+from utils import utils
+from utils.checks import is_staff, check_bot_or_staff
+from utils.database import DatabaseCog
 from discord.ext import commands
 
 

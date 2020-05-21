@@ -5,10 +5,11 @@ from subprocess import call
 import discord
 
 from discord.ext import commands
-from cogs.checks import is_staff, check_staff_id, check_bot_or_staff
-from cogs.database import DatabaseCog
-from cogs.converters import SafeMember, FetchMember
-from cogs import utils
+from utils.checks import is_staff, check_staff_id, check_bot_or_staff
+from utils.database import DatabaseCog
+from utils.converters import SafeMember, FetchMember
+from utils import utils
+
 
 class Mod(DatabaseCog):
     """

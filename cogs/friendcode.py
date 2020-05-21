@@ -2,8 +2,8 @@ import discord
 import hashlib
 import struct
 
-from cogs.converters import SafeMember
-from cogs.database import DatabaseCog
+from utils.converters import SafeMember
+from utils.database import DatabaseCog
 from discord.ext import commands
 
 

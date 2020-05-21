@@ -1,9 +1,9 @@
 import discord
 from discord.ext import commands
-from cogs.checks import is_staff, check_staff_id, check_bot_or_staff
-from cogs.converters import FetchMember
-from cogs.database import DatabaseCog
-from cogs import utils
+from utils.checks import is_staff, check_staff_id, check_bot_or_staff
+from utils.converters import FetchMember
+from utils.database import DatabaseCog
+from utils import utils
 
 
 class ModWarn(DatabaseCog):

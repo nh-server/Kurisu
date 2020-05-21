@@ -5,7 +5,7 @@ import random
 import re
 import string
 
-from cogs.checks import is_staff
+from utils.checks import is_staff
 from discord.ext import commands
 from discord import TextChannel
 
