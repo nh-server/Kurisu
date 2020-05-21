@@ -1,4 +1,5 @@
 import discord
+import re
 
 
 async def send_dm_message(member, message) -> bool:
@@ -23,3 +24,21 @@ def command_signature(command, *, prefix=".") -> str:
         The prefix to include in the signature"""
     signature = f"{discord.utils.escape_markdown(prefix)}{command.qualified_name} {command.signature}"
     return signature
+
+
+def parse_time(time_string) -> int:
+    """Parses a time string in dhms format to seconds"""
+    # thanks Luc#5653
+    units = {
+        "d": 86400,
+        "h": 3600,
+        "m": 60,
+        "s": 1
+    }
+    seconds = 0
+    match = re.findall("([0-9]+[smhd])", time_string)  # Thanks to 3dshax server's former bot
+    if match is None:
+        return 0
+    for item in match:
+        seconds += int(item[:-1]) * units[item[-1]]
+    return seconds

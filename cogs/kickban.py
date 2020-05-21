@@ -1,8 +1,7 @@
-import datetime
 import discord
-import re
 import time
 import typing
+import datetime
 
 from utils.converters import SafeMember, FetchMember
 from utils import utils
@@ -20,26 +19,6 @@ class KickBan(DatabaseCog):
         if ctx.guild is None:
             raise commands.NoPrivateMessage()
         return True
-
-    def parse_time(self, length):
-        # thanks Luc#5653
-        units = {
-            "d": 86400,
-            "h": 3600,
-            "m": 60,
-            "s": 1
-        }
-        seconds = 0
-        match = re.findall("([0-9]+[smhd])", length)  # Thanks to 3dshax server's former bot
-        if not match:
-            return None, None
-        for item in match:
-            seconds += int(item[:-1]) * units[item[-1]]
-        timestamp = datetime.datetime.now()
-        delta = datetime.timedelta(seconds=seconds)
-        unban_time = timestamp + delta
-        unban_time_string = unban_time.strftime("%Y-%m-%d %H:%M:%S")
-        return unban_time, unban_time_string
 
     async def meme(self, beaner: discord.Member, beaned: discord.Member, action: str, channel: discord.TextChannel, reason: str):
         await channel.send(f"Seriously? What makes you think it's okay to try and {action} another staff or helper like that?")
@@ -141,10 +120,15 @@ class KickBan(DatabaseCog):
         """Bans a user for a limited period of time. OP+ only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "timeban"):
             return
-        unban_time, unban_time_string = self.parse_time(length)
-        if unban_time_string is None:
-            await ctx.send("Invalid length for ban!")
-            return
+
+        if not (seconds := utils.parse_time(length)):
+            return await ctx.send("💢 I don't understand your time format.")
+
+        timestamp = datetime.datetime.now()
+        delta = datetime.timedelta(seconds=seconds)
+        unban_time = timestamp + delta
+        unban_time_string = unban_time.strftime("%Y-%m-%d %H:%M:%S")
+
         if isinstance(member, discord.Member):
             msg = f"You were banned from {ctx.guild.name}."
             if reason != "":

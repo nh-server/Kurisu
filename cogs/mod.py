@@ -117,7 +117,7 @@ class Mod(DatabaseCog):
     @commands.bot_has_permissions(manage_channels=True)
     @commands.guild_only()
     @commands.command()
-    async def slowmode(self, ctx, time, channel: discord.TextChannel=None):
+    async def slowmode(self, ctx, time, channel: discord.TextChannel = None):
         """Apply a given slowmode time to a channel.
 
         The time format is identical to that used for timed kicks/bans/takehelps.
@@ -128,20 +128,11 @@ class Mod(DatabaseCog):
             channel = ctx.channel
 
         if channel not in self.bot.assistance_channels and not await check_staff_id(ctx, "OP", ctx.author.id):
-             return await ctx.send("You cannot use this command outside of assistance channels.")
+            return await ctx.send("You cannot use this command outside of assistance channels.")
 
-        units = { # This bit is copied from kickban, removed days since it's not needed.
-            "d": 86400,
-            "h": 3600,
-            "m": 60,
-            "s": 1
-        }
-        seconds = 0
-        match = re.findall("([0-9]+[smhd])", time)
-        if not match:
+        if not (seconds := utils.parse_time(time)):
             return await ctx.send("💢 I don't understand your time format.")
-        for item in match:
-            seconds += int(item[:-1]) * units[item[-1]]
+
         if seconds > 21600:
             return await ctx.send("💢 You can't slowmode a channel for longer than 6 hours!")
         try:
@@ -246,24 +237,17 @@ class Mod(DatabaseCog):
             return
         await member.add_roles(self.bot.roles['Muted'])
         await member.remove_roles(self.bot.roles['#elsewhere'])
+
         issuer = ctx.author
-        # thanks Luc#5653
-        units = {
-            "d": 86400,
-            "h": 3600,
-            "m": 60,
-            "s": 1
-        }
-        seconds = 0
-        match = re.findall(r"([0-9]+[smhd])", length)  # Thanks to 3dshax server's former bot
-        if match is None:
-            return None
-        for item in match:
-            seconds += int(item[:-1]) * units[item[-1]]
+
+        if not (seconds := utils.parse_time(length)):
+            return await ctx.send("💢 I don't understand your time format.")
+
         timestamp = datetime.datetime.now()
         delta = datetime.timedelta(seconds=seconds)
         unmute_time = timestamp + delta
         unmute_time_string = unmute_time.strftime("%Y-%m-%d %H:%M:%S")
+
         old_timestamp = await self.add_timed_restriction(member.id, unmute_time_string, 'timemute')
         await self.add_restriction(member.id, self.bot.roles['Muted'])
         msg_user = "You were muted!"
@@ -470,23 +454,16 @@ class Mod(DatabaseCog):
         if await check_bot_or_staff(ctx, member, "takehelp"):
             return
         issuer = ctx.author
-        # thanks Luc#5653
-        units = {
-            "d": 86400,
-            "h": 3600,
-            "m": 60,
-            "s": 1
-        }
-        seconds = 0
-        match = re.findall("([0-9]+[smhd])", length)  # Thanks to 3dshax server's former bot
-        if match is None:
-            return None
-        for item in match:
-            seconds += int(item[:-1]) * units[item[-1]]
-        timestamp = datetime.datetime.now()
+
+        if not (seconds := utils.parse_time(length)):
+            return await ctx.send("💢 I don't understand your time format.")
+
         delta = datetime.timedelta(seconds=seconds)
+        timestamp = datetime.datetime.now()
+
         unnohelp_time = timestamp + delta
         unnohelp_time_string = unnohelp_time.strftime("%Y-%m-%d %H:%M:%S")
+
         await self.add_timed_restriction(member.id, unnohelp_time_string, 'timenohelp')
         await self.add_restriction(member.id, self.bot.roles['No-Help'])
         await member.add_roles(self.bot.roles['No-Help'])
