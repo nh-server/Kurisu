@@ -60,6 +60,12 @@ class CustomContext(commands.Context):
         Note: This does not escape channel mentions"""
         content = discord.utils.escape_mentions(content)
         return await self.send(content, **kwargs)
+    
+    async def get_user(self, userid:int):
+        if self.guild and (user:=self.guild.get_member(userid)):
+            return user
+        else:
+            return await self.bot.fetch_user(userid)
 
 
 class Kurisu(commands.Bot):
@@ -137,7 +143,7 @@ class Kurisu(commands.Bot):
 
     async def get_context(self, message, *, cls=CustomContext):
         return await super().get_context(message, cls=cls)
-
+    
     def load_cogs(self):
         for extension in cogs:
             try:
