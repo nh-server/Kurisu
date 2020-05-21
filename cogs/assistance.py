@@ -105,7 +105,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 embed.set_thumbnail(url="https://i.imgur.com/T227BW0.png")
                 embed.url = "https://dsi.cfw.guide/"
                 embed.description = "A complete Nintendo DSi homebrew guide, from stock to HiyaCFW"
-                await ctx.send(embed=embed)	
+                await ctx.send(embed=embed)
 
     @commands.command(aliases=['finalizing', 'finalising', 'finalise'])
     async def finalize(self, ctx):
@@ -159,7 +159,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
     @commands.command()
     async def update(self, ctx, *, consoles=""):
         """Explains how to safely prepare for an update for a hacked console"""
-        
+
         systems = ('3ds', 'nx', 'ns', 'switch')
         wanted_consoles = list(set(x for x in consoles.split() if x in systems))
 
@@ -190,7 +190,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                  
                     "**To find out your Luma3DS version, hold select on bootup and look at the top left corner of the top screen**\n"
                 )
-            
+
             elif self.check_console(console, ctx.channel.name, ("switch", "nx", "ns")):
                 embed = discord.Embed(title="Updating Guide", color=discord.Color(0xCB0004))
                 embed.set_author(name="NH Discord Server", url="https://nh-server.github.io/switch-guide/")
@@ -240,7 +240,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         embed.url = "https://3ds.hacks.guide/updating-b9s"
         embed.description = "A guide for updating to new B9S versions."
         await ctx.send(embed=embed)
-    
+
     @commands.command()
     async def updateluma(self, ctx):
         """Links to the guide for updating Luma3DS manually (8.0 or later)"""
@@ -309,7 +309,7 @@ intervention.  A staff or helper will be the quickest route to resolution; you c
 contact available staff by private messaging the Mod-Mail bot.** A full list of staff \
 and helpers can be found in #welcome-and-rules if you don't know who they are.
                                 """)
-        
+
     @commands.command()
     async def vguides(self, ctx):
         """Information about video guides relating to custom firmware"""
@@ -509,7 +509,7 @@ re-read the guide steps 2 or 3 times before coming here.
     async def nxcfw(self, ctx, cfw=""):
         """Information on why we don't support or recommend various other Switch CFWs"""
 
-        if cfw == "sx": #Alias for sxos
+        if cfw == "sx":  # Alias for sxos
             cfw = "sxos"
 
         cfwinfo = {
@@ -524,7 +524,7 @@ re-read the guide steps 2 or 3 times before coming here.
                         * Older versions have caused bans due to the incorrectly implemented user agent string.
                         * The author has expressed no interest in adding emuMMC/emuNAND.
                         * The author has expressed that they feel it doesn't matter if consoles get banned.
-                        * It often takes weeks to several months for it to get support for the latest firmware.""", 
+                        * It often takes weeks to several months for it to get support for the latest firmware.""",
                 'title': "ReiNX"
             },
             'sxos': {
@@ -532,7 +532,7 @@ re-read the guide steps 2 or 3 times before coming here.
                         * SX OS is illegal to purchase and own. It bundles various keys and copyrighted data that cannot be legally shared.
                         * It has known compatibility issues with homebrew, due to its non-standard and proprietary nature.
                         * It does not support loading custom system modules.
-                        * Several versions of the CFW have caused users to be banned without their knowledge.""", 
+                        * Several versions of the CFW have caused users to be banned without their knowledge.""",
                 'title': "SX OS"
             }
         }
@@ -849,7 +849,7 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
             embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/dump-games")
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
             embed.url = "https://wiiu.hacks.guide/#/dump-games"
-            embed.description = ("How to dump/install Wii U game discs using disc2app and WUP Installer GX2")
+            embed.description = "How to dump/install Wii U game discs using disc2app and WUP Installer GX2"
             await ctx.send(embed=embed)
 
     # Embed to Chroma Ryu's cartinstall guide
@@ -1086,7 +1086,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         embed.description = "How to dump GBA cartridges"
         await ctx.send(embed=embed)
 
-    @tutorial.command(aliases=["carttodigitalsave","ctdsave"])
+    @tutorial.command(aliases=["carttodigitalsave", "ctdsave"])
     async def transfersave(self, ctx):
         """Links to cart to digital version save transfer tutorial"""
         embed = discord.Embed(title="Cart to digital version save transfer tutorial", color=discord.Color.purple())
@@ -1164,7 +1164,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         embed.set_image(url="https://i.imgur.com/7PIvVjJ.png")
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=['whatsid0','id0'])
+    @commands.command(aliases=['whatsid0', 'id0'])
     async def whatisid0(self, ctx):
         """Picture to say what the heck is the id0"""
         embed = discord.Embed()
@@ -1184,7 +1184,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
 
     @commands.command(aliases=['switchserial'])
     async def serial(self, ctx):
-        """Picture to show what the hell a serial is""" 
+        """Picture to show what the hell a serial is"""
         embed = discord.Embed(title="Don't know where your Switch's serial is?", color=discord.Color.red())
         embed.description = "This is where the serial is located. Use this number to check if you are patched."
         embed.set_image(url="https://i.imgur.com/03NfeFN.png")
@@ -1205,7 +1205,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
                 """
 
         await self.simple_embed(ctx, f"{reasons}{self.SDFORMAT_TEXT}", title="exFAT on Switch: Why you shouldn't use it")
-        
+
     @commands.command()
     async def nxban(self, ctx):
         """Switch ban risk snippet"""
@@ -1251,7 +1251,7 @@ in the scene.
     @commands.command(aliases=['ntrboot', 'ntrcartlist', 'ntrbootcartlist'])
     async def ntrcart(self, ctx):
         imagelink = "https://i.imgur.com/362bH8k.png"
-        title = "Which flashcarts work with NTRBoot?"		
+        title = "Which flashcarts work with NTRBoot?"
         embed = discord.Embed(title=title, color=discord.Color.default())
         embed.set_image(url=imagelink)
         await ctx.send(embed=embed)
@@ -1265,7 +1265,7 @@ in the scene.
         embed.description = "A list of portable payload injectors for the Nintendo Switch"
         await ctx.send(embed=embed)
 
-    @commands.command()                         
+    @commands.command()
     async def safemode(self, ctx):
         """How to boot into Safe Mode on the 3DS"""
         await self.simple_embed(ctx, """
@@ -1396,7 +1396,7 @@ in the scene.
                 7. Navigate to `/gm9/out` on your SD, `essential.exefs` should be there
             """))
         await ctx.send(embed=embed)
-	
+
     @commands.command(aliases=['systransfer'])
     async def transfer(self, ctx):
         """If you want to keep homebrew apps when doing a system transfer:"""
@@ -1411,6 +1411,7 @@ in the scene.
                 6. Your Homebrew apps should appear on the homescreen!
             """))
         await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
