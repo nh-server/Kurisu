@@ -4,17 +4,19 @@
 # license: Apache License 2.0
 # https://github.com/nh-server/Kurisu
 
+import os
 from asyncio import Event
 from configparser import ConfigParser
+from datetime import datetime
 from subprocess import check_output, CalledProcessError
-import os
-from utils.database import ConnectionHolder
 from sys import exit, hexversion
 from traceback import format_exception, format_exc
+
 import discord
 from discord.ext import commands
-from datetime import datetime
+
 from utils.checks import check_staff_id
+from utils.database import ConnectionHolder
 
 # sets working directory to bot's folder
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -60,9 +62,9 @@ class CustomContext(commands.Context):
         Note: This does not escape channel mentions"""
         content = discord.utils.escape_mentions(content)
         return await self.send(content, **kwargs)
-    
-    async def get_user(self, userid:int):
-        if self.guild and (user:=self.guild.get_member(userid)):
+
+    async def get_user(self, userid: int):
+        if self.guild and (user := self.guild.get_member(userid)):
             return user
         else:
             return await self.bot.fetch_user(userid)
@@ -131,7 +133,7 @@ class Kurisu(commands.Bot):
             'mod-logs': None,
             'server-logs': None,
             'bot-err': None,
-            'elsewhere': None, #I'm a bit worried about how often this changes, shouldn't be a problem tho
+            'elsewhere': None,  # I'm a bit worried about how often this changes, shouldn't be a problem tho
         }
 
         self.failed_cogs = []
@@ -143,7 +145,7 @@ class Kurisu(commands.Bot):
 
     async def get_context(self, message, *, cls=CustomContext):
         return await super().get_context(message, cls=cls)
-    
+
     def load_cogs(self):
         for extension in cogs:
             try:
@@ -151,6 +153,18 @@ class Kurisu(commands.Bot):
             except BaseException as e:
                 print(f'{extension} failed to load.')
                 self.failed_cogs.append([extension, type(e).__name__, e])
+
+    def load_channels(self):
+        for n in self.channels.keys():
+            self.channels[n] = discord.utils.get(self.guild.channels, name=n)
+            if not self.channels[n]:
+                print(f'Failed to find channel {n}')
+
+    def load_roles(self):
+        for n in self.roles.keys():
+            self.roles[n] = discord.utils.get(self.guild.roles, name=n)
+            if not self.roles[n]:
+                print(f'Failed to find role {n}')
 
     @staticmethod
     def escape_text(text):
@@ -162,15 +176,8 @@ class Kurisu(commands.Bot):
         assert len(guilds) == 1
         self.guild = guilds[0]
 
-        for n in self.channels.keys():
-            self.channels[n] = discord.utils.get(self.guild.channels, name=n)
-            if not self.channels[n]:
-                print(f'Failed to find channel {n}')
-
-        for n in self.roles.keys():
-            self.roles[n] = discord.utils.get(self.guild.roles, name=n)
-            if not self.roles[n]:
-                print(f'Failed to find role {n}')
+        self.load_channels()
+        self.load_roles()
 
         self.assistance_channels = {
             self.channels['3ds-assistance-1'],
