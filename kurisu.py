@@ -76,6 +76,8 @@ class Kurisu(commands.Bot):
         super().__init__(command_prefix=command_prefix, description=description)
 
         self.startup = datetime.now()
+        self.channel_config = ConfigParser()
+        self.channel_config.read("channels.ini", encoding='utf-8')
 
         self.roles = {
             'Helpers': None,
@@ -155,10 +157,20 @@ class Kurisu(commands.Bot):
                 self.failed_cogs.append([extension, type(e).__name__, e])
 
     def load_channels(self):
-        for n in self.channels.keys():
-            self.channels[n] = discord.utils.get(self.guild.channels, name=n)
-            if not self.channels[n]:
-                print(f'Failed to find channel {n}')
+        if not self.channel_config.has_section('Channels'):
+            self.channel_config.add_section('Channels')
+
+        for n in self.channels:
+            if n in self.channel_config.options('Channels'):
+                self.channels[n] = self.guild.get_channel(self.channel_config.getint('Channels', n))
+            else:
+                self.channels[n] = discord.utils.get(self.guild.text_channels, name=n)
+                if not self.channels[n]:
+                    print(f"Failed to find channel {n}")
+                    continue
+                self.channel_config['Channels'][n] = str(self.channels[n].id)
+                with open('channels.ini', 'w', encoding='utf-8') as f:
+                    self.channel_config.write(f)
 
     def load_roles(self):
         for n in self.roles.keys():

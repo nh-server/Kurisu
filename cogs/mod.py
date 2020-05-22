@@ -553,6 +553,21 @@ class Mod(DatabaseCog):
         msg = f"⭕️ **Un-probated**: {ctx.author.mention} un-probated {member.mention} | {self.bot.escape_text(member)}"
         await self.bot.channels['mod-logs'].send(msg)
 
+    @is_staff("Owner")
+    @commands.guild_only()
+    @commands.command()
+    async def updatechannel(self, ctx, name, channel: discord.TextChannel):
+        """Changes the id of a channel"""
+        if name not in self.bot.channels:
+            await ctx.send("Invalid channel name!")
+            return
+        self.bot.channel_config['Channels'][name] = str(channel.id)
+        with open('channels.ini', 'w', encoding='utf-8') as f:
+            ctx.bot.channel_config.write(f)
+        self.bot.channels[name] = channel
+        await ctx.send(f"Changed {name} channel to {channel.mention} | {channel.id}")
+        await self.bot.channels['server-logs'].send(f"⚙ **Changed**: {ctx.author.mention} changed {name} channel to {channel.mention} | {channel.id}")
+
     @is_staff("OP")
     @commands.command()
     async def playing(self, ctx, *, gamename):
