@@ -214,10 +214,19 @@ class Kurisu(commands.Bot):
         await self.channels['helpers'].send(startup_message)
         self._is_all_ready.set()
 
+    @staticmethod
+    def format_error(msg):
+        error_paginator = commands.Paginator()
+        for chunk in [msg[i:i + 1800] for i in range(0, len(msg), 1800)]:
+            error_paginator.add_line(chunk)
+        return error_paginator
+
     async def on_command_error(self, ctx: commands.Context, exc: commands.CommandInvokeError):
         author: discord.Member = ctx.author
         command: commands.Command = ctx.command or '<unknown cmd>'
         exc = getattr(exc, 'original', exc)
+        channel = self.channels['bot-err'] if self.channels['bot-err'] else ctx.channel
+
 
         if isinstance(exc, commands.CommandNotFound):
             return
@@ -258,21 +267,24 @@ class Kurisu(commands.Bot):
         elif isinstance(exc, commands.CommandInvokeError):
             await ctx.send(f'{author.mention} `{command}` raised an exception during usage')
             msg = "".join(format_exception(type(exc), exc, exc.__traceback__))
-            for chunk in [msg[i:i + 1800] for i in range(0, len(msg), 1800)]:
-                await self.channels['bot-err'].send(f'```\n{chunk}\n```')
+            error_paginator = self.format_error(msg)
+            for page in error_paginator.pages:
+                await channel.send(page)
         else:
             if not isinstance(command, str):
                 command.reset_cooldown(ctx)
             await ctx.send(f'{author.mention} Unexpected exception occurred while using the command `{command}`')
             msg = "".join(format_exception(type(exc), exc, exc.__traceback__))
-            for chunk in [msg[i:i + 1800] for i in range(0, len(msg), 1800)]:
-                await self.channels['bot-err'].send(f'```\n{chunk}\n```')
+            error_paginator = self.format_error(msg)
+            for page in error_paginator.pages:
+                await channel.send(page)
 
     async def on_error(self, event_method, *args, **kwargs):
         await self.channels['bot-err'].send(f'Error in {event_method}:')
         msg = format_exc()
-        for chunk in [msg[i:i + 1800] for i in range(0, len(msg), 1800)]:
-            await self.channels['bot-err'].send(f'```\n{chunk}\n```')
+        error_paginator = self.format_error(msg)
+        for page in error_paginator.pages:
+            await self.channels['bot-err'].send(page)
 
     def add_cog(self, cog):
         super().add_cog(cog)
