@@ -242,6 +242,12 @@ class Memes(commands.Cog):
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def meta(self, ctx):
+        """Reminds user where they are."""
+        await self._meme(ctx, f"You {'do not ' if ctx.channel != self.bot.channels['meta'] else ''}seem to be in {self.bot.channels['meta'].mention}.", True)
+
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def headrub(self, ctx):
         """Cute"""
         await self._meme(ctx, "", imagelink="http://i.imgur.com/j6xSoKv.jpg")
