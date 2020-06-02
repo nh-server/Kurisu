@@ -128,7 +128,8 @@ class Events(DatabaseCog):
         'poyoshop',
         'pbanjgasm',
         'goldbrick',
-        'neutos'
+        'neutos',
+        'deepsea',
 
         #'sxos',
     )
