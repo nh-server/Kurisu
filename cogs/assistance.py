@@ -853,9 +853,9 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
             await ctx.send(embed=embed)
         elif self.check_console(console, ctx.channel.name, ('vwii')):
             embed = discord.Embed(title="vWii dump Guide", color=discord.Color(0x009AC7))
-            embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/dump-games")
+            embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/dump-wii-games")
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
-            embed.url = "https://wiiu.hacks.guide/#/dump-games"
+            embed.url = "https://wiiu.hacks.guide/#/dump-wii-games"
             embed.description = "How to dump Wii game discs on vWii using CleanRip"
             await ctx.send(embed=embed)
 
