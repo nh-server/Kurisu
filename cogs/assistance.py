@@ -1300,6 +1300,13 @@ in the scene.
         embed.description = "A common fix for those whose web browser keeps freezing their Wii U while attempting the exploit."
         await ctx.send(embed=embed)
 
+    @commands.command(aliases=['missingpayload'])
+    async def wiiupayload(self, ctx):
+        """Missing payload"""
+        await self.simple_embed(ctx, """
+        Missing payload file on the SD.
+        Make sure you have a [payload.elf](https://github.com/wiiu-env/homebrew_launcher_installer/releases/latest) in the wiiu folder.""", title="FSOpenFile Failed [...] payload.elf")
+
     @commands.command()
     async def recover(self, ctx):
         """Troubleshooting guide for vWii"""
