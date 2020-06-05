@@ -844,7 +844,7 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
             embed.description = ("How to dump/build NSPs using NXDumpTool\n"
                                  "BAN Warning: only for use using offline emummc")
             await ctx.send(embed=embed)
-        elif self.check_console(console, ctx.channel.name, ('wiiu')):
+        elif self.check_console(console, ctx.channel.name, ('wiiu',)):
             embed = discord.Embed(title="Wii U dump/install Guide", color=discord.Color(0x009AC7))
             embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/dump-games")
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
