@@ -121,7 +121,7 @@ class KickBan(DatabaseCog):
         if await check_bot_or_staff(ctx, member, "timeban"):
             return
 
-        if not (seconds := utils.parse_time(length)):
+        if (seconds := utils.parse_time(length)) == -1:
             return await ctx.send("💢 I don't understand your time format.")
 
         timestamp = datetime.datetime.now()

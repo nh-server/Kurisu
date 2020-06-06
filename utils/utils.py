@@ -38,7 +38,7 @@ def parse_time(time_string) -> int:
     seconds = 0
     match = re.findall("([0-9]+[smhd])", time_string)  # Thanks to 3dshax server's former bot
     if match is None:
-        return 0
+        return -1
     for item in match:
         seconds += int(item[:-1]) * units[item[-1]]
     return seconds
