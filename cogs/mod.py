@@ -130,7 +130,7 @@ class Mod(DatabaseCog):
         if channel not in self.bot.assistance_channels and not await check_staff_id(ctx, "OP", ctx.author.id):
             return await ctx.send("You cannot use this command outside of assistance channels.")
 
-        if not (seconds := utils.parse_time(time)):
+        if (seconds := utils.parse_time(time)) == -1:
             return await ctx.send("💢 I don't understand your time format.")
 
         if seconds > 21600:
@@ -240,7 +240,7 @@ class Mod(DatabaseCog):
 
         issuer = ctx.author
 
-        if not (seconds := utils.parse_time(length)):
+        if (seconds := utils.parse_time(length)) == -1:
             return await ctx.send("💢 I don't understand your time format.")
 
         timestamp = datetime.datetime.now()
@@ -455,7 +455,7 @@ class Mod(DatabaseCog):
             return
         issuer = ctx.author
 
-        if not (seconds := utils.parse_time(length)):
+        if (seconds := utils.parse_time(length)) == -1:
             return await ctx.send("💢 I don't understand your time format.")
 
         delta = datetime.timedelta(seconds=seconds)
