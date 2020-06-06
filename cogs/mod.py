@@ -35,33 +35,39 @@ class Mod(DatabaseCog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def userinfo(self, ctx, u: discord.Member):
-        """Gets member info. Staff and Helpers only."""
-        role = u.top_role.name
-        await ctx.safe_send(f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}"
-                            f"\nbot = {u.bot}\navatar_url = {u.avatar_url_as(static_format='png')}\ndefault_avatar "
-                            f"= {u.default_avatar}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = "
-                            f"{u.created_at}\ndisplay_name = {u.display_name}\njoined_at = {u.joined_at}\nstatus = "
-                            f"{u.status}\nactivity = {u.activity.name if u.activity else None}\ncolour = {u.colour}"
-                            f"\ntop_role = {role}\n")
+    async def userinfo(self, ctx, u: FetchMember):
+        """Shows information from a user. Staff and Helpers only."""
+        basemsg = f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url_as(static_format='png')}\ndefault_avatar= {u.default_avatar}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\n"
+        if isinstance(u, discord.Member):
+            role = u.top_role.name
+            await ctx.safe_send(f"{basemsg}display_name = {u.display_name}\njoined_at = {u.joined_at}\nstatus ={u.status}\nactivity = {u.activity.name if u.activity else None}\ncolour = {u.colour}\ntop_role = {role}\n")
+        else:
+            try:
+                ban = await ctx.guild.fetch_ban(u)
+            except discord.NotFound:  # NotFound is raised if the user isn't banned
+                ban = None
+            await ctx.safe_send(f"{basemsg}{f'**Banned**, reason: {ban.reason}' if ban is not None else ''}\n")
 
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def userinfoid(self, ctx, id):
-        """Gets a user id info. Staff and Helpers only."""
-        try:
-            u = await self.bot.fetch_user(id)
-        except discord.NotFound:
-            await ctx.send(f"No user matching id `{id}`.")
-            return
+    async def userinfo2(self, ctx, user: FetchMember = None):
+        """Shows information from a user. Staff and Helpers only."""
 
-        try:
-            ban = await ctx.guild.fetch_ban(u)
-        except discord.NotFound:  # NotFound is raised if the user isn't banned
-            ban = None
+        color = utils.gen_color(user.id)
 
-        await ctx.safe_send(f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url_as(static_format='png')}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\ncolour = {u.colour}\n{f'**Banned**, reason: {ban.reason}' if ban is not None else ''}\n")
+        if isinstance(user, discord.Member):
+            embed = discord.Embed(title=f"**Userinfo for {'member' if not user.bot else 'bot'} {user}**", color=color)
+            embed.description = f"**User's ID:** {user.id} \n **Join date:** {user.joined_at} \n **Created on** {user.created_at} \n **Current Status:** {user.status} \n **User Activity:**: {user.activity} \n **Default Profile Picture:** {user.default_avatar} \n **Current Display Name:** {user.display_name} \n **Nitro Boost Info:** {user.premium_since} \n **Current Top Role:** {user.top_role} \n **Color:** {user.color}"
+        else:
+            try:
+                ban = await ctx.guild.fetch_ban(user)
+            except discord.NotFound:
+                ban = None
+            embed = discord.Embed(title=f'**Userinfo for {"user" if not user.bot else "bot"} {user}**', color=color)
+            embed.description = f"**User's ID:** {user.id} \n **Created on** {user.created_at}\n **Default Profile Picture:** {user.default_avatar}\n **Color:** {user.color}\n{f'**Banned**, reason: {ban.reason}' if ban is not None else ''}"
+        embed.set_thumbnail(url=user.avatar_url)
+        await ctx.send(embed=embed)
 
     @is_staff("HalfOP")
     @commands.guild_only()

@@ -1,4 +1,5 @@
 import discord
+import random
 import re
 
 
@@ -24,6 +25,14 @@ def command_signature(command, *, prefix=".") -> str:
         The prefix to include in the signature"""
     signature = f"{discord.utils.escape_markdown(prefix)}{command.qualified_name} {command.signature}"
     return signature
+
+
+def gen_color(seed):
+    random.seed(seed)
+    c_r = random.randint(0, 255)
+    c_g = random.randint(0, 255)
+    c_b = random.randint(0, 255)
+    return discord.Color((c_r << 16) + (c_g << 8) + c_b)
 
 
 def parse_time(time_string) -> int:
