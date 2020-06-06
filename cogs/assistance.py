@@ -822,7 +822,7 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
     @commands.command()
     async def dump(self, ctx, console=None):
         """How to dump games and data for CFW consoles"""
-        systems = ("3ds", "nx", "ns", "switch", "wiiu")
+        systems = ("3ds", "nx", "ns", "switch", "wiiu", "vwii")
         if console not in systems:
             if ctx.channel.name.startswith(systems):
                 console = "auto"
@@ -850,6 +850,13 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
             embed.url = "https://wiiu.hacks.guide/#/dump-games"
             embed.description = "How to dump/install Wii U game discs using disc2app and WUP Installer GX2"
+            await ctx.send(embed=embed)
+        elif self.check_console(console, ctx.channel.name, ('vwii')):
+            embed = discord.Embed(title="vWii dump Guide", color=discord.Color(0x009AC7))
+            embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/dump-wii-games")
+            embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
+            embed.url = "https://wiiu.hacks.guide/#/dump-wii-games"
+            embed.description = "How to dump Wii game discs on vWii using CleanRip"
             await ctx.send(embed=embed)
 
     # Embed to Chroma Ryu's cartinstall guide
@@ -1299,28 +1306,16 @@ in the scene.
         await self.simple_embed(ctx, """
         Missing payload file on the SD.
         Make sure you have a [payload.elf](https://github.com/wiiu-env/homebrew_launcher_installer/releases/latest) in the wiiu folder.""", title="FSOpenFile Failed [...] payload.elf")
-                             
+
     @commands.command()
-    async def recover(self, ctx, console=None):
-        """Troubleshooting guides for vWii"""
-        systems = ("miichannel", "vios")
-        if console not in systems:
-            await ctx.send(f"Please specify an option. Valid options are: {', '.join([x for x in systems])}.")
-            return
-        if self.check_console(console, ctx.message.channel.name, ('miichannel',)):
-            embed = discord.Embed(title="Recover a Lost Mii Channel on vWii", color=0xe60012)
-            embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/recover-mii-channel")
-            embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
-            embed.url = "https://wiiu.hacks.guide/#/recover-mii-channel"
-            embed.description = "A complete guide to recover a lost or corrupted Mii Channel on vWii"
-            await ctx.send(embed=embed)
-        elif self.check_console(console, ctx.message.channel.name, ('vios',)):
-            embed = discord.Embed(title="Recover a Corrupted IOS on vWii", color=0xe60012)
-            embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/recover-ios")
-            embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
-            embed.url = "https://wiiu.hacks.guide/#/recover-ios"
-            embed.description = "A complete guide to recover a lost or corrupted IOS on vWii"
-            await ctx.send(embed=embed)
+    async def recover(self, ctx):
+        """Troubleshooting guide for vWii"""
+        embed = discord.Embed(title="Recover a vWii IOS/Channel", color=0xe60012)
+        embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/recover-vwii-ioses-channels")
+        embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
+        embed.url = "https://wiiu.hacks.guide/#/recover-vwii-ioses-channels"
+        embed.description = "A complete guide to recover a lost or corrupted system channel or IOS on vWii"
+        await ctx.send(embed=embed)
 
     @commands.command()
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
