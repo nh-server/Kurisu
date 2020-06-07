@@ -51,7 +51,7 @@ class Mod(DatabaseCog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def userinfo2(self, ctx, user: FetchMember = None):
+    async def userinfo2(self, ctx, user: FetchMember):
         """Shows information from a user. Staff and Helpers only."""
 
         color = utils.gen_color(user.id)
