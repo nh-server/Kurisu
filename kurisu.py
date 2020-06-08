@@ -239,9 +239,11 @@ class Kurisu(commands.Bot):
         exc = getattr(exc, 'original', exc)
         channel = self.channels['bot-err'] if self.channels['bot-err'] else ctx.channel
 
-
         if isinstance(exc, commands.CommandNotFound):
             return
+
+        elif isinstance(exc, commands.UserInputError):
+            await ctx.send(f'Invalid input.')
 
         elif isinstance(exc, commands.NoPrivateMessage):
             await ctx.send(f'`{command}` cannot be used in direct messages.')
