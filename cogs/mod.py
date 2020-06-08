@@ -66,7 +66,7 @@ class Mod(DatabaseCog):
                 ban = None
             embed = discord.Embed(title=f'**Userinfo for {"user" if not user.bot else "bot"} {user}**', color=color)
             embed.description = f"**User's ID:** {user.id} \n **Created on** {user.created_at}\n **Default Profile Picture:** {user.default_avatar}\n **Color:** {user.color}\n{f'**Banned**, reason: {ban.reason}' if ban is not None else ''}"
-        embed.set_thumbnail(url=user.avatar_url)
+        embed.set_thumbnail(url=user.avatar_url_as(static_format='png'))
         await ctx.send(embed=embed)
 
     @is_staff("HalfOP")
