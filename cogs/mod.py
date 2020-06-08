@@ -34,7 +34,7 @@ class Mod(DatabaseCog):
 
     @is_staff("Helper")
     @commands.guild_only()
-    @commands.command()
+    @commands.command(aliases=['ui'])
     async def userinfo(self, ctx, u: FetchMember):
         """Shows information from a user. Staff and Helpers only."""
         basemsg = f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url_as(static_format='png')}\ndefault_avatar= {u.default_avatar}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\n"
@@ -50,7 +50,7 @@ class Mod(DatabaseCog):
 
     @is_staff("Helper")
     @commands.guild_only()
-    @commands.command()
+    @commands.command(aliases=['ui2'])
     async def userinfo2(self, ctx, user: FetchMember):
         """Shows information from a user. Staff and Helpers only."""
 
