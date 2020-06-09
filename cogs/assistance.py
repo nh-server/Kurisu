@@ -1414,6 +1414,20 @@ in the scene.
             """))
         await ctx.send(embed=embed)
 
+    @commands.command(aliases=['cbhc'])
+    async def cbhcrules(self, ctx):
+        """The rules for the CBHC CFW on Wii U to avoid a brick"""
+        embed = discord.Embed(title="Installing CBHC incorrectly can brick your Wii U!", color=discord.Color.red())
+        embed.add_field(name="Make sure to follow the following rules when installing CBHC:", value=cleandoc("""
+                - The DS game has to be legitimately installed from the eShop!
+                - Don’t format the system while CBHC is installed!
+                - Don’t delete the user account that bought the DS VC game!
+                - Don’t re-install the same game using WUP Installer or from the eShop!
+                - Don’t install Haxchi over CBHC!
+                - Don’t uninstall the DS Virtual Console game without [properly uninstalling CBHC first](https://wiiu.hacks.guide/#/uninstall-cbhc)!
+                - Don’t move the DS Virtual Console game to a USB drive!
+            """))
+        await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
