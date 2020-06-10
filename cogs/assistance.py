@@ -1,5 +1,4 @@
 import aiohttp
-import asyncio
 import discord
 import urllib.parse
 
