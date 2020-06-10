@@ -345,8 +345,6 @@ class Mod(DatabaseCog):
     @commands.command()
     async def noelsewhere(self, ctx, member: SafeMember, *, reason=""):
         """Removes elsewhere access from a user. Staff only."""
-        if await check_bot_or_staff(ctx, member, "noelsewhere"):
-            return
         try:
             if not await self.add_restriction(member.id, self.bot.roles['No-elsewhere']):
                 return await ctx.send("This user is already restricted from elsewhere!")
