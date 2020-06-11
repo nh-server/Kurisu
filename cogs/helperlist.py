@@ -1,8 +1,8 @@
 import discord
 
-from cogs.database import DatabaseCog
-from cogs.converters import SafeMember
-from cogs.checks import is_staff
+from utils.database import DatabaseCog
+from utils.converters import SafeMember
+from utils.checks import is_staff
 from discord.ext import commands
 
 

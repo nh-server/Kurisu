@@ -1,8 +1,8 @@
 import discord
 
-from cogs.checks import is_staff
 from discord.ext import commands
-from cogs.utils import send_dm_message
+from utils.checks import is_staff
+from utils.utils import send_dm_message
 
 
 class Blah(commands.Cog):

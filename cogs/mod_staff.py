@@ -1,9 +1,9 @@
 import discord
 
 from discord.ext import commands
-from cogs import converters
-from cogs.checks import is_staff, staff_ranks
-from cogs.database import DatabaseCog
+from utils import converters
+from utils.checks import is_staff, staff_ranks
+from utils.database import DatabaseCog
 
 
 class ModStaff(DatabaseCog):

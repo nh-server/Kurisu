@@ -4,17 +4,19 @@
 # license: Apache License 2.0
 # https://github.com/nh-server/Kurisu
 
+import os
 from asyncio import Event
 from configparser import ConfigParser
+from datetime import datetime
 from subprocess import check_output, CalledProcessError
-import os
-from cogs.database import ConnectionHolder
 from sys import exit, hexversion
 from traceback import format_exception, format_exc
+
 import discord
 from discord.ext import commands
-from datetime import datetime
-from cogs.checks import check_staff_id
+
+from utils.checks import check_staff_id
+from utils.database import ConnectionHolder
 
 # sets working directory to bot's folder
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -61,6 +63,12 @@ class CustomContext(commands.Context):
         content = discord.utils.escape_mentions(content)
         return await self.send(content, **kwargs)
 
+    async def get_user(self, userid: int):
+        if self.guild and (user := self.guild.get_member(userid)):
+            return user
+        else:
+            return await self.bot.fetch_user(userid)
+
 
 class Kurisu(commands.Bot):
     """Its him!!."""
@@ -68,6 +76,8 @@ class Kurisu(commands.Bot):
         super().__init__(command_prefix=command_prefix, description=description)
 
         self.startup = datetime.now()
+        self.channel_config = ConfigParser()
+        self.channel_config.read("channels.ini", encoding='utf-8')
 
         self.roles = {
             'Helpers': None,
@@ -125,7 +135,7 @@ class Kurisu(commands.Bot):
             'mod-logs': None,
             'server-logs': None,
             'bot-err': None,
-            'elsewhere': None, #I'm a bit worried about how often this changes, shouldn't be a problem tho
+            'elsewhere': None,  # I'm a bit worried about how often this changes, shouldn't be a problem tho
         }
 
         self.failed_cogs = []
@@ -146,6 +156,28 @@ class Kurisu(commands.Bot):
                 print(f'{extension} failed to load.')
                 self.failed_cogs.append([extension, type(e).__name__, e])
 
+    def load_channels(self):
+        if not self.channel_config.has_section('Channels'):
+            self.channel_config.add_section('Channels')
+
+        for n in self.channels:
+            if n in self.channel_config.options('Channels'):
+                self.channels[n] = self.guild.get_channel(self.channel_config.getint('Channels', n))
+            else:
+                self.channels[n] = discord.utils.get(self.guild.text_channels, name=n)
+                if not self.channels[n]:
+                    print(f"Failed to find channel {n}")
+                    continue
+                self.channel_config['Channels'][n] = str(self.channels[n].id)
+                with open('channels.ini', 'w', encoding='utf-8') as f:
+                    self.channel_config.write(f)
+
+    def load_roles(self):
+        for n in self.roles.keys():
+            self.roles[n] = discord.utils.get(self.guild.roles, name=n)
+            if not self.roles[n]:
+                print(f'Failed to find role {n}')
+
     @staticmethod
     def escape_text(text):
         text = str(text)
@@ -156,15 +188,8 @@ class Kurisu(commands.Bot):
         assert len(guilds) == 1
         self.guild = guilds[0]
 
-        for n in self.channels.keys():
-            self.channels[n] = discord.utils.get(self.guild.channels, name=n)
-            if not self.channels[n]:
-                print(f'Failed to find channel {n}')
-
-        for n in self.roles.keys():
-            self.roles[n] = discord.utils.get(self.guild.roles, name=n)
-            if not self.roles[n]:
-                print(f'Failed to find role {n}')
+        self.load_channels()
+        self.load_roles()
 
         self.assistance_channels = {
             self.channels['3ds-assistance-1'],
@@ -201,13 +226,24 @@ class Kurisu(commands.Bot):
         await self.channels['helpers'].send(startup_message)
         self._is_all_ready.set()
 
+    @staticmethod
+    def format_error(msg):
+        error_paginator = commands.Paginator()
+        for chunk in [msg[i:i + 1800] for i in range(0, len(msg), 1800)]:
+            error_paginator.add_line(chunk)
+        return error_paginator
+
     async def on_command_error(self, ctx: commands.Context, exc: commands.CommandInvokeError):
         author: discord.Member = ctx.author
         command: commands.Command = ctx.command or '<unknown cmd>'
         exc = getattr(exc, 'original', exc)
+        channel = self.channels['bot-err'] if self.channels['bot-err'] else ctx.channel
 
         if isinstance(exc, commands.CommandNotFound):
             return
+
+        elif isinstance(exc, commands.ArgumentParsingError):
+            await ctx.send_help(ctx.command)
 
         elif isinstance(exc, commands.NoPrivateMessage):
             await ctx.send(f'`{command}` cannot be used in direct messages.')
@@ -245,21 +281,24 @@ class Kurisu(commands.Bot):
         elif isinstance(exc, commands.CommandInvokeError):
             await ctx.send(f'{author.mention} `{command}` raised an exception during usage')
             msg = "".join(format_exception(type(exc), exc, exc.__traceback__))
-            for chunk in [msg[i:i + 1800] for i in range(0, len(msg), 1800)]:
-                await self.channels['bot-err'].send(f'```\n{chunk}\n```')
+            error_paginator = self.format_error(msg)
+            for page in error_paginator.pages:
+                await channel.send(page)
         else:
             if not isinstance(command, str):
                 command.reset_cooldown(ctx)
             await ctx.send(f'{author.mention} Unexpected exception occurred while using the command `{command}`')
             msg = "".join(format_exception(type(exc), exc, exc.__traceback__))
-            for chunk in [msg[i:i + 1800] for i in range(0, len(msg), 1800)]:
-                await self.channels['bot-err'].send(f'```\n{chunk}\n```')
+            error_paginator = self.format_error(msg)
+            for page in error_paginator.pages:
+                await channel.send(page)
 
     async def on_error(self, event_method, *args, **kwargs):
         await self.channels['bot-err'].send(f'Error in {event_method}:')
         msg = format_exc()
-        for chunk in [msg[i:i + 1800] for i in range(0, len(msg), 1800)]:
-            await self.channels['bot-err'].send(f'```\n{chunk}\n```')
+        error_paginator = self.format_error(msg)
+        for page in error_paginator.pages:
+            await self.channels['bot-err'].send(page)
 
     def add_cog(self, cog):
         super().add_cog(cog)

@@ -1,5 +1,5 @@
 from discord.ext import commands
-from cogs.checks import is_staff
+from utils.checks import is_staff
 
 
 class Load(commands.Cog):

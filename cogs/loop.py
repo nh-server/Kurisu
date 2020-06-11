@@ -6,7 +6,7 @@ import traceback
 import pytz
 from datetime import datetime, timedelta
 from discord.ext import commands
-from cogs.database import DatabaseCog
+from utils.database import DatabaseCog
 
 
 class Loop(DatabaseCog):
@@ -45,45 +45,42 @@ class Loop(DatabaseCog):
                 # No logging setup :/
                 print(f"Netinfo: {r.status} while trying to update netinfo.")
                 return
+
         now = datetime.now(self.tz)
+
         embed = discord.Embed(title="Network Maintenance Information / Online Status",
                               url="https://www.nintendo.co.jp/netinfo/en_US/index.html",
                               description="All times are US/Pacific.")
         embed.set_footer(text=f"This information was last updated {now.strftime('%A, %B %d, %Y %I:%M %p')}.")
-        for m in j["operational_statuses"]:
-            begin = self.netinfo_parse_time(m["begin"])
-            if "end" in m:
-                end = self.netinfo_parse_time(m["end"])
-            else:
-                end = datetime(year=2099, month=1, day=1, tzinfo=self.tz)
-            if begin <= now < end:
-                m_desc = ', '.join(m["platform"])
-                m_desc += '\nBegins: ' + begin.strftime('%A, %B %d, %Y %I:%M %p')
-                if end.year != 2099:
-                    m_desc += '\nEnds: ' + end.strftime('%A, %B %d, %Y %I:%M %p')
-                if "services" in m:
-                    embed.add_field(name=f'Current Status: {m["software_title"].replace(" <br /> ", ", ")}, {", ".join(m["services"])}',
-                                value=m_desc, inline=False)
+
+        for status_type in ("operational_statuses", "temporary_maintenances"):
+            for entry in j[status_type]:
+                if "platform" in entry:
+                    entry_desc = ', '.join(entry["platform"]).replace("nintendo", "Nintendo").replace("web", "Web")
                 else:
-                    embed.add_field(name=f'Current Status: {m["software_title"].replace(" <br /> ", ", ")}',
-                                value=m_desc, inline=False)
-        for m in j["temporary_maintenances"]:
-            begin = self.netinfo_parse_time(m["begin"])
-            if "end" in m:
-                end = self.netinfo_parse_time(m["end"])
-            else:
+                    entry_desc = 'No console specified.'
+
+                begin = datetime(year=2000, month=1, day=1, tzinfo=self.tz)
                 end = datetime(year=2099, month=1, day=1, tzinfo=self.tz)
-            if begin <= now < end:
-                m_desc = ', '.join(m["platform"])
-                m_desc += '\nBegins: ' + begin.strftime('%A, %B %d, %Y %I:%M %p')
-                if end.year != 2099:
-                    m_desc += '\nEnds: ' + end.strftime('%A, %B %d, %Y %I:%M %p')
-                if "services" in m:
-                    embed.add_field(name='Current Maintenance: {}, {}'.format(m["software_title"].replace(' <br />\r\n', ', '), ', '.join(m["services"])),
-                                value=m_desc, inline=False)
-                else:
-                    embed.add_field(name=f'Current Status: {m["software_title"].replace(" <br /> ", ", ")}',
-                                value=m_desc, inline=False)
+                if "begin" in entry:
+                    begin = self.netinfo_parse_time(entry["begin"])
+                    entry_desc += '\nBegins: ' + begin.strftime('%A, %B %d, %Y %I:%M %p')
+                if "end" in entry:
+                    end = self.netinfo_parse_time(entry["end"])
+                    entry_desc += '\nEnds: ' + end.strftime('%A, %B %d, %Y %I:%M %p')
+
+                descriptor = "Maintenance" if status_type == "temporary_maintenances" else "Status"
+
+                if now < end:
+                    entry_name = "{} {}: {}".format(
+                        "Current" if begin <= now else "Upcoming",
+                        descriptor, 
+                        entry["software_title"].replace(' <br />\r\n', ', ')
+                    )
+                    if "services" in entry:
+                        entry_name += ", " + ', '.join(entry["services"])
+                    embed.add_field(name=entry_name, value=entry_desc, inline=False)
+
         self.netinfo_embed = embed
 
     @commands.command()

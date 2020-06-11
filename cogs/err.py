@@ -278,7 +278,7 @@ class Err(commands.Cog):
         '102-2816': 'System is banned for a/multiple game(s) (preferably Splatoon) for an unknown duration, by attempting to use modified static.pack/+ game files online. You cannot ask how to fix this issue here.',
         '106-0306': 'NNID is temporarily banned from a/multiple games (preferably Splatoon) online multiplayer. You cannot ask how to fix this issue here.',
         '106-0346': 'NNID is permanently banned from a/multiple games (preferably Splatoon) online multiplayer. You cannot ask how to fix this issue here.',
-        '112-1037': 'Incorrect permissions for the default index.html file which prevents the Internet Browser from reading it. This can be fixed by following [this guide](https://wiiuguide.xyz/#/troubleshooting/fix-errcode-112-1037).',
+        '112-1037': 'Incorrect permissions for the default index.html file which prevents the Internet Browser from reading it. This can be fixed by following [this guide](https://wiiu.hacks.guide/#/fix-errcode-112-1037).',
         '115-1009': 'System is permanently banned from Miiverse.',
         '121-0902': 'Permissions missing for the action you are trying to perfrom (Miiverse error).',
         '126-9622': 'Error when attempting to add funds. Maybe try again after a while, or make sure there is no issue with the payment method.',

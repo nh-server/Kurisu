@@ -1,9 +1,8 @@
 import aiohttp
-import asyncio
 import discord
 import urllib.parse
 
-from cogs.checks import check_if_user_can_sr
+from utils.checks import check_if_user_can_sr
 from discord.ext import commands
 from inspect import cleandoc
 
@@ -70,17 +69,17 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 continue
             if self.check_console(x, ctx.channel.name, ('wiiu',)):
                 embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
-                embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/")
+                embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/")
                 embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
-                embed.url = "https://wiiuguide.xyz/"
+                embed.url = "https://wiiu.hacks.guide/"
                 embed.description = "A complete Wii U custom firmware + coldboothax guide"
                 await ctx.send(embed=embed)
                 continue
             if self.check_console(x, ctx.channel.name, ('vwii',)):
                 embed = discord.Embed(title="Guide", color=discord.Color(0xFFFFFF))
-                embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/vwii-modding")
+                embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/vwii-modding")
                 embed.set_thumbnail(url="https://i.imgur.com/FclGzNz.png")
-                embed.url = "https://wiiuguide.xyz/#/vwii-modding"
+                embed.url = "https://wiiu.hacks.guide/#/vwii-modding"
                 embed.description = "A complete vWii modding guide"
                 await ctx.send(embed=embed)
                 continue
@@ -105,9 +104,9 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 embed.set_thumbnail(url="https://i.imgur.com/T227BW0.png")
                 embed.url = "https://dsi.cfw.guide/"
                 embed.description = "A complete Nintendo DSi homebrew guide, from stock to HiyaCFW"
-                await ctx.send(embed=embed)	
+                await ctx.send(embed=embed)
 
-    @commands.command(aliases=['finalizing'])
+    @commands.command(aliases=['finalizing', 'finalising', 'finalise'])
     async def finalize(self, ctx):
         """Finalizing Setup"""
         await self.simple_embed(ctx, """
@@ -159,7 +158,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
     @commands.command()
     async def update(self, ctx, *, consoles=""):
         """Explains how to safely prepare for an update for a hacked console"""
-        
+
         systems = ('3ds', 'nx', 'ns', 'switch')
         wanted_consoles = list(set(x for x in consoles.split() if x in systems))
 
@@ -190,7 +189,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                  
                     "**To find out your Luma3DS version, hold select on bootup and look at the top left corner of the top screen**\n"
                 )
-            
+
             elif self.check_console(console, ctx.channel.name, ("switch", "nx", "ns")):
                 embed = discord.Embed(title="Updating Guide", color=discord.Color(0xCB0004))
                 embed.set_author(name="NH Discord Server", url="https://nh-server.github.io/switch-guide/")
@@ -240,7 +239,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         embed.url = "https://3ds.hacks.guide/updating-b9s"
         embed.description = "A guide for updating to new B9S versions."
         await ctx.send(embed=embed)
-    
+
     @commands.command()
     async def updateluma(self, ctx):
         """Links to the guide for updating Luma3DS manually (8.0 or later)"""
@@ -309,7 +308,7 @@ intervention.  A staff or helper will be the quickest route to resolution; you c
 contact available staff by private messaging the Mod-Mail bot.** A full list of staff \
 and helpers can be found in #welcome-and-rules if you don't know who they are.
                                 """)
-        
+
     @commands.command()
     async def vguides(self, ctx):
         """Information about video guides relating to custom firmware"""
@@ -400,15 +399,15 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
         elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Is the new Switch update safe?", color=0xe60012)
             embed.description = cleandoc("""
-            Currently, the latest Switch system firmware is `10.0.1`.
+            Currently, the latest Switch system firmware is `10.0.4`.
 
             If your Switch is **unpatched and can access RCM**:
-            Atmosphere and Hekate currently support 10.0.1, and unpatched units will always be hackable.
+            Atmosphere and Hekate currently support 10.0.4, and unpatched units will always be hackable.
             You should follow the precautions in our update guide, and always update Atmosphere and Hekate before updating the system firmware.
             
             If your Switch is **hardware patched and cannot access RCM**:
             Stay on the lowest possible firmware version. Any Switch that is patched and above 7.0.1 is unlikely to be hackable.
-            *Last edited: April 25, 2020*
+            *Last edited: June 5, 2020*
             """)
             await ctx.send(embed=embed)
 
@@ -509,7 +508,7 @@ re-read the guide steps 2 or 3 times before coming here.
     async def nxcfw(self, ctx, cfw=""):
         """Information on why we don't support or recommend various other Switch CFWs"""
 
-        if cfw == "sx": #Alias for sxos
+        if cfw == "sx":  # Alias for sxos
             cfw = "sxos"
 
         cfwinfo = {
@@ -524,7 +523,7 @@ re-read the guide steps 2 or 3 times before coming here.
                         * Older versions have caused bans due to the incorrectly implemented user agent string.
                         * The author has expressed no interest in adding emuMMC/emuNAND.
                         * The author has expressed that they feel it doesn't matter if consoles get banned.
-                        * It often takes weeks to several months for it to get support for the latest firmware.""", 
+                        * It often takes weeks to several months for it to get support for the latest firmware.""",
                 'title': "ReiNX"
             },
             'sxos': {
@@ -532,7 +531,7 @@ re-read the guide steps 2 or 3 times before coming here.
                         * SX OS is illegal to purchase and own. It bundles various keys and copyrighted data that cannot be legally shared.
                         * It has known compatibility issues with homebrew, due to its non-standard and proprietary nature.
                         * It does not support loading custom system modules.
-                        * Several versions of the CFW have caused users to be banned without their knowledge.""", 
+                        * Several versions of the CFW have caused users to be banned without their knowledge.""",
                 'title': "SX OS"
             }
         }
@@ -585,7 +584,7 @@ already tried the Luma black screen process.
                             If your power LED turns on and off after you installed b9s, you are not bricked and are \
 just missing a file called boot.firm in the root of your SD card.
                             """)
-        embed.add_field(name="How to fix the issue", value="1. Check you inserted the SD card in your console\n 2. Place/replace the file, downloading it from https://github.com/AuroraWright/Luma3DS/releases", inline=False)
+        embed.add_field(name="How to fix the issue", value="1. Check you inserted the SD card in your console\n 2. Place/replace the file, downloading it from https://github.com/LumaTeam/Luma3DS/releases", inline=False)
         embed.add_field(name="Checking your SD for errors or corruption", value="https://3ds.eiphax.tech/sderrors.html \n Please read the instructions carefully.", inline=False)
         await ctx.send(embed=embed)
 
@@ -662,7 +661,7 @@ the system can't check for an update.
         """What to do if you delete all your SD card contents"""
         await self.simple_embed(ctx, """
                                 If you have lost the contents of your SD card with CFW, you will need in SD root:
-                                -`boot.firm` and `boot.3dsx` from [luma3ds latest release](https://github.com/AuroraWright/Luma3DS/releases/latest)
+                                -`boot.firm` and `boot.3dsx` from [luma3ds latest release](https://github.com/LumaTeam/Luma3DS/releases/latest)
                                 Then repeat the [finalizing setup](https://3ds.hacks.guide/finalizing-setup) page.
                                 """, color=discord.Color.red())
 
@@ -671,15 +670,15 @@ the system can't check for an update.
     async def luma(self, ctx, lumaversion=""):
         """Download links for Luma versions"""
         if len(lumaversion) >= 3 and lumaversion[0].isdigit() and lumaversion[1] == "." and lumaversion[2].isdigit():
-            await self.simple_embed(ctx, f"Luma v{lumaversion}\nhttps://github.com/AuroraWright/Luma3DS/releases/tag/v{lumaversion}", color=discord.Color.blue())
+            await self.simple_embed(ctx, f"Luma v{lumaversion}\nhttps://github.com/LumaTeam/Luma3DS/releases/tag/v{lumaversion}", color=discord.Color.blue())
         elif lumaversion == "latest":
-            await self.simple_embed(ctx, "Latest Luma Version:\nhttps://github.com/AuroraWright/Luma3DS/releases/latest", color=discord.Color.blue())
+            await self.simple_embed(ctx, "Latest Luma Version:\nhttps://github.com/LumaTeam/Luma3DS/releases/latest", color=discord.Color.blue())
         else:
             await self.simple_embed(ctx, """
                                     Download links for the most common Luma3DS releases:
-                                    [Latest Luma](https://github.com/AuroraWright/Luma3DS/releases/latest)
-                                    [Luma v7.0.5](https://github.com/AuroraWright/Luma3DS/releases/tag/v7.0.5)
-                                    [Luma v7.1](https://github.com/AuroraWright/Luma3DS/releases/tag/v7.1)
+                                    [Latest Luma](https://github.com/LumaTeam/Luma3DS/releases/latest)
+                                    [Luma v7.0.5](https://github.com/LumaTeam/Luma3DS/releases/tag/v7.0.5)
+                                    [Luma v7.1](https://github.com/LumaTeam/Luma3DS/releases/tag/v7.1)
                                     """, color=discord.Color.blue())
 
     # Embed to broken TWL Troubleshooting
@@ -822,7 +821,7 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
     @commands.command()
     async def dump(self, ctx, console=None):
         """How to dump games and data for CFW consoles"""
-        systems = ("3ds", "nx", "ns", "switch", "wiiu")
+        systems = ("3ds", "nx", "ns", "switch", "wiiu", "vwii")
         if console not in systems:
             if ctx.channel.name.startswith(systems):
                 console = "auto"
@@ -846,10 +845,17 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
             await ctx.send(embed=embed)
         elif self.check_console(console, ctx.channel.name, ('wiiu',)):
             embed = discord.Embed(title="Wii U dump/install Guide", color=discord.Color(0x009AC7))
-            embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/dump-games")
+            embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/dump-games")
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
-            embed.url = "https://wiiuguide.xyz/#/dump-games"
-            embed.description = ("How to dump/install Wii U game discs using disc2app and WUP Installer GX2")
+            embed.url = "https://wiiu.hacks.guide/#/dump-games"
+            embed.description = "How to dump/install Wii U game discs using disc2app and WUP Installer GX2"
+            await ctx.send(embed=embed)
+        elif self.check_console(console, ctx.channel.name, ('vwii')):
+            embed = discord.Embed(title="vWii dump Guide", color=discord.Color(0x009AC7))
+            embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/dump-wii-games")
+            embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
+            embed.url = "https://wiiu.hacks.guide/#/dump-wii-games"
+            embed.description = "How to dump Wii game discs on vWii using CleanRip"
             await ctx.send(embed=embed)
 
     # Embed to Chroma Ryu's cartinstall guide
@@ -910,7 +916,7 @@ One way to fix this is by using an y-cable to connect the HDD to two USB ports.
                                      **Make sure your version of Atmosphere is up to date and that it supports the latest firmware**
 
                                      **Atmosphere 0.12.0 (latest release)**
-                                     Supports up to firmware 10.0.1.
+                                     Supports up to firmware 10.0.4.
 
                                      *To find Atmosphere's version information, while booted into CFW, go into System Settings -> System, and look at \
 the text under the System Update button. If it says that a system update is ready instead of displaying the CFW version, type .pendingupdate to learn \
@@ -918,8 +924,8 @@ how to delete it.*
 
                                      **Make sure your version of Hekate is up to date and that it supports the latest firmware**
                                      
-                                     **Hekate 5.1.4 (latest release)**
-                                     Supports up to firmware 10.0.1.
+                                     **Hekate 5.2.1 (latest release)**
+                                     Supports up to firmware 10.0.4.
                                      
                                      *To find Hekate's version information, once Hekate starts, look in the top left corner of the screen. If you use auto-boot, hold `volume -` to stop it.*
                                      
@@ -1062,7 +1068,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         """Checkpoint/Rosalina cheat guide"""
         embed = discord.Embed(title="3DS Cheats Guide", color=discord.Color.purple())
         embed.set_author(name="Krieg")
-        embed.set_thumbnail(url="https://i.imgur.com/yfsUIs3.png")
+        embed.set_thumbnail(url="https://3ds.eiphax.tech/pic/krieg.png")
         embed.url = "https://3ds.eiphax.tech/cpcheats.html"
         embed.description = "A guide to using cheats with Checkpoint and Rosalina"
         await ctx.send(embed=embed)
@@ -1072,7 +1078,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         """FTPD/WinSCP ftp guide"""
         embed = discord.Embed(title="3DS FTP Guide", color=discord.Color.purple())
         embed.set_author(name="Krieg")
-        embed.set_thumbnail(url="https://i.imgur.com/yfsUIs3.png")
+        embed.set_thumbnail(url="https://3ds.eiphax.tech/pic/krieg.png")
         embed.url = "https://3ds.eiphax.tech/ftp.html"
         embed.description = "A guide to using ftp with FTPD and WinSCP"
         await ctx.send(embed=embed)
@@ -1086,7 +1092,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         embed.description = "How to dump GBA cartridges"
         await ctx.send(embed=embed)
 
-    @tutorial.command(aliases=["carttodigitalsave","ctdsave"])
+    @tutorial.command(aliases=["carttodigitalsave", "ctdsave"])
     async def transfersave(self, ctx):
         """Links to cart to digital version save transfer tutorial"""
         embed = discord.Embed(title="Cart to digital version save transfer tutorial", color=discord.Color.purple())
@@ -1097,7 +1103,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
     @commands.guild_only()
     @tutorial.command(aliases=["theme"])
     async def themes(self, ctx, console=None):
-        """Links to the relevant games database"""
+        """Links to tutorials for installing themes"""
         systems = ("3ds", "nx", "ns", "switch")
         if console not in systems:
             if ctx.channel.name.startswith(systems):
@@ -1137,7 +1143,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
             try:
                 async with session.get(f"https://tinydb.eiphax.tech/api/search/{encodedapp}", timeout=2) as resp:
                     response = await resp.json()
-            except asyncio.TimeoutError:
+            except (aiohttp.ServerConnectionError, aiohttp.ClientConnectorError, aiohttp.ClientResponseError):
                 return await ctx.send("I can't connect to tinydb 💢")
         if response['success']:
             release = response['result']['newest_release']
@@ -1164,7 +1170,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         embed.set_image(url="https://i.imgur.com/7PIvVjJ.png")
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=['whatsid0','id0'])
+    @commands.command(aliases=['whatsid0', 'id0'])
     async def whatisid0(self, ctx):
         """Picture to say what the heck is the id0"""
         embed = discord.Embed()
@@ -1184,7 +1190,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
 
     @commands.command(aliases=['switchserial'])
     async def serial(self, ctx):
-        """Picture to show what the hell a serial is""" 
+        """Picture to show what the hell a serial is"""
         embed = discord.Embed(title="Don't know where your Switch's serial is?", color=discord.Color.red())
         embed.description = "This is where the serial is located. Use this number to check if you are patched."
         embed.set_image(url="https://i.imgur.com/03NfeFN.png")
@@ -1205,7 +1211,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
                 """
 
         await self.simple_embed(ctx, f"{reasons}{self.SDFORMAT_TEXT}", title="exFAT on Switch: Why you shouldn't use it")
-        
+
     @commands.command()
     async def nxban(self, ctx):
         """Switch ban risk snippet"""
@@ -1251,7 +1257,7 @@ in the scene.
     @commands.command(aliases=['ntrboot', 'ntrcartlist', 'ntrbootcartlist'])
     async def ntrcart(self, ctx):
         imagelink = "https://i.imgur.com/362bH8k.png"
-        title = "Which flashcarts work with NTRBoot?"		
+        title = "Which flashcarts work with NTRBoot?"
         embed = discord.Embed(title=title, color=discord.Color.default())
         embed.set_image(url=imagelink)
         await ctx.send(embed=embed)
@@ -1265,7 +1271,7 @@ in the scene.
         embed.description = "A list of portable payload injectors for the Nintendo Switch"
         await ctx.send(embed=embed)
 
-    @commands.command()                         
+    @commands.command()
     async def safemode(self, ctx):
         """How to boot into Safe Mode on the 3DS"""
         await self.simple_embed(ctx, """
@@ -1281,7 +1287,7 @@ in the scene.
         Here are links to some good torrent clients:
         • [qBittorrent](https://www.qbittorrent.org/download.php)
         • [Deluge](https://dev.deluge-torrent.org/wiki/Download)
-        • [Flud](https://play.google.com/store/apps/details?id=com.delphicoder.flud&hl=en_US)""", title="Torrent Clients")
+        • [Flud](https://play.google.com/store/apps/details?id=com.delphicoder.flud&hl=en_US) (Android)""", title="Torrent Clients")
 
     @commands.command(aliases=['wiiubrowserfreeze'])
     async def fixwiiuexploit(self, ctx):
@@ -1293,27 +1299,22 @@ in the scene.
         embed.description = "A common fix for those whose web browser keeps freezing their Wii U while attempting the exploit."
         await ctx.send(embed=embed)
 
+    @commands.command(aliases=['missingpayload'])
+    async def wiiupayload(self, ctx):
+        """Missing payload"""
+        await self.simple_embed(ctx, """
+        Missing payload file on the SD.
+        Make sure you have a [payload.elf](https://github.com/wiiu-env/homebrew_launcher_installer/releases/latest) in the wiiu folder.""", title="FSOpenFile Failed [...] payload.elf")
+
     @commands.command()
-    async def recover(self, ctx, console=None):
-        """Troubleshooting guides for vWii"""
-        systems = ("miichannel", "vios")
-        if console not in systems:
-            await ctx.send(f"Please specify an option. Valid options are: {', '.join([x for x in systems])}.")
-            return
-        if self.check_console(console, ctx.message.channel.name, ('miichannel',)):
-            embed = discord.Embed(title="Recover a Lost Mii Channel on vWii", color=0xe60012)
-            embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/recover-mii-channel")
-            embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
-            embed.url = "https://wiiuguide.xyz/#/recover-mii-channel"
-            embed.description = "A complete guide to recover a lost or corrupted Mii Channel on vWii"
-            await ctx.send(embed=embed)
-        elif self.check_console(console, ctx.message.channel.name, ('vios',)):
-            embed = discord.Embed(title="Recover a Corrupted IOS on vWii", color=0xe60012)
-            embed.set_author(name="NH Discord Server", url="https://wiiuguide.xyz/#/recover-ios")
-            embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
-            embed.url = "https://wiiuguide.xyz/#/recover-ios"
-            embed.description = "A complete guide to recover a lost or corrupted IOS on vWii"
-            await ctx.send(embed=embed)
+    async def recover(self, ctx):
+        """Troubleshooting guide for vWii"""
+        embed = discord.Embed(title="Recover a vWii IOS/Channel", color=0xe60012)
+        embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/recover-vwii-ioses-channels")
+        embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
+        embed.url = "https://wiiu.hacks.guide/#/recover-vwii-ioses-channels"
+        embed.description = "A complete guide to recover a lost or corrupted system channel or IOS on vWii"
+        await ctx.send(embed=embed)
 
     @commands.command()
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
@@ -1345,7 +1346,8 @@ in the scene.
             'switchlan': 'SbxDMER',
             'ctgp7': '0uTPwYv3SPQww54l',
             'retronx': 'vgvZN9W',
-            'r3ds': '3ds'
+            'r3ds': '3ds',
+            'lovepotion' : 'ggbKkhc',
         }
 
         if name in invites:
@@ -1380,6 +1382,51 @@ in the scene.
         """Master Key(mkey) generator for parental controls"""
         await self.simple_embed(ctx, """[Master key generator](https://mkey.salthax.org/) to remove the parental controls pin on Nintendo Consoles""")
 
+    @commands.command(aliases=['noessential'])
+    async def noexefs(self, ctx):
+        """Instructions on what to do if essential.exefs is missing"""
+        embed = discord.Embed(title="What to do if essential.exefs is missing", color=discord.Color.magenta())
+        embed.description = "In order to do this, you will need to boot back into GodMode9"
+        embed.add_field(name="Steps to obtain essential.exefs", value=cleandoc("""
+                1. Reinsert your SD card into your console
+                2. Boot back into GodMode9 by holding start while powering on
+                3. Navigate to SysNAND Virtual
+                4. Select `essential.exefs`
+                5. Select `copy to 0:/gm9/out`
+                6. Power off your console and insert your SD card into your computer
+                7. Navigate to `/gm9/out` on your SD, `essential.exefs` should be there
+            """))
+        await ctx.send(embed=embed)
+
+    @commands.command(aliases=['systransfer'])
+    async def transfer(self, ctx):
+        """If you want to keep homebrew apps when doing a system transfer:"""
+        embed = discord.Embed(title="What to do if you want to keep homebrew apps during a system transfer", color=discord.Color.magenta())
+        embed.description = "Keeping Homebrew Apps after system transfer"
+        embed.add_field(name="Steps to system transfer", value=cleandoc("""
+                1. Install CFW on the new console using [3ds.hacks.guide](https://3ds.hacks.guide/)
+                2. Do a system transfer by navigating to system settings, other settings, system transfer.
+                3. If prompted, choose a PC-Based Transfer.
+                4. To access the Homebrew Launcher on the new console, do `Section III - Homebrew Launcher` in [Finalizing Setup](https://3ds.hacks.guide/finalizing-setup)
+                5. On the console you transfered to, run [faketik](https://github.com/ihaveamac/faketik/releases) in the Homebrew Launcher.
+                6. Your Homebrew apps should appear on the homescreen!
+            """))
+        await ctx.send(embed=embed)
+
+    @commands.command(aliases=['cbhc'])
+    async def cbhcrules(self, ctx):
+        """The rules for the CBHC CFW on Wii U to avoid a brick"""
+        embed = discord.Embed(title="Installing CBHC incorrectly can brick your Wii U!", color=discord.Color.red())
+        embed.add_field(name="Make sure to follow the following rules when installing CBHC:", value=cleandoc("""
+                - The DS game has to be legitimately installed from the eShop!
+                - Don’t format the system while CBHC is installed!
+                - Don’t delete the user account that bought the DS VC game!
+                - Don’t re-install the same game using WUP Installer or from the eShop!
+                - Don’t install Haxchi over CBHC! (You will not brick, but it will cause a boot-loop! Hold A when booting to access the Homebrew Launcher and uninstall CBHC.)
+                - Don’t uninstall the DS Virtual Console game without [properly uninstalling CBHC first](https://wiiu.hacks.guide/#/uninstall-cbhc)!
+                - Don’t move the DS Virtual Console game to a USB drive!
+            """))
+        await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
