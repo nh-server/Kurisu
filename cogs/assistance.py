@@ -1430,9 +1430,9 @@ in the scene.
 
     @commands.command(aliases=['usm'])
     async def unsafe_mode(self, ctx):
-        embed = discord.Embed(title="Unsafe_mode Guide Page", color=discord.Color.dark_orange())
+        embed = discord.Embed(title="unSAFE_MODE Guide Page", color=discord.Color.dark_orange())
         embed.url = "https://3ds.hacks.guide/installing-boot9strap-(usm)"
-        embed.description = "The 3DS Guide page on using Unsafe_mode."
+        embed.description = "The 3DS Guide page on using unSAFE_MODE."
         await ctx.send(embed=embed)
         
 def setup(bot):
