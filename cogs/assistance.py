@@ -986,7 +986,7 @@ your device will refuse to write to it.
         embed.description = "Basic tutorial for PKHeX"
         await ctx.send(embed=embed)
 
-    @tutorial.command(cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
+    @tutorial.command(aliases=["randomise"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def randomize(self, ctx):
         """Links to layeredfs randomizing tutorial"""
         embed = discord.Embed(title="Randomizing with LayeredFS", color=discord.Color.red())
