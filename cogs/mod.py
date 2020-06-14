@@ -54,18 +54,35 @@ class Mod(DatabaseCog):
     async def userinfo2(self, ctx, user: FetchMember):
         """Shows information from a user. Staff and Helpers only."""
 
-        color = utils.gen_color(user.id)
+        embed = discord.Embed(color=utils.gen_color(user.id))
+        embed.description = (
+            f"**User:** {user.mention}\n"
+            f"**User's ID:** {user.id}\n"
+            f"**Created on:** {user.created_at}\n"
+            f"**Default Profile Picture:** {user.default_avatar}\n"
+        )
 
         if isinstance(user, discord.Member):
-            embed = discord.Embed(title=f"**Userinfo for {'member' if not user.bot else 'bot'} {user}**", color=color)
-            embed.description = f"**User's ID:** {user.id} \n **Join date:** {user.joined_at} \n **Created on** {user.created_at} \n **Current Status:** {user.status} \n **User Activity:**: {user.activity} \n **Default Profile Picture:** {user.default_avatar} \n **Current Display Name:** {user.display_name} \n **Nitro Boost Info:** {user.premium_since} \n **Current Top Role:** {user.top_role} \n **Color:** {user.color}"
+            member_type = "member"
+            embed.description += (
+                f"**Join date:** {user.joined_at}\n"
+                f"**Current Status:** {user.status}\n"
+                f"**User Activity:**: {user.activity}\n"
+                f"**Current Display Name:** {user.display_name}\n"
+                f"**Nitro Boost Info:** {user.premium_since}\n"
+                f"**Current Top Role:** {user.top_role}\n"
+                f"**Color:** {user.color}\n"
+            )
         else:
+            member_type = "user"
             try:
                 ban = await ctx.guild.fetch_ban(user)
+                embed.description += f"\n**Banned**, reason: {ban.reason}"
             except discord.NotFound:
-                ban = None
-            embed = discord.Embed(title=f'**Userinfo for {"user" if not user.bot else "bot"} {user}**', color=color)
-            embed.description = f"**User's ID:** {user.id} \n **Created on** {user.created_at}\n **Default Profile Picture:** {user.default_avatar}\n **Color:** {user.color}\n{f'**Banned**, reason: {ban.reason}' if ban is not None else ''}"
+                pass
+
+        member_type = member_type if not user.bot else "bot"
+        embed.title = f"**Userinfo for {member_type} {user}**"
         embed.set_thumbnail(url=user.avatar_url_as(static_format='png'))
         await ctx.send(embed=embed)
 
