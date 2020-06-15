@@ -915,7 +915,7 @@ One way to fix this is by using an y-cable to connect the HDD to two USB ports.
         await self.simple_embed(ctx, cleandoc("""
                                      **Make sure your version of Atmosphere is up to date and that it supports the latest firmware**
 
-                                     **Atmosphere 0.12.0 (latest release)**
+                                     **Atmosphere 0.13.0 (latest release)**
                                      Supports up to firmware 10.0.4.
 
                                      *To find Atmosphere's version information, while booted into CFW, go into System Settings -> System, and look at \
@@ -924,7 +924,7 @@ how to delete it.*
 
                                      **Make sure your version of Hekate is up to date and that it supports the latest firmware**
                                      
-                                     **Hekate 5.2.1 (latest release)**
+                                     **Hekate 5.3.0 (latest release)**
                                      Supports up to firmware 10.0.4.
                                      
                                      *To find Hekate's version information, once Hekate starts, look in the top left corner of the screen. If you use auto-boot, hold `volume -` to stop it.*
