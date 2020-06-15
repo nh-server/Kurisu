@@ -989,7 +989,7 @@ your device will refuse to write to it.
     @tutorial.command(cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def pksm(self, ctx):
         """Links to PKSM Documentation"""
-        embed = discord.Embed(title="PKHeX tutorial", color=discord.Color.red())
+        embed = discord.Embed(title="PKSM Documentation", color=discord.Color.red())
         embed.set_thumbnail(url="https://raw.githubusercontent.com/FlagBrew/PKSM/master/assets/banner.png")
         embed.url = "https://github.com/FlagBrew/PKSM/wiki"
         embed.description = "Documentation for PKSM"
