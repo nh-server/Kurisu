@@ -33,7 +33,7 @@ class FriendCode(DatabaseCog):
         """Add your friend code."""
         fc = self.verify_fc(fc)
         if not fc:
-            await ctx.send("This friend code is invalid.")
+            await ctx.send("This friend code is invalid.\nPlease notice: friend codes from Tencent-Nintendo Switches are currently not supported.")
             return
         rows = await self.get_friendcode(ctx.author.id)
         for row in rows:
@@ -74,7 +74,7 @@ class FriendCode(DatabaseCog):
         if fc:
             await ctx.send(self.fc_to_string(fc))
         else:
-            await ctx.send("Invalid.")
+            await ctx.send("Invalid.\nPlease notice: friend codes from Tencent-Nintendo Switches are currently not supported.")
 
 
 def setup(bot):
