@@ -46,7 +46,7 @@ class Filter(commands.Cog):
         name = await self.bot.wordfilter.delete(word=word)
         if name is None:
             return await ctx.send("Word not found!")
-        await ctx.send(f"Delete filtered word succesfully!")
+        await ctx.send(f"Delete word `{word}` succesfully!")
         await self.bot.channels['mod-logs'].send(f"⭕ **Deleted**: {ctx.author.mention} deleted word `{word}` from the filter!")
 
 
