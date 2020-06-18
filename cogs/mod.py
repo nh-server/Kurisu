@@ -56,7 +56,7 @@ class Mod(DatabaseCog):
         
         if user is None:
             user = ctx.author
-        if (ctx.channel.name == "bot-cmds" and ctx.author == user) or await check_staff_id(ctx, 'Helper', ctx.author.id):
+        if (ctx.channel == self.bot.channels["bot-cmds"] and ctx.author == user) or await check_staff_id(ctx, 'Helper', ctx.author.id):
                                 
             embed = discord.Embed(color=utils.gen_color(user.id))
             embed.description = (
