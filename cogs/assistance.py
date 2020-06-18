@@ -974,7 +974,7 @@ your device will refuse to write to it.
     async def pokemon(self, ctx):
         """Displays different guides for Pokemon"""
         embed = discord.Embed(title="Possible guides for **Pokemon**:", color=discord.Color.red())
-        embed.description = "**pkhex**|**pkhax**|**pkgen** Links to PKHeX tutorial\n**randomize** Links to layeredfs randomizing tutorial"
+        embed.description = "**pkhex**|**pkhax**|**pkgen** Links to PKHeX tutorial\n**randomize** Links to layeredfs randomizing tutorial\n**pksm** Links to the PKSM documentation"
         await ctx.send(embed=embed)
 
     @tutorial.command(aliases=["pkhax", "pkgen"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
@@ -984,6 +984,15 @@ your device will refuse to write to it.
         embed.set_thumbnail(url="https://i.imgur.com/rr7Xf3E.jpg")
         embed.url = "https://3ds.eiphax.tech/pkhex.html"
         embed.description = "Basic tutorial for PKHeX"
+        await ctx.send(embed=embed)
+
+    @tutorial.command(cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
+    async def pksm(self, ctx):
+        """Links to PKSM Documentation"""
+        embed = discord.Embed(title="PKSM Documentation", color=discord.Color.red())
+        embed.set_thumbnail(url="https://raw.githubusercontent.com/FlagBrew/PKSM/master/assets/banner.png")
+        embed.url = "https://github.com/FlagBrew/PKSM/wiki"
+        embed.description = "Documentation for PKSM"
         await ctx.send(embed=embed)
 
     @tutorial.command(aliases=["randomise"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
