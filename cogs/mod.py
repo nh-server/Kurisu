@@ -48,44 +48,49 @@ class Mod(DatabaseCog):
                 ban = None
             await ctx.safe_send(f"{basemsg}{f'**Banned**, reason: {ban.reason}' if ban is not None else ''}\n")
 
-    @is_staff("Helper")
+    
     @commands.guild_only()
     @commands.command(aliases=['ui2'])
-    async def userinfo2(self, ctx, user: FetchMember):
+    async def userinfo2(self, ctx, user: FetchMember = None):
         """Shows information from a user. Staff and Helpers only."""
-
-        embed = discord.Embed(color=utils.gen_color(user.id))
-        embed.description = (
-            f"**User:** {user.mention}\n"
-            f"**User's ID:** {user.id}\n"
-            f"**Created on:** {user.created_at}\n"
-            f"**Default Profile Picture:** {user.default_avatar}\n"
-        )
-
-        if isinstance(user, discord.Member):
-            member_type = "member"
-            embed.description += (
-                f"**Join date:** {user.joined_at}\n"
-                f"**Current Status:** {user.status}\n"
-                f"**User Activity:**: {user.activity}\n"
-                f"**Current Display Name:** {user.display_name}\n"
-                f"**Nitro Boost Info:** {user.premium_since}\n"
-                f"**Current Top Role:** {user.top_role}\n"
-                f"**Color:** {user.color}\n"
+        
+        if user is None:
+            user = ctx.author
+        if (ctx.channel.name == "bot-cmds" and ctx.author == user) or await check_staff_id(ctx, 'Helper', ctx.author.id):
+                                
+            embed = discord.Embed(color=utils.gen_color(user.id))
+            embed.description = (
+                f"**User:** {user.mention}\n"
+                f"**User's ID:** {user.id}\n"
+                f"**Created on:** {user.created_at}\n"
+                f"**Default Profile Picture:** {user.default_avatar}\n"
             )
+
+            if isinstance(user, discord.Member):
+                member_type = "member"
+                embed.description += (
+                    f"**Join date:** {user.joined_at}\n"
+                    f"**Current Status:** {user.status}\n"
+                    f"**User Activity:**: {user.activity}\n"
+                    f"**Current Display Name:** {user.display_name}\n"
+                    f"**Nitro Boost Info:** {user.premium_since}\n"
+                    f"**Current Top Role:** {user.top_role}\n"
+                    f"**Color:** {user.color}\n"
+                )
+            else:
+                member_type = "user"
+                try:
+                    ban = await ctx.guild.fetch_ban(user)
+                    embed.description += f"\n**Banned**, reason: {ban.reason}"
+                except discord.NotFound:
+                    pass
+
+            member_type = member_type if not user.bot else "bot"
+            embed.title = f"**Userinfo for {member_type} {user}**"
+            embed.set_thumbnail(url=user.avatar_url_as(static_format='png'))
+            await ctx.send(embed=embed)
         else:
-            member_type = "user"
-            try:
-                ban = await ctx.guild.fetch_ban(user)
-                embed.description += f"\n**Banned**, reason: {ban.reason}"
-            except discord.NotFound:
-                pass
-
-        member_type = member_type if not user.bot else "bot"
-        embed.title = f"**Userinfo for {member_type} {user}**"
-        embed.set_thumbnail(url=user.avatar_url_as(static_format='png'))
-        await ctx.send(embed=embed)
-
+            raise discord.ext.commands.errors.CheckFailure(f'The check functions for command {ctx.command} failed.')
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
