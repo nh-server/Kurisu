@@ -1356,7 +1356,8 @@ in the scene.
             'ctgp7': '0uTPwYv3SPQww54l',
             'retronx': 'vgvZN9W',
             'r3ds': '3ds',
-            'lovepotion' : 'ggbKkhc',
+            'lovepotion': 'ggbKkhc',
+            'bitbuilt': 'tHEesfb',
         }
 
         if name in invites:
