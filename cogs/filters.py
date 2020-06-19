@@ -24,6 +24,8 @@ class Filter(commands.Cog):
     async def add_word(self, ctx, word: str, *, kind: str):
         if kind not in self.bot.wordfilter.kinds:
             return await ctx.send(f"Possible word kinds for word filter: {', '.join(self.bot.wordfilter.kinds)}")
+        if ' ' in word or '-' in word:
+            return await ctx.send("Filtered words cant contain dashes or spaces!")
         word, _ = await self.bot.wordfilter.add(word=word, kind=kind)
         if word is None:
             return await ctx.send(f"Failed to add word to {kind} filter")
