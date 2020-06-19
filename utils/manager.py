@@ -1,4 +1,5 @@
 import aiosqlite3
+import json
 
 
 class Manager:
@@ -26,6 +27,18 @@ class WordFilterManager(Manager):
         for kind in self.kinds:
             self.filter[kind] = [i[0] for i in await self.fetch(kind=kind)]
         print("Loaded word filter")
+
+    async def bulk_load(self):
+        with open("wordfilter.json", 'r') as f:
+            dict = json.load(f)
+            values = []
+            for kind in self.kinds:
+                if kind in dict:
+                    for entry in dict[kind]:
+                        values.append(f"('{entry}','{kind}')")
+            async with self.dbcon as cur:
+                await cur.execute(f"INSERT INTO wordfilter VALUES {','.join(values)}")
+            await self.load()
 
     async def add(self, word: str, kind: str) -> tuple:
         async with self.dbcon as cur:
