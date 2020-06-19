@@ -119,7 +119,8 @@ class SwitchSerialNumberCheck(Cog):
 
         if mariko:
             return await ctx.send("{}: Serial {} seems to be a \"mariko\" Switch or Switch Lite.\n" 
-                                  "These are currently not hackable or vulnerable to any known exploits".format(ctx.author.mention, safe_serial))
+                                  "Currently, These units can only be hacked by hardware modification solution proposed by Team Xecuter.\n"
+                                  "Please reminder: NO SUPPORT will be provided for Team Xecuter software and devices in this server.".format(ctx.author.mention, safe_serial))
         elif maybe:
             return await ctx.send("{}: Serial {} _might_ be patched. The only way you can know this for sure is by "
                                   "pushing the payload manually. You can find instructions to do so here: "
