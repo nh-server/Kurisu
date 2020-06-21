@@ -1442,7 +1442,7 @@ in the scene.
     async def unsafe_mode(self, ctx):
         """unSAFE_MODE Guide"""
         await self.simple_embed(ctx, """
-                    3DS Hacks Guide's [unSAFE_MODE](https://3ds.hacks.guide/installing-boot9strap-(usm).html)
+                    3DS Hacks Guide's [unSAFE_MODE](https://3ds.hacks.guide/installing-boot9strap-%28usm%29.html)
                     """, title="unSAFE_MODE")
 
         
