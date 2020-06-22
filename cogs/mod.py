@@ -48,7 +48,6 @@ class Mod(DatabaseCog):
                 ban = None
             await ctx.safe_send(f"{basemsg}{f'**Banned**, reason: {ban.reason}' if ban is not None else ''}\n")
 
-    
     @commands.guild_only()
     @commands.command(aliases=['ui2'])
     async def userinfo2(self, ctx, user: FetchMember = None):
@@ -91,6 +90,7 @@ class Mod(DatabaseCog):
             await ctx.send(embed=embed)
         else:
             raise discord.ext.commands.errors.CheckFailure(f'The check functions for command {ctx.command} failed.')
+
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
