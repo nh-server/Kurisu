@@ -48,11 +48,17 @@ class Mod(DatabaseCog):
                 ban = None
             await ctx.safe_send(f"{basemsg}{f'**Banned**, reason: {ban.reason}' if ban is not None else ''}\n")
 
-    @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=['ui2'])
-    async def userinfo2(self, ctx, user: FetchMember):
+    async def userinfo2(self, ctx, user: FetchMember = None):
         """Shows information from a user. Staff and Helpers only."""
+        
+        if user is None:
+            user = ctx.author
+
+        if (not await check_staff_id(ctx, 'Helper', ctx.author.id)) and (ctx.author != user or ctx.channel != self.bot.channels['bot-cmds']):
+            await ctx.message.delete()
+            return await ctx.send(f"{ctx.author.mention} This command can only be used in {self.bot.channels['bot-cmds'].mention} and only on yourself.", delete_after=10)
 
         embed = discord.Embed(color=utils.gen_color(user.id))
         embed.description = (
