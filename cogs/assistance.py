@@ -1176,7 +1176,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
     async def sdroot(self, ctx):
         """Picture to say what the heck is the root"""
         embed = discord.Embed()
-        embed.set_image(url="https://i.imgur.com/7PIvVjJ.png")
+        embed.set_image(url="https://i.imgur.com/QXHIvOz.jpg")
         await ctx.send(embed=embed)
 
     @commands.command(aliases=['whatsid0', 'id0'])
