@@ -1334,9 +1334,9 @@ in the scene.
 
         # When adding invites, make sure the keys are lowercase, or the command will not find it when invoked!
         invites = {
-            'twl':'yD3spjv',
+            'twl': 'yD3spjv',
             'switchroot': '9d66FYg',
-            'acnl':'EZSxqRr',
+            'acnl': 'EZSxqRr',
             'flagbrew': 'bGKEyfY',
             'themeplaza': '2hUQwXz',
             'smashultimate': 'ASJyTrZ',

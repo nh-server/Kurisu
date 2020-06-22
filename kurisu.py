@@ -312,7 +312,6 @@ class Kurisu(commands.Bot):
     async def close(self):
         print('Kurisu is shutting down')
         self.holder.dbcon.close()
-        self.db_closed = True
         await super().close()
 
     async def is_all_ready(self):

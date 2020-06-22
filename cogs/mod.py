@@ -52,7 +52,7 @@ class Mod(DatabaseCog):
     @commands.command(aliases=['ui2'])
     async def userinfo2(self, ctx, user: FetchMember = None):
         """Shows information from a user. Staff and Helpers only."""
-        
+
         if user is None:
             user = ctx.author
 
@@ -649,7 +649,7 @@ class Mod(DatabaseCog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def approve(self, ctx, invite: discord.Invite, times: int=1):
+    async def approve(self, ctx, invite: discord.Invite, times: int = 1):
         """Approves a server invite for a number of times(0 to delete approved invites). Staff and Helpers only."""
         code = invite.code
         if times == 0:
