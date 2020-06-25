@@ -226,9 +226,27 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         await ctx.send(embed=embed)
 
     @commands.command()
-    async def cfwuses(self, ctx):
-        """Links to eiphax cfw uses page"""
-        await self.simple_embed(ctx, "Want to know what CFW can be used for? <https://3ds.eiphax.tech/tips.html>")
+    async def cfwuses(self, ctx, console=""):
+        systems = ("3ds", "wiiu")
+        if console not in systems:
+            if ctx.channel.name.startswith(systems):
+                console = "auto"
+            else:
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+                return
+        if self.check_console(console, ctx.message.channel.name, '3ds'):
+            """Links to eiphax cfw uses page"""
+            await self.simple_embed(ctx, "Want to know what CFW can be used for? <https://3ds.eiphax.tech/tips.html>")
+        elif self.check_console(console, ctx.message.channel.name, 'wiiu'):
+            embed = discord.Embed(title="What can Wii U CFW be used for?", color=discord.Color.blue())
+            embed.add_field(name="Among other things, it allows you to do the following:", value=cleandoc("""
+                        - Use “ROM hacks” for games that you own.
+                        - Backup, edit and restore saves for many games.
+                        - Play games for older systems with various emulators, using RetroArch or other standalone emulators.
+                        - Play out-of-region games.
+                        - Dump your Wii U game discs to a format that can be installed on your internal or external Wii U storage drive.
+                    """))
+            await ctx.send(embed=embed)
 
     @commands.command()
     async def updateb9s(self, ctx):
