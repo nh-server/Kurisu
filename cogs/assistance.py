@@ -238,7 +238,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             """Links to eiphax cfw uses page"""
             await self.simple_embed(ctx, "Want to know what CFW can be used for? <https://3ds.eiphax.tech/tips.html>")
-        elif self.check_console(console, ctx.message.channel.name, 'wiiu'):
+        elif self.check_console(console, ctx.message.channel.name, ('wiiu',)):
             embed = discord.Embed(title="What can Wii U CFW be used for?", color=discord.Color.blue())
             embed.add_field(name="Among other things, it allows you to do the following:", value=cleandoc("""
                         - Use “ROM hacks” for games that you own.
