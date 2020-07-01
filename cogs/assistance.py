@@ -1280,6 +1280,40 @@ in the scene.
                                 Note that if hekate can't find a config, it'll create one. So likely you now have a hekate_ipl.ini in your bootloader folder, replace it with the one from the guide
                                 """, title="Getting the \"No main boot entries found\" error in hekate?")
 
+    @commands.command(aliases=['outdatednosigchk', 'ftanosigchk'])
+    async def missingnosigchk(self, ctx):
+        """Missing patches solutions"""
+
+        embed = discord.Embed(
+            title="Getting the \"Failed to apply nosigchk\" error after launching cfw?",
+            color=discord.Color.default(),
+            description="""
+                You are missing the nosigchk patches, or the ones you have are outdated. 
+                Download the latest patches.ini from the [dumping guide](https://suchmememanyskill.github.io/guides/switchdumpguide), and place it in your bootloader folder.
+                
+                Another solution is to remove the kip1patch=nosigchk lines from the hekate_ipl.ini file, but this will render installed game dumps unusable.
+                """,
+        )
+
+        return await ctx.send(embed=embed)
+
+    @commands.command(aliases=['outdatednoldrchk', 'ftanoldrchk'])
+    async def missingnoldrchk(self, ctx):
+        """Missing patches solutions"""
+
+        embed = discord.Embed(
+            title="Getting the \"Failed to apply noldrchk\" error after launching cfw?",
+            color=discord.Color.default(),
+            description="""
+                You are missing the noldrchk patches, or the ones you have are outdated. 
+                Download the latest patches.ini from the [dumping guide](https://suchmememanyskill.github.io/guides/switchdumpguide), and place it in your bootloader folder.
+                
+                Another solution is to remove the kip1patch=noldrchk lines from the hekate_ipl.ini file, but this will render installed game dumps unusable.
+                """,
+        )
+
+        return await ctx.send(embed=embed)
+
     @commands.command(aliases=['ntrboot', 'ntrcartlist', 'ntrbootcartlist'])
     async def ntrcart(self, ctx):
         imagelink = "https://i.imgur.com/362bH8k.png"
