@@ -840,7 +840,7 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
     @commands.command()
     async def dump(self, ctx, console=None):
         """How to dump games and data for CFW consoles"""
-        systems = ("gba", "vwii", "3ds", "wiiu", "switch", "nx", "ns")
+        systems = ("3ds", "nx", "ns", "switch", "wiiu", "vwii")
         if console not in systems:
             if ctx.channel.name.startswith(systems):
                 console = "auto"
@@ -875,13 +875,6 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
             embed.url = "https://wiiu.hacks.guide/#/dump-wii-games"
             embed.description = "How to dump Wii game discs on vWii using CleanRip"
-            await ctx.send(embed=embed)
-        elif self.check_console(console, ctx.channel.name, ('gba')):
-            embed = discord.Embed(title="Dumping GBA games", color=discord.Color.purple())
-            embed.set_author(name="Multiple Authors", url="https://wiki.no-intro.org/index.php?title=Game_Boy_Advance_Dumping_Guide&action=history")
-            embed.set_thumbnail(url="https://wiki.no-intro.org/resources/assets/wiki.png")
-            embed.url = "https://wiki.no-intro.org/index.php?title=Game_Boy_Advance_Dumping_Guide"
-            embed.description = "How to dump GBA cartridges"
             await ctx.send(embed=embed)
 
     # Embed to Chroma Ryu's cartinstall guide
@@ -1116,6 +1109,15 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         embed.set_thumbnail(url="https://3ds.eiphax.tech/pic/krieg.png")
         embed.url = "https://3ds.eiphax.tech/ftp.html"
         embed.description = "A guide to using ftp with FTPD and WinSCP"
+        await ctx.send(embed=embed)
+
+    @tutorial.command(cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
+    async def gbadump(self, ctx):
+        """Links to GBA Dump guide"""
+        embed = discord.Embed(title="Dumping GBA games", color=discord.Color.purple())
+        embed.set_thumbnail(url="https://wiki.no-intro.org/resources/assets/wiki.png")
+        embed.url = "https://wiki.no-intro.org/index.php?title=Game_Boy_Advance_Dumping_Guide"
+        embed.description = "How to dump GBA cartridges"
         await ctx.send(embed=embed)
 
     @tutorial.command(aliases=["carttodigitalsave", "ctdsave"])
