@@ -1,4 +1,5 @@
 import discord
+import random
 import re
 
 
@@ -26,6 +27,14 @@ def command_signature(command, *, prefix=".") -> str:
     return signature
 
 
+def gen_color(seed):
+    random.seed(seed)
+    c_r = random.randint(0, 255)
+    c_g = random.randint(0, 255)
+    c_b = random.randint(0, 255)
+    return discord.Color((c_r << 16) + (c_g << 8) + c_b)
+
+
 def parse_time(time_string) -> int:
     """Parses a time string in dhms format to seconds"""
     # thanks Luc#5653
@@ -37,8 +46,8 @@ def parse_time(time_string) -> int:
     }
     seconds = 0
     match = re.findall("([0-9]+[smhd])", time_string)  # Thanks to 3dshax server's former bot
-    if match is None:
-        return 0
+    if not match:
+        return -1
     for item in match:
         seconds += int(item[:-1]) * units[item[-1]]
     return seconds

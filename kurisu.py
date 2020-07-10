@@ -17,6 +17,7 @@ from discord.ext import commands
 
 from utils.checks import check_staff_id
 from utils.database import ConnectionHolder
+from utils.manager import WordFilterManager
 
 # sets working directory to bot's folder
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -35,6 +36,7 @@ cogs = [
     'cogs.err',
     'cogs.events',
     'cogs.extras',
+    'cogs.filters',
     'cogs.friendcode',
     'cogs.kickban',
     'cogs.load',
@@ -217,6 +219,9 @@ class Kurisu(commands.Bot):
         self.holder = ConnectionHolder()
         await self.holder.load_db(database_name, self.loop)
 
+        self.wordfilter = WordFilterManager(self)
+        await self.wordfilter.load()
+
         startup_message = f'{self.user.name} has started! {self.guild} has {self.guild.member_count:,} members!'
         if len(self.failed_cogs) != 0:
             startup_message += "\n\nSome addons failed to load:\n"
@@ -239,9 +244,11 @@ class Kurisu(commands.Bot):
         exc = getattr(exc, 'original', exc)
         channel = self.channels['bot-err'] if self.channels['bot-err'] else ctx.channel
 
-
         if isinstance(exc, commands.CommandNotFound):
             return
+
+        elif isinstance(exc, commands.ArgumentParsingError):
+            await ctx.send_help(ctx.command)
 
         elif isinstance(exc, commands.NoPrivateMessage):
             await ctx.send(f'`{command}` cannot be used in direct messages.')
@@ -305,7 +312,6 @@ class Kurisu(commands.Bot):
     async def close(self):
         print('Kurisu is shutting down')
         self.holder.dbcon.close()
-        self.db_closed = True
         await super().close()
 
     async def is_all_ready(self):

@@ -1,5 +1,4 @@
 import aiohttp
-import asyncio
 import discord
 import urllib.parse
 
@@ -227,9 +226,28 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         await ctx.send(embed=embed)
 
     @commands.command()
-    async def cfwuses(self, ctx):
-        """Links to eiphax cfw uses page"""
-        await self.simple_embed(ctx, "Want to know what CFW can be used for? <https://3ds.eiphax.tech/tips.html>")
+    async def cfwuses(self, ctx, console=""):
+        """Uses for CFW on Wii U and 3DS"""
+        systems = ("3ds", "wiiu")
+        if console not in systems:
+            if ctx.channel.name.startswith(systems):
+                console = "auto"
+            else:
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+                return
+        if self.check_console(console, ctx.message.channel.name, '3ds'):
+            """Links to eiphax cfw uses page"""
+            await self.simple_embed(ctx, "Want to know what CFW can be used for? <https://3ds.eiphax.tech/tips.html>")
+        elif self.check_console(console, ctx.message.channel.name, ('wiiu',)):
+            embed = discord.Embed(title="What can Wii U CFW be used for?", color=discord.Color.blue())
+            embed.add_field(name="Among other things, it allows you to do the following:", value=cleandoc("""
+                        - Use “ROM hacks” for games that you own.
+                        - Backup, edit and restore saves for many games.
+                        - Play games for older systems with various emulators, using RetroArch or other standalone emulators.
+                        - Play out-of-region games.
+                        - Dump your Wii U game discs to a format that can be installed on your internal or external Wii U storage drive.
+                    """))
+            await ctx.send(embed=embed)
 
     @commands.command()
     async def updateb9s(self, ctx):
@@ -400,15 +418,15 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
         elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Is the new Switch update safe?", color=0xe60012)
             embed.description = cleandoc("""
-            Currently, the latest Switch system firmware is `10.0.3`.
+            Currently, the latest Switch system firmware is `10.0.4`.
 
             If your Switch is **unpatched and can access RCM**:
-            Atmosphere and Hekate currently support 10.0.3, and unpatched units will always be hackable.
+            Atmosphere and Hekate currently support 10.0.4, and unpatched units will always be hackable.
             You should follow the precautions in our update guide, and always update Atmosphere and Hekate before updating the system firmware.
             
             If your Switch is **hardware patched and cannot access RCM**:
             Stay on the lowest possible firmware version. Any Switch that is patched and above 7.0.1 is unlikely to be hackable.
-            *Last edited: May 25, 2020*
+            *Last edited: June 5, 2020*
             """)
             await ctx.send(embed=embed)
 
@@ -822,7 +840,7 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
     @commands.command()
     async def dump(self, ctx, console=None):
         """How to dump games and data for CFW consoles"""
-        systems = ("3ds", "nx", "ns", "switch", "wiiu")
+        systems = ("3ds", "nx", "ns", "switch", "wiiu", "vwii")
         if console not in systems:
             if ctx.channel.name.startswith(systems):
                 console = "auto"
@@ -850,6 +868,13 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
             embed.url = "https://wiiu.hacks.guide/#/dump-games"
             embed.description = "How to dump/install Wii U game discs using disc2app and WUP Installer GX2"
+            await ctx.send(embed=embed)
+        elif self.check_console(console, ctx.channel.name, ('vwii')):
+            embed = discord.Embed(title="vWii dump Guide", color=discord.Color(0x009AC7))
+            embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/dump-wii-games")
+            embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
+            embed.url = "https://wiiu.hacks.guide/#/dump-wii-games"
+            embed.description = "How to dump Wii game discs on vWii using CleanRip"
             await ctx.send(embed=embed)
 
     # Embed to Chroma Ryu's cartinstall guide
@@ -909,8 +934,8 @@ One way to fix this is by using an y-cable to connect the HDD to two USB ports.
         await self.simple_embed(ctx, cleandoc("""
                                      **Make sure your version of Atmosphere is up to date and that it supports the latest firmware**
 
-                                     **Atmosphere 0.12.0 (latest release)**
-                                     Supports up to firmware 10.0.3.
+                                     **Atmosphere 0.13.0 (latest release)**
+                                     Supports up to firmware 10.0.4.
 
                                      *To find Atmosphere's version information, while booted into CFW, go into System Settings -> System, and look at \
 the text under the System Update button. If it says that a system update is ready instead of displaying the CFW version, type .pendingupdate to learn \
@@ -918,8 +943,8 @@ how to delete it.*
 
                                      **Make sure your version of Hekate is up to date and that it supports the latest firmware**
                                      
-                                     **Hekate 5.2.1 (latest release)**
-                                     Supports up to firmware 10.0.3.
+                                     **Hekate 5.3.0 (latest release)**
+                                     Supports up to firmware 10.0.4.
                                      
                                      *To find Hekate's version information, once Hekate starts, look in the top left corner of the screen. If you use auto-boot, hold `volume -` to stop it.*
                                      
@@ -968,7 +993,7 @@ your device will refuse to write to it.
     async def pokemon(self, ctx):
         """Displays different guides for Pokemon"""
         embed = discord.Embed(title="Possible guides for **Pokemon**:", color=discord.Color.red())
-        embed.description = "**pkhex**|**pkhax**|**pkgen** Links to PKHeX tutorial\n**randomize** Links to layeredfs randomizing tutorial"
+        embed.description = "**pkhex**|**pkhax**|**pkgen** Links to PKHeX tutorial\n**randomize** Links to layeredfs randomizing tutorial\n**pksm** Links to the PKSM documentation"
         await ctx.send(embed=embed)
 
     @tutorial.command(aliases=["pkhax", "pkgen"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
@@ -981,6 +1006,15 @@ your device will refuse to write to it.
         await ctx.send(embed=embed)
 
     @tutorial.command(cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
+    async def pksm(self, ctx):
+        """Links to PKSM Documentation"""
+        embed = discord.Embed(title="PKSM Documentation", color=discord.Color.red())
+        embed.set_thumbnail(url="https://raw.githubusercontent.com/FlagBrew/PKSM/master/assets/banner.png")
+        embed.url = "https://github.com/FlagBrew/PKSM/wiki"
+        embed.description = "Documentation for PKSM"
+        await ctx.send(embed=embed)
+
+    @tutorial.command(aliases=["randomise"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def randomize(self, ctx):
         """Links to layeredfs randomizing tutorial"""
         embed = discord.Embed(title="Randomizing with LayeredFS", color=discord.Color.red())
@@ -1062,7 +1096,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         """Checkpoint/Rosalina cheat guide"""
         embed = discord.Embed(title="3DS Cheats Guide", color=discord.Color.purple())
         embed.set_author(name="Krieg")
-        embed.set_thumbnail(url="https://i.imgur.com/yfsUIs3.png")
+        embed.set_thumbnail(url="https://3ds.eiphax.tech/pic/krieg.png")
         embed.url = "https://3ds.eiphax.tech/cpcheats.html"
         embed.description = "A guide to using cheats with Checkpoint and Rosalina"
         await ctx.send(embed=embed)
@@ -1072,7 +1106,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         """FTPD/WinSCP ftp guide"""
         embed = discord.Embed(title="3DS FTP Guide", color=discord.Color.purple())
         embed.set_author(name="Krieg")
-        embed.set_thumbnail(url="https://i.imgur.com/yfsUIs3.png")
+        embed.set_thumbnail(url="https://3ds.eiphax.tech/pic/krieg.png")
         embed.url = "https://3ds.eiphax.tech/ftp.html"
         embed.description = "A guide to using ftp with FTPD and WinSCP"
         await ctx.send(embed=embed)
@@ -1090,7 +1124,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
     async def transfersave(self, ctx):
         """Links to cart to digital version save transfer tutorial"""
         embed = discord.Embed(title="Cart to digital version save transfer tutorial", color=discord.Color.purple())
-        embed.url = "https://github.com/redkerry135/tutorials/wiki/Moving-a-save-from-a-cart-to-a-digital-game"
+        embed.url = "https://redkerry135.github.io/transfersave/"
         embed.description = "A tutorial about how to transfer a save from the cart version of a game to a digital version of that game."
         await ctx.send(embed=embed)
 
@@ -1137,7 +1171,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
             try:
                 async with session.get(f"https://tinydb.eiphax.tech/api/search/{encodedapp}", timeout=2) as resp:
                     response = await resp.json()
-            except asyncio.TimeoutError:
+            except (aiohttp.ServerConnectionError, aiohttp.ClientConnectorError, aiohttp.ClientResponseError):
                 return await ctx.send("I can't connect to tinydb 💢")
         if response['success']:
             release = response['result']['newest_release']
@@ -1161,7 +1195,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
     async def sdroot(self, ctx):
         """Picture to say what the heck is the root"""
         embed = discord.Embed()
-        embed.set_image(url="https://i.imgur.com/7PIvVjJ.png")
+        embed.set_image(url="https://i.imgur.com/QXHIvOz.jpg")
         await ctx.send(embed=embed)
 
     @commands.command(aliases=['whatsid0', 'id0'])
@@ -1293,27 +1327,22 @@ in the scene.
         embed.description = "A common fix for those whose web browser keeps freezing their Wii U while attempting the exploit."
         await ctx.send(embed=embed)
 
+    @commands.command(aliases=['missingpayload'])
+    async def wiiupayload(self, ctx):
+        """Missing payload"""
+        await self.simple_embed(ctx, """
+        Missing payload file on the SD.
+        Make sure you have a [payload.elf](https://github.com/wiiu-env/homebrew_launcher_installer/releases/latest) in the wiiu folder.""", title="FSOpenFile Failed [...] payload.elf")
+
     @commands.command()
-    async def recover(self, ctx, console=None):
-        """Troubleshooting guides for vWii"""
-        systems = ("miichannel", "vios")
-        if console not in systems:
-            await ctx.send(f"Please specify an option. Valid options are: {', '.join([x for x in systems])}.")
-            return
-        if self.check_console(console, ctx.message.channel.name, ('miichannel',)):
-            embed = discord.Embed(title="Recover a Lost Mii Channel on vWii", color=0xe60012)
-            embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/recover-mii-channel")
-            embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
-            embed.url = "https://wiiu.hacks.guide/#/recover-mii-channel"
-            embed.description = "A complete guide to recover a lost or corrupted Mii Channel on vWii"
-            await ctx.send(embed=embed)
-        elif self.check_console(console, ctx.message.channel.name, ('vios',)):
-            embed = discord.Embed(title="Recover a Corrupted IOS on vWii", color=0xe60012)
-            embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/recover-ios")
-            embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
-            embed.url = "https://wiiu.hacks.guide/#/recover-ios"
-            embed.description = "A complete guide to recover a lost or corrupted IOS on vWii"
-            await ctx.send(embed=embed)
+    async def recover(self, ctx):
+        """Troubleshooting guide for vWii"""
+        embed = discord.Embed(title="Recover a vWii IOS/Channel", color=0xe60012)
+        embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/recover-vwii-ioses-channels")
+        embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
+        embed.url = "https://wiiu.hacks.guide/#/recover-vwii-ioses-channels"
+        embed.description = "A complete guide to recover a lost or corrupted system channel or IOS on vWii"
+        await ctx.send(embed=embed)
 
     @commands.command()
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
@@ -1324,9 +1353,9 @@ in the scene.
 
         # When adding invites, make sure the keys are lowercase, or the command will not find it when invoked!
         invites = {
-            'twl':'yD3spjv',
+            'twl': 'yD3spjv',
             'switchroot': '9d66FYg',
-            'acnl':'EZSxqRr',
+            'acnl': 'EZSxqRr',
             'flagbrew': 'bGKEyfY',
             'themeplaza': '2hUQwXz',
             'smashultimate': 'ASJyTrZ',
@@ -1347,7 +1376,8 @@ in the scene.
             'retronx': 'vgvZN9W',
             'r3ds': '3ds',
             'edizon': 'qyA38T8',
-            'lovepotion' : 'ggbKkhc',
+            'lovepotion': 'ggbKkhc',
+            'bitbuilt': 'tHEesfb',
         }
 
         if name in invites:
@@ -1413,6 +1443,28 @@ in the scene.
             """))
         await ctx.send(embed=embed)
 
+    @commands.command(aliases=['cbhc'])
+    async def cbhcrules(self, ctx):
+        """The rules for the CBHC CFW on Wii U to avoid a brick"""
+        embed = discord.Embed(title="Installing CBHC incorrectly can brick your Wii U!", color=discord.Color.red())
+        embed.add_field(name="Make sure to follow the following rules when installing CBHC:", value=cleandoc("""
+                - The DS game has to be legitimately installed from the eShop!
+                - Don’t format the system while CBHC is installed!
+                - Don’t delete the user account that bought the DS VC game!
+                - Don’t re-install the same game using WUP Installer or from the eShop!
+                - Don’t install Haxchi over CBHC! (You will not brick, but it will cause a boot-loop! Hold A when booting to access the Homebrew Launcher and uninstall CBHC.)
+                - Don’t uninstall the DS Virtual Console game without [properly uninstalling CBHC first](https://wiiu.hacks.guide/#/uninstall-cbhc)!
+                - Don’t move the DS Virtual Console game to a USB drive!
+            """))
+        await ctx.send(embed=embed)
 
+    @commands.command(aliases=['usm'])
+    async def unsafe_mode(self, ctx):
+        """unSAFE_MODE Guide"""
+        await self.simple_embed(ctx, """
+                    3DS Hacks Guide's [unSAFE_MODE](https://git.io/JfNQ4)
+                    """, title="unSAFE_MODE")
+
+        
 def setup(bot):
     bot.add_cog(Assistance(bot))

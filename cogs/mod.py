@@ -34,34 +34,63 @@ class Mod(DatabaseCog):
 
     @is_staff("Helper")
     @commands.guild_only()
-    @commands.command()
-    async def userinfo(self, ctx, u: discord.Member):
-        """Gets member info. Staff and Helpers only."""
-        role = u.top_role.name
-        await ctx.safe_send(f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}"
-                            f"\nbot = {u.bot}\navatar_url = {u.avatar_url_as(static_format='png')}\ndefault_avatar "
-                            f"= {u.default_avatar}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = "
-                            f"{u.created_at}\ndisplay_name = {u.display_name}\njoined_at = {u.joined_at}\nstatus = "
-                            f"{u.status}\nactivity = {u.activity.name if u.activity else None}\ncolour = {u.colour}"
-                            f"\ntop_role = {role}\n")
+    @commands.command(aliases=['ui'])
+    async def userinfo(self, ctx, u: FetchMember):
+        """Shows information from a user. Staff and Helpers only."""
+        basemsg = f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url_as(static_format='png')}\ndefault_avatar= {u.default_avatar}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\n"
+        if isinstance(u, discord.Member):
+            role = u.top_role.name
+            await ctx.safe_send(f"{basemsg}display_name = {u.display_name}\njoined_at = {u.joined_at}\nstatus ={u.status}\nactivity = {u.activity.name if u.activity else None}\ncolour = {u.colour}\ntop_role = {role}\n")
+        else:
+            try:
+                ban = await ctx.guild.fetch_ban(u)
+            except discord.NotFound:  # NotFound is raised if the user isn't banned
+                ban = None
+            await ctx.safe_send(f"{basemsg}{f'**Banned**, reason: {ban.reason}' if ban is not None else ''}\n")
 
-    @is_staff("Helper")
     @commands.guild_only()
-    @commands.command()
-    async def userinfoid(self, ctx, id):
-        """Gets a user id info. Staff and Helpers only."""
-        try:
-            u = await self.bot.fetch_user(id)
-        except discord.NotFound:
-            await ctx.send(f"No user matching id `{id}`.")
-            return
+    @commands.command(aliases=['ui2'])
+    async def userinfo2(self, ctx, user: FetchMember = None):
+        """Shows information from a user. Staff and Helpers only."""
 
-        try:
-            ban = await ctx.guild.fetch_ban(u)
-        except discord.NotFound:  # NotFound is raised if the user isn't banned
-            ban = None
+        if user is None:
+            user = ctx.author
 
-        await ctx.safe_send(f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url_as(static_format='png')}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\ncolour = {u.colour}\n{f'**Banned**, reason: {ban.reason}' if ban is not None else ''}\n")
+        if (not await check_staff_id(ctx, 'Helper', ctx.author.id)) and (ctx.author != user or ctx.channel != self.bot.channels['bot-cmds']):
+            await ctx.message.delete()
+            return await ctx.send(f"{ctx.author.mention} This command can only be used in {self.bot.channels['bot-cmds'].mention} and only on yourself.", delete_after=10)
+
+        embed = discord.Embed(color=utils.gen_color(user.id))
+        embed.description = (
+            f"**User:** {user.mention}\n"
+            f"**User's ID:** {user.id}\n"
+            f"**Created on:** {user.created_at}\n"
+            f"**Default Profile Picture:** {user.default_avatar}\n"
+        )
+
+        if isinstance(user, discord.Member):
+            member_type = "member"
+            embed.description += (
+                f"**Join date:** {user.joined_at}\n"
+                f"**Current Status:** {user.status}\n"
+                f"**User Activity:**: {user.activity}\n"
+                f"**Current Display Name:** {user.display_name}\n"
+                f"**Nitro Boost Info:** {user.premium_since}\n"
+                f"**Current Top Role:** {user.top_role}\n"
+                f"**Color:** {user.color}\n"
+            )
+        else:
+            member_type = "user"
+            try:
+                ban = await ctx.guild.fetch_ban(user)
+                embed.description += f"\n**Banned**, reason: {ban.reason}"
+            except discord.NotFound:
+                pass
+
+        member_type = member_type if not user.bot else "bot"
+        embed.title = f"**Userinfo for {member_type} {user}**"
+        embed.set_thumbnail(url=user.avatar_url_as(static_format='png'))
+        await ctx.send(embed=embed)
 
     @is_staff("HalfOP")
     @commands.guild_only()
@@ -130,7 +159,7 @@ class Mod(DatabaseCog):
         if channel not in self.bot.assistance_channels and not await check_staff_id(ctx, "OP", ctx.author.id):
             return await ctx.send("You cannot use this command outside of assistance channels.")
 
-        if not (seconds := utils.parse_time(time)):
+        if (seconds := utils.parse_time(time)) == -1:
             return await ctx.send("💢 I don't understand your time format.")
 
         if seconds > 21600:
@@ -240,7 +269,7 @@ class Mod(DatabaseCog):
 
         issuer = ctx.author
 
-        if not (seconds := utils.parse_time(length)):
+        if (seconds := utils.parse_time(length)) == -1:
             return await ctx.send("💢 I don't understand your time format.")
 
         timestamp = datetime.datetime.now()
@@ -361,6 +390,8 @@ class Mod(DatabaseCog):
     @commands.command()
     async def noembed(self, ctx, member: SafeMember, *, reason=""):
         """Removes embed permissions from a user. Staff only."""
+        if await check_bot_or_staff(ctx, member, "noembed"):
+            return
         try:
             await self.add_restriction(member.id, self.bot.roles['No-Embed'])
             await member.add_roles(self.bot.roles['No-Embed'])
@@ -455,7 +486,7 @@ class Mod(DatabaseCog):
             return
         issuer = ctx.author
 
-        if not (seconds := utils.parse_time(length)):
+        if (seconds := utils.parse_time(length)) == -1:
             return await ctx.send("💢 I don't understand your time format.")
 
         delta = datetime.timedelta(seconds=seconds)
@@ -618,7 +649,7 @@ class Mod(DatabaseCog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def approve(self, ctx, invite: discord.Invite, times: int=1):
+    async def approve(self, ctx, invite: discord.Invite, times: int = 1):
         """Approves a server invite for a number of times(0 to delete approved invites). Staff and Helpers only."""
         code = invite.code
         if times == 0:
