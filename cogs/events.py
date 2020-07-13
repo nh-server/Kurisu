@@ -43,6 +43,7 @@ class Events(DatabaseCog):
         'bGKEyfY',  # FlagBrew
         '9d66FYg',  # switchroot
         '2hUQwXz',  # Theme Plaza
+        'YVuFUrs',  # ihaveahax's server
     )
 
     # I hate naming variables sometimes
