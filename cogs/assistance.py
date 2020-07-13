@@ -58,7 +58,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         msg = f"❗️ **User ready in newcomers**: {ctx.channel.mention} by {author.mention} | {self.bot.escape_text(author)} @here"
         await self.bot.channels['helpers'].send(msg)
         try:
-            await author.send(f"✅ Online staff have been notified of your request.")
+            await author.send("✅ Online staff have been notified of your request.")
         except discord.errors.Forbidden:
             pass
 
