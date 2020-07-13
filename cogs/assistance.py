@@ -49,7 +49,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
 
     @check_if_user_can_ready()
     @commands.guild_only()
-    @commands.command(aliases=["ready"], cooldown=commands.Cooldown(rate=1, per=60.0, type=commands.BucketType.channel))
+    @commands.command(aliases=["ready"], cooldown=commands.Cooldown(rate=1, per=120.0, type=commands.BucketType.channel))
     async def ncready(self, ctx):
         """Alerts online staff to a ready request in newcomers."""
         author = ctx.author
