@@ -55,7 +55,7 @@ def check_if_user_can_sr():
 def check_if_user_can_ready():
     async def predicate(ctx):
         channel = ctx.channel
-        if not channel == ctx.bot.channels['newcomers']:
+        if channel != ctx.bot.channels['newcomers']:
             return False
         return True
     return commands.check(predicate)
