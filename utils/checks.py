@@ -44,7 +44,6 @@ async def check_bot_or_staff(ctx, target: discord.user, action: str):
 
     return await ctx.send(f"You can't {action} {who} with this command!")
 
-
 def check_if_user_can_sr():
     async def predicate(ctx):
         author = ctx.author
@@ -52,3 +51,12 @@ def check_if_user_can_sr():
             return False
         return True
     return commands.check(predicate)
+
+def check_if_user_can_ready():
+    async def predicate(ctx):
+        channel = ctx.channel
+        if not channel == ctx.bot.channels['newcomers']:
+            return False
+        return True
+    return commands.check(predicate)
+

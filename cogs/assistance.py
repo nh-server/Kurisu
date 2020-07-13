@@ -2,7 +2,7 @@ import aiohttp
 import discord
 import urllib.parse
 
-from utils.checks import check_if_user_can_sr
+from utils.checks import check_if_user_can_sr, check_if_user_can_ready
 from discord.ext import commands
 from inspect import cleandoc
 
@@ -36,7 +36,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         author = ctx.author
         await ctx.message.delete()
         # await ctx.send("Request sent.")
-        msg = f"❗️ **Assistance requested**: {ctx.channel.mention} by {author.mention} | {str(author)} @here"
+        msg = f"❗️ **Assistance requested**: {ctx.channel.mention} by {author.mention} | {self.bot.escape_text(author)} @here"
         if msg_request != "":
             # msg += "\n✏️ __Additional text__: " + msg_request
             embed = discord.Embed(color=discord.Color.gold())
@@ -44,6 +44,21 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         await self.bot.channels['mods'].send(msg, embed=(embed if msg_request != "" else None))
         try:
             await author.send(f"✅ Online staff have been notified of your request in {ctx.channel.mention}.", embed=(embed if msg_request != "" else None))
+        except discord.errors.Forbidden:
+            pass
+
+    @check_if_user_can_ready()
+    @commands.guild_only()
+    @commands.command(aliases=["ready"], cooldown=commands.Cooldown(rate=1, per=60.0, type=commands.BucketType.channel))
+    async def ncready(self, ctx):
+        """Alerts online staff to a ready request in newcomers."""
+        author = ctx.author
+        await ctx.message.delete()
+
+        msg = f"❗️ **User ready in newcomers**: {ctx.channel.mention} by {author.mention} | {self.bot.escape_text(author)} @here"
+        await self.bot.channels['helpers'].send(msg)
+        try:
+            await author.send(f"✅ Online staff have been notified of your request.")
         except discord.errors.Forbidden:
             pass
 
