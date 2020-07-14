@@ -432,10 +432,10 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
         elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Is the new Switch update safe?", color=0xe60012)
             embed.description = cleandoc("""
-            Currently, the latest Switch system firmware is `10.0.4`.
+            Currently, the latest Switch system firmware is `10.1.0`.
 
             If your Switch is **unpatched and can access RCM**:
-            Atmosphere and Hekate currently support 10.0.4, and unpatched units will always be hackable.
+            Atmosphere and Hekate currently support 10.1.0, and unpatched units will always be hackable.
             You should follow the precautions in our update guide, and always update Atmosphere and Hekate before updating the system firmware.
             
             If your Switch is **hardware patched and cannot access RCM**:
@@ -949,7 +949,7 @@ One way to fix this is by using an y-cable to connect the HDD to two USB ports.
                                      **Make sure your version of Atmosphere is up to date and that it supports the latest firmware**
 
                                      **Atmosphere 0.13.0 (latest release)**
-                                     Supports up to firmware 10.0.4.
+                                     Supports up to firmware 10.1.0.
 
                                      *To find Atmosphere's version information, while booted into CFW, go into System Settings -> System, and look at \
 the text under the System Update button. If it says that a system update is ready instead of displaying the CFW version, type .pendingupdate to learn \
@@ -958,7 +958,7 @@ how to delete it.*
                                      **Make sure your version of Hekate is up to date and that it supports the latest firmware**
                                      
                                      **Hekate 5.3.0 (latest release)**
-                                     Supports up to firmware 10.0.4.
+                                     Supports up to firmware 10.1.0.
                                      
                                      *To find Hekate's version information, once Hekate starts, look in the top left corner of the screen. If you use auto-boot, hold `volume -` to stop it.*
                                      
