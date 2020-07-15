@@ -428,7 +428,7 @@ class Mod(DatabaseCog):
 
     @is_staff("Helper")
     @commands.guild_only()
-    @commands.command(aliases=["nohelp"])
+    @commands.command(aliases=["nohelp", "yesnthelp"])
     async def takehelp(self, ctx, member: FetchMember, *, reason=""):
         """Remove access to the assistance channels. Staff and Helpers only."""
         if await check_bot_or_staff(ctx, member, "takehelp"):
@@ -461,7 +461,7 @@ class Mod(DatabaseCog):
 
     @is_staff("Helper")
     @commands.guild_only()
-    @commands.command()
+    @commands.command(aliases=["yeshelp"])
     async def givehelp(self, ctx, member: FetchMember):
         """Restore access to the assistance channels. Staff and Helpers only."""
         if not await self.remove_restriction(member.id, self.bot.roles["No-Help"]):
