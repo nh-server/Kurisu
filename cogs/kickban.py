@@ -161,7 +161,7 @@ class KickBan(DatabaseCog):
             return
 
         timestamp = datetime.datetime.now()
-        await self.add_softban(user.id, ctx.author.id, reason, timestamp)
+        await self.add_softban(member.id, ctx.author.id, reason, timestamp)
 
         if isinstance(member, discord.Member):
             msg = f"This account is no longer permitted to participate in {ctx.guild.name}. The reason is: {reason}"
