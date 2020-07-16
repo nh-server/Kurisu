@@ -107,9 +107,9 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 continue
             if self.check_console(x, ctx.channel.name, ('legacy', 'wii')):
                 embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
-                embed.set_author(name="tj_cool", url="https://sites.google.com/site/completesg/")
+                embed.set_author(name="RiiConnect24", url="https://wii.guide/")
                 embed.set_thumbnail(url="https://i.imgur.com/KI6IXmm.png")
-                embed.url = "https://sites.google.com/site/completesg/"
+                embed.url = "https://wii.guide/"
                 embed.description = "A complete original Wii softmod guide"
                 await ctx.send(embed=embed)
             if self.check_console(x, ctx.channel.name, ('legacy', 'dsi')):
