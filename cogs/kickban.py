@@ -159,6 +159,10 @@ class KickBan(DatabaseCog):
         This "bans" the user without actually doing a ban on Discord. The bot will instead kick the user every time they join. Discord bans are account- and IP-based."""
         if await check_bot_or_staff(ctx, member, "softban"):
             return
+
+        timestamp = datetime.datetime.now()
+        await self.add_softban(user.id, ctx.author.id, reason, timestamp)
+
         if isinstance(member, discord.Member):
             msg = f"This account is no longer permitted to participate in {ctx.guild.name}. The reason is: {reason}"
             await utils.send_dm_message(member, msg)
