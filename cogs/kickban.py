@@ -87,6 +87,26 @@ class KickBan(DatabaseCog):
 
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
+    @commands.command(name="unban", aliases=["unyeet"])
+    async def unban_member(self, ctx, user: FetchMember, reason):
+        """Unbans a user from the server. OP+ only."""
+
+        try:
+            await ctx.guild.fetch_ban(user)
+        except discord.errors.NotFound:
+            return await ctx.safe_send(f"{user} is not banned!")
+
+        await ctx.cog.remove_timed_restriction(user.id, 'timeban')
+        self.bot.actions.append("tbr:"+str(user.id))
+        await ctx.guild.unban(user, reason=reason)
+
+        await ctx.safe_send(f"{user} is now unbanned.")
+        msg = f"⚠ **Unban**: {ctx.author.mention} unbanned {user.mention} | {self.bot.escape_text(user)}\n🏷 __User ID__: {user.id}\n✏️ __Reason__: {self.bot.escape_text(reason)}"
+        await self.bot.channels['mod-logs'].send(msg)
+        await self.bot.channels['server-logs'].send(msg)
+
+    @is_staff("OP")
+    @commands.bot_has_permissions(ban_members=True)
     @commands.command(name="silentban", aliases=["quietyeet"])
     async def silentban_member(self, ctx, member: SafeMember, days: typing.Optional[int] = 0, *, reason=""):
         """Bans a user from the server, without a notification. OP+ only.  Optional: [days] Specify up to 7 days of messages to delete."""
