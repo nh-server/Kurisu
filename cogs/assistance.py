@@ -854,7 +854,7 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
     @commands.command()
     async def dump(self, ctx, console=None):
         """How to dump games and data for CFW consoles"""
-        systems = ("3ds", "nx", "ns", "switch", "wiiu", "vwii")
+        systems = ("3ds", "nx", "ns", "switch", "wiiu", "vwii", "dsi")
         if console not in systems:
             if ctx.channel.name.startswith(systems):
                 console = "auto"
@@ -889,6 +889,12 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
             embed.url = "https://wiiu.hacks.guide/#/dump-wii-games"
             embed.description = "How to dump Wii game discs on vWii using CleanRip"
+            await ctx.send(embed=embed)
+         elif self.check_console(console, ctx.channel.name, ('dsi')):
+            embed = discord.Embed(title="GodMode9i dump Guide", color=discord.Color(0x009AC7))
+            embed.set_author(name="NightScript", url="https://dsi.cfw.guide/dumping-cartridges")
+            embed.url = "https://dsi.cfw.guide/dumping-cartridges"
+            embed.description = "How to dump cartridges on a Nintendo DSi using GodMode9i"
             await ctx.send(embed=embed)
 
     # Embed to Chroma Ryu's cartinstall guide
