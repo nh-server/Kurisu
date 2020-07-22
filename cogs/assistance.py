@@ -458,14 +458,14 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
 
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="what?", color=discord.Color.purple())
-            embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/250051871962562562/726ae27792fc496755805397722c1e8e.png?size=1024")
+            embed.set_thumbnail(url="https://eiphax.tech/assets/eip2.png")
             embed.url = "https://3ds.eiphax.tech/what.html"
             embed.description = "Basic things about the 3DS and CFW"
             await ctx.send(embed=embed)
 
         elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="The NX Nutshell", color=discord.Color.purple())
-            embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/250051871962562562/726ae27792fc496755805397722c1e8e.png?size=1024")
+            embed.set_thumbnail(url="https://eiphax.tech/assets/eip2.png")
             embed.url = "https://nx.eiphax.tech/nutshell.html"
             embed.description = "Basic things about the Switch and CFW"
             await ctx.send(embed=embed)
