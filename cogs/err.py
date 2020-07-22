@@ -1,7 +1,6 @@
 import binascii
 import discord
 import re
-import string
 
 from discord import Color
 from discord.ext import commands
