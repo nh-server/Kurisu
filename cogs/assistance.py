@@ -890,7 +890,7 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
             embed.url = "https://wiiu.hacks.guide/#/dump-wii-games"
             embed.description = "How to dump Wii game discs on vWii using CleanRip"
             await ctx.send(embed=embed)
-         elif self.check_console(console, ctx.channel.name, ('dsi')):
+        elif self.check_console(console, ctx.channel.name, ('dsi')):
             embed = discord.Embed(title="GodMode9i dump Guide", color=discord.Color(0x009AC7))
             embed.set_author(name="NightScript", url="https://dsi.cfw.guide/dumping-cartridges")
             embed.url = "https://dsi.cfw.guide/dumping-cartridges"
