@@ -473,7 +473,7 @@ class Err(commands.Cog):
             elif self.nim_3ds_errors(err, embed):
                 embed.color = Color(0xCE181E)
             else:
-                embed.description = "I don't know this one! Click the error code for details on Nintendo Support.\n\nIf you keep getting this issue and Nintendo Support does not help, or know how to fix it, you should report relevant details to <@78465448093417472> so it can be added to the bot."
+                embed.description = "I don't know this one! Click the error code for details on Nintendo Support.\n\nIf you keep getting this issue and Nintendo Support does not help, or know how to fix it, you should report relevant details to [the Kurisu repository](https://github.com/nh-server/Kurisu/issues) so it can be added to the bot."
 
         # 0xE60012
         # Switch Error Codes (w/ website)
