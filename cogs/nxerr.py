@@ -795,7 +795,7 @@ class NXErr(commands.Cog):
             return
         # Return back to normal guidelines
         else:
-            explanation = "It seems like your error code is unknown. You should report relevant details to <@141532589725974528> so it can be added to the bot. \n \n"
+            explanation = "It seems like your error code is unknown. You should report relevant details to [the Kurisu repository](https://github.com/nh-server/Kurisu/issues) so it can be added to the bot. \n \n"
         explanation += 'Module: ' + self.get_name(self.modules, module)
         explanation += f'\nDescription: {desc}'
         embed = discord.Embed(title=f'0x{errcode:X} / {str_errcode}', description=explanation)
