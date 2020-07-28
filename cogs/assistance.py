@@ -239,6 +239,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 """))
         await ctx.send(embed=embed)
 
+    @commands.guild_only()
     @commands.command()
     async def cfwuses(self, ctx, console=""):
         """Uses for CFW on Wii U and 3DS"""
