@@ -49,13 +49,13 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
 
     @check_if_user_can_ready()
     @commands.guild_only()
-    @commands.command(aliases=["ready"], cooldown=commands.Cooldown(rate=1, per=120.0, type=commands.BucketType.channel))
+    @commands.command(aliases=["ready"], cooldown=commands.Cooldown(rate=1, per=300.0, type=commands.BucketType.channel))
     async def ncready(self, ctx):
         """Alerts online staff to a ready request in newcomers."""
         author = ctx.author
         await ctx.message.delete()
 
-        await self.bot.channels['newcomers'].send('A user is ready for unprobation. @here')
+        await self.bot.channels['newcomers'].send(f'{discord.utils.escape_mentions(ctx.author.name)}#{ctx.author.discriminator} is ready for unprobation. @here\nID: {ctx.author.id}')
         try:
             await author.send("✅ Online staff have been notified of your request.")
         except discord.errors.Forbidden:
@@ -149,6 +149,18 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         embed.url = "https://github.com/zoogie/DSP1/releases"
         await ctx.send(embed=embed)
 
+                               
+    # links the seedminer guide
+    @commands.command()
+    async def seedminer(self, ctx):
+        """Links the seedminer guide"""
+        embed = discord.Embed(title="Seedminer", color=discord.Color(0xb4eb4d))
+        embed.set_author(name="Plailect", url="https://3ds.hacks.guide/seedminer")
+        embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
+        embed.url = "https://3ds.hacks.guide/seedminer"
+        embed.description = "A guide on how to do the seedminer process to get your 3ds' movable.sed file"
+        await ctx.send(embed=embed)
+                                  
     @commands.command(aliases=['snickerstream'])
     async def ntrstream(self, ctx):
         """Snickerstream/NTR streaming guide"""
