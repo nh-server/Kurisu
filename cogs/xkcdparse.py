@@ -37,7 +37,7 @@ class xkcdparse(commands.Cog):
             await ctx.send("https://xkcd.com/{}/".format(xkcd.getLatestComic().number))
         elif comic == "random":
             await ctx.send("https://xkcd.com/{}/".format(xkcd.getRandomComic().number))
-        elif comic.isdigit():
+        elif comic.isdecimal():
             await ctx.send("https://xkcd.com/{}/".format(xkcd.getComic(comic).number))
         elif comic in self.word_responses:
             await ctx.send("https://xkcd.com/{}/".format(xkcd.getComic(self.word_responses[comic]).number))

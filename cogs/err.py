@@ -1,7 +1,6 @@
 import binascii
 import discord
 import re
-import string
 
 from discord import Color
 from discord.ext import commands
@@ -332,11 +331,7 @@ class Err(commands.Cog):
         elif rc == 2343432205:
             await ctx.send(binascii.unhexlify(hex(43563598107828907579305977861310806718428700278286708)[2:]).decode('utf-8'))
 
-    async def convert_zerox(self, ctx, err):
-        err = err.strip()
-        if err.startswith("0x"):
-            err = err[2:]
-        rc = int(err, 16)
+    async def convert_zerox(self, ctx, rc):
         if not rc & 0x80000000:
             await ctx.send('This is likely not a CTR error code.')
         await self.aaaa(ctx, rc)
@@ -378,7 +373,7 @@ class Err(commands.Cog):
         if err_hi != 5:
             return False
 
-        if err_lo >= 2000 and err_lo < 3024:
+        if 2000 <= err_lo < 3024:
             err_lo -= 2000
 
             embed.add_field(name="Module", value=self.get_name(self.modules, 52), inline=False)
@@ -387,7 +382,7 @@ class Err(commands.Cog):
 
         # this range is still a little mystified by another section in nim
         # but this covers one section of it
-        elif err_lo >= 4200 and err_lo < 4400:
+        elif 4200 <= err_lo < 4400:
             embed_extra = None
             if err_lo == 4399:
                 embed_extra = "Or NIM's HTTP result description maximum."
@@ -399,13 +394,12 @@ class Err(commands.Cog):
                 embed.add_field(name="Extra Note", value=embed_extra, inline=False)
             return True
 
-        elif err_lo >= 4400 and err_lo < 5000:
+        elif 4400 <= err_lo < 5000:
             err_lo -= 4400
             embed_extra = None
-            desc = ""
             if err_lo < 100:
                 desc = f"{err_lo + 100}"
-            elif err_lo >= 100 and err_lo < 500:
+            elif 100 <= err_lo < 500:
                 desc = f"{err_lo + 100} or {err_lo}"
                 embed_extra = "Likely due to a programming mistake in NIM, this error code range suffers collision.\n"
                 embed_extra += "Real HTTP code will vary with what operation it came from."
@@ -418,7 +412,7 @@ class Err(commands.Cog):
                 embed.add_field(name="Extra Note", value=embed_extra, inline=False)
             return True
 
-        elif err_lo >= 5000 and err_lo < 7000:
+        elif 5000 <= err_lo < 7000:
             err_lo -= 5000
 
             desc = f"SOAP Message returned ErrorCode {err_lo} on a NIM operation."
@@ -479,7 +473,7 @@ class Err(commands.Cog):
             elif self.nim_3ds_errors(err, embed):
                 embed.color = Color(0xCE181E)
             else:
-                embed.description = "I don't know this one! Click the error code for details on Nintendo Support.\n\nIf you keep getting this issue and Nintendo Support does not help, or know how to fix it, you should report relevant details to <@78465448093417472> so it can be added to the bot."
+                embed.description = "I don't know this one! Click the error code for details on Nintendo Support.\n\nIf you keep getting this issue and Nintendo Support does not help, or know how to fix it, you should report relevant details to [the Kurisu repository](https://github.com/nh-server/Kurisu/issues) so it can be added to the bot."
 
         # 0xE60012
         # Switch Error Codes (w/ website)
@@ -504,8 +498,13 @@ class Err(commands.Cog):
                 else:
                     embed.color = embed.Empty
                     embed.description = "I don't know this one! Click the error code for details on Nintendo Support.\n\nIf you keep getting this issue and Nintendo Support does not help, and know how to fix it, you should report relevant details to <@78465448093417472> so it can be added to the bot."
-        elif err.startswith("0x") or all(c in string.hexdigits for c in err):
-            desc, mod, summ, level, rc = await self.convert_zerox(ctx, err)
+        else:
+            try:
+                err_num = int(err, 16)
+            except ValueError:
+                return await ctx.send("Invalid error code.")
+
+            desc, mod, summ, level, rc = await self.convert_zerox(ctx, err_num)
 
             # garbage
             embed = discord.Embed(title=f"0x{rc:X}")
@@ -513,9 +512,6 @@ class Err(commands.Cog):
             embed.add_field(name="Description", value=self.get_name(self.descriptions, desc), inline=False)
             embed.add_field(name="Summary", value=self.get_name(self.summaries, summ), inline=False)
             embed.add_field(name="Level", value=self.get_name(self.levels, level), inline=False)
-        else:
-            return await ctx.send("Invalid error code.")
-
         await ctx.send(embed=embed)
 
 

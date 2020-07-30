@@ -20,144 +20,6 @@ class Events(DatabaseCog):
         super().__init__(bot)
         self.bot.temp_guilds = {}
 
-    # don't add spaces or dashes to words
-    piracy_tools = (
-        'freeshop',
-        'frepshop',
-        'fr3eshop',
-        'fr33shop',
-        'fre3shop',
-        'ciangel',
-        'ciaangel',
-        'tikdevil',
-        'tikshop',
-        'fr335h0p',
-        'fr€€shop',
-        'fr€€sh0p',
-        'fr3esh0p',
-        'fr//shop',
-        'fr//sh0p',
-        'free$hop',
-        'fr$$hop',
-        'friishop',
-        'fr££shop',
-        'fr£€shop',
-        'fr£shop',
-        'fr£eshop',
-        'fre£shop',
-        'fr€£shop',
-        'threeshop',
-        'thr33shop',
-        'thr££shop',
-        'thr£eshop',
-        'thr33shop',
-        'fr33sh0p',
-        'fresh0p',
-        'fr$shop',
-        'freesho',
-        'freeshoandp',
-        'freeshothenp',
-        'freeeshop',
-        'makiedition',
-        'makiversion',
-        'makifbi',
-        'utikdownloadhelper',
-        'usbh3lper',
-        'funkii',
-        'funkey',
-        'funk11',
-        'freeshp',
-        'frees.hop',
-        'fr*eeshop',
-        'frappeshop',
-        'frickshop',
-        'usbheler',
-        'usbhelper',
-        'frishop',
-        'eshopfree',
-        'erappêshop',
-        'fręëšhøp',
-        'fbimod',
-        'freakshop',
-        'fleashop',
-        'ciangle',
-        'fieashop',
-        'fefosheep',
-        'freebrew',
-        'villain3ds',
-        'vi11ain3ds',
-        'vi1lain3ds',
-        'vil1ain3ds',
-        'villian3ds',
-        'vi11ian3ds',
-        'vi1lian3ds',
-        'vil1ian3ds',
-        'cdnfx',
-        'exhop',
-        'exshop',
-        'enxhop',
-        'exnhop',  # typo of the above, not sure how common
-        'enxshop',  # also typo
-        'cdnsp',
-        'wareznx',
-        'wareznext',
-        'softcobra',
-        'uwizard',
-        'nusgrabber',
-        'fr33$h0p',
-        'free.shop',
-        'fréeshop',
-        'freéshop',
-        'frééshop',
-        'frèeshop',
-        'freèshop',
-        'frèèshop',
-        'freêshop',
-        'frêeshop',
-        'frêêshop',
-        'stargatenx',
-        'homebrewgeneralshop',
-        'hbgshop',
-        '/hbg/shop',
-        '\hbg\shop',
-        'hbgsh0p',
-        'stargate',
-        'freestore',
-        'sxinstaller',
-        'rajnx2',
-        'poyoshop',
-        'pbanjgasm',
-        'goldbrick',
-        'neutos',
-        'deepsea',
-
-        #'sxos',
-    )
-
-    # use the full ID, including capitalization and dashes
-    piracy_video_ids = (
-        'VWFe_n7AhKs',
-    )
-
-    # terms that should cause a notice but not auto-delete
-    piracy_tools_alert = (
-        'jnustool',
-        'freshop',
-        'feeshop',
-        'notabug',
-        'fshop',
-        #'sx',
-        #'tx',
-        'sxos',
-        'operationidroid',
-        'hbg',
-        'mercury',
-        'nxbrew',
-        'cia3ds',
-    )
-
-    drama_alert = ()
-
     ignored_file_extensions = (
         '.jpg',
         '.jpeg',
@@ -167,53 +29,6 @@ class Events(DatabaseCog):
         '.tiff',
         '.psd',
         '.sed',
-    )
-
-    # unbanning stuff
-    unbanning_stuff = (
-        'unbanmii',
-        'easymode9',
-    )
-
-    # piracy sites
-    piracy_sites = (
-        '3dsiso',
-        '3dschaos',
-        'wiiuiso',
-        'madloader',
-        'darkumbra',
-        'chaosgamez',
-        'maxconsole',
-        'emuparadise',
-        'loveroms',
-        'coolrom',
-        'romsmania',
-        'completeroms',
-        'romhustler',
-        'doperoms',
-        'freeroms',
-        'portableroms',
-        'portalroms',
-        'romulation',
-        'emulator.games',
-        '3dscia',
-        'darksoftware',
-        'ziperto',
-        'cdromance',
-        'emurom',
-        'r/3dspiracy',
-        'r/wiiupiracy',
-        'pokemoner',
-        'ndspassion',
-        'inmortalgamespro',
-        'romsmode',
-        'arcadepunks',
-        'romstorage',
-        'enikon',
-        'vimm',
-        'r/roms',
-        'xecuterrocks',
-        'darthsternie',
     )
 
     approved_guilds = (
@@ -228,6 +43,7 @@ class Events(DatabaseCog):
         'bGKEyfY',  # FlagBrew
         '9d66FYg',  # switchroot
         '2hUQwXz',  # Theme Plaza
+        'YVuFUrs',  # ihaveahax's server
     )
 
     # I hate naming variables sometimes
@@ -259,26 +75,26 @@ class Events(DatabaseCog):
         msg_no_separators = re.sub('[ \*_\-~]', '', msg)
 
         contains_skype_link = "join.skype.com" in msg
-        contains_piracy_site_mention = any(x in msg for x in self.piracy_sites)
+        contains_piracy_site_mention = any(x in msg for x in self.bot.wordfilter.filter['piracy site'])
         contains_piracy_url_mention = any(x in msg for x in ('3ds.titlekeys', 'wiiu.titlekeys', 'titlekeys.com', '95.183.50.10',))
-        contains_piracy_tool_mention = any(x in msg_no_separators for x in self.piracy_tools)
+        contains_piracy_tool_mention = any(x in msg_no_separators for x in self.bot.wordfilter.filter['piracy tool'])
 
         # modified regular expresion made by deme72
         res = re.findall('(?:https?://)?(?:(?:(?:www\.)?youtube\.com(?:/(?:watch\?.*?v=([^&\s]+)(?:[^\s]))))|(?:youtu\.be/([^\s]+)))', message.content)
         contains_video = any(res)
-        contains_piracy_video_id = False if not contains_video else any(x or y for x, y in res if x in self.piracy_video_ids or y in self.piracy_video_ids)
+        contains_piracy_video_id = False if not contains_video else any(x or y for x, y in res if x in self.bot.wordfilter.filter['piracy video'] or y in self.bot.wordfilter.filter['piracy video'])
 
         res = re.findall('(?:discordapp\.com/invite|discord\.gg)/([\w]+)', message.content)
         temp_guilds = [x for x in res if x in self.bot.temp_guilds]
         contains_non_approved_invite = not all(x in self.approved_guilds or x in self.bot.temp_guilds for x in res)
 
-        contains_piracy_tool_alert_mention = any(x in msg_no_separators for x in self.piracy_tools_alert)
+        contains_piracy_tool_alert_mention = any(x in msg_no_separators for x in self.bot.wordfilter.filter['piracy tool alert'])
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site',))
         contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub', 'strawpoii', 'hackinformer.com', 'console.guide', 'jacksorrell.co.uk', 'jacksorrell.tv', 'nintendobrew.com', 'reinx.guide', 'NxpeNwz', 'scenefolks.com'))
-        contains_unbanning_stuff = any(x in msg_no_separators for x in self.unbanning_stuff)
+        contains_unbanning_stuff = any(x in msg_no_separators for x in self.bot.wordfilter.filter['unbanning tool'])
         contains_invite_link = contains_non_approved_invite or temp_guilds or contains_skype_link
         # contains_guide_mirror_mention = any(x in msg for x in ('3ds-guide.b4k.co',))
-        contains_drama_alert = any(x in msg_no_separators for x in self.drama_alert)
+        contains_drama_alert = any(x in msg_no_separators for x in self.bot.wordfilter.filter['drama'])
 
         for f in message.attachments:
             if not f.filename.lower().endswith(self.ignored_file_extensions):

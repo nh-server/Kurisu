@@ -433,5 +433,11 @@ class Memes(commands.Cog):
         """stop right there, criminal scum"""
         await self._meme(ctx, "", imagelink="https://cdn.discordapp.com/attachments/508390946753216528/695752500179107910/giphy.gif")
 
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def source2(self, ctx):
+        """citation needed"""
+        await self._meme(ctx, "", imagelink="https://eiphax.tech/assets/source2.jpg")
+
 def setup(bot):
     bot.add_cog(Memes(bot))

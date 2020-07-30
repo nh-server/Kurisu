@@ -1,9 +1,8 @@
 import aiohttp
-import asyncio
 import discord
 import urllib.parse
 
-from utils.checks import check_if_user_can_sr
+from utils.checks import check_if_user_can_sr, check_if_user_can_ready
 from discord.ext import commands
 from inspect import cleandoc
 
@@ -37,7 +36,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         author = ctx.author
         await ctx.message.delete()
         # await ctx.send("Request sent.")
-        msg = f"❗️ **Assistance requested**: {ctx.channel.mention} by {author.mention} | {str(author)} @here"
+        msg = f"❗️ **Assistance requested**: {ctx.channel.mention} by {author.mention} | {self.bot.escape_text(author)} @here"
         if msg_request != "":
             # msg += "\n✏️ __Additional text__: " + msg_request
             embed = discord.Embed(color=discord.Color.gold())
@@ -45,6 +44,20 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         await self.bot.channels['mods'].send(msg, embed=(embed if msg_request != "" else None))
         try:
             await author.send(f"✅ Online staff have been notified of your request in {ctx.channel.mention}.", embed=(embed if msg_request != "" else None))
+        except discord.errors.Forbidden:
+            pass
+
+    @check_if_user_can_ready()
+    @commands.guild_only()
+    @commands.command(aliases=["ready"], cooldown=commands.Cooldown(rate=1, per=120.0, type=commands.BucketType.channel))
+    async def ncready(self, ctx):
+        """Alerts online staff to a ready request in newcomers."""
+        author = ctx.author
+        await ctx.message.delete()
+
+        await self.bot.channels['newcomers'].send('A user is ready for unprobation. @here')
+        try:
+            await author.send("✅ Online staff have been notified of your request.")
         except discord.errors.Forbidden:
             pass
 
@@ -94,9 +107,9 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 continue
             if self.check_console(x, ctx.channel.name, ('legacy', 'wii')):
                 embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
-                embed.set_author(name="tj_cool", url="https://sites.google.com/site/completesg/")
+                embed.set_author(name="RiiConnect24", url="https://wii.guide/")
                 embed.set_thumbnail(url="https://i.imgur.com/KI6IXmm.png")
-                embed.url = "https://sites.google.com/site/completesg/"
+                embed.url = "https://wii.guide/"
                 embed.description = "A complete original Wii softmod guide"
                 await ctx.send(embed=embed)
             if self.check_console(x, ctx.channel.name, ('legacy', 'dsi')):
@@ -226,10 +239,30 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 """))
         await ctx.send(embed=embed)
 
+    @commands.guild_only()
     @commands.command()
-    async def cfwuses(self, ctx):
-        """Links to eiphax cfw uses page"""
-        await self.simple_embed(ctx, "Want to know what CFW can be used for? <https://3ds.eiphax.tech/tips.html>")
+    async def cfwuses(self, ctx, console=""):
+        """Uses for CFW on Wii U and 3DS"""
+        systems = ("3ds", "wiiu")
+        if console not in systems:
+            if ctx.channel.name.startswith(systems):
+                console = "auto"
+            else:
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+                return
+        if self.check_console(console, ctx.message.channel.name, '3ds'):
+            """Links to eiphax cfw uses page"""
+            await self.simple_embed(ctx, "Want to know what CFW can be used for? <https://3ds.eiphax.tech/tips.html>")
+        elif self.check_console(console, ctx.message.channel.name, ('wiiu',)):
+            embed = discord.Embed(title="What can Wii U CFW be used for?", color=discord.Color.blue())
+            embed.add_field(name="Among other things, it allows you to do the following:", value=cleandoc("""
+                        - Use “ROM hacks” for games that you own.
+                        - Backup, edit and restore saves for many games.
+                        - Play games for older systems with various emulators, using RetroArch or other standalone emulators.
+                        - Play out-of-region games.
+                        - Dump your Wii U game discs to a format that can be installed on your internal or external Wii U storage drive.
+                    """))
+            await ctx.send(embed=embed)
 
     @commands.command()
     async def updateb9s(self, ctx):
@@ -400,10 +433,10 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
         elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Is the new Switch update safe?", color=0xe60012)
             embed.description = cleandoc("""
-            Currently, the latest Switch system firmware is `10.0.4`.
+            Currently, the latest Switch system firmware is `10.1.0`.
 
             If your Switch is **unpatched and can access RCM**:
-            Atmosphere and Hekate currently support 10.0.4, and unpatched units will always be hackable.
+            Atmosphere and Hekate currently support 10.1.0, and unpatched units will always be hackable.
             You should follow the precautions in our update guide, and always update Atmosphere and Hekate before updating the system firmware.
             
             If your Switch is **hardware patched and cannot access RCM**:
@@ -426,14 +459,14 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
 
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="what?", color=discord.Color.purple())
-            embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/250051871962562562/726ae27792fc496755805397722c1e8e.png?size=1024")
+            embed.set_thumbnail(url="https://eiphax.tech/assets/eip2.png")
             embed.url = "https://3ds.eiphax.tech/what.html"
             embed.description = "Basic things about the 3DS and CFW"
             await ctx.send(embed=embed)
 
         elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="The NX Nutshell", color=discord.Color.purple())
-            embed.set_thumbnail(url="https://cdn.discordapp.com/avatars/250051871962562562/726ae27792fc496755805397722c1e8e.png?size=1024")
+            embed.set_thumbnail(url="https://eiphax.tech/assets/eip2.png")
             embed.url = "https://nx.eiphax.tech/nutshell.html"
             embed.description = "Basic things about the Switch and CFW"
             await ctx.send(embed=embed)
@@ -822,7 +855,7 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
     @commands.command()
     async def dump(self, ctx, console=None):
         """How to dump games and data for CFW consoles"""
-        systems = ("3ds", "nx", "ns", "switch", "wiiu", "vwii")
+        systems = ("3ds", "nx", "ns", "switch", "wiiu", "vwii", "dsi")
         if console not in systems:
             if ctx.channel.name.startswith(systems):
                 console = "auto"
@@ -857,6 +890,12 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
             embed.url = "https://wiiu.hacks.guide/#/dump-wii-games"
             embed.description = "How to dump Wii game discs on vWii using CleanRip"
+            await ctx.send(embed=embed)
+        elif self.check_console(console, ctx.channel.name, ('dsi')):
+            embed = discord.Embed(title="GodMode9i dump Guide", color=discord.Color(0x009AC7))
+            embed.set_author(name="NightScript", url="https://dsi.cfw.guide/dumping-cartridges")
+            embed.url = "https://dsi.cfw.guide/dumping-cartridges"
+            embed.description = "How to dump cartridges on a Nintendo DSi using GodMode9i"
             await ctx.send(embed=embed)
 
     # Embed to Chroma Ryu's cartinstall guide
@@ -916,8 +955,8 @@ One way to fix this is by using an y-cable to connect the HDD to two USB ports.
         await self.simple_embed(ctx, cleandoc("""
                                      **Make sure your version of Atmosphere is up to date and that it supports the latest firmware**
 
-                                     **Atmosphere 0.12.0 (latest release)**
-                                     Supports up to firmware 10.0.4.
+                                     **Atmosphere 0.13.0 (latest release)**
+                                     Supports up to firmware 10.1.0.
 
                                      *To find Atmosphere's version information, while booted into CFW, go into System Settings -> System, and look at \
 the text under the System Update button. If it says that a system update is ready instead of displaying the CFW version, type .pendingupdate to learn \
@@ -925,8 +964,8 @@ how to delete it.*
 
                                      **Make sure your version of Hekate is up to date and that it supports the latest firmware**
                                      
-                                     **Hekate 5.2.1 (latest release)**
-                                     Supports up to firmware 10.0.4.
+                                     **Hekate 5.3.0 (latest release)**
+                                     Supports up to firmware 10.1.0.
                                      
                                      *To find Hekate's version information, once Hekate starts, look in the top left corner of the screen. If you use auto-boot, hold `volume -` to stop it.*
                                      
@@ -975,7 +1014,7 @@ your device will refuse to write to it.
     async def pokemon(self, ctx):
         """Displays different guides for Pokemon"""
         embed = discord.Embed(title="Possible guides for **Pokemon**:", color=discord.Color.red())
-        embed.description = "**pkhex**|**pkhax**|**pkgen** Links to PKHeX tutorial\n**randomize** Links to layeredfs randomizing tutorial"
+        embed.description = "**pkhex**|**pkhax**|**pkgen** Links to PKHeX tutorial\n**randomize** Links to layeredfs randomizing tutorial\n**pksm** Links to the PKSM documentation"
         await ctx.send(embed=embed)
 
     @tutorial.command(aliases=["pkhax", "pkgen"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
@@ -988,6 +1027,15 @@ your device will refuse to write to it.
         await ctx.send(embed=embed)
 
     @tutorial.command(cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
+    async def pksm(self, ctx):
+        """Links to PKSM Documentation"""
+        embed = discord.Embed(title="PKSM Documentation", color=discord.Color.red())
+        embed.set_thumbnail(url="https://raw.githubusercontent.com/FlagBrew/PKSM/master/assets/banner.png")
+        embed.url = "https://github.com/FlagBrew/PKSM/wiki"
+        embed.description = "Documentation for PKSM"
+        await ctx.send(embed=embed)
+
+    @tutorial.command(aliases=["randomise"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def randomize(self, ctx):
         """Links to layeredfs randomizing tutorial"""
         embed = discord.Embed(title="Randomizing with LayeredFS", color=discord.Color.red())
@@ -1097,7 +1145,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
     async def transfersave(self, ctx):
         """Links to cart to digital version save transfer tutorial"""
         embed = discord.Embed(title="Cart to digital version save transfer tutorial", color=discord.Color.purple())
-        embed.url = "https://github.com/redkerry135/tutorials/wiki/Moving-a-save-from-a-cart-to-a-digital-game"
+        embed.url = "https://redkerry135.github.io/transfersave/"
         embed.description = "A tutorial about how to transfer a save from the cart version of a game to a digital version of that game."
         await ctx.send(embed=embed)
 
@@ -1168,7 +1216,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
     async def sdroot(self, ctx):
         """Picture to say what the heck is the root"""
         embed = discord.Embed()
-        embed.set_image(url="https://i.imgur.com/7PIvVjJ.png")
+        embed.set_image(url="https://i.imgur.com/QXHIvOz.jpg")
         await ctx.send(embed=embed)
 
     @commands.command(aliases=['whatsid0', 'id0'])
@@ -1236,15 +1284,11 @@ in the scene.
                                 The public 90DNS IP adresses are:
                                 - `207.246.121.77` (USA)
                                 - `163.172.141.219`(France)
-                                
-                                To set these go to System Settings -> Internet -> Connection Settings -> Your wifi Network -> DNS to Manual -> Set primary and secondary DNS to the previously listed IPs -> Save Settings.
 
-                                Set the primary DNS server to the IP that is closest to you and the other as your secondary DNS.
-                                
-                                You will have to manually set these for each WiFi connection you have set up.
-                                
-                                [Follow these steps](https://nh-server.github.io/switch-guide/extras/blocking_updates/#testing-if-your-90dns-connection-is-working) to ensure that the connection is safe and not blocked by your ISP.
-                                """, title="90DNS IP adressses")
+                                [Follow these steps](https://nh-server.github.io/switch-guide/extras/blocking_updates/) to set up 90dns and ensure it isn't being blocked
+
+                                You will have to manually set these for each WiFi connection you have set up.""",
+                                title="90DNS IP adressses")
 
     @commands.command(aliases=['missingco'])
     async def missingconfig(self, ctx):
@@ -1321,14 +1365,14 @@ in the scene.
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def invite(self, ctx, name: str):
         """Available servers are:
-        twl, switchroot, acnl, flagbrew, themeplaza, smashultimate, ndsbrew, citra, homebrew, skyrimnx, pkhexautolegality, reswitched, cemu, dragoninjector, vita, henkaku, universal, r3DS, smash4, switchlan, ctgp7, retronx"""
+        twl, switchroot, acnl, flagbrew, themeplaza, smashultimate, ndsbrew, citra, homebrew, skyrimnx, pkhexautolegality, reswitched, cemu, dragoninjector, vita, henkaku, universal, r3DS, smash4, switchlan, ctgp7, retronx, edizon"""
         name = name.casefold()
 
         # When adding invites, make sure the keys are lowercase, or the command will not find it when invoked!
         invites = {
-            'twl':'yD3spjv',
+            'twl': 'yD3spjv',
             'switchroot': '9d66FYg',
-            'acnl':'EZSxqRr',
+            'acnl': 'EZSxqRr',
             'flagbrew': 'bGKEyfY',
             'themeplaza': '2hUQwXz',
             'smashultimate': 'ASJyTrZ',
@@ -1348,7 +1392,9 @@ in the scene.
             'ctgp7': '0uTPwYv3SPQww54l',
             'retronx': 'vgvZN9W',
             'r3ds': '3ds',
-            'lovepotion' : 'ggbKkhc',
+            'edizon': 'qyA38T8',
+            'lovepotion': 'ggbKkhc',
+            'bitbuilt': 'tHEesfb',
         }
 
         if name in invites:
@@ -1429,5 +1475,13 @@ in the scene.
             """))
         await ctx.send(embed=embed)
 
+    @commands.command(aliases=['usm'])
+    async def unsafe_mode(self, ctx):
+        """unSAFE_MODE Guide"""
+        await self.simple_embed(ctx, """
+                    3DS Hacks Guide's [unSAFE_MODE](https://git.io/JfNQ4)
+                    """, title="unSAFE_MODE")
+
+        
 def setup(bot):
     bot.add_cog(Assistance(bot))

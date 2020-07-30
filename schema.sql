@@ -59,3 +59,9 @@ create table watchlist
 (
   user_id INTEGER PRIMARY KEY
 );
+
+create table wordfilter
+(
+  word     TEXT PRIMARY KEY,
+  kind     TEXT
+);

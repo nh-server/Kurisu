@@ -239,7 +239,7 @@ class Extras(commands.Cog):
                 except discord.errors.Forbidden:
                     await ctx.send("💢  I can't change your nickname! (Permission Error)")
                     return
-                await ctx.send(f"Your nickname is now `{member.display_name}`!")
+                await ctx.safe_send(f"Your nickname is now `{member.display_name}`!")
         else:
             await ctx.send("This month is not colorful enough!")
 
@@ -261,7 +261,7 @@ class Extras(commands.Cog):
                 except discord.errors.Forbidden:
                     await ctx.send("💢  I can't change your nickname! (Permission Error)")
                     return
-                await ctx.send(f"Your nickname is now `{nick}`!")
+                await ctx.safe_send(f"Your nickname is now `{nick}`!")
             else:
                 await ctx.send("You don't have a rainbow!")
         elif bool(re.search(pattern, member.name)):
@@ -288,7 +288,7 @@ class Extras(commands.Cog):
                 except discord.errors.Forbidden:
                     await ctx.send("💢  I can't change your nickname! (Permission Error)")
                     return
-                await ctx.send(f"Your nickname is now `{member.display_name}`!")
+                await ctx.safe_send(f"Your nickname is now `{member.display_name}`!")
         else:
             await ctx.send("This month is not spooky enough!")
 
@@ -335,7 +335,7 @@ class Extras(commands.Cog):
                 except discord.errors.Forbidden:
                     await ctx.send("💢  I can't change your nickname! (Permission Error)")
                     return
-                await ctx.send(f"Your nickname is now `{member.display_name}`!")
+                await ctx.safe_send(f"Your nickname is now `{member.display_name}`!")
         else:
             await ctx.send("This month is not thankful enough!")
 
@@ -356,7 +356,7 @@ class Extras(commands.Cog):
                 except discord.errors.Forbidden:
                     await ctx.send("💢  I can't change your nickname! (Permission Error)")
                     return
-                await ctx.send(f"Your nickname is now `{nick}`!")
+                await ctx.safe_send(f"Your nickname is now `{nick}`!")
             else:
                 await ctx.send("You don't have a turkey!")
         elif bool(re.search(pattern, member.name)):
@@ -383,7 +383,7 @@ class Extras(commands.Cog):
                 except discord.errors.Forbidden:
                     await ctx.send("💢  I can't change your nickname! (Permission Error)")
                     return
-                await ctx.send(f"Your nickname is now `{member.display_name}`!")
+                await ctx.safe_send(f"Your nickname is now `{member.display_name}`!")
         else:
             await ctx.send("This month is not christmassy enough!")
 
@@ -404,7 +404,7 @@ class Extras(commands.Cog):
                 except discord.errors.Forbidden:
                     await ctx.send("💢  I can't change your nickname! (Permission Error)")
                     return
-                await ctx.send(f"Your nickname is now `{nick}`!")
+                await ctx.safe_send(f"Your nickname is now `{nick}`!")
             else:
                 await ctx.send("You don't have an xmas tree!")
         elif bool(re.search(pattern, member.name)):
@@ -432,7 +432,7 @@ class Extras(commands.Cog):
                 except discord.errors.Forbidden:
                     await ctx.send("💢  I can't change your nickname! (Permission Error)")
                     return
-                await ctx.send(f"Your nickname is now `{member.display_name}`!")
+                await ctx.safe_send(f"Your nickname is now `{member.display_name}`!")
         else:
             await ctx.send("This day is not old/new enough!")
 
@@ -453,7 +453,7 @@ class Extras(commands.Cog):
                 except discord.errors.Forbidden:
                     await ctx.send("💢  I can't change your nickname! (Permission Error)")
                     return
-                await ctx.send(f"Your nickname is now `{nick}`!")
+                await ctx.safe_send(f"Your nickname is now `{nick}`!")
             else:
                 await ctx.send("You don't have fireworks!")
         elif bool(re.search(pattern, member.name)):
@@ -481,7 +481,7 @@ class Extras(commands.Cog):
                 except discord.errors.Forbidden:
                     await ctx.send("💢  I can't change your nickname! (Permission Error)")
                     return
-                await ctx.send(f"Your nickname is now `{member.display_name}`!")
+                await ctx.safe_send(f"Your nickname is now `{member.display_name}`!")
         else:
             await ctx.send("This day is not filled with enough Jameson Irish Whiskey [PAID PROMOTION]!")
 
@@ -502,7 +502,7 @@ class Extras(commands.Cog):
                 except discord.errors.Forbidden:
                     await ctx.send("💢  I can't change your nickname! (Permission Error)")
                     return
-                await ctx.send(f"Your nickname is now `{nick}`!")
+                await ctx.safe_send(f"Your nickname is now `{nick}`!")
             else:
                 await ctx.send("You don't have a shamrock!")
         elif bool(re.search(pattern, member.name)):
@@ -521,7 +521,7 @@ class Extras(commands.Cog):
         if self.check_nickname(nickname):
             try:
                 await member.edit(nick=nickname)
-                await ctx.send(f"Your nickname is now `{nickname}`!")
+                await ctx.safe_send(f"Your nickname is now `{nickname}`!")
             except discord.errors.Forbidden:
                 await ctx.send("💢  I can't change your nickname! (Permission Error)")
         else:

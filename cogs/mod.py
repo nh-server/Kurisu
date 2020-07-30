@@ -48,24 +48,47 @@ class Mod(DatabaseCog):
                 ban = None
             await ctx.safe_send(f"{basemsg}{f'**Banned**, reason: {ban.reason}' if ban is not None else ''}\n")
 
-    @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=['ui2'])
-    async def userinfo2(self, ctx, user: FetchMember):
+    async def userinfo2(self, ctx, user: FetchMember = None):
         """Shows information from a user. Staff and Helpers only."""
 
-        color = utils.gen_color(user.id)
+        if user is None:
+            user = ctx.author
+
+        if (not await check_staff_id(ctx, 'Helper', ctx.author.id)) and (ctx.author != user or ctx.channel != self.bot.channels['bot-cmds']):
+            await ctx.message.delete()
+            return await ctx.send(f"{ctx.author.mention} This command can only be used in {self.bot.channels['bot-cmds'].mention} and only on yourself.", delete_after=10)
+
+        embed = discord.Embed(color=utils.gen_color(user.id))
+        embed.description = (
+            f"**User:** {user.mention}\n"
+            f"**User's ID:** {user.id}\n"
+            f"**Created on:** {user.created_at}\n"
+            f"**Default Profile Picture:** {user.default_avatar}\n"
+        )
 
         if isinstance(user, discord.Member):
-            embed = discord.Embed(title=f"**Userinfo for {'member' if not user.bot else 'bot'} {user}**", color=color)
-            embed.description = f"**User's ID:** {user.id} \n **Join date:** {user.joined_at} \n **Created on** {user.created_at} \n **Current Status:** {user.status} \n **User Activity:**: {user.activity} \n **Default Profile Picture:** {user.default_avatar} \n **Current Display Name:** {user.display_name} \n **Nitro Boost Info:** {user.premium_since} \n **Current Top Role:** {user.top_role} \n **Color:** {user.color}"
+            member_type = "member"
+            embed.description += (
+                f"**Join date:** {user.joined_at}\n"
+                f"**Current Status:** {user.status}\n"
+                f"**User Activity:**: {user.activity}\n"
+                f"**Current Display Name:** {user.display_name}\n"
+                f"**Nitro Boost Info:** {user.premium_since}\n"
+                f"**Current Top Role:** {user.top_role}\n"
+                f"**Color:** {user.color}\n"
+            )
         else:
+            member_type = "user"
             try:
                 ban = await ctx.guild.fetch_ban(user)
+                embed.description += f"\n**Banned**, reason: {ban.reason}"
             except discord.NotFound:
-                ban = None
-            embed = discord.Embed(title=f'**Userinfo for {"user" if not user.bot else "bot"} {user}**', color=color)
-            embed.description = f"**User's ID:** {user.id} \n **Created on** {user.created_at}\n **Default Profile Picture:** {user.default_avatar}\n **Color:** {user.color}\n{f'**Banned**, reason: {ban.reason}' if ban is not None else ''}"
+                pass
+
+        member_type = member_type if not user.bot else "bot"
+        embed.title = f"**Userinfo for {member_type} {user}**"
         embed.set_thumbnail(url=user.avatar_url_as(static_format='png'))
         await ctx.send(embed=embed)
 
@@ -405,7 +428,7 @@ class Mod(DatabaseCog):
 
     @is_staff("Helper")
     @commands.guild_only()
-    @commands.command(aliases=["nohelp"])
+    @commands.command(aliases=["nohelp", "yesnthelp"])
     async def takehelp(self, ctx, member: FetchMember, *, reason=""):
         """Remove access to the assistance channels. Staff and Helpers only."""
         if await check_bot_or_staff(ctx, member, "takehelp"):
@@ -438,7 +461,7 @@ class Mod(DatabaseCog):
 
     @is_staff("Helper")
     @commands.guild_only()
-    @commands.command()
+    @commands.command(aliases=["yeshelp"])
     async def givehelp(self, ctx, member: FetchMember):
         """Restore access to the assistance channels. Staff and Helpers only."""
         if not await self.remove_restriction(member.id, self.bot.roles["No-Help"]):
@@ -626,7 +649,7 @@ class Mod(DatabaseCog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def approve(self, ctx, invite: discord.Invite, times: int=1):
+    async def approve(self, ctx, invite: discord.Invite, times: int = 1):
         """Approves a server invite for a number of times(0 to delete approved invites). Staff and Helpers only."""
         code = invite.code
         if times == 0:

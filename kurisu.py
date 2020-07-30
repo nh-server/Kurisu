@@ -17,6 +17,7 @@ from discord.ext import commands
 
 from utils.checks import check_staff_id
 from utils.database import ConnectionHolder
+from utils.manager import WordFilterManager
 
 # sets working directory to bot's folder
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -35,6 +36,7 @@ cogs = [
     'cogs.err',
     'cogs.events',
     'cogs.extras',
+    'cogs.filters',
     'cogs.friendcode',
     'cogs.kickban',
     'cogs.load',
@@ -136,6 +138,7 @@ class Kurisu(commands.Bot):
             'server-logs': None,
             'bot-err': None,
             'elsewhere': None,  # I'm a bit worried about how often this changes, shouldn't be a problem tho
+            'newcomers': None,
         }
 
         self.failed_cogs = []
@@ -216,6 +219,9 @@ class Kurisu(commands.Bot):
 
         self.holder = ConnectionHolder()
         await self.holder.load_db(database_name, self.loop)
+
+        self.wordfilter = WordFilterManager(self)
+        await self.wordfilter.load()
 
         startup_message = f'{self.user.name} has started! {self.guild} has {self.guild.member_count:,} members!'
         if len(self.failed_cogs) != 0:
@@ -307,7 +313,6 @@ class Kurisu(commands.Bot):
     async def close(self):
         print('Kurisu is shutting down')
         self.holder.dbcon.close()
-        self.db_closed = True
         await super().close()
 
     async def is_all_ready(self):

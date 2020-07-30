@@ -99,7 +99,7 @@ class Loop(DatabaseCog):
     async def start_update_loop(self):
         # thanks Luc#5653
         await self.bot.wait_until_all_ready()
-        await self.update_netinfo() #Run once so it will always be available after restart
+        await self.update_netinfo()  # Run once so it will always be available after restart
         while self.is_active:
             try:
                 timestamp = datetime.now()

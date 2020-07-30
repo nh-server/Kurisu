@@ -33,6 +33,7 @@ async def check_staff_id(ctx, role, id):
         return staff_ranks[rank] <= staff_ranks[role]
     return False
 
+
 async def check_bot_or_staff(ctx, target: discord.user, action: str):
     if target.bot:
         who = "a bot"
@@ -50,3 +51,12 @@ def check_if_user_can_sr():
             return False
         return True
     return commands.check(predicate)
+
+def check_if_user_can_ready():
+    async def predicate(ctx):
+        channel = ctx.channel
+        if channel != ctx.bot.channels['newcomers']:
+            return False
+        return True
+    return commands.check(predicate)
+
