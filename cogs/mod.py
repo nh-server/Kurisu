@@ -457,7 +457,6 @@ class Mod(DatabaseCog):
         else:
             msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
         await self.bot.channels['mod-logs'].send(msg)
-        await self.bot.channels['helpers'].send(msg)
 
     @is_staff("Helper")
     @commands.guild_only()
@@ -474,7 +473,6 @@ class Mod(DatabaseCog):
         await ctx.send(f"{member.mention} can access the help channels again.")
         msg = f"⭕️ **Help access restored**: {ctx.author.mention} restored access to help channels to {member.mention} | {self.bot.escape_text(member)}"
         await self.bot.channels['mod-logs'].send(msg)
-        await self.bot.channels['helpers'].send(msg)
         await self.remove_timed_restriction(member.id, 'timenohelp')
 
     @is_staff("Helper")
@@ -513,7 +511,6 @@ class Mod(DatabaseCog):
         else:
             msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
         await self.bot.channels['mod-logs'].send(msg)
-        await self.bot.channels['helpers'].send(msg)
 
     @is_staff("Helper")
     @commands.guild_only()
@@ -528,7 +525,6 @@ class Mod(DatabaseCog):
         await ctx.send(f"{', '.join([x.mention for x in members])} can no longer access the small help channel.")
         msg = f"⭕️ **Small help access revoked**: {ctx.author.mention} revoked access to small help channel from {', '.join([f'{x.mention} | {x}'for x in members])}"
         await self.bot.channels['mod-logs'].send(msg)
-        await self.bot.channels['helpers'].send(msg)
 
     @is_staff("Helper")
     @commands.guild_only()
@@ -543,7 +539,6 @@ class Mod(DatabaseCog):
         await ctx.send(f"{', '.join([x.mention for x in members])} can access the small help channel.")
         msg = f"⭕️ **Small help access granted**: {ctx.author.mention} granted access to small help channel to {', '.join([f'{x.mention} | {x}'for x in members])}"
         await self.bot.channels['mod-logs'].send(msg)
-        await self.bot.channels['helpers'].send(msg)
 
     @is_staff("Helper")
     @commands.guild_only()
