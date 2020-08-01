@@ -1377,7 +1377,8 @@ in the scene.
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def invite(self, ctx, name: str):
         """Available servers are:
-        twl, switchroot, acnl, flagbrew, themeplaza, smashultimate, ndsbrew, citra, homebrew, skyrimnx, pkhexautolegality, reswitched, cemu, dragoninjector, vita, henkaku, universal, r3DS, smash4, switchlan, ctgp7, retronx, edizon"""
+        twl, switchroot, acnl, flagbrew, themeplaza, smashultimate, ndsbrew, citra, homebrew, skyrimnx, pkhexautolegality, reswitched, cemu, dragoninjector, vita, henkaku, universal, r3DS, smash4, switchlan, ctgp7, retronx, edizon, hax
+        """
         name = name.casefold()
 
         # When adding invites, make sure the keys are lowercase, or the command will not find it when invoked!
@@ -1407,6 +1408,7 @@ in the scene.
             'edizon': 'qyA38T8',
             'lovepotion': 'ggbKkhc',
             'bitbuilt': 'tHEesfb',
+            'hax': 'YVuFUrs',
         }
 
         if name in invites:
