@@ -497,7 +497,7 @@ class Err(commands.Cog):
                     embed.description = self.switch_errcodes[err][0]
                 else:
                     embed.color = embed.Empty
-                    embed.description = "I don't know this one! Click the error code for details on Nintendo Support.\n\nIf you keep getting this issue and Nintendo Support does not help, and know how to fix it, you should report relevant details to <@78465448093417472> so it can be added to the bot."
+                    embed.description = "I don't know this one! Click the error code for details on Nintendo Support.\n\nIf you keep getting this issue and Nintendo Support does not help, and know how to fix it, you should report relevant details to [the Kurisu repository](https://github.com/nh-server/Kurisu/issues) so it can be added to the bot."
         else:
             try:
                 err_num = int(err, 16)
