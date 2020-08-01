@@ -65,7 +65,9 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
     @commands.command()
     async def guide(self, ctx, *, consoles=""):
         """Links to the recommended guides."""
+        consoles = consoles.casefold()
         consoleslist = {x for x in consoles.split() if x in self.systems}
+
         if not consoleslist:
             if ctx.channel.name.startswith(self.systems):
                 consoleslist = ['auto']
