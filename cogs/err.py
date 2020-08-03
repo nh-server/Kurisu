@@ -234,6 +234,7 @@ class Err(commands.Cog):
         '007-2001': 'Usually the result after region-changing the system. New 3DS cannot fix this issue right now.',
         '007-2100': 'The connection to the Nintendo eShop timed out.\nThis may be due to an ongoing server maintenance, check <https://support.nintendo.com/networkstatus> to make sure the servers are operating normally. You may also encounter this error if you have a weak internet connection.',
         '007-2404': 'An error occurred while attempting to connect to the Nintendo eShop.\nMake sure you are running the latest firmware, since this error will appear if you are trying to access the eShop on older versions.',
+        '007-2670': 'Generic connection error.',
         '007-2720': 'SSL error?',
         '007-2916': 'HTTP error, server is probably down. Try again later?',
         '007-2920': 'This error is caused by installing a game or game update from an unofficial source, as it contains a bad ticket.\nThe only solution is to delete the unofficial game or update as well as its ticket\nin FBI, and install the game or update legitimately. If the title was uninstalled\nalready, remove the ticket in FBI.',
@@ -264,6 +265,7 @@ class Err(commands.Cog):
         '022-2634': 'Nintendo Network ID is not correctly linked on the system. This can be a result of formatting the SysNAND using System Settings to unlink it from the EmuNAND.\nTo fix, boot GodMode9 and [follow these steps.](https://3ds.hacks.guide/godmode9-usage#removing-an-nnid-without-formatting-your-device)\nAfterwards, reboot and sign into your NNID again.',
         '022-2812': 'System is permanently banned by Nintendo for illegally playing the Pokemon Sun & Moon ROM leak online before release. You cannot ask how to fix this issue here.',
         '022-2815': 'System is banned by Nintendo from Miiverse access.',
+        '022-5515': 'Network timeout.',
         '032-1820': 'Browser error that asks whether you want to go on to a potentially dangerous website. Can be bypassed by touching "yes".',
         '090-0212': 'Game is permanently banned from Pokémon Global Link. This is most likely as a result of using altered or illegal save data.',
         # Wii U
