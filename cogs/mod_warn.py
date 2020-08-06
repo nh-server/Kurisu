@@ -130,14 +130,14 @@ class ModWarn(DatabaseCog):
             return
         warns = await self.get_warns(user_id1)
         if not warns:
-            await ctx.safe_send(f"{user_id1} has no warns!")
+            await ctx.send(f"{user_id1} has no warns!")
             return
         for warn in warns:
             await self.add_warn(user_id2, warn[2], warn[3])
         warn_count = len(warns)
         user1 = await ctx.get_user(user_id1)
         user2 = await ctx.get_user(user_id2)
-        await ctx.safe_send(f"{warn_count} warns were copied from {user1.name} to {user2.name}!")
+        await ctx.send(f"{warn_count} warns were copied from {user1.name} to {user2.name}!")
         msg = f"📎 **Copied warns**: {ctx.author.mention} copied {warn_count} warns from {self.bot.escape_text(user1.name)}"\
               f"({user_id1}) to {self.bot.escape_text(user2.name)} ({user_id2})"
         await self.bot.channels['mod-logs'].send(msg)

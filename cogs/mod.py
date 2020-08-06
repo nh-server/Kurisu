@@ -40,13 +40,13 @@ class Mod(DatabaseCog):
         basemsg = f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url_as(static_format='png')}\ndefault_avatar= {u.default_avatar}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\n"
         if isinstance(u, discord.Member):
             role = u.top_role.name
-            await ctx.safe_send(f"{basemsg}display_name = {u.display_name}\njoined_at = {u.joined_at}\nstatus ={u.status}\nactivity = {u.activity.name if u.activity else None}\ncolour = {u.colour}\ntop_role = {role}\n")
+            await ctx.send(f"{basemsg}display_name = {u.display_name}\njoined_at = {u.joined_at}\nstatus ={u.status}\nactivity = {u.activity.name if u.activity else None}\ncolour = {u.colour}\ntop_role = {role}\n")
         else:
             try:
                 ban = await ctx.guild.fetch_ban(u)
             except discord.NotFound:  # NotFound is raised if the user isn't banned
                 ban = None
-            await ctx.safe_send(f"{basemsg}{f'**Banned**, reason: {ban.reason}' if ban is not None else ''}\n")
+            await ctx.send(f"{basemsg}{f'**Banned**, reason: {ban.reason}' if ban is not None else ''}\n")
 
     @commands.guild_only()
     @commands.command(aliases=['ui2'])
@@ -650,14 +650,12 @@ class Mod(DatabaseCog):
         if times == 0:
             try:
                 del self.bot.temp_guilds[code]
-                return await ctx.safe_send(f"Removed {invite.guild}({code}) from approved invite list!")
+                return await ctx.send(f"Removed {invite.guild}({code}) from approved invite list!")
             except KeyError:
                 return await ctx.send("This invite is not in the approved invite list!")
         self.bot.temp_guilds[code] = times
-        await ctx.safe_send(f"Approved an invite to {invite.guild}({code}) for posting {times} times")
-        # You can ping @everyone with a guild name
-        guild = self.bot.escape_text(invite.guild)
-        await self.bot.channels['mod-logs'].send(f"⭕ **Approved**: {ctx.author.mention} approved server {guild}({code}) to be posted {times} times")
+        await ctx.send(f"Approved an invite to {invite.guild}({code}) for posting {times} times")
+        await self.bot.channels['mod-logs'].send(f"⭕ **Approved**: {ctx.author.mention} approved server {invite.guild}({code}) to be posted {times} times")
 
 
 def setup(bot):

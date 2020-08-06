@@ -41,7 +41,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
             # msg += "\n✏️ __Additional text__: " + msg_request
             embed = discord.Embed(color=discord.Color.gold())
             embed.description = msg_request
-        await self.bot.channels['mods'].send(msg, embed=(embed if msg_request != "" else None))
+        await self.bot.channels['mods'].send(msg, embed=(embed if msg_request != "" else None), allowed_mentions=discord.AllowedMentions(everyone=True))
         try:
             await author.send(f"✅ Online staff have been notified of your request in {ctx.channel.mention}.", embed=(embed if msg_request != "" else None))
         except discord.errors.Forbidden:
@@ -55,7 +55,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         author = ctx.author
         await ctx.message.delete()
 
-        await self.bot.channels['newcomers'].send(f'{discord.utils.escape_mentions(ctx.author.name)}#{ctx.author.discriminator} is ready for unprobation. @here\nID: {ctx.author.id}')
+        await self.bot.channels['newcomers'].send(f'{discord.utils.escape_mentions(ctx.author.name)}#{ctx.author.discriminator} is ready for unprobation. @here\nID: {ctx.author.id}', allowed_mentions=discord.AllowedMentions(everyone=True))
         try:
             await author.send("✅ Online staff have been notified of your request.")
         except discord.errors.Forbidden:
