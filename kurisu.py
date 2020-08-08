@@ -176,7 +176,7 @@ class Kurisu(commands.Bot):
     @staticmethod
     def escape_text(text):
         text = str(text)
-        return discord.utils.escape_markdown(discord.utils.escape_mentions(text))
+        return discord.utils.escape_markdown(text)
 
     async def on_ready(self):
         guilds = self.guilds

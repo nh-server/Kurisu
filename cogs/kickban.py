@@ -48,7 +48,7 @@ class KickBan(DatabaseCog):
         await ctx.send(f"{member} is now gone. 👌")
         msg = f"👢 **Kick**: {ctx.author.mention} kicked {member.mention} | {self.bot.escape_text(member)}\n🏷 __User ID__: {member.id}"
         if reason != "":
-            msg += "\n✏️ __Reason__: " + self.bot.escape_text(reason)
+            msg += "\n✏️ __Reason__: " + reason
         await self.bot.channels['server-logs'].send(msg)
         signature = utils.command_signature(ctx.command)
         await self.bot.channels['mod-logs'].send(msg + (f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user." if reason == "" else ""))
@@ -80,7 +80,7 @@ class KickBan(DatabaseCog):
         await ctx.send(f"{member} is now b&. 👍")
         msg = f"⛔ **Ban**: {ctx.author.mention} banned {member.mention} | {self.bot.escape_text(member)}\n🏷 __User ID__: {member.id}"
         if reason != "":
-            msg += "\n✏️ __Reason__: " + self.bot.escape_text(reason)
+            msg += "\n✏️ __Reason__: " + reason
         await self.bot.channels['server-logs'].send(msg)
         signature = utils.command_signature(ctx.command)
         await self.bot.channels['mod-logs'].send(msg + (f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user." if reason == "" else ""))
@@ -101,7 +101,7 @@ class KickBan(DatabaseCog):
         await ctx.guild.unban(user, reason=reason)
 
         await ctx.send(f"{user} is now unbanned.")
-        msg = f"⚠ **Unban**: {ctx.author.mention} unbanned {user.mention} | {self.bot.escape_text(user)}\n🏷 __User ID__: {user.id}\n✏️ __Reason__: {self.bot.escape_text(reason)}"
+        msg = f"⚠ **Unban**: {ctx.author.mention} unbanned {user.mention} | {self.bot.escape_text(user)}\n🏷 __User ID__: {user.id}\n✏️ __Reason__: {reason}"
         await self.bot.channels['mod-logs'].send(msg)
         await self.bot.channels['server-logs'].send(msg)
 
@@ -124,11 +124,10 @@ class KickBan(DatabaseCog):
             await ctx.send("💢 I don't have permission to do this.")
             return
         await ctx.send(f"{member} is now b&. 👍")
-        reason = self.bot.escape_text(reason)
         msg = f"⛔ **Silent ban**: {ctx.author.mention} banned {member.mention} | {self.bot.escape_text(member)}\n"\
               f"🏷 __User ID__: {member.id}"
         if reason != "":
-            msg += "\n✏️ __Reason__: " + self.bot.escape_text(reason)
+            msg += "\n✏️ __Reason__: " + reason
         await self.bot.channels['server-logs'].send(msg)
         signature = utils.command_signature(ctx.command)
         await self.bot.channels['mod-logs'].send(msg + (f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}`." if reason == "" else ""))
@@ -165,7 +164,7 @@ class KickBan(DatabaseCog):
         await ctx.send(f"{member} is now b& until {unban_time_string} {time.tzname[0]}. 👍")
         msg = f"⛔ **Time ban**: {ctx.author.mention} banned {member.mention} until {unban_time_string} | {member}\n🏷 __User ID__: {member.id}"
         if reason != "":
-            msg += "\n✏️ __Reason__: " + self.bot.escape_text(reason)
+            msg += "\n✏️ __Reason__: " + reason
         await self.bot.channels['server-logs'].send(msg)
         signature = utils.command_signature(ctx.command)
         await self.bot.channels['mod-logs'].send(msg + (f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user." if reason == "" else ""))

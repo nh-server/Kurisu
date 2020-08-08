@@ -22,8 +22,7 @@ class Modwatch(DatabaseCog):
             return
         await self.add_watch(member.id)
         await ctx.send(f"{member.mention} is being watched.")
-        msg = f"👀 **Watch**: {ctx.author.mention} put {member.mention} on watch | {self.bot.escape_text(member)}"
-        reason = self.bot.escape_text(reason)
+        msg = f"👀 **Watch**: {ctx.author.mention} put {member.mention} on watch | {member}"
         if reason != "":
             # much \n
             msg += "\n✏️ __Reason__: " + reason

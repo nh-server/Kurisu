@@ -203,7 +203,7 @@ class Mod(DatabaseCog):
         msg = f"🔇 **Meta muted**: {ctx.author.mention} meta muted {member.mention} | {self.bot.escape_text(member)}"
         signature = utils.command_signature(ctx.command)
         if reason != "":
-            msg += "\n✏️ __Reason__: " + self.bot.escape_text(reason)
+            msg += "\n✏️ __Reason__: " + reason
         else:
             msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
         await self.bot.channels['mod-logs'].send(msg)
@@ -249,7 +249,7 @@ class Mod(DatabaseCog):
         await ctx.send(f"{member.mention} can no longer speak.")
         msg = f"🔇 **Muted**: {ctx.author.mention} muted {member.mention} | {self.bot.escape_text(member)}"
         if reason != "":
-            msg += "\n✏️ __Reason__: " + self.bot.escape_text(reason)
+            msg += "\n✏️ __Reason__: " + reason
         else:
             signature = utils.command_signature(ctx.command)
             msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
@@ -284,7 +284,6 @@ class Mod(DatabaseCog):
             msg_user += " The given reason is: " + reason
         msg_user += f"\n\nThis mute expires {unmute_time_string} {time.tzname[0]}."
         await utils.send_dm_message(member, msg_user)
-        reason = self.bot.escape_text(reason)
         signature = utils.command_signature(ctx.command)
         if not old_timestamp:
             await ctx.send(f"{member.mention} can no longer speak.")
@@ -340,7 +339,6 @@ class Mod(DatabaseCog):
             await ctx.send("💢 I don't have permission to do this.")
         await ctx.send(f"{member.mention} can no longer access art-discussion.")
         msg = f"🚫 **Removed art**: {ctx.message.author.mention} removed art access from {member.mention} | {self.bot.escape_text(member)}"
-        reason = self.bot.escape_text(reason)
         signature = utils.command_signature(ctx.command)
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
@@ -375,7 +373,6 @@ class Mod(DatabaseCog):
             await member.remove_roles(self.bot.roles['#elsewhere'])
             await ctx.send(f"{member.mention} can no longer access elsewhere.")
             msg = f"🚫 **Removed elsewhere**: {ctx.author.mention} removed elsewhere access from {member.mention} | {self.bot.escape_text(member)}"
-            reason = self.bot.escape_text(reason)
             signature = utils.command_signature(ctx.command)
             if reason != "":
                 msg += "\n✏️ __Reason__: " + reason
@@ -402,7 +399,6 @@ class Mod(DatabaseCog):
             await utils.send_dm_message(member, msg_user)
             await ctx.send(f"{member.mention} can no longer embed links or attach files.")
             msg = f"🚫 **Removed Embed**: {ctx.author.mention} removed embed from {member.mention} | {self.bot.escape_text(member)}"
-            reason = self.bot.escape_text(reason)
             signature = utils.command_signature(ctx.command)
             if reason != "":
                 msg += "\n✏️ __Reason__: " + reason
@@ -450,7 +446,6 @@ class Mod(DatabaseCog):
             await utils.send_dm_message(member, msg_user)
         await ctx.send(f"{member.mention} can no longer access the help channels.")
         msg = f"🚫 **Help access removed**: {ctx.author.mention} removed access to help channels from {member.mention} | {self.bot.escape_text(member)}"
-        reason = self.bot.escape_text(reason)
         signature = utils.command_signature(ctx.command)
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
@@ -503,7 +498,6 @@ class Mod(DatabaseCog):
         msg_user += f"\n\nThis restriction expires {unnohelp_time_string} {time.tzname[0]}."
         await utils.send_dm_message(member, msg_user)
         await ctx.send(f"{member.mention} can no longer speak in Assistance Channels.")
-        reason = self.bot.escape_text(reason)
         signature = utils.command_signature(ctx.command)
         msg = f"🚫 **Timed No-Help**: {issuer.mention} restricted {member.mention} until {unnohelp_time_string} | {self.bot.escape_text(member)}"
         if reason != "":
@@ -556,10 +550,8 @@ class Mod(DatabaseCog):
                 msg_user += " The given reason is: " + reason
             await utils.send_dm_message(member, msg_user)
         await ctx.send(f"{member.mention} is now in probation.")
-        reason = self.bot.escape_text(reason)
         msg = f"🚫 **Probated**: {ctx.author.mention} probated {member.mention} | {self.bot.escape_text(member)}"
         signature = utils.command_signature(ctx.command)
-        reason = self.bot.escape_text(reason)
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         else:

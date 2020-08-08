@@ -55,7 +55,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         author = ctx.author
         await ctx.message.delete()
 
-        await self.bot.channels['newcomers'].send(f'{discord.utils.escape_mentions(ctx.author.name)}#{ctx.author.discriminator} is ready for unprobation. @here\nID: {ctx.author.id}', allowed_mentions=discord.AllowedMentions(everyone=True))
+        await self.bot.channels['newcomers'].send(f'{ctx.author.name}#{ctx.author.discriminator} is ready for unprobation. @here\nID: {ctx.author.id}', allowed_mentions=discord.AllowedMentions(everyone=True))
         try:
             await author.send("✅ Online staff have been notified of your request.")
         except discord.errors.Forbidden:
