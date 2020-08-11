@@ -1019,7 +1019,7 @@ your device will refuse to write to it.
         await ctx.send(embed=embed)
 
     # Creates tutorial command group
-    @commands.group(cooldown=commands.Cooldown(0, 0, commands.BucketType.channel), invoke_without_command=True)
+    @commands.group(cooldown=commands.Cooldown(0, 0, commands.BucketType.channel), invoke_without_command=True, case_insensitive=True)
     async def tutorial(self, ctx):
         """Links to one of multiple guides"""
         await ctx.send_help(ctx.command)
