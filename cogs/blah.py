@@ -19,7 +19,7 @@ class Blah(commands.Cog):
     @is_staff("OP")
     @commands.command()
     async def announce(self, ctx, *, inp):
-        await self.bot.channels['announcements'].send(inp, allowed_mentions=discord.AllowedMentions(everyone=True))
+        await self.bot.channels['announcements'].send(inp, allowed_mentions=discord.AllowedMentions(everyone=True, roles=True))
 
     @is_staff("OP")
     @commands.command()
@@ -27,7 +27,7 @@ class Blah(commands.Cog):
         if channel.id in self.speak_blacklist:
             await ctx.send(f'You cannot send a message to {channel.mention}.')
             return
-        await channel.send(inp, allowed_mentions=discord.AllowedMentions(everyone=True))
+        await channel.send(inp, allowed_mentions=discord.AllowedMentions(everyone=True, roles=True))
 
     @is_staff("OP")
     @commands.command()

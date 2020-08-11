@@ -339,7 +339,7 @@ def main():
         print(f'Checking for git branch failed: {type(e).__name__}: {e}')
         branch = "<unknown>"
 
-    bot = Kurisu(('.', '!'), description="Kurisu, the bot for Nintendo Homebrew!", allowed_mentions=discord.AllowedMentions(everyone=False))
+    bot = Kurisu(('.', '!'), description="Kurisu, the bot for Nintendo Homebrew!", allowed_mentions=discord.AllowedMentions(everyone=False, roles=False))
     bot.help_command = commands.DefaultHelpCommand(dm_help=None)
     print(f'Starting Kurisu on commit {commit} on branch {branch}')
     bot.load_cogs()
