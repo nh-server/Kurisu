@@ -73,6 +73,8 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 consoleslist = ['auto']
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in self.systems])}.")
+
+                ctx.command.reset_cooldown(ctx)
                 return
         for x in consoleslist:
             if self.check_console(x, ctx.channel.name, '3ds'):
@@ -195,6 +197,8 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 wanted_consoles = ["auto"]
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}")
+
+                ctx.command.reset_cooldown(ctx)
                 return
 
         for console in wanted_consoles:
@@ -263,6 +267,8 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+
+                ctx.command.reset_cooldown(ctx)
                 return
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             """Links to eiphax cfw uses page"""
@@ -393,6 +399,8 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+
+                ctx.command.reset_cooldown(ctx)
                 return
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
@@ -427,6 +435,8 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+
+                ctx.command.reset_cooldown(ctx)
                 return
 
         if self.check_console(console, ctx.message.channel.name, '3ds'):
@@ -469,6 +479,8 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+
+                ctx.command.reset_cooldown(ctx)
                 return
 
         if self.check_console(console, ctx.message.channel.name, '3ds'):
@@ -495,6 +507,8 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+
+                ctx.command.reset_cooldown(ctx)
                 return
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="eip's problem solver packs", color=0xe60012)
@@ -586,6 +600,8 @@ re-read the guide steps 2 or 3 times before coming here.
 
         if not (info := cfwinfo.get(cfw)):
             await ctx.send(f"Please specify a cfw. Valid options are: {', '.join([x for x in cfwinfo])}.")
+
+            ctx.command.reset_cooldown(ctx)
             return
         await self.simple_embed(ctx, info['info'], title=f"Why {info['title']} isn't recommended")
 
@@ -667,6 +683,8 @@ command line. The `movable.sed` is the final product and requires no further pro
                 console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+
+                ctx.command.reset_cooldown(ctx)
                 return
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="EmuNAND for 3DS", color=0xe60012)
@@ -779,6 +797,8 @@ the system can't check for an update.
                 console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+
+                ctx.command.reset_cooldown(ctx)
                 return
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             await self.simple_embed(ctx, """
@@ -837,6 +857,8 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
                 consoleslist = ['auto']
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in injects])}.")
+
+                ctx.command.reset_cooldown(ctx)
                 return
         for x in consoleslist:
             if self.check_console(x, ctx.channel.name, ('3ds',)):
@@ -875,6 +897,8 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
                 console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+
+                ctx.command.reset_cooldown(ctx)
                 return
         if self.check_console(console, ctx.channel.name, '3ds'):
             embed = discord.Embed(title="GodMode9 dump/build Guide", color=discord.Color(0x66FFFF))
@@ -1173,6 +1197,8 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
                 console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+
+                ctx.command.reset_cooldown(ctx)
                 return
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="3DS Themes Tutorial", color=discord.Color.dark_orange())
@@ -1417,6 +1443,7 @@ in the scene.
             await ctx.send(f"https://discord.gg/{invites[name]}")
         else:
             await ctx.send(f"Invalid invite code. Valid server names are: {', '.join(invites.keys())}")
+            ctx.command.reset_cooldown(ctx)
 
     @commands.guild_only()
     @commands.command()
@@ -1428,6 +1455,8 @@ in the scene.
                 console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+
+                ctx.command.reset_cooldown(ctx)
                 return
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="3DS Database", color=discord.Color.dark_orange())
