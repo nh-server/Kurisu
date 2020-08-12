@@ -220,7 +220,7 @@ class Events(DatabaseCog):
             embed.add_field(name="#" + message.channel.name,
                             value="\u200b" + message.content)
             await self.bot.channels['mod-logs'].send(log_msg, embed=embed)
-            await self.bot.channels['mods'].send(log_msg + f"\nSee {self.bot.channels['mod-logs'].mention} for the deleted message. @here")
+            await self.bot.channels['mods'].send(log_msg + f"\nSee {self.bot.channels['mod-logs'].mention} for the deleted message. @here", allowed_mentions=discord.AllowedMentions(everyone=True))
             try:
                 await message.delete()
             except discord.errors.NotFound:
@@ -283,7 +283,7 @@ class Events(DatabaseCog):
             for msg in msgs_to_delete:
                 embed.add_field(name="#"+msg[0].channel.name, value="\u200b" + msg[0].content)  # added zero-width char to prevent an error with an empty string (lazy workaround)
             await self.bot.channels['mod-logs'].send(log_msg, embed=embed)
-            await self.bot.channels['mods'].send(log_msg + f"\nSee {self.bot.channels['mod-logs'].mention} for a list of deleted messages. @here")
+            await self.bot.channels['mods'].send(log_msg + f"\nSee {self.bot.channels['mod-logs'].mention} for a list of deleted messages. @here", allowed_mentions=discord.AllowedMentions(everyone=True))
             for msg in msgs_to_delete:
                 try:
                     await msg[0].delete()
@@ -313,7 +313,7 @@ class Events(DatabaseCog):
             await message.channel.send(msg_channel)
             log_msg = f"🔒 **Auto-locked**: {message.channel.mention} locked for spam"
             await self.bot.channels['mod-logs'].send(log_msg, embed=embed)
-            await self.bot.channels['mods'].send(f"{log_msg} @here\nSee {self.bot.channels['mod-logs'].mention} for a list of deleted messages.")
+            await self.bot.channels['mods'].send(f"{log_msg} @here\nSee {self.bot.channels['mod-logs'].mention} for a list of deleted messages.", allowed_mentions=discord.AllowedMentions(everyone=True))
             # msgs_to_delete = self.channel_antispam[message.channel.id][:]  # clone list so nothing is removed while going through it
             # for msg in msgs_to_delete:
             #     try:
