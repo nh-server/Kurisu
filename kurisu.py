@@ -58,13 +58,6 @@ cogs = [
 
 
 class CustomContext(commands.Context):
-    async def safe_send(self, content, **kwargs):
-        """Same as send except it escapes mentions.
-
-        Note: This does not escape channel mentions"""
-        content = discord.utils.escape_mentions(content)
-        return await self.send(content, **kwargs)
-
     async def get_user(self, userid: int):
         if self.guild and (user := self.guild.get_member(userid)):
             return user
@@ -74,9 +67,8 @@ class CustomContext(commands.Context):
 
 class Kurisu(commands.Bot):
     """Its him!!."""
-    def __init__(self, command_prefix, description):
-        super().__init__(command_prefix=command_prefix, description=description)
-
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.startup = datetime.now()
         self.channel_config = ConfigParser()
         self.channel_config.read("channels.ini", encoding='utf-8')
@@ -184,7 +176,7 @@ class Kurisu(commands.Bot):
     @staticmethod
     def escape_text(text):
         text = str(text)
-        return discord.utils.escape_markdown(discord.utils.escape_mentions(text))
+        return discord.utils.escape_markdown(text)
 
     async def on_ready(self):
         guilds = self.guilds
@@ -347,7 +339,7 @@ def main():
         print(f'Checking for git branch failed: {type(e).__name__}: {e}')
         branch = "<unknown>"
 
-    bot = Kurisu(('.', '!'), description="Kurisu, the bot for Nintendo Homebrew!")
+    bot = Kurisu(('.', '!'), description="Kurisu, the bot for Nintendo Homebrew!", allowed_mentions=discord.AllowedMentions(everyone=False, roles=False))
     bot.help_command = commands.DefaultHelpCommand(dm_help=None)
     print(f'Starting Kurisu on commit {commit} on branch {branch}')
     bot.load_cogs()
