@@ -311,6 +311,7 @@ class Err(commands.Cog):
         '2181-4008': ['System is permanently banned by Nintendo. You cannot ask how to fix this issue here.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/42061/kw/2181-4008'],
         '2811-5001': ['General connection error.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/22392/kw/2811-5001'],
         '2124-4517': ['Console banned due a breach of the user agreements. You cannot ask how to fix this issue here.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/43652/kw/2124-4517'],
+        '2124-4621': ['Online features in foreign games are not available on Tencent-Nintendo Switch (Chinese model).', 'https://nintendoswitch.com.cn/support/']
     }
 
     def get_name(self, d, k, show_unknown=False):
