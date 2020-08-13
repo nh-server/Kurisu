@@ -532,7 +532,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                                 It is now recommended to use a CFW method like unSAFE_MODE
                                 to get Homebrew Launcher access, as these methods are simple and have a wider
                                 compatability with existing homebrew apps than HBL-only exploits.
-                                Use the ".guide 3ds" command to get a link to the recommended guide.
+                                Use the `.guide 3ds` command to get a link to the recommended guide.
                                 """)
 
     @commands.command()
