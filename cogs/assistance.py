@@ -527,7 +527,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
 
     @commands.command()
     async def hbl(self, ctx):
-        """Get Homebrew Launcher working on 11.4+ firmware"""
+        """Show recommended way to get access to the Homebrew Launcher on the latest firmware"""
         await self.simple_embed(ctx, """
                                 It is now recommended to use a CFW method like unSAFE_MODE
                                 to get Homebrew Launcher access, as these methods are simple and have a wider
