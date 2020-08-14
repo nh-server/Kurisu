@@ -530,10 +530,10 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
         """Get Homebrew Launcher working on 11.4+ firmware"""
         await self.simple_embed(ctx, """
                                 If you wish to access the Homebrew Launcher on 11.4+, you have two options.
-                                First of all, you can use Steelminer, a free exploit to install the Homebrew Launcher. However, homebrew-only access has disadvantages.
+                                First of all, you can use PicHaxx, a free exploit to install the Homebrew Launcher. However, homebrew-only access has disadvantages.
                                 For example, homebrew-only is often unstable and will crash unexpectedly. Also, it is limited in features and system access.
                                 The second option is to install CFW, or custom firmware. Please use `.guide 3ds` for a list of ways to get CFW.
-                                Here is a [Steelhax guide](https://git.io/fhbGY). Do NOT proceed to `Installing boot9strap` if you do not want CFW.
+                                Here is a [PicHaxx guide](https://git.io/JJ7pv). Do NOT proceed to `Installing boot9strap` if you do not want CFW.
                                 """)
 
     @commands.command()
