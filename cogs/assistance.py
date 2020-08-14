@@ -530,7 +530,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
         """Show recommended ways to get access to the Homebrew Launcher"""
         await self.simple_embed(ctx, """
                                 If you wish to access the Homebrew Launcher, you have two options.
-                                You could use Pichaxx, a free exploit to access the Homebrew Launcher.
+                                You can use Pichaxx, a free exploit to access the Homebrew Launcher.
                                 However, homebrew-only access has disadvantages.
                                 For example, homebrew-only is often unstable and will crash unexpectedly. Also, it is limited in features and system access.
                                 To use Pichaxx, follow [this](https://3ds.hacks.guide/seedminer.html) guide to get your console's movable.sed, \
