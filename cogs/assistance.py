@@ -527,12 +527,15 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
 
     @commands.command()
     async def hbl(self, ctx):
-        """Show recommended way to get access to the Homebrew Launcher on the latest firmware"""
+        """Show recommended ways to get access to the Homebrew Launcher"""
         await self.simple_embed(ctx, """
-                                It is now recommended to use a CFW method like unSAFE_MODE
-                                to get Homebrew Launcher access, as these methods are simple and have a wider
-                                compatability with existing homebrew apps than HBL-only exploits.
-                                Use the `.guide 3ds` command to get a link to the recommended guide.
+                                If you wish to access the Homebrew Launcher, you have two options.
+                                You could use Pichaxx, a free exploit to access the Homebrew Launcher.
+                                However, homebrew-only access has disadvantages.
+                                For example, homebrew-only is often unstable and will crash unexpectedly. Also, it is limited in features and system access.
+                                To use Pichaxx, follow [this](https://3ds.hacks.guide/seedminer.html) guide to get your console's movable.sed, \
+then [this](https://3ds.hacks.guide/homebrew-launcher-(pichaxx).html) guide to setup Pichaxx. Do not continue to Frogtool if you want homebrew-only access.
+                                Another option is to install Custom Firmware, or CFW. Use `.guide 3ds` for an up-to-date guide to install CFW.
                                 """)
 
     @commands.command()
