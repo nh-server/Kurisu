@@ -54,6 +54,7 @@ cogs = [
     'cogs.rules',
     'cogs.ssnc',
     'cogs.xkcdparse',
+    'cogs.seasonal',
 ]
 
 
