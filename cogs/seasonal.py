@@ -32,7 +32,7 @@ class Season:
     @staticmethod
     def get_int_from_dotstr(dotstr: str) -> int:
         month, day = dotstr.split(".")
-        return (month * 31) + day
+        return (int(month) * 31) + int(day)
 
 class Seasonal(commands.Cog):
     seasons: List[Season] = [
