@@ -515,10 +515,8 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             embed = discord.Embed(title="3DS Bans", color=discord.Color.purple())
             embed.description = cleandoc ("""
             Nintendo has shown a marked lack of care about bans on the 3DS lately.
-            However, it is still advised that you:
-            - do not pirate games
-            - do not cheat online/cheat in multiplayer games
-            as these things will still get you banned.
+            However, such things as piracy and cheating online/cheating in multiplayer games have been known causes for NNID/console bans in the past.
+            eShop fraud (eg credit card chargebacks) will also get you banned.
             
             You can enable online status and Spotpass/Streetpass as these do not seem to be high risk at this time.
             """)
