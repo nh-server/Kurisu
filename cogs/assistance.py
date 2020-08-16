@@ -405,7 +405,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
             embed.add_field(name="NTRBoot", value="Requires a compatible NDS flashcart and maybe an additional DS(i) or hacked 3DS console depending on the flashcart (All versions, all hardware). [Guide](https://3ds.hacks.guide/ntrboot)", inline=False)
-            embed.add_field(name="Seedminer", value="Requires a working NDS mode or Pokémon Picross (free from eshop) [Guide](https://3ds.hacks.guide/seedminer)", inline=False)
+            embed.add_field(name="Seedminer", value="Requires a working DSiWare Data Management, NDS mode, or Pokémon Picross (free from eshop) [Guide](https://3ds.hacks.guide/seedminer)", inline=False)
             embed.add_field(name="Hardmod", value="Requires soldering **Not for beginners!**. [Guide](https://git.io/fhQk9)", inline=False)
             await ctx.send(embed=embed)
         elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
@@ -721,7 +721,7 @@ command line. The `movable.sed` is the final product and requires no further pro
         if self.check_console(console, ctx.message.channel.name, '3ds'):
             embed = discord.Embed(title="EmuNAND for 3DS", color=0xe60012)
             embed.description = cleandoc("""
-            With the recent advances in hacking methods and safety, it is no longer recommended to use an emuNAND on a 3DS/2DS system.
+            Since 2016 it has no longer been recommended to use an emuNAND on a 3DS/2DS system.
             Generally, for most users, there is no reason or benefit to using an emuNAND on a 3DS/2DS system.
             If you do not know what an emuNAND is, or is used for, you do not need one.
             """)
@@ -747,14 +747,6 @@ the system can't check for an update.
                                  """, color=discord.Color(0x009AC7))
 
     @commands.command()
-    async def ctrmount(self, ctx):
-        """Failed to mount CTRNAND error"""
-        await self.simple_embed(ctx, """
-                                While following the guide, after installing boot9strap, if you get an error that says \
-"Failed to mount CTRNAND", just continue on with the guide.
-                                """)
-
-    @commands.command()
     async def emptysd(self, ctx):
         """What to do if you delete all your SD card contents"""
         await self.simple_embed(ctx, """
@@ -771,6 +763,10 @@ the system can't check for an update.
             await self.simple_embed(ctx, f"Luma v{lumaversion}\nhttps://github.com/LumaTeam/Luma3DS/releases/tag/v{lumaversion}", color=discord.Color.blue())
         elif lumaversion == "latest":
             await self.simple_embed(ctx, "Latest Luma Version:\nhttps://github.com/LumaTeam/Luma3DS/releases/latest", color=discord.Color.blue())
+        elif lumaversion == "updater":
+            embed = discord.Embed(title="Luma Updater", description=f"[[Download](https://github.com/KunoichiZ/lumaupdate/releases/download/latest/lumaupdater.cia)] [[Source](https://github.com/KunoichiZ/lumaupdate/releases/)]")
+            embed.set_image(url="https://tinydb.eiphax.tech/qr/lumaupdater.png")
+            await ctx.send(embed=embed)
         else:
             await self.simple_embed(ctx, """
                                     Download links for the most common Luma3DS releases:
@@ -1001,7 +997,7 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
         embed.description = "PSA About Sighax"
         await ctx.send(embed=embed)
 
-    @commands.command(name="7zip")
+    @commands.command(name="7zip", aliases=['7z'])
     async def p7zip(self, ctx):
         """Download a .7z file extractor"""
         embed = discord.Embed(title="Download 7-Zip", color=discord.Color(0x0000ff))
