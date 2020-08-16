@@ -764,7 +764,7 @@ the system can't check for an update.
         elif lumaversion == "latest":
             await self.simple_embed(ctx, "Latest Luma Version:\nhttps://github.com/LumaTeam/Luma3DS/releases/latest", color=discord.Color.blue())
         elif lumaversion == "updater":
-            embed = discord.Embed(title="Luma Updater", description=f"[[Download](https://github.com/KunoichiZ/lumaupdate/releases/download/latest/lumaupdater.cia)] [[Source](https://github.com/KunoichiZ/lumaupdate/releases/)]")
+            embed = discord.Embed(title="Luma Updater", description="[[Download](https://github.com/KunoichiZ/lumaupdate/releases/download/latest/lumaupdater.cia)] [[Source](https://github.com/KunoichiZ/lumaupdate/releases/)]")
             embed.set_image(url="https://tinydb.eiphax.tech/qr/lumaupdater.png")
             await ctx.send(embed=embed)
         else:
