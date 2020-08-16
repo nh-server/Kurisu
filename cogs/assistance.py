@@ -514,8 +514,11 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
     async def baninfo(self, ctx, console=None):
         """Links to ban information pages"""
         systems = ("3ds", "nx", "ns", "switch")
+        channelName = ""
+        if not isinstance(ctx.channel, discord.DMChannel):
+            channelName = ctx.channel.name
         if console not in systems:
-            if ctx.channel.name.startswith(systems):
+            if channelName.startswith(systems):
                 console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
@@ -523,7 +526,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 ctx.command.reset_cooldown(ctx)
                 return
 
-        if self.check_console(console, ctx.message.channel.name, '3ds'):
+        if self.check_console(console, channelName, '3ds'):
             embed = discord.Embed(title="3DS Bans", color=discord.Color.purple())
             embed.description = cleandoc ("""
             Nintendo has shown a marked lack of care about bans on the 3DS lately.
@@ -534,14 +537,13 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             """)
             await ctx.send(embed=embed)
 
-        elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+        elif self.check_console(console, channelName, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="NX Bans", color=discord.Color.purple())
             embed.set_thumbnail(url="https://eiphax.tech/assets/gunther.png")
             embed.url = "https://nx.eiphax.tech/ban"
             embed.description = "Bans on the Switch are complicated. Please click the embed header link and read the linked page to learn more."
             await ctx.send(embed=embed)
 
-    @commands.guild_only()
     @commands.command()
     async def catalyst(self, ctx, console=None):
         """Link to problem solvers"""
