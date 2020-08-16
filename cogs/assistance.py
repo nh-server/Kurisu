@@ -53,9 +53,12 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         """Links to the recommended guides."""
         consoles = consoles.casefold()
         consoleslist = {x for x in consoles.split() if x in self.systems}
-
+        channelName = ""
+        if not isinstance(ctx.channel, discord.DMChannel):
+            channelName = ctx.channel.name
+            
         if not consoleslist:
-            if ctx.channel.name.startswith(self.systems):
+            if channelName.startswith(self.systems):
                 consoleslist = ['auto']
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in self.systems])}.")
@@ -63,7 +66,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 ctx.command.reset_cooldown(ctx)
                 return
         for x in consoleslist:
-            if self.check_console(x, ctx.channel.name, '3ds'):
+            if self.check_console(x, channelName, '3ds'):
                 embed = discord.Embed(title="Guide", color=discord.Color(0xCE181E))
                 embed.set_author(name="Plailect", url="https://3ds.hacks.guide/")
                 embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
@@ -71,7 +74,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 embed.description = "A complete guide to 3DS custom firmware, from stock to boot9strap."
                 await ctx.send(embed=embed)
                 continue
-            if self.check_console(x, ctx.channel.name, ('wiiu',)):
+            if self.check_console(x, channelName, ('wiiu',)):
                 embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
                 embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/")
                 embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
@@ -79,7 +82,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 embed.description = "A complete Wii U custom firmware + coldboothax guide"
                 await ctx.send(embed=embed)
                 continue
-            if self.check_console(x, ctx.channel.name, ('vwii',)):
+            if self.check_console(x, channelName, ('vwii',)):
                 embed = discord.Embed(title="Guide", color=discord.Color(0xFFFFFF))
                 embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/vwii-modding")
                 embed.set_thumbnail(url="https://i.imgur.com/FclGzNz.png")
@@ -87,7 +90,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 embed.description = "A complete vWii modding guide"
                 await ctx.send(embed=embed)
                 continue
-            if self.check_console(x, ctx.channel.name, ('switch', 'nx', 'ns')):
+            if self.check_console(x, channelName, ('switch', 'nx', 'ns')):
                 embed = discord.Embed(title="Guide", color=discord.Color(0xCB0004))
                 embed.set_author(name="NH Discord Server", url="https://nh-server.github.io/switch-guide/")
                 embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
@@ -95,14 +98,14 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 embed.description = "A Switch guide from stock to Atmosphere"
                 await ctx.send(embed=embed)
                 continue
-            if self.check_console(x, ctx.channel.name, ('legacy', 'wii')):
+            if self.check_console(x, channelName, ('legacy', 'wii')):
                 embed = discord.Embed(title="Guide", color=discord.Color(0x009AC7))
                 embed.set_author(name="RiiConnect24", url="https://wii.guide/")
                 embed.set_thumbnail(url="https://i.imgur.com/KI6IXmm.png")
                 embed.url = "https://wii.guide/"
                 embed.description = "A complete original Wii softmod guide"
                 await ctx.send(embed=embed)
-            if self.check_console(x, ctx.channel.name, ('legacy', 'dsi')):
+            if self.check_console(x, channelName, ('legacy', 'dsi')):
                 embed = discord.Embed(title="Guide", color=discord.Color(0xCB0004))
                 embed.set_author(name="jerbear64 & emiyl", url="https://dsi.cfw.guide/")
                 embed.set_thumbnail(url="https://i.imgur.com/T227BW0.png")
@@ -170,16 +173,18 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 """))
         await ctx.send(embed=embed)
 
-    @commands.guild_only()
     @commands.command()
     async def update(self, ctx, *, consoles=""):
         """Explains how to safely prepare for an update for a hacked console"""
 
         systems = ('3ds', 'nx', 'ns', 'switch')
         wanted_consoles = list(set(x for x in consoles.split() if x in systems))
+        channelName = ""
+        if not isinstance(ctx.channel, discord.DMChannel):
+            channelName = ctx.channel.name
 
         if not wanted_consoles:
-            if ctx.channel.name.startswith(systems):
+            if channelName.startswith(systems):
                 wanted_consoles = ["auto"]
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}")
@@ -188,7 +193,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 return
 
         for console in wanted_consoles:
-            if self.check_console(console, ctx.channel.name, "3ds"):
+            if self.check_console(console, channelName, "3ds"):
                 await self.simple_embed(ctx,
                     "**Is it safe to update to current 3DS firmware?**\n\n"
 
@@ -208,7 +213,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                     "**To find out your Luma3DS version, hold select on bootup and look at the top left corner of the top screen**\n"
                 )
 
-            elif self.check_console(console, ctx.channel.name, ("switch", "nx", "ns")):
+            elif self.check_console(console, channelName, ("switch", "nx", "ns")):
                 embed = discord.Embed(title="Updating Guide", color=discord.Color(0xCB0004))
                 embed.set_author(name="NH Discord Server", url="https://nh-server.github.io/switch-guide/")
                 embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
@@ -243,23 +248,25 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 """))
         await ctx.send(embed=embed)
 
-    @commands.guild_only()
     @commands.command()
     async def cfwuses(self, ctx, console=""):
         """Uses for CFW on Wii U and 3DS"""
         systems = ("3ds", "wiiu")
+        channelName = ""
+        if not isinstance(ctx.channel, discord.DMChannel):
+            channelName = ctx.channel.name
         if console not in systems:
-            if ctx.channel.name.startswith(systems):
+            if channelName.startswith(systems):
                 console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
 
                 ctx.command.reset_cooldown(ctx)
                 return
-        if self.check_console(console, ctx.message.channel.name, '3ds'):
+        if self.check_console(console, channelName, '3ds'):
             """Links to eiphax cfw uses page"""
             await self.simple_embed(ctx, "Want to know what CFW can be used for? <https://3ds.eiphax.tech/tips.html>")
-        elif self.check_console(console, ctx.message.channel.name, ('wiiu',)):
+        elif self.check_console(console, channelName, ('wiiu',)):
             embed = discord.Embed(title="What can Wii U CFW be used for?", color=discord.Color.blue())
             embed.add_field(name="Among other things, it allows you to do the following:", value=cleandoc("""
                         - Use “ROM hacks” for games that you own.
@@ -375,26 +382,28 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
         embed.add_field(name="Check your 3DSs IP (Homebrew)", value="1. Open Homebrew Launcher\n2. Press Y")
         await ctx.send(embed=embed)
 
-    @commands.guild_only()
     @commands.command()
     async def stock(self, ctx, console=None):
         """Advisory for various Nintendo systems on stock firmware"""
         systems = ("3ds", "nx", "ns", "switch")
+        channelName = ""
+        if not isinstance(ctx.channel, discord.DMChannel):
+            channelName = ctx.channel.name
         if console not in systems:
-            if ctx.channel.name.startswith(systems):
+            if channelName.startswith(systems):
                 console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
 
                 ctx.command.reset_cooldown(ctx)
                 return
-        if self.check_console(console, ctx.message.channel.name, '3ds'):
+        if self.check_console(console, channelName, '3ds'):
             embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
             embed.add_field(name="NTRBoot", value="Requires a compatible NDS flashcart and maybe an additional DS(i) or hacked 3DS console depending on the flashcart (All versions, all hardware). [Guide](https://3ds.hacks.guide/ntrboot)", inline=False)
             embed.add_field(name="Seedminer", value="Requires a working NDS mode or Pokémon Picross (free from eshop) [Guide](https://3ds.hacks.guide/seedminer)", inline=False)
             embed.add_field(name="Hardmod", value="Requires soldering **Not for beginners!**. [Guide](https://git.io/fhQk9)", inline=False)
             await ctx.send(embed=embed)
-        elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+        elif self.check_console(console, channelName, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Looking to hack your Switch?", color=0xe60012)
             embed.description = cleandoc("""
             Use [our guide](https://nh-server.github.io/switch-guide/user_guide/getting_started/) to determine if your Switch is a first-gen unit.
@@ -411,13 +420,15 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             """)
             await ctx.send(embed=embed)
 
-    @commands.guild_only()
     @commands.command()
     async def newver(self, ctx, console=None):
         """Quick advice for new versions"""
         systems = ("3ds", "nx", "ns", "switch")
+        channelName = ""
+        if not isinstance(ctx.channel, discord.DMChannel):
+            channelName = ctx.channel.name
         if console not in systems:
-            if ctx.channel.name.startswith(systems):
+            if channelName.startswith(systems):
                 console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
@@ -425,7 +436,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 ctx.command.reset_cooldown(ctx)
                 return
 
-        if self.check_console(console, ctx.message.channel.name, '3ds'):
+        if self.check_console(console, channelName, '3ds'):
             embed = discord.Embed(title="Is the new 3DS update safe?", color=0xe60012)
             embed.description = cleandoc("""
             Currently, the latest 3DS system firmware is `11.13.0-45`.
@@ -440,7 +451,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             """)
             await ctx.send(embed=embed)
 
-        elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+        elif self.check_console(console, channelName, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Is the new Switch update safe?", color=0xe60012)
             embed.description = cleandoc("""
             Currently, the latest Switch system firmware is `10.1.0`.
@@ -455,13 +466,15 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             """)
             await ctx.send(embed=embed)
 
-    @commands.guild_only()
     @commands.command()
     async def what(self, ctx, console=None):
         """Links to 'what' style pages"""
         systems = ("3ds", "nx", "ns", "switch")
+        channelName = ""
+        if not isinstance(ctx.channel, discord.DMChannel):
+            channelName = ctx.channel.name
         if console not in systems:
-            if ctx.channel.name.startswith(systems):
+            if channelName.startswith(systems):
                 console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
@@ -469,27 +482,29 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 ctx.command.reset_cooldown(ctx)
                 return
 
-        if self.check_console(console, ctx.message.channel.name, '3ds'):
+        if self.check_console(console, channelName, '3ds'):
             embed = discord.Embed(title="what?", color=discord.Color.purple())
             embed.set_thumbnail(url="https://eiphax.tech/assets/eip2.png")
             embed.url = "https://3ds.eiphax.tech/what.html"
             embed.description = "Basic things about the 3DS and CFW"
             await ctx.send(embed=embed)
 
-        elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+        elif self.check_console(console, channelName, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="The NX Nutshell", color=discord.Color.purple())
             embed.set_thumbnail(url="https://eiphax.tech/assets/eip2.png")
             embed.url = "https://nx.eiphax.tech/nutshell.html"
             embed.description = "Basic things about the Switch and CFW"
             await ctx.send(embed=embed)
 
-    @commands.guild_only()
     @commands.command()
     async def baninfo(self, ctx, console=None):
         """Links to ban information pages"""
         systems = ("3ds", "nx", "ns", "switch")
+        channelName = ""
+        if not isinstance(ctx.channel, discord.DMChannel):
+            channelName = ctx.channel.name
         if console not in systems:
-            if ctx.channel.name.startswith(systems):
+            if channelName.startswith(systems):
                 console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
@@ -497,7 +512,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 ctx.command.reset_cooldown(ctx)
                 return
 
-        if self.check_console(console, ctx.message.channel.name, '3ds'):
+        if self.check_console(console, channelName, '3ds'):
             embed = discord.Embed(title="3DS Bans", color=discord.Color.purple())
             embed.description = cleandoc ("""
             Nintendo has shown a marked lack of care about bans on the 3DS lately.
@@ -508,34 +523,36 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             """)
             await ctx.send(embed=embed)
 
-        elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+        elif self.check_console(console, channelName, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="NX Bans", color=discord.Color.purple())
             embed.set_thumbnail(url="https://eiphax.tech/assets/gunther.png")
             embed.url = "https://nx.eiphax.tech/ban"
             embed.description = "Bans on the Switch are complicated. Please click the embed header link and read the linked page to learn more."
             await ctx.send(embed=embed)
 
-    @commands.guild_only()
     @commands.command()
     async def catalyst(self, ctx, console=None):
         """Link to problem solvers"""
         systems = ("3ds", "nx", "ns", "switch")
+        channelName = ""
+        if not isinstance(ctx.channel, discord.DMChannel):
+            channelName = ctx.channel.name
         if not console:
-            if ctx.channel.name.startswith(systems):
+            if channelName.startswith(systems):
                 console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
 
                 ctx.command.reset_cooldown(ctx)
                 return
-        if self.check_console(console, ctx.message.channel.name, '3ds'):
+        if self.check_console(console, channelName, '3ds'):
             embed = discord.Embed(title="eip's problem solver packs", color=0xe60012)
             embed.description = cleandoc("""
             Please visit the following page and read the information provided.
             https://3ds.eiphax.tech/catalyst.html
             """)
             await ctx.send(embed=embed)
-        elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+        elif self.check_console(console, channelName, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="eip's problem solver pack", color=0xe60012)
             embed.description = cleandoc("""
             Please visit the following page and read the information provided.
@@ -583,7 +600,6 @@ re-read the guide steps 2 or 3 times before coming here.
         await ctx.send(embed=embed)
 
     # Why various Switch cfws aren't supported or recommended
-    @commands.guild_only()
     @commands.command()
     async def nxcfw(self, ctx, cfw=""):
         """Information on why we don't support or recommend various other Switch CFWs"""
@@ -691,20 +707,22 @@ command line. The `movable.sed` is the final product and requires no further pro
                                 The bot already has your information and has removed you as a friend.**
                                 """, title="BruteforceMovable Advice")
 
-    @commands.guild_only()
     @commands.command()
     async def emureco(self, ctx, console=None):
         """Quick advice for emunands"""
         systems = ("3ds", "nx", "ns", "switch")
+        channelName = ""
+        if not isinstance(ctx.channel, discord.DMChannel):
+            channelName = ctx.channel.name
         if console not in systems:
-            if ctx.channel.name.startswith(systems):
+            if channelName.startswith(systems):
                 console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
 
                 ctx.command.reset_cooldown(ctx)
                 return
-        if self.check_console(console, ctx.message.channel.name, '3ds'):
+        if self.check_console(console, channelName, '3ds'):
             embed = discord.Embed(title="EmuNAND for 3DS", color=0xe60012)
             embed.description = cleandoc("""
             With the recent advances in hacking methods and safety, it is no longer recommended to use an emuNAND on a 3DS/2DS system.
@@ -712,7 +730,7 @@ command line. The `movable.sed` is the final product and requires no further pro
             If you do not know what an emuNAND is, or is used for, you do not need one.
             """)
             await ctx.send(embed=embed)
-        elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+        elif self.check_console(console, channelName, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="EmuMMC/EmuNAND for Switch", color=0xe60012)
             embed.description = cleandoc("""
             On the Switch system, it is recommended to use an emuMMC/emuNAND.
@@ -805,20 +823,22 @@ the system can't check for an update.
                                   KOR: `000000A9`
                                   """, title="How to clear Home Menu extdata")
 
-    @commands.guild_only()
     @commands.command()
     async def deltheme(self, ctx, console=None):
         """Deleting home menu theme data"""
         systems = ("3ds", "nx", "ns", "switch")
+        channelName = ""
+        if not isinstance(ctx.channel, discord.DMChannel):
+            channelName = ctx.channel.name
         if console not in systems:
-            if ctx.channel.name.startswith(systems):
+            if channelName.startswith(systems):
                 console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
 
                 ctx.command.reset_cooldown(ctx)
                 return
-        if self.check_console(console, ctx.message.channel.name, '3ds'):
+        if self.check_console(console, channelName, '3ds'):
             await self.simple_embed(ctx, """
                             1. Navigate to the following folder on your SD card: \
 `/Nintendo 3DS/(32 Character ID)/(32 Character ID)/extdata/00000000/`
@@ -827,7 +847,7 @@ the system can't check for an update.
                               EUR: `000002ce`
                               JPN: `000002cc`
                               """, title="How to delete Home Menu Theme Data")
-        elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+        elif self.check_console(console, channelName, ('nx', 'switch', 'ns')):
             await self.simple_embed(ctx, """
                             1. Navigate to the following folder on your SD card: `/atmosphere/contents`
                             2. Delete the folder with the name `0100000000001000`
@@ -864,14 +884,16 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
         await ctx.send(embed=embed)
 
     @commands.command()
-    @commands.guild_only()
     async def vc(self, ctx, *, consoles=""):
         """Link to Virtual Console Injects for 3DS/Wiiu."""
         injects = ("3ds", "wiiu")
         consoleslist = []
         consoleslist = [x for x in consoles.split() if x in injects and x not in consoleslist]
+        channelName = ""
+        if not isinstance(ctx.channel, discord.DMChannel):
+            channelName = ctx.channel.name
         if not consoleslist:
-            if ctx.channel.name.startswith(injects):
+            if channelName.startswith(injects):
                 consoleslist = ['auto']
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in injects])}.")
@@ -879,7 +901,7 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
                 ctx.command.reset_cooldown(ctx)
                 return
         for x in consoleslist:
-            if self.check_console(x, ctx.channel.name, ('3ds',)):
+            if self.check_console(x, channelName, ('3ds',)):
                 embed = discord.Embed(title="Virtual Console Injects for 3DS", color=discord.Color.red())
                 embed.set_author(name="Asdolo", url="https://gbatemp.net/members/asdolo.389539/")
                 embed.set_thumbnail(url="https://i.imgur.com/rHa76XM.png")
@@ -889,7 +911,7 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
                 await ctx.send(embed=embed)
                 continue
 
-            if self.check_console(x, ctx.channel.name, ('wiiu', 'wii u')):
+            if self.check_console(x, channelName, ('wiiu', 'wii u')):
                 embed = discord.Embed(title="Virtual Console Injects for Wii U", color=discord.Color.blue())
                 embed.set_author(name="NicoAICP",  url="https://gbatemp.net/members/nicoaicp.404553/")
                 embed.set_thumbnail(url="https://gbatemp.net/data/avatars/l/404/404553.jpg")
@@ -899,27 +921,29 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
                 await ctx.send(embed=embed)
 
     # Embed to Console Dump Guides
-    @commands.guild_only()
     @commands.command()
     async def dump(self, ctx, console=None):
         """How to dump games and data for CFW consoles"""
         systems = ("3ds", "nx", "ns", "switch", "wiiu", "vwii", "dsi")
+        channelName = ""
+        if not isinstance(ctx.channel, discord.DMChannel):
+            channelName = ctx.channel.name
         if console not in systems:
-            if ctx.channel.name.startswith(systems):
+            if channelName.startswith(systems):
                 console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
 
                 ctx.command.reset_cooldown(ctx)
                 return
-        if self.check_console(console, ctx.channel.name, '3ds'):
+        if self.check_console(console, channelName, '3ds'):
             embed = discord.Embed(title="GodMode9 dump/build Guide", color=discord.Color(0x66FFFF))
             embed.set_author(name="Chroma Ryu", url="https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Godmode9-CIA-Dumping-and-Building")
             embed.set_thumbnail(url="https://i.imgur.com/U8NA9lx.png")
             embed.url = "https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Godmode9-CIA-Dumping-and-Building"
             embed.description = "How to dump/build CIAs and Files using GodMode9"
             await ctx.send(embed=embed)
-        elif self.check_console(console, ctx.channel.name, ('switch', 'nx', 'ns')):
+        elif self.check_console(console, channelName, ('switch', 'nx', 'ns')):
             embed = discord.Embed(title="Switch dump/build Guide", color=discord.Color(0xCB0004))
             embed.set_author(name="SuchMeme", url="https://suchmememanyskill.github.io/guides/switchdumpguide/")
             embed.set_thumbnail(url="https://i.imgur.com/FkKB0er.png")
@@ -927,21 +951,21 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
             embed.description = ("How to dump/build NSPs using NXDumpTool\n"
                                  "BAN Warning: only for use using offline emummc")
             await ctx.send(embed=embed)
-        elif self.check_console(console, ctx.channel.name, ('wiiu',)):
+        elif self.check_console(console, channelName, ('wiiu',)):
             embed = discord.Embed(title="Wii U dump/install Guide", color=discord.Color(0x009AC7))
             embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/dump-games")
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
             embed.url = "https://wiiu.hacks.guide/#/dump-games"
             embed.description = "How to dump/install Wii U game discs using disc2app and WUP Installer GX2"
             await ctx.send(embed=embed)
-        elif self.check_console(console, ctx.channel.name, ('vwii')):
+        elif self.check_console(console, channelName, ('vwii')):
             embed = discord.Embed(title="vWii dump Guide", color=discord.Color(0x009AC7))
             embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/dump-wii-games")
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
             embed.url = "https://wiiu.hacks.guide/#/dump-wii-games"
             embed.description = "How to dump Wii game discs on vWii using CleanRip"
             await ctx.send(embed=embed)
-        elif self.check_console(console, ctx.channel.name, ('dsi')):
+        elif self.check_console(console, channelName, ('dsi')):
             embed = discord.Embed(title="GodMode9i dump Guide", color=discord.Color(0x009AC7))
             embed.set_author(name="NightScript", url="https://dsi.cfw.guide/dumping-cartridges")
             embed.url = "https://dsi.cfw.guide/dumping-cartridges"
@@ -1199,25 +1223,27 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         embed.description = "A tutorial about how to transfer a save from the cart version of a game to a digital version of that game."
         await ctx.send(embed=embed)
 
-    @commands.guild_only()
     @tutorial.command(aliases=["theme"])
     async def themes(self, ctx, console=None):
         """Links to tutorials for installing themes"""
         systems = ("3ds", "nx", "ns", "switch")
+        channelName = ""
+        if not isinstance(ctx.channel, discord.DMChannel):
+            channelName = ctx.channel.name
         if console not in systems:
-            if ctx.channel.name.startswith(systems):
+            if channelName.startswith(systems):
                 console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
 
                 ctx.command.reset_cooldown(ctx)
                 return
-        if self.check_console(console, ctx.message.channel.name, '3ds'):
+        if self.check_console(console, channelName, '3ds'):
             embed = discord.Embed(title="3DS Themes Tutorial", color=discord.Color.dark_orange())
             embed.url = "https://itspizzatime1501.github.io/guides/themes/"
             embed.description = "Tutorial for installing themes on the 3DS"
             await ctx.send(embed=embed)
-        elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+        elif self.check_console(console, channelName, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Switch Themes Tutorial", color=discord.Color.dark_orange())
             embed.url = "https://nh-server.github.io/switch-guide/extras/theming/"
             embed.description = "Tutorial for installing themes on the Switch"
@@ -1458,25 +1484,27 @@ in the scene.
             await ctx.send(f"Invalid invite code. Valid server names are: {', '.join(invites.keys())}")
             ctx.command.reset_cooldown(ctx)
 
-    @commands.guild_only()
     @commands.command()
     async def db(self, ctx, console=None):
         """Links to the relevant games database"""
         systems = ("3ds", "nx", "ns", "switch")
+        channelName = ""
+        if not isinstance(ctx.channel, discord.DMChannel):
+            channelName = ctx.channel.name
         if console not in systems:
-            if ctx.channel.name.startswith(systems):
+            if channelName.startswith(systems):
                 console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
 
                 ctx.command.reset_cooldown(ctx)
                 return
-        if self.check_console(console, ctx.message.channel.name, '3ds'):
+        if self.check_console(console, channelName, '3ds'):
             embed = discord.Embed(title="3DS Database", color=discord.Color.dark_orange())
             embed.url = "http://3dsdb.com/"
             embed.description = "3DS database for game releases."
             await ctx.send(embed=embed)
-        elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+        elif self.check_console(console, channelName, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Nintendo Switch Database", color=discord.Color.dark_orange())
             embed.url = "http://nswdb.com/"
             embed.description = "Nintendo Switch database for game releases."
