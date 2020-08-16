@@ -41,7 +41,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
             # msg += "\n✏️ __Additional text__: " + msg_request
             embed = discord.Embed(color=discord.Color.gold())
             embed.description = msg_request
-        await self.bot.channels['mods'].send(msg, embed=(embed if msg_request != "" else None), allowed_mentions=discord.AllowedMentions(everyone=True))
+        await self.bot.channels['mods'].send(msg, embed=(embed if msg_request != "" else None))
         try:
             await author.send(f"✅ Online staff have been notified of your request in {ctx.channel.mention}.", embed=(embed if msg_request != "" else None))
         except discord.errors.Forbidden:
@@ -55,7 +55,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         author = ctx.author
         await ctx.message.delete()
 
-        await self.bot.channels['newcomers'].send(f'{ctx.author.name}#{ctx.author.discriminator} is ready for unprobation. @here\nID: {ctx.author.id}', allowed_mentions=discord.AllowedMentions(everyone=True))
+        await self.bot.channels['newcomers'].send(f'{discord.utils.escape_mentions(ctx.author.name)}#{ctx.author.discriminator} is ready for unprobation. @here\nID: {ctx.author.id}')
         try:
             await author.send("✅ Online staff have been notified of your request.")
         except discord.errors.Forbidden:
@@ -75,8 +75,6 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 consoleslist = ['auto']
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in self.systems])}.")
-
-                ctx.command.reset_cooldown(ctx)
                 return
         for x in consoleslist:
             if self.check_console(x, channelName, '3ds'):
@@ -498,40 +496,6 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             embed.set_thumbnail(url="https://eiphax.tech/assets/eip2.png")
             embed.url = "https://nx.eiphax.tech/nutshell.html"
             embed.description = "Basic things about the Switch and CFW"
-            await ctx.send(embed=embed)
-
-    @commands.command()
-    async def baninfo(self, ctx, console=None):
-        """Links to ban information pages"""
-        systems = ("3ds", "nx", "ns", "switch")
-        channelName = ""
-        if not isinstance(ctx.channel, discord.DMChannel):
-            channelName = ctx.channel.name
-        if console not in systems:
-            if channelName.startswith(systems):
-                console = "auto"
-            else:
-                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
-
-                ctx.command.reset_cooldown(ctx)
-                return
-
-        if self.check_console(console, channelName, '3ds'):
-            embed = discord.Embed(title="3DS Bans", color=discord.Color.purple())
-            embed.description = cleandoc ("""
-            Nintendo has shown a marked lack of care about bans on the 3DS lately.
-            However, such things as piracy and cheating online/cheating in multiplayer games have been known causes for NNID/console bans in the past.
-            eShop fraud (eg credit card chargebacks) will also get you banned.
-            
-            You can enable online status and Spotpass/Streetpass as these do not seem to be high risk at this time.
-            """)
-            await ctx.send(embed=embed)
-
-        elif self.check_console(console, channelName, ('nx', 'switch', 'ns')):
-            embed = discord.Embed(title="NX Bans", color=discord.Color.purple())
-            embed.set_thumbnail(url="https://eiphax.tech/assets/gunther.png")
-            embed.url = "https://nx.eiphax.tech/ban"
-            embed.description = "Bans on the Switch are complicated. Please click the embed header link and read the linked page to learn more."
             await ctx.send(embed=embed)
 
     @commands.command()
