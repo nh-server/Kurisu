@@ -538,7 +538,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
 
         elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="NX Bans", color=discord.Color.purple())
-            embed.set_thumbnail(url="https://eiphax.tech/assets/burguers.png")
+            embed.set_thumbnail(url="https://eiphax.tech/assets/gunther.png")
             embed.url = "https://nx.eiphax.tech/ban"
             embed.description = "Bans on the Switch are complicated. Please click the embed header link and read the linked page to learn more."
             await ctx.send(embed=embed)
