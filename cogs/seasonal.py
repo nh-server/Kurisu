@@ -98,7 +98,7 @@ class Seasonal(commands.Cog):
                     )
             
                 if len(new_nick) == 0:
-                    return await ctx.send(f"💢 I can't completely remove your nick!")
+                    return await ctx.send("💢 I can't completely remove your nick!")
             elif bool(search(season.emote_regex, ctx.author.name)):
                 return await ctx.send(f"Your username is the one with a {season.emote_str}")
             else:
@@ -135,7 +135,7 @@ class Seasonal(commands.Cog):
 
         line_template = "{0:6} | {1:6} | {2:1} | {3}\n"
         await ctx.send(
-            f"The following seasons exist on this server:\n```"
+            "The following seasons exist on this server:\n```"
             + line_template.format("start", "end", "emote", "emote_name")
             + f"{'=' * 36}\n"
             + "".join(
