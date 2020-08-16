@@ -511,6 +511,40 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             await ctx.send(embed=embed)
 
     @commands.command()
+    async def baninfo(self, ctx, console=None):
+        """Links to ban information pages"""
+        systems = ("3ds", "nx", "ns", "switch")
+        if console not in systems:
+            if ctx.channel.name.startswith(systems):
+                console = "auto"
+            else:
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+
+                ctx.command.reset_cooldown(ctx)
+                return
+
+        if self.check_console(console, ctx.message.channel.name, '3ds'):
+            embed = discord.Embed(title="3DS Bans", color=discord.Color.purple())
+            embed.description = cleandoc ("""
+            Nintendo has shown a marked lack of care about bans on the 3DS lately.
+            However, it is still advised that you:
+            - do not pirate games
+            - do not cheat online/cheat in multiplayer games
+            as these things will still get you banned.
+            
+            You can enable online status and Spotpass/Streetpass as these do not seem to be high risk at this time.
+            """)
+            await ctx.send(embed=embed)
+
+        elif self.check_console(console, ctx.message.channel.name, ('nx', 'switch', 'ns')):
+            embed = discord.Embed(title="NX Bans", color=discord.Color.purple())
+            embed.set_thumbnail(url="https://eiphax.tech/assets/burguers.png")
+            embed.url = "https://nx.eiphax.tech/ban"
+            embed.description = "Bans on the Switch are complicated. Please click the embed header link and read the linked page to learn more."
+            await ctx.send(embed=embed)
+
+    @commands.guild_only()
+    @commands.command()
     async def catalyst(self, ctx, console=None):
         """Link to problem solvers"""
         systems = ("3ds", "nx", "ns", "switch")
