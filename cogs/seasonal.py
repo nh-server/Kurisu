@@ -52,7 +52,7 @@ class Seasonal(commands.Cog):
         t = datetime.today()
         curr_time = f"{t.month}.{t.day}"
         for season_ in self.seasons:
-            if curr_time in season_ or (mode == "remove" and season_ == target):
+            if (mode == "remove" and season_ == target) or curr_time in season_:
                 season = season_
                 break
         else:
