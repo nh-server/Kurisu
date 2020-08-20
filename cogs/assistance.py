@@ -2,7 +2,7 @@ import aiohttp
 import discord
 import urllib.parse
 
-from utils.checks import check_if_user_can_sr, check_if_user_can_ready
+from utils.checks import check_if_user_can_sr
 from discord.ext import commands
 from inspect import cleandoc
 
