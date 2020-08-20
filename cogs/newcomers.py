@@ -57,12 +57,12 @@ class Newcomers(DatabaseCog):
     @commands.command(aliases=['ready'], cooldown=commands.Cooldown(rate=1, per=300.0, type=commands.BucketType.channel))
     async def ncready(self, ctx):
         """Alerts online staff to a ready request in newcomers."""
-        author = ctx.author
+
         await ctx.message.delete()
 
         await self.bot.channels['newcomers'].send(f'{str(ctx.author)} is ready for unprobation. @here\nID: {ctx.author.id}', allowed_mentions=discord.AllowedMentions(everyone=True))
         try:
-            await author.send('✅ Online staff have been notified of your request.')
+            await ctx.author.send('✅ Online staff have been notified of your request.')
         except discord.errors.Forbidden:
             pass
 
