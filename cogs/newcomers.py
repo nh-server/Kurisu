@@ -8,8 +8,8 @@ class Newcomers(DatabaseCog):
     Handles auto-probation and commands related to the newcomers channel.
     """
 
-    on_aliases = ['on', 'true', '1', 'enable']
-    off_aliases = ['off', 'false', '0', 'disable']
+    on_aliases = ('on', 'true', '1', 'enable')
+    off_aliases = ('off', 'false', '0', 'disable')
 
     def __init__(self, bot):
         self.bot = bot
@@ -29,8 +29,8 @@ class Newcomers(DatabaseCog):
             self.autoprobate = enabled
             await self.set_flag('auto_probation', enabled)
 
-        inactive_text = f'**inactive**. ⚠️\nTo activate it, use `.autoprobate {" | ".join(Newcomers.on_aliases)}`.'
-        active_text = f'**active**. ✅\nTo deactivate it, use `.autoprobate {" | ".join(Newcomers.off_aliases)}`.'
+        inactive_text = f'**inactive**. ⚠️\nTo activate it, use `.autoprobate {" | ".join(self.on_aliases)}`.'
+        active_text = f'**active**. ✅\nTo deactivate it, use `.autoprobate {" | ".join(self.off_aliases)}`.'
         await ctx.send(f'🔨 Auto-probation is {active_text if self.autoprobate else inactive_text}')
 
     @is_staff('OP')
