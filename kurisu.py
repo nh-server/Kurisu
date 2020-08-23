@@ -101,6 +101,7 @@ class Kurisu(commands.Bot):
             'meta-mute': None,
             'Nitro Booster': None,
             'crc': None,
+            'cade enthusiast': None,
         }
 
         self.actions = []
