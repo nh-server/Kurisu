@@ -237,7 +237,25 @@ class Extras(commands.Cog):
         else:
             await ctx.send("The nickname doesn't comply with our nickname policy or it's too long!")
             ctx.command.reset_cooldown(ctx)
-
+            
+    @commands.guild_only()
+    @commands.command(hidden=True)
+    async def cade(self, ctx):
+        """Enable or disable the cade enthusiast role."""
+        await ctx.message.delete()
+        author = ctx.author
+        if ctx.channel != self.bot.channels['bot-cmds']:
+            return await ctx.send(f"{ctx.author.mention}: .cade can only be used in <#261581918653513729>.", delete_after=10)
+        try:
+            if self.bot.roles['cade enthusiast'] in author.roles:
+                await author.remove_roles(self.bot.roles['cade enthusiast'])
+                await author.send("Cade enthusiast role removed.")
+            else:
+                await author.add_roles(self.bot.roles['cade enthusiast'])
+                await author.send("Cade enthusiast role added.")
+                
+        except discord.errors.Forbidden:
+            await ctx.send("💢 I don't have permission to do this.")
 
 def setup(bot):
     bot.add_cog(Extras(bot))
