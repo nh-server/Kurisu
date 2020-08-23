@@ -1437,7 +1437,7 @@ in the scene.
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def invite(self, ctx, name: str):
         """Available servers are:
-        twl, switchroot, acnl, flagbrew, themeplaza, smashultimate, ndsbrew, citra, homebrew, skyrimnx, pkhexautolegality, reswitched, cemu, dragoninjector, vita, henkaku, universal, r3DS, smash4, switchlan, ctgp7, retronx, edizon, hax
+        twl, switchroot, acnl, flagbrew, themeplaza, smashultimate, ndsbrew, citra, homebrew, skyrimnx, pkhexautolegality, reswitched, cemu, dragoninjector, vita, henkaku, universal, r3DS, smash4, switchlan, ctgp7, retronx, edizon, hax, 4tu
         """
         name = name.casefold()
 
@@ -1469,6 +1469,7 @@ in the scene.
             'lovepotion': 'ggbKkhc',
             'bitbuilt': 'tHEesfb',
             'hax': 'YVuFUrs',
+            '4tu': 'z8wBTvU',
         }
 
         if name in invites:
