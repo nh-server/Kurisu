@@ -61,7 +61,7 @@ class Newcomers(DatabaseCog):
     @is_staff('OP')
     @commands.guild_only()
     @commands.command()
-    async def ncprune(self, ctx, days):
+    async def ncprune(self, ctx, days:int=7):
         res = await ctx.guild.prune_members(days=days, compute_prune_count=True, roles=[self.bot.roles['Probation']], reason='Auto-probation pruning')
         await ctx.send('Prune complete. ✅')
 
