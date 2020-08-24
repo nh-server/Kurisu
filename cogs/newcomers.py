@@ -17,7 +17,13 @@ class Newcomers(DatabaseCog):
 
     async def init(self):
         await self.bot.wait_until_all_ready()
-        self.autoprobate = await self.get_flag('auto_probation')
+        flag_name = 'auto_probation'
+
+        self.autoprobate = await self.get_flag(flag_name)
+
+        if self.autoprobate is None:
+            self.autoprobate = False
+            await self.add_flag(flag_name)
 
     @commands.Cog.listener()
     async def on_member_join(self, member):

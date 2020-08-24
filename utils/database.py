@@ -172,11 +172,19 @@ class DatabaseCog(commands.Cog):
         async with self.bot.holder as cur:
             await cur.execute('UPDATE timed_restrictions SET alert=1 WHERE user_id=? AND type=?', (user_id, type))
 
+    async def add_flag(self, name):
+        async with self.bot.holder as cur:
+            await cur.execute('INSERT INTO flags VALUES(?, ?)', (name, 0))
+
+    async def remove_flag(self, name):
+        async with self.bot.holder as cur:
+            await cur.execute('DELETE FROM flags WHERE name=?', (name,))
+
     async def get_flag(self, name):
         async with self.bot.holder as cur:
             await cur.execute('SELECT value FROM flags WHERE name=?', (name,))
             ret = await cur.fetchone()
-            return bool(ret[0]) if ret is not None else False
+            return bool(ret[0]) if ret is not None else None
 
     async def set_flag(self, name, value:bool):
         async with self.bot.holder as cur:
