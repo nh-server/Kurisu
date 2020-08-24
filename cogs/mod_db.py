@@ -17,40 +17,40 @@ class ModDB(DatabaseCog):
             raise commands.NoPrivateMessage()
         return True
 
-    @is_staff('SuperOP')
+    @is_staff('Owner')
     @commands.command()
     async def addflag(self, ctx, name):
-        """Adds a config flag to the database. SuperOP+ only."""
+        """Adds a config flag to the database. Owners only."""
         if await self.get_flag(name) is None:
             await self.add_flag(name)
             await ctx.send('Flag added to the database. ✅')
         else:
             await ctx.send('Flag already exists in the database. ⚠️')
 
-    @is_staff('SuperOP')
+    @is_staff('Owner')
     @commands.command()
     async def delflag(self, ctx, name):
-        """Removes a config flag from the database. SuperOP+ only."""
+        """Removes a config flag from the database. Owners only."""
         if await self.get_flag(name) is not None:
             await self.remove_flag(name)
             await ctx.send('Flag removed from the database. ✅')
         else:
             await ctx.send(self.NOT_FOUND)
 
-    @is_staff('SuperOP')
+    @is_staff('Owner')
     @commands.command()
     async def getflag(self, ctx, name):
-        """Retrieves a config flag from the database. SuperOP+ only."""
+        """Retrieves a config flag from the database. Owners only."""
         value = await self.get_flag(name)
         if value is not None:
             await ctx.send(f'{name} is set to: {value}.')
         else:
             await ctx.send(self.NOT_FOUND)
 
-    @is_staff('SuperOP')
+    @is_staff('Owner')
     @commands.command()
     async def setflag(self, ctx, name, value:bool):
-        """Sets a config flag in the database. SuperOP+ only."""
+        """Sets a config flag in the database. Owners only."""
         if await self.get_flag(name) is not None:
             await self.set_flag(name, value)
             await ctx.send("Flag's value was set. ✅")
