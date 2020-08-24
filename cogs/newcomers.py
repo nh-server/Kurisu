@@ -28,7 +28,7 @@ class Newcomers(DatabaseCog):
     @commands.Cog.listener()
     async def on_member_join(self, member):
         if self.autoprobate:
-            await member.add_roles(self.bot.roles['Probation'], reason="Auto Probation")
+            await member.add_roles(self.bot.roles['Probation'], reason="Auto-probation")
 
     async def autoprobate_handler(self, ctx, enabled:bool=None):
         if enabled is not None:
@@ -57,6 +57,14 @@ class Newcomers(DatabaseCog):
     @autoprobate.command(aliases=off_aliases, hidden=True)
     async def autoprobate_off(self, ctx):
         await self.autoprobate_handler(ctx, False)
+
+    @is_staff('OP')
+    @commands.guild_only()
+    @commands.command()
+    async def ncprune(self, ctx, days):
+        res = await ctx.guild.prune_members(days=days, compute_prune_count=True, roles=[self.bot.roles['Probation']], reason='Auto-probation pruning')
+        await ctx.send('Prune complete. ✅')
+
 
     @check_if_user_can_ready()
     @commands.guild_only()
