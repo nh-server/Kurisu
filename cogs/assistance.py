@@ -1444,47 +1444,19 @@ in the scene.
 
     @commands.command()
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
-    async def invite(self, ctx, name: str):
+    async def invite(self, ctx, name: str = ""):
         """Available servers are:
         twl, switchroot, acnl, flagbrew, themeplaza, smashultimate, ndsbrew, citra, homebrew, skyrimnx, pkhexautolegality, reswitched, cemu, dragoninjector, vita, henkaku, universal, r3DS, smash4, switchlan, ctgp7, retronx, edizon, hax, 4tu
         """
-        name = name.casefold()
 
-        # When adding invites, make sure the keys are lowercase, or the command will not find it when invoked!
-        invites = {
-            'twl': 'yD3spjv',
-            'switchroot': '9d66FYg',
-            'acnl': 'EZSxqRr',
-            'flagbrew': 'bGKEyfY',
-            'themeplaza': '2hUQwXz',
-            'smashultimate': 'ASJyTrZ',
-            'ndsbrew': 'XRXjzY5',
-            'citra': 'FAXfZV9',
-            'homebrew': 'C29hYvh',
-            'skyrimnx': 'FhhfvVj',
-            'pkhexautolegality': 'tDMvSRv',
-            'reswitched': 'ZdqEhed',
-            'cemu': '5psYsup',
-            'dragoninjector': 'HdSFXbh',
-            'vita': 'JXEKeg6',
-            'henkaku': 'm7MwpKA',
-            'universal': 'KDJCfGF',
-            'smash4': 'EUZJhUJ',
-            'switchlan': 'SbxDMER',
-            'ctgp7': '0uTPwYv3SPQww54l',
-            'retronx': 'vgvZN9W',
-            'r3ds': '3ds',
-            'edizon': 'qyA38T8',
-            'lovepotion': 'ggbKkhc',
-            'bitbuilt': 'tHEesfb',
-            'hax': 'YVuFUrs',
-            '4tu': 'z8wBTvU',
-        }
+        if not name:
+            ctx.command.reset_cooldown(ctx)
+            return await ctx.send(f"Valid server names are: {', '.join(self.bot.invitefilter.dict.keys())}")
 
-        if name in invites:
-            await ctx.send(f"https://discord.gg/{invites[name]}")
+        if name in self.bot.invitefilter.dict.keys():
+            await ctx.send(f"https://discord.gg/{self.bot.invitefilter.dict[name]}")
         else:
-            await ctx.send(f"Invalid invite code. Valid server names are: {', '.join(invites.keys())}")
+            await ctx.send(f"Invalid invite code. Valid server names are: {', '.join(self.bot.invitefilter.dict.keys())}")
             ctx.command.reset_cooldown(ctx)
 
     @commands.command()

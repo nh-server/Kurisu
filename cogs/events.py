@@ -31,21 +31,6 @@ class Events(DatabaseCog):
         '.sed',
     )
 
-    approved_guilds = (
-        'C29hYvh',  # Nintendo Homebrew
-        'nintendohomebrew', # Nintendo Homebrew's vanity invite
-        'ZdqEhed',  # ReSwitched
-        'DThbZ7z',  # ReSwitched, not sure why two permanent invites exist but they do
-        'qgEeK3E',  # Famicomunnity
-        'yqSut8c',  # TWL Mode Hacking! (old invite)
-        'yD3spjv',  # TWL Mode Hacking!
-        'EZSxqRr',  # ACNL Modding
-        'bGKEyfY',  # FlagBrew
-        '9d66FYg',  # switchroot
-        '2hUQwXz',  # Theme Plaza
-        'YVuFUrs',  # ihaveahax's server
-    )
-
     # I hate naming variables sometimes
     user_antispam = {}
     channel_antispam = {}
@@ -85,14 +70,14 @@ class Events(DatabaseCog):
         contains_piracy_video_id = False if not contains_video else any(x or y for x, y in res if x in self.bot.wordfilter.filter['piracy video'] or y in self.bot.wordfilter.filter['piracy video'])
 
         res = re.findall('(?:discordapp\.com/invite|discord\.gg)/([\w]+)', message.content)
-        temp_guilds = [x for x in res if x in self.bot.temp_guilds]
-        contains_non_approved_invite = not all(x in self.approved_guilds or x in self.bot.temp_guilds for x in res)
+        guilds = [x for x in res if x in self.bot.invitefilter.dict.values()]
+        contains_non_approved_invite = len(res) != len(guilds)
 
         contains_piracy_tool_alert_mention = any(x in msg_no_separators for x in self.bot.wordfilter.filter['piracy tool alert'])
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site',))
         contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub', 'strawpoii', 'hackinformer.com', 'console.guide', 'jacksorrell.co.uk', 'jacksorrell.tv', 'nintendobrew.com', 'reinx.guide', 'NxpeNwz', 'scenefolks.com'))
         contains_unbanning_stuff = any(x in msg_no_separators for x in self.bot.wordfilter.filter['unbanning tool'])
-        contains_invite_link = contains_non_approved_invite or temp_guilds or contains_skype_link
+        contains_invite_link = contains_non_approved_invite or contains_skype_link or guilds
         # contains_guide_mirror_mention = any(x in msg for x in ('3ds-guide.b4k.co',))
         contains_drama_alert = any(x in msg_no_separators for x in self.bot.wordfilter.filter['drama'])
 
@@ -112,14 +97,19 @@ class Events(DatabaseCog):
                     await message.author.send(f"Please read {self.bot.channels['welcome-and-rules'].mention}. Server invites must be approved by staff. To contact staff send a message to <@333857992170536961>.")
                 except discord.errors.Forbidden:
                     pass
-            if temp_guilds:
-                for guild in temp_guilds:
-                    try:
-                        self.bot.temp_guilds[guild] -= 1
-                    except KeyError:
-                        continue
-                    if self.bot.temp_guilds[guild] <= 0:
-                        del self.bot.temp_guilds[guild]
+            if guilds:
+                print("ent")
+                print(guilds)
+                for guild in guilds:
+                    print("ent2")
+                    uses = await self.bot.invitefilter.fetch_uses(code=guild)
+                    print(uses)
+                    if uses > 0:
+                        print('temp')
+                        if uses == 1:
+                            await self.bot.invitefilter.delete(code=guild)
+                        else:
+                            await self.bot.invitefilter.set_uses(code=guild, uses=uses-1)
 
         if contains_misinformation_url_mention:
             try:

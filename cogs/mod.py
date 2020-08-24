@@ -636,16 +636,20 @@ class Mod(DatabaseCog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def approve(self, ctx, invite: discord.Invite, times: int = 1):
+    async def approve(self, ctx, invite: discord.Invite, alias: str, times: int = 1):
         """Approves a server invite for a number of times(0 to delete approved invites). Staff and Helpers only."""
         code = invite.code
+        if alias in self.bot.invitefilter.dict.keys():
+            return await ctx.send("This alias is already in use!")
         if times == 0:
-            try:
-                del self.bot.temp_guilds[code]
-                return await ctx.send(f"Removed {invite.guild}({code}) from approved invite list!")
-            except KeyError:
-                return await ctx.send("This invite is not in the approved invite list!")
-        self.bot.temp_guilds[code] = times
+            if invite.code in self.bot.invitefilter.dict.values() and await self.bot.invitefilter.fetch_uses(code=code) > 0:
+                self.bot.invitefilter.delete(code=code)
+                return await ctx.send("Temporal invite removed successfully!")
+            else:
+                return await ctx.send("This invite has not been approved or it is not a temporal one!")
+        if invite.code in self.bot.invitefilter.dict.values() and await self.bot.invitefilter.fetch_uses(code=code) == -1:
+            return await ctx.send("This invite is permanent and can't be changed!")
+        await self.bot.invitefilter.add(code=code, name=invite.guild.name, alias=alias, uses=times)
         await ctx.send(f"Approved an invite to {invite.guild}({code}) for posting {times} times")
         await self.bot.channels['mod-logs'].send(f"⭕ **Approved**: {ctx.author.mention} approved server {invite.guild}({code}) to be posted {times} times")
 
