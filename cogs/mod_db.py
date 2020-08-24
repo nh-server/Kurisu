@@ -1,7 +1,7 @@
 import discord
 
 from discord.ext import commands
-from utils.checks import is_staff, staff_ranks
+from utils.checks import is_staff
 from utils.database import DatabaseCog
 
 
