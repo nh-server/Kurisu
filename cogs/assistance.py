@@ -904,19 +904,12 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
                 continue
 
             if self.check_console(x, ctx.channel.name, ('wiiu', 'wii u')):
-                embed1 = discord.Embed(title="Wii and GameCube games for WiiU", color=discord.Color.red())
-                embed1.set_author(name="TeconMoon")
-                embed1.set_thumbnail(url="https://gbatemp.net/data/avatars/m/300/300039.jpg")
-                embed1.url = "https://gbatemp.net/threads/release-wiivc-injector-script-gc-wii-homebrew-support.483577/"
-                embed1.description = "The recommended way to play Wii and gamecube games on your WiiU"
-                await ctx.send(embed=embed1)
-
-                embed2 = discord.Embed(title="Virtual Console Injects for WiiU", color=discord.Color.red())
-                embed2.set_author(name="CatmanFan")
-                embed2.set_thumbnail(url="https://gbatemp.net/data/avatars/m/398/398221.jpg")
-                embed2.url = "https://gbatemp.net/threads/release-injectiine-wii-u-virtual-console-injector.491386/"
-                embed2.description = "The recommended way to play old classics on your WiiU"
-                await ctx.send(embed=embed2)
+                embed1 = discord.Embed(title="Classic Games for Wii U", color=discord.Color.red())
+                embed1.set_author(name="UWUVCI AIO")
+                embed1.set_thumbnail(url="https://gbatemp.net/data/avatars/l/404/404553.jpg")
+                embed1.url = "https://gbatemp.net/threads/release-uwuvci-injectiine.486781/"
+                embed1.description = "The recommended way to play classic games on your Wii U"
+                await ctx.send(embed=embed)
 
     # Embed to Console Dump Guides
     @commands.guild_only()
