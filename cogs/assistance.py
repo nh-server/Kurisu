@@ -904,11 +904,11 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
                 continue
 
             if self.check_console(x, ctx.channel.name, ('wiiu', 'wii u')):
-                embed1 = discord.Embed(title="Classic Games for Wii U", color=discord.Color.red())
-                embed1.set_author(name="UWUVCI AIO")
-                embed1.set_thumbnail(url="https://gbatemp.net/data/avatars/l/404/404553.jpg")
-                embed1.url = "https://gbatemp.net/threads/release-uwuvci-injectiine.486781/"
-                embed1.description = "The recommended way to play classic games on your Wii U"
+                embed = discord.Embed(title="Classic Games for Wii U", color=discord.Color.red())
+                embed.set_author(name="UWUVCI AIO")
+                embed.set_thumbnail(url="https://gbatemp.net/data/avatars/l/404/404553.jpg")
+                embed.url = "https://gbatemp.net/threads/release-uwuvci-injectiine.486781/"
+                embed.description = "The recommended way to play classic games on your Wii U"
                 await ctx.send(embed=embed)
 
     # Embed to Console Dump Guides
