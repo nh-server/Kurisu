@@ -894,21 +894,22 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
                 return
         for x in consoleslist:
             if self.check_console(x, ctx.channel.name, ('3ds',)):
-                embed = discord.Embed(title="Virtual Console Injects for 3DS", color=discord.Color.blue())
+                embed = discord.Embed(title="Virtual Console Injects for 3DS", color=discord.Color.red())
                 embed.set_author(name="Asdolo", url="https://gbatemp.net/members/asdolo.389539/")
                 embed.set_thumbnail(url="https://i.imgur.com/rHa76XM.png")
                 embed.url = "https://mega.nz/#!qnAE1YjC!q3FRHgIAVEo4nRI2IfANHJr-r7Sil3YpPYE4w8ZbUPY"
                 embed.description = ("The recommended way to play old classics on your 3DS.\n"
-                                     "Usage guide [here](http://3ds.eiphax.tech/nsui.html)")
+                                     "Usage guide [here](http://3ds.eiphax.tech/nsui.html).")
                 await ctx.send(embed=embed)
                 continue
 
             if self.check_console(x, ctx.channel.name, ('wiiu', 'wii u')):
-                embed = discord.Embed(title="Classic Games for Wii U", color=discord.Color.red())
-                embed.set_author(name="UWUVCI AIO")
+                embed = discord.Embed(title="Virtual Console Injects for Wii U", color=discord.Color.blue())
+                embed.set_author(name="NicoAICP",  url="https://gbatemp.net/members/nicoaicp.404553/")
                 embed.set_thumbnail(url="https://gbatemp.net/data/avatars/l/404/404553.jpg")
                 embed.url = "https://gbatemp.net/threads/release-uwuvci-injectiine.486781/"
-                embed.description = "The recommended way to play classic games on your Wii U"
+                embed.description = ("The recommended way to play old classics on your Wii U.\n"
+                                    "Usage guide [here](https://flumpster.github.io/instructions/index).")
                 await ctx.send(embed=embed)
 
     # Embed to Console Dump Guides
