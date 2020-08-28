@@ -165,7 +165,7 @@ class DatabaseCog(commands.Cog):
 
     async def get_time_restrictions_by_type(self, type):
         async with self.bot.holder as cur:
-            await cur.execute('SELECT * from timed_restrictions WHERE type=?', (type,))
+            await cur.execute('SELECT user_id, timestamp, alert from timed_restrictions WHERE type=?', (type,))
             return await cur.fetchall()
 
     async def set_time_restriction_alert(self, user_id, type):
