@@ -1081,7 +1081,11 @@ your device will refuse to write to it.
     @commands.group(cooldown=commands.Cooldown(0, 0, commands.BucketType.channel), invoke_without_command=True, case_insensitive=True)
     async def tutorial(self, ctx):
         """Links to one of multiple guides"""
-        await ctx.send_help(ctx.command)
+        if isinstance(ctx.channel, discord.DMChannel):
+            await ctx.send_help(ctx.command)
+        else:
+            await ctx.send(f'{ctx.author.mention}, if you wish to view the \
+complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
 
     @tutorial.command(cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def pokemon(self, ctx):
