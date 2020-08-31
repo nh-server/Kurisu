@@ -39,7 +39,7 @@ class Newcomers(DatabaseCog):
         active_text = f'**active**. ✅\nTo deactivate it, use `.autoprobate {" | ".join(self.off_aliases)}`.'
         await ctx.send(f'🔨 Auto-probation is {active_text if self.autoprobate else inactive_text}')
 
-    @is_staff('OP')
+    @is_staff('Helper')
     @commands.group(invoke_without_command=True, case_insensitive=True)
     async def autoprobate(self, ctx):
         """
@@ -50,10 +50,12 @@ class Newcomers(DatabaseCog):
         """
         await self.autoprobate_handler(ctx)
 
+    @is_staff('OP')
     @autoprobate.command(aliases=on_aliases, hidden=True)
     async def autoprobate_on(self, ctx):
         await self.autoprobate_handler(ctx, True)
 
+    @is_staff('OP')
     @autoprobate.command(aliases=off_aliases, hidden=True)
     async def autoprobate_off(self, ctx):
         await self.autoprobate_handler(ctx, False)
