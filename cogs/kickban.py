@@ -88,7 +88,7 @@ class KickBan(DatabaseCog):
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
     @commands.command(name="unban", aliases=["unyeet"])
-    async def unban_member(self, ctx, user: FetchMember, reason):
+    async def unban_member(self, ctx, user: FetchMember, *, reason):
         """Unbans a user from the server. OP+ only."""
 
         try:
