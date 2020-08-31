@@ -47,7 +47,6 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         except discord.errors.Forbidden:
             pass
 
-    @commands.guild_only()
     @commands.command()
     async def guide(self, ctx, *, consoles=""):
         """Links to the recommended guides."""
