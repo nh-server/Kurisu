@@ -65,3 +65,10 @@ create table wordfilter
   word     TEXT PRIMARY KEY,
   kind     TEXT
 );
+
+create table flags
+(
+  name     TEXT PRIMARY KEY,
+  value    TINYINT default 0
+);
+

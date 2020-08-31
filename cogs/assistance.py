@@ -2,7 +2,7 @@ import aiohttp
 import discord
 import urllib.parse
 
-from utils.checks import check_if_user_can_sr, check_if_user_can_ready
+from utils.checks import check_if_user_can_sr
 from discord.ext import commands
 from inspect import cleandoc
 
@@ -44,20 +44,6 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         await self.bot.channels['mods'].send(msg, embed=(embed if msg_request != "" else None), allowed_mentions=discord.AllowedMentions(everyone=True))
         try:
             await author.send(f"✅ Online staff have been notified of your request in {ctx.channel.mention}.", embed=(embed if msg_request != "" else None))
-        except discord.errors.Forbidden:
-            pass
-
-    @check_if_user_can_ready()
-    @commands.guild_only()
-    @commands.command(aliases=["ready"], cooldown=commands.Cooldown(rate=1, per=300.0, type=commands.BucketType.channel))
-    async def ncready(self, ctx):
-        """Alerts online staff to a ready request in newcomers."""
-        author = ctx.author
-        await ctx.message.delete()
-
-        await self.bot.channels['newcomers'].send(f'{ctx.author.name}#{ctx.author.discriminator} is ready for unprobation. @here\nID: {ctx.author.id}', allowed_mentions=discord.AllowedMentions(everyone=True))
-        try:
-            await author.send("✅ Online staff have been notified of your request.")
         except discord.errors.Forbidden:
             pass
 
