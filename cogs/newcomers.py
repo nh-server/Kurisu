@@ -88,7 +88,9 @@ class Newcomers(DatabaseCog):
                 pass
         else:
             cooldown = 30
-            await newcomers.send(f'{ctx.author.mention}, please run this command in {cooldown} seconds again with a brief message explaining your situation (e.g., `.ready hi all, i\'m having an issue with my 3ds.`) **Copying and pasting the example will not remove your probation.**')
+            await newcomers.send(f'{ctx.author.mention}, please run this command in {cooldown} seconds again \
+with a brief message explaining your situation (e.g., `.ready hi all, i\'m having an issue with my 3ds.`). \
+**Copying and pasting the example will not remove your probation.**')
 
         await asyncio.sleep(cooldown)
 
