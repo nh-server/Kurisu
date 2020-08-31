@@ -284,6 +284,8 @@ class Kurisu(commands.Bot):
             error_paginator = self.format_error(msg)
             for page in error_paginator.pages:
                 await channel.send(page)
+        elif isinstance(exc, commands.MaxConcurrencyReached):
+            await ctx.send(f'{author.mention} `{command}` is still on cooldown. Please see the command\'s text for how long you have to wait.')
         else:
             if not isinstance(command, str):
                 command.reset_cooldown(ctx)

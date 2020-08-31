@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from utils.database import DatabaseCog
 from utils.checks import is_staff, check_if_user_can_ready
+import asyncio
 
 class Newcomers(DatabaseCog):
     """
@@ -67,20 +68,29 @@ class Newcomers(DatabaseCog):
         await ctx.guild.prune_members(days=days, compute_prune_count=False, roles=[self.bot.roles['Probation']], reason='Auto-probation pruning')
         await ctx.send('Prune complete. ✅')
 
-
     @check_if_user_can_ready()
     @commands.guild_only()
-    @commands.command(aliases=['ready'], cooldown=commands.Cooldown(rate=1, per=300.0, type=commands.BucketType.channel))
-    async def ncready(self, ctx):
+    @commands.command(aliases=['ready'])
+    @commands.max_concurrency(1, commands.BucketType.channel)
+    async def ncready(self, ctx, *, reason=""):
         """Alerts online staff to a ready request in newcomers."""
+        cooldown = 300
+        newcomers = self.bot.channels['newcomers']
+        reason = reason[:500] # truncate to 500 chars so kurisu doesn't send absurdly huge messages
 
         await ctx.message.delete()
+        if reason:
+            await newcomers.send(f'{ctx.author} (ID: {ctx.author.id}) is ready for unprobation.\n\nMessage: `{reason}` @here', allowed_mentions=discord.AllowedMentions(everyone=True))
+            await newcomers.send(f'This command will be usable again in {cooldown} seconds.')
+            try:
+                await ctx.author.send('✅ Online staff have been notified of your request.')
+            except discord.errors.Forbidden:
+                pass
+        else:
+            cooldown = 30
+            await newcomers.send(f'{ctx.author.mention}, please run this command in {cooldown} seconds again with a brief message explaining your situation (e.g., `.ready hi all, i\'m having an issue with my 3ds.`) **Copying and pasting the example will not remove your probation.**')
 
-        await self.bot.channels['newcomers'].send(f'{str(ctx.author)} is ready for unprobation. @here\nID: {ctx.author.id}', allowed_mentions=discord.AllowedMentions(everyone=True))
-        try:
-            await ctx.author.send('✅ Online staff have been notified of your request.')
-        except discord.errors.Forbidden:
-            pass
+        await asyncio.sleep(cooldown)
 
 def setup(bot):
     bot.add_cog(Newcomers(bot))
