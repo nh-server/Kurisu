@@ -81,7 +81,7 @@ class Newcomers(DatabaseCog):
         await ctx.message.delete()
         if reason:
             await newcomers.send(f'{ctx.author} (ID: {ctx.author.id}) is ready for unprobation.\n\nMessage: `{reason}` @here', allowed_mentions=discord.AllowedMentions(everyone=True))
-            await newcomers.send(f'This command will be usable again in {cooldown} seconds.')
+            await newcomers.send(f'This command will be usable again in {cooldown} seconds.', delete_after=cooldown)
             try:
                 await ctx.author.send('✅ Online staff have been notified of your request.')
             except discord.errors.Forbidden:
