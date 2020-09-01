@@ -236,12 +236,12 @@ class Mod(DatabaseCog):
             # Check if the user has a timed restriction.
             # If there is one, this will convert it to a permanent one.
             # If not, it will display that it was already taken.
-            if not self.get_time_restrictions_by_user_type(member.id, 'timemute'):
+            if not await self.get_time_restrictions_by_user_type(member.id, 'timemute'):
                 return await ctx.send("User is already muted!")
             else:
                 await self.remove_timed_restriction(member.id, 'timemute')
         await member.add_roles(self.bot.roles['Muted'])
-        await member.remove_roles(self.bot.roles['#elsewhere'])
+        await member.remove_roles(self.bot.roles['#elsewhere'], self.bot.roles['#art-discussion'])
         msg_user = "You were muted!"
         if reason != "":
             msg_user += " The given reason is: " + reason
@@ -265,7 +265,7 @@ class Mod(DatabaseCog):
         if await check_bot_or_staff(ctx, member, "mute"):
             return
         await member.add_roles(self.bot.roles['Muted'])
-        await member.remove_roles(self.bot.roles['#elsewhere'])
+        await member.remove_roles(self.bot.roles['#elsewhere'], self.bot.roles['#art-discussion'])
 
         issuer = ctx.author
 
@@ -433,7 +433,7 @@ class Mod(DatabaseCog):
             # Check if the user has a timed restriction.
             # If there is one, this will convert it to a permanent one.
             # If not, it will display that it was already taken.
-            if not self.get_time_restrictions_by_user_type(member.id, 'timenohelp'):
+            if not await self.get_time_restrictions_by_user_type(member.id, 'timenohelp'):
                 return await ctx.send("This user's help is already taken!")
             else:
                 await self.remove_timed_restriction(member.id, 'timenohelp')
