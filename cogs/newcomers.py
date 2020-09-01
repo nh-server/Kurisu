@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 from utils.database import DatabaseCog
 from utils.checks import is_staff, check_if_user_can_ready
-import asyncio
 
 class Newcomers(DatabaseCog):
     """
