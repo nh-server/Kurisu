@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from utils.database import DatabaseCog
 from utils.checks import is_staff, check_if_user_can_ready
+import re
 
 class Newcomers(DatabaseCog):
     """
@@ -67,20 +68,29 @@ class Newcomers(DatabaseCog):
         await ctx.guild.prune_members(days=days, compute_prune_count=False, roles=[self.bot.roles['Probation']], reason='Auto-probation pruning')
         await ctx.send('Prune complete. ✅')
 
-
     @check_if_user_can_ready()
     @commands.guild_only()
     @commands.command(aliases=['ready'], cooldown=commands.Cooldown(rate=1, per=300.0, type=commands.BucketType.channel))
-    async def ncready(self, ctx):
+    async def ncready(self, ctx, *, reason=""):
         """Alerts online staff to a ready request in newcomers."""
+        newcomers = self.bot.channels['newcomers']
+        reason = reason[:300] # truncate to 300 chars so kurisu doesn't send absurdly huge messages
+        reason = re.sub(r'[^\x20-\x5b\x5d-\x7f]', r'', reason) # filter out non-ascii and backslash
+        reason = discord.utils.escape_mentions(reason) # remove all other mentions, in case escaping tricks are attempted
 
         await ctx.message.delete()
 
-        await self.bot.channels['newcomers'].send(f'{str(ctx.author)} is ready for unprobation. @here\nID: {ctx.author.id}', allowed_mentions=discord.AllowedMentions(everyone=True))
-        try:
-            await ctx.author.send('✅ Online staff have been notified of your request.')
-        except discord.errors.Forbidden:
-            pass
+        if reason:
+            await newcomers.send(f'{ctx.author} (ID: {ctx.author.id}) is ready for unprobation.\n\nMessage: `{reason}` @here', allowed_mentions=discord.AllowedMentions(everyone=True))
+            try:
+                await ctx.author.send('✅ Online staff have been notified of your request.')
+            except discord.errors.Forbidden:
+                pass
+        else:
+            await newcomers.send(f'{ctx.author.mention}, please run this command again \
+with a brief message explaining your situation (e.g., `.ready hey guys, i was having trouble hacking my console`). \
+**Copying and pasting the example will not remove your probation.**')
+            ctx.command.reset_cooldown(ctx)
 
 def setup(bot):
     bot.add_cog(Newcomers(bot))
