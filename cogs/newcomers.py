@@ -70,29 +70,24 @@ class Newcomers(DatabaseCog):
 
     @check_if_user_can_ready()
     @commands.guild_only()
-    @commands.command(aliases=['ready'])
-    @commands.max_concurrency(1, commands.BucketType.channel)
+    @commands.command(aliases=['ready'], cooldown=commands.Cooldown(rate=1, per=300.0, type=commands.BucketType.channel))
     async def ncready(self, ctx, *, reason=""):
         """Alerts online staff to a ready request in newcomers."""
-        cooldown = 300
         newcomers = self.bot.channels['newcomers']
-        reason = reason[:500] # truncate to 500 chars so kurisu doesn't send absurdly huge messages
+        reason = reason[:300] # truncate to 300 chars so kurisu doesn't send absurdly huge messages
 
         await ctx.message.delete()
         if reason:
             await newcomers.send(f'{ctx.author} (ID: {ctx.author.id}) is ready for unprobation.\n\nMessage: `{reason}` @here', allowed_mentions=discord.AllowedMentions(everyone=True))
-            await newcomers.send(f'This command will be usable again in {cooldown} seconds.', delete_after=cooldown)
             try:
                 await ctx.author.send('✅ Online staff have been notified of your request.')
             except discord.errors.Forbidden:
                 pass
         else:
-            cooldown = 30
-            await newcomers.send(f'{ctx.author.mention}, please run this command again in {cooldown} seconds \
+            await newcomers.send(f'{ctx.author.mention}, please run this command again \
 with a brief message explaining your situation (e.g., `.ready hey guys, i was having trouble hacking my console`). \
 **Copying and pasting the example will not remove your probation.**')
-
-        await asyncio.sleep(cooldown)
+            ctx.command.reset_cooldown(ctx)
 
 def setup(bot):
     bot.add_cog(Newcomers(bot))
