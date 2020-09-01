@@ -75,7 +75,7 @@ class Newcomers(DatabaseCog):
         """Alerts online staff to a ready request in newcomers."""
         newcomers = self.bot.channels['newcomers']
         reason = reason[:300] # truncate to 300 chars so kurisu doesn't send absurdly huge messages
-        reason = re.sub(r'[^\x20-\x7f]', r'', reason) # filter out characters that aren't printable ascii
+        reason = re.sub(r'[^\x20-\x7f]', r'', reason.replace('\\', '')) # filter out non-ascii and backslash
         reason = discord.utils.escape_mentions(reason) # remove all other mentions, in case escaping tricks are attempted
 
         await ctx.message.delete()
