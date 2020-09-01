@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from utils.database import DatabaseCog
 from utils.checks import is_staff, check_if_user_can_ready
+import re
 
 class Newcomers(DatabaseCog):
     """
@@ -74,8 +75,11 @@ class Newcomers(DatabaseCog):
         """Alerts online staff to a ready request in newcomers."""
         newcomers = self.bot.channels['newcomers']
         reason = reason[:300] # truncate to 300 chars so kurisu doesn't send absurdly huge messages
+        reason = re.sub(r'[^\x20-\x7f]', r'', reason) # filter out characters that aren't printable ascii
+        reason = discord.utils.escape_mentions(reason) # remove all other mentions, in case escaping tricks are attempted
 
         await ctx.message.delete()
+
         if reason:
             await newcomers.send(f'{ctx.author} (ID: {ctx.author.id}) is ready for unprobation.\n\nMessage: `{reason}` @here', allowed_mentions=discord.AllowedMentions(everyone=True))
             try:
