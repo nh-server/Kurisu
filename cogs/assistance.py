@@ -408,7 +408,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 return
         if self.check_console(console, channelName, '3ds'):
             embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
-            embed.add_field(name="BrowserHax 2020", value="Requires console to be on latest firmware and working L+R buttons. [Guide](https://3ds.hacks.guide/homebrew-launcher-(browserhax-2020))", inline=False)
+            embed.add_field(name="BrowserHax 2020", value="Requires console to be on latest firmware and have working L+R buttons. [Guide](https://3ds.hacks.guide/homebrew-launcher-(browserhax-2020))", inline=False)
             embed.add_field(name="NTRBoot", value="Requires a compatible NDS flashcart and maybe an additional DS(i) or hacked 3DS console depending on the flashcart (All versions, all hardware). [Guide](https://3ds.hacks.guide/ntrboot)", inline=False)
             embed.add_field(name="Hardmod", value="Requires soldering **Not for beginners!**. [Guide](https://git.io/fhQk9)", inline=False)
             await ctx.send(embed=embed)
