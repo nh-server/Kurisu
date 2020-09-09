@@ -570,7 +570,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             """)
             await ctx.send(embed=embed)
 
-         elif self.check_console(console, channelName, ('nx', 'switch', 'ns')):
+        elif self.check_console(console, channelName, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Big SD", color=discord.Color.purple())
             embed.description = cleandoc ("""
             Although Nintendo supports large SD cards in EXFAT format, it is recommended to use FAT32.
@@ -618,7 +618,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
 			""")
             await ctx.send(embed=embed)
 
-         elif self.check_console(console, channelName, ('nx', 'switch', 'ns')):
+        elif self.check_console(console, channelName, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Moving SD Cards", color=discord.Color.purple())
             embed.description = cleandoc ("""
             **How do I transfer to a larger SD Card?**
