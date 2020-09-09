@@ -67,8 +67,8 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         for x in consoleslist:
             if self.check_console(x, channelName, '3ds'):
                 embed = discord.Embed(title="Guide", color=discord.Color(0xCE181E))
-                embed.set_author(name="Plailect", url="https://3ds.hacks.guide/")
-                embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
+                embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/")
+                embed.set_thumbnail(url="https://nintendohomebrew.com/pics/nhplai.png")
                 embed.url = "https://3ds.hacks.guide/"
                 embed.description = "A complete guide to 3DS custom firmware, from stock to boot9strap."
                 await ctx.send(embed=embed)
@@ -147,8 +147,8 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
     async def seedminer(self, ctx):
         """Links the seedminer guide"""
         embed = discord.Embed(title="Seedminer", color=discord.Color(0xb4eb4d))
-        embed.set_author(name="Plailect", url="https://3ds.hacks.guide/seedminer")
-        embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
+        embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/seedminer")
+        embed.set_thumbnail(url="https://nintendohomebrew.com/pics/nhplai.png")
         embed.url = "https://3ds.hacks.guide/seedminer"
         embed.description = "A guide on how to do the seedminer process to get your 3ds' movable.sed file"
         await ctx.send(embed=embed)
@@ -290,8 +290,8 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
     async def updateb9s(self, ctx):
         """Links to the guide for updating b9s versions"""
         embed = discord.Embed(title="Updating B9S Guide", color=discord.Color(0xCE181E))
-        embed.set_author(name="Plailect", url="https://3ds.hacks.guide/updating-b9s")
-        embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
+        embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/updating-b9s")
+        embed.set_thumbnail(url="https://nintendohomebrew.com/pics/nhplai.png")
         embed.url = "https://3ds.hacks.guide/updating-b9s"
         embed.description = "A guide for updating to new B9S versions."
         await ctx.send(embed=embed)
@@ -310,8 +310,8 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
     async def atob(self, ctx):
         """Links to the guide for updating from a9lh to b9s"""
         embed = discord.Embed(title="Upgrading a9lh to b9s", color=discord.Color(0xCE181E))
-        embed.set_author(name="Plailect", url="https://3ds.hacks.guide/a9lh-to-b9s")
-        embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
+        embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/a9lh-to-b9s")
+        embed.set_thumbnail(url="https://nintendohomebrew.com/pics/nhplai.png")
         embed.url = "https://3ds.hacks.guide/a9lh-to-b9s"
         embed.description = "A guide for upgrading your device from arm9loaderhax to boot9strap."
         await ctx.send(embed=embed)
@@ -341,8 +341,8 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
     async def ctr(self, ctx):
         """Links to ctrtransfer guide"""
         embed = discord.Embed(title="Guide - ctrtransfer", color=discord.Color.orange())
-        embed.set_author(name="Plailect", url="https://3ds.hacks.guide/")
-        embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
+        embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/")
+        embed.set_thumbnail(url="https://nintendohomebrew.com/pics/nhplai.png")
         embed.url = "https://3ds.hacks.guide/ctrtransfer"
         embed.description = "How to do the 11.5.0-38 ctrtransfer"
         await ctx.send(embed=embed)
@@ -540,6 +540,107 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             await ctx.send(embed=embed)
 
     @commands.command()
+    async def bigsd(self, ctx, console=None):
+        """Embeds big sd information"""
+        systems = ("3ds", "nx", "ns", "switch")
+        channelName = ""
+        if not isinstance(ctx.channel, discord.DMChannel):
+            channelName = ctx.channel.name
+        if console not in systems:
+            if channelName.startswith(systems):
+                console = "auto"
+            else:
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+
+                ctx.command.reset_cooldown(ctx)
+                return
+
+        if self.check_console(console, channelName, '3ds'):
+            embed = discord.Embed(title="Big SD", color=discord.Color.purple())
+            embed.description = cleandoc ("""
+            Although Nintendo says the official SD size limit is 32GB, the 3DS can accept cards up to 2TB.
+            In order to use them, you will have to format them to FAT32 first.
+            You can do this using these tools:
+            
+            -GUIFormat for Windows: http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm
+            -gparted for Linux: https://gparted.org/download.php
+            -Disk Utility for macOS: https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010
+            
+            IMPORTANT: On macOS, always select "MS-DOS (Windows)". Formatting will erase all data on the card. Make a backup first.
+            """)
+            await ctx.send(embed=embed)
+
+         elif self.check_console(console, channelName, ('nx', 'switch', 'ns')):
+            embed = discord.Embed(title="Big SD", color=discord.Color.purple())
+            embed.description = cleandoc ("""
+            Although Nintendo supports large SD cards in EXFAT format, it is recommended to use FAT32.
+            In order to change the card's format, you will need to use an external utility.
+            Here are some suggestions:
+            
+            -GUIFormat for Windows: http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm
+            -gparted for Linux: https://gparted.org/download.php
+            -Disk Utility for macOS: https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010
+            
+            IMPORTANT: On macOS, always select "MS-DOS (Windows)". Formatting will erase all data on the card. Make a backup first.
+            """)
+            await ctx.send(embed=embed)
+
+    @commands.command()
+    async def transfersd(self, ctx, console=None):
+        """Embeds sd transfer information"""
+        systems = ("3ds", "nx", "ns", "switch")
+        channelName = ""
+        if not isinstance(ctx.channel, discord.DMChannel):
+            channelName = ctx.channel.name
+        if console not in systems:
+            if channelName.startswith(systems):
+                console = "auto"
+            else:
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+
+                ctx.command.reset_cooldown(ctx)
+                return
+
+        if self.check_console(console, channelName, '3ds'):
+            embed = discord.Embed(title="Moving SD Cards", color=discord.Color.purple())
+            embed.description = cleandoc ("""
+            Moving SD cards on a 3DS is easy.
+            First, ensure the new SD card is in the FAT32 format.
+            If it is above 32GB, you will need to format it using one of these tools:
+            
+            -GUIFormat for Windows: http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm
+            -gparted for Linux: https://gparted.org/download.php
+            -Disk Utility for macOS: https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010
+            
+            Once the new card is in FAT32, move all your content from the old SD to the new SD.
+			IMPORTANT: On macOS, always select "MS-DOS (Windows)". Formatting will erase all data on the card. Make a backup first.
+            IMPORTANT: Do not put the new SD card in the console before moving all your data to it.
+			""")
+            await ctx.send(embed=embed)
+
+         elif self.check_console(console, channelName, ('nx', 'switch', 'ns')):
+            embed = discord.Embed(title="Moving SD Cards", color=discord.Color.purple())
+            embed.description = cleandoc ("""
+            **How do I transfer to a larger SD Card?**
+            First off, your SD card should be in FAT32. Type `.bigsd nx` to learn more.
+            Do you have an emuMMC? If no, then simply copy and paste SD contents from one SD to the next.
+            If yes, do you have a partition based emuMMC or file based? (If you do not know which you have, launch the Hekate payload with the bootloader folder on your SD, click the emuMMC box, and it will tell you). 
+            If you have a file based emuMMC, simply copy and paste SD contents from one SD to the next.
+            
+            If you have a partition based emunand, there are two things you can do.
+            The easiest and safest option is to simply remake an emuMMC on the new SD card.
+            If you do this, make sure to backup your game saves on the old emuMMC and load them onto the new one.
+            Alternatively, you can backup your emuMMC (raw GPP and boot0/boot1) via Hekate (requires Hekate 5.3.0 or later) and then restore it to the partition on your new SD card.
+            WARNING: During both the backup and restoring (especially during the restoring), it is important to make sure the option at the bottom of Hekate that says "SD Raw Partition" is set to "ON."
+            If this option is not selected, you will alter your sysMMC.
+            
+            Both of the above will require you to partition the new SD card.
+            We suggest using the TegraExplorer payload to do this.
+            Once you have dealt with your emuMMC, copy and paste the remaining SD card contents from one SD to the next.
+            """)
+            await ctx.send(embed=embed)
+
+    @commands.command()
     async def catalyst(self, ctx, console=None):
         """Link to problem solvers"""
         systems = ("3ds", "nx", "ns", "switch")
@@ -648,7 +749,7 @@ re-read the guide steps 2 or 3 times before coming here.
             return
         await self.simple_embed(ctx, info['info'], title=f"Why {info['title']} isn't recommended")
 
-    @commands.command(aliases=["sderror", "sderrors", "bigsd", "sd"])
+    @commands.command(aliases=["sderror", "sderrors", "sd"])
     async def sdguide(self, ctx):
         """SD Troubleshooter"""
         await self.simple_embed(ctx, """
@@ -867,8 +968,8 @@ the system can't check for an update.
     async def gm9(self, ctx):
         """Links to the guide on GodMode9"""
         embed = discord.Embed(title="GodMode9 Usage", color=discord.Color(0x66FFFF))
-        embed.set_author(name="Plailect", url="https://3ds.hacks.guide/godmode9-usage")
-        embed.set_thumbnail(url="https://3ds.hacks.guide/images/bio-photo.png")
+        embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/godmode9-usage")
+        embed.set_thumbnail(url="https://nintendohomebrew.com/pics/nhplai.png")
         embed.url = "https://3ds.hacks.guide/godmode9-usage"
         embed.description = "GodMode9 usage guide"
         await ctx.send(embed=embed)
