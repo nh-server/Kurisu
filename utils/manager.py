@@ -10,11 +10,12 @@ class Manager:
     def format_args(args: dict) -> str:
         if len(args) < 1:
             return ''
+        separator = args.pop('separator', 'AND')
         statement = 'WHERE '
         conditions = []
         for kword, value in args.items():
             conditions.append(f"{kword} = '{value}'")
-        return statement + ' AND '.join(conditions)
+        return statement + f' {separator} '.join(conditions)
 
 
 class WordFilterManager(Manager):
