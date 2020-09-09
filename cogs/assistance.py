@@ -1445,9 +1445,7 @@ in the scene.
     @commands.command()
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def invite(self, ctx, name: str = ""):
-        """Available servers are:
-        twl, switchroot, acnl, flagbrew, themeplaza, smashultimate, ndsbrew, citra, homebrew, skyrimnx, pkhexautolegality, reswitched, cemu, dragoninjector, vita, henkaku, universal, r3DS, smash4, switchlan, ctgp7, retronx, edizon, hax, 4tu
-        """
+        """Post an invite to an approved server"""
 
         if not name:
             ctx.command.reset_cooldown(ctx)
