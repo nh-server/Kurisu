@@ -1451,13 +1451,20 @@ in the scene.
 
         if not name:
             ctx.command.reset_cooldown(ctx)
-            return await ctx.send(f"Valid server names are: {', '.join(self.bot.invitefilter.dict.keys())}")
+            return await ctx.send(f"Valid server names are: {', '.join(self.bot.invitefilter.invites.keys())}")
 
-        if name in self.bot.invitefilter.dict.keys():
-            await ctx.send(f"https://discord.gg/{self.bot.invitefilter.dict[name]}")
+        invite = self.bot.invitefilter.invites.get(name)
+
+        if invite:
+            await ctx.send(f"https://discord.gg/{invite.code}")
+            if invite.is_temporary:
+                if invite.uses > 1:
+                    await self.bot.invitefilter.set_uses(code=invite.code, uses=invite.uses-1)
+                else:
+                    await self.bot.invitefilter.delete(code=invite.code)
         else:
-            await ctx.send(f"Invalid invite code. Valid server names are: {', '.join(self.bot.invitefilter.dict.keys())}")
             ctx.command.reset_cooldown(ctx)
+            await ctx.send(f"Invalid invite code. Valid server names are: {', '.join(self.bot.invitefilter.invites.keys())}")
 
     @commands.command()
     async def db(self, ctx, console=None):

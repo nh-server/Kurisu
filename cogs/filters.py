@@ -67,36 +67,38 @@ class Filter(commands.Cog):
     @is_staff("Helper")
     @commands.group()
     async def invitefilter(self, ctx):
+        """Command group for managing the invite filter"""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
     @is_staff("SuperOP")
     @invitefilter.command(name='add')
     async def add_invite(self, ctx, invite: discord.Invite, alias: str):
-        if invite.code in self.bot.invitefilter.dict.values():
-            return await ctx.send(f"Invite {invite.code} is already in the whitelist!")
-        elif alias in self.bot.invitefilter.dict.keys():
-            return await ctx.send("The alias is already in use!")
+        """Adds a invite to the filter whitelist"""
+        if await self.bot.invitefilter.fetch(code=invite.code, alias=alias, separator='OR'):
+            return await ctx.send("This invite code or alias is already in use!")
         name, _ = await self.bot.invitefilter.add(name=invite.guild.name, code=invite.code, alias=alias)
         if name is None:
-            return await ctx.send("Failed to add invite to the whitelist!")
+            return await ctx.send("Failed to add invite to the invite whitelist!")
         await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added {invite.code}(`{invite.guild.name}`) to the invite whitelist!")
         await ctx.send("Successfully added invite to whitelist")
 
     @is_staff("SuperOP")
     @invitefilter.command(name='delete')
     async def delete_invite(self, ctx, code: str):
+        """Removes a invite from the filter whitelist"""
         name, _ = await self.bot.invitefilter.delete(code=code)
-        if name is None:
-            return await ctx.send("Word not found!")
+        if not name:
+            return await ctx.send("Invite code not found!")
         await ctx.send(f"Deleted server `{name}` from filter succesfully!")
         await self.bot.channels['mod-logs'].send(f"⭕ **Deleted**: {ctx.author.mention} deleted server `{name}` from the invite filter!")
 
     @invitefilter.command(name='list')
     async def list_invites(self, ctx):
+        """List invites in the filter whitelist"""
         embed = discord.Embed()
-        if self.bot.invitefilter.dict:
-            embed.add_field(name='Invites', value='\n'.join(f"{name} : {code}" for name, code in self.bot.invitefilter.dict.items()))
+        if self.bot.invitefilter.invites:
+            embed.add_field(name='Invites', value='\n'.join(f"name: {alias} code:{self.bot.invitefilter.invites[alias].code} uses:{self.bot.invitefilter.invites[alias].uses}" for alias in self.bot.invitefilter.invites.keys()))
             await ctx.send(embed=embed)
         else:
             await ctx.send("The invite filter is empty!")

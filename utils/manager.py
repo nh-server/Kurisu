@@ -66,20 +66,30 @@ class WordFilterManager(Manager):
         return word
 
 
+class Invite:
+    def __init__(self, invite_code, remaining_uses):
+        self.code = invite_code
+        self.uses = remaining_uses
+
+    @property
+    def is_temporary(self):
+        return self.uses > 0
+
+
 class InviteFilterManager(Manager):
     def __init__(self, bot):
         super().__init__(bot)
-        self.dict = {}
+        self.invites = {}
 
     async def load(self):
-        self.dict.clear()
+        self.invites.clear()
         invites = await self.fetch()
         if invites:
-            for code, _, alias in invites:
-                self.dict[alias] = code
+            for code, _, alias, uses in invites:
+                self.invites[alias] = Invite(code, uses)
         print("Loaded Invites")
 
-    async def add(self, code: str, name: str, alias: str, uses: int = -1):
+    async def add(self, code: str, name: str, alias: str, uses):
         async with self.dbcon as cur:
             try:
                 await cur.execute(f"INSERT INTO invitefilter VALUES ('{code}', '{name}', '{alias}', {uses})")
@@ -91,22 +101,16 @@ class InviteFilterManager(Manager):
     async def fetch(self, **kwargs):
         cond = self.format_args(kwargs)
         async with self.dbcon as cur:
-            await cur.execute(f'SELECT code, name, alias FROM invitefilter {cond}')
+            await cur.execute(f'SELECT * FROM invitefilter {cond}')
             return await cur.fetchall()
 
-    async def fetch_uses(self, **kwargs):
-        cond = self.format_args(kwargs)
-        async with self.dbcon as cur:
-            await cur.execute(f'SELECT remaining_uses FROM invitefilter {cond}')
-            uses = await cur.fetchone()
-            return uses[0]
-
-    async def set_uses(self, code: str, uses):
+    async def set_uses(self, code: str, uses: int):
         async with self.dbcon as cur:
             await cur.execute(f"UPDATE invitefilter SET remaining_uses={uses} WHERE code='{code}'")
+        await self.load()
 
     async def delete(self, **kwargs):
-        cond = self.format_args(kwargs)
+        cond = self.format_args(kwargs,)
         async with self.dbcon as cur:
             await cur.execute(f'DELETE FROM invitefilter {cond}')
         await self.load()
