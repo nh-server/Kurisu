@@ -1245,9 +1245,9 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
     async def twlmenu(self, ctx):
         """Links to twlmenu tutorial"""
         embed = discord.Embed(title="TWiLightMenu++ tutorial", color=discord.Color.purple())
-        embed.set_thumbnail(url="https://avatars3.githubusercontent.com/u/16110127?s=400&v=4")
-        embed.url = "https://3ds.eiphax.tech/twlmenu.html"
-        embed.description = "Basic tutorial for TWiLightMenu++"
+        embed.set_thumbnail(url="https://avatars1.githubusercontent.com/u/46971470?s=200&v=4")
+        embed.url = "https://github.com/DS-Homebrew/TWiLightMenu/wiki/Installing-(3DS)#"
+        embed.description = "Basic tutorial for installing TWiLightMenu++"
         await ctx.send(embed=embed)
 
     @tutorial.command(aliases=["forwarders", "forwarder", "twlforwarders"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
