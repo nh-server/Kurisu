@@ -801,7 +801,7 @@ just missing a file called boot.firm in the root of your SD card.
         """Troubleshooting guides for common issues"""
         embed = discord.Embed(title="Troubleshooting guide for most Seedminer-based methods", color=discord.Color(0xA2BAE0))
         embed.url = "https://3ds.eiphax.tech/issues.html"
-        embed.description = "A simple troubleshooting guide for common CFW and homebrew installation issues \n when using Seedminer-based methods."
+        embed.description = "A simple troubleshooting guide for common CFW and homebrew installation issues \n when using popular recent 3DS hacking methods."
         await ctx.send(embed=embed)
 
     @commands.command()
