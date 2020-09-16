@@ -46,7 +46,6 @@ class WordFilterManager(Manager):
             try:
                 await cur.execute(f'INSERT INTO wordfilter VALUES ("{word}","{kind}")')
             except aiosqlite3.IntegrityError as e:
-                print(e)
                 return None, None
         await self.load()
         return word, kind
@@ -89,7 +88,7 @@ class InviteFilterManager(Manager):
                 self.invites[alias] = Invite(code, uses)
         print("Loaded Invites")
 
-    async def add(self, code: str, name: str, alias: str, uses):
+    async def add(self, code: str, name: str, alias: str, uses: int):
         async with self.dbcon as cur:
             try:
                 await cur.execute(f"INSERT INTO invitefilter VALUES ('{code}', '{name}', '{alias}', {uses})")

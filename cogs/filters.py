@@ -77,7 +77,7 @@ class Filter(commands.Cog):
         """Adds a invite to the filter whitelist"""
         if await self.bot.invitefilter.fetch(code=invite.code, alias=alias, separator='OR'):
             return await ctx.send("This invite code or alias is already in use!")
-        name, _ = await self.bot.invitefilter.add(name=invite.guild.name, code=invite.code, alias=alias)
+        name, _ = await self.bot.invitefilter.add(name=invite.guild.name, code=invite.code, alias=alias, uses=-1)
         if name is None:
             return await ctx.send("Failed to add invite to the invite whitelist!")
         await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added {invite.code}(`{invite.guild.name}`) to the invite whitelist!")
