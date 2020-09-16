@@ -45,7 +45,7 @@ class WordFilterManager(Manager):
         async with self.dbcon as cur:
             try:
                 await cur.execute(f'INSERT INTO wordfilter VALUES ("{word}","{kind}")')
-            except aiosqlite3.IntegrityError as e:
+            except aiosqlite3.IntegrityError:
                 return None, None
         await self.load()
         return word, kind
