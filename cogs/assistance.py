@@ -1488,7 +1488,7 @@ in the scene.
         await self.simple_embed(ctx, """
                                 You forgot to copy the "hekate_ipl.ini" file to the bootloader folder on your sd card, or forgot to insert your sd card before booting hekate.
 
-                                Note that if hekate can't find a config, it'll create one. So likely you now have a hekate_ipl.ini in your bootloader folder, replace it with the one from the guide
+                                Note that if hekate can't find a config, it'll create one. So likely you now have a hekate_ipl.ini in your bootloader folder, replace it with the one from [the guide](https://nh-server.github.io/switch-guide/user_guide/emummc/sd_preparation/)
                                 """, title="Getting the \"No main boot entries found\" error in hekate?")
 
     @commands.command(aliases=['ntrboot', 'ntrcartlist', 'ntrbootcartlist'])
