@@ -46,6 +46,9 @@ test = Module('test', {
 modules = {
     9999: test
 }
+
+TODO: Add a number of result codes that were in the previous result code Kurisu
+used. They were left out for the sake of getting this initial code done faster.
 """
 
 srv = Module('srv', {
