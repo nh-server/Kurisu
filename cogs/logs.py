@@ -125,12 +125,11 @@ Thanks for boosting and have a good time!
     async def on_member_update(self, member_before, member_after):
         await self.bot.wait_until_all_ready()
         do_log = False  # only nickname and roles should be logged
-        dest = self.bot.channels['mod-logs']
+        dest = self.bot.channels['server-logs']
         roles_before = set(member_before.roles)
         roles_after = set(member_after.roles)
         if roles_before ^ roles_after:
             do_log = True
-            dest = self.bot.channels['server-logs']
             # role removal
             if roles_before - roles_after:
                 msg = "\n👑 __Role removal__: "
