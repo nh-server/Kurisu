@@ -374,6 +374,10 @@ eshop_web = Module('eshop (web)', {
     9100: ResultCode('Invalid template.')
 })
 
+olv = Module('olv (miiverse)', {
+    5004: 'The Miiverse service has been discontinued.'
+})
+
 unknown = Module('unknown/misc.', {
     9999: 'Usually indicates an invalid signature, ticket, or corrupted data. Typically happens when running an unsigned program without CFW/signature patches.'
 })
@@ -388,7 +392,7 @@ modules = {
     106: nex,
     107: eshop_api,
     111: eshop_web,
-    115: Module('olv (miiverse)'),
+    115: olv,
     118: Module('pia (peer-to-peer)'),
     124: Module('ec (e-commerce)'),
     150: Module('fs'),
