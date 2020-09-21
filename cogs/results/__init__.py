@@ -59,7 +59,7 @@ class Results(commands.Cog):
                 embed.add_field(name="Level", value=error.level, inline=False)
             if error.support_url:
                 embed.add_field(name="Further information", value=error.support_url, inline=False)
-                embed.add_field(name="Description", value=error.description, inline=False)
+            embed.add_field(name="Description", value=error.description, inline=False)
             embed.color = color
             await ctx.send(embed=embed)
         else:
