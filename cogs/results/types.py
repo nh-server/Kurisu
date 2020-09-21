@@ -1,4 +1,9 @@
 class Module():
+    """
+    Describes a Module. A Module contains a dictionary of ResultCodes,
+    and possibly a second dictionary with extra information.
+    A module itself is basically who raised the error or returned the result.
+    """
     def __init__(self, name, data={}, levels={}):
         self.name = name
         self.data = data
@@ -13,7 +18,7 @@ class Module():
 
         return UNKNOWN_ERROR
 
-    # Wii U and Switch-specific
+    # If your modules require specific extra info for error ranges, add it here
     def get_level(self, level:int):
         for key, value in self.levels.items():
             if isinstance(key, tuple) and key[0] <= level <= key[1]:
@@ -21,6 +26,11 @@ class Module():
         return None
 
 class ResultCode():
+    """
+    Describes a result code. A ResultCode has several fields which are used
+    to provide information about the error or result, including a support
+    webpage, if available.
+    """
     def __init__(self, description=None, support_url=None):
         self.description = description
         self.support_url = support_url
@@ -28,6 +38,7 @@ class ResultCode():
         self.level = None
         self.code = None
 
+# Helper constants
 UNKNOWN_MODULE =  ResultCode('Invalid or unknown module. Are you sure you \
 typed the error code in correctly?')
 

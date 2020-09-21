@@ -2,6 +2,58 @@ import re
 
 from .types import Module, ResultCode, UNKNOWN_MODULE, NO_RESULTS_FOUND
 
+"""
+This file contains all currently known Wii U result and error codes. 
+There may be inaccuracies here; we'll do our best to correct them 
+when we find out more about them.
+
+A result code is a 32-bit integer returned when calling various commands in the
+Wii U's operating system, Cafe OS. Its breaks down like so:
+
+ Bits | Description
+-------------------
+00-03 | Level
+04-12 | Module
+13-31 | Description
+
+Level: A value indicating the severity of the issue (fatal, temporary, etc.).
+Module: A value indicating who raised the error or returned the result.
+Description: A value indicating exactly what happened.
+
+Unlike the 3DS, the Wii U does not provide a 'summary'
+field in result codes, so some artistic license was taken here to repurpose those
+fields in our ResultCode class to add additional information from sources
+such as the NintendoClients wiki.
+
+Currently our Wii U result code parsing does not understand hexadecimal
+values. It is planned in the future to add support for these.
+
+To add a module so the code understands it, simply add a new module number
+to the 'modules' dictionary, with a Module variable as the value. If the module
+has no known error codes, simply add a dummy Module instead (see the dict for
+more info). See the various module variables for a more in-depth example
+ on how to make one.
+
+Once you've added a module, or you want to add a new result code to an existing
+module, add a new description value (for Switch it's the final set of 4 digits after any dashes)
+as the key, and a ResultCode variable with a text description of the error or result.
+You can also add a second string to the ResultCode to designate a support URL if
+one exists. Not all results or errors have support webpages.
+
+Simple example of adding a module with a sample result code:
+test = Module('test', {
+    5: ResultCode('test', 'https://example.com')
+})
+
+modules = {
+    9999: test
+}
+
+Sources used to compile this list of results:
+https://github.com/Kinnay/NintendoClients/wiki/Wii-U-Error-Codes
+https://github.com/devkitPro/wut/blob/master/include/nn/result.h#L67
+"""
+
 fp = Module('fp (friends)', {
     0: ResultCode('Success.'),
     1: ResultCode('Session closed.'),
@@ -367,7 +419,7 @@ eshop_api = Module('eshop(api)', {
 })
 
 eshop_web = Module('eshop (web)', {
-    9000: ResultCode('Close application. (Connection timeout issue?)'),
+    9000: ResultCode('Close application (Connection timeout issue?).'),
     9001: ResultCode('Retriable.'),
     9002: ResultCode('Online services are undergoing maintenance.'),
     9003: ResultCode('The online services are discontinued and thus are no longer available.'),
@@ -405,13 +457,24 @@ modules = {
     199: unknown
 }
 
-# regex for result code format "1XX-YYYY"
+# TODO: Add support for levels from hex inputs.
+levels = {
+    0: 'Success.',
+    -1: 'Fatal.',
+    -2: 'Usage.',
+    -3: 'Status.',
+    -7: 'End.'
+}
+
+# regex for Wii U result code format "1XX-YYYY"
 RE = re.compile(r'1\d{2}\-\d{4}')
 
 CONSOLE_NAME = 'Nintendo Wii U'
+
+# Suggested color to use if displaying information through a Discord bot's embed
 COLOR = 0x009AC7
 
-# TODO: If/when hexadecimal is figured out, add support for it.
+# TODO: When hexadecimal is figured out, add support for it.
 def is_valid(error):
     return RE.match(error)
 

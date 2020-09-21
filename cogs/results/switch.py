@@ -3,7 +3,46 @@ import re
 from .types import Module, ResultCode, UNKNOWN_MODULE, NO_RESULTS_FOUND
 
 """
-    This file houses all known Nintendo Switch modules and result codes.
+This file contains all currently known Switch result and error codes. 
+There may be inaccuracies here; we'll do our best to correct them 
+when we find out more about them.
+
+A result code is a 32-bit integer returned when calling various commands in the
+Switch's operating system, Horizon. Its breaks down like so:
+
+ Bits | Description
+-------------------
+00-08 | Module
+09-21 | Description
+
+Module: A value indicating who raised the error or returned the result.
+Description: A value indicating exactly what happened.
+
+Unlike the 3DS, the Nintendo Switch does not provide a 'summary' or 'level'
+field in result codes, so some artistic license was taken here to repurpose those
+fields in our ResultCode class to add additional information from sources
+such as Atmosphere's libvapours and the Switchbrew wiki.
+
+To add a module so the code understands it, simply add a new module number
+to the 'modules' dictionary, with a Module variable as the value. If the module
+has no known error codes, simply add a dummy Module instead (see the dict for
+more info). See the various module variables for a more in-depth example
+ on how to make one.
+
+Once you've added a module, or you want to add a new result code to an existing
+module, add a new description value (for Switch it's the final set of 4 digits after any dashes)
+as the key, and a ResultCode variable with a text description of the error or result.
+You can also add a second string to the ResultCode to designate a support URL if
+one exists. Not all results or errors have support webpages.
+
+Simple example of adding a module with a sample result code:
+test = Module('test', {
+    5: ResultCode('test', 'https://example.com')
+})
+
+modules = {
+    9999: test
+}
 """
 
 kernel = Module('kernel', {
@@ -1634,6 +1673,8 @@ RE = re.compile(r'2\d{3}\-\d{4}')
 RE_APP = re.compile(r'\d{1}-[a-zA-Z]{5}-\d{4}')
 
 CONSOLE_NAME = 'Nintendo Switch'
+
+# Suggested color to use if displaying information through a Discord bot's embed
 COLOR = 0xE60012
 
 def is_valid(error):

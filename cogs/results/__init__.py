@@ -18,6 +18,7 @@ class Results(commands.Cog):
         elif wiiu.is_valid(error):
             return wiiu.get(error)
 
+        # Console name, module name, result, color
         return None, None, None, types.WARNING_COLOR
 
     def fixup_input(self, input):
@@ -26,8 +27,7 @@ class Results(commands.Cog):
         # that have longer error codes, adjust accordingly.
         input = input[:16]
 
-        # Fix up hex input if 0x was omitted
-        # It's fine if it doesn't convert.
+        # Fix up hex input if 0x was omitted. It's fine if it doesn't convert.
         if not input.startswith('0x'):
             try:
                 input = hex(int(input, 16))

@@ -2,33 +2,51 @@ import re
 
 from .types import Module, ResultCode, UNKNOWN_MODULE, NO_RESULTS_FOUND
 
-levels = {
-    0:'Success',
-    1:'Info',
-    25:'Status',
-    26:'Temporary',
-    27:'Permanent',
-    28:'Usage',
-    29:'Reinitialize',
-    30:'Reset',
-    31:'Fatal'
-}
+"""
+This file contains all currently known 2DS/3DS result and error codes. 
+There may be inaccuracies here; we'll do our best to correct them 
+when we find out more about them.
 
-summaries = {
-    0:'Success',
-    1:'Nothing happened',
-    2:'Would block',
-    3:'Out of resource',
-    4:'Not found',
-    5:'Invalid state',
-    6:'Not supported',
-    7:'Invalid argument',
-    8:'Wrong argument',
-    9:'Canceled',
-    10:'Status changed',
-    11:'Internal',
-    63:'Invalid result value'
+A result code is a 32-bit integer returned when calling various commands in the
+3DS's operating system, Horizon. Its breaks down like so:
+
+ Bits | Description
+-------------------
+00-09 | Description
+10-17 | Module
+21-26 | Summary
+27-31 | Level
+
+Description: A value indicating exactly what happened.
+Module: A value indicating who raised the error or returned the result.
+Summary: A value indicating a shorter description of what happened.
+Level: A value indicating the severity of the issue (fatal, temporary, etc.).
+
+The 3DS makes it simple by providing all of these values directly. Other
+consoles, such as the Wii U and Switch do not provide summaries or levels, so
+those fields in the ResultCode class are re-used for other similar purposes.
+
+To add a module so the code understands it, simply add a new module number
+to the 'modules' dictionary, with a Module variable as the value. If the module
+has no known error codes, simply add a dummy Module instead (see the dict for
+more info). See the various module variables for a more in-depth example
+ on how to make one.
+
+Once you've added a module, or you want to add a new result code to an existing
+module, add a new description value (for 3DS it's the 4 digit number after the dash)
+as the key, and a ResultCode variable with a text description of the error or result.
+You can also add a second string to the ResultCode to designate a support URL if
+one exists. Not all results or errors have support webpages.
+
+Simple example of adding a module with a sample result code:
+test = Module('test', {
+    5: ResultCode('test', 'https://example.com')
+})
+
+modules = {
+    9999: test
 }
+"""
 
 srv = Module('srv', {
     5: ResultCode('Invalid string length (service name length is zero or longer than 8 chars).'),
@@ -233,10 +251,40 @@ modules = {
     254: application,
 }
 
-# regex for result code format "0XX-YYYY"
+levels = {
+    0:'Success',
+    1:'Info',
+    25:'Status',
+    26:'Temporary',
+    27:'Permanent',
+    28:'Usage',
+    29:'Reinitialize',
+    30:'Reset',
+    31:'Fatal'
+}
+
+summaries = {
+    0:'Success',
+    1:'Nothing happened',
+    2:'Would block',
+    3:'Out of resource',
+    4:'Not found',
+    5:'Invalid state',
+    6:'Not supported',
+    7:'Invalid argument',
+    8:'Wrong argument',
+    9:'Canceled',
+    10:'Status changed',
+    11:'Internal',
+    63:'Invalid result value'
+}
+
+# regex for 3DS result code format "0XX-YYYY"
 RE = re.compile(r'0\d{2}\-\d{4}')
 
 CONSOLE_NAME = 'Nintendo 2DS/3DS'
+
+# Suggested color to use if displaying information through a Discord bot's embed
 COLOR = 0xCE181E
 
 def is_valid(error):
