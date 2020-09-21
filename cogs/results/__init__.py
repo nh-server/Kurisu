@@ -5,7 +5,7 @@ from . import (switch, wiiu, ctr, types)
 
 class Results(commands.Cog):
     """
-    Parses game console result and error codes.
+    Parses game console result codes.
     """
     def __init__(self, bot):
         self.bot = bot
@@ -38,7 +38,8 @@ class Results(commands.Cog):
     @commands.command(aliases=['nxerr', 'serr', 'err', 'res'])
     async def result(self, ctx, err: str):
         """
-        Parses game console result codes, with a fancy embed. 0x prefix is not required.
+        Displays information on game console result codes, with a fancy embed.
+        0x prefix is not required for hex input.
 
         Examples:
           .err 0xD960D02B
@@ -46,6 +47,7 @@ class Results(commands.Cog):
           .err 022-2634
           .err 102-2804
           .err 2168-0002
+          .err 2-ARVHA-0000
         """
         err = self.fixup_input(err)
         system_name, module_name, error, color = self.fetch(err)
