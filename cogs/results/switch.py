@@ -460,7 +460,7 @@ fs = Module('fs', {
     6383: ResultCode('Attempted to call nn::fssystem::SaveDataFileSystem::DoCommitProvisionally.'),
     6384: ResultCode('Attempted to call nn::fssystem::DirectorySaveDataFileSystem::DoCommitProvisionally.'),
     6385: ResultCode('Attempted to call nn::fssystem::ZeroBitmapHashStorageFile::Write.'),
-    6385: ResultCode('Attempted to call nn::fssystem::ZeroBitmapHashStorageFile::SetSize.'),
+    6386: ResultCode('Attempted to call nn::fssystem::ZeroBitmapHashStorageFile::SetSize.'),
     6400: ResultCode('Permission denied.'),
     6451: ResultCode('Missing titlekey (required to mount content).'),
     6454: ResultCode('Needs flush.'),
@@ -1705,7 +1705,7 @@ def get(error):
 
     if mod in modules:
         if not modules[mod].data:
-            return CONSOLE_NAME, modules(mod).name, NO_ERRORS_FOUND, COLOR
+            return CONSOLE_NAME, modules(mod).name, NO_RESULTS_FOUND, COLOR
         ret = modules[mod].get_error(code)
         ret.code = code
         ret.summary = modules[mod].get_level(code)

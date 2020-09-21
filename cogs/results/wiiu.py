@@ -479,8 +479,8 @@ def is_valid(error):
     return RE.match(error)
 
 def get(error):
-    level = None
-    summary = None
+    # TODO: Use level in the future once hex support is written.
+    #level = None
     mod = int(error[0:3])
     desc = int(error[4:])
     if mod in modules:
