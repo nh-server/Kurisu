@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from . import (nx, cafe, ctr, types)
+from . import (switch, wiiu, ctr, types)
 
 class Results(commands.Cog):
     """
@@ -11,12 +11,12 @@ class Results(commands.Cog):
         self.bot = bot
 
     def fetch(self, error):
-        if nx.is_valid(error):
-            return nx.get(error)
+        if switch.is_valid(error):
+            return switch.get(error)
         elif ctr.is_valid(error):
             return ctr.get(error)
-        elif cafe.is_valid(error):
-            return cafe.get(error)
+        elif wiiu.is_valid(error):
+            return wiiu.get(error)
 
         return None, None, None, types.WARNING_COLOR
 
