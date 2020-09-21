@@ -102,6 +102,7 @@ class Kurisu(commands.Bot):
             'meta-mute': None,
             'Nitro Booster': None,
             'crc': None,
+            'streamer(temp)': None,
         }
 
         self.actions = []
