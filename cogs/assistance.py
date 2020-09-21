@@ -997,8 +997,7 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
     async def vc(self, ctx, *, consoles=""):
         """Link to Virtual Console Injects for 3DS/Wiiu."""
         injects = ("3ds", "wiiu")
-        consoleslist = []
-        consoleslist = [x for x in consoles.split() if x in injects and x not in consoleslist]
+        consoleslist = {x for x in consoles.split() if x in injects}
         channelName = ""
         if not isinstance(ctx.channel, discord.DMChannel):
             channelName = ctx.channel.name
