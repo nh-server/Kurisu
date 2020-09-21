@@ -47,6 +47,10 @@ modules = {
     9999: test
 }
 
+Sources used to compile these results and information:
+https://www.3dbrew.org/wiki/Error_codes
+Kurisu's previous err.py module
+
 TODO: Add a number of result codes that were in the previous result code Kurisu
 used. They were left out for the sake of getting this initial code done faster.
 """

@@ -43,6 +43,10 @@ test = Module('test', {
 modules = {
     9999: test
 }
+
+Sources used to compile these results and information:
+https://switchbrew.org/wiki/Error_codes
+https://github.com/Atmosphere-NX/Atmosphere/tree/master/libraries/libvapours/include/vapours/results
 """
 
 kernel = Module('kernel', {
