@@ -1449,9 +1449,12 @@ in the scene.
 
         if not name:
             ctx.command.reset_cooldown(ctx)
-            return await ctx.send(f"Valid server names are: {', '.join(self.bot.invitefilter.invites.keys())}")
+            if self.bot.invitefilter.invites:
+                return await ctx.send(f"Valid server names are: {', '.join(x.alias for x in self.bot.invitefilter.invites)}")
+            else:
+                return await ctx.send("There is no approved servers!")
 
-        invite = self.bot.invitefilter.invites.get(name)
+        invite = await self.bot.invitefilter.fetchinvite(alias=name)
 
         if invite:
             await ctx.send(f"https://discord.gg/{invite.code}")

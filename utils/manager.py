@@ -1,3 +1,4 @@
+from typing import Optional, List
 import aiosqlite3
 import json
 
@@ -44,7 +45,7 @@ class WordFilterManager(Manager):
     async def add(self, word: str, kind: str) -> tuple:
         async with self.dbcon as cur:
             try:
-                await cur.execute(f'INSERT INTO wordfilter VALUES ("{word}","{kind}")')
+                await cur.execute(f'INSERT INTO invitefilter VALUES (?, ?, ?, ?)', (word, kind))
             except aiosqlite3.IntegrityError:
                 return None, None
         await self.load()
@@ -66,9 +67,10 @@ class WordFilterManager(Manager):
 
 
 class Invite:
-    def __init__(self, invite_code, remaining_uses):
+    def __init__(self, invite_code: str, alias: str, remaining_uses: int):
         self.code = invite_code
         self.uses = remaining_uses
+        self.alias = alias
 
     @property
     def is_temporary(self):
@@ -78,30 +80,35 @@ class Invite:
 class InviteFilterManager(Manager):
     def __init__(self, bot):
         super().__init__(bot)
-        self.invites = {}
+        self.invites = []
 
     async def load(self):
         self.invites.clear()
-        invites = await self.fetch()
-        if invites:
-            for code, _, alias, uses in invites:
-                self.invites[alias] = Invite(code, uses)
-        print("Loaded Invites")
+        self.invites = await self.fetch()
 
-    async def add(self, code: str, name: str, alias: str, uses: int):
+    async def add(self, code: str, name: str, alias: str, uses: int) -> Optional[Invite]:
         async with self.dbcon as cur:
             try:
-                await cur.execute(f"INSERT INTO invitefilter VALUES ('{code}', '{name}', '{alias}', {uses})")
+                await cur.execute("INSERT INTO invitefilter VALUES (?, ?, ?, ?)", (code, name, alias, uses))
+                await self.load()
             except aiosqlite3.IntegrityError:
-                return None, None
-        await self.load()
-        return name, code
+                return None
+        return Invite(code, alias, uses)
 
-    async def fetch(self, **kwargs):
+    async def fetch(self, **kwargs) -> List[Invite]:
         cond = self.format_args(kwargs)
         async with self.dbcon as cur:
             await cur.execute(f'SELECT * FROM invitefilter {cond}')
-            return await cur.fetchall()
+            if data := await cur.fetchall():
+                return [Invite(code, alias, uses) for code, _, alias, uses in data]
+            return data
+
+    async def fetchinvite(self, **kwargs) -> Optional[Invite]:
+        cond = self.format_args(kwargs)
+        async with self.dbcon as cur:
+            await cur.execute(f'SELECT * FROM invitefilter {cond}')
+            if data := await cur.fetchone():
+                return Invite(data[0], data[2], data[3])
 
     async def set_uses(self, code: str, uses: int):
         async with self.dbcon as cur:

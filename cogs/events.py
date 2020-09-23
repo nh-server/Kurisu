@@ -70,7 +70,7 @@ class Events(DatabaseCog):
         contains_piracy_video_id = False if not contains_video else any(x or y for x, y in res if x in self.bot.wordfilter.filter['piracy video'] or y in self.bot.wordfilter.filter['piracy video'])
 
         res = re.findall('(?:discordapp\.com/invite|discord\.gg)/([\w]+)', message.content)
-        approved_invites = [x for x in self.bot.invitefilter.invites.values() if x.code in res]
+        approved_invites = [x for x in self.bot.invitefilter.invites if x.code in res]
         contains_non_approved_invite = len(res) != len(approved_invites)
 
         contains_piracy_tool_alert_mention = any(x in msg_no_separators for x in self.bot.wordfilter.filter['piracy tool alert'])
