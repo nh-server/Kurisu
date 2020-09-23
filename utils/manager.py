@@ -45,7 +45,7 @@ class WordFilterManager(Manager):
     async def add(self, word: str, kind: str) -> tuple:
         async with self.dbcon as cur:
             try:
-                await cur.execute(f'INSERT INTO invitefilter VALUES (?, ?, ?, ?)', (word, kind))
+                await cur.execute('INSERT INTO invitefilter VALUES (?, ?, ?, ?)', (word, kind))
             except aiosqlite3.IntegrityError:
                 return None, None
         await self.load()
