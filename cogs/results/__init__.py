@@ -35,6 +35,14 @@ class Results(commands.Cog):
                 pass
         return input
 
+    def check_meme(self, err:str) -> str:
+        memes = {
+            '0xdeadbeef': 'you sure you want to eat that?',
+            '0xdeadbabe': 'i think you have bigger problems if that\'s the case',
+            '0x8badf00d': 'told you not to eat it'
+        }
+        return memes[err] if err.casefold() in memes.keys() else None
+
     @commands.command(aliases=['nxerr', 'serr', 'err', 'res'])
     async def result(self, ctx, err: str):
         """
@@ -50,6 +58,9 @@ class Results(commands.Cog):
           .err 2-ARVHA-0000
         """
         err = self.fixup_input(err)
+        if (meme := self.check_meme(err)) is not None:
+            return await ctx.send(meme)
+
         system_name, module_name, error, color = self.fetch(err)
 
         if error:
