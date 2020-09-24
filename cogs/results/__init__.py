@@ -66,13 +66,16 @@ class Results(commands.Cog):
         if error:
             embed = discord.Embed(title=f"Result {err} ({system_name})")
             embed.add_field(name="Module", value=module_name, inline=False)
+
             if error.summary:
                 embed.add_field(name="Summary", value=error.summary, inline=False)
             if error.level:
                 embed.add_field(name="Level", value=error.level, inline=False)
+
+            embed.add_field(name="Description", value=error.description, inline=False)
+
             if error.support_url:
                 embed.add_field(name="Further information", value=error.support_url, inline=False)
-            embed.add_field(name="Description", value=error.description, inline=False)
             embed.color = color
             await ctx.send(embed=embed)
         else:

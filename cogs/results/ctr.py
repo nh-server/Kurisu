@@ -5,7 +5,10 @@ from .types import Module, ResultCode, UNKNOWN_MODULE, NO_RESULTS_FOUND
 """
 This file contains all currently known 2DS/3DS result and error codes. 
 There may be inaccuracies here; we'll do our best to correct them 
-when we find out more about them.
+when we find out more about them. It is also worth noting that apparently Nintendo
+loved to use random modules for some of these error codes, due to the reporting
+modules not making much sense (e.g., kernel reporting an internet authentication
+ server error...).
 
 A result code is a 32-bit integer returned when calling various commands in the
 3DS's operating system, Horizon. Its breaks down like so:
@@ -54,6 +57,11 @@ Kurisu's previous err.py module
 TODO: Add a number of result codes that were in the previous result code Kurisu
 used. They were left out for the sake of getting this initial code done faster.
 """
+
+fssrv = Module('file server', {
+    1099: ResultCode('Access point with given SSID not found.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/4249/kw/003-1099'),
+    2001: ResultCode('DNS error. If you\'re using a custom DNS server, make sure the settings are correct.')
+})
 
 srv = Module('srv', {
     5: ResultCode('Invalid string length (service name length is zero or longer than 8 chars).'),
@@ -115,8 +123,19 @@ common = Module('common', {
     1023: ResultCode('Invalid result value')
 })
 
+i2c = Module('i2c', {
+    3021: ResultCode('Cannot find title on Nintendo eShop (incorrect region, or never existed?).'),
+    3136: ResultCode('Nintendo eShop is currently unavailable. Try again later.'),
+    6901: ResultCode('This console is permanently banned by Nintendo (displayed in Japanese for some reason). You cannot ask how to fix this issue here.')
+})
+
 kernel = Module('kernel', {
     2: ResultCode('Invalid memory permissions.')
+})
+
+codec = Module('codec', {
+    16: ResultCode('Both consoles have the same movable.sed key. Format the target console and system transfer again.'),
+    62: ResultCode('An error occurred during system transfer. Move closer to the wireless router and try again.')
 })
 
 am = Module('am', {
@@ -127,17 +146,51 @@ am = Module('am', {
     43: ResultCode('Database doesn\'t exist, or it failed to open.'),
     44: ResultCode('Trying to uninstall system-app.'),
     106: ResultCode('Invalid signature/CIA.'),
-    393: ResultCode('Invalid database.')
+    393: ResultCode('Invalid database.'),
+    1820: ResultCode('Displayed when the browser asks if you want to go to to a potentially dangerous website. Press \'yes\' to continue if you feel it is safe.')
+})
+
+gpio = Module('gpio', {
+    1511: ResultCode('Certificate warning.')
+})
+
+pm = Module('pm', {
+    2452: ResultCode('Tried to access the eShop with UNITINFO patch enabled. Turn it off in Luma\'s options.'),
+    2501: ResultCode('NNID is already linked to another system. This can be the result of using System Transfer (where all NNIDs associated with the system are moved, whether they are currently linked or not), restoring the source console\'s NAND, and then attempting to use applications which require an NNID.'),
+    2511: ResultCode('System update required (displayed by Miiverse?).'),
+    2613: ResultCode('Incorrect email or password when attempting to link an existing NNID. Can also happen if the NNID is already linked to another system, or if you attempt to download an application from the eShop without a linked NNID on the console.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/4314/kw/022-2613'),
+    2631: ResultCode('The NNID you are attempting to use has been deleted, or is unusable due to a System Transfer. A transferred NNID will only work on the target system.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/4285/kw/022-2631'),
+    2633: ResultCode('NNID is temporarily locked due to too many incorrect password attempts. Try again later.'),
+    2634: ResultCode('NNID is not correctly linked on this console.', '[To fix it, follow these steps.](https://3ds.hacks.guide/godmode9-usage#removing-an-nnid-without-formatting-your-device)'),
+    2812: ResultCode('This console is permanently banned by Nintendo for playing Pokémon Sun & Moon online before the release date illegally. You cannot ask how to fix this issue here.'),
+    2815: ResultCode('This console is banned from accessing Miiverse by Nintendo.'),
+    5515: ResultCode('Network timeout.'),
 })
 
 util = Module('util', {
-    102: ResultCode('This console is permanently banned by Nintendo.')
+    102: ResultCode('This console is permanently banned by Nintendo. You cannot ask how to fix this issue here.'),
+    107: ResultCode('This console is temporarily (?) banned by Nintendo. You cannot ask how to fix this issue here.'),
+    119: ResultCode('System update is required. This is typically shown when the friends module is outdated.'),
+    120: ResultCode('Game or title update is required. This is typically shown when the title you\'re trying to launch is outdated.'),
+    121: ResultCode('Local friend code SEED has invalid signature. This should only happen if it has been modified. You cannot ask how to fix this issue here.'),
+    123: ResultCode('This console is permanently banned by Nintendo. You cannot ask how to fix this issue here.'),
 })
 
 os = Module('os', {
     10: ResultCode('Not enough memory.'),
     26: ResultCode('Session closed by remote.'),
     47: ResultCode('Invalid command header.')
+})
+
+pdn = Module('pdn', {
+    1000: ResultCode('System update required (friends module?).'),
+    2913: ResultCode('NIM HTTP error, so the server is probably down. Try again later.'),
+    2916: ResultCode('NIM HTTP error, so the server is probably down. Try again later.'),
+    2920: ResultCode('Title has an invalid ticket. Delete the title and/or its ticket in FBI and install it again from a legitimate source like the Nintendo eShop, or from your game cartridges if using cart dumps.')
+    4079: ResultCode('Unable to access SD card.'),
+    4998: ResultCode('Local content is newer. Unknown what causes this.'),
+    6106: ResultCode('AM error in NIM. Bad ticket is likely.'),
+    8401: ResultCode('The update data is corrupted. Delete it and reinstall.')
 })
 
 http = Module('http', {
@@ -150,6 +203,10 @@ mvd = Module('mvd', {
 
 qtm = Module('qtm', {
     8: ResultCode('Camera is already in use or busy.')
+})
+
+avd = Module('avd', {
+    212: ResultCode('Game is permanently banned from Pokémon Global Link for using altered or illegal save data. You cannot ask how to fix this issue here.')
 })
 
 # This is largely a dummy module, but FBI errors often get passed through the bot
@@ -165,15 +222,17 @@ modules = {
     0: common,
     1: kernel,
     2: util,
+    3: fssrv,
+    4: Module('loader server'),
     6: os,
     7: Module('dbg'),
     8: Module('dmnt'),
-    9: Module('pdn'),
+    9: pdn,
     10: Module('gsp'),
-    11: Module('i2c'),
-    12: Module('gpio'),
+    11: i2c,
+    12: gpio,
     13: Module('dd'),
-    14: Module('codec'),
+    14: codec,
     15: Module('spi'),
     16: Module('pxi'),
     17: fs,
@@ -181,7 +240,7 @@ modules = {
     19: Module('hid'),
     20: Module('cam'),
     21: Module('pi'),
-    22: Module('pm'),
+    22: pm,
     23: Module('pm_low'),
     24: Module('fsi'),
     25: srv,
@@ -247,7 +306,7 @@ modules = {
     85: Module('olv'),
     86: Module('neia'),
     87: Module('npns'),
-    90: Module('avd'),
+    90: avd,
     91: Module('l2b'),
     92: mvd,
     93: Module('nfc'),
