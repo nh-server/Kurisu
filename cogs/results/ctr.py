@@ -126,7 +126,7 @@ common = Module('common', {
 i2c = Module('i2c', {
     3021: ResultCode('Cannot find title on Nintendo eShop (incorrect region, or never existed?).'),
     3136: ResultCode('Nintendo eShop is currently unavailable. Try again later.'),
-    6901: ResultCode('This console is permanently banned by Nintendo (displayed in Japanese for some reason). You cannot ask how to fix this issue here.')
+    6901: ResultCode('This console is permanently banned by Nintendo (displayed in Japanese for some reason).', is_ban=True)
 })
 
 kernel = Module('kernel', {
@@ -162,18 +162,18 @@ pm = Module('pm', {
     2631: ResultCode('The NNID you are attempting to use has been deleted, or is unusable due to a System Transfer. A transferred NNID will only work on the target system.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/4285/kw/022-2631'),
     2633: ResultCode('NNID is temporarily locked due to too many incorrect password attempts. Try again later.'),
     2634: ResultCode('NNID is not correctly linked on this console.', '[To fix it, follow these steps.](https://3ds.hacks.guide/godmode9-usage#removing-an-nnid-without-formatting-your-device)'),
-    2812: ResultCode('This console is permanently banned by Nintendo for playing Pokémon Sun & Moon online before the release date illegally. You cannot ask how to fix this issue here.'),
+    2812: ResultCode('This console is permanently banned by Nintendo for playing Pokémon Sun & Moon online before the release date illegally.', is_ban=True),
     2815: ResultCode('This console is banned from accessing Miiverse by Nintendo.'),
     5515: ResultCode('Network timeout.'),
 })
 
 util = Module('util', {
-    102: ResultCode('This console is permanently banned by Nintendo. You cannot ask how to fix this issue here.'),
-    107: ResultCode('This console is temporarily (?) banned by Nintendo. You cannot ask how to fix this issue here.'),
+    102: ResultCode('This console is permanently banned by Nintendo.', is_ban=True),
+    107: ResultCode('This console is temporarily (?) banned by Nintendo.', is_ban=True),
     119: ResultCode('System update is required. This is typically shown when the friends module is outdated.'),
     120: ResultCode('Game or title update is required. This is typically shown when the title you\'re trying to launch is outdated.'),
-    121: ResultCode('Local friend code SEED has invalid signature. This should only happen if it has been modified. You cannot ask how to fix this issue here.'),
-    123: ResultCode('This console is permanently banned by Nintendo. You cannot ask how to fix this issue here.'),
+    121: ResultCode('Local friend code SEED has invalid signature. This should only happen if it has been modified.', is_ban=True),
+    123: ResultCode('This console is permanently banned by Nintendo.', is_ban=True)
 })
 
 os = Module('os', {
@@ -186,7 +186,7 @@ pdn = Module('pdn', {
     1000: ResultCode('System update required (friends module?).'),
     2913: ResultCode('NIM HTTP error, so the server is probably down. Try again later.'),
     2916: ResultCode('NIM HTTP error, so the server is probably down. Try again later.'),
-    2920: ResultCode('Title has an invalid ticket. Delete the title and/or its ticket in FBI and install it again from a legitimate source like the Nintendo eShop, or from your game cartridges if using cart dumps.')
+    2920: ResultCode('Title has an invalid ticket. Delete the title and/or its ticket in FBI and install it again from a legitimate source like the Nintendo eShop, or from your game cartridges if using cart dumps.'),
     4079: ResultCode('Unable to access SD card.'),
     4998: ResultCode('Local content is newer. Unknown what causes this.'),
     6106: ResultCode('AM error in NIM. Bad ticket is likely.'),
@@ -206,7 +206,7 @@ qtm = Module('qtm', {
 })
 
 avd = Module('avd', {
-    212: ResultCode('Game is permanently banned from Pokémon Global Link for using altered or illegal save data. You cannot ask how to fix this issue here.')
+    212: ResultCode('Game is permanently banned from Pokémon Global Link for using altered or illegal save data.', is_ban=True)
 })
 
 # This is largely a dummy module, but FBI errors often get passed through the bot

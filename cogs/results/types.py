@@ -31,12 +31,13 @@ class ResultCode():
     to provide information about the error or result, including a support
     webpage, if available.
     """
-    def __init__(self, description=None, support_url=None):
+    def __init__(self, description=None, support_url=None, is_ban=None):
         self.description = description
         self.support_url = support_url
         self.summary = None
         self.level = None
         self.code = None
+        self.is_ban = is_ban
 
 # Helper constants
 UNKNOWN_MODULE =  ResultCode('Invalid or unknown module. Are you sure you \
