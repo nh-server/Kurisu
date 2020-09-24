@@ -555,7 +555,7 @@ fs = Module('fs', {
 ncm = Module('ncm', {
     1: ResultCode('Invalid ContentStorageBase.'),
     2: ResultCode('Placeholder already exists.'),
-    3: ResultCode('Placeholder not found.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/22393/kw/2005-0003'),
+    3: ResultCode('Placeholder not found (issue related to the SD card in use).', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/22393/kw/2005-0003'),
     4: ResultCode('Content already exists.'),
     5: ResultCode('Content not found.'),
     7: ResultCode('Content meta not found.'),
@@ -1184,8 +1184,9 @@ account = Module('account', {
     4027: ResultCode('Console (and Nintendo Account) are temporarily banned from a game.', is_ban=True),
     4508: ResultCode('Console is permanently banned.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/28046/', is_ban=True),
     4517: ResultCode('Console is permanently banned.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/43652/', is_ban=True),
-    4609: ResultCode('The online service is no longer available.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/46482/')
-    4621: ResultCode('Tencent-Nintendo (Chinese) Switches cannot use online features in foreign games.' 'https://nintendoswitch.com.cn/support/'), 
+    4609: ResultCode('The online service is no longer available.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/46482/'),
+    4621: ResultCode('Tencent-Nintendo (Chinese) consoles cannot use online features in foreign games.' 'https://nintendoswitch.com.cn/support/'),
+    5111: ResultCode('Complete account ban.', is_ban=True)
 })
 
 sf = Module('sf', {
@@ -1545,6 +1546,10 @@ arms_game = Module('ARMS', {
     1021: ResultCode('This error code indicates the connection has likely timed out during a download.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/26250/~/error-code%3A-2-aabqa-1021')
 })
 
+splatoon_game = Module('Splatoon 2', {
+    3400: ResultCode('You have been kicked from the online service due to using exefs/romfs edits.')
+})
+
 # We have some modules partially documented, those that aren't have dummy Modules.
 modules = {
     1: kernel,
@@ -1665,6 +1670,14 @@ modules = {
     230: Module('ins'),
     231: Module('lp2p'),
 
+    800: web_applet,
+    809: web_applet,
+    810: web_applet,
+    811: web_applet,
+    'arvha': youtube_app,
+    'aabqa': arms_game,
+    'aab6a': splatoon_game,
+
     # Add non-nintendo modules below here.
     345: libnx,
     346: hb_abi,
@@ -1675,19 +1688,14 @@ modules = {
     416: Module('SwitchPresence-Rewritten'),
     444: exosphere,
     789: Module('SwitchPresence-Old-Random'),
-    800: web_applet,
-    809: web_applet,
-    810: web_applet,
-    811: web_applet,
-    'arvha': youtube_app,
-    'aabqa': arms_game,
 }
 
 # regex for result code format "XXXX-YYYY"
 RE = re.compile(r'2\d{3}\-\d{4}')
 
-# regex for result code format "A-BBBBB-CCCC"
-RE_APP = re.compile(r'\d{1}-[a-zA-Z]{5}-\d{4}')
+# regex for result code format "2-BBBBB-CCCC"
+# The first digit always appears to be "2" for games/applications.
+RE_APP = re.compile(r'2-[a-zA-Z]{5}-\d{4}')
 
 CONSOLE_NAME = 'Nintendo Switch'
 
@@ -1702,9 +1710,25 @@ def is_valid(error):
         return not err_int & 0x80000000
     return RE.match(error) or RE_APP.match(error)
 
+def err2hex(error):
+    if RE.match(error):
+        module = int(error[:4]) - 2000
+        desc = int(error[5:9])
+        code = (desc << 9) + module
+        return hex(code)
+    return 'Invalid format. The only supported error code format is `XXXX-YYYY`.'
+
+def hex2err(error):
+    if error.startswith('0x'):
+        error = error[2:]
+    error = int(error, 16)
+    module = error & 0x1FF
+    desc = (error >> 9) & 0x3FFF
+    code = f'{module + 2000:04}-{desc:04}'
+    return code
+
 def get(error):
     if RE_APP.match(error):
-        # TODO: What does the first digit mean?
         subs = error.split('-')
         mod = subs[1].casefold()
         code = int(subs[2], 10)

@@ -361,6 +361,23 @@ def is_valid(error):
         return err_int & 0x80000000
     return RE.match(error)
 
+def err2hex(error):
+    if RE.match(error):
+        module = int(error[:2])
+        desc = int(error[4:7])
+        code = (desc << 9) | module
+        return hex(code)
+    return 'Invalid format. The only supported error code format is `0XX-YYYY`.'
+
+def hex2err(error):
+    if error.startswith('0x'):
+        error = error[2:]
+    error = int(error, 16)
+    module = (error >> 10) & 0xFF
+    desc = error & 0x3FF
+    code = f'{module:03}-{desc:04}'
+    return code
+
 def get(error):
     level = None
     summary = None

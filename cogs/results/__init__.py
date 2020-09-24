@@ -85,6 +85,22 @@ class Results(commands.Cog):
             await ctx.send(f'{ctx.author.mention}, the code you entered is \
 invalid or is for a system I don\'t have support for.', delete_after=10)
 
+    @commands.command()
+    async def err2hex(self, ctx, error:str):
+        if switch.is_valid(error):
+            return await ctx.send(switch.err2hex(error))
+        if ctr.is_valid(error):
+            return await ctx.send(ctr.err2hex(error))
+        # TODO: Wii U?
+
+    @commands.command()
+    async def hex2err(self, ctx, error:str):
+        if switch.is_valid(error):
+            return await ctx.send(switch.hex2err(error))
+        if ctr.is_valid(error):
+            return await ctx.send(ctr.hex2err(error))
+        # TODO: Wii U?
+  
 def setup(bot):
     bot.add_cog(Results(bot))
 
