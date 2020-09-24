@@ -67,9 +67,9 @@ class Results(commands.Cog):
             embed = discord.Embed(title=f"Result {err} ({system_name})")
             embed.add_field(name="Module", value=module_name, inline=False)
 
-            if error.summary:
+            if error.summary is not None:
                 embed.add_field(name="Summary", value=error.summary, inline=False)
-            if error.level:
+            if error.level is not None:
                 embed.add_field(name="Level", value=error.level, inline=False)
 
             embed.add_field(name="Description", value=error.description, inline=False)

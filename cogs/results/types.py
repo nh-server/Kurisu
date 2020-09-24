@@ -31,7 +31,7 @@ class ResultCode():
     to provide information about the error or result, including a support
     webpage, if available.
     """
-    def __init__(self, description=None, support_url=None, is_ban=None):
+    def __init__(self, description='', support_url='', is_ban=False):
         self.description = description
         self.support_url = support_url
         self.summary = None
