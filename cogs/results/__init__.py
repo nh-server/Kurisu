@@ -78,7 +78,7 @@ class Results(commands.Cog):
                 embed.add_field(name="Further information", value=error.support_url, inline=False)
 
             if error.is_ban:
-                embed.add_field(name="Console/Game bans", value="Nintendo Homebrew does not provide support for or help with unbanning your game or console. Please do not ask for further assistance with this.")
+                embed.add_field(name="Console, account and game bans", value="Nintendo Homebrew does not provide support for unbanning your game or console. Please do not ask for further assistance with this.")
             embed.color = color
             await ctx.send(embed=embed)
         else:

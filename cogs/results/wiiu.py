@@ -307,6 +307,7 @@ act = Module('act (accounts)', {
     2813: ResultCode('Console is banned from a particular game.', is_ban=True),
     2814: ResultCode('Console is banned from Nintendo\'s online service.', is_ban=True),
     2815: ResultCode('Console is banned from independent services.', is_ban=True),
+    2816: ResultCode('Console is banned for an unknown duration, due to using modified/hacked files in online games like Splatoon.', is_ban=True),
     2821: ResultCode('Account is temporarily banned.', is_ban=True),
     2822: ResultCode('Account is temporarily banned from all services.', is_ban=True),
     2823: ResultCode('Account is temporarily banned from a particular game.', is_ban=True),
@@ -375,7 +376,7 @@ nex = Module('nex (game servers)', {
     303: ResultCode('The Principal tried to log in with an invalid user name, i.e. the user name does not exist in the database.'),
     304: ResultCode('The Principal either tried to log in with an invalid password for the provided user name or tried to join a Gathering with an invalid password.'),
     305: ResultCode('The provided user name already exists in the database. All usernames must be unique.'),
-    306: ResultCode('The Principal\'s account still exists in the database but the account has been disabled.'),
+    306: ResultCode('The Principal\'s account still exists in the database but the account has been disabled.', is_ban=True),
     307: ResultCode('The Principal\'s account still exists in the database but the account has expired.'),
     308: ResultCode('The Principal does not have the Capabilities to perform concurrent log ins, i.e. at any given time only one log-in may be maintained.'),
     309: ResultCode('Data encryption failed.'),
@@ -385,6 +386,7 @@ nex = Module('nex (game servers)', {
     313: ResultCode('Invalid Control script ID.'),
     314: ResultCode('Invalid operation in live/production environment.'),
     315: ResultCode('Duplicate entry.'),
+    346: ResultCode('NNID is permanently banned.', is_ban=True),
     501: ResultCode('The reason for the error is unknown.'),
     502: ResultCode('Network connection was unable to be established.'),
     503: ResultCode('The URL contained in the StationURL is invalid. The syntax may be incorrect.'),
@@ -426,12 +428,34 @@ eshop_web = Module('eshop (web)', {
     9100: ResultCode('Invalid template.')
 })
 
+unknown2 = Module('unknown (browser?)', {
+    1037: ResultCode('Incorrect permissions for the default index.html file which prevents the Internet Browser from reading it.', '[To fix it, follow these steps.](https://wiiu.hacks.guide/#/fix-errcode-112-1037)'),
+})
+
 olv = Module('olv (miiverse)', {
-    5004: 'The Miiverse service has been discontinued.'
+    1009: ResultCode('Console is permanently banned from Miiverse.', is_ban=True),
+    5004: ResultCode('The Miiverse service has been discontinued.')
+})
+
+eshop_unk = Module('eShop (unknown)', {
+    9622: ResultCode('Error when attempting to add funds. Check that the payment method is correct or try again later.')
+})
+
+fs = Module('fs', {
+    1031: ResultCode('The disc could not be read or is unsupported (i.e. not a Wii or Wii U game). Try cleaning the disc or lens if it is a supported title.'),
+    2031: ResultCode('The disc could not be read or is unsupported (i.e. not a Wii or Wii U game). Try cleaning the disc or lens if it is a supported title.')
+})
+
+syserr = Module('system error', {
+    101: ResultCode('Generic error. Can happen when formatting a console that has CBHC installed.'),
+    102: ResultCode('Error in SLC/MLC or USB.'),
+    103: ResultCode('The MLC system memory is corrupted.'),
+    104: ResultCode('The SLC system memory is corrupted.'),
+    105: ResultCode('The USB storage is corrupted.'),
 })
 
 unknown = Module('unknown/misc.', {
-    9999: 'Usually indicates an invalid signature, ticket, or corrupted data. Typically happens when running an unsigned program without CFW/signature patches.'
+    9999: ResultCode('Usually indicates an invalid signature, ticket, or corrupted data. Typically happens when running an unsigned program without CFW/signature patches.')
 })
 
 # We have some modules partially documented, those that aren't have dummy Modules.
@@ -444,13 +468,15 @@ modules = {
     106: nex,
     107: eshop_api,
     111: eshop_web,
+    112: unknown2,
     115: olv,
     118: Module('pia (peer-to-peer)'),
     124: Module('ec (e-commerce)'),
-    150: Module('fs'),
+    126: eshop_unk,
+    150: fs,
     151: Module('kpad (wiimote)'),
     155: Module('save'),
-    160: Module('system error'),
+    160: syserr,
     165: Module('vpad (gamepad)'),
     166: Module('aoc (dlc)'),
     187: Module('nfp (amiibo'),
