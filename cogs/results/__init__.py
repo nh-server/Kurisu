@@ -21,18 +21,35 @@ class Results(commands.Cog):
         # Console name, module name, result, color
         return None, None, None, types.WARNING_COLOR
 
+    def err2hex(self, error):
+        if switch.is_valid(error):
+            return switch.err2hex(error)
+        if ctr.is_valid(error):
+            return ctr.err2hex(error)
+        # TODO: Wii U?
+
+    def hex2err(self, error):
+        if switch.is_valid(error):
+            return switch.hex2err(error)
+        if ctr.is_valid(error):
+            return ctr.hex2err(error)
+        # TODO: Wii U?
+
     def fixup_input(self, input):
         # Truncate input to 16 chars so as not to create a huge embed or do
         # eventual regex on a huge string. If we add support for consoles that
         # that have longer error codes, adjust accordingly.
         input = input[:16]
-
+        self.is_hex = False
         # Fix up hex input if 0x was omitted. It's fine if it doesn't convert.
         if not input.startswith('0x'):
             try:
                 input = hex(int(input, 16))
+                self.is_hex = True
             except ValueError:
                 pass
+        else:
+            self.is_hex = True
         return input
 
     def check_meme(self, err:str) -> str:
@@ -64,7 +81,8 @@ class Results(commands.Cog):
         system_name, module_name, error, color = self.fetch(err)
 
         if error:
-            embed = discord.Embed(title=f"Result {err} ({system_name})")
+            extra = f'{self.err2hex(err) if not self.is_hex else err}/{self.hex2err(err) if self.is_hex else err}'
+            embed = discord.Embed(title=f"{extra} ({system_name})")
             embed.add_field(name="Module", value=module_name, inline=False)
 
             if error.summary is not None:
@@ -85,23 +103,15 @@ class Results(commands.Cog):
             await ctx.send(f'{ctx.author.mention}, the code you entered is \
 invalid or is for a system I don\'t have support for.', delete_after=10)
 
-    @commands.command()
-    async def err2hex(self, ctx, error:str):
+    @commands.command(name='err2hex')
+    async def cmderr2hex(self, ctx, error:str):
         error = self.fixup_input(error)
-        if switch.is_valid(error):
-            return await ctx.send(switch.err2hex(error))
-        if ctr.is_valid(error):
-            return await ctx.send(ctr.err2hex(error))
-        # TODO: Wii U?
+        return await ctx.send(self.err2hex(error))
 
-    @commands.command()
-    async def hex2err(self, ctx, error:str):
+    @commands.command(name='hex2err')
+    async def cmdhex2err(self, ctx, error:str):
         error = self.fixup_input(error)
-        if switch.is_valid(error):
-            return await ctx.send(switch.hex2err(error))
-        if ctr.is_valid(error):
-            return await ctx.send(ctr.hex2err(error))
-        # TODO: Wii U?
+        return await ctx.send(self.hex2err(error))
   
 def setup(bot):
     bot.add_cog(Results(bot))
