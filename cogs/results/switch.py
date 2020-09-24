@@ -555,7 +555,7 @@ fs = Module('fs', {
 ncm = Module('ncm', {
     1: ResultCode('Invalid ContentStorageBase.'),
     2: ResultCode('Placeholder already exists.'),
-    3: ResultCode('Placeholder not found.'),
+    3: ResultCode('Placeholder not found.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/22393/kw/2005-0003'),
     4: ResultCode('Content already exists.'),
     5: ResultCode('Content not found.'),
     7: ResultCode('Content meta not found.'),
@@ -730,7 +730,8 @@ ns = Module('ns', {
     801: ResultCode('SystemDeliveryInfo system_delivery_protocol_version is less than the system setting.'),
     802: ResultCode('SystemDeliveryInfo system_delivery_protocol_version is greater than the system setting.'),
     892: ResultCode('Unknown state: reference count is zero.'),
-    931: ResultCode('Invalid SystemDeliveryInfo HMAC/invalid Meta ID.')
+    931: ResultCode('Invalid SystemDeliveryInfo HMAC/invalid Meta ID.'),
+    2101: ResultCode('Inserted region-locked Tencent-Nintendo (Chinese) game cartridge into a non-Chinese console.', 'https://nintendoswitch.com.cn/support/')
 })
 
 sm = Module('sm', {
@@ -1139,6 +1140,10 @@ nim = Module('nim', {
     (8001, 8096): ResultCode('libcurl error 1-96. Some errors map to the 7800 result code range instead, however.')
 })
 
+dauth = Module('dauth', {
+    4008: ResultCode('Console is permanently banned by Nintendo.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/42061/kw/2181-4008', is_ban=True)
+})
+
 web_applet = Module('web applet', {
     1006: ResultCode('This error code indicates an issue with the DNS used or that the connection timed out.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/25859/p/897'),
     1028: ResultCode('This error code generally indicates that your connection to the Nintendo eShop has timed out.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/22503/p/897'),
@@ -1174,10 +1179,13 @@ spl = Module('spl', {
 account = Module('account', {
     59: ResultCode('IsAnyInternetRequestAccepted with the output from GetClientId returned false.'),
     3000: ResultCode('System update is required.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/27166/'),
-    4007: ResultCode('Console is permanently banned.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/28046/'),
-    4508: ResultCode('Console is permanently banned.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/28046/'),
-    4517: ResultCode('Console is permanently banned.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/43652/'),
+    4007: ResultCode('Console is permanently banned.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/28046/', is_ban=True),
+    4025: ResultCode('Game Card is banned. If you have a legitimate cartridge and this happened to you, contact Nintendo.', is_ban=True),
+    4027: ResultCode('Console (and Nintendo Account) are temporarily banned from a game.', is_ban=True),
+    4508: ResultCode('Console is permanently banned.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/28046/', is_ban=True),
+    4517: ResultCode('Console is permanently banned.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/43652/', is_ban=True),
     4609: ResultCode('The online service is no longer available.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/46482/')
+    4621: ResultCode('Tencent-Nintendo (Chinese) Switches cannot use online features in foreign games.' 'https://nintendoswitch.com.cn/support/'), 
 })
 
 sf = Module('sf', {
@@ -1354,7 +1362,12 @@ arp = Module('arp', {
     102: ResultCode('Invalid PID.')
 })
 
+nifm = Module('nifm', {
+    3400: ResultCode('The internet connection you are using requires authentication or a user agreement.' 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/22569/kw/2110-3400'), 
+})
+
 ec = Module('ec', {
+    20: ResultCode('Unable to start the software.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/22539/kw/2164-0020'),
     56: ResultCode('IsAnyInternetRequestAccepted with the output from GetClientId returned false.')
 })
 
@@ -1570,7 +1583,7 @@ modules = {
     105: settings,
     107: Module('wlan'),
     108: Module('xcd'),
-    110: Module('nifm'),
+    110: nifm,
     111: Module('hwopus'),
     113: Module('bluetooth'),
     114: vi,
@@ -1616,17 +1629,17 @@ modules = {
     158: updater,
     159: Module('swkbd'),
     161: Module('mifare'),
-    162:userland_assert,
-    163:fatal,
+    162: userland_assert,
+    163: fatal,
     164: ec,
     165: Module('spsm'),
     167: Module('bgtc'),
-    168:creport,
+    168: creport,
     175: jit,
     178: Module('pdm'),
     179: Module('olsc'),
     180: Module('srepo'),
-    181: Module('dauth'),
+    181: dauth,
     183: dbg,
     187: Module('sasbus'),
     189: Module('pwm'),
