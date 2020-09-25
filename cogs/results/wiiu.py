@@ -500,15 +500,34 @@ CONSOLE_NAME = 'Nintendo Wii U'
 # Suggested color to use if displaying information through a Discord bot's embed
 COLOR = 0x009AC7
 
-# TODO: When hexadecimal is figured out, add support for it.
 def is_valid(error):
+    err_int = None
+    if error.startswith('0x'):
+        err_int = int(error, 16)
+    if err_int:
+        module = (err_int & 0x1FF0) >> 4
+        return (err_int & 0x80000000) and module >= 100
     return RE.match(error)
 
+def hex2err(error):
+    error = int(error)
+    level = (error & 0xF) | 0xFFFFFFF8
+    mod = (error & 0x1FF0) >> 4
+    desc = (error & 0xFFFFE000) >> 13
+    code = f'{module:03}-{desc:04}'
+    return code
+
 def get(error):
-    # TODO: Use level in the future once hex support is written.
-    #level = None
-    mod = int(error[0:3])
-    desc = int(error[4:])
+    if error.startswith('0x'):
+        error = int(error)
+        level = (error & 0xF) | 0xFFFFFFF8
+        print(level)
+        mod = (error & 0x1FF0) >> 4
+        desc = (error & 0xFFFFE000) >> 13
+    else:
+        level = None
+        mod = int(error[0:3])
+        desc = int(error[4:])
     if mod in modules:
         if not modules[mod].data:
             return CONSOLE_NAME, modules[mod].name, NO_RESULTS_FOUND, COLOR

@@ -11,29 +11,28 @@ class Results(commands.Cog):
         self.bot = bot
 
     def fetch(self, error):
+        if ctr.is_valid(error):
+            return ctr.get(error)
+        if wiiu.is_valid(error):
+            return wiiu.get(error)
         if switch.is_valid(error):
             return switch.get(error)
-        elif ctr.is_valid(error):
-            return ctr.get(error)
-        elif wiiu.is_valid(error):
-            return wiiu.get(error)
 
         # Console name, module name, result, color
         return None, None, None, types.WARNING_COLOR
 
     def err2hex(self, error):
+        # Only Switch is supported. The other two can only give nonsense results.
         if switch.is_valid(error):
             return switch.err2hex(error)
-        if ctr.is_valid(error):
-            return ctr.err2hex(error)
-        # TODO: Wii U?
 
     def hex2err(self, error):
-        if switch.is_valid(error):
-            return switch.hex2err(error)
         if ctr.is_valid(error):
             return ctr.hex2err(error)
-        # TODO: Wii U?
+        if wiiu.is_valid(error):
+            return wiiu.err2hex(error)
+        if switch.is_valid(error):
+            return switch.hex2err(error)
 
     def fixup_input(self, input):
         # Truncate input to 16 chars so as not to create a huge embed or do
@@ -58,7 +57,7 @@ class Results(commands.Cog):
             '0xdeadbabe': 'i think you have bigger problems if that\'s the case',
             '0x8badf00d': 'told you not to eat it'
         }
-        return memes[err] if err.casefold() in memes.keys() else None
+        return memes.get(err.casefold())
 
     @commands.command(aliases=['nxerr', 'serr', 'err', 'res'])
     async def result(self, ctx, err: str):
