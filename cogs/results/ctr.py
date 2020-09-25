@@ -161,7 +161,7 @@ pm = Module('pm', {
     2613: ResultCode('Incorrect email or password when attempting to link an existing NNID. Can also happen if the NNID is already linked to another system, or if you attempt to download an application from the eShop without a linked NNID on the console.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/4314/kw/022-2613'),
     2631: ResultCode('The NNID you are attempting to use has been deleted, or is unusable due to a System Transfer. A transferred NNID will only work on the target system.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/4285/kw/022-2631'),
     2633: ResultCode('NNID is temporarily locked due to too many incorrect password attempts. Try again later.'),
-    2634: ResultCode('NNID is not correctly linked on this console.', '[To fix it, follow these steps.](https://3ds.hacks.guide/godmode9-usage#removing-an-nnid-without-formatting-your-device)'),
+    2634: ResultCode('NNID is not correctly linked on this console.', '[To fix it, follow these steps. Afterwards, reboot and sign into your NNID again.](https://3ds.hacks.guide/godmode9-usage#removing-an-nnid-without-formatting-your-device)'),
     2812: ResultCode('This console is permanently banned by Nintendo for playing Pokémon Sun & Moon online before the release date illegally.', is_ban=True),
     2815: ResultCode('This console is banned from accessing Miiverse by Nintendo.'),
     5515: ResultCode('Network timeout.'),
