@@ -1710,14 +1710,15 @@ def is_valid(error):
         return not err_int & 0x80000000
     return RE.match(error) or RE_APP.match(error)
 
-def err2hex(error):
+def err2hex(error, suppress_error=False):
     if RE.match(error):
         module = int(error[:4]) - 2000
         desc = int(error[5:9])
         code = (desc << 9) + module
         return hex(code)
-    if RE_APP.match(error):
+    if RE_APP.match(error) and not suppress_error:
         return '2-BBBBB-CCCC format error codes are not supported.'
+    return ''
 
 def hex2err(error):
     if error.startswith('0x'):

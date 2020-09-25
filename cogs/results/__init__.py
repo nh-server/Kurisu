@@ -21,17 +21,18 @@ class Results(commands.Cog):
         # Console name, module name, result, color
         return None, None, None, types.WARNING_COLOR
 
-    def err2hex(self, error):
+    def err2hex(self, error, suppress_error=False):
         # If it's already hex, just return it.
         if self.is_hex(error):
             return error
 
         # Only Switch is supported. The other two can only give nonsense results.
         if switch.is_valid(error):
-            return switch.err2hex(error)
+            return switch.err2hex(error, suppress_error)
 
-        return 'Invalid or unsupported error code format. Only Nintendo Switch\
- XXXX-YYYY formatted error codes are supported.'
+        if not suppress_error:
+            return 'Invalid or unsupported error code format. \
+Only Nintendo Switch XXXX-YYYY formatted error codes are supported.'
 
     def hex2err(self, error):
         # Don't bother processing anything if it's not hex.
@@ -42,7 +43,6 @@ class Results(commands.Cog):
                 return wiiu.hex2err(error)
             if switch.is_valid(error):
                 return switch.hex2err(error)
-
         return 'This isn\'t a hexadecimal value!'
 
     def fixup_input(self, user_input):
@@ -95,13 +95,12 @@ class Results(commands.Cog):
         system_name, module_name, error, color = self.fetch(err)
 
         if error:
+            if self.is_hex(err):
+                err_str = self.hex2err(err)
+            else:
+                err_str = self.err2hex(err, True)
 
-            if (err_disp := self.err2hex(err)) is None:
-                err_disp = err
-
-            if (err_str := self.hex2err(err)) is not None:
-                err_disp += f'{"/" + err_str}'
-
+            err_disp = f'{err}{"/" + err_str if err_str else ""}'
             embed = discord.Embed(title=f"{err_disp} ({system_name})")
             embed.add_field(name="Module", value=module_name, inline=False)
 
@@ -117,9 +116,9 @@ class Results(commands.Cog):
 
             if error.is_ban:
                 embed.add_field(name="Console, account and game bans", 
-                value="Nintendo Homebrew does not provide support for unbanning\
- your game or console. Please do not ask for further assistance with this.")
-            embed.color = color
+                value="Nintendo Homebrew does not provide support \
+for unbanning. Please do not ask for further assistance with this.")
+            embed.color = color if not error.is_ban else types.WARNING_COLOR
             await ctx.send(embed=embed)
         else:
             await ctx.send(f'{ctx.author.mention}, the code you entered is \
