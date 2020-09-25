@@ -511,8 +511,7 @@ def is_valid(error):
 
 def hex2err(error):
     error = int(error)
-    level = (error & 0xF) | 0xFFFFFFF8
-    mod = (error & 0x1FF0) >> 4
+    module = (error & 0x1FF0) >> 4
     desc = (error & 0xFFFFE000) >> 13
     code = f'{module:03}-{desc:04}'
     return code
