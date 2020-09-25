@@ -520,7 +520,6 @@ def get(error):
     if error.startswith('0x'):
         error = int(error)
         level = (error & 0xF) | 0xFFFFFFF8
-        print(level)
         mod = (error & 0x1FF0) >> 4
         desc = (error & 0xFFFFE000) >> 13
     else:

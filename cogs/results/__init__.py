@@ -28,7 +28,6 @@ class Results(commands.Cog):
 
         # Only Switch is supported. The other two can only give nonsense results.
         if switch.is_valid(error):
-            print('switch.is_valid true')
             return switch.err2hex(error)
 
         return 'Invalid or unsupported error code format. Only Nintendo Switch\
