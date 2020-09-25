@@ -25,14 +25,16 @@ class Results(commands.Cog):
         # Only Switch is supported. The other two can only give nonsense results.
         if switch.is_valid(error):
             return switch.err2hex(error)
+        return ''
 
     def hex2err(self, error):
         if ctr.is_valid(error):
             return ctr.hex2err(error)
         if wiiu.is_valid(error):
-            return wiiu.err2hex(error)
+            return wiiu.hex2err(error)
         if switch.is_valid(error):
             return switch.hex2err(error)
+        return ''
 
     def fixup_input(self, input):
         # Truncate input to 16 chars so as not to create a huge embed or do
@@ -80,8 +82,14 @@ class Results(commands.Cog):
         system_name, module_name, error, color = self.fetch(err)
 
         if error:
-            extra = f'{self.err2hex(err) if not self.is_hex else err}/{self.hex2err(err) if self.is_hex else err}'
-            embed = discord.Embed(title=f"{extra} ({system_name})")
+            err_disp = err if self.is_hex else self.err2hex(err)
+
+            if err_disp:
+                err_disp += f'/{err if not self.is_hex else self.hex2err(err)}'
+            else:
+                err_disp = err
+
+            embed = discord.Embed(title=f"{err_disp} ({system_name})")
             embed.add_field(name="Module", value=module_name, inline=False)
 
             if error.summary is not None:

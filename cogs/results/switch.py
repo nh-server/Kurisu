@@ -1695,7 +1695,7 @@ RE = re.compile(r'2\d{3}\-\d{4}')
 
 # regex for result code format "2-BBBBB-CCCC"
 # The first digit always appears to be "2" for games/applications.
-RE_APP = re.compile(r'2-[a-zA-Z]{5}-\d{4}')
+RE_APP = re.compile(r'2-[a-zA-Z0-9]{5}-\d{4}')
 
 CONSOLE_NAME = 'Nintendo Switch'
 
@@ -1716,7 +1716,6 @@ def err2hex(error):
         desc = int(error[5:9])
         code = (desc << 9) + module
         return hex(code)
-    return 'Invalid format. The only supported error code format is `XXXX-YYYY`.'
 
 def hex2err(error):
     if error.startswith('0x'):
