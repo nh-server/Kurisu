@@ -380,6 +380,19 @@ def hex2err(error):
     return code
 
 def nim_handler(module, level, summary, description):
+        """
+        Parses 3ds nim error codes in the following ranges:
+        005-2000 to 005-3023:
+         - NIM got a result of its own. Took description and added by 52000.
+        005-4200 to 005-4399:
+         - NIM got an HTTP result. Took description and added by 54200, cutting out at 54399 if it was beyond that.
+        005-4400 to 005-4999:
+         - Range of HTTP codes, however, can suffer collision.
+        005-5000 to 005-6999:
+         - SOAP Error Code range, when <ErrorCode> is not 0 on the SOAP responses.
+        005-7000 to 005-9999:
+         - Non specific expected results are formatted to an error code in nim by taking result module and shifting right by 5, and taking the result description and masked with 0x1F, then added both together along with 57000.
+        """
     nim = modules[52]
     if 2000 <= description < 3024:
         description -= 2000
@@ -405,6 +418,7 @@ def nim_handler(module, level, summary, description):
         ret.level = level
         ret.summary = summary
         return CONSOLE_NAME, nim.name, ret, COLOR
+    # >= 7000 range is compacted
     elif description >= 7000:
         description -= 7000
         module = description >> 5
