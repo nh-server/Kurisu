@@ -408,7 +408,7 @@ def nim_handler(module, level, summary, description):
             ret = ResultCode(f'{description + 100}')
         elif 100 <= description < 500:
             ret = ResultCode(f'{description + 100} or {description} due to a programming mistake in NIM.')
-            ret.summary = f'HTTP error code'
+            ret.summary = 'HTTP error code'
         else:
             ret = ResultCode(f'{description}')
         return CONSOLE_NAME, modules[40].name, ret, COLOR
