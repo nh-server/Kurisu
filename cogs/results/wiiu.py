@@ -517,13 +517,13 @@ def hex2err(error):
     return code
 
 def get(error):
+    level = None
     if error.startswith('0x'):
         error = int(error)
         level = (error & 0xF) | 0xFFFFFFF8
         mod = (error & 0x1FF0) >> 4
         desc = (error & 0xFFFFE000) >> 13
     else:
-        level = None
         mod = int(error[0:3])
         desc = int(error[4:])
     if mod in modules:
@@ -531,7 +531,7 @@ def get(error):
             return CONSOLE_NAME, modules[mod].name, NO_RESULTS_FOUND, COLOR
         ret = modules[mod].get_error(desc)
         ret.code = desc
-        ret.level = modules[mod].get_level(desc)
+        ret.level = modules[mod].get_level(desc) if not level else levels[level]
         return CONSOLE_NAME, modules[mod].name, ret, COLOR
 
     return CONSOLE_NAME, None, UNKNOWN_MODULE, COLOR
