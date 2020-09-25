@@ -552,6 +552,22 @@ fs = Module('fs', {
         (7910, 7912): 'DBM find finished.',
 })
 
+os = Module('os', {
+    4: ResultCode('Busy.'),
+    8: ResultCode('Out of memory.'),
+    9: ResultCode('Out of resources.'),
+    12: ResultCode('Out of virtual address space.'),
+    13: ResultCode('Resource limit reached.'),
+    384: ResultCode('File operation failed.'),
+    500: ResultCode('Out of handles.'),
+    501: ResultCode('Invalid handle.'),
+    502: ResultCode('Invalid CurrentMemory state.'),
+    503: ResultCode('Invalid TransferMemory state.'),
+    504: ResultCode('Invalid TransferMemory size.'),
+    505: ResultCode('Out of TransferMemory.'),
+    506: ResultCode('Out of address space.')
+})
+
 ncm = Module('ncm', {
     1: ResultCode('Invalid ContentStorageBase.'),
     2: ResultCode('Placeholder already exists.'),
@@ -598,45 +614,6 @@ ncm = Module('ncm', {
     (260, 268): 'Content meta database is not active.',
     (290, 299): 'Install task was cancelled.',
     (8181, 8191): 'Invalid argument.'
-})
-
-os = Module('os', {
-    4: ResultCode('Busy.'),
-    8: ResultCode('Out of memory.'),
-    9: ResultCode('Out of resources.'),
-    12: ResultCode('Out of virtual address space.'),
-    13: ResultCode('Resource limit reached.'),
-    384: ResultCode('File operation failed.'),
-    500: ResultCode('Out of handles.'),
-    501: ResultCode('Invalid handle.'),
-    502: ResultCode('Invalid CurrentMemory state.'),
-    503: ResultCode('Invalid TransferMemory state.'),
-    504: ResultCode('Invalid TransferMemory size.'),
-    505: ResultCode('Out of TransferMemory.'),
-    506: ResultCode('Out of address space.')
-})
-
-dmnt = Module('dmnt', {
-    1: ResultCode('Unknown error.'),
-    2: ResultCode('Debugging is disabled.'),
-
-    # atmosphere extension errors
-    6500: ResultCode('Not attached.'),
-    6501: ResultCode('Buffer is null.'),
-    6502: ResultCode('Buffer is invalid.'),
-    6503: ResultCode('ID is unknown.'),
-    6504: ResultCode('Out of resources.'),
-    6505: ResultCode('Cheat is invalid.'),
-    6506: ResultCode('Cheat cannot be disabled.'),
-    6600: ResultCode('Width is invalid.'),
-    6601: ResultCode('Address already exists.'),
-    6602: ResultCode('Address not found.'),
-    6603: ResultCode('Address is out of resources.'),
-    6700: ResultCode('Virtual machine condition depth is invalid.')
-},
-{
-    (6500, 6599): 'Cheat engine error.',
-    (6600, 6699): 'Frozen address error.'
 })
 
 lr = Module('lr', {
@@ -691,6 +668,29 @@ loader = Module('loader', {
     200: ResultCode('Internal error.')
 })
 
+sf = Module('sf', {
+    1: ResultCode('Not supported.'),
+    3: ResultCode('Precondition violation.'),
+    202: ResultCode('Invalid header size.'),
+    211: ResultCode('Invalid in header.'),
+    212: ResultCode('Invalid out header.'),
+    221: ResultCode('Unknown command ID.'),
+    232: ResultCode('Invalid out raw size.'),
+    235: ResultCode('Invalid number of in objects.'),
+    236: ResultCode('Invalid number of out objects.'),
+    239: ResultCode('Invalid in object.'),
+    261: ResultCode('Target not found.'),
+    301: ResultCode('Out of domain entries.'),
+    800: ResultCode('Request invalidated.'),
+    802: ResultCode('Request invalidated by user.'),
+    812: ResultCode('Request deferred by user.'),
+},
+{
+    (800, 809): 'Request invalidated.',
+    (810, 819): 'Request deferred.',
+    (820, 899): 'Request context changed.'
+})
+
 hipc = Module('hipc', {
     1: ResultCode('Unsupported operation.'),
     102: ResultCode('Out of session memory.'),
@@ -706,6 +706,29 @@ hipc = Module('hipc', {
 },
 {
     (100, 299): 'Out of resources.'
+})
+
+dmnt = Module('dmnt', {
+    1: ResultCode('Unknown error.'),
+    2: ResultCode('Debugging is disabled.'),
+
+    # atmosphere extension errors
+    6500: ResultCode('Not attached.'),
+    6501: ResultCode('Buffer is null.'),
+    6502: ResultCode('Buffer is invalid.'),
+    6503: ResultCode('ID is unknown.'),
+    6504: ResultCode('Out of resources.'),
+    6505: ResultCode('Cheat is invalid.'),
+    6506: ResultCode('Cheat cannot be disabled.'),
+    6600: ResultCode('Width is invalid.'),
+    6601: ResultCode('Address already exists.'),
+    6602: ResultCode('Address not found.'),
+    6603: ResultCode('Address is out of resources.'),
+    6700: ResultCode('Virtual machine condition depth is invalid.')
+},
+{
+    (6500, 6599): 'Cheat engine error.',
+    (6600, 6699): 'Frozen address error.'
 })
 
 pm = Module('pm', {
@@ -732,6 +755,16 @@ ns = Module('ns', {
     892: ResultCode('Unknown state: reference count is zero.'),
     931: ResultCode('Invalid SystemDeliveryInfo HMAC/invalid Meta ID.'),
     2101: ResultCode('Inserted region-locked Tencent-Nintendo (Chinese) game cartridge into a non-Chinese console.', 'https://nintendoswitch.com.cn/support/')
+})
+
+kvdb = Module('kvdb', {
+    1: ResultCode('Out of key resources.'),
+    2: ResultCode('Key not found.'),
+    4: ResultCode('Allocation failed.'),
+    5: ResultCode('Invalid key value.'),
+    6: ResultCode('Buffer insufficient.'),
+    8: ResultCode('Invalid filesystem state.'),
+    9: ResultCode('Not created.')
 })
 
 sm = Module('sm', {
@@ -768,6 +801,35 @@ ro = Module('ro', {
     1029: ResultCode('NRO not registered.'),
     1030: ResultCode('Invalid session (already initialized).'),
     1031: ResultCode('Invalid process (not initialized).')
+})
+
+spl = Module('spl', {
+    1: ResultCode('Secure monitor: function is not implemented.'),
+    2: ResultCode('Secure monitor: invalid argument.'),
+    3: ResultCode('Secure monitor is busy.'),
+    4: ResultCode('Secure monitor: function is not an async operation.'),
+    5: ResultCode('Secure monitor: invalid async operation.'),
+    6: ResultCode('Secure monitor: not permitted.'),
+    7: ResultCode('Secure monitor: not initialized.'),
+    100: ResultCode('Invalid size.'),
+    101: ResultCode('Unknown secure monitor error.'),
+    102: ResultCode('Decryption failed.'),
+    104: ResultCode('Out of keyslots.'),
+    105: ResultCode('Invalid keyslot.'),
+    106: ResultCode('Boot reason was aleady set.'),
+    107: ResultCode('Boot reason was not set.'),
+    108: ResultCode('Invalid argument.')
+},
+{
+    (0, 99): 'Secure monitor error.'
+})
+
+i2c = Module('i2c', {
+    1: ResultCode('No ACK.'),
+    2: ResultCode('Bus is busy.'),
+    3: ResultCode('Command list is full.'),
+    4: ResultCode('Timed out.'),
+    5: ResultCode('Unknown device.')
 })
 
 settings = Module('settings', {
@@ -894,78 +956,8 @@ settings = Module('settings', {
     (621, 1276): 'Setting buffer is null.',
 })
 
-erpt = Module('erpt', {
-    1: ResultCode('Not initialized.'),
-    2: ResultCode('Already initialized.'),
-    3: ResultCode('Out of array space.'),
-    4: ResultCode('Out of field space.'),
-    5: ResultCode('Out of memory.'),
-    7: ResultCode('Invalid argument.'),
-    8: ResultCode('Not found.'),
-    9: ResultCode('Field category mismatch.'),
-    10: ResultCode('Field type mismatch.'),
-    11: ResultCode('Already exists.'),
-    12: ResultCode('Journal is corrupted.'),
-    13: ResultCode('Category not found.'),
-    14: ResultCode('Required context is missing.'),
-    15: ResultCode('Required field is missing.'),
-    16: ResultCode('Formatter error.'),
-    17: ResultCode('Invalid power state.'),
-    18: ResultCode('Array field is too large.'),
-    19: ResultCode('Already owned.')
-})
-
-calibration = Module('calibration', {
-    101: ResultCode('Calibration data CRC error.'),
-})
-
-dbg = Module('dbg', {
-    1: ResultCode('Cannot debug.'),
-    2: ResultCode('Already attached.'),
-    3: ResultCode('Cancelled.')
-})
-
-userland_assert = Module('userland (assert)', {
-    0: ResultCode('Undefined instruction.'),
-    1: ResultCode('Application aborted (usually svcBreak).'),
-    2: ResultCode('System module aborted.'),
-    3: ResultCode('Unaligned userland PC.'),
-    8: ResultCode('Attempted to call an SVC outside of the whitelist.')
-})
-
-fatal = Module('fatal', {
-    1: ResultCode('Allocation failed.'),
-    2: ResultCode('Graphics buffer is null.'),
-    3: ResultCode('Already thrown.'),
-    4: ResultCode('Too many events.'),
-    5: ResultCode('In repair without volume held.'),
-    6: ResultCode('In repair without time reviser cartridge.')
-})
-
-i2c = Module('i2c', {
-    1: ResultCode('No ACK.'),
-    2: ResultCode('Bus is busy.'),
-    3: ResultCode('Command list is full.'),
-    4: ResultCode('Timed out.'),
-    5: ResultCode('Unknown device.')
-})
-
-kvdb = Module('kvdb', {
-    1: ResultCode('Out of key resources.'),
-    2: ResultCode('Key not found.'),
-    4: ResultCode('Allocation failed.'),
-    5: ResultCode('Invalid key value.'),
-    6: ResultCode('Buffer insufficient.'),
-    8: ResultCode('Invalid filesystem state.'),
-    9: ResultCode('Not created.')
-})
-
-updater = Module('updater', {
-    2: ResultCode('Boot image package not found.'),
-    3: ResultCode('Invalid boot image package.'),
-    4: ResultCode('Work buffer is too small.'),
-    5: ResultCode('Work buffer is not aligned.'),
-    6: ResultCode('Needs repair boot images.')
+nifm = Module('nifm', {
+    3400: ResultCode('The internet connection you are using requires authentication or a user agreement.' 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/22569/kw/2110-3400'), 
 })
 
 vi = Module('vi', {
@@ -980,11 +972,6 @@ nfp = Module('nfp', {
     128: ResultCode('Area needs to be created.'),
     152: ResultCode('Access ID mismatch.'),
     168: ResultCode('Area already created.')
-})
-
-psc = Module('psc', {
-    2: ResultCode('Already initialized.'),
-    3: ResultCode('Not initialized.')
 })
 
 time = Module('time', {
@@ -1002,6 +989,10 @@ time = Module('time', {
 },
 {
     (900, 919): 'Invalid argument.'
+})
+
+friends = Module('friends', {
+    6: ResultCode('IsAnyInternetRequestAccepted with the output from GetClientId returned false.'),
 })
 
 bcat = Module('bcat', {
@@ -1092,90 +1083,6 @@ ssl = Module('ssl', {
     5007: ResultCode('Out-of-bounds error during error conversion.')
 })
 
-creport = Module('userland assert/crash', {
-    0: ResultCode('Undefined instruction.'),
-    1: ResultCode('Instruction abort.'),
-    2: ResultCode('Data abort.'),
-    3: ResultCode('Alignment fault.'),
-    4: ResultCode('Debugger attached.'),
-    5: ResultCode('Breakpoint.'),
-    6: ResultCode('User break.'),
-    7: ResultCode('Debugger break.'),
-    8: ResultCode('Undefined system call.'),
-    9: ResultCode('Memory system error.'),
-    99: ResultCode('Report is incomplete.')
-})
-
-pgl = Module('pgl', {
-    2: ResultCode('Not available.'),
-    3: ResultCode('Application not running.'),
-    4: ResultCode('Buffer is not enough.'),
-    5: ResultCode('Application content record was not found.'),
-    6: ResultCode('Content meta was not found.')
-})
-
-nim = Module('nim', {
-    10: ResultCode('Already initialized.'),
-    30: ResultCode('Task not found.'),
-    40: ResultCode('Memory allocation failed (due to bad input?).'),
-    70: ResultCode('HTTP connection canceled.'),
-    330: ResultCode('ContentMetaType does not match SystemUpdate.'),
-    5001: ResultCode('A socket error occurred (ENETDOWN, ECONNRESET, EHOSTDOWN, EHOSTUNREACH, or EPIPE). Also occurs when the received size doesn\'t match the expected size (recvfrom() ret with meta_size data receiving).'),
-    5010: ResultCode('Socket was shutdown due to the async operation being cancelled.'),
-    5020: ResultCode('Too many internal input entries with nim command 42, or an unrecognized socket error occurred.'),
-    5100: ResultCode('Connection time-out.'),
-    5410: ResultCode('Invalid ID.'),
-    5420: ResultCode('Invalid magicnum. Can also be caused by the connection being closed by the peer, since non-negative return values from recv() are ignored in this case.'),
-    5430: ResultCode('Invalid data_size.'),
-    5440: ResultCode('The input ContentMetaKey doesn\'t match the ContentMetaKey in state.'),
-    5450: ResultCode('Invalid meta_size.'),
-    7001: ResultCode('Invalid HTTP response code (>=600).'),
-    7002: ResultCode('Invalid HTTP client response code (4xx).'),
-    7003: ResultCode('Invalid HTTP server response code (5xx).'),
-    7004: ResultCode('Invalid HTTP redirect response code (3xx).'),
-    (7300, 7308): ResultCode('HTTP response code 300-308.'),
-    (7400, 7417): ResultCode('HTTP response code 400-417.'),
-    (7500, 7509): ResultCode('HTTP response code 500-509.'),
-    7800: ResultCode('Unknown/invalid libcurl error.'),
-    (8001, 8096): ResultCode('libcurl error 1-96. Some errors map to the 7800 result code range instead, however.')
-})
-
-dauth = Module('dauth', {
-    4008: ResultCode('Console is permanently banned by Nintendo.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/42061/kw/2181-4008', is_ban=True)
-})
-
-web_applet = Module('web applet', {
-    1006: ResultCode('This error code indicates an issue with the DNS used or that the connection timed out.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/25859/p/897'),
-    1028: ResultCode('This error code generally indicates that your connection to the Nintendo eShop has timed out.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/22503/p/897'),
-    2750: ResultCode('MP4 parsing failed.'),
-    5001: ResultCode('This error code indicates an error occurred when connecting to the service, likely the result of the network environment.',  'https://en-americas-support.nintendo.com/app/answers/detail/a_id/22392/p/897'),
-})
-
-friends = Module('friends', {
-    6: ResultCode('IsAnyInternetRequestAccepted with the output from GetClientId returned false.'),
-})
-
-spl = Module('spl', {
-    1: ResultCode('Secure monitor: function is not implemented.'),
-    2: ResultCode('Secure monitor: invalid argument.'),
-    3: ResultCode('Secure monitor is busy.'),
-    4: ResultCode('Secure monitor: function is not an async operation.'),
-    5: ResultCode('Secure monitor: invalid async operation.'),
-    6: ResultCode('Secure monitor: not permitted.'),
-    7: ResultCode('Secure monitor: not initialized.'),
-    100: ResultCode('Invalid size.'),
-    101: ResultCode('Unknown secure monitor error.'),
-    102: ResultCode('Decryption failed.'),
-    104: ResultCode('Out of keyslots.'),
-    105: ResultCode('Invalid keyslot.'),
-    106: ResultCode('Boot reason was aleady set.'),
-    107: ResultCode('Boot reason was not set.'),
-    108: ResultCode('Invalid argument.')
-},
-{
-    (0, 99): 'Secure monitor error.'
-})
-
 account = Module('account', {
     59: ResultCode('IsAnyInternetRequestAccepted with the output from GetClientId returned false.'),
     3000: ResultCode('System update is required.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/27166/'),
@@ -1187,89 +1094,6 @@ account = Module('account', {
     4609: ResultCode('The online service is no longer available.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/46482/'),
     4621: ResultCode('Tencent-Nintendo (Chinese) consoles cannot use online features in foreign games.' 'https://nintendoswitch.com.cn/support/'),
     5111: ResultCode('Complete account ban.', is_ban=True)
-})
-
-sf = Module('sf', {
-    1: ResultCode('Not supported.'),
-    3: ResultCode('Precondition violation.'),
-    202: ResultCode('Invalid header size.'),
-    211: ResultCode('Invalid in header.'),
-    212: ResultCode('Invalid out header.'),
-    221: ResultCode('Unknown command ID.'),
-    232: ResultCode('Invalid out raw size.'),
-    235: ResultCode('Invalid number of in objects.'),
-    236: ResultCode('Invalid number of out objects.'),
-    239: ResultCode('Invalid in object.'),
-    261: ResultCode('Target not found.'),
-    301: ResultCode('Out of domain entries.'),
-    800: ResultCode('Request invalidated.'),
-    802: ResultCode('Request invalidated by user.'),
-    812: ResultCode('Request deferred by user.'),
-},
-{
-    (800, 809): 'Request invalidated.',
-    (810, 819): 'Request deferred.',
-    (820, 899): 'Request context changed.'
-})
-
-capsrv = Module('capsrv (capture)', {
-    3: ResultCode('Album work memory error.'),
-    7: ResultCode('Album is already opened.'),
-    8: ResultCode('Album is out of range.'),
-    11: ResultCode('The application ID is invalid.'),
-    12: ResultCode('The timestamp is invalid.'),
-    13: ResultCode('The storage is invalid.'),
-    14: ResultCode('The filecontents is invalid.'),
-    21: ResultCode('Album is not mounted.'),
-    22: ResultCode('Album is full.'),
-    23: ResultCode('File not found.'),
-    24: ResultCode('The file data is invalid.'),
-    25: ResultCode('The file count limit has been reached.'),
-    26: ResultCode('The file has no thumbnail.'),
-    30: ResultCode('The read buffer is too small.'),
-    96: ResultCode('The destination is corrupted.'),
-    820: ResultCode('Control resource limit reached.'),
-    822: ResultCode('Control is not opened.'),
-    1023: ResultCode('Not supported.'),
-    1210: ResultCode('Internal JPEG encoder error.'),
-    1212: ResultCode('Internal JPEG work memory shortage.'),
-    1301: ResultCode('The file data was empty.'),
-    1302: ResultCode('EXIF extraction failed.'),
-    1303: ResultCode('EXIF data analysis failed.'),
-    1304: ResultCode('Datetime extraction failed.'),
-    1305: ResultCode('Invalid datetime length.'),
-    1306: ResultCode('Inconsistent datatime.'),
-    1307: ResultCode('Make note extraction failed.'),
-    1308: ResultCode('Inconsistent application ID.'),
-    1309: ResultCode('Inconsistent signature.'),
-    1310: ResultCode('Unsupported orientation.'),
-    1311: ResultCode('Invalid data dimension.'),
-    1312: ResultCode('Inconsistent orientation.'),
-    1401: ResultCode('File count limit has been reached.'),
-    1501: ResultCode('EXIF extraction failed.'),
-    1502: ResultCode('Maker note extraction failed'),
-    1701: ResultCode('Album session limit reached.'),
-    1901: ResultCode('File count limit reached.'),
-    1902: ResultCode('Error when creating file.'),
-    1903: ResultCode('File creation retry limit reached.'),
-    1904: ResultCode('Error opening file.'),
-    1905: ResultCode('Error retrieving the file size.'),
-    1906: ResultCode('Error setting the file size.'),
-    1907: ResultCode('Error when reading the file.'),
-    1908: ResultCode('Error when writing the file.')
-},
-{
-    (10, 19): 'Album: invalid file ID.',
-    (90, 99): 'Album: filesystem error.',
-    (800, 899): 'Control error.',
-    #(1024, 2047): 'Internal error.',
-    (1200,1299): 'Internal JPEG encoder error.',
-    (1300, 1399): 'Internal file data verification error.',
-    (1400, 1499): 'Internal album limitation error.',
-    (1500, 1599): 'Internal signature error.',
-    (1700, 1799): 'Internal album session error.',
-    (1900, 1999): 'Internal album temporary file error.'
-
 })
 
 mii = Module('mii', {
@@ -1334,6 +1158,37 @@ pcv = Module('pcv', {
     4: ResultCode('Invalid parameter.')
 })
 
+nim = Module('nim', {
+    10: ResultCode('Already initialized.'),
+    30: ResultCode('Task not found.'),
+    40: ResultCode('Memory allocation failed (due to bad input?).'),
+    70: ResultCode('HTTP connection canceled.'),
+    330: ResultCode('ContentMetaType does not match SystemUpdate.'),
+    5001: ResultCode('A socket error occurred (ENETDOWN, ECONNRESET, EHOSTDOWN, EHOSTUNREACH, or EPIPE). Also occurs when the received size doesn\'t match the expected size (recvfrom() ret with meta_size data receiving).'),
+    5010: ResultCode('Socket was shutdown due to the async operation being cancelled.'),
+    5020: ResultCode('Too many internal input entries with nim command 42, or an unrecognized socket error occurred.'),
+    5100: ResultCode('Connection time-out.'),
+    5410: ResultCode('Invalid ID.'),
+    5420: ResultCode('Invalid magicnum. Can also be caused by the connection being closed by the peer, since non-negative return values from recv() are ignored in this case.'),
+    5430: ResultCode('Invalid data_size.'),
+    5440: ResultCode('The input ContentMetaKey doesn\'t match the ContentMetaKey in state.'),
+    5450: ResultCode('Invalid meta_size.'),
+    7001: ResultCode('Invalid HTTP response code (>=600).'),
+    7002: ResultCode('Invalid HTTP client response code (4xx).'),
+    7003: ResultCode('Invalid HTTP server response code (5xx).'),
+    7004: ResultCode('Invalid HTTP redirect response code (3xx).'),
+    (7300, 7308): ResultCode('HTTP response code 300-308.'),
+    (7400, 7417): ResultCode('HTTP response code 400-417.'),
+    (7500, 7509): ResultCode('HTTP response code 500-509.'),
+    7800: ResultCode('Unknown/invalid libcurl error.'),
+    (8001, 8096): ResultCode('libcurl error 1-96. Some errors map to the 7800 result code range instead, however.')
+})
+
+psc = Module('psc', {
+    2: ResultCode('Already initialized.'),
+    3: ResultCode('Not initialized.')
+})
+
 usb = Module('usb', {
     51: ResultCode('USB data transfer in progress.'),
     106: ResultCode('Invalid descriptor.'),
@@ -1342,6 +1197,34 @@ usb = Module('usb', {
 
 pctl = Module('pctl', {
     223: ResultCode('IsAnyInternetRequestAccepted with the output from GetClientId returned false.')
+})
+
+applet = Module('applet', {
+    1: ResultCode('Exited abnormally.'),
+    3: ResultCode('Cancelled.'),
+    4: ResultCode('Rejected.'),
+    5: ResultCode('Exited unexpectedly.')
+})
+
+erpt = Module('erpt', {
+    1: ResultCode('Not initialized.'),
+    2: ResultCode('Already initialized.'),
+    3: ResultCode('Out of array space.'),
+    4: ResultCode('Out of field space.'),
+    5: ResultCode('Out of memory.'),
+    7: ResultCode('Invalid argument.'),
+    8: ResultCode('Not found.'),
+    9: ResultCode('Field category mismatch.'),
+    10: ResultCode('Field type mismatch.'),
+    11: ResultCode('Already exists.'),
+    12: ResultCode('Journal is corrupted.'),
+    13: ResultCode('Category not found.'),
+    14: ResultCode('Required context is missing.'),
+    15: ResultCode('Required field is missing.'),
+    16: ResultCode('Formatter error.'),
+    17: ResultCode('Invalid power state.'),
+    18: ResultCode('Array field is too large.'),
+    19: ResultCode('Already owned.')
 })
 
 audio = Module('audio', {
@@ -1363,13 +1246,48 @@ arp = Module('arp', {
     102: ResultCode('Invalid PID.')
 })
 
-nifm = Module('nifm', {
-    3400: ResultCode('The internet connection you are using requires authentication or a user agreement.' 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/22569/kw/2110-3400'), 
+updater = Module('updater', {
+    2: ResultCode('Boot image package not found.'),
+    3: ResultCode('Invalid boot image package.'),
+    4: ResultCode('Work buffer is too small.'),
+    5: ResultCode('Work buffer is not aligned.'),
+    6: ResultCode('Needs repair boot images.')
+})
+
+userland_assert = Module('userland (assert)', {
+    0: ResultCode('Undefined instruction.'),
+    1: ResultCode('Application aborted (usually svcBreak).'),
+    2: ResultCode('System module aborted.'),
+    3: ResultCode('Unaligned userland PC.'),
+    8: ResultCode('Attempted to call an SVC outside of the whitelist.')
+})
+
+fatal = Module('fatal', {
+    1: ResultCode('Allocation failed.'),
+    2: ResultCode('Graphics buffer is null.'),
+    3: ResultCode('Already thrown.'),
+    4: ResultCode('Too many events.'),
+    5: ResultCode('In repair without volume held.'),
+    6: ResultCode('In repair without time reviser cartridge.')
 })
 
 ec = Module('ec', {
     20: ResultCode('Unable to start the software.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/22539/kw/2164-0020'),
     56: ResultCode('IsAnyInternetRequestAccepted with the output from GetClientId returned false.')
+})
+
+creport = Module('userland assert/crash', {
+    0: ResultCode('Undefined instruction.'),
+    1: ResultCode('Instruction abort.'),
+    2: ResultCode('Data abort.'),
+    3: ResultCode('Alignment fault.'),
+    4: ResultCode('Debugger attached.'),
+    5: ResultCode('Breakpoint.'),
+    6: ResultCode('User break.'),
+    7: ResultCode('Debugger break.'),
+    8: ResultCode('Undefined system call.'),
+    9: ResultCode('Memory system error.'),
+    99: ResultCode('Report is incomplete.')
 })
 
 jit = Module('jit', {
@@ -1380,98 +1298,108 @@ jit = Module('jit', {
     602: ResultCode('An error occurred when calling the function pointer with the Control command.'),
 })
 
+dauth = Module('dauth', {
+    4008: ResultCode('Console is permanently banned by Nintendo.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/42061/kw/2181-4008', is_ban=True)
+})
+
+dbg = Module('dbg', {
+    1: ResultCode('Cannot debug.'),
+    2: ResultCode('Already attached.'),
+    3: ResultCode('Cancelled.')
+})
+
+calibration = Module('calibration', {
+    101: ResultCode('Calibration data CRC error.'),
+})
+
+capsrv = Module('capsrv (capture)', {
+    3: ResultCode('Album work memory error.'),
+    7: ResultCode('Album is already opened.'),
+    8: ResultCode('Album is out of range.'),
+    11: ResultCode('The application ID is invalid.'),
+    12: ResultCode('The timestamp is invalid.'),
+    13: ResultCode('The storage is invalid.'),
+    14: ResultCode('The filecontents is invalid.'),
+    21: ResultCode('Album is not mounted.'),
+    22: ResultCode('Album is full.'),
+    23: ResultCode('File not found.'),
+    24: ResultCode('The file data is invalid.'),
+    25: ResultCode('The file count limit has been reached.'),
+    26: ResultCode('The file has no thumbnail.'),
+    30: ResultCode('The read buffer is too small.'),
+    96: ResultCode('The destination is corrupted.'),
+    820: ResultCode('Control resource limit reached.'),
+    822: ResultCode('Control is not opened.'),
+    1023: ResultCode('Not supported.'),
+    1210: ResultCode('Internal JPEG encoder error.'),
+    1212: ResultCode('Internal JPEG work memory shortage.'),
+    1301: ResultCode('The file data was empty.'),
+    1302: ResultCode('EXIF extraction failed.'),
+    1303: ResultCode('EXIF data analysis failed.'),
+    1304: ResultCode('Datetime extraction failed.'),
+    1305: ResultCode('Invalid datetime length.'),
+    1306: ResultCode('Inconsistent datatime.'),
+    1307: ResultCode('Make note extraction failed.'),
+    1308: ResultCode('Inconsistent application ID.'),
+    1309: ResultCode('Inconsistent signature.'),
+    1310: ResultCode('Unsupported orientation.'),
+    1311: ResultCode('Invalid data dimension.'),
+    1312: ResultCode('Inconsistent orientation.'),
+    1401: ResultCode('File count limit has been reached.'),
+    1501: ResultCode('EXIF extraction failed.'),
+    1502: ResultCode('Maker note extraction failed'),
+    1701: ResultCode('Album session limit reached.'),
+    1901: ResultCode('File count limit reached.'),
+    1902: ResultCode('Error when creating file.'),
+    1903: ResultCode('File creation retry limit reached.'),
+    1904: ResultCode('Error opening file.'),
+    1905: ResultCode('Error retrieving the file size.'),
+    1906: ResultCode('Error setting the file size.'),
+    1907: ResultCode('Error when reading the file.'),
+    1908: ResultCode('Error when writing the file.')
+},
+{
+    (10, 19): 'Album: invalid file ID.',
+    (90, 99): 'Album: filesystem error.',
+    (800, 899): 'Control error.',
+    #(1024, 2047): 'Internal error.',
+    (1200,1299): 'Internal JPEG encoder error.',
+    (1300, 1399): 'Internal file data verification error.',
+    (1400, 1499): 'Internal album limitation error.',
+    (1500, 1599): 'Internal signature error.',
+    (1700, 1799): 'Internal album session error.',
+    (1900, 1999): 'Internal album temporary file error.'
+
+})
+
+pgl = Module('pgl', {
+    2: ResultCode('Not available.'),
+    3: ResultCode('Application not running.'),
+    4: ResultCode('Buffer is not enough.'),
+    5: ResultCode('Application content record was not found.'),
+    6: ResultCode('Content meta was not found.')
+})
+
+web_applet = Module('web applet', {
+    1006: ResultCode('This error code indicates an issue with the DNS used or that the connection timed out.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/25859/p/897'),
+    1028: ResultCode('This error code generally indicates that your connection to the Nintendo eShop has timed out.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/22503/p/897'),
+    2750: ResultCode('MP4 parsing failed.'),
+    5001: ResultCode('This error code indicates an error occurred when connecting to the service, likely the result of the network environment.',  'https://en-americas-support.nintendo.com/app/answers/detail/a_id/22392/p/897'),
+})
+
+youtube_app = Module('youtube', {
+    0: ResultCode('This error typically occurs when your system clock isn\'t set correctly. If the problem persists, try reinstalling YouTube from the Nintendo eShop.')
+})
+
+arms_game = Module('ARMS', {
+    1021: ResultCode('This error code indicates the connection has likely timed out during a download.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/26250/~/error-code%3A-2-aabqa-1021')
+})
+
+splatoon_game = Module('Splatoon 2', {
+    3400: ResultCode('You have been kicked from the online service due to using exefs/romfs edits.')
+})
+
 # known homebrew modules go below here
-exosphere = Module('exosphere', {
-    1: ResultCode('Not present.'),
-    2: ResultCode('Version mismatch.')
-})
-
-hbl = Module('homebrew loader', {
-    1: ResultCode('Failed to initialize sm.'),
-    2: ResultCode('Failed to initialize fs.'),
-    3: ResultCode('Next NRO to run was not found. This is usually caused by `hbmenu.nro` not being found on the root of the SD card.'),
-    4: ResultCode('Failed to read NRO.'),
-    5: ResultCode('NRO header magic is invalid.'),
-    6: ResultCode('NRO size does not match size indicated by header.'),
-    7: ResultCode('Failed to read the rest of the NRO.'),
-    8: ResultCode('Reached an unreachable location in hbloader main(). What are you doing here? This area is off-limits.'),
-    9: ResultCode('Unable to set heap size, or heap address was NULL.'),
-    10: ResultCode('Failed to create service thread.'),
-    12: ResultCode('Unable to create svc session.'),
-    13: ResultCode('Failed to start service thread.'),
-    15: ResultCode('An error occurred while executing svcReplyAndReceive.'),
-    17: ResultCode('Too many (> 1) copy handles from hipcParseRequest.'),
-    18: ResultCode('Failed to map process code memory.'),
-    19: ResultCode('Failed to set process .text memory permissions.'),
-    20: ResultCode('Failed to set process .rodata memory permissions.'),
-    21: ResultCode('Failed to set process .data & .bss memory permissions.'),
-    24: ResultCode('Failed to unmap process .text.'),
-    25: ResultCode('Failed to unmap process .rodata.'),
-    26: ResultCode('Failed to unmap process .data and .bss.'),
-    39: ResultCode('Attempted to call exit(), which should never happen.'),
-    404: ResultCode('Failed to mount SD card.')
-})
-
-hb_abi = Module('homebrew ABI', {
-    0: ResultCode('End of list.'),
-    1: ResultCode('Main thread handle.'),
-    2: ResultCode('Next load path.'),
-    3: ResultCode('Override heap.'),
-    4: ResultCode('Override service.'),
-    5: ResultCode('Argv.'),
-    6: ResultCode('Syscall available hint.'),
-    7: ResultCode('Applet type.'),
-    8: ResultCode('Applet workaround.'),
-    9: ResultCode('Reserved9.'),
-    10: ResultCode('Process handle.'),
-    11: ResultCode('Last load result.'),
-    12: ResultCode('Alloc pages.'),
-    13: ResultCode('Lock region.'),
-    14: ResultCode('Random seed.'),
-    15: ResultCode('User ID storage.'),
-    16: ResultCode('HOS version.')
-})
-
-lnx_nvidia = Module('libnx (NVIDIA)', {
-    1: ResultCode('Not implemented.'),
-    2: ResultCode('Not supported.'),
-    3: ResultCode('Not initialized.'),
-    4: ResultCode('Bad parameter.'),
-    5: ResultCode('Timed out.'),
-    6: ResultCode('Insufficient memory.'),
-    7: ResultCode('Read-only attribute.'),
-    8: ResultCode('Invalid state.'),
-    9: ResultCode('Invalid address.'),
-    10: ResultCode('Invalid size.'),
-    11: ResultCode('Bad value.'),
-    13: ResultCode('Already allocated.'),
-    14: ResultCode('Busy.'),
-    15: ResultCode('Resource error.'),
-    16: ResultCode('Count mismatch.'),
-    4096: ResultCode('Shared memory too small.'),
-    #0x30003: ResultCode('File operation failed.') # This actually belongs to OS.
-})
-
-lnx_binder = Module('libnx (binder)', {
-    1: ResultCode('Permission denied.'),
-    2: ResultCode('Name not found.'),
-    11: ResultCode('Would block.'),
-    12: ResultCode('No memory.'),
-    17: ResultCode('Already exists.'),
-    19: ResultCode('No init.'),
-    22: ResultCode('Bad value.'),
-    32: ResultCode('Dead object.'),
-    38: ResultCode('Invalid operation.'),
-    61: ResultCode('Not enough data.'),
-    74: ResultCode('Unknown transaction.'),
-    75: ResultCode('Bad index.'),
-    110: ResultCode('Timed out.')
-    # TODO: How do I express INT32_MIN in pythonic terms?
-    # -(INT32_MIN + 7): ResultCode('Fds not allowed.'),
-    # -(INT32_MIN + 2): ResultCode('Failed transaction.'),
-    # -(INT32_MIN + 1): ResultCode('Bad type.'),
-})
-
 libnx = Module('libnx', {
     1: ResultCode('Bad relocation.'),
     2: ResultCode('Out of memory.'),
@@ -1523,11 +1451,90 @@ libnx = Module('libnx', {
     48: ResultCode('Should not happen.')
 })
 
-applet = Module('applet', {
-    1: ResultCode('Exited abnormally.'),
-    3: ResultCode('Cancelled.'),
-    4: ResultCode('Rejected.'),
-    5: ResultCode('Exited unexpectedly.')
+hb_abi = Module('homebrew ABI', {
+    0: ResultCode('End of list.'),
+    1: ResultCode('Main thread handle.'),
+    2: ResultCode('Next load path.'),
+    3: ResultCode('Override heap.'),
+    4: ResultCode('Override service.'),
+    5: ResultCode('Argv.'),
+    6: ResultCode('Syscall available hint.'),
+    7: ResultCode('Applet type.'),
+    8: ResultCode('Applet workaround.'),
+    9: ResultCode('Reserved9.'),
+    10: ResultCode('Process handle.'),
+    11: ResultCode('Last load result.'),
+    12: ResultCode('Alloc pages.'),
+    13: ResultCode('Lock region.'),
+    14: ResultCode('Random seed.'),
+    15: ResultCode('User ID storage.'),
+    16: ResultCode('HOS version.')
+})
+
+hbl = Module('homebrew loader', {
+    1: ResultCode('Failed to initialize sm.'),
+    2: ResultCode('Failed to initialize fs.'),
+    3: ResultCode('Next NRO to run was not found. This is usually caused by `hbmenu.nro` not being found on the root of the SD card.'),
+    4: ResultCode('Failed to read NRO.'),
+    5: ResultCode('NRO header magic is invalid.'),
+    6: ResultCode('NRO size does not match size indicated by header.'),
+    7: ResultCode('Failed to read the rest of the NRO.'),
+    8: ResultCode('Reached an unreachable location in hbloader main(). What are you doing here? This area is off-limits.'),
+    9: ResultCode('Unable to set heap size, or heap address was NULL.'),
+    10: ResultCode('Failed to create service thread.'),
+    12: ResultCode('Unable to create svc session.'),
+    13: ResultCode('Failed to start service thread.'),
+    15: ResultCode('An error occurred while executing svcReplyAndReceive.'),
+    17: ResultCode('Too many (> 1) copy handles from hipcParseRequest.'),
+    18: ResultCode('Failed to map process code memory.'),
+    19: ResultCode('Failed to set process .text memory permissions.'),
+    20: ResultCode('Failed to set process .rodata memory permissions.'),
+    21: ResultCode('Failed to set process .data & .bss memory permissions.'),
+    24: ResultCode('Failed to unmap process .text.'),
+    25: ResultCode('Failed to unmap process .rodata.'),
+    26: ResultCode('Failed to unmap process .data and .bss.'),
+    39: ResultCode('Attempted to call exit(), which should never happen.'),
+    404: ResultCode('Failed to mount SD card.')
+})
+
+lnx_nvidia = Module('libnx (NVIDIA)', {
+    1: ResultCode('Not implemented.'),
+    2: ResultCode('Not supported.'),
+    3: ResultCode('Not initialized.'),
+    4: ResultCode('Bad parameter.'),
+    5: ResultCode('Timed out.'),
+    6: ResultCode('Insufficient memory.'),
+    7: ResultCode('Read-only attribute.'),
+    8: ResultCode('Invalid state.'),
+    9: ResultCode('Invalid address.'),
+    10: ResultCode('Invalid size.'),
+    11: ResultCode('Bad value.'),
+    13: ResultCode('Already allocated.'),
+    14: ResultCode('Busy.'),
+    15: ResultCode('Resource error.'),
+    16: ResultCode('Count mismatch.'),
+    4096: ResultCode('Shared memory too small.'),
+    #0x30003: ResultCode('File operation failed.') # This actually belongs to OS.
+})
+
+lnx_binder = Module('libnx (binder)', {
+    1: ResultCode('Permission denied.'),
+    2: ResultCode('Name not found.'),
+    11: ResultCode('Would block.'),
+    12: ResultCode('No memory.'),
+    17: ResultCode('Already exists.'),
+    19: ResultCode('No init.'),
+    22: ResultCode('Bad value.'),
+    32: ResultCode('Dead object.'),
+    38: ResultCode('Invalid operation.'),
+    61: ResultCode('Not enough data.'),
+    74: ResultCode('Unknown transaction.'),
+    75: ResultCode('Bad index.'),
+    110: ResultCode('Timed out.')
+    # TODO: How do I express INT32_MIN in pythonic terms?
+    # -(INT32_MIN + 7): ResultCode('Fds not allowed.'),
+    # -(INT32_MIN + 2): ResultCode('Failed transaction.'),
+    # -(INT32_MIN + 1): ResultCode('Bad type.'),
 })
 
 emuiibo = Module('emuiibo', {
@@ -1537,17 +1544,9 @@ emuiibo = Module('emuiibo', {
     4: ResultCode('Unable to read Mii.')
 })
 
-
-youtube_app = Module('youtube', {
-    0: ResultCode('This error typically occurs when your system clock isn\'t set correctly. If the problem persists, try reinstalling YouTube from the Nintendo eShop.')
-})
-
-arms_game = Module('ARMS', {
-    1021: ResultCode('This error code indicates the connection has likely timed out during a download.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/26250/~/error-code%3A-2-aabqa-1021')
-})
-
-splatoon_game = Module('Splatoon 2', {
-    3400: ResultCode('You have been kicked from the online service due to using exefs/romfs edits.')
+exosphere = Module('exosphere', {
+    1: ResultCode('Not present.'),
+    2: ResultCode('Version mismatch.')
 })
 
 # We have some modules partially documented, those that aren't have dummy Modules.
@@ -1665,7 +1664,7 @@ modules = {
     216: Module('migration'),
     218: Module('hidbus'),
     223: Module('websocket'),
-    228: Module('pgl'),
+    228: pgl,
     229: Module('notification'),
     230: Module('ins'),
     231: Module('lp2p'),
