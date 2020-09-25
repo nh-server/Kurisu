@@ -530,7 +530,6 @@ def get(error):
         if not modules[mod].data:
             return CONSOLE_NAME, modules[mod].name, NO_RESULTS_FOUND, COLOR
         ret = modules[mod].get_error(desc)
-        ret.code = desc
         ret.level = modules[mod].get_level(desc) if not level else levels[level]
         return CONSOLE_NAME, modules[mod].name, ret, COLOR
 

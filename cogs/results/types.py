@@ -36,7 +36,6 @@ class ResultCode():
         self.support_url = support_url
         self.summary = None
         self.level = None
-        self.code = None
         self.is_ban = is_ban
 
 # Helper constants

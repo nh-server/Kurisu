@@ -1,6 +1,6 @@
 import re
 
-from .types import Module, ResultCode, UNKNOWN_MODULE, NO_RESULTS_FOUND
+from .types import Module, ResultCode, UNKNOWN_MODULE, UNKNOWN_ERROR, NO_RESULTS_FOUND
 
 """
 This file contains all currently known 2DS/3DS result and error codes. 
@@ -209,6 +209,13 @@ avd = Module('avd', {
     212: ResultCode('Game is permanently banned from Pokémon Global Link for using altered or illegal save data.', is_ban=True)
 })
 
+nim = Module('nim', {
+    # Temporary value to remove the "no known error codes for this module"
+    # message. We *do* know about some of NIM's weird error codes, but they
+    # do not all fit nicely here.
+    65535: ResultCode('Placeholder value hack. This should never be displayed.')
+})
+
 # This is largely a dummy module, but FBI errors often get passed through the bot
 # which return incorrect error strings. Since there's not really a feasible way to figure out the
 # application which is throwing the error, this is the best compromise without giving the user
@@ -224,6 +231,7 @@ modules = {
     2: util,
     3: fssrv,
     4: Module('loader server'),
+    # Module 5 is deliberately left out due to needing specific hack logic...
     6: os,
     7: Module('dbg'),
     8: Module('dmnt'),
@@ -270,7 +278,7 @@ modules = {
     49: Module('friends'),
     50: Module('rdt'),
     51: Module('applet'),
-    52: Module('nim'),
+    52: nim,
     53: Module('ptm'),
     54: Module('midi'),
     55: Module('mc'),
@@ -371,6 +379,56 @@ def hex2err(error):
     code = f'{module:03}-{desc:04}'
     return code
 
+def nim_handler(module, level, summary, description):
+    nim = modules[52]
+    if 2000 <= description < 3024:
+        description -= 2000
+        module = 52 # nim
+        return construct_result(module, level, summary, description)
+    elif 4200 <= description < 4400:
+        description -= 4200
+        module = 40 # http
+        return construct_result(module, level, summary, description)
+    elif 4400 <= description < 5000:
+        description -= 4400
+        if description < 100:
+            ret = ResultCode(f'{description + 100}')
+        elif 100 <= description < 500:
+            ret = ResultCode(f'{description + 100} or {description} due to a programming mistake in NIM.')
+            ret.summary = f'HTTP error code'
+        else:
+            ret = ResultCode(f'{description}')
+        return CONSOLE_NAME, modules[40].name, ret, COLOR
+    elif 5000 <= description < 7000:
+        description -= 5000
+        ret = ResultCode(f'SOAP message returned result code {description} on a NIM operation.')
+        ret.level = level
+        ret.summary = summary
+        return CONSOLE_NAME, nim.name, ret, COLOR
+    elif description >= 7000:
+        description -= 7000
+        module = description >> 5
+        return construct_result(module, level, summary, description)
+    return CONSOLE_NAME, nim.name, UNKNOWN_ERROR, COLOR
+
+def construct_result(mod, level, summary, desc):
+    if mod in modules:
+        in_common_range = desc in common.data
+        if not modules[mod].data:
+            if not in_common_range:
+                return CONSOLE_NAME, modules[mod].name, NO_RESULTS_FOUND, COLOR
+            else:
+                ret = ResultCode() # Make a blank result that gets filled in below
+        else:
+            ret = modules[mod].get_error(desc)
+
+        if in_common_range:
+            ret.description = common.data[desc].description
+        ret.level = levels[level] if level in levels else None
+        ret.summary = summaries[summary] if summary in summaries else None
+        return CONSOLE_NAME, modules[mod].name, ret, COLOR
+    return CONSOLE_NAME, None, UNKNOWN_MODULE, COLOR
+
 def get(error):
     level = None
     summary = None
@@ -387,17 +445,10 @@ def get(error):
         mod = int(error[0:3])
         desc = int(error[4:])
 
-    if mod in modules:
-        if not modules[mod].data:
-            return CONSOLE_NAME, modules[mod].name, NO_RESULTS_FOUND, COLOR
-        ret = modules[mod].get_error(desc)
-        ret.code = desc
-        # Result codes in range 1000-1023 are common to all modules.
-        if 1000 <= desc <= 1023:
-            ret.description = common.data[desc].description
-        ret.level = levels[level] if level in levels else None
-        ret.summary = summaries[summary] if summary in summaries else None
-        return CONSOLE_NAME, modules[mod].name, ret, COLOR
+    # NIM-specific hack, hopefully more like these won't creep up in the
+    # future.
+    if mod == 5:
+        return nim_handler(mod, level, summary, desc)
 
-    return CONSOLE_NAME, None, UNKNOWN_MODULE, COLOR
+    return construct_result(mod, level, summary, desc)
 
