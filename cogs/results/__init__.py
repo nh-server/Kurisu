@@ -22,36 +22,50 @@ class Results(commands.Cog):
         return None, None, None, types.WARNING_COLOR
 
     def err2hex(self, error):
+        # If it's already hex, just return it.
+        if self.is_hex(error):
+            return error
+
         # Only Switch is supported. The other two can only give nonsense results.
         if switch.is_valid(error):
+            print('switch.is_valid true')
             return switch.err2hex(error)
-        return ''
+
+        return 'Invalid or unsupported error code format. Only Nintendo Switch\
+ XXXX-YYYY formatted error codes are supported.'
 
     def hex2err(self, error):
-        if ctr.is_valid(error):
-            return ctr.hex2err(error)
-        if wiiu.is_valid(error):
-            return wiiu.hex2err(error)
-        if switch.is_valid(error):
-            return switch.hex2err(error)
-        return ''
+        # Don't bother processing anything if it's not hex.
+        if self.is_hex(error):
+            if ctr.is_valid(error):
+                return ctr.hex2err(error)
+            if wiiu.is_valid(error):
+                return wiiu.hex2err(error)
+            if switch.is_valid(error):
+                return switch.hex2err(error)
 
-    def fixup_input(self, input):
+        return 'This isn\'t a hexadecimal value!'
+
+    def fixup_input(self, user_input):
         # Truncate input to 16 chars so as not to create a huge embed or do
         # eventual regex on a huge string. If we add support for consoles that
         # that have longer error codes, adjust accordingly.
-        input = input[:16]
-        self.is_hex = False
+        user_input = user_input[:16]
+
         # Fix up hex input if 0x was omitted. It's fine if it doesn't convert.
-        if not input.startswith('0x'):
-            try:
-                input = hex(int(input, 16))
-                self.is_hex = True
-            except ValueError:
-                pass
-        else:
-            self.is_hex = True
-        return input
+        try:
+            user_input = hex(int(user_input, 16))
+        except ValueError:
+            pass
+
+        return user_input
+
+    def is_hex(self, user_input):
+        try:
+            user_input = hex(int(user_input, 16))
+        except ValueError:
+            return False
+        return True
 
     def check_meme(self, err:str) -> str:
         memes = {
@@ -82,12 +96,12 @@ class Results(commands.Cog):
         system_name, module_name, error, color = self.fetch(err)
 
         if error:
-            err_disp = err if self.is_hex else self.err2hex(err)
 
-            if err_disp:
-                err_disp += f'/{err if not self.is_hex else self.hex2err(err)}'
-            else:
+            if (err_disp := self.err2hex(err)) is None:
                 err_disp = err
+
+            if (err_str := self.hex2err(err)) is not None:
+                err_disp += f'{"/" + err_str}'
 
             embed = discord.Embed(title=f"{err_disp} ({system_name})")
             embed.add_field(name="Module", value=module_name, inline=False)
@@ -110,7 +124,7 @@ class Results(commands.Cog):
             await ctx.send(embed=embed)
         else:
             await ctx.send(f'{ctx.author.mention}, the code you entered is \
-invalid or is for a system I don\'t have support for.', delete_after=10)
+invalid or is for a system I don\'t have support for.')
 
     @commands.command(name='err2hex')
     async def cmderr2hex(self, ctx, error:str):

@@ -1716,6 +1716,8 @@ def err2hex(error):
         desc = int(error[5:9])
         code = (desc << 9) + module
         return hex(code)
+    if RE_APP.match(error):
+        return '2-BBBBB-CCCC format error codes are not supported.'
 
 def hex2err(error):
     if error.startswith('0x'):
