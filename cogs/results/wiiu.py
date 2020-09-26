@@ -479,11 +479,10 @@ modules = {
     160: syserr,
     165: Module('vpad (gamepad)'),
     166: Module('aoc (dlc)'),
-    187: Module('nfp (amiibo'),
+    187: Module('nfp (amiibo)'),
     199: unknown
 }
 
-# TODO: Add support for levels from hex inputs.
 levels = {
     0: 'Success.',
     -1: 'Fatal.',
