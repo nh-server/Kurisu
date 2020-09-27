@@ -33,7 +33,6 @@ database_name = 'data/kurisu.sqlite'
 cogs = [
     'cogs.assistance',
     'cogs.blah',
-    'cogs.err',
     'cogs.events',
     'cogs.extras',
     'cogs.filters',
@@ -50,7 +49,7 @@ cogs = [
     'cogs.mod_warn',
     'cogs.mod_watch',
     'cogs.mod',
-    'cogs.nxerr',
+    'cogs.results',
     'cogs.rules',
     'cogs.ssnc',
     'cogs.xkcdparse',
