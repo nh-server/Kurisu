@@ -1,4 +1,4 @@
-class Module():
+class Module:
     """
     Describes a Module. A Module contains a dictionary of ResultCodes,
     and possibly a second dictionary with extra information.
@@ -26,7 +26,7 @@ class Module():
         return None
 
 
-class ResultCode():
+class ResultCode:
     """
     Describes a result code. A ResultCode has several fields which are used
     to provide information about the error or result, including a support
@@ -38,6 +38,7 @@ class ResultCode():
         self.summary = None
         self.level = None
         self.is_ban = is_ban
+
 
 # Helper constants
 UNKNOWN_MODULE = ResultCode('Invalid or unknown module. Are you sure you \

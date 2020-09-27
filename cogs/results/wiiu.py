@@ -488,7 +488,7 @@ levels = {
 }
 
 # regex for Wii U result code format "1XX-YYYY"
-RE = re.compile(r'1\d{2}\-\d{4}')
+RE = re.compile(r'1\d{2}-\d{4}')
 
 CONSOLE_NAME = 'Nintendo Wii U'
 

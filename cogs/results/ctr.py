@@ -354,7 +354,7 @@ summaries = {
 }
 
 # regex for 3DS result code format "0XX-YYYY"
-RE = re.compile(r'0\d{2}\-\d{4}')
+RE = re.compile(r'0\d{2}-\d{4}')
 
 CONSOLE_NAME = 'Nintendo 2DS/3DS'
 

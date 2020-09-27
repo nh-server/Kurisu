@@ -1679,7 +1679,7 @@ modules = {
 }
 
 # regex for result code format "XXXX-YYYY"
-RE = re.compile(r'2\d{3}\-\d{4}')
+RE = re.compile(r'2\d{3}-\d{4}')
 
 # regex for result code format "2-BBBBB-CCCC"
 # The first digit always appears to be "2" for games/applications.

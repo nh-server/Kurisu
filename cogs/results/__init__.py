@@ -8,9 +8,6 @@ class Results(commands.Cog):
     """
     Parses game console result codes.
     """
-    def __init__(self, bot):
-        self.bot = bot
-
     def fetch(self, error):
         if ctr.is_valid(error):
             return ctr.get(error)
