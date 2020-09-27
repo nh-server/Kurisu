@@ -532,4 +532,3 @@ def get(error):
         return CONSOLE_NAME, modules[mod].name, ret, COLOR
 
     return CONSOLE_NAME, None, UNKNOWN_MODULE, COLOR
-

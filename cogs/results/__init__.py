@@ -90,7 +90,7 @@ Only Nintendo Switch XXXX-YYYY formatted error codes are supported.'
           .err 2-ARVHA-0000
         """
         err = self.fixup_input(err)
-        if (meme:=self.check_meme(err)) is not None:
+        if (meme := self.check_meme(err)) is not None:
             return await ctx.send(meme)
 
         system_name, module_name, error, color = self.fetch(err)
@@ -139,4 +139,3 @@ invalid or is for a system I don\'t have support for.')
 
 def setup(bot):
     bot.add_cog(Results(bot))
-

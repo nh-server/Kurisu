@@ -470,4 +470,3 @@ def get(error):
         return nim_handler(mod, level, summary, desc)
 
     return construct_result(mod, level, summary, desc)
-

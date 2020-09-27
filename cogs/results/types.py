@@ -52,4 +52,3 @@ information on error codes for it. You should report relevant details to \
 [the Kurisu repository](https://github.com/nh-server/Kurisu/issues).')
 
 WARNING_COLOR = 0xFFFF00
-
