@@ -3,8 +3,8 @@ import re
 from .types import Module, ResultCode, UNKNOWN_MODULE, UNKNOWN_ERROR, NO_RESULTS_FOUND
 
 """
-This file contains all currently known 2DS/3DS result and error codes. 
-There may be inaccuracies here; we'll do our best to correct them 
+This file contains all currently known 2DS/3DS result and error codes.
+There may be inaccuracies here; we'll do our best to correct them
 when we find out more about them. It is also worth noting that apparently Nintendo
 loved to use random modules for some of these error codes, due to the reporting
 modules not making much sense (e.g., kernel reporting an internet authentication
@@ -220,7 +220,7 @@ qtm = Module('qtm', {
 # which return incorrect error strings. Since there's not really a feasible way to figure out the
 # application which is throwing the error, this is the best compromise without giving the user
 # false information.
-application = Module('application-specific error', { 
+application = Module('application-specific error', {
     (0, 9999): ResultCode('The application raised an error. Please consult the application\'s source code or ask the author for assistance with it.')
 })
 
@@ -326,31 +326,31 @@ modules = {
 }
 
 levels = {
-    0:'Success',
-    1:'Info',
-    25:'Status',
-    26:'Temporary',
-    27:'Permanent',
-    28:'Usage',
-    29:'Reinitialize',
-    30:'Reset',
-    31:'Fatal'
+    0: 'Success',
+    1: 'Info',
+    25: 'Status',
+    26: 'Temporary',
+    27: 'Permanent',
+    28: 'Usage',
+    29: 'Reinitialize',
+    30: 'Reset',
+    31: 'Fatal'
 }
 
 summaries = {
-    0:'Success',
-    1:'Nothing happened',
-    2:'Would block',
-    3:'Out of resource',
-    4:'Not found',
-    5:'Invalid state',
-    6:'Not supported',
-    7:'Invalid argument',
-    8:'Wrong argument',
-    9:'Canceled',
-    10:'Status changed',
-    11:'Internal',
-    63:'Invalid result value'
+    0: 'Success',
+    1: 'Nothing happened',
+    2: 'Would block',
+    3: 'Out of resource',
+    4: 'Not found',
+    5: 'Invalid state',
+    6: 'Not supported',
+    7: 'Invalid argument',
+    8: 'Wrong argument',
+    9: 'Canceled',
+    10: 'Status changed',
+    11: 'Internal',
+    63: 'Invalid result value'
 }
 
 # regex for 3DS result code format "0XX-YYYY"
@@ -361,6 +361,7 @@ CONSOLE_NAME = 'Nintendo 2DS/3DS'
 # Suggested color to use if displaying information through a Discord bot's embed
 COLOR = 0xCE181E
 
+
 def is_valid(error):
     err_int = None
     if error.startswith('0x'):
@@ -370,6 +371,7 @@ def is_valid(error):
         return (err_int & 0x80000000) and (module < 100 or module != 254)
     return RE.match(error)
 
+
 def hex2err(error):
     if error.startswith('0x'):
         error = error[2:]
@@ -378,6 +380,7 @@ def hex2err(error):
     desc = error & 0x3FF
     code = f'{module:03}-{desc:04}'
     return code
+
 
 def nim_handler(module, level, summary, description):
     """
@@ -396,11 +399,11 @@ def nim_handler(module, level, summary, description):
     nim = modules[52]
     if 2000 <= description < 3024:
         description -= 2000
-        module = 52 # nim
+        module = 52  # nim
         return construct_result(module, level, summary, description)
     elif 4200 <= description < 4400:
         description -= 4200
-        module = 40 # http
+        module = 40  # http
         return construct_result(module, level, summary, description)
     elif 4400 <= description < 5000:
         description -= 4400
@@ -425,6 +428,7 @@ def nim_handler(module, level, summary, description):
         return construct_result(module, level, summary, description)
     return CONSOLE_NAME, nim.name, UNKNOWN_ERROR, COLOR
 
+
 def construct_result(mod, level, summary, desc):
     if mod in modules:
         in_common_range = desc in common.data
@@ -432,7 +436,7 @@ def construct_result(mod, level, summary, desc):
             if not in_common_range:
                 return CONSOLE_NAME, modules[mod].name, NO_RESULTS_FOUND, COLOR
             else:
-                ret = ResultCode() # Make a blank result that gets filled in below
+                ret = ResultCode()  # Make a blank result that gets filled in below
         else:
             ret = modules[mod].get_error(desc)
 
@@ -442,6 +446,7 @@ def construct_result(mod, level, summary, desc):
         ret.summary = summaries[summary] if summary in summaries else None
         return CONSOLE_NAME, modules[mod].name, ret, COLOR
     return CONSOLE_NAME, None, UNKNOWN_MODULE, COLOR
+
 
 def get(error):
     level = None

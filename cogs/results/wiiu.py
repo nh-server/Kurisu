@@ -3,8 +3,8 @@ import re
 from .types import Module, ResultCode, UNKNOWN_MODULE, NO_RESULTS_FOUND
 
 """
-This file contains all currently known Wii U result and error codes. 
-There may be inaccuracies here; we'll do our best to correct them 
+This file contains all currently known Wii U result and error codes.
+There may be inaccuracies here; we'll do our best to correct them
 when we find out more about them.
 
 A result code is a 32-bit integer returned when calling various commands in the
@@ -206,8 +206,7 @@ fp = Module('fp (friends)', {
     811: ResultCode('Under maintenance.'),
     812: ResultCode('Unsupported version.'),
     813: ResultCode('Unknown error.')
-}, 
-{
+}, {
     (100, 199): 'Core',
     (200, 299): 'DDL',
     (300, 399): 'Rendezvous',
@@ -295,7 +294,6 @@ act = Module('act (accounts)', {
     2679: ResultCode('Card is expired.'),
     2680: ResultCode('Credit card number is wrong.'),
     2681: ResultCode('PIN is wrong.'),
-    
     2800: ResultCode('Banned.', is_ban=True),
     2801: ResultCode('Account is banned.', is_ban=True),
     2802: ResultCode('Account is banned from all services.', is_ban=True),
@@ -331,9 +329,8 @@ act = Module('act (accounts)', {
     2932: ResultCode('Unknown server error.'),
     2998: ResultCode('Unauthenticated after salvage.'),
     2999: ResultCode('Unknown authentication failure.'),
-    
-},
-{
+
+}, {
     (0, 499): 'Internal',
     (500, 599): 'Status changed',
     (600, 699): 'Invalid argument',
@@ -350,7 +347,7 @@ act = Module('act (accounts)', {
     (2500, 2599): 'Account',
     (2670, 2699): 'Credit Card',
     (2800, 2835): 'Banned',
-    (2880, 2899): 'Not available', # not provided/under maintenance/no longer in service
+    (2880, 2899): 'Not available',  # not provided/under maintenance/no longer in service
 })
 
 nex = Module('nex (game servers)', {
@@ -398,16 +395,15 @@ nex = Module('nex (game servers)', {
     509: ResultCode('The network connection was reset.'),
     510: ResultCode('The destination Station did not authenticate itself properly.'),
     511: ResultCode('3rd-party server or device answered with an error code according to protocol used e.g. HTTP error code.'),
-},
-{
-    (100, 199):'Core',
-    (200, 299):'DDL',
-    (300, 399):'Rendezvous',
-    (400, 499):'Python Core',
-    (500, 599):'Transport',
-    (600, 699):'DO Core',
-    (700, 799):'FPD',
-    (800, 899):'Authentication',
+}, {
+    (100, 199): 'Core',
+    (200, 299): 'DDL',
+    (300, 399): 'Rendezvous',
+    (400, 499): 'Python Core',
+    (500, 599): 'Transport',
+    (600, 699): 'DO Core',
+    (700, 799): 'FPD',
+    (800, 899): 'Authentication',
     (1100, 1199): 'Ranking',
     (1200, 1299): 'Data Store',
     (1500, 1599): 'Service Item',
@@ -499,6 +495,7 @@ CONSOLE_NAME = 'Nintendo Wii U'
 # Suggested color to use if displaying information through a Discord bot's embed
 COLOR = 0x009AC7
 
+
 def is_valid(error):
     err_int = None
     if error.startswith('0x'):
@@ -508,12 +505,14 @@ def is_valid(error):
         return (err_int & 0x80000000) and module >= 100
     return RE.match(error)
 
+
 def hex2err(error):
     error = int(error)
     module = (error & 0x1FF0) >> 4
     desc = (error & 0xFFFFE000) >> 13
     code = f'{module:03}-{desc:04}'
     return code
+
 
 def get(error):
     level = None

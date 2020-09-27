@@ -3,8 +3,8 @@ import re
 from .types import Module, ResultCode, UNKNOWN_MODULE, NO_RESULTS_FOUND
 
 """
-This file contains all currently known Switch result and error codes. 
-There may be inaccuracies here; we'll do our best to correct them 
+This file contains all currently known Switch result and error codes.
+There may be inaccuracies here; we'll do our best to correct them
 when we find out more about them.
 
 A result code is a 32-bit integer returned when calling various commands in the
@@ -362,7 +362,7 @@ fs = Module('fs', {
     6031: ResultCode('The directory is not deletable.'),
     6032: ResultCode('The directory is not renameable.'),
     6033: ResultCode('The path is incompatible.'),
-    6034: ResultCode('Rename to other filesystem.'), # 'Attempted to rename to other filesystem.'?
+    6034: ResultCode('Rename to other filesystem.'),  # 'Attempted to rename to other filesystem.'?
     6061: ResultCode('Invalid offset.'),
     6062: ResultCode('Invalid size.'),
     6063: ResultCode('Argument is nullptr.'),
@@ -494,8 +494,7 @@ fs = Module('fs', {
     7915: ResultCode('Invalid DBM path format.'),
     7916: ResultCode('DBM directory name is too long.'),
     7917: ResultCode('DBM filename is too long.')
-},
-{
+}, {
         (30, 33): 'Not enough free space.',
         (34, 38): 'Not enough BIS free space.',
         (39, 45): 'Not enough free space.',
@@ -503,7 +502,7 @@ fs = Module('fs', {
         (2500, 2999): 'Failed to access Game Card.',
         (3200, 3499): 'Allocation failed.',
         (3500, 3999): 'Failed to access eMMC.',
-        #(4001, 4200): 'ROM is corrupted.',
+        # (4001, 4200): 'ROM is corrupted.',
         (4001, 4010): 'ROM is corrupted.',
         (4011, 4019): 'AES-CTR CounterExtendedStorage is corrupted.',
         (4021, 4029): 'Indirect storage is corrupted.',
@@ -608,8 +607,7 @@ ncm = Module('ncm', {
     360: ResultCode('Unexpected ContentMeta prepared.'),
     380: ResultCode('Invalid firmware variation.'),
     8182: ResultCode('Invalid offset.')
-},
-{
+}, {
     (250, 258): 'Content storage is not active.',
     (260, 268): 'Content meta database is not active.',
     (290, 299): 'Install task was cancelled.',
@@ -684,8 +682,7 @@ sf = Module('sf', {
     800: ResultCode('Request invalidated.'),
     802: ResultCode('Request invalidated by user.'),
     812: ResultCode('Request deferred by user.'),
-},
-{
+}, {
     (800, 809): 'Request invalidated.',
     (810, 819): 'Request deferred.',
     (820, 899): 'Request context changed.'
@@ -703,8 +700,7 @@ hipc = Module('hipc', {
     420: ResultCode('Invalid CMIF request.'),
     491: ResultCode('Target is not a domain.'),
     492: ResultCode('Domain object was not found.')
-},
-{
+}, {
     (100, 299): 'Out of resources.'
 })
 
@@ -725,8 +721,7 @@ dmnt = Module('dmnt', {
     6602: ResultCode('Address not found.'),
     6603: ResultCode('Address is out of resources.'),
     6700: ResultCode('Virtual machine condition depth is invalid.')
-},
-{
+}, {
     (6500, 6599): 'Cheat engine error.',
     (6600, 6699): 'Frozen address error.'
 })
@@ -780,8 +775,7 @@ sm = Module('sm', {
 
     1000: ResultCode('Should forward to session.'),
     1100: ResultCode('Process is not associated.')
-},
-{
+}, {
     (1000, 2000): 'Atmosphere man-in-the-middle (MITM) extension result.'
 })
 
@@ -819,8 +813,7 @@ spl = Module('spl', {
     106: ResultCode('Boot reason was aleady set.'),
     107: ResultCode('Boot reason was not set.'),
     108: ResultCode('Invalid argument.')
-},
-{
+}, {
     (0, 99): 'Secure monitor error.'
 })
 
@@ -949,15 +942,14 @@ settings = Module('settings', {
     1274: ResultCode('Amiibo ECQV BLS key.'),
     1275: ResultCode('Amiibo ECQV BLS certificate.'),
     1276: ResultCode('Amiibo ECQV BLS root certificate.')
-},
-{
+}, {
     (100, 149): 'Internal error.',
     (200, 399): 'Invalid argument.',
     (621, 1276): 'Setting buffer is null.',
 })
 
 nifm = Module('nifm', {
-    3400: ResultCode('The internet connection you are using requires authentication or a user agreement.' 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/22569/kw/2110-3400'), 
+    3400: ResultCode('The internet connection you are using requires authentication or a user agreement.' 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/22569/kw/2110-3400'),
 })
 
 vi = Module('vi', {
@@ -986,8 +978,7 @@ time = Module('time', {
     903: ResultCode('TimeZoneRule conversion failed.'),
     989: ResultCode('TimeZone location name not found.'),
     990: ResultCode('Unimplemented.')
-},
-{
+}, {
     (900, 919): 'Invalid argument.'
 })
 
@@ -1146,8 +1137,7 @@ prepo = Module('prepo', {
     2500: ResultCode('Status 500.'),
     2503: ResultCode('Status 503.'),
     2504: ResultCode('Status 504.'),
-},
-{
+}, {
     (1005, 1060): 'HTTP error.',
     (2400, 2504): 'Server error.'
 })
@@ -1357,13 +1347,12 @@ capsrv = Module('capsrv (capture)', {
     1906: ResultCode('Error setting the file size.'),
     1907: ResultCode('Error when reading the file.'),
     1908: ResultCode('Error when writing the file.')
-},
-{
+}, {
     (10, 19): 'Album: invalid file ID.',
     (90, 99): 'Album: filesystem error.',
     (800, 899): 'Control error.',
-    #(1024, 2047): 'Internal error.',
-    (1200,1299): 'Internal JPEG encoder error.',
+    # (1024, 2047): 'Internal error.',
+    (1200, 1299): 'Internal JPEG encoder error.',
     (1300, 1399): 'Internal file data verification error.',
     (1400, 1499): 'Internal album limitation error.',
     (1500, 1599): 'Internal signature error.',
@@ -1514,7 +1503,7 @@ lnx_nvidia = Module('libnx (NVIDIA)', {
     15: ResultCode('Resource error.'),
     16: ResultCode('Count mismatch.'),
     4096: ResultCode('Shared memory too small.'),
-    #0x30003: ResultCode('File operation failed.') # This actually belongs to OS.
+    # 0x30003: ResultCode('File operation failed.') # This actually belongs to OS.
 })
 
 lnx_binder = Module('libnx (binder)', {
@@ -1701,6 +1690,7 @@ CONSOLE_NAME = 'Nintendo Switch'
 # Suggested color to use if displaying information through a Discord bot's embed
 COLOR = 0xE60012
 
+
 def is_valid(error):
     err_int = None
     if error.startswith('0x'):
@@ -1708,6 +1698,7 @@ def is_valid(error):
     if err_int:
         return not err_int & 0x80000000
     return RE.match(error) or RE_APP.match(error)
+
 
 def err2hex(error, suppress_error=False):
     if RE.match(error):
@@ -1719,6 +1710,7 @@ def err2hex(error, suppress_error=False):
         return '2-BBBBB-CCCC format error codes are not supported.'
     return ''
 
+
 def hex2err(error):
     if error.startswith('0x'):
         error = error[2:]
@@ -1727,6 +1719,7 @@ def hex2err(error):
     desc = (error >> 9) & 0x3FFF
     code = f'{module + 2000:04}-{desc:04}'
     return code
+
 
 def get(error):
     if RE_APP.match(error):

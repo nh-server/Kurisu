@@ -3,6 +3,7 @@ from discord.ext import commands
 
 from . import switch, wiiu, ctr, types
 
+
 class Results(commands.Cog):
     """
     Parses game console result codes.
@@ -66,7 +67,7 @@ Only Nintendo Switch XXXX-YYYY formatted error codes are supported.'
             return False
         return True
 
-    def check_meme(self, err:str) -> str:
+    def check_meme(self, err: str) -> str:
         memes = {
             '0xdeadbeef': 'you sure you want to eat that?',
             '0xdeadbabe': 'i think you have bigger problems if that\'s the case',
@@ -89,7 +90,7 @@ Only Nintendo Switch XXXX-YYYY formatted error codes are supported.'
           .err 2-ARVHA-0000
         """
         err = self.fixup_input(err)
-        if (meme := self.check_meme(err)) is not None:
+        if (meme:=self.check_meme(err)) is not None:
             return await ctx.send(meme)
 
         system_name, module_name, error, color = self.fetch(err)
@@ -115,8 +116,9 @@ Only Nintendo Switch XXXX-YYYY formatted error codes are supported.'
                 embed.add_field(name="Further information", value=error.support_url, inline=False)
 
             if error.is_ban:
-                embed.add_field(name="Console, account and game bans", 
-                value="Nintendo Homebrew does not provide support \
+                embed.add_field(
+                    name="Console, account and game bans",
+                    value="Nintendo Homebrew does not provide support \
 for unbanning. Please do not ask for further assistance with this.")
             embed.color = color if not error.is_ban else types.WARNING_COLOR
             await ctx.send(embed=embed)
@@ -125,15 +127,16 @@ for unbanning. Please do not ask for further assistance with this.")
 invalid or is for a system I don\'t have support for.')
 
     @commands.command(name='err2hex')
-    async def cmderr2hex(self, ctx, error:str):
+    async def cmderr2hex(self, ctx, error: str):
         error = self.fixup_input(error)
         return await ctx.send(self.err2hex(error))
 
     @commands.command(name='hex2err')
-    async def cmdhex2err(self, ctx, error:str):
+    async def cmdhex2err(self, ctx, error: str):
         error = self.fixup_input(error)
         return await ctx.send(self.hex2err(error))
-  
+
+
 def setup(bot):
     bot.add_cog(Results(bot))
 

@@ -9,7 +9,7 @@ class Module():
         self.data = data
         self.levels = levels
 
-    def get_error(self, error:int):
+    def get_error(self, error: int):
         for key, value in self.data.items():
             if key == error:
                 return value
@@ -19,11 +19,12 @@ class Module():
         return UNKNOWN_ERROR
 
     # If your modules require specific extra info for error ranges, add it here
-    def get_level(self, level:int):
+    def get_level(self, level: int):
         for key, value in self.levels.items():
             if isinstance(key, tuple) and key[0] <= level <= key[1]:
                 return value
         return None
+
 
 class ResultCode():
     """
@@ -39,7 +40,7 @@ class ResultCode():
         self.is_ban = is_ban
 
 # Helper constants
-UNKNOWN_MODULE =  ResultCode('Invalid or unknown module. Are you sure you \
+UNKNOWN_MODULE = ResultCode('Invalid or unknown module. Are you sure you \
 typed the error code in correctly?')
 
 UNKNOWN_ERROR = ResultCode('Your error appears to be unknown. You should report\
