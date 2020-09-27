@@ -64,6 +64,46 @@ class Filter(commands.Cog):
         else:
             await ctx.send("There is no valid file for loading!")
 
+    @is_staff("Helper")
+    @commands.group()
+    async def invitefilter(self, ctx):
+        """Command group for managing the invite filter"""
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help(ctx.command)
+
+    @is_staff("SuperOP")
+    @invitefilter.command(name='add')
+    async def add_invite(self, ctx, invite: discord.Invite, alias: str):
+        """Adds a invite to the filter whitelist"""
+        if await self.bot.invitefilter.fetch(code=invite.code, alias=alias, separator='OR'):
+            return await ctx.send("This invite code or alias is already in use!")
+        entry = await self.bot.invitefilter.add(name=invite.guild.name, code=invite.code, alias=alias, uses=-1)
+        if entry is None:
+            return await ctx.send("Failed to add invite to the invite whitelist!")
+        await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added {invite.code}(`{invite.guild.name}`) to the invite whitelist!")
+        await ctx.send("Successfully added invite to whitelist")
+
+    @is_staff("SuperOP")
+    @invitefilter.command(name='delete')
+    async def delete_invite(self, ctx, code: str):
+        """Removes a invite from the filter whitelist"""
+        entry = await self.bot.invitefilter.fetchinvite(code=code)
+        if not entry:
+            return await ctx.send("Invite code not found!")
+        await self.bot.invitefilter.delete(code=code)
+        await ctx.send(f"Deleted server `{entry.alias}` from filter succesfully!")
+        await self.bot.channels['mod-logs'].send(f"⭕ **Deleted**: {ctx.author.mention} deleted server `{entry.alias}` from the invite filter!")
+
+    @invitefilter.command(name='list')
+    async def list_invites(self, ctx):
+        """List invites in the filter whitelist"""
+        embed = discord.Embed()
+        if self.bot.invitefilter.invites:
+            embed.add_field(name='Invites', value='\n'.join(f"name: {invite.alias} code:{invite.code} uses:{invite.uses}" for invite in self.bot.invitefilter.invites))
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send("The invite filter is empty!")
+
 
 def setup(bot):
     bot.add_cog(Filter(bot))

@@ -17,7 +17,7 @@ from discord.ext import commands
 
 from utils.checks import check_staff_id
 from utils.database import ConnectionHolder
-from utils.manager import WordFilterManager
+from utils.manager import WordFilterManager, InviteFilterManager
 
 # sets working directory to bot's folder
 dir_path = os.path.dirname(os.path.realpath(__file__))
@@ -216,6 +216,9 @@ class Kurisu(commands.Bot):
 
         self.wordfilter = WordFilterManager(self)
         await self.wordfilter.load()
+
+        self.invitefilter = InviteFilterManager(self)
+        await self.invitefilter.load()
 
         startup_message = f'{self.user.name} has started! {self.guild} has {self.guild.member_count:,} members!'
         if len(self.failed_cogs) != 0:

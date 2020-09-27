@@ -72,3 +72,10 @@ create table flags
   value    TINYINT default 0
 );
 
+create table invitefilter
+(
+  code TEXT PRIMARY KEY,
+  name TEXT,
+  alias TEXT,
+  remaining_uses INTEGER
+);
