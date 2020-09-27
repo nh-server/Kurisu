@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from . import switch, wiiu, ctr, types
+from . import switch, wiiu, ctr_support, ctr_results, types
 
 
 class Results(commands.Cog):
@@ -9,8 +9,10 @@ class Results(commands.Cog):
     Parses game console result codes.
     """
     def fetch(self, error):
-        if ctr.is_valid(error):
-            return ctr.get(error)
+        if ctr_support.is_valid(error):
+            return ctr_support.get(error)
+        if ctr_results.is_valid(error):
+            return ctr_results.get(error)
         if wiiu.is_valid(error):
             return wiiu.get(error)
         if switch.is_valid(error):
@@ -32,16 +34,13 @@ class Results(commands.Cog):
             return 'Invalid or unsupported error code format. \
 Only Nintendo Switch XXXX-YYYY formatted error codes are supported.'
 
-    def hex2err(self, error):
+    def hex2err(self, error, suppress_error=False):
         # Don't bother processing anything if it's not hex.
         if self.is_hex(error):
-            if ctr.is_valid(error):
-                return ctr.hex2err(error)
-            if wiiu.is_valid(error):
-                return wiiu.hex2err(error)
             if switch.is_valid(error):
                 return switch.hex2err(error)
-        return 'This isn\'t a hexadecimal value!'
+        if not suppress_error:
+            return 'This isn\'t a hexadecimal value!'
 
     def fixup_input(self, user_input):
         # Truncate input to 16 chars so as not to create a huge embed or do
@@ -94,7 +93,7 @@ Only Nintendo Switch XXXX-YYYY formatted error codes are supported.'
 
         if error:
             if self.is_hex(err):
-                err_str = self.hex2err(err)
+                err_str = self.hex2err(err, True)
             else:
                 err_str = self.err2hex(err, True)
 
@@ -126,12 +125,30 @@ invalid or is for a system I don\'t have support for.')
     @commands.command(name='err2hex')
     async def cmderr2hex(self, ctx, error: str):
         error = self.fixup_input(error)
-        return await ctx.send(self.err2hex(error))
+        await ctx.send(self.err2hex(error))
 
     @commands.command(name='hex2err')
     async def cmdhex2err(self, ctx, error: str):
         error = self.fixup_input(error)
-        return await ctx.send(self.hex2err(error))
+        await ctx.send(self.hex2err(error))
+
+    @commands.command()
+    async def hexinfo(self, ctx, error: str):
+        error = self.fixup_input(error)
+        if self.is_hex(error):
+            if ctr_results.is_valid(error):
+                mod, desc, summary, level = ctr_results.hexinfo(error)
+                embed = discord.Embed(title="3DS hex result info")
+                embed.add_field(name="Module", value=mod, inline=False)
+                embed.add_field(name="Summary", value=summary, inline=False)
+                embed.add_field(name="Level", value=level, inline=False)
+                embed.add_field(name="Description", value=desc, inline=False)
+
+                await ctx.send(embed=embed)
+            else:
+                await ctx.send('This isn\'t a 3DS result code.')
+        else:
+            await ctx.send('This isn\'t a hexadecimal value!')
 
 
 def setup(bot):
