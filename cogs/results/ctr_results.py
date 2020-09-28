@@ -1,6 +1,4 @@
-import re
-
-from .types import Module, ResultInfo, UNKNOWN_MODULE, UNKNOWN_ERROR, NO_RESULTS_FOUND
+from .types import Module, ResultInfo, UNKNOWN_MODULE, NO_RESULTS_FOUND
 
 """
 This file contains all currently known 2DS/3DS result and error codes (hexadecimal).

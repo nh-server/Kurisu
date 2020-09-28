@@ -1,7 +1,7 @@
 import re
 
 from .types import Module, ResultInfo, UNKNOWN_MODULE,\
-    UNKNOWN_ERROR, NO_RESULTS_FOUND
+    UNKNOWN_ERROR
 
 """
 This file contains all currently known 2DS/3DS support codes.
@@ -244,8 +244,6 @@ def nim_handler(module, description):
     elif 5000 <= description < 7000:
         description -= 5000
         ret = ResultInfo(f'SOAP message returned result code {description} on a NIM operation.')
-        ret.level = level
-        ret.summary = summary
         return CONSOLE_NAME, nim.name, ret, COLOR
     # >= 7000 range is compacted
     elif description >= 7000:
