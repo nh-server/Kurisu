@@ -1,0 +1,7 @@
+version: "3.8"
+services:
+  kurisutest:
+    image: "ianburgwin/kurisutest"
+    volumes:
+      - /opt/kurisudata:/home/kurisu/data
+    restart: always

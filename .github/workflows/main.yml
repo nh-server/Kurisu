@@ -1,0 +1,56 @@
+name: 'ci'
+
+on:
+  push:
+    branches: port
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-qemu-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build Docker image
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          push: false
+          # Can't auto-push with v2 right now...
+          tags: nhserver/kurisu:latest
+          build-args: COMMIT=${{ github.sha }},BRANCH=${{ github.ref }}
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+      - name: Push Docker image
+        run: docker push nhserver/kurisu:latest
+# https://stackoverflow.com/questions/60477061/github-actions-how-to-deploy-to-remote-server-using-ssh/60479844#60479844
+#     - name: Create SSH key
+#       run: |
+#         mkdir -p ~/.ssh/
+#         chmod 700 ~/.ssh/
+#         echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+#         chmod 600 ~/.ssh/id_rsa
+#         echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+#       shell: bash
+#       env:
+#         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+#         SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+#     - name: Pull on server
+#       run: docker-compose pull
+#       env:
+#         DOCKER_HOST: ${{ secrets.SSH_HOST }}
+#     - name: Run on server
+#       run: docker-compose up -d
+#       env:
+#         DOCKER_HOST: ${{ secrets.SSH_HOST }}

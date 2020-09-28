@@ -1,6 +1,7 @@
 import asyncio
 import discord
 import re
+import os
 
 from collections import deque
 from utils.checks import check_staff_id
@@ -314,13 +315,14 @@ class Events(DatabaseCog):
     async def on_message(self, message):
         if isinstance(message.channel, discord.abc.PrivateChannel):
             return
-        if message.author.name == "GitHub" and message.author.discriminator == "0000":
-            if message.embeds[0].title.startswith('[Kurisu:port]'):
-                await self.bot.channels['helpers'].send("Automatically pulling changes!")
-                call(['git', 'pull'])
-                await self.bot.channels['helpers'].send("Restarting bot...")
-                await self.bot.close()
-            return
+        if not self.bot.IS_DOCKER:
+            if message.author.name == "GitHub" and message.author.discriminator == "0000":
+                if message.embeds[0].title.startswith('[Kurisu:port]'):
+                    await self.bot.channels['helpers'].send("Automatically pulling changes!")
+                    call(['git', 'pull'])
+                    await self.bot.channels['helpers'].send("Restarting bot...")
+                    await self.bot.close()
+                return
         await self.bot.wait_until_all_ready()
         if message.author == message.guild.me or await check_staff_id(self, 'Helper', message.author.id) or await self.check_nofilter(message.channel):  # don't process messages by the bot or staff or in the helpers channel
             return
