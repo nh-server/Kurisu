@@ -251,7 +251,7 @@ def nim_handler(module, description):
         module = description >> 5
         # There are way more than 0x1F descriptions, but this is how Nintendo does it...
         description = description & 0x1F
-        return construct_result(module, desc)
+        return construct_result(module, description)
     return CONSOLE_NAME, nim.name, UNKNOWN_ERROR, COLOR
 
 
