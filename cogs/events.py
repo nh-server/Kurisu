@@ -1,7 +1,6 @@
 import asyncio
 import discord
 import re
-import os
 
 from collections import deque
 from utils.checks import check_staff_id
