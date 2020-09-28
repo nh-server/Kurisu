@@ -12,7 +12,10 @@ A "support" code, in contrast to a result code, is a human-readable string like
 002-0102. They're meant to be more user-friendly than result codes, which are
 typically integer values.
 
-To add a module so the code understands it, simply add a new module number
+Note: the "modules" presented here are more like "categories". However, this difference
+isn't enough to justify creating a different class with the same logic, so we'll just
+refer to them as "modules" from now on.
+To add a module/category so the code understands it, simply add a new module number
 to the 'modules' dictionary, with a Module variable as the value. If the module
 has no known error codes, simply add a dummy Module instead (see the dict for
 more info). See the various module variables for a more in-depth example
