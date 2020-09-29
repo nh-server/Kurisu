@@ -30,7 +30,6 @@ class Extras(commands.Cog):
         else:
             return match
 
-    @is_staff("SuperOP")
     @commands.command(hidden=True)
     async def env(self, ctx):
         msg = f'''
