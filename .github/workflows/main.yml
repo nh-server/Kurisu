@@ -37,22 +37,22 @@ jobs:
       - name: Push Docker image
         run: docker push ghcr.io/nh-server/kurisu:latest
 # https://stackoverflow.com/questions/60477061/github-actions-how-to-deploy-to-remote-server-using-ssh/60479844#60479844
-#     - name: Create SSH key
-#       run: |
-#         mkdir -p ~/.ssh/
-#         chmod 700 ~/.ssh/
-#         echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-#         chmod 600 ~/.ssh/id_rsa
-#         echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
-#       shell: bash
-#       env:
-#         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-#         SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
-#     - name: Pull on server
-#       run: docker-compose pull
-#       env:
-#         DOCKER_HOST: ${{ secrets.SSH_HOST }}
-#     - name: Run on server
-#       run: docker-compose up -d
-#       env:
-#         DOCKER_HOST: ${{ secrets.SSH_HOST }}
+      - name: Create SSH key
+        run: |
+          mkdir -p ~/.ssh/
+          chmod 700 ~/.ssh/
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+        shell: bash
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+      - name: Pull on server
+        run: docker-compose pull
+        env:
+          DOCKER_HOST: ${{ secrets.SSH_HOST }}
+      - name: Run on server
+        run: docker-compose up -d
+        env:
+          DOCKER_HOST: ${{ secrets.SSH_HOST }}
