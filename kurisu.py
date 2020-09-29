@@ -71,13 +71,15 @@ class CustomContext(commands.Context):
 class Kurisu(commands.Bot):
     """Its him!!."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, commit, branch, **kwargs):
         super().__init__(*args, **kwargs)
         self.startup = datetime.now()
         self.channel_config = ConfigParser()
         self.channel_config.read("data/channels.ini", encoding='utf-8')
 
         self.IS_DOCKER = IS_DOCKER
+        self.commit = commit
+        self.branch = branch
 
         self.roles = {
             'Helpers': None,
@@ -351,7 +353,7 @@ def main():
         commit = os.environ.get('COMMIT_SHA')
         branch = os.environ.get('COMMIT_BRANCH')
 
-    bot = Kurisu(('.', '!'), description="Kurisu, the bot for Nintendo Homebrew!", allowed_mentions=discord.AllowedMentions(everyone=False, roles=False))
+    bot = Kurisu(('.', '!'), description="Kurisu, the bot for Nintendo Homebrew!", allowed_mentions=discord.AllowedMentions(everyone=False, roles=False), commit=commit, branch=branch)
     bot.help_command = commands.DefaultHelpCommand(dm_help=None)
     print(f'Starting Kurisu on commit {commit} on branch {branch}')
     bot.load_cogs()
