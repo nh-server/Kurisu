@@ -27,10 +27,14 @@ class Mod(DatabaseCog):
     @commands.command()
     async def pull(self, ctx):
         """Pull new changes from GitHub and restart."""
-        await ctx.send("Pulling changes...")
-        call(['git', 'pull'])
-        await ctx.send("👋 Restarting bot!")
-        await self.bot.close()
+        if self.bot.IS_DOCKER:
+            await ctx.send("Pull isn't used when running from a Docker container!")
+            return
+        else:
+            await ctx.send("Pulling changes...")
+            call(['git', 'pull'])
+            await ctx.send("👋 Restarting bot!")
+            await self.bot.close()
 
     @is_staff("Helper")
     @commands.guild_only()
@@ -580,7 +584,7 @@ class Mod(DatabaseCog):
             await ctx.send("Invalid channel name!")
             return
         self.bot.channel_config['Channels'][name] = str(channel.id)
-        with open('channels.ini', 'w', encoding='utf-8') as f:
+        with open('data/channels.ini', 'w', encoding='utf-8') as f:
             ctx.bot.channel_config.write(f)
         self.bot.channels[name] = channel
         await ctx.send(f"Changed {name} channel to {channel.mention} | {channel.id}")

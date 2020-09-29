@@ -19,13 +19,15 @@ from utils.checks import check_staff_id
 from utils.database import ConnectionHolder
 from utils.manager import WordFilterManager, InviteFilterManager
 
+IS_DOCKER = os.environ.get('IS_DOCKER', 0)
+
 # sets working directory to bot's folder
 dir_path = os.path.dirname(os.path.realpath(__file__))
 os.chdir(dir_path)
 
 # Load config
 config = ConfigParser()
-config.read("config.ini")
+config.read("data/config.ini")
 
 database_name = 'data/kurisu.sqlite'
 
@@ -68,11 +70,14 @@ class CustomContext(commands.Context):
 
 class Kurisu(commands.Bot):
     """Its him!!."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.startup = datetime.now()
         self.channel_config = ConfigParser()
-        self.channel_config.read("channels.ini", encoding='utf-8')
+        self.channel_config.read("data/channels.ini", encoding='utf-8')
+
+        self.IS_DOCKER = IS_DOCKER
 
         self.roles = {
             'Helpers': None,
@@ -139,7 +144,6 @@ class Kurisu(commands.Bot):
         self._is_all_ready = Event(loop=self.loop)
 
         os.makedirs("data", exist_ok=True)
-        os.makedirs("data/ninupdates", exist_ok=True)
 
     async def get_context(self, message, *, cls=CustomContext):
         return await super().get_context(message, cls=cls)
@@ -165,7 +169,7 @@ class Kurisu(commands.Bot):
                     print(f"Failed to find channel {n}")
                     continue
                 self.channel_config['Channels'][n] = str(self.channels[n].id)
-                with open('channels.ini', 'w', encoding='utf-8') as f:
+                with open('data/channels.ini', 'w', encoding='utf-8') as f:
                     self.channel_config.write(f)
 
     def load_roles(self):
@@ -330,18 +334,22 @@ def main():
         print('Kurisu requires 3.8 or later.')
         return 2
 
-    # attempt to get current git information
-    try:
-        commit = check_output(['git', 'rev-parse', 'HEAD']).decode('ascii')[:-1]
-    except CalledProcessError as e:
-        print(f'Checking for git commit failed: {type(e).__name__}: {e}')
-        commit = "<unknown>"
+    if not IS_DOCKER:
+        # attempt to get current git information
+        try:
+            commit = check_output(['git', 'rev-parse', 'HEAD']).decode('ascii')[:-1]
+        except CalledProcessError as e:
+            print(f'Checking for git commit failed: {type(e).__name__}: {e}')
+            commit = "<unknown>"
 
-    try:
-        branch = check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).decode()[:-1]
-    except CalledProcessError as e:
-        print(f'Checking for git branch failed: {type(e).__name__}: {e}')
-        branch = "<unknown>"
+        try:
+            branch = check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).decode()[:-1]
+        except CalledProcessError as e:
+            print(f'Checking for git branch failed: {type(e).__name__}: {e}')
+            branch = "<unknown>"
+    else:
+        commit = os.environ.get('COMMIT_SHA')
+        branch = os.environ.get('COMMIT_BRANCH')
 
     bot = Kurisu(('.', '!'), description="Kurisu, the bot for Nintendo Homebrew!", allowed_mentions=discord.AllowedMentions(everyone=False, roles=False))
     bot.help_command = commands.DefaultHelpCommand(dm_help=None)

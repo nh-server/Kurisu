@@ -1,0 +1,7 @@
+version: "3.8"
+services:
+  kurisu:
+    image: "ghcr.io/nh-server/kurisu"
+    volumes:
+      - /opt/kurisudata:/home/kurisu/data
+    restart: always

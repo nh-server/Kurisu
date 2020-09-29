@@ -1,5 +1,5 @@
-discord.py
-aiosqlite3
-Pillow
-xkcd
-pytz
+discord.py==1.4.1
+aiosqlite3==0.3.0
+Pillow==7.2.0
+xkcd==2.4.2
+pytz==2020.1

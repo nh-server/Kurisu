@@ -1,0 +1,7 @@
+data
+.git
+.dockerignore
+Dockerfile
+config.ini
+config.ini.example
+dockerbuild.sh
