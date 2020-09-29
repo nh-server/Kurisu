@@ -1,13 +1,17 @@
 import datetime
 import discord
+import inspect
 import os
 import random
 import re
 import string
+import sys
 
 from utils.checks import is_staff
 from discord.ext import commands
-from discord import TextChannel
+from discord import TextChannel, __version__ as discordpy_version
+
+python_version = sys.version.split()[0]
 
 
 class Extras(commands.Cog):
@@ -25,6 +29,18 @@ class Extras(commands.Cog):
             return len(nickname) <= 32
         else:
             return match
+
+    @is_staff("SuperOP")
+    @commands.command(hidden=True)
+    async def env(self, ctx):
+        msg = f'''
+        Python {python_version}
+        discord.py {discordpy_version}
+        Is Docker: {bool(self.bot.IS_DOCKER)}
+        Commit: {self.bot.commit}
+        Branch: {self.bot.branch}
+        '''
+        await ctx.send(inspect.cleandoc(msg))
 
     @commands.command(aliases=['about'])
     async def kurisu(self, ctx):
