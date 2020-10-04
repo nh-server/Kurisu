@@ -1353,7 +1353,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
                 return
         if self.check_console(console, channelName, '3ds'):
             embed = discord.Embed(title="3DS Themes Tutorial", color=discord.Color.dark_orange())
-            embed.url = "https://itspizzatime1501.github.io/guides/themes/"
+            embed.url = "https://mega.charizard-is.best/tutorials/#/theme"
             embed.description = "Tutorial for installing themes on the 3DS"
             await ctx.send(embed=embed)
         elif self.check_console(console, channelName, ('nx', 'switch', 'ns')):
