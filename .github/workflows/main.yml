@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Send job start webhook
-        continue-on-error: false
+        continue-on-error: true
         uses: appleboy/discord-action@4c19612
         with:
           webhook_id: ${{ secrets.WEBHOOK_ID }}
@@ -43,7 +43,7 @@ jobs:
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
       - name: Send push webhook
-        continue-on-error: false
+        continue-on-error: true
         uses: appleboy/discord-action@4c19612
         with:
           webhook_id: ${{ secrets.WEBHOOK_ID }}
@@ -64,7 +64,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
       - name: Send push webhook
-        continue-on-error: false
+        continue-on-error: true
         uses: appleboy/discord-action@4c19612
         with:
           webhook_id: ${{ secrets.WEBHOOK_ID }}
@@ -75,7 +75,7 @@ jobs:
         env:
           DOCKER_HOST: ${{ secrets.SSH_HOST }}
       - name: Send up webhook
-        continue-on-error: false
+        continue-on-error: true
         uses: appleboy/discord-action@4c19612
         with:
           webhook_id: ${{ secrets.WEBHOOK_ID }}
