@@ -9,6 +9,13 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'skip ci')"
     runs-on: ubuntu-latest
     steps:
+      - name: Send job start webhook
+        continue-on-error: false
+        uses: appleboy/discord-action@4c19612
+        with:
+          webhook_id: ${{ secrets.WEBHOOK_ID }}
+          webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
+          message: Starting build for commit ${{ github.sha }}
       - name: Checkout
         uses: actions/checkout@v2
       - name: Set up QEMU
@@ -35,6 +42,13 @@ jobs:
           build-args: COMMIT=${{ github.sha }},BRANCH=${{ github.ref }}
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
+      - name: Send push webhook
+        continue-on-error: false
+        uses: appleboy/discord-action@4c19612
+        with:
+          webhook_id: ${{ secrets.WEBHOOK_ID }}
+          webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
+          message: Pushing to ghcr.io/nh-server/kurisu
       - name: Push Docker image
         run: docker push ghcr.io/nh-server/kurisu:latest
 # https://stackoverflow.com/questions/60477061/github-actions-how-to-deploy-to-remote-server-using-ssh/60479844#60479844
@@ -49,10 +63,24 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+      - name: Send push webhook
+        continue-on-error: false
+        uses: appleboy/discord-action@4c19612
+        with:
+          webhook_id: ${{ secrets.WEBHOOK_ID }}
+          webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
+          message: Pulling on server
       - name: Pull on server
         run: docker-compose pull
         env:
           DOCKER_HOST: ${{ secrets.SSH_HOST }}
+      - name: Send up webhook
+        continue-on-error: false
+        uses: appleboy/discord-action@4c19612
+        with:
+          webhook_id: ${{ secrets.WEBHOOK_ID }}
+          webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
+          message: Running on server
       - name: Run on server
         run: docker-compose up -d
         env:
