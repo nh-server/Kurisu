@@ -352,7 +352,9 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         """Links to a tool for a mod manager"""
         await self.simple_embed(ctx, cleandoc("""
                                 To install mods for Smash 3DS, and to manage other LayeredFS mods, \
-[Mod-Moon](https://github.com/Swiftloke/ModMoon/releases) is recommended. Instructions for use can be found on the page.
+[Mod-Moon](https://github.com/Swiftloke/ModMoon/releases) is recommended.
+
+                                Instructions for usage can be found [in this thread.](https://gbatemp.net/threads/modmoon-a-beautiful-simple-and-compact-mods-manager-for-the-nintendo-3ds.519080#)
                                 """))
 
     @commands.command()
