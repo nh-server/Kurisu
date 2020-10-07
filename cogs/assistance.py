@@ -1383,15 +1383,15 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         encodedapp = urllib.parse.quote(app)
         async with aiohttp.ClientSession() as session:
             try:
-                async with session.get(f"https://tinydb.eiphax.tech/api/search/{encodedapp}", timeout=2) as resp:
+                async with session.get(f"https://api.homebrew.space/search/{encodedapp}", timeout=2) as resp:
                     response = await resp.json()
             except (aiohttp.ServerConnectionError, aiohttp.ClientConnectorError, aiohttp.ClientResponseError):
                 return await ctx.send("I can't connect to tinydb 💢")
-        if response['success']:
-            release = response['result']['newest_release']
-            embed = discord.Embed(title=release['name'], image=release['qr_url'], description=f"{release['description']}\n [[Download]({release['download_url']})] [[Source]({response['result']['github_url']})]")
-            embed.set_image(url=release['qr_url'])
-            embed.set_footer(text=f"by {release['author']}")
+        if response and len(response) > 0:
+            release = response[0]['latestRelease']['3ds_release_files'][0]
+            embed = discord.Embed(title=response[0]['name'], image=f"https://api.homebrew.space/qr/{response[0]['id']}/", description=f"{response[0]['description']}\n [[Download]({release['download_url']})] [[Source](https://github.com/{response[0]['github_owner']}/{response[0]['github_repository']})]")
+            embed.set_image(url=rf"https://api.homebrew.space/qr/{response[0]['id']}/")
+            embed.set_footer(text=f"by {response[0]['github_owner']}")
             return await ctx.send(embed=embed)
         return await ctx.send(f"Couldnt find {self.bot.escape_text(app)} in tinydb!")
 
