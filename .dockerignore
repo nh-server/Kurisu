@@ -1,5 +1,8 @@
 data
 .git
+.github
+.gitignore
+.travis.yml
 .dockerignore
 Dockerfile
 config.ini
