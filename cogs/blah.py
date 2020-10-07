@@ -28,6 +28,7 @@ class Blah(commands.Cog):
             await ctx.send(f'You cannot send a message to {channel.mention}.')
             return
         await channel.send(inp, allowed_mentions=discord.AllowedMentions(everyone=True, roles=True))
+        await ctx.message.delete()
 
     @is_staff("OP")
     @commands.command()
