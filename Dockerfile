@@ -1,6 +1,7 @@
 FROM python:3.8.6-slim-buster
 LABEL org.opencontainers.image.source https://github.com/nh-server/Kurisu
 ENV IS_DOCKER=1
+ENV PYTHONUNBUFFERED=1
 ENV HOME /home/kurisu
 RUN useradd -m -d $HOME -s /bin/sh -u 2849 kurisu
 WORKDIR $HOME
