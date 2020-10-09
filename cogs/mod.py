@@ -181,7 +181,7 @@ class Mod(DatabaseCog):
     @commands.command(aliases=["clear"])
     async def purge(self, ctx, limit: int):
         """Clears a given number of messages. Helpers in assistance channels and Staff only."""
-        if ctx.channel not in self.bot.assistance_channels and not await check_staff_id(ctx, "OP", ctx.author.id):
+        if ctx.channel not in self.bot.assistance_channels and not await check_staff_id(ctx, "HalfOP", ctx.author.id):
             return await ctx.send("You cannot use this command outside of assistance channels.")
         await ctx.channel.purge(limit=limit+1, check=lambda message: not message.pinned)
         msg = f"🗑 **Cleared**: {ctx.author.mention} cleared {limit} messages in {ctx.channel.mention}"
