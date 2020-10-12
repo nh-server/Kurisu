@@ -650,7 +650,7 @@ class Mod(DatabaseCog):
         await self.bot.channels['mod-logs'].send(f"⭕ **Approved**: {ctx.author.mention} approved server {invite.guild}({code}) to be posted {times} times")
                        
                        
-    @is_staff("Helper")
+    @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
     async def givestreamer(self, ctx, members: commands.Greedy[SafeMember]):
@@ -665,7 +665,7 @@ class Mod(DatabaseCog):
         await self.bot.channels['mod-logs'].send(msg)
                        
                        
-    @is_staff("Helper")
+    @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
     async def takestreamer(self, ctx, members: commands.Greedy[SafeMember]):
