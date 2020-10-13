@@ -654,8 +654,7 @@ class Mod(DatabaseCog):
         await self.bot.invitefilter.add(code=code, name=invite.guild.name, alias=alias, uses=times)
         await ctx.send(f"Approved an invite to {invite.guild}({code}) for posting {times} times")
         await self.bot.channels['mod-logs'].send(f"⭕ **Approved**: {ctx.author.mention} approved server {invite.guild}({code}) to be posted {times} times")         
-                       
-                       
+                            
     @commands.group()
     async def role(self, ctx):
 
@@ -670,7 +669,6 @@ class Mod(DatabaseCog):
 
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
-
                       
     @is_staff("HalfOP")
     @role.command(name='give')
