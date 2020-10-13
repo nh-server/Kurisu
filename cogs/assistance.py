@@ -106,10 +106,10 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 await ctx.send(embed=embed)
             if self.check_console(x, channelName, ('legacy', 'dsi')):
                 embed = discord.Embed(title="Guide", color=discord.Color(0xCB0004))
-                embed.set_author(name="jerbear64 & emiyl", url="https://dsi.cfw.guide/")
-                embed.set_thumbnail(url="https://i.imgur.com/T227BW0.png")
+                embed.set_author(name="emiyl & DS⁽ⁱ⁾ Mode Hacking", url="https://dsi.cfw.guide/credits")
+                embed.set_thumbnail(url="https://i.imgur.com/OGelKVt.png")
                 embed.url = "https://dsi.cfw.guide/"
-                embed.description = "A complete Nintendo DSi homebrew guide, from stock to HiyaCFW"
+                embed.description = "The complete guide to modding your Nintendo DSi"
                 await ctx.send(embed=embed)
 
     @commands.command(aliases=['finalizing', 'finalising', 'finalise'])
