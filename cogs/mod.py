@@ -676,13 +676,12 @@ class Mod(DatabaseCog):
     @role.command(name='give')
     async def give_role(self, ctx, member: FetchMember, *, role: str):
         if member is None:
-            return await ctx.send(f"Please include a user to add a role to.")
+            return await ctx.send("Please include a user to add a role to.")
 
         selected_role = [x for x in self.role_list if role in x]
 
-        if len(selected_role) > 1:
-            await ctx.send("More than a role were selected. Stopping...")
-            return
+        if len(selected_role) > 1:      
+            return await ctx.send("More than a role were selected. Stopping...")
 
         await member.add_roles(self.bot.roles[selected_role[0]])
         await ctx.send(f"{member.mention} has been given the ``{selected_role}`` role.")
@@ -693,13 +692,12 @@ class Mod(DatabaseCog):
     async def take_role(self, ctx, member: FetchMember, *, role: str):
 
         if member is None: # Eh, we don't need that
-            return await ctx.send(f"Please include a user to add a role to.")
+            return await ctx.send("Please include a user to add a role to.")
 
         selected_role = [x for x in self.role_list if role in x]
     
         if len(selected_role) > 1:
-            await ctx.send("More than a role were selected. Stopping...")
-            return
+            return await ctx.send("More than a role were selected. Stopping...")
 
         await member.remove_roles(self.bot.roles[selected_role[0]])
         await ctx.send(f"``{selected_role}`` was removed from {member.mention}.")
