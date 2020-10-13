@@ -108,6 +108,8 @@ class Kurisu(commands.Bot):
             'meta-mute': None,
             'Nitro Booster': None,
             'crc': None,
+            'cade enthusiast 😻': None,
+            'streamer(temp)': None,
         }
 
         self.actions = []
