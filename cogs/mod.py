@@ -654,6 +654,56 @@ class Mod(DatabaseCog):
         await self.bot.invitefilter.add(code=code, name=invite.guild.name, alias=alias, uses=times)
         await ctx.send(f"Approved an invite to {invite.guild}({code}) for posting {times} times")
         await self.bot.channels['mod-logs'].send(f"⭕ **Approved**: {ctx.author.mention} approved server {invite.guild}({code}) to be posted {times} times")
+                       
+                       
+                       
+    @commands.group()
+    async def role(self, ctx):
+
+#        self.role_list = {
+#            "cade": "cade enthusiast 😻",
+#            "streamer": "streamer(temp)",
+#        }
+        self.role_list = [
+            "cade enthusiast 😻",
+            "streamer(temp)",
+        ]
+
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help(ctx.command)
+
+    @is_staff("HalfOP")
+    @role.command(name='give')
+    async def give_role(self, ctx, member: FetchMember, *, role: str):
+        if member is None:
+            return await ctx.send(f"Please include a user to add a role to.")
+
+        selected_role = [x for x in self.role_list if role in x]
+
+        if len(selected_role) > 1:
+            await ctx.send("More than a role were selected. Stopping...")
+            return
+
+        await member.add_roles(self.bot.roles[selected_role[0]])
+        await ctx.send(f"{member.mention} has been given the ``{selected_role}`` role.")
+
+
+    @is_staff("HalfOP")
+    @role.command(name='take', aliases=['remove', 'delete', 'del'])
+    async def take_role(self, ctx, member: FetchMember, *, role: str):
+
+        if member is None: # Eh, we don't need that
+            return await ctx.send(f"Please include a user to add a role to.")
+
+        selected_role = [x for x in self.role_list if role in x]
+    
+        if len(selected_role) > 1:
+            await ctx.send("More than a role were selected. Stopping...")
+            return
+
+        await member.remove_roles(self.bot.roles[selected_role[0]])
+        await ctx.send(f"``{selected_role}`` was removed from {member.mention}.")
+
 
 
 def setup(bot):
