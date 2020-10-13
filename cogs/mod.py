@@ -685,7 +685,7 @@ class Mod(DatabaseCog):
 
     @is_staff("HalfOP")
     @role.command(name='take')
-    async def take_role(self, ctx, member: SafeMember, *, role: str)
+    async def take_role(self, ctx, member: SafeMember, *, role: str):
 
         selected_role = [x for x in self.role_list if role in x]
         
