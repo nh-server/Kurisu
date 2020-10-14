@@ -1,31 +1,15 @@
 from typing import Optional, List
-import aiosqlite3
-import json
 from utils.models import FilteredWord, ApprovedInvite
 
 
-class Manager:
-
-    @staticmethod
-    def format_args(args: dict) -> str:
-        if len(args) < 1:
-            return ''
-        separator = args.pop('separator', 'AND')
-        statement = 'WHERE '
-        conditions = []
-        for kword, value in args.items():
-            conditions.append(f"{kword} = '{value}'")
-        return statement + f' {separator} '.join(conditions)
-
-
-class WordFilterManager(Manager):
-    def __init__(self, bot):
+class WordFilterManager:
+    def __init__(self):
         self.kinds = ('piracy tool', 'piracy video', 'piracy tool alert', 'drama', 'unbanning tool', 'piracy site')
         self.filter = {}
 
     async def load(self):
         for kind in self.kinds:
-            self.filter[kind] = [i[0] for i in await self.fetch(kind=kind)]
+            self.filter[kind] = [entry.word for entry in await self.fetch(kind=kind)]
         print("Loaded word filter")
 
     async def add(self, word: str, kind: str) -> FilteredWord:
@@ -43,35 +27,38 @@ class WordFilterManager(Manager):
             return entry
 
 
-class InviteFilterManager(Manager):
-    def __init__(self, bot):
+class InviteFilterManager:
+    def __init__(self):
         self.invites = []
 
     async def load(self):
         self.invites.clear()
-        self.invites = await self.fetch()
+        self.invites = await self.fetch_all()
 
     async def add(self, code: str, alias: str, uses: int) -> Optional[ApprovedInvite]:
         entry = await FilteredWord.create(code=code, use=uses, alias=alias)
         await self.load()
         return entry
 
-    async def fetch(self) -> List[ApprovedInvite]:
+    @staticmethod
+    async def fetch_all() -> List[ApprovedInvite]:
         return await ApprovedInvite.query.gino.all()
 
-    async def fetchinvite(self, alias) -> Optional[ApprovedInvite]:
+    @staticmethod
+    async def fetch_invite_by_alias(alias) -> Optional[ApprovedInvite]:
         return await ApprovedInvite.query.where(FilteredWord.alias == alias).gino.first()
+
+    @staticmethod
+    async def fetch_invite_by_code(code) -> Optional[ApprovedInvite]:
+        return await ApprovedInvite.get(code)
 
     async def set_uses(self, code: str, uses: int):
         invite = await ApprovedInvite.get(code)
         await invite.update(uses=uses).apply()
         await self.load()
 
-    async def delete(self, code: str = "", alias: str = ""):
-        if code:
-            entry = await ApprovedInvite.get(code)
-        elif alias:
-            entry = await ApprovedInvite.query.where(FilteredWord.alias == alias).gino.first()
+    async def delete(self, code: str):
+        entry = await self.fetch_invite_by_code(code)
         if entry:
             await entry.delete()
             return entry

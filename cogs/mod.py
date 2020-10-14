@@ -643,15 +643,15 @@ class Mod(commands.Cog):
     async def approve(self, ctx, alias: str, invite: discord.Invite, times: int = 1):
         """Approves a server invite for a number of times. Staff and Helpers only."""
 
-        if await self.bot.invitefilter.fetch(code=invite.code, alias=alias, separator='OR'):
-            return await ctx.send("This code or alias is already in use!")
-
         code = invite.code
+
+        if await self.bot.invitefilter.fetch_by_alias(alias) or await self.bot.invitefilter.fetch_by_code(code):
+            return await ctx.send("This code or alias is already in use!")
 
         if times < 1:
             return await ctx.send("The invite must be approved for a number of times higher than 0")
 
-        await self.bot.invitefilter.add(code=code, name=invite.guild.name, alias=alias, uses=times)
+        await self.bot.invitefilter.add(code=code, alias=alias, uses=times)
         await ctx.send(f"Approved an invite to {invite.guild}({code}) for posting {times} times")
         await self.bot.channels['mod-logs'].send(f"⭕ **Approved**: {ctx.author.mention} approved server {invite.guild}({code}) to be posted {times} times")
 

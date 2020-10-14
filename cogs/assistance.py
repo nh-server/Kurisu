@@ -1565,7 +1565,7 @@ in the scene.
             else:
                 return await ctx.send("There is no approved servers!")
 
-        invite = await self.bot.invitefilter.fetchinvite(alias=name)
+        invite = await self.bot.invitefilter.fetch_invite_by_alias(alias=name)
 
         if invite:
             await ctx.send(f"https://discord.gg/{invite.code}")

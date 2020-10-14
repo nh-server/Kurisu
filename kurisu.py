@@ -219,10 +219,10 @@ class Kurisu(commands.Bot):
                              "Legacy": self.roles['On-Duty Legacy']
                              }
 
-        self.wordfilter = WordFilterManager(self)
+        self.wordfilter = WordFilterManager()
         await self.wordfilter.load()
 
-        self.invitefilter = InviteFilterManager(self)
+        self.invitefilter = InviteFilterManager()
         await self.invitefilter.load()
 
         startup_message = f'{self.user.name} has started! {self.guild} has {self.guild.member_count:,} members!'
