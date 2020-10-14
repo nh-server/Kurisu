@@ -1,10 +1,11 @@
 import discord
 from discord.ext import commands
-from utils.database import DatabaseCog
 from utils.checks import is_staff, check_if_user_can_ready
 import re
+from utils import crud
 
-class Newcomers(DatabaseCog):
+
+class Newcomers(commands.Cog):
     """
     Handles auto-probation and commands related to the newcomers channel.
     """
@@ -20,11 +21,11 @@ class Newcomers(DatabaseCog):
         await self.bot.wait_until_all_ready()
         flag_name = 'auto_probation'
 
-        self.autoprobate = await self.get_flag(flag_name)
+        self.autoprobate = await crud.get_flag(flag_name)
 
         if self.autoprobate is None:
             self.autoprobate = False
-            await self.add_flag(flag_name)
+            await crud.add_flag(flag_name)
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
@@ -34,7 +35,7 @@ class Newcomers(DatabaseCog):
     async def autoprobate_handler(self, ctx, enabled:bool=None):
         if enabled is not None:
             self.autoprobate = enabled
-            await self.set_flag('auto_probation', enabled)
+            await crud.set_flag('auto_probation', enabled)
 
         inactive_text = f'**inactive**. ⚠️\nTo activate it, use `.autoprobate {" | ".join(self.on_aliases)}`.'
         active_text = f'**active**. ✅\nTo deactivate it, use `.autoprobate {" | ".join(self.off_aliases)}`.'
@@ -91,6 +92,7 @@ class Newcomers(DatabaseCog):
 with a brief message explaining your situation (e.g., `.ready hey guys, i was having trouble hacking my console`). \
 **Copying and pasting the example will not remove your probation.**', delete_after=10)
             ctx.command.reset_cooldown(ctx)
+
 
 def setup(bot):
     bot.add_cog(Newcomers(bot))

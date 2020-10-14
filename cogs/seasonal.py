@@ -34,6 +34,7 @@ class Season:
         month, day = dotstr.split(".")
         return (int(month) * 31) + int(day)
 
+
 class Seasonal(commands.Cog):
     seasons: List[Season] = [
         Season("12.1", "12.31", "🎄", "xmasthing"),
@@ -47,7 +48,7 @@ class Seasonal(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def _seasonal_impl(self, ctx, mode: str, target: str=None):
+    async def _seasonal_impl(self, ctx, mode: str, target: str = None):
         season = None
         t = datetime.today()
         curr_time = f"{t.month}.{t.day}"
@@ -121,7 +122,7 @@ class Seasonal(commands.Cog):
 
     @commands.guild_only()
     @commands.command()
-    async def noseasonal(self, ctx, *, target: str=None):
+    async def noseasonal(self, ctx, *, target: str = None):
         """Removes the emote of the current season (or any you want) 
         from your name.  
         

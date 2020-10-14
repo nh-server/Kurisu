@@ -16,9 +16,9 @@ import discord
 from discord.ext import commands
 
 from utils.checks import check_staff_id
-from utils.database import ConnectionHolder
 from utils.manager import WordFilterManager, InviteFilterManager
-
+from utils import models
+from utils.models import db
 IS_DOCKER = os.environ.get('IS_DOCKER', 0)
 
 # sets working directory to bot's folder
@@ -28,8 +28,6 @@ os.chdir(dir_path)
 # Load config
 config = ConfigParser()
 config.read("data/config.ini")
-
-database_name = 'data/kurisu.sqlite'
 
 # loads extensions
 cogs = [
@@ -75,7 +73,6 @@ class Kurisu(commands.Bot):
         super().__init__(*args, **kwargs)
         self.startup = datetime.now()
         self.channel_config = ConfigParser()
-        self.channel_config.read("data/channels.ini", encoding='utf-8')
 
         self.IS_DOCKER = IS_DOCKER
         self.commit = commit
@@ -158,27 +155,27 @@ class Kurisu(commands.Bot):
                 print(f'{extension} failed to load.')
                 self.failed_cogs.append([extension, type(e).__name__, e])
 
-    def load_channels(self):
-        if not self.channel_config.has_section('Channels'):
-            self.channel_config.add_section('Channels')
-
+    async def load_channels(self):
         for n in self.channels:
-            if n in self.channel_config.options('Channels'):
-                self.channels[n] = self.guild.get_channel(self.channel_config.getint('Channels', n))
+            if channel := await models.Channel.query.where(models.Channel.name == n).gino.scalar():
+                self.channels[n] = self.guild.get_channel(channel)
             else:
                 self.channels[n] = discord.utils.get(self.guild.text_channels, name=n)
                 if not self.channels[n]:
                     print(f"Failed to find channel {n}")
                     continue
-                self.channel_config['Channels'][n] = str(self.channels[n].id)
-                with open('data/channels.ini', 'w', encoding='utf-8') as f:
-                    self.channel_config.write(f)
+                await models.Channel.create(id=self.channels[n].id, name=self.channels[n].name)
 
-    def load_roles(self):
-        for n in self.roles.keys():
-            self.roles[n] = discord.utils.get(self.guild.roles, name=n)
-            if not self.roles[n]:
-                print(f'Failed to find role {n}')
+    async def load_roles(self):
+        for n in self.roles:
+            if role := await models.Role.query.where(models.Role.name == n).gino.scalar():
+                self.roles[n] = self.guild.get_role(role)
+            else:
+                self.roles[n] = discord.utils.get(self.guild.roles, name=n)
+                if not self.roles[n]:
+                    print(f"Failed to find role {n}")
+                    continue
+                await models.Role.create(id=self.roles[n].id, name=self.roles[n].name)
 
     @staticmethod
     def escape_text(text):
@@ -190,8 +187,14 @@ class Kurisu(commands.Bot):
         assert len(guilds) == 1
         self.guild = guilds[0]
 
-        self.load_channels()
-        self.load_roles()
+        try:
+            await db.set_bind(config['Main']['database_url'])
+            await db.gino.create_all()
+        except:
+            exit(-1)
+
+        await self.load_channels()
+        await self.load_roles()
 
         self.assistance_channels = {
             self.channels['3ds-assistance-1'],
@@ -207,7 +210,7 @@ class Kurisu(commands.Bot):
                             'SuperOP': self.roles['SuperOP'],
                             'OP': self.roles['OP'],
                             'HalfOP': self.roles['HalfOP'],
-                            'Staff' : self.roles['Staff'],
+                            'Staff': self.roles['Staff'],
                             }
 
         self.helper_roles = {"3DS": self.roles['On-Duty 3DS'],
@@ -215,9 +218,6 @@ class Kurisu(commands.Bot):
                              "Switch": self.roles['On-Duty Switch'],
                              "Legacy": self.roles['On-Duty Legacy']
                              }
-
-        self.holder = ConnectionHolder()
-        await self.holder.load_db(database_name, self.loop)
 
         self.wordfilter = WordFilterManager(self)
         await self.wordfilter.load()
@@ -267,7 +267,7 @@ class Kurisu(commands.Bot):
             await ctx.send_help(ctx.command)
 
         elif isinstance(exc, discord.ext.commands.errors.CommandOnCooldown):
-            if not await check_staff_id(ctx, 'Helper', author.id):
+            if not await check_staff_id('Helper', author.id):
                 try:
                     await ctx.message.delete()
                 except (discord.errors.NotFound, discord.errors.Forbidden):
@@ -306,6 +306,7 @@ class Kurisu(commands.Bot):
         msg = format_exc()
         error_paginator = self.format_error(msg)
         for page in error_paginator.pages:
+            print(page)
             await self.channels['bot-err'].send(page)
 
     def add_cog(self, cog):
@@ -314,7 +315,7 @@ class Kurisu(commands.Bot):
 
     async def close(self):
         print('Kurisu is shutting down')
-        self.holder.dbcon.close()
+        await db.pop_bind().close()
         await super().close()
 
     async def is_all_ready(self):

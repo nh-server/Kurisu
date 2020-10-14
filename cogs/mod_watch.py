@@ -1,13 +1,15 @@
-from utils.database import DatabaseCog
 from discord.ext import commands
 from utils.checks import is_staff
-from utils import utils, converters
+from utils import utils, converters, crud
 
 
-class Modwatch(DatabaseCog):
+class Modwatch(commands.Cog):
     """
     User watch management commands.
     """
+
+    def __init__(self, bot):
+        self.bot = bot
 
     async def cog_check(self, ctx):
         if ctx.guild is None:
@@ -17,10 +19,10 @@ class Modwatch(DatabaseCog):
     @is_staff("Helper")
     @commands.command()
     async def watch(self, ctx, member: converters.SafeMember, *, reason=""):
-        if await self.is_watched(member.id):
+        if await crud.is_watched(member.id):
             await ctx.send("User is already being watched!")
             return
-        await self.add_watch(member.id)
+        await crud.add_watch(member.id)
         await ctx.send(f"{member.mention} is being watched.")
         msg = f"👀 **Watch**: {ctx.author.mention} put {member.mention} on watch | {member}"
         if reason != "":
@@ -35,10 +37,10 @@ class Modwatch(DatabaseCog):
     @is_staff("Helper")
     @commands.command()
     async def unwatch(self, ctx, member: converters.SafeMember):
-        if not await self.is_watched(member.id):
+        if not await crud.is_watched(member.id):
             await ctx.send("This user was not being watched.")
             return
-        await self.remove_watch(member.id)
+        await crud.remove_watch(member.id)
         await ctx.send(f"{member.mention} is no longer being watched.")
         msg = f"❌ **Unwatch**: {ctx.author.mention} removed {member.mention} from watch | {self.bot.escape_text(member)}"
         await self.bot.channels['mod-logs'].send(msg)

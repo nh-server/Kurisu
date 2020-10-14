@@ -1,2 +1,3 @@
 [Main]
 token = <token for Discord bot>
+database_url = <url of the database>

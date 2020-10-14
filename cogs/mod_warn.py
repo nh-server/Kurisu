@@ -2,14 +2,16 @@ import discord
 from discord.ext import commands
 from utils.checks import is_staff, check_staff_id, check_bot_or_staff
 from utils.converters import FetchMember
-from utils.database import DatabaseCog
-from utils import utils
+from utils import utils, crud
 
 
-class ModWarn(DatabaseCog):
+class ModWarn(commands.Cog):
     """
     Warn commands.
     """
+
+    def __init__(self, bot):
+        self.bot = bot
 
     async def cog_check(self, ctx):
         if ctx.guild is None:
@@ -24,12 +26,12 @@ class ModWarn(DatabaseCog):
         channel = ctx.channel
         if await check_bot_or_staff(ctx, member, "warn"):
             return
-        warn_count = len(await self.get_warns(member.id))
+        warn_count = len(await crud.get_warns(member.id))
         if warn_count >= 5:
             await ctx.send("A user can't have more than 5 warns!")
             return
-        await self.add_warn(member.id, issuer.id, reason)
-        warn_count +=1
+        await crud.add_warn(member.id, issuer.id, reason)
+        warn_count += 1
         if isinstance(member, discord.Member):
             msg = f"You were warned on {ctx.guild.name}."
             if reason != "":
@@ -46,8 +48,11 @@ class ModWarn(DatabaseCog):
                 msg += "\n\nYou were automatically banned due to five warnings."
             await utils.send_dm_message(member, msg)
             if warn_count == 3 or warn_count == 4:
-                self.bot.actions.append("wk:"+str(member.id))
-                await member.kick(reason=f"{warn_count} warns.")
+                try:
+                    self.bot.actions.append("wk:"+str(member.id))
+                    await member.kick(reason=f"{warn_count} warns.")
+                except discord.Forbidden:
+                    await ctx.send("I can't kick this user!")
         if warn_count >= 5:  # just in case
             self.bot.actions.append("wb:"+str(member.id))
             try:
@@ -70,12 +75,12 @@ class ModWarn(DatabaseCog):
         channel = ctx.channel
         if await check_bot_or_staff(ctx, member, "warn"):
             return
-        warn_count = len(await self.get_warns(member.id))
+        warn_count = len(await crud.get_warns(member.id))
         if warn_count >= 5:
             await ctx.send("A user can't have more than 5 warns!")
             return
         warn_count += 1
-        await self.add_warn(member.id, ctx.author.id, reason)
+        await crud.add_warn(member.id, ctx.author.id, reason)
         if isinstance(member, discord.Member):
             msg = f"You were warned on {ctx.guild}."
             if reason != "":
@@ -100,21 +105,21 @@ class ModWarn(DatabaseCog):
         if not member:  # If user is set to None, its a selfcheck
             member = ctx.author
         issuer = ctx.author
-        if not await check_staff_id(ctx, "Helper", ctx.author.id) and (member != issuer):
+        if not await check_staff_id("Helper", ctx.author.id) and (member != issuer):
                 msg = f"{issuer.mention} Using this command on others is limited to Staff and Helpers."
                 await ctx.send(msg)
                 return
         embed = discord.Embed(color=discord.Color.dark_red())
         embed.set_author(name=f"Warns for {member}", icon_url=member.avatar_url)
-        warns = await self.get_warns(member.id)
+        warns = await crud.get_warns(member.id)
         if warns:
             for idx, warn in enumerate(warns):
-                issuer = await ctx.get_user(warn[2])
+                issuer = await ctx.get_user(warn.issuer)
                 value = ""
                 if ctx.channel == self.bot.channels['helpers'] or ctx.channel == self.bot.channels['mods'] or ctx.channel == self.bot.channels['mod-logs']:
                     value += f"Issuer: {issuer.name}\n"
-                value += f"Reason: {warn[3]} "
-                embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn[0])}", value=value)
+                value += f"Reason: {warn.reason} "
+                embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn.id)}", value=value)
         else:
             embed.description = "There are none!"
             embed.color = discord.Color.green()
@@ -126,12 +131,12 @@ class ModWarn(DatabaseCog):
         """Copy warns from one user ID to another. Overwrites all warns of the target user ID. SOP+ only."""
         if await check_bot_or_staff(ctx, user_id2, "warn"):
             return
-        warns = await self.get_warns(user_id1)
+        warns = await crud.get_warns(user_id1)
         if not warns:
             await ctx.send(f"{user_id1} has no warns!")
             return
         for warn in warns:
-            await self.add_warn(user_id2, warn[2], warn[3])
+            await crud.add_warn(user_id2, warn.issuer, warn.reason)
         warn_count = len(warns)
         user1 = await ctx.get_user(user_id1)
         user2 = await ctx.get_user(user_id2)
@@ -144,7 +149,7 @@ class ModWarn(DatabaseCog):
     @commands.command()
     async def delwarn(self, ctx, member: FetchMember, idx: int):
         """Remove a specific warn from a user. Staff only."""
-        warns = await self.get_warns(member.id)
+        warns = await crud.get_warns(member.id)
         if not warns:
             await ctx.send(f"{member.mention} has no warns!")
             return
@@ -156,10 +161,10 @@ class ModWarn(DatabaseCog):
             await ctx.send("Warn index is below 1!")
             return
         warn = warns[idx-1]
-        issuer = await ctx.get_user(warn[2])
-        embed = discord.Embed(color=discord.Color.dark_red(), title=f"Warn {idx} on {discord.utils.snowflake_time(warn[0]).strftime('%Y-%m-%d %H:%M:%S')}",
-                              description=f"Issuer: {issuer}\nReason: {warn[3]}")
-        await self.remove_warn_id(member.id, idx)
+        issuer = await ctx.get_user(warn.issuer)
+        embed = discord.Embed(color=discord.Color.dark_red(), title=f"Warn {idx} on {discord.utils.snowflake_time(warn.id).strftime('%Y-%m-%d %H:%M:%S')}",
+                              description=f"Issuer: {issuer}\nReason: {warn.reason}")
+        await crud.remove_warn_id(member.id, idx)
         await ctx.send(f"{member.mention} has a warning removed!")
         msg = f"🗑 **Deleted warn**: {ctx.author.mention} removed warn {idx} from {member.mention} | {self.bot.escape_text(member)}"
         await self.bot.channels['mod-logs'].send(msg, embed=embed)
@@ -168,12 +173,12 @@ class ModWarn(DatabaseCog):
     @commands.command()
     async def clearwarns(self, ctx, member: FetchMember):
         """Clear all warns for a user. Staff only."""
-        warns = await self.get_warns(member.id)
+        warns = await crud.get_warns(member.id)
         if not warns:
             await ctx.send(f"{member.mention} has no warns!")
             return
         warn_count = len(warns)
-        await self.remove_warns(member.id)
+        await crud.remove_warns(member.id)
         await ctx.send(f"{member.mention} no longer has any warns!")
         msg = f"🗑 **Cleared warns**: {ctx.author.mention} cleared {warn_count} warns from {member.mention} | {self.bot.escape_text(member)}"
         await self.bot.channels['mod-logs'].send(msg)

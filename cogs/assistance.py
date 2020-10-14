@@ -141,7 +141,6 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         embed.url = "https://github.com/zoogie/DSP1/releases"
         await ctx.send(embed=embed)
 
-                               
     # links the seedminer guide
     @commands.command()
     async def seedminer(self, ctx):
@@ -559,7 +558,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
 
         if self.check_console(console, channelName, '3ds'):
             embed = discord.Embed(title="Big SD", color=discord.Color.purple())
-            embed.description = cleandoc ("""
+            embed.description = cleandoc("""
             Although Nintendo says the official SD size limit is 32GB, the 3DS can accept cards up to 2TB.
             In order to use them, you will have to format them to FAT32 first.
             You can do this using these tools:
@@ -605,7 +604,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
 
         if self.check_console(console, channelName, '3ds'):
             embed = discord.Embed(title="Moving SD Cards", color=discord.Color.purple())
-            embed.description = cleandoc ("""
+            embed.description = cleandoc("""
             Moving SD cards on a 3DS is easy.
             First, ensure the new SD card is in the FAT32 format.
             If it is above 32GB, you will need to format it using one of these tools:
@@ -615,9 +614,9 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             -Disk Utility for macOS: https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010
             
             Once the new card is in FAT32, move all your content from the old SD to the new SD.
-			IMPORTANT: On macOS, always select "MS-DOS (Windows)". Formatting will erase all data on the card. Make a backup first.
+            IMPORTANT: On macOS, always select "MS-DOS (Windows)". Formatting will erase all data on the card. Make a backup first.
             IMPORTANT: Do not put the new SD card in the console before moving all your data to it.
-			""")
+            """)
             await ctx.send(embed=embed)
 
         elif self.check_console(console, channelName, ('nx', 'switch', 'ns')):

@@ -6,15 +6,17 @@ import discord
 
 from discord.ext import commands
 from utils.checks import is_staff, check_staff_id, check_bot_or_staff
-from utils.database import DatabaseCog
 from utils.converters import SafeMember, FetchMember
-from utils import utils
+from utils import utils, crud, models
 
 
-class Mod(DatabaseCog):
+class Mod(commands.Cog):
     """
     Staff commands.
     """
+
+    def __init__(self, bot):
+        self.bot = bot
 
     @is_staff("Owner")
     @commands.command()
@@ -60,7 +62,7 @@ class Mod(DatabaseCog):
         if user is None:
             user = ctx.author
 
-        if (not await check_staff_id(ctx, 'Helper', ctx.author.id)) and (ctx.author != user or ctx.channel != self.bot.channels['bot-cmds']):
+        if (not await check_staff_id('Helper', ctx.author.id)) and (ctx.author != user or ctx.channel != self.bot.channels['bot-cmds']):
             await ctx.message.delete()
             return await ctx.send(f"{ctx.author.mention} This command can only be used in {self.bot.channels['bot-cmds'].mention} and only on yourself.", delete_after=10)
 
@@ -160,7 +162,7 @@ class Mod(DatabaseCog):
         if not channel:
             channel = ctx.channel
 
-        if channel not in self.bot.assistance_channels and not await check_staff_id(ctx, "OP", ctx.author.id):
+        if channel not in self.bot.assistance_channels and not await check_staff_id("OP", ctx.author.id):
             return await ctx.send("You cannot use this command outside of assistance channels.")
 
         if (seconds := utils.parse_time(time)) == -1:
@@ -181,7 +183,7 @@ class Mod(DatabaseCog):
     @commands.command(aliases=["clear"])
     async def purge(self, ctx, limit: int):
         """Clears a given number of messages. Helpers in assistance channels and Staff only."""
-        if ctx.channel not in self.bot.assistance_channels and not await check_staff_id(ctx, "OP", ctx.author.id):
+        if ctx.channel not in self.bot.assistance_channels and not await check_staff_id("OP", ctx.author.id):
             return await ctx.send("You cannot use this command outside of assistance channels.")
         await ctx.channel.purge(limit=limit+1, check=lambda message: not message.pinned)
         msg = f"🗑 **Cleared**: {ctx.author.mention} cleared {limit} messages in {ctx.channel.mention}"
@@ -192,7 +194,7 @@ class Mod(DatabaseCog):
     @commands.command()
     async def metamute(self, ctx, member: SafeMember, *, reason=""):
         """Mutes a user so they can't speak in meta. Staff only."""
-        if not await self.add_restriction(member.id, self.bot.roles['meta-mute']):
+        if not await crud.add_restriction(member.id, self.bot.roles['meta-mute'].id):
             await ctx.send("User is already meta muted!")
             return
         await member.add_roles(self.bot.roles['meta-mute'])
@@ -219,7 +221,7 @@ class Mod(DatabaseCog):
     async def metaunmute(self, ctx, member: SafeMember):
         """Unmutes a user so they can speak in meta. Staff only."""
         try:
-            if not await self.remove_restriction(member.id, self.bot.roles["meta-mute"]) and self.bot.roles['meta-mute'] not in member.roles:
+            if not await self.remove_permanent_role(member.id, self.bot.roles["meta-mute"]) and self.bot.roles['meta-mute'] not in member.roles:
                 return await ctx.send("This user is not meta muted!")
             await member.remove_roles(self.bot.roles['meta-mute'])
             await ctx.send(f"{member.mention} can now speak in meta again.")
@@ -307,7 +309,7 @@ class Mod(DatabaseCog):
     async def unmute(self, ctx, member: SafeMember):
         """Unmutes a user so they can speak. Staff only."""
         try:
-            if not await self.remove_restriction(member.id, self.bot.roles["Muted"]):
+            if not await self.remove_permanent_role(member.id, self.bot.roles["Muted"]):
                 return await ctx.send("This user is not muted")
             await member.remove_roles(self.bot.roles['Muted'])
             await ctx.send(f"{member.mention} can now speak again.")
@@ -321,7 +323,7 @@ class Mod(DatabaseCog):
     @commands.command()
     async def art(self, ctx, member: SafeMember):
         """Restore art-discussion access for a user. Staff only."""
-        if not await self.remove_restriction(member.id, self.bot.roles['No-art']):
+        if not await self.remove_permanent_role(member.id, self.bot.roles['No-art']):
             return await ctx.send("This user is not restricted from art channels.")
         try:
             await member.remove_roles(self.bot.roles['No-art'])
@@ -356,7 +358,7 @@ class Mod(DatabaseCog):
     async def elsewhere(self, ctx, member: SafeMember):
         """Restore elsewhere access for a user. Staff only."""
         try:
-            if not await self.remove_restriction(member.id, self.bot.roles["No-elsewhere"]):
+            if not await self.remove_permanent_role(member.id, self.bot.roles["No-elsewhere"]):
                 return await ctx.send("This user is not restricted from elsewhere!")
             await member.remove_roles(self.bot.roles['No-elsewhere'])
             await ctx.send(f"{member.mention} can access elsewhere again.")
@@ -418,7 +420,7 @@ class Mod(DatabaseCog):
     async def embed(self, ctx, member: SafeMember):
         """Restore embed permissions for a user. Staff only."""
         try:
-            await self.remove_restriction(member.id, self.bot.roles["No-Embed"])
+            await self.remove_permanent_role(member.id, self.bot.roles["No-Embed"])
             await member.remove_roles(self.bot.roles['No-Embed'])
             await ctx.send(f"{member.mention} can now embed links and attach files again.")
             msg = f"⭕️ **Restored Embed**: {ctx.author.mention} restored embed to {member.mention} | {self.bot.escape_text(member)}"
@@ -462,7 +464,7 @@ class Mod(DatabaseCog):
     @commands.command(aliases=["yeshelp"])
     async def givehelp(self, ctx, member: FetchMember):
         """Restore access to the assistance channels. Staff and Helpers only."""
-        if not await self.remove_restriction(member.id, self.bot.roles["No-Help"]):
+        if not await self.remove_permanent_role(member.id, self.bot.roles["No-Help"]):
             return await ctx.send("This user is not take-helped!")
         if isinstance(member, discord.Member):
             try:
@@ -567,7 +569,7 @@ class Mod(DatabaseCog):
     @commands.command()
     async def unprobate(self, ctx, member: FetchMember):
         """Unprobate a user. Staff and Helpers only."""
-        if not await self.remove_restriction(member.id, self.bot.roles["Probation"]) and self.bot.roles["Probation"] not in member.roles:
+        if not await crud.remove_permanent_role(member.id, self.bot.roles["Probation"].id) and self.bot.roles["Probation"] not in member.roles:
             return await ctx.send("This user is not probated!")
         if isinstance(member, discord.Member):
             await member.remove_roles(self.bot.roles['Probation'])
@@ -583,9 +585,7 @@ class Mod(DatabaseCog):
         if name not in self.bot.channels:
             await ctx.send("Invalid channel name!")
             return
-        self.bot.channel_config['Channels'][name] = str(channel.id)
-        with open('data/channels.ini', 'w', encoding='utf-8') as f:
-            ctx.bot.channel_config.write(f)
+        await models.Channel.update.values(id=channel.id).where(models.Channel.name == name).gino.status
         self.bot.channels[name] = channel
         await ctx.send(f"Changed {name} channel to {channel.mention} | {channel.id}")
         await self.bot.channels['server-logs'].send(f"⚙ **Changed**: {ctx.author.mention} changed {name} channel to {channel.mention} | {channel.id}")
@@ -622,9 +622,9 @@ class Mod(DatabaseCog):
     @commands.command()
     async def nofilter(self, ctx, channel: discord.TextChannel):
         """Adds nofilter to the channel"""
-        if await self.check_nofilter(channel):
+        if await crud.check_nofilter(channel):
             return await ctx.send("This channel is already no filtered!")
-        await self.add_nofilter(channel)
+        await crud.add_nofilter(channel)
         await self.bot.channels['mod-logs'].send(f"⭕ **No filter**: {ctx.author.mention} added no filter to {channel.mention}")
 
     @is_staff("SuperOP")
@@ -632,9 +632,9 @@ class Mod(DatabaseCog):
     @commands.command()
     async def filter(self, ctx, channel: discord.TextChannel):
         """Removes nofilter from the channel"""
-        if not await self.check_nofilter(channel):
+        if not await crud.check_nofilter(channel):
             return await ctx.send("This channel is already filtered!")
-        await self.remove_nofilter(channel)
+        await crud.remove_nofilter(channel)
         await self.bot.channels['mod-logs'].send(f"🚫 **Filter**: {ctx.author.mention} removed no filter from {channel.mention}")
 
     @is_staff("Helper")

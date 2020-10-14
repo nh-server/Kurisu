@@ -1,13 +1,16 @@
 import discord
 from discord.ext import commands
-from utils.database import DatabaseCog
+from utils import crud
+from utils.utils import send_dm_message
 
 
-class Logs(DatabaseCog):
+class Logs(commands.Cog):
     """
     Logs join and leave messages, bans and unbans, and member changes.
     """
 
+    def __init__(self, bot):
+        self.bot = bot
     welcome_msg = """
 Hello {0}, welcome to the {1} server on Discord!
 
@@ -37,7 +40,7 @@ Thanks for boosting and have a good time!
     async def on_member_join(self, member):
         await self.bot.wait_until_all_ready()
         msg = f"✅ **Join**: {member.mention} | {self.bot.escape_text(member)}\n🗓 __Creation__: {member.created_at}\n🏷 __User ID__: {member.id}"
-        softban = await self.get_softban(member.id)
+        softban = await crud.get_softban(member.id)
         if softban:
             message_sent = False
             try:
@@ -54,26 +57,23 @@ Thanks for boosting and have a good time!
             embed.description = softban[2]
             await self.bot.channels['server-logs'].send(msg, embed=embed)
             return
-        rst = await self.get_restrictions_roles_id(member.id)
+        rst = await crud.get_permanent_roles(member.id)
         if rst:
             roles = []
             for role in rst:
                 roles.append(member.guild.get_role(role))
             await member.add_roles(*roles)
 
-        warns = await self.get_warns(member.id)
+        warns = await crud.get_warns(member.id)
         if len(warns) == 0:
             await self.bot.channels['server-logs'].send(msg)
         else:
             embed = discord.Embed(color=discord.Color.dark_red())
             embed.set_author(name=f"Warns for {member}", icon_url=member.avatar_url)
             for idx, warn in enumerate(warns):
-                embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn[0]).strftime('%Y-%m-%d %H:%M:%S')}", value=f"Issuer: {self.bot.escape_text((await self.bot.fetch_user(warn[2])).display_name)}\nReason: {warn[3]}")
+                embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn.id).strftime('%Y-%m-%d %H:%M:%S')}", value=f"Issuer: {self.bot.escape_text((await self.bot.fetch_user(warn.issuer)).display_name)}\nReason: {warn.reason}")
             await self.bot.channels['server-logs'].send(msg, embed=embed)
-        try:
-            await member.send(self.welcome_msg.format(member.name, member.guild.name, self.bot.channels['welcome-and-rules'].mention))
-        except discord.errors.Forbidden:
-            pass
+            await send_dm_message(member, self.welcome_msg.format(member.name, member.guild.name, self.bot.channels['welcome-and-rules'].mention))
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
@@ -116,9 +116,9 @@ Thanks for boosting and have a good time!
             self.bot.actions.remove("tbr:"+str(user.id))
             return
         msg = f"⚠️ **Unban**: {user.mention} | {self.bot.escape_text(user)}"
-        if await self.get_softban(user.id):
+        if await crud.get_softban(user.id):
             msg += "\nTimeban removed."
-            await self.remove_timed_restriction(user.id, 'timeban')
+            await crud.remove_timed_restriction(user.id, 'timeban')
         await self.bot.channels['mod-logs'].send(msg)
 
     @commands.Cog.listener()
