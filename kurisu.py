@@ -306,7 +306,6 @@ class Kurisu(commands.Bot):
         msg = format_exc()
         error_paginator = self.format_error(msg)
         for page in error_paginator.pages:
-            print(page)
             await self.channels['bot-err'].send(page)
 
     def add_cog(self, cog):
