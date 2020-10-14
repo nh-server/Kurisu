@@ -1,4 +1,5 @@
 import aiohttp
+import asyncio
 import discord
 import urllib.parse
 
@@ -1385,7 +1386,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
             try:
                 async with session.get(f"https://api.homebrew.space/search/{encodedapp}", timeout=2) as resp:
                     response = await resp.json()
-            except (aiohttp.ServerConnectionError, aiohttp.ClientConnectorError, aiohttp.ClientResponseError):
+            except (aiohttp.ServerConnectionError, aiohttp.ClientConnectorError, aiohttp.ClientResponseError, asyncio.TimeoutError):
                 return await ctx.send("I can't connect to tinydb 💢")
         if response and len(response) > 0:
             release = response[0]['latestRelease']['3ds_release_files'][0]
