@@ -5,7 +5,7 @@ db = Gino()
 
 class Staff(db.Model):
     __tablename__ = "staff"
-    id = db.Column(db.BigInteger, primary_key=True)
+    id = db.Column(db.BigInteger, db.ForeignKey("members.id"), primary_key=True)
     position = db.Column(db.String(8))
     console = db.Column(db.String(8))
 
@@ -64,7 +64,7 @@ class Softban(db.Model):
     __tablename__ = "softbans"
     id = db.Column(db.BigInteger(), primary_key=True)
     user = db.Column(db.BigInteger(), db.ForeignKey("members.id"))
-    issuer = db.Column(db.BigInteger())
+    issuer = db.Column(db.BigInteger(), db.ForeignKey("members.id"))
     reason = db.Column(db.Unicode())
 
 
