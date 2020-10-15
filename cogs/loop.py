@@ -112,17 +112,20 @@ class Loop(commands.Cog):
                 for timeban in timebans:
                     unban_time = timeban.end_date
                     if current_timestamp > unban_time:
-                        user = await self.bot.fetch_user(timeban.userid)
-                        self.bot.actions.append("tbr:" + str(timeban.userid))
-                        await self.bot.guild.unban(user)
+                        user = await self.bot.fetch_user(timeban.user)
+                        self.bot.actions.append("tbr:" + str(timeban.user))
+                        try:
+                            await self.bot.guild.unban(user)
+                        except discord.errors.NotFound:
+                            pass
                         msg = f"⚠️ **Ban expired**: {user.mention} | {user}"
                         await self.bot.channels['mod-logs'].send(msg)
                         await crud.remove_timed_restriction(user.id, 'timeban')
                     elif not timeban.alerted:
                         warning_time = unban_time - self.warning_time_period_ban
                         if current_timestamp > warning_time:
-                            await crud.set_time_restriction_alert(timeban.userid, 'timeban')
-                            user = await self.bot.fetch_user(timeban.userid)
+                            await crud.set_time_restriction_alert(timeban.user, 'timeban')
+                            user = await self.bot.fetch_user(timeban.user)
                             await self.bot.channels['mods'].send(f"**Note**: {user.id} will be unbanned in {((unban_time - current_timestamp).seconds // 60) + 1} minutes.")
 
                 for timemute in timemutes:
@@ -135,11 +138,11 @@ class Loop(commands.Cog):
                         member = self.bot.guild.get_member(timemute.user)
                         if member:
                             await member.remove_roles(self.bot.roles['Muted'])
-                    elif not timemute.alert:
+                    elif not timemute.alerted:
                         warning_time = unmute_time - self.warning_time_period_mute
                         if current_timestamp > warning_time:
-                            await crud.set_time_restriction_alert(timemute.userid, 'timemute')
-                            user = await self.bot.fetch_user(timemute.userid)
+                            await crud.set_time_restriction_alert(timemute.user, 'timemute')
+                            user = await self.bot.fetch_user(timemute.user)
                             await self.bot.channels['mods'].send(f"**Note**: <@{user.id}> will be unmuted in {((unmute_time - current_timestamp).seconds // 60) + 1} minutes.")
 
                 for timenohelp in timenohelps:
