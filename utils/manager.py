@@ -46,7 +46,7 @@ class InviteFilterManager:
 
     @staticmethod
     async def fetch_invite_by_alias(alias) -> Optional[ApprovedInvite]:
-        return await ApprovedInvite.query.where(FilteredWord.alias == alias).gino.first()
+        return await ApprovedInvite.query.where(ApprovedInvite.alias == alias).gino.first()
 
     @staticmethod
     async def fetch_invite_by_code(code) -> Optional[ApprovedInvite]:

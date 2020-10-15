@@ -1576,7 +1576,7 @@ in the scene.
                     await self.bot.invitefilter.delete(code=invite.code)
         else:
             ctx.command.reset_cooldown(ctx)
-            await ctx.send(f"Invalid invite code. Valid server names are: {', '.join(x.alias for x in self.bot.invitefilter.invites)}")
+            await ctx.send(f"Invalid invite name. Valid server names are: {', '.join(x.alias for x in self.bot.invitefilter.invites)}")
 
     @commands.command()
     async def db(self, ctx, console=None):
