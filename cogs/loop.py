@@ -104,9 +104,10 @@ class Loop(commands.Cog):
         while self.is_active:
             try:
                 current_timestamp = datetime.now()
-                timebans = await crud.get_time_restrictions_by_type('timeban') or []
-                timemutes = await crud.get_time_restrictions_by_type('timemute') or []
-                timenohelps = await crud.get_time_restrictions_by_type('timenohelp') or []
+
+                timebans = await crud.get_time_restrictions_by_type('timeban')
+                timemutes = await crud.get_time_restrictions_by_type('timemute')
+                timenohelps = await crud.get_time_restrictions_by_type('timenohelp')
 
                 for timeban in timebans:
                     unban_time = timeban.end_date
@@ -128,7 +129,7 @@ class Loop(commands.Cog):
                     unmute_time = timemute.end_date
                     if current_timestamp > unmute_time:
                         await crud.remove_timed_restriction(timemute.user, "timemute")
-                        await crud.remove_permanent_role(timemute.user, self.bot.roles['Muted'])
+                        await crud.remove_permanent_role(timemute.user, self.bot.roles['Muted'].id)
                         msg = f"🔈 **Mute expired**: <@{timemute.user}>"
                         await self.bot.channels['mod-logs'].send(msg)
                         member = self.bot.guild.get_member(timemute.user)
@@ -144,7 +145,7 @@ class Loop(commands.Cog):
                 for timenohelp in timenohelps:
                     if current_timestamp > timenohelp.end_date:
                         await crud.remove_timed_restriction(timenohelp.user, "timenohelp")
-                        await crud.remove_permanent_role(timenohelp.user, self.bot.roles['No-Help'])
+                        await crud.remove_permanent_role(timenohelp.user, self.bot.roles['No-Help'].id)
                         msg = f"⭕️ **No-Help Restriction expired**: <@{timenohelp.user}>"
                         await self.bot.channels['mod-logs'].send(msg)
                         await self.bot.channels['helpers'].send(msg)

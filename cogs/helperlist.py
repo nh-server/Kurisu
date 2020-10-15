@@ -28,17 +28,17 @@ class HelperList(commands.Cog):
             return
         await crud.add_helper(member.id, 'Helper', console)
         await member.add_roles(self.bot.roles['Helpers'])
-        await crud.add_action("addhelper", ctx.author.id, member.id, console)
         await ctx.send(f"{member.mention} is now a helper. Welcome to the party room!")
 
     @is_staff(role='Owner')                       
     @commands.command()
     async def delhelper(self, ctx, member: SafeMember):
         """Remove user from helpers. Owners only."""
+        if not await crud.get_helper(member.id):
+            return await ctx.send("This user is not a helper!")
         await ctx.send(member.name)
         await crud.remove_helper(member.id)
         await member.remove_roles(self.bot.roles['Helpers'])
-        await crud.add_action("delhelper", ctx.author.id, member.id)
         await ctx.send(f"{member.mention} is no longer a helper. Stop by some time!")
 
     @commands.command()

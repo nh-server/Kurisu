@@ -2,6 +2,7 @@ from discord.ext import commands
 from utils.checks import is_staff
 from utils import crud
 
+
 class ModDB(commands.Cog):
     """
     Database management commands.
@@ -56,6 +57,7 @@ class ModDB(commands.Cog):
             await ctx.send("Flag's value was set. ✅")
         else:
             await ctx.send(self.NOT_FOUND)
+
 
 def setup(bot):
     bot.add_cog(ModDB(bot))

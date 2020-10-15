@@ -47,7 +47,6 @@ class KickBan(commands.Cog):
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
             return
-        await crud.add_action("kick", ctx.author.id, member.id, reason)
         await ctx.send(f"{member} is now gone. 👌")
         msg = f"👢 **Kick**: {ctx.author.mention} kicked {member.mention} | {self.bot.escape_text(member)}\n🏷 __User ID__: {member.id}"
         if reason != "":
@@ -80,7 +79,6 @@ class KickBan(commands.Cog):
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
             return
-        await crud.add_action("ban", ctx.author.id, member.id, reason)
         await ctx.send(f"{member} is now b&. 👍")
         msg = f"⛔ **Ban**: {ctx.author.mention} banned {member.mention} | {self.bot.escape_text(member)}\n🏷 __User ID__: {member.id}"
         if reason != "":
@@ -103,7 +101,6 @@ class KickBan(commands.Cog):
         await crud.remove_timed_restriction(user.id, 'timeban')
         self.bot.actions.append("tbr:"+str(user.id))
         await ctx.guild.unban(user, reason=reason)
-        await crud.add_action("unban", ctx.author.id, user.id, reason)
         await ctx.send(f"{user} is now unbanned.")
         msg = f"⚠ **Unban**: {ctx.author.mention} unbanned {user.mention} | {self.bot.escape_text(user)}\n🏷 __User ID__: {user.id}\n✏️ __Reason__: {reason}"
         await self.bot.channels['mod-logs'].send(msg)
@@ -127,7 +124,6 @@ class KickBan(commands.Cog):
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
             return
-        await crud.add_action("silentban", ctx.author.id, member.id, reason)
         await ctx.send(f"{member} is now b&. 👍")
         msg = f"⛔ **Silent ban**: {ctx.author.mention} banned {member.mention} | {self.bot.escape_text(member)}\n"\
               f"🏷 __User ID__: {member.id}"
@@ -166,7 +162,6 @@ class KickBan(commands.Cog):
             await ctx.send("💢 I don't have permission to do this.")
             return
         await crud.add_timed_restriction(member.id, unban_time, 'timeban')
-        await crud.add_action("timeban", ctx.author.id, member.id, unban_time_string)
         await ctx.send(f"{member} is now b& until {unban_time_string} {time.tzname[0]}. 👍")
         msg = f"⛔ **Time ban**: {ctx.author.mention} banned {member.mention} until {unban_time_string} | {member}\n🏷 __User ID__: {member.id}"
         if reason != "":
@@ -185,7 +180,7 @@ class KickBan(commands.Cog):
         if await check_bot_or_staff(ctx, member, "softban"):
             return
 
-        await crud.add_softban(member.id)
+        await crud.add_softban(member.id, ctx.author.id, reason)
 
         if isinstance(member, discord.Member):
             msg = f"This account is no longer permitted to participate in {ctx.guild.name}. The reason is: {reason}"
@@ -195,7 +190,6 @@ class KickBan(commands.Cog):
             except discord.errors.Forbidden:
                 await ctx.send("💢 I don't have permission to do this.")
                 return
-        await crud.add_action("softban", ctx.author.id, member.id, reason)
         await ctx.send(f"{member} is now b&. 👍")
         msg = f"⛔ **Soft-ban**: {ctx.author.mention} soft-banned {member.mention} | {self.bot.escape_text(member)}\n🏷 __User ID__: {member.id}\n✏️ __Reason__: {reason}"
         await self.bot.channels['mod-logs'].send(msg)
@@ -206,7 +200,6 @@ class KickBan(commands.Cog):
     async def unsoftban_member(self, ctx, user: FetchMember):
         """Un-soft-ban a user based on ID. OP+ only."""
         await crud.remove_softban(user.id)
-        await crud.add_action("softban", ctx.author.id, user.id)
         await ctx.send(f"{user} has been unbanned!")
         msg = f"⚠️ **Un-soft-ban**: {ctx.author.mention} un-soft-banned {self.bot.escape_text(user)}"
         await self.bot.channels['mod-logs'].send(msg)

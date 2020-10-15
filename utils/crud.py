@@ -2,31 +2,34 @@ from datetime import datetime
 from discord import utils, TextChannel
 from . import models
 
+
+def generate_id():
+    return utils.time_snowflake(datetime.now())
+
+
 async def add_permanent_role(user_id: int, role_id: int):
-    db_member = await get_dbmember(user_id)
-    if not db_member:
-        await add_dbmember(user_id)
+    await add_dbmember_if_not_exist(user_id)
     if not await models.PermanentRole.query.where((models.PermanentRole.user_id == user_id) & (
-            models.PermanentRole.role_id == role_id)).gino.fist():
-        await models.PermanentRole.create(user_id=user_id, role_id=role_id)
+            models.PermanentRole.role_id == role_id)).gino.first():
+        return await models.PermanentRole.create(user_id=user_id, role_id=role_id)
 
 
-async def remove_permanent_role(user_id, role_id):
-    db_member = await get_dbmember(user_id)
-    if db_member:
-        permanent_role = await models.PermanentRole.query.where((models.PermanentRole.user_id == user_id) & (
-                models.PermanentRole.role_id == role_id)).gino.fist()
-        if permanent_role:
-            await permanent_role.delete()
+async def remove_permanent_role(user_id: int, role_id: int):
+    permanent_role = await models.PermanentRole.query.where((models.PermanentRole.user_id == user_id) & (
+                models.PermanentRole.role_id == role_id)).gino.first()
+    if permanent_role:
+        await permanent_role.delete()
+        return permanent_role
 
 
-async def get_permanent_roles(user_id):
+async def get_permanent_roles(user_id: int):
     db_member = await get_dbmember(user_id)
     if db_member:
         return await models.PermanentRole.load(parent=db_member).query.gino.all()
 
 
 async def add_staff(user_id: int, position: str):
+    await add_dbmember_if_not_exist(user_id)
     staff = await get_staff(user_id) or await get_helper(user_id)
     if staff:
         await staff.update(position=position).apply()
@@ -35,6 +38,7 @@ async def add_staff(user_id: int, position: str):
 
 
 async def add_helper(user_id: int, position: str, console: str = None):
+    await add_dbmember_if_not_exist(user_id)
     if staff := await get_staff(user_id):
         await staff.update(console=console).apply()
     else:
@@ -77,7 +81,9 @@ async def get_helper(user_id: int):
 
 
 async def add_warn(user_id: int, issuer_id: int, reason: str):
-    await models.Warn.create(id=utils.time_snowflake(datetime.now()), user=user_id, issuer=issuer_id, reason=reason)
+    await add_dbmember_if_not_exist(user_id)
+    await add_dbmember_if_not_exist(issuer_id)
+    await models.Warn.create(id=generate_id(), user=user_id, issuer=issuer_id, reason=reason)
 
 
 async def get_warns(user_id: int):
@@ -85,7 +91,7 @@ async def get_warns(user_id: int):
 
 
 async def remove_warn_id(user_id: int, index: int):
-    warn = await models.Warn.query.where(models.Warn.user == user_id).offset(index-1).gino.first()
+    warn = await models.Warn.query.where(models.Warn.user == user_id).offset(index - 1).gino.first()
     await warn.delete()
 
 
@@ -97,6 +103,7 @@ async def remove_warns(user_id: int):
 
 
 async def add_timed_restriction(user_id: int, end_date: datetime, type: str):
+    await add_dbmember_if_not_exist(user_id)
     await models.TimedRestriction.create(id=utils.time_snowflake(datetime.now()), user=user_id, type=type,
                                          end_date=end_date)
 
@@ -107,7 +114,7 @@ async def get_time_restrictions_by_user_type(user_id: int, type: str):
 
 
 async def get_time_restrictions_by_type(type: str):
-    return await models.TimedRestriction.query.where(models.TimedRestriction.type == type).gino.first()
+    return await models.TimedRestriction.query.where(models.TimedRestriction.type == type).gino.all()
 
 
 async def remove_timed_restriction(user_id: int, type: str):
@@ -122,15 +129,17 @@ async def set_time_restriction_alert(user_id: int, type: str):
         await time_restriction.update(alerted=True).apply()
 
 
-async def add_flag(name):
+async def add_flag(name: str):
     await models.Flag.create(name=name)
 
 
-async def get_flag(name):
-    return await models.Flag.get(name)
+async def get_flag(name: str):
+    if flag := await models.Flag.get(name):
+        return flag.value
+    return None
 
 
-async def remove_flag(name):
+async def remove_flag(name: str):
     flag = await get_flag(name)
     if flag:
         await flag.delete()
@@ -142,28 +151,33 @@ async def set_flag(name: str, value: bool):
         await flag.update(value=value).apply()
 
 
-async def add_softban(user_id):
-    db_member = await get_dbmember(user_id)
-    if not db_member:
-        db_member = await add_dbmember(user_id)
-    await db_member.update(softbanned=True).apply()
+async def add_softban(user_id: int, issuer_id: int, reason: str):
+    await add_dbmember_if_not_exist(user_id)
+    await models.Softban.create(id=generate_id(), user=user_id, issuer=issuer_id, reason=reason)
 
 
-async def remove_softban(user_id):
-    db_member = await get_dbmember(user_id)
-    if db_member:
-        await db_member.update(softbanned=False).apply()
+async def remove_softban(user_id: int):
+    softban = await get_softban(user_id)
+    if softban:
+        await softban.delete()
 
 
 async def add_dbmember(user_id: int):
     return await models.Member.create(id=user_id)
 
 
+async def add_dbmember_if_not_exist(user_id: int):
+    db_member = await get_dbmember(user_id)
+    if not db_member:
+        db_member = await add_dbmember(user_id)
+    return db_member
+
+
 async def get_dbmember(user_id: int):
     return await models.Member.get(user_id)
 
 
-async def add_dbchannel(channel_id: int, name):
+async def add_dbchannel(channel_id: int, name: str):
     return await models.Channel.create(id=channel_id, name=name)
 
 
@@ -172,18 +186,15 @@ async def get_dbchannel(channel_id: int):
 
 
 async def get_softban(user_id: int):
-    member = await models.Member.get(user_id)
-    return member.softbanned if member else False
+    return await models.Softban.query.where(models.Softban.user == user_id).gino.first()
 
 
 async def add_watch(user_id: int):
-    db_member = await get_dbmember(user_id)
-    if not db_member:
-        db_member = await add_dbmember(user_id)
+    db_member = await add_dbmember_if_not_exist(user_id)
     await db_member.update(watched=True).apply()
 
 
-async def remove_watch(user_id):
+async def remove_watch(user_id: int):
     db_member = await get_dbmember(user_id)
     if db_member:
         await db_member.update(watched=False).apply()
@@ -201,21 +212,19 @@ async def add_nofilter(channel: TextChannel):
     await db_channel.update(nofilter=True).apply()
 
 
-async def remove_nofilter(channel):
+async def remove_nofilter(channel: TextChannel):
     db_channel = await get_dbchannel(channel.id)
     if db_channel:
         await db_channel.update(nofilter=True).apply()
 
 
-async def check_nofilter(channel):
+async def check_nofilter(channel: TextChannel):
     channel = await models.Channel.get(channel.id)
     return channel.nofilter if channel else False
 
 
 async def add_friendcode(user_id: int, fc: int):
-    db_member = await get_dbmember(user_id)
-    if not db_member:
-        await add_dbmember(user_id)
+    await add_dbmember_if_not_exist(user_id)
     await models.FriendCode.create(id=user_id, fc_3ds=fc)
 
 
@@ -227,7 +236,3 @@ async def delete_friendcode(user_id: int):
     friendcode = await get_friendcode(user_id)
     if friendcode:
         await friendcode.delete()
-
-
-async def add_action(type: str, issuer: int, target: int, note: str = ""):
-    await models.Action.create(type=type, issuer=issuer, target=target, note=note, datetime=datetime.now())

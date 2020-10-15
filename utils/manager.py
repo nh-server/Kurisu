@@ -36,7 +36,7 @@ class InviteFilterManager:
         self.invites = await self.fetch_all()
 
     async def add(self, code: str, alias: str, uses: int) -> Optional[ApprovedInvite]:
-        entry = await FilteredWord.create(code=code, use=uses, alias=alias)
+        entry = await ApprovedInvite.create(code=code, uses=uses, alias=alias)
         await self.load()
         return entry
 

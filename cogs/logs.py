@@ -44,24 +44,24 @@ Thanks for boosting and have a good time!
         if softban:
             message_sent = False
             try:
-                await member.send(f"This account has not been permitted to participate in {self.bot.guild.name}. The reason is: {softban[2]}")
+                await member.send(f"This account has not been permitted to participate in {self.bot.guild.name}. The reason is: {softban.reason}")
                 message_sent = True
             except discord.errors.Forbidden:
                 pass
             self.bot.actions.append("sbk:"+str(member.id))
             await member.kick()
-            msg = f"🚨 **Attempted join**: {member.mention} is soft-banned by <@{softban[1]}> | {self.bot.escape_text(member)}"
+            msg = f"🚨 **Attempted join**: {member.mention} is soft-banned by <@{softban.issuer}> | {self.bot.escape_text(member)}"
             if not message_sent:
                 msg += "\nThis message did not send to the user."
             embed = discord.Embed(color=discord.Color.red())
-            embed.description = softban[2]
+            embed.description = softban.reason
             await self.bot.channels['server-logs'].send(msg, embed=embed)
             return
-        rst = await crud.get_permanent_roles(member.id)
-        if rst:
+        perm_roles = await crud.get_permanent_roles(member.id)
+        if perm_roles:
             roles = []
-            for role in rst:
-                roles.append(member.guild.get_role(role))
+            for perm_role in perm_roles:
+                roles.append(member.guild.get_role(perm_role.role_id))
             await member.add_roles(*roles)
 
         warns = await crud.get_warns(member.id)
@@ -73,7 +73,7 @@ Thanks for boosting and have a good time!
             for idx, warn in enumerate(warns):
                 embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn.id).strftime('%Y-%m-%d %H:%M:%S')}", value=f"Issuer: {self.bot.escape_text((await self.bot.fetch_user(warn.issuer)).display_name)}\nReason: {warn.reason}")
             await self.bot.channels['server-logs'].send(msg, embed=embed)
-            await send_dm_message(member, self.welcome_msg.format(member.name, member.guild.name, self.bot.channels['welcome-and-rules'].mention))
+        await send_dm_message(member, self.welcome_msg.format(member.name, member.guild.name, self.bot.channels['welcome-and-rules'].mention))
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
@@ -116,7 +116,7 @@ Thanks for boosting and have a good time!
             self.bot.actions.remove("tbr:"+str(user.id))
             return
         msg = f"⚠️ **Unban**: {user.mention} | {self.bot.escape_text(user)}"
-        if await crud.get_softban(user.id):
+        if await crud.get_time_restrictions_by_user_type(user.id, 'timeban'):
             msg += "\nTimeban removed."
             await crud.remove_timed_restriction(user.id, 'timeban')
         await self.bot.channels['mod-logs'].send(msg)

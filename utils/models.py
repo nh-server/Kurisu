@@ -40,8 +40,8 @@ class Role(db.Model):
 
 class PermanentRole(db.Model):
     __tablename__ = "permanentroles"
-    user_id = db.Column(db.BigInteger(), db.ForeignKey("roles.id"))
-    role_id = db.Column(db.BigInteger(), db.ForeignKey("members.id"))
+    user_id = db.Column(db.BigInteger(), db.ForeignKey("members.id"))
+    role_id = db.Column(db.BigInteger(), db.ForeignKey("roles.id"))
     _pk = db.PrimaryKeyConstraint('user_id', 'role_id', name='permanentroles_pkey')
 
 
@@ -49,7 +49,7 @@ class TimedRestriction(db.Model):
     __tablename__ = "timed_restriction"
     id = db.Column(db.BigInteger(), primary_key=True)
     user = db.Column(db.BigInteger, db.ForeignKey("members.id"))
-    type = db.Column(db.String(6))
+    type = db.Column(db.String(12))
     end_date = db.Column(db.DateTime())
     alerted = db.Column(db.Boolean(), default=False)
 
@@ -57,25 +57,21 @@ class TimedRestriction(db.Model):
 class Member(db.Model):
     __tablename__ = "members"
     id = db.Column(db.BigInteger(), primary_key=True)
-    #name = db.Column(db.Unicode())
     watched = db.Column(db.Boolean(), default=False)
-    softbanned = db.Column(db.Boolean(), default=False)
 
 
-class Action(db.Model):
-    __tablename__ = "actions"
-    id = db.Column(db.Integer(), primary_key=True)
-    type = db.Column(db.String(6))
+class Softban(db.Model):
+    __tablename__ = "softbans"
+    id = db.Column(db.BigInteger(), primary_key=True)
+    user = db.Column(db.BigInteger(), db.ForeignKey("members.id"))
     issuer = db.Column(db.BigInteger())
-    target = db.Column(db.BigInteger())
-    note = db.Column(db.Unicode())
-    datetime = db.Column(db.DateTime())
+    reason = db.Column(db.Unicode())
 
 
 class Flag(db.Model):
     __tablename__ = "flags"
     name = db.Column(db.String(20), primary_key=True)
-    value = db.Column(db.Boolean())
+    value = db.Column(db.Boolean(), default=False)
 
 
 class FilteredWord(db.Model):
