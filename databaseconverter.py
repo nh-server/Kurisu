@@ -181,8 +181,7 @@ async def main():
     data = c.fetchall()
     mb_entries = []
     if data:
-
-        async with db.transaction() as tx:
+        async with db.transaction():
             for entry in data:
                 if entry[0] in users:
                     await db.status(f"UPDATE members SET watched='true' where id={entry[0]}")
