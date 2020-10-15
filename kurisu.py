@@ -17,7 +17,7 @@ from discord.ext import commands
 
 from utils.checks import check_staff_id
 from utils.manager import WordFilterManager, InviteFilterManager
-from utils import models
+from utils import models, crud
 from utils.models import db
 IS_DOCKER = os.environ.get('IS_DOCKER', 0)
 
@@ -164,7 +164,10 @@ class Kurisu(commands.Bot):
                 if not self.channels[n]:
                     print(f"Failed to find channel {n}")
                     continue
-                await models.Channel.create(id=self.channels[n].id, name=self.channels[n].name)
+                if db_chan := await crud.get_dbchannel(self.channels[n].id):
+                    await db_chan.update(name=n).apply()
+                else:
+                    await models.Channel.create(id=self.channels[n].id, name=self.channels[n].name)
 
     async def load_roles(self):
         for n in self.roles:
@@ -175,7 +178,10 @@ class Kurisu(commands.Bot):
                 if not self.roles[n]:
                     print(f"Failed to find role {n}")
                     continue
-                await models.Role.create(id=self.roles[n].id, name=self.roles[n].name)
+                if db_role := await crud.get_dbrole(self.roles[n].id):
+                    await db_role.update(name=n).apply()
+                else:
+                    await models.Role.create(id=self.roles[n].id, name=self.roles[n].name)
 
     @staticmethod
     def escape_text(text):

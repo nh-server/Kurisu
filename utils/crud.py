@@ -185,6 +185,10 @@ async def get_dbchannel(channel_id: int):
     return await models.Member.get(channel_id)
 
 
+async def get_dbrole(role_id: int):
+    return await models.Role.get(role_id)
+
+
 async def get_softban(user_id: int):
     return await models.Softban.query.where(models.Softban.user == user_id).gino.first()
 
