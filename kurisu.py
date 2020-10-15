@@ -4,7 +4,6 @@
 # license: Apache License 2.0
 # https://github.com/nh-server/Kurisu
 
-import os
 from asyncio import Event
 from configparser import ConfigParser
 from datetime import datetime
@@ -12,13 +11,16 @@ from subprocess import check_output, CalledProcessError
 from sys import exit, hexversion
 from traceback import format_exception, format_exc
 
+import os
 import discord
+import sys
 from discord.ext import commands
 
 from utils.checks import check_staff_id
 from utils.manager import WordFilterManager, InviteFilterManager
 from utils import models, crud
 from utils.models import db
+
 IS_DOCKER = os.environ.get('IS_DOCKER', 0)
 
 # sets working directory to bot's folder
@@ -26,8 +28,30 @@ dir_path = os.path.dirname(os.path.realpath(__file__))
 os.chdir(dir_path)
 
 # Load config
-config = ConfigParser()
-config.read("data/config.ini")
+if IS_DOCKER:
+    token_file = os.environ.get('KURISU_TOKEN')
+    if token_file:
+        with open(token_file, 'r', encoding='utf-8') as f:
+            TOKEN = f.readline().strip()
+    else:
+        sys.exit('Token path needs to be provided in the KURISU_TOKEN environment variable')
+
+    db_user_file = os.environ.get('DB_USER')
+    db_password_file = os.environ.get('DB_PASSWORD')
+
+    if db_user_file and db_password_file:
+        with open(db_user_file, 'r', encoding='utf-8') as f:
+            db_user = f.readline().strip()
+        with open(db_password_file, 'r', encoding='utf-8') as f:
+            db_password = f.readline().strip()
+        DATABASE_URL = f"postgresql://{db_user}:{db_password}@db/{db_user}"
+    else:
+        sys.exit('Database user and database password files paths need to be proved')
+else:
+    config = ConfigParser()
+    config.read("data/config.ini")
+    TOKEN = config['Main']['token']
+    DATABASE_URL = config['Main']['database_url']
 
 # loads extensions
 cogs = [
@@ -72,7 +96,6 @@ class Kurisu(commands.Bot):
     def __init__(self, *args, commit, branch, **kwargs):
         super().__init__(*args, **kwargs)
         self.startup = datetime.now()
-        self.channel_config = ConfigParser()
 
         self.IS_DOCKER = IS_DOCKER
         self.commit = commit
@@ -194,10 +217,10 @@ class Kurisu(commands.Bot):
         self.guild = guilds[0]
 
         try:
-            await db.set_bind(config['Main']['database_url'])
+            await db.set_bind(DATABASE_URL)
             await db.gino.create_all()
         except:
-            exit(-1)
+            sys.exit('Error when connecting to database')
 
         await self.load_channels()
         await self.load_roles()
@@ -365,7 +388,7 @@ def main():
     bot.help_command = commands.DefaultHelpCommand(dm_help=None)
     print(f'Starting Kurisu on commit {commit} on branch {branch}')
     bot.load_cogs()
-    bot.run(config['Main']['token'])
+    bot.run(TOKEN)
 
     return bot.exitcode
 

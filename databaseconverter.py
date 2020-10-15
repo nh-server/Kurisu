@@ -1,16 +1,32 @@
 import sqlite3
 import asyncio
 import discord
-
+import sys
 import datetime
+import os
 from utils import models
 from utils.models import db
 from configparser import ConfigParser
 
 SQLITE_FILE = './data/kurisu.sqlite'
 
-config = ConfigParser()
-config.read("data/config.ini")
+IS_DOCKER = os.environ.get('IS_DOCKER', 0)
+
+if IS_DOCKER:
+    db_user_file = os.environ.get('DB_USER')
+    db_password_file = os.environ.get('DB_PASSWORD')
+    if db_user_file and db_password_file:
+        with open(db_user_file, 'r', encoding='utf-8') as f:
+            db_user = f.readline().strip()
+        with open(db_password_file, 'r', encoding='utf-8') as f:
+            db_password = f.readline().strip()
+        DATABASE_URL = f"postgresql://{db_user}:{db_password}@db/{db_user}"
+    else:
+        sys.exit('Database user and database password files paths need to be proved')
+else:
+    config = ConfigParser()
+    config.read("data/config.ini")
+    DATABASE_URL = config['Main']['database_url']
 
 
 def has_seconds(str_timestamp):
@@ -18,7 +34,7 @@ def has_seconds(str_timestamp):
 
 
 async def main():
-    await db.set_bind(config['Main']['database_url'])
+    await db.set_bind(DATABASE_URL)
     await db.gino.drop_all()
     await db.gino.create_all()
     conn = sqlite3.connect(SQLITE_FILE)
