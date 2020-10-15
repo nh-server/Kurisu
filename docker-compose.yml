@@ -1,7 +1,29 @@
 version: "3.8"
 services:
-  kurisu:
-    image: "ghcr.io/nh-server/kurisu"
+  db:
+    image: postgres:13.0
     volumes:
-      - /opt/kurisudata:/home/kurisu/data
+      - ./db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER_FILE: /run/secrets/db_user
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+      POSTGRES_DB_FILE: /run/secrets/db_name
+    secrets:
+      - db_user
+      - db_password
+      - db_name
     restart: always
+
+  kurisu:
+    image: ghcr.io/nh-server/kurisu
+    volumes:
+      - ./kurisu-data:/home/kurisu/data
+    restart: always
+
+secrets:
+  db_user:
+    file: /opt/secrets/kurisu/db_user
+  db_password:
+    file: /opt/secrets/kurisu/db_password
+  db_name:
+    file: /opt/secrets/kurisu/db_name
