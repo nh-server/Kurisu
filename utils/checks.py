@@ -16,7 +16,7 @@ def is_staff(role):
 
 
 async def check_staff(ctx, role: str):
-    return check_staff_id(role, ctx.author.id)
+    return await check_staff_id(role, ctx.author.id)
 
 
 async def check_staff_id(role: str, user_id: int):
