@@ -22,7 +22,7 @@ if IS_DOCKER:
             db_password = f.readline().strip()
         DATABASE_URL = f"postgresql://{db_user}:{db_password}@db/{db_user}"
     else:
-        sys.exit('Database user and database password files paths need to be proved')
+        sys.exit('Database user and database password files paths need to be provided')
 else:
     config = ConfigParser()
     config.read("data/config.ini")
