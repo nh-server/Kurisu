@@ -3,7 +3,7 @@ services:
   db:
     image: postgres:13.0
     volumes:
-      - ./db:/var/lib/postgresql/data
+      - kurisudb:/var/lib/postgresql/data
     environment:
       POSTGRES_USER_FILE: /run/secrets/db_user
       POSTGRES_PASSWORD_FILE: /run/secrets/db_password
@@ -31,6 +31,9 @@ services:
       db:
         condition: service_healthy
     restart: always
+
+volumes:
+  kurisudb:
 
 secrets:
   db_user:
