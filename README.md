@@ -5,4 +5,5 @@ Although it is open source, this bot is not really designed to be used in other 
 
 ## Requirements:
 * Python 3.8 or above
+* Postgresql Server 13.0 or above
 * Everything in requirements.txt

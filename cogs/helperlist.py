@@ -1,15 +1,19 @@
 import discord
 
-from utils.database import DatabaseCog
 from utils.converters import SafeMember
 from utils.checks import is_staff
+from utils import crud
 from discord.ext import commands
 
 
-class HelperList(DatabaseCog):
+class HelperList(commands.Cog):
     """
     Management of active helpers.
     """
+
+    def __init__(self, bot):
+        self.bot = bot
+
     async def cog_check(self, ctx):
         if ctx.guild is None:
             raise commands.NoPrivateMessage()
@@ -17,12 +21,12 @@ class HelperList(DatabaseCog):
 
     @is_staff(role='Owner')
     @commands.command()
-    async def addhelper(self, ctx, member: SafeMember, position):
+    async def addhelper(self, ctx, member: SafeMember, console):
         """Add user as a helper. Owners only."""
-        if position not in self.bot.helper_roles:
+        if console not in self.bot.helper_roles:
             await ctx.send(f"💢 That's not a valid position. You can use __{'__, __'.join(self.bot.helper_roles.keys())}__")
             return
-        await self.add_helper(member.id, position)
+        await crud.add_helper(member.id, 'Helper', console)
         await member.add_roles(self.bot.roles['Helpers'])
         await ctx.send(f"{member.mention} is now a helper. Welcome to the party room!")
 
@@ -30,8 +34,10 @@ class HelperList(DatabaseCog):
     @commands.command()
     async def delhelper(self, ctx, member: SafeMember):
         """Remove user from helpers. Owners only."""
+        if not await crud.get_helper(member.id):
+            return await ctx.send("This user is not a helper!")
         await ctx.send(member.name)
-        await self.remove_helper(member.id)
+        await crud.remove_helper(member.id)
         await member.remove_roles(self.bot.roles['Helpers'])
         await ctx.send(f"{member.mention} is no longer a helper. Stop by some time!")
 
@@ -39,11 +45,11 @@ class HelperList(DatabaseCog):
     async def helpon(self, ctx):
         """Gain highlighted helping role. Only needed by Helpers."""
         author = ctx.author
-        console = await self.get_console(ctx.author.id)
-        if not console:
+        helper = await crud.get_helper(author.id)
+        if not helper.console:
             await ctx.send("You are not listed as a helper, and can't use this.")
             return
-        await author.add_roles(self.bot.helper_roles[console])
+        await author.add_roles(self.bot.helper_roles[helper.console])
         await ctx.send(f"{author.mention} is now actively helping.")
         msg = f"🚑 **Elevated: +Help**: {author.mention} | {author}"
         await self.bot.channels['mod-logs'].send(msg)
@@ -52,11 +58,11 @@ class HelperList(DatabaseCog):
     async def helpoff(self, ctx):
         """Remove highlighted helping role. Only needed by Helpers."""
         author = ctx.author
-        console = await self.get_console(ctx.author.id)
-        if not console:
+        helper = await crud.get_helper(author.id)
+        if not helper.console:
             await ctx.send("You are not listed as a helper, and can't use this.")
             return
-        await author.remove_roles(self.bot.helper_roles[console])
+        await author.remove_roles(self.bot.helper_roles[helper.console])
         await ctx.send(f"{author.mention} is no longer actively helping!")
         msg = f"👎🏻 **De-Elevated: -Help**: {author.mention} | {author}"
         await self.bot.channels['mod-logs'].send(msg)
@@ -64,14 +70,14 @@ class HelperList(DatabaseCog):
     @commands.command()
     async def listhelpers(self, ctx):
         """List helpers per console."""
-        helper_list = await self.get_helpers_role()
+        helper_list = await crud.get_helpers()
         consoles = dict.fromkeys(self.bot.helper_roles.keys())
         embed = discord.Embed()
         for console in consoles:
             consoles[console] = []
             for helper in helper_list:
-                if console in helper:
-                    consoles[console].append(helper[0])
+                if console == helper.console:
+                    consoles[console].append(helper.id)
             if consoles[console]:
                 embed.add_field(name=console, value="".join([f"<@{x}>\n" for x in consoles[console]]), inline=False)
         await ctx.send("Here is a list of our helpers:", embed=embed)

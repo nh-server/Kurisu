@@ -2,7 +2,7 @@ name: 'ci'
 
 on:
   push:
-    branches: port
+    branches: main
 
 jobs:
   build:
@@ -74,14 +74,14 @@ jobs:
         run: docker-compose pull
         env:
           DOCKER_HOST: ${{ secrets.SSH_HOST }}
-      - name: Send up webhook
-        continue-on-error: true
-        uses: appleboy/discord-action@4c19612
-        with:
-          webhook_id: ${{ secrets.WEBHOOK_ID }}
-          webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
-          message: Running on server
-      - name: Run on server
-        run: docker-compose up -d
-        env:
-          DOCKER_HOST: ${{ secrets.SSH_HOST }}
+#      - name: Send up webhook
+#        continue-on-error: true
+#        uses: appleboy/discord-action@4c19612
+#        with:
+#          webhook_id: ${{ secrets.WEBHOOK_ID }}
+#          webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
+#          message: Running on server
+#      - name: Run on server
+#        run: docker-compose up -d
+#        env:
+#          DOCKER_HOST: ${{ secrets.SSH_HOST }}

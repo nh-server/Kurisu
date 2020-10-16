@@ -100,7 +100,7 @@ class Lockdown(commands.Cog):
         if not channels:
             channels.append(ctx.channel)
         locked_down = []
-        ishelper = not await check_staff_id(ctx, "HalfOP", author.id)
+        ishelper = not await check_staff_id("HalfOP", author.id)
 
         for c in channels:
             if ishelper and (c not in self.bot.assistance_channels):
@@ -142,7 +142,7 @@ class Lockdown(commands.Cog):
         elsewhere = self.bot.channels['elsewhere']
         if not channels:
             channels.append(ctx.channel)
-        ishelper = not await check_staff_id(ctx, "HalfOP", author.id)
+        ishelper = not await check_staff_id("HalfOP", author.id)
         unlocked = []
 
         for c in channels:

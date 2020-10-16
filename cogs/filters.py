@@ -1,5 +1,4 @@
 import discord
-import os.path
 
 from discord.ext import commands
 from utils.checks import is_staff
@@ -26,10 +25,10 @@ class Filter(commands.Cog):
             return await ctx.send(f"Possible word kinds for word filter: {', '.join(self.bot.wordfilter.kinds)}")
         if ' ' in word or '-' in word:
             return await ctx.send("Filtered words cant contain dashes or spaces!")
-        word, _ = await self.bot.wordfilter.add(word=word, kind=kind)
+        entry = await self.bot.wordfilter.add(word=word, kind=kind)
         if word is None:
             return await ctx.send(f"Failed to add word to {kind} filter")
-        await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added `{word}` to the word filter!")
+        await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added `{entry.word}` to the word filter!")
         await ctx.send("Successfully added word to word filter")
 
     @wordfilter.command(name='list')
@@ -46,23 +45,11 @@ class Filter(commands.Cog):
     @is_staff("SuperOP")
     @wordfilter.command(name='delete', aliases=['remove'])
     async def delete_word(self, ctx, word: str):
-        name = await self.bot.wordfilter.delete(word=word)
-        if name is None:
+        entry = await self.bot.wordfilter.delete(word=word)
+        if entry is None:
             return await ctx.send("Word not found!")
         await ctx.send(f"Delete word `{word}` succesfully!")
-        await self.bot.channels['mod-logs'].send(f"⭕ **Deleted**: {ctx.author.mention} deleted word `{word}` from the filter!")
-
-    @is_staff("Owner")
-    @wordfilter.command()
-    async def bulk_load_config(self, ctx):
-        if os.path.exists("wordfilter.json"):
-            try:
-                await self.bot.wordfilter.bulk_load()
-                await ctx.send("Bulk loaded config successfully!")
-            except BaseException as e:
-                return await ctx.send(f"Failed to bulk load configuration: {e}")
-        else:
-            await ctx.send("There is no valid file for loading!")
+        await self.bot.channels['mod-logs'].send(f"⭕ **Deleted**: {ctx.author.mention} deleted word `{entry.word}` from the filter!")
 
     @is_staff("Helper")
     @commands.group()
@@ -75,9 +62,9 @@ class Filter(commands.Cog):
     @invitefilter.command(name='add')
     async def add_invite(self, ctx, invite: discord.Invite, alias: str):
         """Adds a invite to the filter whitelist"""
-        if await self.bot.invitefilter.fetch(code=invite.code, alias=alias, separator='OR'):
+        if await self.bot.invitefilter.fetch_invite_by_alias(alias) or await self.bot.invitefilter.fetch_invite_by_code(invite.code):
             return await ctx.send("This invite code or alias is already in use!")
-        entry = await self.bot.invitefilter.add(name=invite.guild.name, code=invite.code, alias=alias, uses=-1)
+        entry = await self.bot.invitefilter.add(code=invite.code, alias=alias, uses=-1)
         if entry is None:
             return await ctx.send("Failed to add invite to the invite whitelist!")
         await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added {invite.code}(`{invite.guild.name}`) to the invite whitelist!")
@@ -87,7 +74,7 @@ class Filter(commands.Cog):
     @invitefilter.command(name='delete')
     async def delete_invite(self, ctx, code: str):
         """Removes a invite from the filter whitelist"""
-        entry = await self.bot.invitefilter.fetchinvite(code=code)
+        entry = await self.bot.invitefilter.fetch_invite_by_code(code=code)
         if not entry:
             return await ctx.send("Invite code not found!")
         await self.bot.invitefilter.delete(code=code)

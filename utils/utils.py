@@ -27,7 +27,7 @@ def command_signature(command, *, prefix=".") -> str:
     return signature
 
 
-def gen_color(seed):
+def gen_color(seed) -> discord.Color:
     random.seed(seed)
     c_r = random.randint(0, 255)
     c_g = random.randint(0, 255)

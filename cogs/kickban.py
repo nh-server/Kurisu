@@ -4,16 +4,18 @@ import typing
 import datetime
 
 from utils.converters import SafeMember, FetchMember
-from utils import utils
+from utils import utils, crud
 from utils.checks import is_staff, check_bot_or_staff
-from utils.database import DatabaseCog
 from discord.ext import commands
 
 
-class KickBan(DatabaseCog):
+class KickBan(commands.Cog):
     """
     Kicking and banning users.
     """
+
+    def __init__(self, bot):
+        self.bot = bot
 
     async def cog_check(self, ctx):
         if ctx.guild is None:
@@ -71,7 +73,7 @@ class KickBan(DatabaseCog):
             msg += "\n\nThis ban does not expire."
             await utils.send_dm_message(member, msg)
         try:
-            await ctx.cog.remove_timed_restriction(member.id, 'timeban')
+            await crud.remove_timed_restriction(member.id, 'timeban')
             self.bot.actions.append("ub:" + str(member.id))
             await ctx.guild.ban(member, reason=reason, delete_message_days=days)
         except discord.errors.Forbidden:
@@ -96,10 +98,9 @@ class KickBan(DatabaseCog):
         except discord.errors.NotFound:
             return await ctx.send(f"{user} is not banned!")
 
-        await ctx.cog.remove_timed_restriction(user.id, 'timeban')
+        await crud.remove_timed_restriction(user.id, 'timeban')
         self.bot.actions.append("tbr:"+str(user.id))
         await ctx.guild.unban(user, reason=reason)
-
         await ctx.send(f"{user} is now unbanned.")
         msg = f"⚠ **Unban**: {ctx.author.mention} unbanned {user.mention} | {self.bot.escape_text(user)}\n🏷 __User ID__: {user.id}\n✏️ __Reason__: {reason}"
         await self.bot.channels['mod-logs'].send(msg)
@@ -160,7 +161,7 @@ class KickBan(DatabaseCog):
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
             return
-        await self.add_timed_restriction(member.id, unban_time_string, 'timeban')
+        await crud.add_timed_restriction(member.id, unban_time, 'timeban')
         await ctx.send(f"{member} is now b& until {unban_time_string} {time.tzname[0]}. 👍")
         msg = f"⛔ **Time ban**: {ctx.author.mention} banned {member.mention} until {unban_time_string} | {member}\n🏷 __User ID__: {member.id}"
         if reason != "":
@@ -179,8 +180,7 @@ class KickBan(DatabaseCog):
         if await check_bot_or_staff(ctx, member, "softban"):
             return
 
-        timestamp = datetime.datetime.now()
-        await self.add_softban(member.id, ctx.author.id, reason, timestamp)
+        await crud.add_softban(member.id, ctx.author.id, reason)
 
         if isinstance(member, discord.Member):
             msg = f"This account is no longer permitted to participate in {ctx.guild.name}. The reason is: {reason}"
@@ -199,7 +199,7 @@ class KickBan(DatabaseCog):
     @commands.command(name="unsoftban")
     async def unsoftban_member(self, ctx, user: FetchMember):
         """Un-soft-ban a user based on ID. OP+ only."""
-        await self.remove_softban(user.id)
+        await crud.remove_softban(user.id)
         await ctx.send(f"{user} has been unbanned!")
         msg = f"⚠️ **Un-soft-ban**: {ctx.author.mention} un-soft-banned {self.bot.escape_text(user)}"
         await self.bot.channels['mod-logs'].send(msg)

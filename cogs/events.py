@@ -4,21 +4,20 @@ import re
 
 from collections import deque
 from utils.checks import check_staff_id
-from utils.database import DatabaseCog
+from utils import crud
 from discord.ext import commands
 from subprocess import call
 from string import printable
 from urllib.parse import urlparse
 
 
-class Events(DatabaseCog):
+class Events(commands.Cog):
     """
     Special event handling.
     """
 
     def __init__(self, bot):
-        super().__init__(bot)
-        self.bot.temp_guilds = {}
+        self.bot = bot
 
     ignored_file_extensions = (
         '.jpg',
@@ -39,7 +38,7 @@ class Events(DatabaseCog):
     async def scan_message(self, message, is_edit=False):
         embed = discord.Embed()
         embed.description = message.content
-        if await self.is_watched(message.author.id):
+        if await crud.is_watched(message.author.id):
             content = f"**Channel**:\n[#{message.channel.name}](https://discordapp.com/channels/{str(message.guild.id)}/{message.channel.id}/{message.id})\n"
             msg = message.author.mention
             if message.attachments:
@@ -57,7 +56,7 @@ class Events(DatabaseCog):
             await self.bot.channels['watch-logs'].send(msg, embed=embed)
         is_help_channel = message.channel in self.bot.assistance_channels
         msg = ''.join(char for char in message.content.lower() if char in printable)
-        msg_no_separators = re.sub('[ \*_\-~]', '', msg)
+        msg_no_separators = re.sub('[ *_\-~]', '', msg)
 
         contains_skype_link = "join.skype.com" in msg
         contains_piracy_site_mention = any(x in msg for x in self.bot.wordfilter.filter['piracy site'])
@@ -211,7 +210,7 @@ class Events(DatabaseCog):
                 await message.author.send(f"You were automatically placed under probation in {self.bot.guild.name} for mass user mentions.")
             except discord.errors.Forbidden:
                 pass
-            await self.add_restriction(message.author.id, self.bot.roles['Probation'])
+            await crud.add_permanent_role(message.author.id, self.bot.roles['Probation'].id)
             await message.author.add_roles(self.bot.roles['Probation'])
 
     async def user_spam_check(self, message):
@@ -220,7 +219,7 @@ class Events(DatabaseCog):
         self.user_antispam[message.author.id].append(message)
         if len(self.user_antispam[message.author.id]) == 6:  # it can trigger it multiple times if I use >. it can't skip to a number so this should work
             await message.author.add_roles(self.bot.roles['Muted'])
-            await self.add_restriction(message.author.id, self.bot.roles['Muted'])
+            await crud.add_permanent_role(message.author.id, self.bot.roles['Muted'].id)
             msg_user = f"You were automatically muted for sending too many messages in a short period of time!\n\nIf you believe this was done in error, send a direct message to one of the staff in {self.bot.channels['welcome-and-rules'].mention}."
             try:
                 await message.author.send(msg_user)
@@ -252,7 +251,7 @@ class Events(DatabaseCog):
         self.user_antispam["p" + str(message.author.id)].append((message, len(message.mentions)))
         _, user_mentions = zip(*self.user_antispam["p" + str(message.author.id)])
         if sum(user_mentions) > 6:
-            await self.add_restriction(message.author, self.bot.roles["Probation"])
+            await crud.add_permanent_role(message.author, self.bot.roles["Probation"].id)
             await message.author.add_roles(self.bot.roles['Probation'])
             msg_user = f"You were automatically placed under probation for mentioning too many users in a short period of time!\n\nIf you believe this was done in error, send a direct message to one of the staff in {self.bot.channels['welcome-and-rules'].mention}."
             try:
@@ -323,7 +322,7 @@ class Events(DatabaseCog):
                     await self.bot.close()
                 return
         await self.bot.wait_until_all_ready()
-        if message.author == message.guild.me or await check_staff_id(self, 'Helper', message.author.id) or await self.check_nofilter(message.channel):  # don't process messages by the bot or staff or in the helpers channel
+        if message.author == message.guild.me or await check_staff_id('Helper', message.author.id) or await crud.check_nofilter(message.channel):  # don't process messages by the bot or staff or in the helpers channel
             return
         await self.scan_message(message)
         self.bot.loop.create_task(self.user_ping_check(message))
@@ -336,9 +335,9 @@ class Events(DatabaseCog):
             return
         await self.bot.wait_until_all_ready()
         try:
-            if await self.check_nofilter(message_before.channel):
+            if await crud.check_nofilter(message_before.channel):
                 return
-            if message_after.author == self.bot.guild.me or await check_staff_id(self, 'Helper', message_after.author.id) or await self.check_nofilter(message_after.channel):  # don't process messages by the bot or staff or in the helpers channel
+            if message_after.author == self.bot.guild.me or await check_staff_id('Helper', message_after.author.id) or await crud.check_nofilter(message_after.channel):  # don't process messages by the bot or staff or in the helpers channel
                 return
             if message_before.content == message_after.content:
                 return
