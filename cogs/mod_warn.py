@@ -119,7 +119,7 @@ class ModWarn(commands.Cog):
                 if ctx.channel == self.bot.channels['helpers'] or ctx.channel == self.bot.channels['mods'] or ctx.channel == self.bot.channels['mod-logs']:
                     value += f"Issuer: {issuer.name}\n"
                 value += f"Reason: {warn.reason} "
-                embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn.id)}", value=value)
+                embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn.id).strftime('%Y-%m-%d %H:%M:%S')}", value=value)
         else:
             embed.description = "There are none!"
             embed.color = discord.Color.green()
