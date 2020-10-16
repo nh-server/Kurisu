@@ -127,22 +127,24 @@ class ModWarn(commands.Cog):
 
     @is_staff("SuperOP")
     @commands.command()
-    async def copywarns_id2id(self, ctx, user_id1: int, user_id2: int):
+    async def copywarns_id2id(self, ctx, user_1: FetchMember, user_2: FetchMember):
         """Copy warns from one user ID to another. Overwrites all warns of the target user ID. SOP+ only."""
-        if await check_bot_or_staff(ctx, user_id2, "warn"):
+        if await check_bot_or_staff(ctx, user_2, "warn"):
             return
-        warns = await crud.get_warns(user_id1)
-        if not warns:
-            await ctx.send(f"{user_id1} has no warns!")
+        warns_1 = await crud.get_warns(user_1.id)
+        warns_2 = await crud.get_warns(user_2.id)
+        warn_count = len(warns_1)
+        if not warns_1:
+            await ctx.send(f"{user_1} has no warns!")
             return
-        for warn in warns:
-            await crud.add_warn(user_id2, warn.issuer, warn.reason)
-        warn_count = len(warns)
-        user1 = await ctx.get_user(user_id1)
-        user2 = await ctx.get_user(user_id2)
-        await ctx.send(f"{warn_count} warns were copied from {user1.name} to {user2.name}!")
-        msg = f"📎 **Copied warns**: {ctx.author.mention} copied {warn_count} warns from {self.bot.escape_text(user1.name)}"\
-              f"({user_id1}) to {self.bot.escape_text(user2.name)} ({user_id2})"
+        if len(warns_2)+len(warns_1) > 5:
+            return await ctx.send("Copying the warns would go over the max warn count.")
+        for warn in warns_1:
+            await crud.copy_warn(user_2.id ,warn)
+
+        await ctx.send(f"{warn_count} warns were copied from {user_1.name} to {user_2.name}!")
+        msg = f"📎 **Copied warns**: {ctx.author.mention} copied {warn_count} warns from {self.bot.escape_text(user_1.name)}"\
+              f"({user_1}) to {self.bot.escape_text(user_2.name)} ({user_2})"
         await self.bot.channels['mod-logs'].send(msg)
 
     @is_staff("HalfOP")

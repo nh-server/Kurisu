@@ -1,10 +1,10 @@
-from datetime import datetime
+import datetime
 from discord import utils, TextChannel
 from . import models
 
 
 def generate_id():
-    return utils.time_snowflake(datetime.now())
+    return utils.time_snowflake(datetime.datetime.now())
 
 
 async def add_permanent_role(user_id: int, role_id: int):
@@ -16,7 +16,7 @@ async def add_permanent_role(user_id: int, role_id: int):
 
 async def remove_permanent_role(user_id: int, role_id: int):
     permanent_role = await models.PermanentRole.query.where((models.PermanentRole.user_id == user_id) & (
-                models.PermanentRole.role_id == role_id)).gino.first()
+            models.PermanentRole.role_id == role_id)).gino.first()
     if permanent_role:
         await permanent_role.delete()
         return permanent_role
@@ -86,6 +86,19 @@ async def add_warn(user_id: int, issuer_id: int, reason: str):
     await models.Warn.create(id=generate_id(), user=user_id, issuer=issuer_id, reason=reason)
 
 
+async def copy_warn(user_id: int, warn: models.Warn):
+    await add_dbmember_if_not_exist(user_id)
+    warn.id = utils.time_snowflake(utils.snowflake_time(warn.id) + datetime.timedelta(milliseconds=1))
+    while await get_warn(warn.id):
+        warn.id = utils.time_snowflake(utils.snowflake_time(warn.id) + datetime.timedelta(milliseconds=1))
+    warn.user = user_id
+    await warn.create()
+
+
+async def get_warn(warn_id: int):
+    return await models.Warn.get(warn_id)
+
+
 async def get_warns(user_id: int):
     return await models.Warn.query.where(models.Warn.user == user_id).gino.all()
 
@@ -102,9 +115,9 @@ async def remove_warns(user_id: int):
     return n_warns
 
 
-async def add_timed_restriction(user_id: int, end_date: datetime, type: str):
+async def add_timed_restriction(user_id: int, end_date: datetime.datetime, type: str):
     await add_dbmember_if_not_exist(user_id)
-    await models.TimedRestriction.create(id=utils.time_snowflake(datetime.now()), user=user_id, type=type,
+    await models.TimedRestriction.create(id=utils.time_snowflake(generate_id()), user=user_id, type=type,
                                          end_date=end_date)
 
 
