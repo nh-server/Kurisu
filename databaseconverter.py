@@ -117,7 +117,7 @@ async def main():
     staff = []
     if data:
         for entry in data:
-            staff_entries.append(dict(id=entry[0], position=entry[1]))
+            staff_entries.append(dict(id=entry[0], position=entry[1], console=None))
             staff.append(entry[0])
             if entry[0] not in users:
                 users.append(entry[0])
@@ -128,13 +128,13 @@ async def main():
     helper_entries = []
     if data:
         for entry in data:
-            try:
-                index = staff.index(entry[0])
-            except:
-                index = -1
-            if index >= 0:
-                staff_entries[index]['console'] = entry[1]
-            else:
+            found = False
+            for a in staff_entries:
+                if entry[0] in a.values():
+                    a['console'] = entry[1]
+                    found = True
+                    break
+            if not found:
                 helper_entries.append(dict(id=entry[0], position='Helper', console=entry[1]))
                 if entry[0] not in users:
                     users.append(entry[0])
