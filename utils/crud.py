@@ -25,7 +25,7 @@ async def remove_permanent_role(user_id: int, role_id: int):
 async def get_permanent_roles(user_id: int):
     db_member = await get_dbmember(user_id)
     if db_member:
-        return await models.PermanentRole.load(parent=db_member).query.gino.all()
+        return await models.Role.query.where((models.Role.id == models.PermanentRole.role_id) & (models.PermanentRole.user_id == db_member.id)).gino.all()
 
 
 async def add_staff(user_id: int, position: str):
@@ -117,8 +117,12 @@ async def remove_warns(user_id: int):
 
 async def add_timed_restriction(user_id: int, end_date: datetime.datetime, type: str):
     await add_dbmember_if_not_exist(user_id)
-    await models.TimedRestriction.create(id=utils.time_snowflake(generate_id()), user=user_id, type=type,
+    await models.TimedRestriction.create(id=generate_id(), user=user_id, type=type,
                                          end_date=end_date)
+
+
+async def get_time_restrictions_by_user(user_id: int):
+    return await models.TimedRestriction.query.where(models.TimedRestriction.user == user_id).gino.all()
 
 
 async def get_time_restrictions_by_user_type(user_id: int, type: str):
