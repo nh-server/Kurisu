@@ -46,7 +46,7 @@ class HelperList(commands.Cog):
         """Gain highlighted helping role. Only needed by Helpers."""
         author = ctx.author
         helper = await crud.get_helper(author.id)
-        if not helper.console:
+        if not helper or not helper.console:
             await ctx.send("You are not listed as a helper, and can't use this.")
             return
         await author.add_roles(self.bot.helper_roles[helper.console])
@@ -59,7 +59,7 @@ class HelperList(commands.Cog):
         """Remove highlighted helping role. Only needed by Helpers."""
         author = ctx.author
         helper = await crud.get_helper(author.id)
-        if not helper.console:
+        if not helper or not helper.console:
             await ctx.send("You are not listed as a helper, and can't use this.")
             return
         await author.remove_roles(self.bot.helper_roles[helper.console])
