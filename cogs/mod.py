@@ -114,18 +114,18 @@ class Mod(commands.Cog):
     @is_staff("Owner")
     @commands.guild_only()
     @commands.command()
-    async def multiban(self, ctx, users: commands.Greedy[FetchMember]):
+    async def multiban(self, ctx, users: commands.Greedy[int]):
         """Multi-ban users."""
         author = ctx.author
-        msg = "```\nbanned:\n"
+        msg = "```\nfailed:\n"
         for m in users:
-            msg += f"{m.id} - {m}\n"
             try:
-                await self.bot.guild.ban(m)
-            except discord.errors.NotFound:
+                await self.bot.guild.ban(discord.Object(id=m))
+            except (discord.errors.NotFound, discord.errors.Forbidden) as e:
+                msg += f"{m}:\n  {e.text}\n"
                 pass
         msg += "```"
-        await author.send(msg)
+        await utils.send_dm_message(author, msg)
 
     @is_staff("Owner")
     @commands.guild_only()
