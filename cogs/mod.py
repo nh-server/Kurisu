@@ -114,7 +114,7 @@ class Mod(commands.Cog):
     @is_staff("Owner")
     @commands.guild_only()
     @commands.command()
-    async def multiban(self, ctx, users: commands.Greedy[SafeMember]):
+    async def multiban(self, ctx, users: commands.Greedy[FetchMember]):
         """Multi-ban users."""
         author = ctx.author
         msg = "```\nbanned:\n"
