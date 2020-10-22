@@ -121,7 +121,7 @@ class Mod(commands.Cog):
         for m in users:
             msg += f"{m.id} - {m}\n"
             try:
-                await m.ban()
+                await self.bot.guild.ban(m)
             except discord.errors.NotFound:
                 pass
         msg += "```"
