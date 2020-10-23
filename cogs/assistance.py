@@ -373,7 +373,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
         embed = discord.Embed(title="Why you should not use video guides", color=discord.Color.dark_orange())
         embed.description = cleandoc("""
                 Reasons to not use video guides:
-                - Tough to update post-upload, due to how videos work, it is impossible to update a specific part of it without creating an entirely new video
+                - Tough to update after the video is uploaded, due to how videos work, it is impossible to update a specific part of it without creating an entirely new video
                 - Most guides are not removed when they're no longer relevant, guiding users through complex processes when better options may exist
                 - Hard to give assistance for, due to the amount of existing guides
                 - Multiple videos also include an "all in one" (AIO) download, which might contain outdated, unrelated or broken files
