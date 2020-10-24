@@ -1663,6 +1663,12 @@ in the scene.
                     3DS Hacks Guide's [unSAFE_MODE](https://git.io/JfNQ4)
                     """, title="unSAFE_MODE")
 
-        
+      @commands.command(aliases=['brick', 'bricc'])
+    async def brick(self, ctx):
+        """picture to say that somebody bricked their console"""
+        embed = discord.Embed()
+        embed.set_image(url="https://media.discordapp.net/attachments/730541730725757017/769384755455197244/unknown.png")
+        await ctx.send(embed=embed)
+                               
 def setup(bot):
     bot.add_cog(Assistance(bot))
