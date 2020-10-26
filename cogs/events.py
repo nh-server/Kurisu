@@ -82,17 +82,26 @@ class Events(commands.Cog):
 
         for f in message.attachments:
             if not f.filename.lower().endswith(self.ignored_file_extensions):
-                embed2 = discord.Embed(description=f"Size: {f.size}\nMessage: [{message.channel.name}]({message.jump_url})\nDownload: [{f.filename}]({f.url})")
-                await self.bot.channels['upload-logs'].send(f"📎 **Attachment**: {message.author.mention} uploaded to {message.channel.mention}", embed=embed2)
+                embed2 = discord.Embed(description=f"Size: {f.size}\n"
+                                                   f"Message: [{message.channel.name}]({message.jump_url})\n"
+                                                   f"Download: [{f.filename}]({f.url})")
+                await self.bot.channels['upload-logs'].send(f"📎 **Attachment**: {message.author.mention} "
+                                                            f"uploaded to {message.channel.mention}", embed=embed2)
         if contains_invite_link:
-            await self.bot.channels['message-logs'].send(f"✉️ **Invite posted**: {message.author.mention} posted an invite link in {message.channel.mention} {'(message deleted)' if contains_non_approved_invite else ''}\n------------------\n{self.bot.escape_text(message.content)}")
+            await self.bot.channels['message-logs'].send(
+                f"✉️ **Invite posted**: {message.author.mention} posted an invite link in {message.channel.mention}"
+                f" {'(message deleted)' if contains_non_approved_invite else ''}"
+                f"\n------------------\n"
+                f"{self.bot.escape_text(message.content)}")
             if contains_non_approved_invite:
                 try:
                     await message.delete()
                 except discord.NotFound:
                     pass
                 try:
-                    await message.author.send(f"Please read {self.bot.channels['welcome-and-rules'].mention}. Server invites must be approved by staff. To contact staff send a message to <@333857992170536961>.")
+                    await message.author.send(
+                        f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
+                        "Server invites must be approved by staff. To contact staff send a message to <@333857992170536961>.")
                 except discord.errors.Forbidden:
                     pass
             if approved_invites:
@@ -107,68 +116,87 @@ class Events(commands.Cog):
                 await message.delete()
             except discord.errors.NotFound:
                 pass
-            try:
-                await message.author.send(f"Please read {self.bot.channels['welcome-and-rules'].mention}. This site may be misinterpreted as legitimate and cause users harm, therefore your message was automatically deleted.", embed=embed)
-            except discord.errors.Forbidden:
-                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
-            await self.bot.channels['message-logs'].send(f"**Bad site**: {message.author.mention} mentioned a blocked site in {message.channel.mention} (message deleted)", embed=embed)
+            await utils.send_dm_message(message.author,
+                                        f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
+                                        f"This site may be misinterpreted as legitimate and cause users harm, therefore your message was automatically deleted.",
+                                        embed=embed)
+            await self.bot.channels['message-logs'].send(
+                f"**Bad site**: {message.author.mention} mentioned a blocked site in {message.channel.mention} (message deleted)",
+                embed=embed)
         if contains_drama_alert:
-            await self.bot.channels['message-logs'].send(f"**Potential drama/heated debate Warning**: {message.author.mention} posted a blacklisted word in {message.channel.mention}", embed=embed)
+            embed.description = contains_drama_alert
+            await self.bot.channels['message-logs'].send(
+                f"**Potential drama/heated debate Warning**: {message.author.mention} posted a blacklisted word in {message.channel.mention}",
+                embed=embed)
         if contains_piracy_tool_mention:
             try:
                 await message.delete()
             except discord.errors.NotFound:
                 pass
-            try:
-                await message.author.send(f"Please read {self.bot.channels['welcome-and-rules'].mention}. You cannot mention tools used for piracy, therefore your message was automatically deleted.", embed=embed)
-            except discord.errors.Forbidden:
-                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
-            await self.bot.channels['message-logs'].send(f"**Bad tool**: {message.author.mention} mentioned a piracy tool in {message.channel.mention} (message deleted)", embed=embed)
+            await utils.send_dm_message(message.author,
+                                        f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
+                                        f"You cannot mention tools used for piracy, therefore your message was automatically deleted.",
+                                        embed=embed)
+            await self.bot.channels['message-logs'].send(
+                f"**Bad tool**: {message.author.mention} mentioned a piracy tool in {message.channel.mention} (message deleted)",
+                embed=embed)
         if contains_piracy_video_id:
             try:
                 await message.delete()
             except discord.errors.NotFound:
                 pass
-            try:
-                await message.author.send(f"Please read {self.bot.channels['welcome-and-rules'].mention}. You cannot link videos that mention piracy, therefore your message was automatically deleted.", embed=embed)
-            except discord.errors.Forbidden:
-                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
-            await self.bot.channels['message-logs'].send(f"**Bad video**: {message.author.mention} linked a banned video in {message.channel.mention} (message deleted)", embed=embed)
+            await utils.send_dm_message(message.author,
+                                        f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
+                                        f"You cannot link videos that mention piracy, therefore your message was automatically deleted.",
+                                        embed=embed)
+            await self.bot.channels['message-logs'].send(
+                f"**Bad video**: {message.author.mention} linked a banned video in {message.channel.mention} (message deleted)",
+                embed=embed)
         if contains_piracy_tool_alert_mention:
-            await self.bot.channels['message-logs'].send(f"**Bad tool**: {message.author.mention} likely mentioned a piracy tool in {message.channel.mention}", embed=embed)
-        if contains_piracy_site_mention or contains_piracy_url_mention:
+            await self.bot.channels['message-logs'].send(
+                f"**Bad tool**: {message.author.mention} likely mentioned a piracy tool in {message.channel.mention}",
+                embed=embed)
+        if contains_piracy_site_mention:
             try:
                 await message.delete()
             except discord.errors.NotFound:
                 pass
-            try:
-                await message.author.send(f"Please read {self.bot.channels['welcome-and-rules'].mention}. You cannot mention sites used for piracy directly, therefore your message was automatically deleted.", embed=embed)
-            except discord.errors.Forbidden:
-                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
-            await self.bot.channels['message-logs'].send(f"**Bad site**: {message.author.mention} mentioned a piracy site directly in {message.channel.mention} (message deleted)", embed=embed)
+            await utils.send_dm_message(message.author,
+                                        f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
+                                        f"You cannot mention sites used for piracy directly, therefore your message was automatically deleted.",
+                                        embed=embed)
+            await self.bot.channels['message-logs'].send(
+                f"**Bad site**: {message.author.mention} mentioned a piracy site directly in {message.channel.mention} (message deleted)",
+                embed=embed)
         elif contains_piracy_site_mention_indirect:
             if is_help_channel:
                 try:
                     await message.delete()
                 except discord.errors.NotFound:
                     pass
-                try:
-                    await message.author.send(f"Please read {self.bot.channels['welcome-and-rules'].mention}. You cannot mention sites used for piracy in the help-and-questions channels directly or indirectly, therefore your message was automatically deleted.", embed=embed)
-                except discord.errors.Forbidden:
-                    pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
-            await self.bot.channels['message-logs'].send(f"**Bad site**: {message.author.mention} mentioned a piracy site indirectly in {message.channel.mention}{' (message deleted)' if is_help_channel else ''}", embed=embed)
+                await utils.send_dm_message(message.author,
+                                            f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
+                                            f"You cannot mention sites used for piracy in the help-and-questions channels directly or indirectly, "
+                                            f"therefore your message was automatically deleted.",
+                                            embed=embed)
+            await self.bot.channels['message-logs'].send(
+                f"**Bad site**: {message.author.mention} mentioned a piracy site indirectly in {message.channel.mention}{' (message deleted)' if is_help_channel else ''}",
+                embed=embed)
         if contains_unbanning_stuff:
             try:
                 await message.delete()
             except discord.errors.NotFound:
                 pass
-            try:
-                await message.author.send(f"Please read {self.bot.channels['welcome-and-rules'].mention}. You cannot mention sites, programs or services used for unbanning, therefore your message was automatically deleted.", embed=embed)
-            except discord.errors.Forbidden:
-                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
-            await self.bot.channels['message-logs'].send(f"**Bad site**: {message.author.mention} mentioned an unbanning site/service/program directly in {message.channel.mention} (message deleted)", embed=embed)
+            await utils.send_dm_message(message.author,
+                                        f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
+                                        f"You cannot mention sites, programs or services used for unbanning, therefore your message was automatically deleted.",
+                                        embed=embed)
+            await self.bot.channels['message-logs'].send(
+                f"**Bad site**: {message.author.mention} mentioned an unbanning site/service/program directly in {message.channel.mention} (message deleted)",
+                embed=embed)
         if contains_video and message.channel in self.bot.assistance_channels:
-            await self.bot.channels['message-logs'].send(f"▶️ **Video posted**: {message.author.mention} posted a video in {message.channel.mention}\n------------------\n{message.clean_content}")
+            await self.bot.channels['message-logs'].send(
+                f"▶️ **Video posted**: {message.author.mention} posted a video in {message.channel.mention}\n------------------\n{message.clean_content}")
 
         # check for guide mirrors and post the actual link
         urls = re.findall(r'(https?://\S+)', msg)
@@ -180,36 +208,37 @@ class Events(commands.Cog):
             elif ps.netloc.startswith('hax.b4k.co') and ps.path.startswith('/3ds/guide'):
                 to_replace.append(ps._replace(netloc='3ds.guide', path=ps.query[2:], query='').geturl())
         if to_replace:
-            msg_user = f"Please read {self.bot.channels['welcome-and-rules'].mention}. Guide mirrors may not be linked to, therefore your message was automatically deleted.\nPlease link to <https://3ds.guide> or <https://wiiu.guide> directly instead of mirrors of the sites.\n\nThe official equivalents of the links are:"
+            msg_user = f"Please read {self.bot.channels['welcome-and-rules'].mention}. " \
+                       f"Guide mirrors may not be linked to, therefore your message was automatically deleted.\n" \
+                       f"Please link to <https://3ds.guide> or <https://wiiu.guide> directly instead of mirrors of the sites.\n\n" \
+                       f"The official equivalents of the links are:"
             for url in to_replace:
                 msg_user += '\n• ' + url
             try:
                 await message.delete()
             except discord.errors.NotFound:
                 pass
-            try:
-                await message.author.send(msg_user, embed=embed)
-            except discord.errors.Forbidden:
-                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
+            await utils.send_dm_message(message.author, msg_user, embed=embed)
             await self.bot.channels['message-logs'].send(
-                f"**Bad site**: {message.author.mention} mentioned a blocked guide mirror in {message.channel.mention} (message deleted)", embed=embed)
+                f"**Bad site**: {message.author.mention} mentioned a blocked guide mirror in {message.channel.mention} (message deleted)",
+                embed=embed)
 
         # check for mention spam
         if len(message.mentions) >= 6 and not self.bot.roles['Helpers'] in message.author.roles:
-            log_msg = f"🚫 **Auto-probate**: {message.author.mention} probated for mass user mentions | {message.author}\n🗓 __Creation__: {message.author.created_at}\n🏷 __User ID__: {message.author.id}"
+            log_msg = f"🚫 **Auto-probate**: {message.author.mention} probated for mass user mentions | {message.author}\n" \
+                      f"🗓 __Creation__: {message.author.created_at}\n🏷 __User ID__: {message.author.id}"
             embed = discord.Embed(title="Deleted message", color=discord.Color.gold())
-            embed.add_field(name="#" + message.channel.name,
-                            value="\u200b" + message.content)
+            embed.add_field(name="#" + message.channel.name, value="\u200b" + message.content)
             await self.bot.channels['mod-logs'].send(log_msg, embed=embed)
-            await self.bot.channels['mods'].send(log_msg + f"\nSee {self.bot.channels['mod-logs'].mention} for the deleted message. @here", allowed_mentions=discord.AllowedMentions(everyone=True))
+            await self.bot.channels['mods'].send(
+                f"{log_msg}\nSee {self.bot.channels['mod-logs'].mention} for the deleted message. @here",
+                allowed_mentions=discord.AllowedMentions(everyone=True))
             try:
                 await message.delete()
             except discord.errors.NotFound:
                 pass
-            try:
-                await message.author.send(f"You were automatically placed under probation in {self.bot.guild.name} for mass user mentions.")
-            except discord.errors.Forbidden:
-                pass
+            await utils.send_dm_message(
+                message.author, f"You were automatically placed under probation in {self.bot.guild.name} for mass user mentions.")
             await crud.add_permanent_role(message.author.id, self.bot.roles['Probation'].id)
             await message.author.add_roles(self.bot.roles['Probation'])
 
@@ -217,21 +246,23 @@ class Events(commands.Cog):
         if message.author.id not in self.user_antispam:
             self.user_antispam[message.author.id] = []
         self.user_antispam[message.author.id].append(message)
-        if len(self.user_antispam[message.author.id]) == 6:  # it can trigger it multiple times if I use >. it can't skip to a number so this should work
+        # it can trigger it multiple times if I use >. it can't skip to a number so this should work
+        if len(self.user_antispam[message.author.id]) == 6:
             await message.author.add_roles(self.bot.roles['Muted'])
             await crud.add_permanent_role(message.author.id, self.bot.roles['Muted'].id)
-            msg_user = f"You were automatically muted for sending too many messages in a short period of time!\n\nIf you believe this was done in error, send a direct message to one of the staff in {self.bot.channels['welcome-and-rules'].mention}."
-            try:
-                await message.author.send(msg_user)
-            except discord.errors.Forbidden:
-                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
+            msg_user = f"You were automatically muted for sending too many messages in a short period of time!\n\n" \
+                       f"If you believe this was done in error, send a direct message to one of the staff in {self.bot.channels['welcome-and-rules'].mention}."
+            await utils.send_dm_message(message.author, msg_user)
             log_msg = f"🔇 **Auto-muted**: {message.author.mention} muted for spamming | {message.author}\n🗓 __Creation__: {message.author.created_at}\n🏷 __User ID__: {message.author.id}"
             embed = discord.Embed(title="Deleted messages", color=discord.Color.gold())
-            msgs_to_delete = self.user_antispam[message.author.id][:]  # clone list so nothing is removed while going through it
+            # clone list so nothing is removed while going through it
+            msgs_to_delete = self.user_antispam[message.author.id][:]
             for msg in msgs_to_delete:
-                embed.add_field(name="#"+msg.channel.name, value="\u200b" + msg.content)  # added zero-width char to prevent an error with an empty string (lazy workaround)
+                embed.add_field(name="#" + msg.channel.name,
+                                value="\u200b" + msg.content)  # added zero-width char to prevent an error with an empty string (lazy workaround)
             await self.bot.channels['mod-logs'].send(log_msg, embed=embed)
-            await self.bot.channels['mods'].send(log_msg + f"\nSee {self.bot.channels['mod-logs'].mention} for a list of deleted messages.")
+            await self.bot.channels['mods'].send(
+                f"{log_msg}\nSee {self.bot.channels['mod-logs'].mention} for a list of deleted messages.")
             for msg in msgs_to_delete:
                 try:
                     await msg.delete()
@@ -254,18 +285,21 @@ class Events(commands.Cog):
         if sum(user_mentions) > 6:
             await crud.add_permanent_role(message.author, self.bot.roles["Probation"].id)
             await message.author.add_roles(self.bot.roles['Probation'])
-            msg_user = f"You were automatically placed under probation for mentioning too many users in a short period of time!\n\nIf you believe this was done in error, send a direct message to one of the staff in {self.bot.channels['welcome-and-rules'].mention}."
-            try:
-                await message.author.send(msg_user)
-            except discord.errors.Forbidden:
-                pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
-            log_msg = f"🚫 **Auto-probated**: {message.author.mention} probated for mass user mentions | {message.author}\n🗓 __Creation__: {message.author.created_at}\n🏷 __User ID__: {message.author.id}"
+            msg_user = f"You were automatically placed under probation for mentioning too many users in a short period of time!\n\n" \
+                       f"If you believe this was done in error, send a direct message to one of the staff in {self.bot.channels['welcome-and-rules'].mention}."
+            await utils.send_dm_message(message.author, msg_user)
+            log_msg = f"🚫 **Auto-probated**: {message.author.mention} probated for mass user mentions | {message.author}\n" \
+                      f"🗓 __Creation__: {message.author.created_at}\n🏷 __User ID__: {message.author.id}"
             embed = discord.Embed(title="Deleted messages", color=discord.Color.gold())
-            msgs_to_delete = self.user_antispam["p" + message.author.id].copy()  # clone list so nothing is removed while going through it
+            # clone list so nothing is removed while going through it
+            msgs_to_delete = self.user_antispam[key].copy()
             for msg in msgs_to_delete:
-                embed.add_field(name="#"+msg[0].channel.name, value="\u200b" + msg[0].content)  # added zero-width char to prevent an error with an empty string (lazy workaround)
+                # added zero-width char to prevent an error with an empty string (lazy workaround)
+                embed.add_field(name="#" + msg[0].channel.name, value="\u200b" + msg[0].content)
             await self.bot.channels['mod-logs'].send(log_msg, embed=embed)
-            await self.bot.channels['mods'].send(log_msg + f"\nSee {self.bot.channels['mod-logs'].mention} for a list of deleted messages. @here", allowed_mentions=discord.AllowedMentions(everyone=True))
+            await self.bot.channels['mods'].send(
+                f"{log_msg}\nSee {self.bot.channels['mod-logs'].mention} for a list of deleted messages. @here",
+                allowed_mentions=discord.AllowedMentions(everyone=True))
             for msg in msgs_to_delete:
                 try:
                     await msg[0].delete()
@@ -285,7 +319,8 @@ class Events(commands.Cog):
         if message.channel.id not in self.channel_antispam:
             self.channel_antispam[message.channel.id] = []
         self.channel_antispam[message.channel.id].append(message)
-        if len(self.channel_antispam[message.channel.id]) == 22:  # it can trigger it multiple times if I use >. it can't skip to a number so this should work
+        # it can trigger it multiple times if I use >. it can't skip to a number so this should work
+        if len(self.channel_antispam[message.channel.id]) == 22:
             await message.channel.set_permission(self.bot.guild.default_role, send_messages=False)
             msg_channel = "This channel has been automatically locked for spam. Please wait while staff review the situation."
             embed = discord.Embed(title="Deleted messages", color=discord.Color.gold())
@@ -295,7 +330,8 @@ class Events(commands.Cog):
             await message.channel.send(msg_channel)
             log_msg = f"🔒 **Auto-locked**: {message.channel.mention} locked for spam"
             await self.bot.channels['mod-logs'].send(log_msg, embed=embed)
-            await self.bot.channels['mods'].send(f"{log_msg} @here\nSee {self.bot.channels['mod-logs'].mention} for a list of deleted messages.", allowed_mentions=discord.AllowedMentions(everyone=True))
+            await self.bot.channels['mods'].send(f"{log_msg} @here\nSee {self.bot.channels['mod-logs'].mention} for a list of deleted messages.",
+                                                 allowed_mentions=discord.AllowedMentions(everyone=True))
             # msgs_to_delete = self.channel_antispam[message.channel.id][:]  # clone list so nothing is removed while going through it
             # for msg in msgs_to_delete:
             #     try:
@@ -323,7 +359,8 @@ class Events(commands.Cog):
                     await self.bot.close()
                 return
         await self.bot.wait_until_all_ready()
-        if message.author == message.guild.me or await check_staff_id('Helper', message.author.id) or await crud.check_nofilter(message.channel):  # don't process messages by the bot or staff or in the helpers channel
+        if message.author == message.guild.me or await check_staff_id('Helper', message.author.id) \
+                or await crud.check_nofilter(message.channel):
             return
         await self.scan_message(message)
         self.bot.loop.create_task(self.user_ping_check(message))
@@ -335,16 +372,14 @@ class Events(commands.Cog):
         if isinstance(message_before.channel, discord.abc.PrivateChannel):
             return
         await self.bot.wait_until_all_ready()
-        try:
-            if await crud.check_nofilter(message_before.channel):
-                return
-            if message_after.author == self.bot.guild.me or await check_staff_id('Helper', message_after.author.id) or await crud.check_nofilter(message_after.channel):  # don't process messages by the bot or staff or in the helpers channel
-                return
-            if message_before.content == message_after.content:
-                return
-            await self.scan_message(message_after, is_edit=True)
-        except AttributeError:
-            pass  # I need to figure this out eventually. at the moment there's no real harm doing this.
+        if await crud.check_nofilter(message_before.channel):
+            return
+        if message_after.author == self.bot.guild.me or await check_staff_id('Helper', message_after.author.id) \
+                or await crud.check_nofilter(message_after.channel):
+            return
+        if message_before.content == message_after.content:
+            return
+        await self.scan_message(message_after, is_edit=True)
 
 
 def setup(bot):
