@@ -246,10 +246,11 @@ class Events(commands.Cog):
             pass  # if the array doesn't exist, don't raise an error
 
     async def user_ping_check(self, message):
-        if "p" + str(message.author.id) not in self.user_antispam:
-            self.user_antispam["p" + str(message.author.id)] = deque()
-        self.user_antispam["p" + str(message.author.id)].append((message, len(message.mentions)))
-        _, user_mentions = zip(*self.user_antispam["p" + str(message.author.id)])
+        key = "p" + str(message.author.id)
+        if key not in self.user_antispam:
+            self.user_antispam[key] = deque()
+        self.user_antispam[key].append((message, len(message.mentions)))
+        _, user_mentions = zip(*self.user_antispam[key])
         if sum(user_mentions) > 6:
             await crud.add_permanent_role(message.author, self.bot.roles["Probation"].id)
             await message.author.add_roles(self.bot.roles['Probation'])
@@ -270,13 +271,13 @@ class Events(commands.Cog):
                     await msg[0].delete()
                 except discord.errors.NotFound:
                     pass  # don't fail if the message doesn't exist
-            self.user_antispam["p" + message.author.id].clear()
+            self.user_antispam[key].clear()
         else:
             await asyncio.sleep(10)
-            self.user_antispam["p" + str(message.author.id)].popleft()
+            self.user_antispam[key].popleft()
         try:
-            if len(self.user_antispam["p" + str(message.author.id)]) == 0:
-                self.user_antispam.pop("p" + str(message.author.id))
+            if len(self.user_antispam[key]) == 0:
+                self.user_antispam.pop(key)
         except KeyError:
             pass  # if the array doesn't exist, don't raise an error
 
