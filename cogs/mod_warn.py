@@ -185,6 +185,41 @@ class ModWarn(commands.Cog):
         msg = f"🗑 **Cleared warns**: {ctx.author.mention} cleared {warn_count} warns from {member.mention} | {self.bot.escape_text(member)}"
         await self.bot.channels['mod-logs'].send(msg)
 
+                                
+    @is_staff('HalfOP')
+    @commands.command()
+    async def silentwarn(self, ctx, member: FetchMember, *, reason=""):
+        """Warns a user without notify. Staff only.
+           Use this command to reapply warns after a fuckup."""
+        issuer = ctx.author
+        channel = ctx.channel
+        if await check_bot_or_staff(ctx, member, "warn"):
+            return
+        warn_count = len(await crud.get_warns(member.id))
+        if warn_count >= 5:
+            await ctx.send("A user can't have more than 5 warns!")
+            return
+        await crud.add_warn(member.id, issuer.id, reason)
+        warn_count += 1
+            if warn_count == 3 or warn_count == 4:
+                try:
+                    self.bot.actions.append("wk:"+str(member.id))
+                    await member.kick(reason=f"{warn_count} warns.")
+                except discord.Forbidden:
+                    await ctx.send("I can't kick this user!")
+        if warn_count >= 5:  # just in case
+            self.bot.actions.append("wb:"+str(member.id))
+            try:
+                await ctx.guild.ban(member, reason="5 warns.", delete_message_days=0)
+            except discord.Forbidden:
+                await ctx.send("I can't ban this user!")
+        await ctx.send(f"{member.mention} silently warned. User has {warn_count} warning(s)")
+        msg = f"⚠️ **Warned**: {issuer.mention} silent warned {member.mention} in {channel.mention} ({self.bot.escape_text(channel)}) (warn #{warn_count}) | {self.bot.escape_text(member)}"
+        signature = utils.command_signature(ctx.command)
+        if reason != "":
+            # much \n
+            msg += "\n✏️ __Reason__: " + reason
+        await self.bot.channels['mod-logs'].send(msg + (f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user." if reason == "" else ""))
 
 def setup(bot):
     bot.add_cog(ModWarn(bot))
