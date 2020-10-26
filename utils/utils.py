@@ -3,12 +3,12 @@ import random
 import re
 
 
-async def send_dm_message(member, message) -> bool:
+async def send_dm_message(member, message, **kwargs) -> bool:
     """A helper method for sending a message to a member's DMs.
 
     Returns a boolean indicating success of the DM."""
     try:
-        await member.send(message)
+        await member.send(message, **kwargs)
         return True
     except (discord.HTTPException, discord.Forbidden, discord.NotFound, AttributeError):
         return False
