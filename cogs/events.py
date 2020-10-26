@@ -4,7 +4,7 @@ import re
 
 from collections import deque
 from utils.checks import check_staff_id
-from utils import crud
+from utils import crud, utils
 from discord.ext import commands
 from subprocess import call
 from string import printable
