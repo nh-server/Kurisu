@@ -39,7 +39,7 @@ class Events(commands.Cog):
         embed = discord.Embed()
         embed.description = message.content
         if await crud.is_watched(message.author.id):
-            content = f"**Channel**:\n[#{message.channel.name}](https://discordapp.com/channels/{str(message.guild.id)}/{message.channel.id}/{message.id})\n"
+            content = f"**Channel**:\n[#{message.channel.name}]({message.jump_url})\n"
             msg = message.author.mention
             if message.attachments:
                 content += "**Images**:\n"
