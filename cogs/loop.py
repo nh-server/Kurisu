@@ -108,6 +108,7 @@ class Loop(commands.Cog):
                 timebans = await crud.get_time_restrictions_by_type('timeban')
                 timemutes = await crud.get_time_restrictions_by_type('timemute')
                 timenohelps = await crud.get_time_restrictions_by_type('timenohelp')
+                timenotechs = await crud.get_time_restrictions_by_type('timenotech')
 
                 for timeban in timebans:
                     unban_time = timeban.end_date
@@ -160,6 +161,22 @@ class Loop(commands.Cog):
                         if current_timestamp > warning_time:
                             await crud.set_time_restriction_alert(timenohelp.user, 'timenohelp')
                             await self.bot.channels['helpers'].send(f"**Note**: <@{timenohelp.user}> no-help restriction will expire in {((timenohelp.end_date - current_timestamp).seconds // 60) + 1} minutes.")
+
+                for timenotech in timenotechs:
+                    if current_timestamp > timenotech.end_date:
+                        await crud.remove_timed_restriction(timenotech.user, "timenotech")
+                        await crud.remove_permanent_role(timenotech.user, self.bot.roles['No-Tech'].id)
+                        msg = f"⭕️ **No-Tech Restriction expired**: <@{timenotech.user}>"
+                        await self.bot.channels['mod-logs'].send(msg)
+                        await self.bot.channels['helpers'].send(msg)
+                        member = self.bot.guild.get_member(timenotech.user)
+                        if member:
+                            await member.remove_roles(self.bot.roles['No-Tech'])
+                    elif not timenotech.alerted:
+                        warning_time = timenotech.end_date - self.warning_time_period_notech
+                        if current_timestamp > warning_time:
+                            await crud.set_time_restriction_alert(timenotech.user, 'timenotech')
+                            await self.bot.channels['helpers'].send(f"**Note**: <@{timenotech.user}> no-tech restriction will expire in {((timenotech.end_date - current_timestamp).seconds // 60) + 1} minutes.")
 
                 if current_timestamp.minute == 0 and current_timestamp.hour != self.last_hour:
                     await self.bot.channels['helpers'].send(f"{self.bot.guild.name} has {self.bot.guild.member_count:,} members at this hour!")

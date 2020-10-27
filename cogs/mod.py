@@ -514,9 +514,9 @@ class Mod(commands.Cog):
 
     @is_staff("Helper")
     @commands.guild_only()
-    @commands.command(aliases=["notech", "yesnttech"])
+    @commands.command(aliases=["notech", "technt"])
     async def taketech(self, ctx, member: FetchMember, *, reason=""):
-        """Remove access to the assistance channels. Staff and Helpers only."""
+        """Remove access to the tech channel. Staff and Helpers only."""
         if await check_bot_or_staff(ctx, member, "taketech"):
             return
         if not await crud.add_permanent_role(member.id, self.bot.roles['No-Tech'].id):
