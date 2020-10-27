@@ -514,6 +514,90 @@ class Mod(commands.Cog):
 
     @is_staff("Helper")
     @commands.guild_only()
+    @commands.command(aliases=["notech", "yesnttech"])
+    async def taketech(self, ctx, member: FetchMember, *, reason=""):
+        """Remove access to the assistance channels. Staff and Helpers only."""
+        if await check_bot_or_staff(ctx, member, "taketech"):
+            return
+        if not await crud.add_permanent_role(member.id, self.bot.roles['No-Tech'].id):
+            # Check if the user has a timed restriction.
+            # If there is one, this will convert it to a permanent one.
+            # If not, it will display that it was already taken.
+            if not await crud.get_time_restrictions_by_user_type(member.id, 'timenotech'):
+                return await ctx.send("This user's tech is already taken!")
+            else:
+                await crud.remove_timed_restriction(member.id, 'timenotech')
+        msg_user = "You lost access to the tech channel!"
+        if isinstance(member, discord.Member):
+            await member.add_roles(self.bot.roles['No-Tech'])
+            if reason != "":
+                msg_user += " The given reason is: " + reason
+            msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
+            await utils.send_dm_message(member, msg_user)
+        await ctx.send(f"{member.mention} can no longer access the tech channel.")
+        msg = f"🚫 **Help access removed**: {ctx.author.mention} removed access to tech channel from {member.mention} | {self.bot.escape_text(member)}"
+        signature = utils.command_signature(ctx.command)
+        if reason != "":
+            msg += "\n✏️ __Reason__: " + reason
+        else:
+            msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
+        await self.bot.channels['mod-logs'].send(msg)
+
+    @is_staff("Helper")
+    @commands.guild_only()
+    @commands.command(aliases=["yestech"])
+    async def givetech(self, ctx, member: FetchMember):
+        """Restore access to the tech channel. Staff and Helpers only."""
+        if not await crud.remove_permanent_role(member.id, self.bot.roles["No-Tech"].id):
+            return await ctx.send("This user is not take-helped!")
+        if isinstance(member, discord.Member):
+            try:
+                await member.remove_roles(self.bot.roles['No-Tech'])
+            except discord.errors.Forbidden:
+                await ctx.send("💢 I don't have permission to do this.")
+        await ctx.send(f"{member.mention} can access the tech channel again.")
+        msg = f"⭕️ **Help access restored**: {ctx.author.mention} restored access to tech channel to {member.mention} | {self.bot.escape_text(member)}"
+        await self.bot.channels['mod-logs'].send(msg)
+        await crud.remove_timed_restriction(member.id, 'timenotech')
+
+    @is_staff("Helper")
+    @commands.guild_only()
+    @commands.command(aliases=["timenotech"])
+    async def timetaketech(self, ctx, member: SafeMember, length, *, reason=""):
+        """Restricts a user from the tech channel for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
+        if await check_bot_or_staff(ctx, member, "taketech"):
+            return
+        issuer = ctx.author
+
+        if (seconds := utils.parse_time(length)) == -1:
+            return await ctx.send("💢 I don't understand your time format.")
+
+        delta = datetime.timedelta(seconds=seconds)
+        timestamp = datetime.datetime.now()
+
+        unnotech_time = timestamp + delta
+        unnotech_time_string = unnotech_time.strftime("%Y-%m-%d %H:%M:%S")
+
+        await crud.add_timed_restriction(member.id, unnotech_time, 'timenotech')
+        await crud.add_permanent_role(member.id, self.bot.roles['No-Tech'].id)
+        await member.add_roles(self.bot.roles['No-Tech'])
+        msg_user = "You lost access to the tech channel temporarily!"
+        if reason != "":
+            msg_user += " The given reason is: " + reason
+        msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
+        msg_user += f"\n\nThis restriction expires {unnohelp_time_string} {time.tzname[0]}."
+        await utils.send_dm_message(member, msg_user)
+        await ctx.send(f"{member.mention} can no longer speak in the tech channel.")
+        signature = utils.command_signature(ctx.command)
+        msg = f"🚫 **Timed No-Tech**: {issuer.mention} restricted {member.mention} for {delta}, until {unnotech_time_string} | {self.bot.escape_text(member)}"
+        if reason != "":
+            msg += "\n✏️ __Reason__: " + reason
+        else:
+            msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
+        await self.bot.channels['mod-logs'].send(msg)
+
+    @is_staff("Helper")
+    @commands.guild_only()
     @commands.command()
     async def takesmallhelp(self, ctx, members: commands.Greedy[SafeMember]):
         """Remove access to small help channel. Staff and Helpers only."""
