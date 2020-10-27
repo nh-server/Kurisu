@@ -200,15 +200,21 @@ class Memes(commands.Cog):
     # Cute commands :3
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
-    async def headpat(self, ctx):
-        """Cute"""
-        await self._meme(ctx, "", imagelink="http://i.imgur.com/7V6gIIW.jpg")
+    async def headpat(self, ctx, u: discord.Member):
+        """headpat"""
+        await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has been gently patted.", True, "http://i.imgur.com/7V6gIIW.jpg")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
-    async def headpat2(self, ctx):
-        """Cute"""
-        await self._meme(ctx, "", imagelink="http://i.imgur.com/djhHX0n.gif")
+    async def headpat2(self, ctx, u: discord.Member):
+        """headpat 2"""
+        await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has been gently patted.", True, "http://i.imgur.com/djhHX0n.gif")
+
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def headrub(self, ctx, u: discord.Member):
+        """headrub"""
+        await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has received a head rub.", True, "http://i.imgur.com/j6xSoKv.jpg")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
@@ -239,12 +245,6 @@ class Memes(commands.Cog):
     async def dev(self, ctx):
         """Reminds user where they are."""
         await self._meme(ctx, f"You {'do not ' if ctx.channel != self.bot.channels['dev'] else ''}seem to be in {self.bot.channels['dev'].mention}.", True)
-
-    @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
-    async def headrub(self, ctx):
-        """Cute"""
-        await self._meme(ctx, "", imagelink="http://i.imgur.com/j6xSoKv.jpg")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
