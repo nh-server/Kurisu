@@ -514,7 +514,7 @@ class Mod(commands.Cog):
 
     @is_staff("Helper")
     @commands.guild_only()
-    @commands.command(aliases=["notech", "technt"])
+    @commands.command(aliases=["notech", "technt", "t3chtip"])
     async def taketech(self, ctx, member: FetchMember, *, reason=""):
         """Remove access to the tech channel. Staff and Helpers only."""
         if await check_bot_or_staff(ctx, member, "taketech"):
