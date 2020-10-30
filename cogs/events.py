@@ -60,7 +60,6 @@ class Events(commands.Cog):
 
         contains_skype_link = "join.skype.com" in msg
         contains_piracy_site_mention = any(x in msg for x in self.bot.wordfilter.filter['piracy site'])
-        contains_piracy_url_mention = any(x in msg for x in ('3ds.titlekeys', 'wiiu.titlekeys', 'titlekeys.com', '95.183.50.10',))
         contains_piracy_tool_mention = any(x in msg_no_separators for x in self.bot.wordfilter.filter['piracy tool'])
 
         # modified regular expresion made by deme72
