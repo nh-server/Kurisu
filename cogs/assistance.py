@@ -564,7 +564,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             In order to use them, you will have to format them to FAT32 first.
             You can do this using these tools:
             
-            -GUIFormat for Windows: http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm
+            -GUIFormat for Windows: http://ridgecrop.co.uk/index.htm?guiformat.htm
             -gparted for Linux: https://gparted.org/download.php
             -Disk Utility for macOS: https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010
             
@@ -579,7 +579,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             In order to change the card's format, you will need to use an external utility.
             Here are some suggestions:
             
-            -GUIFormat for Windows: http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm
+            -GUIFormat for Windows: http://ridgecrop.co.uk/index.htm?guiformat.htm
             -gparted for Linux: https://gparted.org/download.php
             -Disk Utility for macOS: https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010
             
@@ -610,7 +610,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             First, ensure the new SD card is in the FAT32 format.
             If it is above 32GB, you will need to format it using one of these tools:
             
-            -GUIFormat for Windows: http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm
+            -GUIFormat for Windows: http://ridgecrop.co.uk/index.htm?guiformat.htm
             -gparted for Linux: https://gparted.org/download.php
             -Disk Utility for macOS: https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010
             
@@ -760,7 +760,7 @@ re-read the guide steps 2 or 3 times before coming here.
 
     SDFORMAT_TEXT = """
                 Here are some links to common FAT32 formatting tools:
-                • [GUIFormat](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm) (Windows)
+                • [GUIFormat](http://ridgecrop.co.uk/index.htm?guiformat.htm) (Windows)
                 • [gparted](https://gparted.org/download.php) + [dosfstools](https://github.com/dosfstools/dosfstools) (Linux)
                 • [Disk Utility](https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010) (MacOS)
                 MacOS: Always select "MS-DOS (FAT)", even if the card is larger than 32GB."""
