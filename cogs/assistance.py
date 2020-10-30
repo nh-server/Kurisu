@@ -564,7 +564,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             In order to use them, you will have to format them to FAT32 first.
             You can do this using these tools:
             
-            -GUIFormat for Windows: http://ridgecrop.co.uk/index.htm?guiformat.htm
+            -GUIFormat for Windows: http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm
             -gparted for Linux: https://gparted.org/download.php
             -Disk Utility for macOS: https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010
             
@@ -579,7 +579,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             In order to change the card's format, you will need to use an external utility.
             Here are some suggestions:
             
-            -GUIFormat for Windows: http://ridgecrop.co.uk/index.htm?guiformat.htm
+            -GUIFormat for Windows: http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm
             -gparted for Linux: https://gparted.org/download.php
             -Disk Utility for macOS: https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010
             
@@ -610,7 +610,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             First, ensure the new SD card is in the FAT32 format.
             If it is above 32GB, you will need to format it using one of these tools:
             
-            -GUIFormat for Windows: http://ridgecrop.co.uk/index.htm?guiformat.htm
+            -GUIFormat for Windows: http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm
             -gparted for Linux: https://gparted.org/download.php
             -Disk Utility for macOS: https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010
             
@@ -760,7 +760,7 @@ re-read the guide steps 2 or 3 times before coming here.
 
     SDFORMAT_TEXT = """
                 Here are some links to common FAT32 formatting tools:
-                • [GUIFormat](http://ridgecrop.co.uk/index.htm?guiformat.htm) (Windows)
+                • [GUIFormat](http://www.ridgecrop.demon.co.uk/index.htm?guiformat.htm) (Windows)
                 • [gparted](https://gparted.org/download.php) + [dosfstools](https://github.com/dosfstools/dosfstools) (Linux)
                 • [Disk Utility](https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010) (MacOS)
                 MacOS: Always select "MS-DOS (FAT)", even if the card is larger than 32GB."""
@@ -1094,17 +1094,6 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
         embed.description = "How to install 3DS cartridges to the SD card"
         await ctx.send(embed=embed)
 
-    # Embed to Chroma Ryu's layeredfs guide
-    @commands.command()
-    async def layeredfs(self, ctx):
-        """How to use Luma 8.0+ LayeredFs"""
-        embed = discord.Embed(title="LayeredFs Guide", color=discord.Color(0x66FFFF))
-        embed.set_author(name="Chroma Ryu", url="https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Using-Luma3DS'-layeredfs-(Only-version-8.0-and-higher)")
-        embed.set_thumbnail(url="https://i.imgur.com/U8NA9lx.png")
-        embed.url = "https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Using-Luma3DS'-layeredfs-(Only-version-8.0-and-higher)"
-        embed.description = "How to use Luma 8.0+ LayeredFs for ROM Hacking."
-        await ctx.send(embed=embed)
-
     # Information about sighax
     @commands.command()
     async def sighax(self, ctx):
@@ -1231,6 +1220,16 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
         embed.set_thumbnail(url="https://i.imgur.com/rr7Xf3E.jpg")
         embed.url = "https://zetadesigns.github.io/randomizing-layeredfs.html"
         embed.description = "Basic tutorial for randomizing with LayeredFS"
+        await ctx.send(embed=embed)
+        
+    @tutorial.command(aliases=["layeredfstutorial"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
+    async def layeredfs(self, ctx):
+        """How to use Luma 8.0+ LayeredFs"""
+        embed = discord.Embed(title="LayeredFs Guide", color=discord.Color(0x66FFFF))
+        embed.set_author(name="Chroma Ryu", url="https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Using-Luma3DS'-layeredfs-(Only-version-8.0-and-higher)")
+        embed.set_thumbnail(url="https://i.imgur.com/U8NA9lx.png")
+        embed.url = "https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Using-Luma3DS'-layeredfs-(Only-version-8.0-and-higher)"
+        embed.description = "How to use Luma 8.0+ LayeredFs for ROM Hacking."
         await ctx.send(embed=embed)
 
     @tutorial.command(aliases=["Animal_crossing"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
