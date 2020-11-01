@@ -1,6 +1,6 @@
 import re
 
-from .types import Module, ResultInfo, UNKNOWN_MODULE, NO_RESULTS_FOUND
+from .types import Module, ResultInfo, ConsoleErrorInfo, ConsoleErrorField, BANNED_FIELD, WARNING_COLOR
 
 """
 This file contains all currently known Switch result and error codes.
@@ -1692,11 +1692,11 @@ COLOR = 0xE60012
 
 
 def is_valid(error):
-    err_int = None
-    if error.startswith('0x'):
+    try:
         err_int = int(error, 16)
-    if err_int:
-        return not err_int & 0x80000000
+        return True
+    except ValueError:
+        pass
     return RE.match(error) or RE_APP.match(error)
 
 
@@ -1712,8 +1712,6 @@ def err2hex(error, suppress_error=False):
 
 
 def hex2err(error):
-    if error.startswith('0x'):
-        error = error[2:]
     error = int(error, 16)
     module = error & 0x1FF
     desc = (error >> 9) & 0x3FFF
@@ -1726,19 +1724,32 @@ def get(error):
         subs = error.split('-')
         mod = subs[1].casefold()
         code = int(subs[2], 10)
+        sec_error = None
     elif not error.startswith('0x'):
         mod = int(error[:4], 10) - 2000
         code = int(error[5:9], 10)
+        sec_error = err2hex(error)
     else:
         err_int = int(error, 16)
         mod = err_int & 0x1FF
-        code = (err_int >> 9 & 0x3FFF)
+        code = (err_int >> 9) & 0x3FFF
+        sec_error = hex2err(error)
 
-    if mod in modules:
-        if not modules[mod].data:
-            return CONSOLE_NAME, modules[mod].name, NO_RESULTS_FOUND, COLOR
-        ret = modules[mod].get_error(code)
-        ret.summary = modules[mod].get_level(code)
-        return CONSOLE_NAME, modules[mod].name, modules[mod].get_error(code), COLOR
+    ret = ConsoleErrorInfo(error, CONSOLE_NAME, COLOR, secondary_error = sec_error)
+    module = modules.get(mod, Module(''))
+    ret.add_field(ConsoleErrorField('Module', message_str = module.name, supplementary_value = mod))
+    summary = module.get_summary(code)
+    if summary:
+        ret.add_field(ConsoleErrorField('Summary', message_str = summary))
+    description = module.get_error(code)
+    if description is None or not description.description:
+        ret.add_field(ConsoleErrorField('Description', supplementary_value = code))
+    else:
+        ret.add_field(ConsoleErrorField('Description', message_str = description.description, supplementary_value = code))
+        if description.support_url:
+            ret.add_field(ConsoleErrorField('Further information', message_str = description.support_url))
+        if description.is_ban:
+            ret.add_field(BANNED_FIELD)
+            ret.color = WARNING_COLOR
 
-    return CONSOLE_NAME, None, UNKNOWN_MODULE, COLOR
+    return ret

@@ -1,32 +1,20 @@
 import re
 
-from .types import Module, ResultInfo, UNKNOWN_MODULE, NO_RESULTS_FOUND
+from .types import Module, ResultInfo, ConsoleErrorInfo, ConsoleErrorField, \
+    BANNED_FIELD, WARNING_COLOR, UNKNOWN_CATEGORY_DESCRIPTION
 
 """
 This file contains all currently known Wii U result and error codes.
 There may be inaccuracies here; we'll do our best to correct them
 when we find out more about them.
 
-A result code is a 32-bit integer returned when calling various commands in the
-Wii U's operating system, Cafe OS. Its breaks down like so:
+A "support" code, in contrast to a result code, is a human-readable string like
+102-2811. They're meant to be more user-friendly than result codes, which are
+typically integer values.
 
- Bits | Description
--------------------
-00-03 | Level
-04-12 | Module
-13-31 | Description
-
-Level: A value indicating the severity of the issue (fatal, temporary, etc.).
-Module: A value indicating who raised the error or returned the result.
-Description: A value indicating exactly what happened.
-
-Unlike the 3DS, the Wii U does not provide a 'summary'
-field in result codes, so some artistic license was taken here to repurpose those
-fields in our ResultInfo class to add additional information from sources
-such as the NintendoClients wiki.
-
-Currently our Wii U result code parsing does not understand hexadecimal
-values. It is planned in the future to add support for these.
+Note: the "modules" presented here are more like "categories". However, this difference
+isn't enough to justify creating a different class with the same logic, so we'll just
+refer to them as "modules" from now on.
 
 To add a module so the code understands it, simply add a new module number
 to the 'modules' dictionary, with a Module variable as the value. If the module
@@ -51,7 +39,6 @@ modules = {
 
 Sources used to compile this list of results:
 https://github.com/Kinnay/NintendoClients/wiki/Wii-U-Error-Codes
-https://github.com/devkitPro/wut/blob/master/include/nn/result.h#L67
 """
 
 fp = Module('fp (friends)', {
@@ -479,13 +466,6 @@ modules = {
     199: unknown
 }
 
-levels = {
-    0: 'Success.',
-    -1: 'Fatal.',
-    -2: 'Usage.',
-    -3: 'Status.',
-    -7: 'End.'
-}
 
 # regex for Wii U result code format "1XX-YYYY"
 RE = re.compile(r'1\d{2}-\d{4}')
@@ -497,38 +477,35 @@ COLOR = 0x009AC7
 
 
 def is_valid(error):
-    err_int = None
-    if error.startswith('0x'):
-        err_int = int(error, 16)
-    if err_int:
-        module = (err_int & 0x1FF0) >> 4
-        return (err_int & 0x80000000) and module >= 100
     return RE.match(error)
 
 
-def hex2err(error):
-    error = int(error)
-    module = (error & 0x1FF0) >> 4
-    desc = (error & 0xFFFFE000) >> 13
-    code = f'{module:03}-{desc:04}'
-    return code
+def construct_support(ret, mod, desc):
+    category = modules.get(mod, Module(''))
+    if category.name:
+        ret.add_field(ConsoleErrorField('Category', message_str = category.name))
+    else:
+        ret.add_field(ConsoleErrorField('Category', supplementary_value = mod))
+    summary = category.get_summary(desc)
+    if summary:
+        ret.add_field(ConsoleErrorField('Summary', message_str = summary))
+    description = category.get_error(desc)
+    if description is not None and description.description:
+        ret.add_field(ConsoleErrorField('Description', message_str = description.description))
+        if description.support_url:
+            ret.add_field(ConsoleErrorField('Further information', message_str = description.support_url))
+        if description.is_ban:
+            ret.add_field(BANNED_FIELD)
+            ret.color = WARNING_COLOR
+    else:
+        ret.add_field(UNKNOWN_CATEGORY_DESCRIPTION)
+    return ret
 
 
 def get(error):
     level = None
-    if error.startswith('0x'):
-        error = int(error)
-        level = (error & 0xF) | 0xFFFFFFF8
-        mod = (error & 0x1FF0) >> 4
-        desc = (error & 0xFFFFE000) >> 13
-    else:
-        mod = int(error[0:3])
-        desc = int(error[4:])
-    if mod in modules:
-        if not modules[mod].data:
-            return CONSOLE_NAME, modules[mod].name, NO_RESULTS_FOUND, COLOR
-        ret = modules[mod].get_error(desc)
-        ret.level = modules[mod].get_level(desc) if not level else levels[level]
-        return CONSOLE_NAME, modules[mod].name, ret, COLOR
+    mod = int(error[:3])
+    desc = int(error[4:])
+    ret = ConsoleErrorInfo(error, CONSOLE_NAME, COLOR)
+    return construct_support(ret, mod, desc)
 
-    return CONSOLE_NAME, None, UNKNOWN_MODULE, COLOR

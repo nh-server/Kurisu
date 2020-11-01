@@ -1,4 +1,4 @@
-from .types import Module, ResultInfo, UNKNOWN_MODULE, NO_RESULTS_FOUND
+from .types import Module, ResultInfo, ConsoleErrorInfo, ConsoleErrorField
 
 """
 This file contains all currently known 2DS/3DS result and error codes (hexadecimal).
@@ -155,7 +155,7 @@ qtm = Module('qtm', {
 # application which is throwing the error, this is the best compromise without giving the user
 # false information.
 application = Module('application-specific error', {
-    (0, 9999): ResultInfo('The application raised an error. Please consult the application\'s source code or ask the author for assistance with it.')
+    (0, 1023): ResultInfo('The application raised an error. Please consult the application\'s source code or ask the author for assistance with it.')
 })
 
 # We have some modules partially documented, those that aren't have dummy Modules.
@@ -287,10 +287,6 @@ summaries = {
     63: 'Invalid result value'
 }
 
-# Would be provided for consistency
-# but is_valid in here has its own logic.
-# RE = None
-
 CONSOLE_NAME = 'Nintendo 2DS/3DS'
 
 # Suggested color to use if displaying information through a Discord bot's embed
@@ -299,12 +295,11 @@ COLOR = 0xCE181E
 
 def is_valid(error: str):
     err_int = None
-    if error.startswith('0x'):
+    try:
         err_int = int(error, 16)
-    if err_int is not None:
-        module = (err_int >> 10) & 0xFF
-        return (err_int & 0x80000000) and (module < 100 or module != 254)
-    return False
+    except ValueError:
+        return False
+    return True if err_int.bit_length() <= 32 else False
 
 
 def hexinfo(error: str):
@@ -317,25 +312,25 @@ def hexinfo(error: str):
     return mod, summary, level, desc
 
 
-def construct_result(mod, summary, level, desc):
-    if mod in modules:
-        in_common_range = desc in common.data
-        if not modules[mod].data:
-            if not in_common_range:
-                return CONSOLE_NAME, modules[mod].name, NO_RESULTS_FOUND, COLOR
-            else:
-                ret = ResultInfo()  # Make a blank result that gets filled in below
+def construct_result(ret, mod, summary, level, desc):
+    module = modules.get(mod, Module(''))
+    ret.add_field(ConsoleErrorField('Module', message_str = module.name, supplementary_value = mod))
+    ret.add_field(ConsoleErrorField('Summary', message_str = summaries.get(summary, ''), supplementary_value = summary))
+    ret.add_field(ConsoleErrorField('Level', message_str = levels.get(level, ''), supplementary_value = level))
+    description = module.get_error(desc)
+    if description is None:
+        description = common.get_error(desc)
+        if description is None:
+            ret.add_field(ConsoleErrorField('Description', supplementary_value = desc))
         else:
-            ret = modules[mod].get_error(desc)
+            ret.add_field(ConsoleErrorField('Description', message_str = description.description, supplementary_value = desc))
+    else:
+        ret.add_field(ConsoleErrorField('Description', message_str = description.description, supplementary_value = desc))
 
-        if in_common_range:
-            ret.description = common.data[desc].description
-        ret.level = levels[level] if level in levels else None
-        ret.summary = summaries[summary] if summary in summaries else None
-        return CONSOLE_NAME, modules[mod].name, ret, COLOR
-    return CONSOLE_NAME, None, UNKNOWN_MODULE, COLOR
+    return ret
 
 
 def get(error: str):
+    ret = ConsoleErrorInfo(error, CONSOLE_NAME, COLOR)
     mod, summary, level, desc = hexinfo(error)
-    return construct_result(mod, summary, level, desc)
+    return construct_result(ret, mod, summary, level, desc)

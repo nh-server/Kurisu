@@ -1,7 +1,8 @@
 import re
 
-from .types import Module, ResultInfo, UNKNOWN_MODULE,\
-    UNKNOWN_ERROR
+from .types import Module, ResultInfo, ConsoleErrorInfo, ConsoleErrorField, \
+    BANNED_FIELD, WARNING_COLOR, UNKNOWN_CATEGORY_DESCRIPTION
+from .ctr_results import modules as ctr_results_modules
 
 """
 This file contains all currently known 2DS/3DS support codes.
@@ -15,6 +16,7 @@ typically integer values.
 Note: the "modules" presented here are more like "categories". However, this difference
 isn't enough to justify creating a different class with the same logic, so we'll just
 refer to them as "modules" from now on.
+
 To add a module/category so the code understands it, simply add a new module number
 to the 'modules' dictionary, with a Module variable as the value. If the module
 has no known error codes, simply add a dummy Module instead (see the dict for
@@ -138,13 +140,13 @@ data_transfer = Module('system transfer', {
     16: ResultInfo('Both consoles have the same movable.sed key. Format the target console and system transfer again.'),
     62: ResultInfo('An error occurred during system transfer. Move closer to the wireless router and try again.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/15664')
 })
-# 012: a category related to the web browser
+# 012: a category related to the web browser or ssl module considered 1511
 browser1 = Module('browser (?)', {
     1511: ResultInfo('Certificate warning.')
 })
 
 # 032: a second category related to the web browser
-browser2 = Module('browser (?', {
+browser2 = Module('browser (?)', {
     1820: ResultInfo('Displayed when the browser asks if you want to go to to a potentially dangerous website. Press \'yes\' to continue if you feel it is safe.')
 })
 
@@ -162,7 +164,7 @@ account2 = Module('account', {
     5515: ResultInfo('Network timeout.'),
 })
 
-# 090: no clue what this one represents.
+# 090: application defined?
 unknown1 = Module('unknown', {
     212: ResultInfo('Game is permanently banned from Pokémon Global Link for using altered or illegal save data.', is_ban=True)
 })
@@ -198,14 +200,68 @@ def is_valid(error: str):
     return RE.match(error)
 
 
-def construct_result(module, desc):
-    if module in modules:
-        ret = modules[module].get_error(desc)
-        return CONSOLE_NAME, modules[module].name, ret, COLOR
-    return CONSOLE_NAME, None, UNKNOWN_MODULE, COLOR
+def construct_result(ret, mod, desc):
+    module = ctr_results_modules.get(mod, Module(''))
+    ret.add_field(ConsoleErrorField('Module', message_str = module.name, supplementary_value = mod))
+    description = module.get_error(desc)
+    if description is None or not description.description:
+        description = ctr_results_modules[0].get_error(desc)
+        if description is None or not description.description:
+            ret.add_field(ConsoleErrorField('Description', supplementary_value = desc))
+        else:
+            ret.add_field(ConsoleErrorField('Description', message_str = description.description, supplementary_value = desc))
+    else:
+        ret.add_field(ConsoleErrorField('Description', message_str = description.description, supplementary_value = desc))
+
+    return ret
+
+def construct_result_range(ret, mod, range_desc):
+    module = ctr_results_modules.get(mod, Module(''))
+    ret.add_field(ConsoleErrorField('Module', message_str = module.name, supplementary_value = mod))
+    found_descs = []
+    unknown_descs = []
+    for desc in range_desc:
+        if desc < 0 or desc > 1023:
+            continue
+
+        description = module.get_error(desc)
+        if description is None or not description.description:
+            description = ctr_results_modules[0].get_error(desc)
+            if description is None or not description.description:
+                unknown_descs.append(str(desc))
+            else:
+                found_descs.append(ConsoleErrorField('Description', message_str = description.description, supplementary_value = desc).message)
+        else:
+            found_descs.append(ConsoleErrorField('Description', message_str = description.description, supplementary_value = desc).message)
+
+    if found_descs:
+        ret.add_field(ConsoleErrorField('Possible known descriptions', message_str = '\n'.join(found_descs)))
+    if unknown_descs:
+        ret.add_field(ConsoleErrorField('Possible unknown descriptions', message_str = ', '.join(unknown_descs)))
+
+    return ret
 
 
-def nim_handler(module, description):
+def construct_support(ret, mod, desc):
+    category = modules.get(mod, Module(''))
+    if category.name:
+        ret.add_field(ConsoleErrorField('Category', message_str = category.name))
+    else:
+        ret.add_field(ConsoleErrorField('Category', supplementary_value = mod))
+    description = category.get_error(desc)
+    if description is not None and description.description:
+        ret.add_field(ConsoleErrorField('Description', message_str = description.description))
+        if description.support_url:
+            ret.add_field(ConsoleErrorField('Further information', message_str = description.support_url))
+        if description.is_ban:
+            ret.add_field(BANNED_FIELD)
+            ret.color = WARNING_COLOR
+    else:
+        ret.add_field(UNKNOWN_CATEGORY_DESCRIPTION)
+    return ret
+
+
+def nim_handler(ret, description):
     """
     Parses 3ds nim error codes in the following ranges:
     005-2000 to 005-3023:
@@ -221,46 +277,54 @@ def nim_handler(module, description):
     """
     # If we have a specific description for it in our knowledgebase,
     # show it instead of doing the rest of the processing.
-    if description in nim.data.keys():
-        return CONSOLE_NAME, nim.name, nim.get_error(description), COLOR
+    error = nim.get_error(description)
+    if error is not None and error.description:
+        return construct_support(ret, 5, description)
 
-    if 2000 <= description < 3024:
+    elif 2000 <= description < 3024:
         description -= 2000
-        module = 5  # nim
-        return construct_result(module, description)
+        return construct_result(ret, 52, description) # nim result module, not support category
+
     elif 4200 <= description < 4400:
         description -= 4200
-        ret = ResultInfo(f'{description}')
-        ret.summary = 'HTTP result code NIM received'
-        # TODO: if this is actually a category, fill it in someday
-        return CONSOLE_NAME, 'http', ret, COLOR
+        construct_result(ret, 40, description) # http result module, not support category
+        if description == 199:
+            ret.add_field(ConsoleErrorField('Extra note', message_str = 'Alternatively, any http description beyond 199.\nNIM truncates it to 199.'))
+
     elif 4400 <= description < 5000:
         description -= 4400
+        ret.add_field(ConsoleErrorField('Category', message_str = 'nim'))
         if description < 100:
-            ret = ResultInfo(f'{description + 100}')
+            ret.add_field(ConsoleErrorField('HTTP Status Code', message_str = f'{description + 100}'))
         elif 100 <= description < 500:
-            ret = ResultInfo(f'{description + 100} or {description} due to a programming mistake in NIM.')
-            ret.summary = 'HTTP error code'
+            ret.add_field(ConsoleErrorField('HTTP Status Code', message_str = f'{description + 100} or {description} due to a programming mistake in NIM.'))
         else:
-            ret = ResultInfo(f'{description}')
-        return CONSOLE_NAME, 'http', ret, COLOR
+            ret.add_field(ConsoleErrorField('HTTP Status Code', message_str = f'{description}'))
+
     elif 5000 <= description < 7000:
         description -= 5000
-        ret = ResultInfo(f'SOAP message returned result code {description} on a NIM operation.')
-        return CONSOLE_NAME, nim.name, ret, COLOR
+        ret.add_field(ConsoleErrorField('Category', message_str = 'nim'))
+        ret.add_field(ConsoleErrorField('Description', message_str = f'SOAP message returned result code {description} on a NIM operation.'))
+
     # >= 7000 range is compacted
     elif description >= 7000:
         description -= 7000
         module = description >> 5
         # There are way more than 0x1F descriptions, but this is how Nintendo does it...
         description = description & 0x1F
-        return construct_result(module, description)
-    return CONSOLE_NAME, nim.name, UNKNOWN_ERROR, COLOR
+        return construct_result_range(ret, module, range(0 + description, 1024 + description, 32))
+
+    else:
+        ret.add_field(ConsoleErrorField('Category', message_str = 'nim'))
+        ret.add_field(UNKNOWN_CATEGORY_DESCRIPTION)
+
+    return ret
 
 
 def get(error: str):
-    mod = int(error[0:3])
+    mod = int(error[:3])
     desc = int(error[4:])
+    ret = ConsoleErrorInfo(error, CONSOLE_NAME, COLOR)
     if mod == 5:  # 5 is NIM
-        return nim_handler(mod, desc)
-    return construct_result(mod, desc)
+        return nim_handler(ret, desc)
+    return construct_support(ret, mod, desc)
