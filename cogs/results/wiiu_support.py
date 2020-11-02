@@ -503,7 +503,6 @@ def construct_support(ret, mod, desc):
 
 
 def get(error):
-    level = None
     mod = int(error[:3])
     desc = int(error[4:])
     ret = ConsoleErrorInfo(error, CONSOLE_NAME, COLOR)

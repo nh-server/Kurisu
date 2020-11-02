@@ -1,5 +1,3 @@
-import re
-
 from .types import Module, ResultInfo, ConsoleErrorInfo, ConsoleErrorField
 
 """

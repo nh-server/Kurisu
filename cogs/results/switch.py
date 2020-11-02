@@ -1693,7 +1693,7 @@ COLOR = 0xE60012
 
 def is_valid(error):
     try:
-        err_int = int(error, 16)
+        int(error, 16)
         return True
     except ValueError:
         pass
