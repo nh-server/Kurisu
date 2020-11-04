@@ -4,3 +4,4 @@ xkcd==2.4.2
 pytz==2020.1
 gino==1.0.1
 alembic==1.4.3
+psycopg2-binary==2.8.6
