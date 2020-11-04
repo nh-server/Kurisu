@@ -202,6 +202,10 @@ async def get_dbchannel(channel_id: int):
     return await models.Channel.get(channel_id)
 
 
+async def add_dbrole(role_id: int, name: str):
+    return await models.Role.create(id=role_id, name=name)
+
+
 async def get_dbrole(role_id: int):
     return await models.Role.get(role_id)
 

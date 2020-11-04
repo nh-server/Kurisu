@@ -5,6 +5,9 @@
 # https://github.com/nh-server/Kurisu
 
 from asyncio import Event
+from alembic import config, script, command
+from alembic.runtime import migration
+from sqlalchemy import engine
 from configparser import ConfigParser
 from datetime import datetime
 from subprocess import check_output, CalledProcessError
@@ -48,10 +51,10 @@ if IS_DOCKER:
     else:
         sys.exit('Database user and database password files paths need to be provided')
 else:
-    config = ConfigParser()
-    config.read("data/config.ini")
-    TOKEN = config['Main']['token']
-    DATABASE_URL = config['Main']['database_url']
+    kurisu_config = ConfigParser()
+    kurisu_config.read("data/config.ini")
+    TOKEN = kurisu_config['Main']['token']
+    DATABASE_URL = kurisu_config['Main']['database_url']
 
 # loads extensions
 cogs = [
@@ -171,6 +174,16 @@ class Kurisu(commands.Bot):
     async def get_context(self, message, *, cls=CustomContext):
         return await super().get_context(message, cls=cls)
 
+    def upgrade_database_revision(self):
+        connection = engine.create_engine(DATABASE_URL)
+        alembic_cfg = config.Config('./alembic.ini', stdout=None)
+        directory = script.ScriptDirectory.from_config(alembic_cfg)
+        with connection.begin() as connection:
+            context = migration.MigrationContext.configure(connection)
+            if set(context.get_current_heads()) == set(directory.get_heads()):
+                print('Upgrading database revision')
+                command.upgrade(alembic_cfg, 'head')
+
     def load_cogs(self):
         for extension in cogs:
             try:
@@ -217,9 +230,10 @@ class Kurisu(commands.Bot):
         assert len(guilds) == 1
         self.guild = guilds[0]
 
+        self.upgrade_database_revision()
+
         try:
             await db.set_bind(DATABASE_URL)
-            await db.gino.create_all()
         except:
             sys.exit('Error when connecting to database')
 
