@@ -180,7 +180,7 @@ class Kurisu(commands.Bot):
         directory = script.ScriptDirectory.from_config(alembic_cfg)
         with connection.begin() as connection:
             context = migration.MigrationContext.configure(connection)
-            if set(context.get_current_heads()) == set(directory.get_heads()):
+            if set(context.get_current_heads()) != set(directory.get_heads()):
                 print('Upgrading database revision')
                 command.upgrade(alembic_cfg, 'head')
 
