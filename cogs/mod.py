@@ -739,6 +739,36 @@ class Mod(commands.Cog):
         await ctx.send(f"Approved an invite to {invite.guild}({code}) for posting {times} times")
         await self.bot.channels['mod-logs'].send(f"⭕ **Approved**: {ctx.author.mention} approved server {invite.guild}({code}) to be posted {times} times")
 
+    @is_staff("SuperOP")
+    @commands.command(aliases=['setrole', 'scr'])
+    async def setchannelrole(self, ctx, channel: discord.TextChannel, role: discord.Role):
+        """Sets the default role of a channel."""
+        dbchannel = await models.Channel.get(channel.id)
+        if not dbchannel:
+            dbchannel = await crud.add_dbchannel(channel.id, channel.name)
+        if not await models.Role.get(role.id):
+            await crud.add_dbrole(role.id, role.name)
+        await dbchannel.update(default_role=role.id).apply()
+        await ctx.send("Parameter updated succesfully")
+
+    @is_staff("Helper")
+    @commands.command(aliases=['ci'])
+    async def channelinfo(self, ctx, channel: discord.TextChannel = None):
+        """Shows database information about a text channel."""
+        state = {0: "Not locked", 1: "softlocked", 2: "locked", 3: "super locked"}
+        if not channel:
+            channel = ctx.channel
+        dbchannel = await models.Channel.get(channel.id)
+        if not dbchannel:
+            return await ctx.send("This channel is not in the database")
+        role = await crud.get_dbrole(dbchannel.default_role) if dbchannel.default_role else ctx.guild.default_role
+        embed = discord.Embed(title=dbchannel.name)
+        embed.add_field(name="ID", value=dbchannel.id, inline=False)
+        embed.add_field(name="Default Role", value=role.name, inline=False)
+        embed.add_field(name="Filtered", value=str(not dbchannel.nofilter), inline=False)
+        embed.add_field(name="Status", value=state[dbchannel.lock_level], inline=False)
+        await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Mod(bot))
