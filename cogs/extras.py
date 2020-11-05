@@ -108,6 +108,8 @@ class Extras(commands.Cog):
     @commands.command()
     async def estprune(self, ctx, days=30):
         """Estimate count of members that would be pruned based on the amount of days. Staff only."""
+        if ctx.guild.member_count > 100000:
+            return await ctx.send("The server has too many members, the command would fail!")
         if days > 30:
             await ctx.send("Maximum 30 days")
             return
@@ -125,6 +127,8 @@ class Extras(commands.Cog):
     @commands.command()
     async def activecount(self, ctx, days=30):
         """Shows the number of members active in the past amount of days. Staff only."""
+        if ctx.guild.member_count > 100000:
+            return await ctx.send("The server has too many members, the command would fail!")
         if days > 30:
             await ctx.send("Maximum 30 days")
             return
