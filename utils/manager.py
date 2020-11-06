@@ -1,15 +1,21 @@
 from typing import Optional, List
 from utils.models import FilteredWord, ApprovedInvite
 
+import re
+
 
 class WordFilterManager:
     def __init__(self):
         self.kinds = ('piracy tool', 'piracy video', 'piracy tool alert', 'drama', 'unbanning tool', 'piracy site')
         self.filter = {}
+        self.word_exp = {}
 
     async def load(self):
         for kind in self.kinds:
-            self.filter[kind] = [entry.word for entry in await self.fetch(kind=kind)]
+            self.filter[kind] = []
+            for entry in await self.fetch(kind=kind):
+                self.filter[kind].append(entry.word)
+                self.word_exp[entry.word] = re.compile(r"[ *_\-~]*".join(list(entry.word)))
         print("Loaded word filter")
 
     async def add(self, word: str, kind: str) -> FilteredWord:
@@ -17,10 +23,12 @@ class WordFilterManager:
         await self.load()
         return entry
 
-    async def fetch(self, kind: str) -> List[FilteredWord]:
+    @staticmethod
+    async def fetch(kind: str) -> List[FilteredWord]:
         return await FilteredWord.query.where(FilteredWord.kind == kind).gino.all()
 
-    async def delete(self, word: str):
+    @staticmethod
+    async def delete(word: str):
         entry = await FilteredWord.get(word)
         if entry:
             await entry.delete()

@@ -9,6 +9,7 @@ from discord.ext import commands
 from subprocess import call
 from string import printable
 from urllib.parse import urlparse
+from typing import List
 
 
 class Events(commands.Cog):
@@ -18,6 +19,25 @@ class Events(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
+    def search_word(self, words: str, msg_no_sep: str, message: str) -> List[re.Match]:
+        dect_words = []
+        matches = []
+        for word in words:
+            if word in msg_no_sep:
+                dect_words.append(word)
+        if dect_words:
+            for word in dect_words:
+                if match := self.bot.wordfilter.word_exp[word].search(message):
+                    matches.append(match)
+        return matches
+
+    def highligth_matches(self, matches: List[re.Match], message: str) -> str:
+        msg = message
+        for match in matches:
+            a, b = match.span(0)
+            msg = f"{msg[:a]}**{match.group(0)}**{msg[b:]}"
+        return msg
 
     ignored_file_extensions = (
         '.jpg',
@@ -56,28 +76,28 @@ class Events(commands.Cog):
             await self.bot.channels['watch-logs'].send(msg, embed=embed)
         is_help_channel = message.channel in self.bot.assistance_channels
         msg = ''.join(char for char in message.content.lower() if char in printable)
-        msg_no_separators = re.sub('[ *_\-~]', '', msg)
+        msg_no_separators = re.sub(r'[ *_\-~]', '', msg)
 
         contains_skype_link = "join.skype.com" in msg
-        contains_piracy_site_mention = any(x in msg for x in self.bot.wordfilter.filter['piracy site'])
-        contains_piracy_tool_mention = any(x in msg_no_separators for x in self.bot.wordfilter.filter['piracy tool'])
+        contains_piracy_site_mention = self.search_word(self.bot.wordfilter.filter['piracy site'], msg_no_separators, msg)
+        contains_piracy_tool_mention = self.search_word(self.bot.wordfilter.filter['piracy tool'], msg_no_separators, msg)
 
         # modified regular expresion made by deme72
-        res = re.findall('(?:https?://)?(?:(?:(?:www\.)?youtube\.com(?:/(?:watch\?.*?v=([^&\s]+)(?:[^\s]))))|(?:youtu\.be/([^\s]+)))', message.content)
+        res = re.findall(r'(?:(?:https?://)?(?:www.)?)(?:(?:youtube\.com/watch\?v=)|(?:youtu\.be/))([aA-zZ_\-\d]{11})', message.content)
         contains_video = any(res)
-        contains_piracy_video_id = False if not contains_video else any(x or y for x, y in res if x in self.bot.wordfilter.filter['piracy video'] or y in self.bot.wordfilter.filter['piracy video'])
+        contains_piracy_video_id = False if not contains_video else any(x for x in res if x in self.bot.wordfilter.filter['piracy video'])
 
         res = re.findall('(?:discordapp\.com/invite|discord\.gg)/([\w]+)', message.content)
         approved_invites = [x for x in self.bot.invitefilter.invites if x.code in res]
         contains_non_approved_invite = len(res) != len(approved_invites)
 
-        contains_piracy_tool_alert_mention = any(x in msg_no_separators for x in self.bot.wordfilter.filter['piracy tool alert'])
+        contains_piracy_tool_alert_mention = self.search_word(self.bot.wordfilter.filter['piracy tool alert'], msg_no_separators, msg)
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site',))
         contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub', 'strawpoii', 'hackinformer.com', 'console.guide', 'jacksorrell.co.uk', 'jacksorrell.tv', 'nintendobrew.com', 'reinx.guide', 'NxpeNwz', 'scenefolks.com'))
-        contains_unbanning_stuff = any(x in msg_no_separators for x in self.bot.wordfilter.filter['unbanning tool'])
+        contains_unbanning_stuff = self.search_word(self.bot.wordfilter.filter['unbanning tool'], msg_no_separators, msg)
         contains_invite_link = contains_non_approved_invite or contains_skype_link or approved_invites
         # contains_guide_mirror_mention = any(x in msg for x in ('3ds-guide.b4k.co',))
-        contains_drama_alert = any(x in msg_no_separators for x in self.bot.wordfilter.filter['drama'])
+        contains_drama_alert = self.search_word(self.bot.wordfilter.filter['drama'], msg_no_separators, msg)
 
         for f in message.attachments:
             if not f.filename.lower().endswith(self.ignored_file_extensions):
@@ -110,6 +130,7 @@ class Events(commands.Cog):
                             await self.bot.invitefilter.set_uses(code=invite.code, uses=invite.uses - 1)
                         else:
                             await self.bot.invitefilter.delete(code=invite.code)
+
         if contains_misinformation_url_mention:
             try:
                 await message.delete()
@@ -128,6 +149,7 @@ class Events(commands.Cog):
                 f"**Potential drama/heated debate Warning**: {message.author.mention} posted a blacklisted word in {message.channel.mention}",
                 embed=embed)
         if contains_piracy_tool_mention:
+            embed.description = self.highligth_matches(contains_piracy_tool_mention, msg)
             try:
                 await message.delete()
             except discord.errors.NotFound:
@@ -152,10 +174,12 @@ class Events(commands.Cog):
                 f"**Bad video**: {message.author.mention} linked a banned video in {message.channel.mention} (message deleted)",
                 embed=embed)
         if contains_piracy_tool_alert_mention:
+            embed.description = self.highligth_matches(contains_piracy_tool_alert_mention, msg)
             await self.bot.channels['message-logs'].send(
                 f"**Bad tool**: {message.author.mention} likely mentioned a piracy tool in {message.channel.mention}",
                 embed=embed)
         if contains_piracy_site_mention:
+            embed.description = self.highligth_matches(contains_piracy_site_mention, msg)
             try:
                 await message.delete()
             except discord.errors.NotFound:
@@ -182,6 +206,7 @@ class Events(commands.Cog):
                 f"**Bad site**: {message.author.mention} mentioned a piracy site indirectly in {message.channel.mention}{' (message deleted)' if is_help_channel else ''}",
                 embed=embed)
         if contains_unbanning_stuff:
+            embed.description = self.highligth_matches(contains_unbanning_stuff, msg)
             try:
                 await message.delete()
             except discord.errors.NotFound:
