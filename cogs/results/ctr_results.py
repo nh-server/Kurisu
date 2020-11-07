@@ -142,6 +142,24 @@ http = Module('http', {
     105: ResultInfo('Request timed out.')
 })
 
+nim = Module('nim', {
+    1: ResultInfo('Invalid string IPC paramater (non null terminated at its indicated length).'),
+    12: ResultInfo('Invalid country code returned by CFG module reading config save 0xB0000.'),
+    13: ResultInfo('Zero string length console serial number or "000000000000000" returned by CFG\'s SecureInfoGetSerialNo.'),
+    18: ResultInfo('General data reading error of NIM\'s .dat files from its system save, bad data or bad data lengths.'),
+    22: ResultInfo('General invalid data or length of data returned from nintendo servers. (Only applicable for some operations)'),
+    25: ResultInfo('IntegrityVerificationSeed is waiting on servers to be synced into console. Can\'t processed with online services without sync being completed first over IPC request.'),
+    26: ResultInfo('Unavailable/unaccessable IntegrityVerificationSeed on Nintendo servers. May happen if NIM is told to import IntegrityVerificationSeed from servers at any time other than after the successful System Transfer reboot.'),
+    27: ResultInfo('Invalid country language code returned by CFG module reading config save 0xA0002.'),
+    37: ResultInfo('Service is in Standby Mode. (eShop ban? General service is down? This caused by a server response flag on account information. Account is not referring to NNID.)'),
+    39: ResultInfo('HTTP Status non 200. (Only applicable for some operations)'),
+    40: ResultInfo('General XML read/write error while processing Auto Delivery XMLs.'),
+    41: ResultInfo('General XML read/write error while processing Auto Delivery XMLs. (Stubbed virtual call was called)'),
+    58: ResultInfo('Invalid NPNS token returned by CFG module reading config save 0xF0006.'),
+    67: ResultInfo('HTTP Status 404 while trying to download a game\'s seed.'),
+    68: ResultInfo('HTTP Status 503 while trying to download a game\'s seed.')
+})
+
 mvd = Module('mvd', {
     271: ResultInfo('Invalid configuration.')
 })
@@ -212,7 +230,7 @@ modules = {
     49: Module('friends'),
     50: Module('rdt'),
     51: Module('applet'),
-    52: Module('nim'),
+    52: nim,
     53: Module('ptm'),
     54: Module('midi'),
     55: Module('mc'),
