@@ -182,8 +182,10 @@ invalid for the 3DS.')
         0x prefix is not required for hex input.
 
         Examples:
-          .cafeerr 0x4606F
-          .cafeerr 4606F
+          .cafeerr 0xC070FA80
+          .cafeerr C070FA80
+          .cafeerr 0x18106FFF
+          .cafeerr 18106FFF
           .cafeerr 102-2804
         """
         err = self.fixup_input(err)
