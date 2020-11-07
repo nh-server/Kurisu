@@ -10,9 +10,9 @@ Wii U's operating system, Cafe OS. Its breaks down like so:
 
  Bits | Description
 -------------------
-00-03 | Level
-04-12 | Module
-13-31 | Description
+00-19 | Description
+20-28 | Module
+29-31 | Level
 
 Level: A value indicating the severity of the issue (fatal, temporary, etc.).
 Module: A value indicating who raised the error or returned the result.
@@ -22,15 +22,15 @@ Alternatively, legacy results break down to:
 
  Bits | Description
 -------------------
-00-02 | Unused
-03-04 | Signature
-05-11 | Module
-12-13 | Unused
+00-09 | Description
+10-13 | Summary
 14-17 | Level
-18-21 | Summary
-22-32 | Description
+18-19 | Unused
+20-26 | Module
+27-28 | Signature
+29-31 | Unused
 
-Signature: A check to see if its legacy (although there's collisions with non legacy modules)
+Signature: A check to see if its legacy
 Summary: A value indicating a shorter description of what happened.
 
 Unlike the 3DS, the Wii U does not provide a 'summary' field in non legacy result codes.
@@ -245,19 +245,16 @@ def construct_result(ret, mod, summary, level, desc, is_legacy):
 def get(error: str):
     level = None
     err_int = int(error, 16)
-    # is this really how it is to check legacy?
-    # based on wut's result.h it is.
-    # but also causes collisions non legacy result modules!!
-    if ((err_int >> 3) & 0x3) == SIGNATURE_IS_LEGACY:
-        mod = (err_int >> 5) & 0x7F
+    if ((err_int >> 27) & 0x3) == SIGNATURE_IS_LEGACY:
+        mod = (err_int >> 20) & 0x7F
         level = (err_int >> 14) & 0xF
-        summary = (err_int >> 18) & 0xF
-        desc = (err_int >> 22) & 0x3FF
+        summary = (err_int >> 10) & 0xF
+        desc = err_int & 0x3FF
         is_legacy = True
     else:
-        level = err_int & 0x7
-        mod = (err_int >> 3) & 0x1FF
-        desc = (err_int >> 12) & 0xFFFFF
+        level = (err_int >> 29) & 0x7
+        mod = (err_int >> 20) & 0x1FF
+        desc = err_int & 0xFFFFF
         summary = None
         is_legacy = False
 
