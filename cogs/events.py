@@ -32,7 +32,7 @@ class Events(commands.Cog):
                     matches.append(match)
         return matches
 
-    def highligth_matches(self, matches: List[re.Match], message: str) -> str:
+    def highlight_matches(self, matches: List[re.Match], message: str) -> str:
         msg = message
         for match in matches:
             a, b = match.span(0)
@@ -149,7 +149,7 @@ class Events(commands.Cog):
                 f"**Potential drama/heated debate Warning**: {message.author.mention} posted a blacklisted word in {message.channel.mention}",
                 embed=embed)
         if contains_piracy_tool_mention:
-            embed.description = self.highligth_matches(contains_piracy_tool_mention, msg)
+            embed.description = self.highlight_matches(contains_piracy_tool_mention, msg)
             try:
                 await message.delete()
             except discord.errors.NotFound:
@@ -174,12 +174,12 @@ class Events(commands.Cog):
                 f"**Bad video**: {message.author.mention} linked a banned video in {message.channel.mention} (message deleted)",
                 embed=embed)
         if contains_piracy_tool_alert_mention:
-            embed.description = self.highligth_matches(contains_piracy_tool_alert_mention, msg)
+            embed.description = self.highlight_matches(contains_piracy_tool_alert_mention, msg)
             await self.bot.channels['message-logs'].send(
                 f"**Bad tool**: {message.author.mention} likely mentioned a piracy tool in {message.channel.mention}",
                 embed=embed)
         if contains_piracy_site_mention:
-            embed.description = self.highligth_matches(contains_piracy_site_mention, msg)
+            embed.description = self.highlight_matches(contains_piracy_site_mention, msg)
             try:
                 await message.delete()
             except discord.errors.NotFound:
@@ -206,7 +206,7 @@ class Events(commands.Cog):
                 f"**Bad site**: {message.author.mention} mentioned a piracy site indirectly in {message.channel.mention}{' (message deleted)' if is_help_channel else ''}",
                 embed=embed)
         if contains_unbanning_stuff:
-            embed.description = self.highligth_matches(contains_unbanning_stuff, msg)
+            embed.description = self.highlight_matches(contains_unbanning_stuff, msg)
             try:
                 await message.delete()
             except discord.errors.NotFound:
