@@ -1094,17 +1094,6 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
         embed.description = "How to install 3DS cartridges to the SD card"
         await ctx.send(embed=embed)
 
-    # Embed to Chroma Ryu's layeredfs guide
-    @commands.command()
-    async def layeredfs(self, ctx):
-        """How to use Luma 8.0+ LayeredFs"""
-        embed = discord.Embed(title="LayeredFs Guide", color=discord.Color(0x66FFFF))
-        embed.set_author(name="Chroma Ryu", url="https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Using-Luma3DS'-layeredfs-(Only-version-8.0-and-higher)")
-        embed.set_thumbnail(url="https://i.imgur.com/U8NA9lx.png")
-        embed.url = "https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Using-Luma3DS'-layeredfs-(Only-version-8.0-and-higher)"
-        embed.description = "How to use Luma 8.0+ LayeredFs for ROM Hacking."
-        await ctx.send(embed=embed)
-
     # Information about sighax
     @commands.command()
     async def sighax(self, ctx):
@@ -1231,6 +1220,16 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
         embed.set_thumbnail(url="https://i.imgur.com/rr7Xf3E.jpg")
         embed.url = "https://zetadesigns.github.io/randomizing-layeredfs.html"
         embed.description = "Basic tutorial for randomizing with LayeredFS"
+        await ctx.send(embed=embed)
+        
+    @tutorial.command(aliases=["romhack", "romhacks"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
+    async def layeredfs(self, ctx):
+        """How to use Luma 8.0+ LayeredFs"""
+        embed = discord.Embed(title="LayeredFs Guide", color=discord.Color(0x66FFFF))
+        embed.set_author(name="Chroma Ryu", url="https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Using-Luma3DS'-layeredfs-(Only-version-8.0-and-higher)")
+        embed.set_thumbnail(url="https://i.imgur.com/U8NA9lx.png")
+        embed.url = "https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Using-Luma3DS'-layeredfs-(Only-version-8.0-and-higher)"
+        embed.description = "How to use Luma 8.0+ LayeredFs for ROM Hacking."
         await ctx.send(embed=embed)
 
     @tutorial.command(aliases=["Animal_crossing"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
