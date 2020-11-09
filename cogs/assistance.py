@@ -1222,7 +1222,7 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
         embed.description = "Basic tutorial for randomizing with LayeredFS"
         await ctx.send(embed=embed)
         
-    @tutorial.command(aliases=["layeredfstutorial"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
+    @tutorial.command(aliases=["romhack", "romhacks"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def layeredfs(self, ctx):
         """How to use Luma 8.0+ LayeredFs"""
         embed = discord.Embed(title="LayeredFs Guide", color=discord.Color(0x66FFFF))
