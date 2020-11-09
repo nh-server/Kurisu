@@ -374,19 +374,27 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
         embed.description = cleandoc("""
                 Reasons to not use video guides:
                 - Most uploaders do not edit their guides after uploading, even if there are mistakes
-                - When methods become outdated, the title and description are not changed
-                 - This leads to users doing older, more complicated methods for no reason
-                - Difficult to give assistance with as every uploader has a different sequence of steps
-                - Most videos also include a pre-packaged download, saying it's to make things easier
-                 - These files are often outdated and poorly organised, which actually makes things harder
+                - When methods become outdated, the information is not updated
+                - Difficult to give assistance with
+                - Most videos also refer to a pre-packaged download, which are often outdated and poorly organised
                 """)
         embed.add_field(name="Recommended Solution", value="Read a trusted written tutorial. Try `.guide` for a list.")
         await ctx.send(embed=embed)
 
     @commands.command()
     async def vguides2(self, ctx):
-        """Information about video guides relating to custom firmware"""
-        await ctx.send("https://www.youtube.com/watch?v=miVDKgInzyg")
+        """Video Guides 2: Electric Boogaloo"""
+        embed = discord.Embed(title="More information about video guides", color=discord.Color.dark_orange())
+        embed.description = cleandoc("""
+                Other problems with video guides:
+                - Uploaders tend to care more about views than helping the community, so they don't remove old content
+                - This usually leads to confusion about which method is best, or most current
+                - Every uploader has a different route through each method, which often makes it very difficult to give assistance
+                - Pre-packaged downloads are often hosted on the uploader's server, which they use to generate clicks and revenue
+                - Pre-packaged downloads ("AIOs") are also very often outdated and not maintained by the creators
+                """)
+        embed.add_field(name="Recommended Solution", value="Read a trusted written tutorial. Try `.guide` for a list.")
+        await ctx.send(embed=embed)
 
     @commands.command()
     async def ip(self, ctx):
