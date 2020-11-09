@@ -1327,7 +1327,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         embed = discord.Embed(title="3DS NTR Plugins Guide", color=discord.Color.purple())
         embed.set_author(name="Krieg")
         embed.set_thumbnail(url="https://3ds.eiphax.tech/pic/krieg.png")
-        embed.url = "https://3ds.eiphax.tech/ntrplugins.html"
+        embed.url = "https://3ds.eiphax.tech/ntrplugins"
         embed.description = "A guide to using plugins with NTR"
         await ctx.send(embed=embed)
 
