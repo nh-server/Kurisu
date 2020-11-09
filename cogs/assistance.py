@@ -1321,6 +1321,16 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         embed.description = "A guide to using ftp with FTPD and WinSCP"
         await ctx.send(embed=embed)
 
+    @tutorial.command(aliases=["plugins", "ntrplugins"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
+    async def plugins(self, ctx):
+        """NTR Plugins guide"""
+        embed = discord.Embed(title="3DS NTR Plugins Guide", color=discord.Color.purple())
+        embed.set_author(name="Krieg")
+        embed.set_thumbnail(url="https://3ds.eiphax.tech/pic/krieg.png")
+        embed.url = "https://3ds.eiphax.tech/ntrplugins.html"
+        embed.description = "A guide to using using plugins with NTR"
+        await ctx.send(embed=embed)
+
     @tutorial.command(cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def gbadump(self, ctx):
         """Links to GBA Dump guide"""
