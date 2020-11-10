@@ -11,7 +11,7 @@ class Memes(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def _meme(self, ctx, msg, directed: bool = False, imagelink=None):
+    async def _meme(self, ctx, msg, directed: bool = False, imagelink=None, allowed_mentions=None):
         author = ctx.author
         if isinstance(ctx.channel, discord.abc.GuildChannel) and (ctx.channel in self.bot.assistance_channels or (self.bot.roles['No-Memes'] in author.roles)):
             await ctx.message.delete()
@@ -20,12 +20,12 @@ class Memes(commands.Cog):
             except discord.errors.Forbidden:
                 await ctx.send(f"{ctx.author.mention} Meme commands are disabled in this channel, or your privileges have been revoked.")
         elif imagelink is not None:
-            title = f"{self.bot.escape_text(ctx.author.display_name) + ':' if not directed else ''} {msg}"		
+            title = f"{self.bot.escape_text(ctx.author.display_name) + ':' if not directed else ''} {msg}"
             embed = discord.Embed(title=title, color=discord.Color.default())
             embed.set_image(url=imagelink)
             await ctx.send(embed=embed)
         else:
-            await ctx.send(f"{self.bot.escape_text(ctx.author.display_name) + ':' if not directed else ''} {msg}")
+            await ctx.send(f"{self.bot.escape_text(ctx.author.display_name) + ':' if not directed else ''} {msg}", allowed_mentions=allowed_mentions)
 
     # list memes
     @commands.command(name="listmemes")
@@ -76,7 +76,7 @@ class Memes(commands.Cog):
     async def inori(self, ctx):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/WLncIsi.gif")
-        
+
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def inori2(self, ctx):
@@ -299,25 +299,25 @@ class Memes(commands.Cog):
     async def fuck(self, ctx):
         """MEMES?"""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/4lNA5Ud.gif")
-                       
+
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def goose(self, ctx):
         """MEMES?"""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/pZUeBql.jpg")
-    
+
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def planet(self, ctx):
         """haha yes!"""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/YIBADGT.png")
-       
+
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def pbanj(self, ctx):
         """he has the power"""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/EQy9pl3.png")
-                       
+
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def pbanj2(self, ctx):
@@ -366,13 +366,13 @@ class Memes(commands.Cog):
     async def nogas(self, ctx):
         """shhhh no one gives a shit!"""
         await self._meme(ctx, "https://imgur.com/a/5IcfK6N")
-                       
+
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def cosmic(self, ctx):
         """Cosmic ban"""
         await self._meme(ctx, "https://i.imgur.com/V4TVpbC.gifv")
-              
+
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def menuhax(self, ctx):
@@ -396,7 +396,7 @@ class Memes(commands.Cog):
     async def bananoose(self, ctx):
         """:)"""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/VUmkXDd.jpg")
-                         
+
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def goosenana(self, ctx):
@@ -414,7 +414,7 @@ class Memes(commands.Cog):
     async def dab(self, ctx):
         """Memes."""
         await self._meme(ctx, "No. I might be controlled by you idiots, but I have *some* self respect, baka...")
-    
+
     @commands.command(hidden=True, aliases=["hacc"])
     @commands.cooldown(rate=5, per=30.0, type=commands.BucketType.channel)
     async def nobrain(self, ctx, *, action="hacc"):
@@ -438,6 +438,13 @@ class Memes(commands.Cog):
     async def source2(self, ctx):
         """citation needed"""
         await self._meme(ctx, "", imagelink="https://eiphax.tech/assets/source2.jpg")
+
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=120.0, type=commands.BucketType.channel)
+    async def cadealert(self, ctx):
+        """stop! cade time."""
+        await self._meme(ctx, "excuse me <@&575940388452433940>, it is time for cade", allowed_mentions=discord.AllowedMentions(roles=True))
+
 
 def setup(bot):
     bot.add_cog(Memes(bot))
