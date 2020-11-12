@@ -75,9 +75,9 @@ nim = Module('nim', {
     4040: ResultInfo('The connection timed out when connecting to the eShop.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/4429'),
     4069: NIM_4069,
     # in HTTP range...
-    4240: ('This error code likely indicates a temporary service issue with the Nintendo eShop.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/28399'),
+    4240: ResultInfo('This error code likely indicates a temporary service issue with the Nintendo eShop.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/28399'),
     4305: ResultInfo('A generic error that may be displayed when the connection times out or you are unable to download software from the eShop.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/4346'),
-    4320: ('A generic error that may be displayed when formatting your console or performing a system transfer.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/48382'),
+    4320: ResultInfo('A generic error that may be displayed when formatting your console or performing a system transfer.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/48382'),
     5602: ResultInfo('Unable to connect to the eShop. This usually occurs when the System\'s region setting is incorrect. Change it in system settings and try connecting again.'),
     5687: ResultInfo('A generic error that displays when you\'re unable to connect to the eShop.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/26251/'),
     # in SOAP range...
