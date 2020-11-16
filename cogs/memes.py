@@ -437,7 +437,13 @@ class Memes(commands.Cog):
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def source2(self, ctx):
         """citation needed"""
-        await self._meme(ctx, "", imagelink="https://eiphax.tech/assets/source2.jpg")
+        await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/b5c031e07ddbc3e48d0853f2d7064f66.jpg")
+
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def disgraceful(self, ctx):
+        """YOU DIDN'T SEE IT BECAUSE IT WASN'T THERE"""
+        await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/b93b2a99bc28df4a192fc7eb8ccc01a9.png")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=120.0, type=commands.BucketType.channel)
