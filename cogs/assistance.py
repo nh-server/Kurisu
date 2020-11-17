@@ -153,16 +153,6 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         embed.description = "A guide on how to do the seedminer process to get your 3ds' movable.sed file"
         await ctx.send(embed=embed)
 
-    @commands.command()
-    async def browserhax(self, ctx):
-        """Links the browserhax guide"""
-        embed = discord.Embed(title="BrowserHax 2020", color=discord.Color(0xb4eb4d))
-        embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/homebrew-launcher-(browserhax-2020)")
-        embed.set_thumbnail(url="https://3ds.eiphax.tech/pic/browserhaxfriends.png")
-        embed.url = "https://3ds.hacks.guide/homebrew-launcher-(browserhax-2020)"
-        embed.description = "A guide on how to do BrowserHax 2020 for getting CFW on your 3DS"
-        await ctx.send(embed=embed)
-
     @commands.command(aliases=['snickerstream'])
     async def ntrstream(self, ctx):
         """Snickerstream/NTR streaming guide"""
@@ -206,10 +196,10 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 await self.simple_embed(ctx,
                     "**Is it safe to update to current 3DS firmware?**\n\n"
 
-                    "**Luma3DS 9.1 and above**\n"
+                    "**Luma3DS 10.2.1 and above**\n"
                     "You can update safely.\n\n"
                 
-                    "**Luma3DS 8.0 - 9.0**\n"
+                    "**Luma3DS 8.0 - 10.2**\n"
                     "Follow the [manual Luma3DS update guide](https://gist.github.com/chenzw95/3b5b953c9c913e89fdda3c4c4d98d086), then you can update safely. Being on these Luma3DS "
                     "versions on 11.8+ will cause an error screen until you update.\n\n"
                 
@@ -303,7 +293,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         embed.set_author(name="Chenzw", url="https://gist.github.com/chenzw95/3b5b953c9c913e89fdda3c4c4d98d086")
         embed.set_thumbnail(url="https://avatars0.githubusercontent.com/u/5243259?s=400&v=4")
         embed.url = "https://gist.github.com/chenzw95/3b5b953c9c913e89fdda3c4c4d98d086"
-        embed.description = "A guide for manually updating Luma3ds. This is necessary if you receive the \"Failed to apply 1 Firm patch(es)\" error."
+        embed.description = "A guide for manually updating Luma3ds. This is necessary if you receive the \"Failed to apply 1 Firm patch(es)\" or \"pm\" errors."
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["a9lhtob9s", "updatea9lh"])
@@ -421,7 +411,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 return
         if self.check_console(console, channelName, '3ds'):
             embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
-            embed.add_field(name="BrowserHax 2020", value="Requires console to be on latest firmware and have working L+R buttons. [Guide](https://3ds.hacks.guide/homebrew-launcher-(browserhax-2020)#)", inline=False)
+            embed.add_field(name="Seedminer", value="Requires console to be on latest firmware [Guide](https://3ds.hacks.guide/seedminer)", inline=False)
             embed.add_field(name="NTRBoot", value="Requires a compatible NDS flashcart and maybe an additional DS(i) or hacked 3DS console depending on the flashcart (All versions, all hardware). [Guide](https://3ds.hacks.guide/ntrboot)", inline=False)
             embed.add_field(name="Hardmod", value="Requires soldering **Not for beginners!**. [Guide](https://git.io/fhQk9)", inline=False)
             await ctx.send(embed=embed)
@@ -461,15 +451,15 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
         if self.check_console(console, channelName, '3ds'):
             embed = discord.Embed(title="Is the new 3DS update safe?", color=0xe60012)
             embed.description = cleandoc("""
-            Currently, the latest 3DS system firmware is `11.13.0-45`.
+            Currently, the latest 3DS system firmware is `11.14.0-46`.
             
             If you currently have CFW installed (boot9strap/Luma):
-            Is your Luma version up to date? If your Luma version is 9.1 or above, **updating is safe**.
-            If it is 9.0 or below, please type `.update` in <#261581918653513729> and follow the information there.
+            Is your Luma version up to date? If your Luma version is 10.2.1 or above, **updating is safe**.
+            If it is 10.2 or below, please type `.update` in <#261581918653513729> and follow the information there.
             
             If you DO NOT currently have CFW installed (stock console):
-            11.13.0-45 can be hacked with current methods. **Updating is safe**.
-            *Last edited: December 3, 2019*
+            11.14.0-46 can be hacked with current methods. **Updating is safe**.
+            *Last edited: November 16th, 2020*
             """)
             await ctx.send(embed=embed)
 
