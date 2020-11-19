@@ -27,11 +27,12 @@ class WordFilterManager:
     async def fetch(kind: str) -> List[FilteredWord]:
         return await FilteredWord.query.where(FilteredWord.kind == kind).gino.all()
 
-    @staticmethod
-    async def delete(word: str):
+    async def delete(self, word: str):
         entry = await FilteredWord.get(word)
         if entry:
             await entry.delete()
+            self.filter[entry.kind].remove(entry.word)
+            del self.word_exp[entry.word]
             return entry
 
 
