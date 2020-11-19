@@ -44,12 +44,18 @@ class Filter(commands.Cog):
 
     @is_staff("SuperOP")
     @wordfilter.command(name='delete', aliases=['remove'])
-    async def delete_word(self, ctx, word: str):
-        entry = await self.bot.wordfilter.delete(word=word)
-        if entry is None:
-            return await ctx.send("Word not found!")
-        await ctx.send(f"Delete word `{word}` succesfully!")
-        await self.bot.channels['mod-logs'].send(f"⭕ **Deleted**: {ctx.author.mention} deleted word `{entry.word}` from the filter!")
+    async def delete_word(self, ctx, *, words: str):
+        words = words.split()
+        deleted = []
+        for word in words:
+            entry = await self.bot.wordfilter.delete(word=word)
+            if entry:
+                deleted.append(entry.word)
+        if deleted:
+            await ctx.send(f"Deleted words `{'`,`'.join(deleted)}` succesfully!")
+            await self.bot.channels['mod-logs'].send(f"⭕ **Deleted**: {ctx.author.mention} deleted words `{'`,`'.join(deleted)}` from the filter!")
+        else:
+            await ctx.send("No word was deleted from the filter!")
 
     @is_staff("Helper")
     @commands.group()
