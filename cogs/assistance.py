@@ -290,9 +290,9 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
     async def updateluma(self, ctx):
         """Links to the guide for updating Luma3DS manually (8.0 or later)"""
         embed = discord.Embed(title="Manually Updating Luma3DS", color=discord.Color(0xCE181E))
-        embed.set_author(name="Chenzw", url="https://gist.github.com/chenzw95/3b5b953c9c913e89fdda3c4c4d98d086")
+        embed.set_author(name="chenzw + lily", url="https://gist.github.com/lilyuwuu/3a7ba3dcd2476e6b5f4b6f66fa173bd6")
         embed.set_thumbnail(url="https://avatars0.githubusercontent.com/u/5243259?s=400&v=4")
-        embed.url = "https://gist.github.com/chenzw95/3b5b953c9c913e89fdda3c4c4d98d086"
+        embed.url = "https://gist.github.com/lilyuwuu/3a7ba3dcd2476e6b5f4b6f66fa173bd6"
         embed.description = "A guide for manually updating Luma3ds. This is necessary if you receive the \"Failed to apply 1 Firm patch(es)\" or \"pm\" errors."
         await ctx.send(embed=embed)
 
