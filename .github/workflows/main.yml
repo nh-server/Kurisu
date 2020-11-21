@@ -21,7 +21,14 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-buildx-action@v1
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
       - name: Login to GHCR
         uses: docker/login-action@v1
         with:
@@ -36,21 +43,13 @@ jobs:
           context: .
           file: ./Dockerfile
           platforms: linux/amd64
-          push: false
-          # Can't auto-push with v2 right now...
+          push: true
           tags: ghcr.io/nh-server/kurisu:latest
           build-args: COMMIT=${{ github.sha }},BRANCH=${{ github.ref }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
-      - name: Send push webhook
-        continue-on-error: true
-        uses: appleboy/discord-action@4c19612
-        with:
-          webhook_id: ${{ secrets.WEBHOOK_ID }}
-          webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
-          message: Pushing to ghcr.io/nh-server/kurisu
-      - name: Push Docker image
-        run: docker push ghcr.io/nh-server/kurisu:latest
 # https://stackoverflow.com/questions/60477061/github-actions-how-to-deploy-to-remote-server-using-ssh/60479844#60479844
       - name: Create SSH key
         run: |
