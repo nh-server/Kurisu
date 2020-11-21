@@ -729,7 +729,7 @@ class Mod(commands.Cog):
 
         code = invite.code
 
-        if await self.bot.invitefilter.fetch_by_alias(alias) or await self.bot.invitefilter.fetch_by_code(code):
+        if await self.bot.invitefilter.fetch_invite_by_alias(alias) or await self.bot.invitefilter.fetch_invite_by_code(code):
             return await ctx.send("This code or alias is already in use!")
 
         if times < 1:
