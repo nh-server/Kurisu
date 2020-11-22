@@ -1311,15 +1311,37 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         embed.description = "A guide to using cheats with Checkpoint and Rosalina"
         await ctx.send(embed=embed)
 
-    @tutorial.command(aliases=["ftpd", "3dsftp"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
-    async def ftp(self, ctx):
+    @tutorial.command(aliases=["ftpd"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
+    async def ftp(self, ctx, console=None):
         """FTPD/WinSCP ftp guide"""
-        embed = discord.Embed(title="3DS FTP Guide", color=discord.Color.purple())
-        embed.set_author(name="Krieg")
-        embed.set_thumbnail(url="https://3ds.eiphax.tech/pic/krieg.png")
-        embed.url = "https://3ds.eiphax.tech/ftp.html"
-        embed.description = "A guide to using ftp with FTPD and WinSCP"
-        await ctx.send(embed=embed)
+        systems = ("3ds", "nx", "nx", "switch")
+        channelName = ""
+        if not isinstance(ctx.channel, discord.DMChannel):
+            channelName = ctx.channel.name
+        if console not in systems:
+            if channelName.startswitch(systems):
+                console = "auto"
+            else:
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+                
+                ctx.command.reset_cooldown(ctx)
+                return
+                               
+        if self.check_console(console, channelName, "3ds"):
+            embed = discord.Embed(title="3DS FTP Guide", color=discord.Color.purple())
+            embed.set_author(name="Krieg")
+            embed.set_thumbnail(url="https://3ds.eiphax.tech/pic/krieg.png")
+            embed.url = "https://3ds.eiphax.tech/ftp.html"
+            embed.description = "A guide to using ftp with FTPD and WinSCP"
+            await ctx.send(embed=embed)
+                               
+        if self.check_console(console, channelName, "nx", "ns", "switch"):
+            embed = discord.Embed(title="Switch FTP Guide", color=discord.Color.purple())
+            embed.set_author(name="Krieg")
+            embed.set_thumbnail(url="https://3ds.eiphax.tech/pic/krieg.png")
+            embed.url = "https://nx.eiphax.tech/ftp.html"
+            embed.description = "A guide to using ftp with FTPD and WinSCP"
+            await ctx.send(embed=embed)
 
     @tutorial.command(aliases=["ntrplugins"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def plugins(self, ctx):
