@@ -1319,7 +1319,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         if not isinstance(ctx.channel, discord.DMChannel):
             channelName = ctx.channel.name
         if console not in systems:
-            if channelName.startswitch(systems):
+            if channelName.startswith(systems):
                 console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
