@@ -1314,7 +1314,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
     @tutorial.command(aliases=["ftpd"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def ftp(self, ctx, console=None):
         """FTPD/WinSCP ftp guide"""
-        systems = ("3ds", "nx", "nx", "switch")
+        systems = ("3ds", "nx", "ns", "switch")
         channelName = ""
         if not isinstance(ctx.channel, discord.DMChannel):
             channelName = ctx.channel.name
@@ -1333,9 +1333,8 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
             embed.set_thumbnail(url="https://3ds.eiphax.tech/pic/krieg.png")
             embed.url = "https://3ds.eiphax.tech/ftp.html"
             embed.description = "A guide to using ftp with FTPD and WinSCP"
-            await ctx.send(embed=embed)
-                               
-        if self.check_console(console, channelName, "nx", "ns", "switch"):
+            await ctx.send(embed=embed)                   
+        elif self.check_console(console, channelName, ("nx", "ns", "switch")):
             embed = discord.Embed(title="Switch FTP Guide", color=discord.Color.purple())
             embed.set_author(name="Krieg")
             embed.set_thumbnail(url="https://3ds.eiphax.tech/pic/krieg.png")
