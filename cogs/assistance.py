@@ -286,7 +286,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         embed.description = "A guide for updating to new B9S versions."
         await ctx.send(embed=embed)
 
-    @commands.command(name = "updateluma", aliases = ["lumaupdate"])
+    @commands.command(aliases = ["lumaupdate"])
     async def updateluma(self, ctx):
         """Links to the guide for updating Luma3DS manually (8.0 or later)"""
         embed = discord.Embed(title="Manually Updating Luma3DS", color=discord.Color(0xCE181E))
