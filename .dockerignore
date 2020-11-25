@@ -3,8 +3,8 @@ kurisudb
 .git
 .github
 .gitignore
-.travis.yml
 .dockerignore
+*.yml
 Dockerfile
 token.txt
 config.ini

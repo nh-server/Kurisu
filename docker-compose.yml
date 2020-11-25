@@ -15,7 +15,8 @@ services:
     restart: always
 
   kurisu:
-    image: ghcr.io/nh-server/kurisu
+    build: .
+    image: kurisutest
     environment:
       KURISU_TOKEN_FILE: /run/secrets/kurisu_token
       DB_USER: kurisu
