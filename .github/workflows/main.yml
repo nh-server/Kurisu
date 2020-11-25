@@ -70,7 +70,7 @@ jobs:
           webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
           message: Pulling on server
       - name: Pull on server
-        run: docker-compose pull
+        run: docker-compose -f docker-compose-prod.yml pull
         env:
           DOCKER_HOST: ${{ secrets.SSH_HOST }}
       - name: Send up webhook
@@ -81,6 +81,6 @@ jobs:
           webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
           message: Running on server
       - name: Run on server
-        run: docker-compose up -d
+        run: docker-compose -f docker-compose-prod.yml up -d
         env:
           DOCKER_HOST: ${{ secrets.SSH_HOST }}
