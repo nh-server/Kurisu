@@ -45,7 +45,9 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: ghcr.io/nh-server/kurisu:latest
-          build-args: COMMIT=${{ github.sha }},BRANCH=${{ github.ref }}
+          build-args: |
+            COMMIT=${{ github.sha }}
+            BRANCH=${{ github.ref }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
       - name: Image digest
