@@ -1,10 +1,12 @@
 data
+kurisudb
 .git
 .github
 .gitignore
 .travis.yml
 .dockerignore
 Dockerfile
+token.txt
 config.ini
 config.ini.example
 dockerbuild.sh

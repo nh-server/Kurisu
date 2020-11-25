@@ -3,30 +3,25 @@ services:
   db:
     image: postgres:13
     volumes:
-      - kurisudb:/var/lib/postgresql/data
+      - ./kurisudb:/var/lib/postgresql/data
     environment:
-      POSTGRES_USER_FILE: /run/secrets/db_user
-      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+      POSTGRES_USER: kurisu
+      POSTGRES_PASSWORD: dev123
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U kurisu"]
       interval: 10s
       timeout: 5s
       retries: 5
-    secrets:
-      - db_user
-      - db_password
     restart: always
 
   kurisu:
     image: ghcr.io/nh-server/kurisu
     environment:
       KURISU_TOKEN_FILE: /run/secrets/kurisu_token
-      DB_USER_FILE: /run/secrets/db_user
-      DB_PASSWORD_FILE: /run/secrets/db_password
+      DB_USER: kurisu
+      DB_PASSWORD: dev123
     secrets:
       - kurisu_token
-      - db_user
-      - db_password
     depends_on:
       db:
         condition: service_healthy
@@ -36,9 +31,5 @@ volumes:
   kurisudb:
 
 secrets:
-  db_user:
-    file: /opt/secrets/kurisu/db_user
-  db_password:
-    file: /opt/secrets/kurisu/db_password
   kurisu_token:
-    file: /opt/secrets/kurisu/token
+    file: ./token.txt

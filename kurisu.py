@@ -32,24 +32,22 @@ os.chdir(dir_path)
 
 # Load config
 if IS_DOCKER:
-    token_file = os.environ.get('KURISU_TOKEN')
-    if token_file:
-        with open(token_file, 'r', encoding='utf-8') as f:
-            TOKEN = f.readline().strip()
-    else:
-        sys.exit('Token path needs to be provided in the KURISU_TOKEN environment variable')
+    def get_env(name: str):
+        contents = os.environ.get(name)
+        if contents is None:
+            contents_file = os.environ.get(name + '_FILE')
+            try:
+                with open(contents_file, 'r', encoding='utf-8') as f:
+                    contents = f.readline().strip()
+            except FileNotFoundError:
+                sys.exit(f"Couldn't find environment variables {name} or {name}_FILE.")
 
-    db_user_file = os.environ.get('DB_USER')
-    db_password_file = os.environ.get('DB_PASSWORD')
+        return contents
 
-    if db_user_file and db_password_file:
-        with open(db_user_file, 'r', encoding='utf-8') as f:
-            db_user = f.readline().strip()
-        with open(db_password_file, 'r', encoding='utf-8') as f:
-            db_password = f.readline().strip()
-        DATABASE_URL = f"postgresql://{db_user}:{db_password}@db/{db_user}"
-    else:
-        sys.exit('Database user and database password files paths need to be provided')
+    TOKEN = get_env('KURISU_TOKEN')
+    db_user = get_env('DB_USER')
+    db_password = get_env('DB_PASSWORD')
+    DATABASE_URL = f"postgresql://{db_user}:{db_password}@db/{db_user}"
 else:
     kurisu_config = ConfigParser()
     kurisu_config.read("data/config.ini")
