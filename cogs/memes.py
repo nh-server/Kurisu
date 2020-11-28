@@ -198,13 +198,13 @@ class Memes(commands.Cog):
         await self._meme(ctx, "", imagelink="http://i.imgur.com/sBJKzuK.png")
 
     # Cute commands :3
-    @commands.command(hidden=True)
+    @commands.command(hidden=True, aliases=["pat"])
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def headpat(self, ctx, u: discord.Member):
         """headpat"""
         await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has been gently patted.", True, "http://i.imgur.com/7V6gIIW.jpg")
 
-    @commands.command(hidden=True)
+    @commands.command(hidden=True, aliases=["pat2"])
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def headpat2(self, ctx, u: discord.Member):
         """headpat 2"""
