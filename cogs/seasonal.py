@@ -53,7 +53,7 @@ class Seasonal(commands.Cog):
         t = datetime.today()
         curr_time = f"{t.month}.{t.day}"
         for season_ in self.seasons:
-            if (mode == "remove" and season_ == target) or (target == None and curr_time in season_):
+            if (mode == "remove" and season_.emote_str == target) or (target == None and curr_time in season_):
                 season = season_
                 break
         else:
