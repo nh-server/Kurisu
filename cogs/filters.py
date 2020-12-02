@@ -21,13 +21,14 @@ class Filter(commands.Cog):
     @is_staff("SuperOP")
     @wordfilter.command(name='add')
     async def add_word(self, ctx, word: str, *, kind: str):
+        word = word.lower()
         if kind not in self.bot.wordfilter.kinds:
             return await ctx.send(f"Possible word kinds for word filter: {', '.join(self.bot.wordfilter.kinds)}")
         if ' ' in word or '-' in word:
             return await ctx.send("Filtered words cant contain dashes or spaces!")
+        if self.bot.wordfilter.fetch_word(word):
+            return await ctx.send("This word is already in the filter!")
         entry = await self.bot.wordfilter.add(word=word, kind=kind)
-        if word is None:
-            return await ctx.send(f"Failed to add word to {kind} filter")
         await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added `{entry.word}` to the word filter!")
         await ctx.send("Successfully added word to word filter")
 

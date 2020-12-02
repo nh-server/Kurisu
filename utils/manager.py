@@ -13,7 +13,7 @@ class WordFilterManager:
     async def load(self):
         for kind in self.kinds:
             self.filter[kind] = []
-            for entry in await self.fetch(kind=kind):
+            for entry in await self.fetch_by_kind(kind=kind):
                 self.filter[kind].append(entry.word)
                 self.word_exp[entry.word] = re.compile(r"[ *_\-~]*".join(list(entry.word)))
         print("Loaded word filter")
@@ -24,16 +24,20 @@ class WordFilterManager:
         return entry
 
     @staticmethod
-    async def fetch(kind: str) -> List[FilteredWord]:
+    async def fetch_by_kind(kind: str) -> List[FilteredWord]:
         return await FilteredWord.query.where(FilteredWord.kind == kind).gino.all()
 
-    async def delete(self, word: str):
-        entry = await FilteredWord.get(word)
+    @staticmethod
+    async def fetch_word(word: str) -> Optional[FilteredWord]:
+        return await FilteredWord.get(word)
+
+    async def delete(self, word: str) -> Optional[FilteredWord]:
+        entry = await self.fetch_word(word)
         if entry:
             await entry.delete()
             self.filter[entry.kind].remove(entry.word)
             del self.word_exp[entry.word]
-            return entry
+        return entry
 
 
 class InviteFilterManager:
@@ -44,9 +48,9 @@ class InviteFilterManager:
         self.invites.clear()
         self.invites = await self.fetch_all()
 
-    async def add(self, code: str, alias: str, uses: int) -> Optional[ApprovedInvite]:
+    async def add(self, code: str, alias: str, uses: int) -> ApprovedInvite:
         entry = await ApprovedInvite.create(code=code, uses=uses, alias=alias)
-        await self.load()
+        self.invites.append(entry)
         return entry
 
     @staticmethod
@@ -70,4 +74,5 @@ class InviteFilterManager:
         entry = await self.fetch_invite_by_code(code)
         if entry:
             await entry.delete()
-            return entry
+            await self.load()
+        return entry
