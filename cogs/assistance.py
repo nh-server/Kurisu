@@ -200,7 +200,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                     "You can update safely.\n\n"
                 
                     "**Luma3DS 8.0 - 10.2**\n"
-                    "Follow the [manual Luma3DS update guide](https://gist.github.com/chenzw95/3b5b953c9c913e89fdda3c4c4d98d086), then you can update safely. Being on these Luma3DS "
+                    "Follow the [manual Luma3DS update guide](https://gist.github.com/lilyuwuu/3a7ba3dcd2476e6b5f4b6f66fa173bd6), then you can update safely. Being on these Luma3DS "
                     "versions on 11.8+ will cause an error screen until you update.\n\n"
                 
                     "**Luma3DS 7.1**\n"
