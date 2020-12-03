@@ -277,14 +277,14 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
             await ctx.send(embed=embed)
                                
     @commands.command(aliases = ["pirate3", "whatisp")
-     async def piracy(self, ctx)
-         """Links to Eip's page on piracy"""
-         embed = discord.Embed(title="Eip's Piracy Page", color=discord.Color(0xCE181E))
-         embed.set_author(Name="eip", url = "https://3ds.eiphax.tech/piracy")
-         embed.set__thumbnail(url="https://nintendohomebrew.com/pics/nhplai.png")                         
-         embed.url = "https://3ds.eiphax.tech/piracy"
-         embed.description = "A link to Eip's page on what piracy is and what it constitutes"
-         await ctx.send(embed=embed)
+    async def piracy(self, ctx):
+        """Links to Eip's page on piracy"""
+        embed = discord.Embed(title="Eip's Piracy Page", color=discord.Color(0xCE181E))
+        embed.set_author(Name="eip", url = "https://3ds.eiphax.tech/piracy")
+        embed.set__thumbnail(url="https://nintendohomebrew.com/pics/nhplai.png")                         
+        embed.url = "https://3ds.eiphax.tech/piracy"
+        embed.description = "A link to Eip's page on what piracy is and what it constitutes"
+        await ctx.send(embed=embed)
                                  
     @commands.command()
     async def updateb9s(self, ctx):
