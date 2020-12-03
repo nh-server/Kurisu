@@ -286,7 +286,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         embed.description = "A guide for updating to new B9S versions."
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(aliases = ["lumaupdate"])
     async def updateluma(self, ctx):
         """Links to the guide for updating Luma3DS manually (8.0 or later)"""
         embed = discord.Embed(title="Manually Updating Luma3DS", color=discord.Color(0xCE181E))
@@ -569,7 +569,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             -gparted for Linux: https://gparted.org/download.php
             -Disk Utility for macOS: https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010
             
-            IMPORTANT: On macOS, always select "MS-DOS (Windows)". Formatting will erase all data on the card. Make a backup first.
+            IMPORTANT: On macOS, always select "MS-DOS (Fat)". Formatting will erase all data on the card. Make a backup first.
             """)
             await ctx.send(embed=embed)
 
@@ -584,7 +584,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             -gparted for Linux: https://gparted.org/download.php
             -Disk Utility for macOS: https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010
             
-            IMPORTANT: On macOS, always select "MS-DOS (Windows)". Formatting will erase all data on the card. Make a backup first.
+            IMPORTANT: On macOS, always select "MS-DOS (Fat)". Formatting will erase all data on the card. Make a backup first.
             """)
             await ctx.send(embed=embed)
 
@@ -616,7 +616,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             -Disk Utility for macOS: https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010
             
             Once the new card is in FAT32, move all your content from the old SD to the new SD.
-            IMPORTANT: On macOS, always select "MS-DOS (Windows)". Formatting will erase all data on the card. Make a backup first.
+            IMPORTANT: On macOS, always select "MS-DOS (Fat)". Formatting will erase all data on the card. Make a backup first.
             IMPORTANT: Do not put the new SD card in the console before moving all your data to it.
             """)
             await ctx.send(embed=embed)
