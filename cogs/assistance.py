@@ -276,7 +276,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                     """))
             await ctx.send(embed=embed)
                                
-    @commands.command(aliases = ["pirate3", "whatisp")
+    @commands.command(aliases = ["pirate3", "whatisp"])
     async def piracy(self, ctx):
         """Links to Eip's page on piracy"""
         embed = discord.Embed(title="Eip's Piracy Page", color=discord.Color(0xCE181E))
