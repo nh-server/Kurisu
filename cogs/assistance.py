@@ -622,27 +622,13 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             await ctx.send(embed=embed)
 
         elif self.check_console(console, channelName, ('nx', 'switch', 'ns')):
-            embed = discord.Embed(title="Moving SD Cards", color=discord.Color.purple())
-            embed.description = cleandoc ("""
-            **How do I transfer to a larger SD Card?**
-            First off, your SD card should be in FAT32. Type `.bigsd nx` to learn more.
-            Do you have an emuMMC? If no, then simply copy and paste SD contents from one SD to the next.
-            If yes, do you have a partition based emuMMC or file based? (If you do not know which you have, launch the Hekate payload with the bootloader folder on your SD, click the emuMMC box, and it will tell you). 
-            If you have a file based emuMMC, simply copy and paste SD contents from one SD to the next.
-            
-            If you have a partition based emunand, there are two things you can do.
-            The easiest and safest option is to simply remake an emuMMC on the new SD card.
-            If you do this, make sure to backup your game saves on the old emuMMC and load them onto the new one.
-            Alternatively, you can backup your emuMMC (raw GPP and boot0/boot1) via Hekate (requires Hekate 5.3.0 or later) and then restore it to the partition on your new SD card.
-            WARNING: During both the backup and restoring (especially during the restoring), it is important to make sure the option at the bottom of Hekate that says "SD Raw Partition" is set to "ON."
-            If this option is not selected, you will alter your sysMMC.
-            
-            Both of the above will require you to partition the new SD card.
-            We suggest using the TegraExplorer payload to do this.
-            Once you have dealt with your emuMMC, copy and paste the remaining SD card contents from one SD to the next.
-            """)
+            embed = discord.Embed(title="Moving SD cards", color=discord.Color(0xCB0004))
+            embed.set_author(name="NH Discord Server", url="https://switchgui.de/switch-guide/")
+            embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
+            embed.url = "https://switchgui.de/switch-guide/extras/transfer_sd/"
+            embed.description = "A guide to moving SD cards with emuMMC"
             await ctx.send(embed=embed)
-
+                               
     @commands.command()
     async def catalyst(self, ctx, console=None):
         """Link to problem solvers"""
