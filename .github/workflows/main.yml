@@ -17,7 +17,7 @@ jobs:
           webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
           message: |
             Starting build for commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}) by ${{ github.actor }}
-            > ${{ github.event.head_commit.message }}
+            >>> ${{ github.event.head_commit.message }}
       - name: Checkout
         uses: actions/checkout@v2
       - name: Set up QEMU
