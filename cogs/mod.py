@@ -461,37 +461,6 @@ class Mod(commands.Cog):
 
     @is_staff("Helper")
     @commands.guild_only()
-    @commands.command(aliases=["mutehelp"])
-    async def helpmute(self, ctx, member: FetchMember, *, reason=""):
-        """Remove speak perms to the assistance channels. Staff and Helpers only."""
-        if await check_bot_or_staff(ctx, member, "helpmute"):
-            return
-        if not await crud.add_permanent_role(member.id, self.bot.roles['help-mute'].id):
-            # Check if the user has a timed restriction.
-            # If there is one, this will convert it to a permanent one.
-            # If not, it will display that it was already taken.
-            if not await crud.get_time_restrictions_by_user_type(member.id, 'timehelpmute'):
-                return await ctx.send("This user's mouth is already shut!")
-            else:
-                await crud.remove_timed_restriction(member.id, 'timehelpmute')
-        msg_user = "You lost send privileges in help channels!"
-        if isinstance(member, discord.Member):
-            await member.add_roles(self.bot.roles['No-Help'])
-            if reason != "":
-                msg_user += " The given reason is: " + reason
-            msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
-            await utils.send_dm_message(member, msg_user)
-        await ctx.send(f"{member.mention} can no longer speak in the help channels.")
-        msg = f"🚫 **Help mute applied**: {ctx.author.mention} removed speak access to help channels from {member.mention} | {self.bot.escape_text(member)}"
-        signature = utils.command_signature(ctx.command)
-        if reason != "":
-            msg += "\n✏️ __Reason__: " + reason
-        else:
-            msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
-        await self.bot.channels['mod-logs'].send(msg)
-
-    @is_staff("Helper")
-    @commands.guild_only()
     @commands.command(aliases=["yeshelp"])
     async def givehelp(self, ctx, member: FetchMember):
         """Restore access to the assistance channels. Staff and Helpers only."""
@@ -543,41 +512,6 @@ class Mod(commands.Cog):
             msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
         await self.bot.channels['mod-logs'].send(msg)
 
-    @is_staff("Helper")
-    @commands.guild_only()
-    @commands.command(aliases=["timemutehelp"])
-    async def timehelpmute(self, ctx, member: SafeMember, length, *, reason=""):
-        """Restricts a user from speaking in Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
-        if await check_bot_or_staff(ctx, member, "helpmute"):
-            return
-        issuer = ctx.author
-
-        if (seconds := utils.parse_time(length)) == -1:
-            return await ctx.send("💢 I don't understand your time format.")
-
-        delta = datetime.timedelta(seconds=seconds)
-        timestamp = datetime.datetime.now()
-
-        unhelpmute_time = timestamp + delta
-        unhelpmute_time_string = unhelpmute_time.strftime("%Y-%m-%d %H:%M:%S")
-
-        await crud.add_timed_restriction(member.id, unhelpmute_time, 'timehelpmute')
-        await crud.add_permanent_role(member.id, self.bot.roles['help-mute'].id)
-        await member.add_roles(self.bot.roles['help-mute'])
-        msg_user = "You lost send access to help channels temporarily!"
-        if reason != "":
-            msg_user += " The given reason is: " + reason
-        msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
-        msg_user += f"\n\nThis restriction expires {unhelpmute_time_string} {time.tzname[0]}."
-        await utils.send_dm_message(member, msg_user)
-        await ctx.send(f"{member.mention} can no longer speak in Assistance Channels.")
-        signature = utils.command_signature(ctx.command)
-        msg = f"🚫 **Timed Helpmute**: {issuer.mention} restricted {member.mention} for {delta}, until {unhelpmute_time_string} | {self.bot.escape_text(member)}"
-        if reason != "":
-            msg += "\n✏️ __Reason__: " + reason
-        else:
-            msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
-        await self.bot.channels['mod-logs'].send(msg)
 
     @is_staff("Helper")
     @commands.guild_only()
@@ -661,6 +595,87 @@ class Mod(commands.Cog):
             msg += "\n✏️ __Reason__: " + reason
         else:
             msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
+        await self.bot.channels['mod-logs'].send(msg)
+
+    @is_staff("Helper")
+    @commands.guild_only()
+    @commands.command(aliases=["mutehelp"])
+    async def helpmute(self, ctx, member: FetchMember, *, reason=""):
+        """Remove speak perms to the assistance channels. Staff and Helpers only."""
+        if await check_bot_or_staff(ctx, member, "helpmute"):
+            return
+        if not await crud.add_permanent_role(member.id, self.bot.roles['help-mute'].id):
+            if not await crud.get_time_restrictions_by_user_type(member.id, 'timehelpmute'):
+                return await ctx.send("This user is already helpmuted!")
+            else:
+                await crud.remove_timed_restriction(member.id, 'timehelpmute')
+        msg_user = "You muted in the help channels!"
+        if isinstance(member, discord.Member):
+            await member.add_roles(self.bot.roles['help-mute'])
+            if reason != "":
+                msg_user += " The given reason is: " + reason
+            msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
+            await utils.send_dm_message(member, msg_user)
+        await ctx.send(f"{member.mention} can no longer speak in the help channels.")
+        msg = f"🚫 **Help mute**: {ctx.author.mention} removed speak access in help channels from {member.mention} | {self.bot.escape_text(member)}"
+        signature = utils.command_signature(ctx.command)
+        if reason != "":
+            msg += "\n✏️ __Reason__: " + reason
+        else:
+            msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
+        await self.bot.channels['mod-logs'].send(msg)
+
+    @is_staff("Helper")
+    @commands.guild_only()
+    @commands.command(aliases=["timemutehelp"])
+    async def timehelpmute(self, ctx, member: SafeMember, length, *, reason=""):
+        """Restricts a user from speaking in Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
+        if await check_bot_or_staff(ctx, member, "helpmute"):
+            return
+        issuer = ctx.author
+
+        if (seconds := utils.parse_time(length)) == -1:
+            return await ctx.send("💢 I don't understand your time format.")
+
+        delta = datetime.timedelta(seconds=seconds)
+        timestamp = datetime.datetime.now()
+
+        unhelpmute_time = timestamp + delta
+        unhelpmute_time_string = unhelpmute_time.strftime("%Y-%m-%d %H:%M:%S")
+
+        await crud.add_timed_restriction(member.id, unhelpmute_time, 'timehelpmute')
+        await crud.add_permanent_role(member.id, self.bot.roles['help-mute'].id)
+        await member.add_roles(self.bot.roles['help-mute'])
+        msg_user = "You lost send access to help channels temporarily!"
+        if reason != "":
+            msg_user += " The given reason is: " + reason
+        msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
+        msg_user += f"\n\nThis restriction expires {unhelpmute_time_string} {time.tzname[0]}."
+        await utils.send_dm_message(member, msg_user)
+        await ctx.send(f"{member.mention} can no longer speak in the help channels.")
+        signature = utils.command_signature(ctx.command)
+        msg = f"🚫 **Timed Help mute**: {issuer.mention} help muted {member.mention} for {delta}, until {unhelpmute_time_string} | {self.bot.escape_text(member)}"
+        if reason != "":
+            msg += "\n✏️ __Reason__: " + reason
+        else:
+            msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
+        await self.bot.channels['mod-logs'].send(msg)
+
+    @is_staff("Helper")
+    @commands.guild_only()
+    @commands.command()
+    async def helpunmute(self, ctx, member: FetchMember):
+        """Provide access to small help channel for 1-on-1 help. Staff and Helpers only."""
+        if not await crud.remove_permanent_role(member.id, self.bot.roles["help-mute"].id):
+            return await ctx.send("This user is not help muted!")
+        if isinstance(member, discord.Member):
+            try:
+                await member.remove_roles(self.bot.roles['help-mute'])
+            except discord.errors.Forbidden:
+                await ctx.send("💢 I don't have permission to do this.")
+        await crud.remove_timed_restriction(member.id, 'timehelpmute')
+        await ctx.send(f"{member.mention} can now speak in the help channels again.")
+        msg = f"⭕ **Help unmuted**: {ctx.author.mention} help unmuted {member.mention} | {self.bot.escape_text(member)}"
         await self.bot.channels['mod-logs'].send(msg)
 
     @is_staff("Helper")
