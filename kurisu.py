@@ -130,6 +130,7 @@ class Kurisu(commands.Bot):
             'Nitro Booster': None,
             'crc': None,
             'No-Tech': None,
+            'help-mute': None,
         }
 
         self.actions = []

@@ -28,6 +28,8 @@ class Loop(commands.Cog):
     warning_time_period_ban = timedelta(minutes=30)
     warning_time_period_mute = timedelta(minutes=10)
     warning_time_period_nohelp = timedelta(minutes=10)
+    warning_time_period_notech = timedelta(minutes=10)
+    warning_time_period_helpmute = timedelta(minutes=10)
 
     tz = pytz.timezone('US/Pacific')
 
@@ -109,6 +111,7 @@ class Loop(commands.Cog):
                 timemutes = await crud.get_time_restrictions_by_type('timemute')
                 timenohelps = await crud.get_time_restrictions_by_type('timenohelp')
                 timenotechs = await crud.get_time_restrictions_by_type('timenotech')
+                timehelpmutes = await crud.get_time_restrictions_by_type('timehelpmute')
 
                 for timeban in timebans:
                     unban_time = timeban.end_date
@@ -161,6 +164,22 @@ class Loop(commands.Cog):
                         if current_timestamp > warning_time:
                             await crud.set_time_restriction_alert(timenohelp.user, 'timenohelp')
                             await self.bot.channels['helpers'].send(f"**Note**: <@{timenohelp.user}> no-help restriction will expire in {((timenohelp.end_date - current_timestamp).seconds // 60) + 1} minutes.")
+
+                for timehelpmute in timehelpmutes:
+                    if current_timestamp > timehelpmute.end_date:
+                        await crud.remove_timed_restriction(timehelpmute.user, "timehelpmute")
+                        await crud.remove_permanent_role(timehelpmute.user, self.bot.roles['help-mute'].id)
+                        msg = f"⭕️ **Help Mute expired**: <@{timehelpmute.user}>"
+                        await self.bot.channels['mod-logs'].send(msg)
+                        await self.bot.channels['helpers'].send(msg)
+                        member = self.bot.guild.get_member(timehelpmute.user)
+                        if member:
+                            await member.remove_roles(self.bot.roles['help-mute'])
+                    elif not timehelpmute.alerted:
+                        warning_time = timehelpmute.end_date - self.warning_time_period_helpmute
+                        if current_timestamp > warning_time:
+                            await crud.set_time_restriction_alert(timehelpmute.user, 'timehelpmute')
+                            await self.bot.channels['helpers'].send(f"**Note**: <@{timehelpmute.user}> help mute will expire in {((timehelpmute.end_date - current_timestamp).seconds // 60) + 1} minutes.")
 
                 for timenotech in timenotechs:
                     if current_timestamp > timenotech.end_date:
