@@ -568,11 +568,11 @@ class Mod(commands.Cog):
         if reason != "":
             msg_user += " The given reason is: " + reason
         msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
-        msg_user += f"\n\nThis restriction expires {unnohelp_time_string} {time.tzname[0]}."
+        msg_user += f"\n\nThis restriction expires {unhelpmute_time_string} {time.tzname[0]}."
         await utils.send_dm_message(member, msg_user)
         await ctx.send(f"{member.mention} can no longer speak in Assistance Channels.")
         signature = utils.command_signature(ctx.command)
-        msg = f"🚫 **Timed Helpmute**: {issuer.mention} restricted {member.mention} for {delta}, until {unnohelp_time_string} | {self.bot.escape_text(member)}"
+        msg = f"🚫 **Timed Helpmute**: {issuer.mention} restricted {member.mention} for {delta}, until {unhelpmute_time_string} | {self.bot.escape_text(member)}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         else:
