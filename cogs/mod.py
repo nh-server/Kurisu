@@ -665,7 +665,7 @@ class Mod(commands.Cog):
     @commands.guild_only()
     @commands.command()
     async def helpunmute(self, ctx, member: FetchMember):
-        """Provide access to small help channel for 1-on-1 help. Staff and Helpers only."""
+        """Restores speak access to help channels. Helpers+ only."""
         if not await crud.remove_permanent_role(member.id, self.bot.roles["help-mute"].id):
             return await ctx.send("This user is not help muted!")
         if isinstance(member, discord.Member):
