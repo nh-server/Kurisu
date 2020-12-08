@@ -1,4 +1,4 @@
-FROM python:3.8-slim-buster
+FROM python:3.8-slim
 LABEL org.opencontainers.image.source https://github.com/nh-server/Kurisu
 ENV IS_DOCKER=1
 ENV PYTHONUNBUFFERED=1
