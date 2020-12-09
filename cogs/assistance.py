@@ -1511,10 +1511,11 @@ in the scene.
 
     @commands.command(aliases=['ntrboot', 'ntrcartlist', 'ntrbootcartlist'])
     async def ntrcart(self, ctx):
-        imagelink = "https://i.imgur.com/362bH8k.png"
+        imagelink = "https://i.imgur.com/CxRwyUX.png"
         title = "Which flashcarts work with NTRBoot?"
         embed = discord.Embed(title=title, color=discord.Color.default())
         embed.set_image(url=imagelink)
+        embed.description = "To see an always up to date list of compatible flashcarts go to https://3ds.hacks.guide/ntrboot"
         await ctx.send(embed=embed)
 
     @commands.command(aliases=['injector'])
