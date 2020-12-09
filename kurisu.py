@@ -22,6 +22,7 @@ from discord.ext import commands
 from utils.checks import check_staff_id
 from utils.manager import WordFilterManager, InviteFilterManager
 from utils import models, crud
+from utils.utils import create_error_embed
 from utils.models import db
 
 IS_DOCKER = os.environ.get('IS_DOCKER', 0)
@@ -331,18 +332,12 @@ class Kurisu(commands.Bot):
 
         elif isinstance(exc, commands.CommandInvokeError):
             await ctx.send(f'{author.mention} `{command}` raised an exception during usage')
-            msg = "".join(format_exception(type(exc), exc, exc.__traceback__))
-            error_paginator = self.format_error(msg)
-            for page in error_paginator.pages:
-                await channel.send(page)
+            embed = create_error_embed(ctx, exc)
+            await channel.send(embed=embed)
         else:
-            if not isinstance(command, str):
-                command.reset_cooldown(ctx)
             await ctx.send(f'{author.mention} Unexpected exception occurred while using the command `{command}`')
-            msg = "".join(format_exception(type(exc), exc, exc.__traceback__))
-            error_paginator = self.format_error(msg)
-            for page in error_paginator.pages:
-                await channel.send(page)
+            embed = create_error_embed(ctx, exc)
+            await channel.send(embed=embed)
 
     async def on_error(self, event_method, *args, **kwargs):
         await self.channels['bot-err'].send(f'Error in {event_method}:')
