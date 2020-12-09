@@ -26,7 +26,7 @@ class Filter(commands.Cog):
             return await ctx.send(f"Possible word kinds for word filter: {', '.join(self.bot.wordfilter.kinds)}")
         if ' ' in word or '-' in word:
             return await ctx.send("Filtered words cant contain dashes or spaces!")
-        if self.bot.wordfilter.fetch_word(word):
+        if await self.bot.wordfilter.fetch_word(word):
             return await ctx.send("This word is already in the filter!")
         entry = await self.bot.wordfilter.add(word=word, kind=kind)
         await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added `{entry.word}` to the word filter!")
