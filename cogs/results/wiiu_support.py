@@ -483,17 +483,17 @@ def is_valid(error):
 def construct_support(ret, mod, desc):
     category = modules.get(mod, Module(''))
     if category.name:
-        ret.add_field(ConsoleErrorField('Category', message_str = category.name))
+        ret.add_field(ConsoleErrorField('Category', message_str=category.name))
     else:
-        ret.add_field(ConsoleErrorField('Category', supplementary_value = mod))
+        ret.add_field(ConsoleErrorField('Category', supplementary_value=mod))
     summary = category.get_summary(desc)
     if summary:
-        ret.add_field(ConsoleErrorField('Summary', message_str = summary))
+        ret.add_field(ConsoleErrorField('Summary', message_str=summary))
     description = category.get_error(desc)
     if description is not None and description.description:
-        ret.add_field(ConsoleErrorField('Description', message_str = description.description))
+        ret.add_field(ConsoleErrorField('Description', message_str=description.description))
         if description.support_url:
-            ret.add_field(ConsoleErrorField('Further information', message_str = description.support_url))
+            ret.add_field(ConsoleErrorField('Further information', message_str=description.support_url))
         if description.is_ban:
             ret.add_field(BANNED_FIELD)
             ret.color = WARNING_COLOR
@@ -507,4 +507,3 @@ def get(error):
     desc = int(error[4:])
     ret = ConsoleErrorInfo(error, CONSOLE_NAME, COLOR)
     return construct_support(ret, mod, desc)
-

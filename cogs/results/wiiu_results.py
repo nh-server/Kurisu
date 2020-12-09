@@ -18,7 +18,7 @@ Level: A value indicating the severity of the issue (fatal, temporary, etc.).
 Module: A value indicating who raised the error or returned the result.
 Description: A value indicating exactly what happened.
 
-Alternatively, legacy results break down to: 
+Alternatively, legacy results break down to:
 
  Bits | Description
 -------------------
@@ -3286,18 +3286,18 @@ legacy_modules = {
 
 levels = {
     0: 'Success',
-    1: 'End', # -7
-    5: 'Status', # -3
-    6: 'Usage', # -2
-    7: 'Fatal' # -1
+    1: 'End',  # -7
+    5: 'Status',  # -3
+    6: 'Usage',  # -2
+    7: 'Fatal'  # -1
 }
 
 legacy_levels = {
     1: 'Info',
-    9: 'Temporary', # -7
-    10: 'Permanent', # -6
-    11: 'Reinit', # -5
-    12: 'Reset' # -4
+    9: 'Temporary',  # -7
+    10: 'Permanent',  # -6
+    11: 'Reinit',  # -5
+    12: 'Reset'  # -4
 }
 
 legacy_summary = {
@@ -3336,21 +3336,21 @@ def is_valid(error: str):
 def construct_result(ret, mod, summary, level, desc, is_legacy):
     module = (legacy_modules if is_legacy else modules).get(mod, Module(''))
     common = (legacy_modules if is_legacy else modules)[0]
-    ret.add_field(ConsoleErrorField('Module', message_str = module.name, supplementary_value = mod))
+    ret.add_field(ConsoleErrorField('Module', message_str=module.name, supplementary_value=mod))
     if is_legacy:
         ret.extra_description = "Legacy result"
     if is_legacy and summary is not None:
-        ret.add_field(ConsoleErrorField('Summary', message_str = legacy_summary.get(summary, ''), supplementary_value = summary))
-    ret.add_field(ConsoleErrorField('Level', message_str = (legacy_levels if is_legacy else levels).get(level, ''), supplementary_value = level))
+        ret.add_field(ConsoleErrorField('Summary', message_str=legacy_summary.get(summary, ''), supplementary_value=summary))
+    ret.add_field(ConsoleErrorField('Level', message_str=(legacy_levels if is_legacy else levels).get(level, ''), supplementary_value=level))
     description = module.get_error(desc)
     if description is None:
         description = common.get_error(desc)
         if description is None:
-            ret.add_field(ConsoleErrorField('Description', supplementary_value = desc))
+            ret.add_field(ConsoleErrorField('Description', supplementary_value=desc))
         else:
-            ret.add_field(ConsoleErrorField('Description', message_str = description.description, supplementary_value = desc))
+            ret.add_field(ConsoleErrorField('Description', message_str=description.description, supplementary_value=desc))
     else:
-        ret.add_field(ConsoleErrorField('Description', message_str = description.description, supplementary_value = desc))
+        ret.add_field(ConsoleErrorField('Description', message_str=description.description, supplementary_value=desc))
 
     return ret
 
@@ -3373,4 +3373,3 @@ def get(error: str):
 
     ret = ConsoleErrorInfo(error, CONSOLE_NAME, COLOR)
     return construct_result(ret, mod, summary, level, desc, is_legacy)
-

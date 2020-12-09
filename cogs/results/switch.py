@@ -379,7 +379,8 @@ fs = Module('fs', {
     6300: ResultInfo('Operation not supported.'),
     6301: ResultInfo('A specified filesystem has no MultiCommitTarget when doing a multi-filesystem commit.'),
     6302: ResultInfo('Attempted to resize a nn::fs::SubStorage or BufferedStorage that is marked as non-resizable.'),
-    6303: ResultInfo('Attempted to resize a nn::fs::SubStorage or BufferedStorage when the SubStorage ends before the base storage.'),
+    6303: ResultInfo(
+        'Attempted to resize a nn::fs::SubStorage or BufferedStorage when the SubStorage ends before the base storage.'),
     6304: ResultInfo('Attempted to call nn::fs::MemoryStorage::SetSize.'),
     6305: ResultInfo('Invalid Operation ID in nn::fs::MemoryStorage::OperateRange.'),
     6306: ResultInfo('Invalid Operation ID in nn::fs::FileStorage::OperateRange.'),
@@ -395,10 +396,12 @@ fs = Module('fs', {
     6316: ResultInfo('Attempted to call nn::fssystem::save::HierarchicalIntegrityVerificationStorage::SetSize.'),
     6317: ResultInfo('Attempted to call nn::fssystem::save::HierarchicalIntegrityVerificationStorage::OperateRange.'),
     6318: ResultInfo('Attempted to call nn::fssystem::save::IntegrityVerificationStorage::SetSize.'),
-    6319: ResultInfo('Attempted to invalidate the cache of a RomFs IVFC storage in nn::fssystem::save::IntegrityVerificationStorage::OperateRange.'),
+    6319: ResultInfo(
+        'Attempted to invalidate the cache of a RomFs IVFC storage in nn::fssystem::save::IntegrityVerificationStorage::OperateRange.'),
     6320: ResultInfo('Invalid Operation ID in nn::fssystem::save::IntegrityVerificationStorage::OperateRange.'),
     6321: ResultInfo('Attempted to call nn::fssystem::save::BlockCacheBufferedStorage::SetSize.'),
-    6322: ResultInfo('Attempted to invalidate the cache of something other than a savedata IVFC storage in nn::fssystem::save::BlockCacheBufferedStorage::OperateRange.'),
+    6322: ResultInfo(
+        'Attempted to invalidate the cache of something other than a savedata IVFC storage in nn::fssystem::save::BlockCacheBufferedStorage::OperateRange.'),
     6323: ResultInfo('Invalid Operation ID in nn::fssystem::save::BlockCacheBufferedStorage::OperateRange.'),
     6324: ResultInfo('Attempted to call nn::fssystem::IndirectStorage::Write.'),
     6325: ResultInfo('Attempted to call nn::fssystem::IndirectStorage::SetSize.'),
@@ -455,7 +458,8 @@ fs = Module('fs', {
     6376: ResultInfo('Attempted to call nn::fssystem::PartitionFileSystemCore::PartitionFile::DoSetSize.'),
     6377: ResultInfo('Invalid Operation ID in nn::fssystem::PartitionFileSystemCore::PartitionFile::DoOperateRange.'),
     6378: ResultInfo('Invalid Operation ID in nn::fssystem::TmFileSystemFile::DoOperateRange.'),
-    6379: ResultInfo('Attempted to call unsupported functions in nn::fssrv::fscreator::SaveDataInternalStorageFileSystem, nn::fssrv::detail::SaveDataInternalStorageAccessor::PaddingFile or nn::fssystem::save::detail::SaveDataExtraDataInternalStorageFile.'),
+    6379: ResultInfo(
+        'Attempted to call unsupported functions in nn::fssrv::fscreator::SaveDataInternalStorageFileSystem, nn::fssrv::detail::SaveDataInternalStorageAccessor::PaddingFile or nn::fssystem::save::detail::SaveDataExtraDataInternalStorageFile.'),
     6382: ResultInfo('Attempted to call nn::fssystem::ApplicationTemporaryFileSystem::DoCommitProvisionally.'),
     6383: ResultInfo('Attempted to call nn::fssystem::SaveDataFileSystem::DoCommitProvisionally.'),
     6384: ResultInfo('Attempted to call nn::fssystem::DirectorySaveDataFileSystem::DoCommitProvisionally.'),
@@ -1735,19 +1739,19 @@ def get(error):
         code = (err_int >> 9) & 0x3FFF
         sec_error = hex2err(error)
 
-    ret = ConsoleErrorInfo(error, CONSOLE_NAME, COLOR, secondary_error = sec_error)
+    ret = ConsoleErrorInfo(error, CONSOLE_NAME, COLOR, secondary_error=sec_error)
     module = modules.get(mod, Module(''))
-    ret.add_field(ConsoleErrorField('Module', message_str = module.name, supplementary_value = mod))
+    ret.add_field(ConsoleErrorField('Module', message_str=module.name, supplementary_value=mod))
     summary = module.get_summary(code)
     if summary:
-        ret.add_field(ConsoleErrorField('Summary', message_str = summary))
+        ret.add_field(ConsoleErrorField('Summary', message_str=summary))
     description = module.get_error(code)
     if description is None or not description.description:
-        ret.add_field(ConsoleErrorField('Description', supplementary_value = code))
+        ret.add_field(ConsoleErrorField('Description', supplementary_value=code))
     else:
-        ret.add_field(ConsoleErrorField('Description', message_str = description.description, supplementary_value = code))
+        ret.add_field(ConsoleErrorField('Description', message_str=description.description, supplementary_value=code))
         if description.support_url:
-            ret.add_field(ConsoleErrorField('Further information', message_str = description.support_url))
+            ret.add_field(ConsoleErrorField('Further information', message_str=description.support_url))
         if description.is_ban:
             ret.add_field(BANNED_FIELD)
             ret.color = WARNING_COLOR
