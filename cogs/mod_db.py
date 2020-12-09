@@ -50,7 +50,7 @@ class ModDB(commands.Cog):
 
     @is_staff('Owner')
     @commands.command()
-    async def setflag(self, ctx, name, value:bool):
+    async def setflag(self, ctx, name, value: bool):
         """Sets a config flag in the database. Owners only."""
         if await crud.get_flag(name) is not None:
             await crud.set_flag(name, value)

@@ -99,7 +99,7 @@ class KickBan(commands.Cog):
             return await ctx.send(f"{user} is not banned!")
 
         await crud.remove_timed_restriction(user.id, 'timeban')
-        self.bot.actions.append("tbr:"+str(user.id))
+        self.bot.actions.append("tbr:" + str(user.id))
         await ctx.guild.unban(user, reason=reason)
         await ctx.send(f"{user} is now unbanned.")
         msg = f"⚠ **Unban**: {ctx.author.mention} unbanned {user.mention} | {self.bot.escape_text(user)}\n🏷 __User ID__: {user.id}\n✏️ __Reason__: {reason}"

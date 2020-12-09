@@ -77,7 +77,7 @@ class Loop(commands.Cog):
                 if now < end:
                     entry_name = "{} {}: {}".format(
                         "Current" if begin <= now else "Upcoming",
-                        descriptor, 
+                        descriptor,
                         entry["software_title"].replace(' <br />\r\n', ', ')
                     )
                     if "services" in entry:

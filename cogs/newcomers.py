@@ -15,7 +15,7 @@ class Newcomers(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.bot.loop.create_task(self.init()) # We can't do proper init here.
+        self.bot.loop.create_task(self.init())  # We can't do proper init here.
 
     async def init(self):
         await self.bot.wait_until_all_ready()
@@ -32,7 +32,7 @@ class Newcomers(commands.Cog):
         if self.autoprobate:
             await member.add_roles(self.bot.roles['Probation'], reason="Auto-probation")
 
-    async def autoprobate_handler(self, ctx, enabled:bool=None):
+    async def autoprobate_handler(self, ctx, enabled: bool = None):
         if enabled is not None:
             self.autoprobate = enabled
             await crud.set_flag('auto_probation', enabled)
@@ -65,7 +65,7 @@ class Newcomers(commands.Cog):
     @is_staff('OP')
     @commands.guild_only()
     @commands.command()
-    async def ncprune(self, ctx, days:int=7):
+    async def ncprune(self, ctx, days: int = 7):
         await ctx.guild.prune_members(days=days, compute_prune_count=False, roles=[self.bot.roles['Probation']], reason='Auto-probation pruning')
         await ctx.send('Prune complete. ✅')
 
@@ -75,9 +75,9 @@ class Newcomers(commands.Cog):
     async def ncready(self, ctx, *, reason=""):
         """Alerts online staff to a ready request in newcomers."""
         newcomers = self.bot.channels['newcomers']
-        reason = reason[:300] # truncate to 300 chars so kurisu doesn't send absurdly huge messages
-        reason = re.sub(r'[^\x20-\x5b\x5d-\x7f]', r'', reason) # filter out non-ascii and backslash
-        reason = discord.utils.escape_mentions(reason) # remove all other mentions, in case escaping tricks are attempted
+        reason = reason[:300]  # truncate to 300 chars so kurisu doesn't send absurdly huge messages
+        reason = re.sub(r'[^\x20-\x5b\x5d-\x7f]', r'', reason)  # filter out non-ascii and backslash
+        reason = discord.utils.escape_mentions(reason)  # remove all other mentions, in case escaping tricks are attempted
 
         await ctx.message.delete()
 
@@ -96,4 +96,3 @@ with a brief message explaining your situation (e.g., `.ready hey guys, i was ha
 
 def setup(bot):
     bot.add_cog(Newcomers(bot))
-

@@ -87,7 +87,7 @@ class Events(commands.Cog):
         contains_video = any(res)
         contains_piracy_video_id = False if not contains_video else any(x for x in res if x in self.bot.wordfilter.filter['piracy video'])
 
-        res = re.findall('(?:discordapp\.com/invite|discord\.gg)/([\w]+)', message.content)
+        res = re.findall(r'(?:discordapp\.com/invite|discord\.gg)/([\w]+)', message.content)
         approved_invites = [x for x in self.bot.invitefilter.invites if x.code in res]
         contains_non_approved_invite = len(res) != len(approved_invites)
 

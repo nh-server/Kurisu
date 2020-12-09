@@ -181,7 +181,7 @@ class Lockdown(commands.Cog):
 
         ishelper = not await check_staff_id("HalfOP", author.id)
         unlocked = []
-        
+
         for c in channels:
             if c not in self.bot.assistance_channels and ishelper:
                 await ctx.send(f"{ctx.author.mention} {c.mention} can't be unlocked by a helper.")

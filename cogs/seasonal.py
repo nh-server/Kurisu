@@ -53,7 +53,7 @@ class Seasonal(commands.Cog):
         t = datetime.today()
         curr_time = f"{t.month}.{t.day}"
         for season_ in self.seasons:
-            if (mode == "remove" and season_.emote_str == target) or (target == None and curr_time in season_):
+            if (mode == "remove" and season_.emote_str == target) or (target is None and curr_time in season_):
                 season = season_
                 break
         else:
@@ -61,7 +61,7 @@ class Seasonal(commands.Cog):
                 return await ctx.send(
                     "There is no special season happening right now "
                     "or it hasn't been implemented yet."
-                )    
+                )
             return await ctx.send(
                 "There is no season with the name you specified."
             )
@@ -97,7 +97,7 @@ class Seasonal(commands.Cog):
                         "Your nickname doesn't contain the current/requested"
                         f" seasonal emote [{season.emote} | '{season.emote_str}']"
                     )
-            
+
                 if len(new_nick) == 0:
                     return await ctx.send("💢 I can't completely remove your nick!")
             elif bool(search(season.emote_regex, ctx.author.name)):
@@ -110,12 +110,12 @@ class Seasonal(commands.Cog):
             await ctx.send(f"Your nickname is now `{ctx.author.display_name}`")
         except discord.errors.Forbidden:
             await ctx.send("💢  I can't change your nickname! (Permission Error)")
-    
+
     @commands.guild_only()
     @commands.command()
     async def seasonal(self, ctx):
         """Adds the emote of the current season to your name.
-        
+
         You can see which seasons exist and when they are by typing .seasonals
         """
         return await self._seasonal_impl(ctx, "add")
@@ -123,13 +123,13 @@ class Seasonal(commands.Cog):
     @commands.guild_only()
     @commands.command()
     async def noseasonal(self, ctx, *, target: str = None):
-        """Removes the emote of the current season (or any you want) 
-        from your name.  
-        
+        """Removes the emote of the current season (or any you want)
+        from your name.
+
         You can see which seasons exist and when they are by typing .seasonals
         """
         return await self._seasonal_impl(ctx, "remove", target)
-    
+
     @commands.command(aliases=["seasons"])
     async def seasonals(self, ctx):
         """Lists all available seasons."""
@@ -146,6 +146,7 @@ class Seasonal(commands.Cog):
             )
             + "```"
         )
+
 
 def setup(bot):
     bot.add_cog(Seasonal(bot))

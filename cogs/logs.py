@@ -27,7 +27,7 @@ By participating in this server, you acknowledge that user data (including messa
 Thanks for stopping by and have a good time!
 """  # ughhhhhhhh
 
-    nitro_msg= """
+    nitro_msg = """
 Thanks for boosting <:nitro:641446520675368971> Nintendo Homebrew!
 As a Nitro Booster you have the following bonuses:
     - React permissions in <#314856589716750346>, <#485138525885431808>, and <#300388576451887104>.
@@ -48,7 +48,7 @@ Thanks for boosting and have a good time!
                 message_sent = True
             except discord.errors.Forbidden:
                 pass
-            self.bot.actions.append("sbk:"+str(member.id))
+            self.bot.actions.append("sbk:" + str(member.id))
             await member.kick()
             msg = f"🚨 **Attempted join**: {member.mention} is soft-banned by <@{softban.issuer}> | {self.bot.escape_text(member)}"
             if not message_sent:
@@ -78,33 +78,33 @@ Thanks for boosting and have a good time!
     @commands.Cog.listener()
     async def on_member_remove(self, member):
         await self.bot.wait_until_all_ready()
-        if "uk:"+str(member.id) in self.bot.actions:
-            self.bot.actions.remove("uk:"+str(member.id))
+        if "uk:" + str(member.id) in self.bot.actions:
+            self.bot.actions.remove("uk:" + str(member.id))
             return
-        if "sbk:"+str(member.id) in self.bot.actions:
-            self.bot.actions.remove("sbk:"+str(member.id))
+        if "sbk:" + str(member.id) in self.bot.actions:
+            self.bot.actions.remove("sbk:" + str(member.id))
             return
-        if self.bot.pruning != 0 and "wk:"+str(member.id) not in self.bot.actions:
+        if self.bot.pruning != 0 and "wk:" + str(member.id) not in self.bot.actions:
             self.bot.pruning -= 1
             if self.bot.pruning == 0:
                 await self.bot.channels['mods'].send("Pruning finished!")
             return
         msg = f"{'👢 **Auto-kick**' if 'wk:' + str(member.id) in self.bot.actions else '⬅️ **Leave**'}: {member.mention} | {self.bot.escape_text(member)}\n🏷 __User ID__: {member.id}"
         await self.bot.channels['server-logs'].send(msg)
-        if "wk:"+str(member.id) in self.bot.actions:
-            self.bot.actions.remove("wk:"+str(member.id))
+        if "wk:" + str(member.id) in self.bot.actions:
+            self.bot.actions.remove("wk:" + str(member.id))
             await self.bot.channels['mod-logs'].send(msg)
 
     @commands.Cog.listener()
     async def on_member_ban(self, guild, member):
         await self.bot.wait_until_all_ready()
-        if "ub:"+str(member.id) in self.bot.actions:
-            self.bot.actions.remove("ub:"+str(member.id))
+        if "ub:" + str(member.id) in self.bot.actions:
+            self.bot.actions.remove("ub:" + str(member.id))
             return
         msg = f"{'⛔ **Auto-ban**' if 'wb:' + str(member.id) in self.bot.actions else '⛔ **Ban**'}: {member.mention} | {self.bot.escape_text(member)}\n🏷 __User ID__: {member.id}"
         await self.bot.channels['server-logs'].send(msg)
-        if "wb:"+str(member.id) in self.bot.actions:
-            self.bot.actions.remove("wb:"+str(member.id))
+        if "wb:" + str(member.id) in self.bot.actions:
+            self.bot.actions.remove("wb:" + str(member.id))
         else:
             msg += "\nThe responsible staff member should add an explanation below."
         await self.bot.channels['mod-logs'].send(msg)
@@ -112,8 +112,8 @@ Thanks for boosting and have a good time!
     @commands.Cog.listener()
     async def on_member_unban(self, guild, user):
         await self.bot.wait_until_all_ready()
-        if "tbr:"+str(user.id) in self.bot.actions:
-            self.bot.actions.remove("tbr:"+str(user.id))
+        if "tbr:" + str(user.id) in self.bot.actions:
+            self.bot.actions.remove("tbr:" + str(user.id))
             return
         msg = f"⚠️ **Unban**: {user.mention} | {self.bot.escape_text(user)}"
         if await crud.get_time_restrictions_by_user_type(user.id, 'timeban'):

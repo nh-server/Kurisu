@@ -206,7 +206,7 @@ class Extras(commands.Cog):
             with open(f"#{channel.name}-{channel.id}/{message.id}.txt", "w") as f:
                 f.write(message.content)
         await ctx.send("Done!")
-        
+
     @commands.guild_only()
     @commands.command(hidden=True)
     async def togglechannel(self, ctx, channelname):

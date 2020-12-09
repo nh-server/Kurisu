@@ -56,7 +56,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         channelName = ""
         if not isinstance(ctx.channel, discord.DMChannel):
             channelName = ctx.channel.name
-            
+
         if not consoleslist:
             if channelName.startswith(self.systems):
                 consoleslist = ['auto']
@@ -198,19 +198,19 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
 
                     "**Luma3DS 10.2.1 and above**\n"
                     "You can update safely.\n\n"
-                
+
                     "**Luma3DS 8.0 - 10.2**\n"
                     "Follow the [manual Luma3DS update guide](https://gist.github.com/lilyuwuu/3a7ba3dcd2476e6b5f4b6f66fa173bd6), then you can update safely. Being on these Luma3DS "
                     "versions on 11.8+ will cause an error screen until you update.\n\n"
-                
+
                     "**Luma3DS 7.1**\n"
                     "Follow the [B9S upgrade guide](https://3ds.hacks.guide/updating-b9s)\n\n"
-                
+
                     "**Luma3DS 7.0.5 and below**\n"
                     "Follow the [a9lh-to-b9s guide](https://3ds.hacks.guide/a9lh-to-b9s)\n\n"
-                 
+
                     "**To find out your Luma3DS version, hold select on bootup and look at the top left corner of the top screen**\n"
-                )
+                                        )
 
             elif self.check_console(console, channelName, ("switch", "nx", "ns")):
                 embed = discord.Embed(title="Updating Guide", color=discord.Color(0xCB0004))
@@ -286,7 +286,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         embed.description = "A guide for updating to new B9S versions."
         await ctx.send(embed=embed)
 
-    @commands.command(aliases = ["lumaupdate"])
+    @commands.command(aliases=["lumaupdate"])
     async def updateluma(self, ctx):
         """Links to the guide for updating Luma3DS manually (8.0 or later)"""
         embed = discord.Embed(title="Manually Updating Luma3DS", color=discord.Color(0xCE181E))
@@ -313,9 +313,9 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         embed.description = "A9LH + b9stool information"
         embed.add_field(name="Guide and Advice", value=cleandoc("""
                 If you are seeing an "arm9loaderhax detected!" message in b9stool, you should attempt to boot into the luma configuration menu before simply pressing A. If you can access the config, you should follow the normal a9lh-to-b9s guide instead of using b9stool.
-                
+
                 If you appear to not actually have a9lh installed, you may press A to continue in b9stool. Once you do so and unlock NAND writing, one of two things will happen. If you reboot into an installer and then a luma config, you did actually have a9lh and it was successfully replaced with b9s. If you reboot to the home menu normally, you did not have a9lh and you should run b9stool again once.
-                
+
                 If you're seeing an "a9lh detected! brick avoided!" error, you are on an old version of b9stool and should update your boot.nds to the latest.
                 """))
         await ctx.send(embed=embed)
@@ -452,11 +452,11 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             embed = discord.Embed(title="Is the new 3DS update safe?", color=0xe60012)
             embed.description = cleandoc("""
             Currently, the latest 3DS system firmware is `11.14.0-46`.
-            
+
             If you currently have CFW installed (boot9strap/Luma):
             Is your Luma version up to date? If your Luma version is 10.2.1 or above, **updating is safe**.
             If it is 10.2 or below, please type `.update` in <#261581918653513729> and follow the information there.
-            
+
             If you DO NOT currently have CFW installed (stock console):
             11.14.0-46 can be hacked with current methods. **Updating is safe**.
             *Last edited: November 16th, 2020*
@@ -471,7 +471,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             If your Switch is **unpatched and can access RCM**:
             Atmosphere and Hekate currently support 11.0.0, and unpatched units will always be hackable.
             You should follow the precautions in our update guide, and always update Atmosphere and Hekate before updating the system firmware.
-            
+
             If your Switch is **hardware patched and cannot access RCM**:
             Stay on the lowest possible firmware version. Any Switch that is patched and above 7.0.1 is unlikely to be hackable.
             *Last edited: December 04, 2020*
@@ -526,11 +526,11 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
 
         if self.check_console(console, channelName, '3ds'):
             embed = discord.Embed(title="3DS Bans", color=discord.Color.purple())
-            embed.description = cleandoc ("""
+            embed.description = cleandoc("""
             Nintendo has shown a marked lack of care about bans on the 3DS lately.
             However, such things as piracy and cheating online/cheating in multiplayer games have been known causes for NNID/console bans in the past.
             eShop fraud (eg credit card chargebacks) will also get you banned.
-            
+
             You can enable online status and Spotpass/Streetpass as these do not seem to be high risk at this time.
             """)
             await ctx.send(embed=embed)
@@ -564,26 +564,26 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             Although Nintendo says the official SD size limit is 32GB, the 3DS can accept cards up to 2TB.
             In order to use them, you will have to format them to FAT32 first.
             You can do this using these tools:
-            
+
             -GUIFormat for Windows: http://ridgecrop.co.uk/index.htm?guiformat.htm
             -gparted for Linux: https://gparted.org/download.php
             -Disk Utility for macOS: https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010
-            
+
             IMPORTANT: On macOS, always select "MS-DOS (Fat)". Formatting will erase all data on the card. Make a backup first.
             """)
             await ctx.send(embed=embed)
 
         elif self.check_console(console, channelName, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Big SD", color=discord.Color.purple())
-            embed.description = cleandoc ("""
+            embed.description = cleandoc("""
             Although Nintendo supports large SD cards in EXFAT format, it is recommended to use FAT32.
             In order to change the card's format, you will need to use an external utility.
             Here are some suggestions:
-            
+
             -GUIFormat for Windows: http://ridgecrop.co.uk/index.htm?guiformat.htm
             -gparted for Linux: https://gparted.org/download.php
             -Disk Utility for macOS: https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010
-            
+
             IMPORTANT: On macOS, always select "MS-DOS (Fat)". Formatting will erase all data on the card. Make a backup first.
             """)
             await ctx.send(embed=embed)
@@ -610,11 +610,11 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             Moving SD cards on a 3DS is easy.
             First, ensure the new SD card is in the FAT32 format.
             If it is above 32GB, you will need to format it using one of these tools:
-            
+
             -GUIFormat for Windows: http://ridgecrop.co.uk/index.htm?guiformat.htm
             -gparted for Linux: https://gparted.org/download.php
             -Disk Utility for macOS: https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010
-            
+
             Once the new card is in FAT32, move all your content from the old SD to the new SD.
             IMPORTANT: On macOS, always select "MS-DOS (Fat)". Formatting will erase all data on the card. Make a backup first.
             IMPORTANT: Do not put the new SD card in the console before moving all your data to it.
@@ -628,7 +628,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             embed.url = "https://switchgui.de/switch-guide/extras/transfer_sd/"
             embed.description = "A guide to moving SD cards with emuMMC"
             await ctx.send(embed=embed)
-                               
+
     @commands.command()
     async def catalyst(self, ctx, console=None):
         """Link to problem solvers"""
@@ -800,7 +800,7 @@ just missing a file called boot.firm in the root of your SD card.
                                 If BruteforceMovable is now at step 4, download your `movable.sed` and continue. \
 You do not need to do anything more related to `movable_part1.sed`, Python, or the \
 command line. The `movable.sed` is the final product and requires no further processing.
-                                **You do not need to go back and get the friend code, or do anything more 
+                                **You do not need to go back and get the friend code, or do anything more
                                 with the friend code.
                                 It does not matter if the friend does not add you back.
                                 The bot already has your information and has removed you as a friend.**
@@ -1011,7 +1011,7 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
 
             if self.check_console(x, channelName, ('wiiu', 'wii u')):
                 embed = discord.Embed(title="Virtual Console Injects for Wii U", color=discord.Color.blue())
-                embed.set_author(name="NicoAICP",  url="https://gbatemp.net/members/nicoaicp.404553/")
+                embed.set_author(name="NicoAICP", url="https://gbatemp.net/members/nicoaicp.404553/")
                 embed.set_thumbnail(url="https://gbatemp.net/data/avatars/l/404/404553.jpg")
                 embed.url = "https://gbatemp.net/threads/release-uwuvci-injectiine.486781/"
                 embed.description = ("The recommended way to play old classics on your Wii U.\n"
@@ -1124,12 +1124,12 @@ the text under the System Update button. If it says that a system update is read
 how to delete it.*
 
                                      **Make sure your version of Hekate is up to date and that it supports the latest firmware**
-                                     
+
                                      **Hekate 5.5.0 (latest release)**
                                      Supports up to firmware 11.0.0.
-                                     
+
                                      *To find Hekate's version information, once Hekate starts, look in the top left corner of the screen. If you use auto-boot, hold `volume -` to stop it.*
-                                     
+
                                      **If you use a custom theme (Atmosphere 0.10.0 and above)**
                                      Delete or rename `/atmosphere/contents/0100000000001000` on your SD card prior to updating, \
 as custom themes must be reinstalled for most firmware updates. **Note: On Atmosphere 0.9.4 or below, `contents` is called `titles`.**
@@ -1142,14 +1142,14 @@ as custom themes must be reinstalled for most firmware updates. **Note: On Atmos
         await self.simple_embed(ctx, """
                                 When an update is downloaded, but not installed, the console will not display the \
 firmware version in System Settings.
-                                
+
                                 • To reset on a stock system,  *power the console off* (hold the power button, follow on-screen prompts).\
  __Hold__ Volume - and Volume +, then Power. When you see Maintenance Mode, you \
 can reboot, and check System Settings.
                                 • If you're using CFW, launch Hekate, select your boot option, then immediately\
  __Hold__ Volume - and Volume +. When you see Maintenance Mode, you \
 can reboot, and check System Settings.
-                                
+
                                 To block automatic update downloads, type '.90dns' in <#261581918653513729> for further information.
                                  """, title="How to delete pending Switch Updates")
 
@@ -1208,7 +1208,7 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
         embed.url = "https://zetadesigns.github.io/randomizing-layeredfs.html"
         embed.description = "Basic tutorial for randomizing with LayeredFS"
         await ctx.send(embed=embed)
-        
+
     @tutorial.command(aliases=["romhack", "romhacks"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def layeredfs(self, ctx):
         """How to use Luma 8.0+ LayeredFs"""
@@ -1309,17 +1309,16 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
                 console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
-                
                 ctx.command.reset_cooldown(ctx)
                 return
-                               
+
         if self.check_console(console, channelName, "3ds"):
             embed = discord.Embed(title="3DS FTP Guide", color=discord.Color.purple())
             embed.set_author(name="Krieg")
             embed.set_thumbnail(url="https://3ds.eiphax.tech/pic/krieg.png")
             embed.url = "https://3ds.eiphax.tech/ftp.html"
             embed.description = "A guide to using ftp with FTPD and WinSCP"
-            await ctx.send(embed=embed)                   
+            await ctx.send(embed=embed)
         elif self.check_console(console, channelName, ("nx", "ns", "switch")):
             embed = discord.Embed(title="Switch FTP Guide", color=discord.Color.purple())
             embed.set_author(name="Krieg")
@@ -1459,14 +1458,13 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
     async def exfat(self, ctx):
         """exFAT on Switch: why not to use it"""
         reasons = """
-                The recommended filesystem format for the Switch is FAT32. 
-                
+                The recommended filesystem format for the Switch is FAT32.
+
                 While the Switch supports exFAT through an additional update from Nintendo, here are reasons not to use it:
-                
+
                 * CFW may fail to boot due to a missing exFAT update in Horizon
                 * This filesystem is prone to corruption.
                 * Nintendo doesn't use files larger than 4GB, even with large games and exFAT.
-                
                 """
 
         await self.simple_embed(ctx, f"{reasons}{self.SDFORMAT_TEXT}", title="exFAT on Switch: Why you shouldn't use it")
@@ -1475,13 +1473,13 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
     async def nxban(self, ctx):
         """Switch ban risk snippet"""
         await self.simple_embed(ctx, """
-                                The Switch is a much more secure system than the 3DS, and Nintendo has upped their game when it comes to bans. 
+                                The Switch is a much more secure system than the 3DS, and Nintendo has upped their game when it comes to bans.
                                 One of the main reasons for this is that there are significantly more monitoring systems, \
 some of which cannot be turned off.
 
                                 Remember that you can only reduce your chances of getting banned; nothing is guaranteed and you could be banned \
 at any time if you decide to hack your device. It will always be a cat and mouse game, until or unless there are big changes \
-in the scene. 
+in the scene.
 
                                 Refer to <#465640445913858048> for a list of things to avoid doing to reduce your risks.
                                 You cannot ask about unbanning your console here.
@@ -1589,7 +1587,7 @@ in the scene.
             await ctx.send(f"https://discord.gg/{invite.code}")
             if invite.is_temporary:
                 if invite.uses > 1:
-                    await self.bot.invitefilter.set_uses(code=invite.code, uses=invite.uses-1)
+                    await self.bot.invitefilter.set_uses(code=invite.code, uses=invite.uses - 1)
                 else:
                     await self.bot.invitefilter.delete(code=invite.code)
         else:
@@ -1680,6 +1678,6 @@ in the scene.
                     3DS Hacks Guide's [unSAFE_MODE](https://git.io/JfNQ4)
                     """, title="unSAFE_MODE")
 
-        
+
 def setup(bot):
     bot.add_cog(Assistance(bot))

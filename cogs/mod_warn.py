@@ -49,12 +49,12 @@ class ModWarn(commands.Cog):
             await utils.send_dm_message(member, msg)
             if warn_count == 3 or warn_count == 4:
                 try:
-                    self.bot.actions.append("wk:"+str(member.id))
+                    self.bot.actions.append("wk:" + str(member.id))
                     await member.kick(reason=f"{warn_count} warns.")
                 except discord.Forbidden:
                     await ctx.send("I can't kick this user!")
         if warn_count >= 5:  # just in case
-            self.bot.actions.append("wb:"+str(member.id))
+            self.bot.actions.append("wb:" + str(member.id))
             try:
                 await ctx.guild.ban(member, reason="5 warns.", delete_message_days=0)
             except discord.Forbidden:
@@ -106,9 +106,9 @@ class ModWarn(commands.Cog):
             member = ctx.author
         issuer = ctx.author
         if not await check_staff_id("Helper", ctx.author.id) and (member != issuer):
-                msg = f"{issuer.mention} Using this command on others is limited to Staff and Helpers."
-                await ctx.send(msg)
-                return
+            msg = f"{issuer.mention} Using this command on others is limited to Staff and Helpers."
+            await ctx.send(msg)
+            return
         embed = discord.Embed(color=discord.Color.dark_red())
         embed.set_author(name=f"Warns for {member}", icon_url=member.avatar_url)
         warns = await crud.get_warns(member.id)
@@ -137,7 +137,7 @@ class ModWarn(commands.Cog):
         if not src_warns:
             await ctx.send(f"{src} has no warns!")
             return
-        if len(tgt_warns)+src_warn_count > 5:
+        if len(tgt_warns) + src_warn_count > 5:
             return await ctx.send("Copying the warns would go over the max warn count.")
 
         for warn in src_warns:
@@ -163,7 +163,7 @@ class ModWarn(commands.Cog):
         if idx < 1:
             await ctx.send("Warn index is below 1!")
             return
-        warn = warns[idx-1]
+        warn = warns[idx - 1]
         issuer = await ctx.get_user(warn.issuer)
         embed = discord.Embed(color=discord.Color.dark_red(), title=f"Warn {idx} on {discord.utils.snowflake_time(warn.id).strftime('%Y-%m-%d %H:%M:%S')}",
                               description=f"Issuer: {issuer}\nReason: {warn.reason}")

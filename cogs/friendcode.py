@@ -55,7 +55,6 @@ class FriendCode(commands.Cog):
         await ctx.send(f"{member.mention} friend code is {self.fc_to_string(friendcode_m.fc_3ds)}")
         await utils.send_dm_message(member, f"{ctx.author} has asked for your friend code! Their code is {self.fc_to_string(friendcode.fc_3ds)}.")
 
-
     @commands.command()
     async def fcdelete(self, ctx):
         """Delete your friend code."""
