@@ -466,15 +466,15 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
         elif self.check_console(console, channelName, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Is the new Switch update safe?", color=0xe60012)
             embed.description = cleandoc("""
-            Currently, the latest Switch system firmware is `11.0.0`.
+            Currently, the latest Switch system firmware is `11.0.1`.
 
             If your Switch is **unpatched and can access RCM**:
-            Atmosphere and Hekate currently support 11.0.0, and unpatched units will always be hackable.
+            Atmosphere and Hekate currently support 11.0.1, and unpatched units will always be hackable.
             You should follow the precautions in our update guide, and always update Atmosphere and Hekate before updating the system firmware.
 
             If your Switch is **hardware patched and cannot access RCM**:
             Stay on the lowest possible firmware version. Any Switch that is patched and above 7.0.1 is unlikely to be hackable.
-            *Last edited: December 04, 2020*
+            *Last edited: December 12, 2020*
             """)
             await ctx.send(embed=embed)
 
@@ -1116,8 +1116,8 @@ One way to fix this is by using an y-cable to connect the HDD to two USB ports.
         await self.simple_embed(ctx, cleandoc("""
                                      **Make sure your version of Atmosphere is up to date and that it supports the latest firmware**
 
-                                     **Atmosphere 0.16.0 (latest release)**
-                                     Supports up to firmware 11.0.0.
+                                     **Atmosphere 0.16.1 (latest release)**
+                                     Supports up to firmware 11.0.1.
 
                                      *To find Atmosphere's version information, while booted into CFW, go into System Settings -> System, and look at \
 the text under the System Update button. If it says that a system update is ready instead of displaying the CFW version, type .pendingupdate to learn \
@@ -1125,8 +1125,8 @@ how to delete it.*
 
                                      **Make sure your version of Hekate is up to date and that it supports the latest firmware**
 
-                                     **Hekate 5.5.0 (latest release)**
-                                     Supports up to firmware 11.0.0.
+                                     **Hekate 5.5.1 (latest release)**
+                                     Supports up to firmware 11.0.1.
 
                                      *To find Hekate's version information, once Hekate starts, look in the top left corner of the screen. If you use auto-boot, hold `volume -` to stop it.*
 
