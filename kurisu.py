@@ -12,7 +12,7 @@ from configparser import ConfigParser
 from datetime import datetime
 from subprocess import check_output, CalledProcessError
 from sys import exit, hexversion
-from traceback import format_exception, format_exc
+from traceback import format_exc
 
 import os
 import discord
