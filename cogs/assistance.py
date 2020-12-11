@@ -474,7 +474,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
 
             If your Switch is **hardware patched and cannot access RCM**:
             Stay on the lowest possible firmware version. Any Switch that is patched and above 7.0.1 is unlikely to be hackable.
-            *Last edited: December 12, 2020*
+            *Last edited: December 11, 2020*
             """)
             await ctx.send(embed=embed)
 
