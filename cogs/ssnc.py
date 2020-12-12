@@ -46,7 +46,7 @@ class SwitchSerialNumberCheck(Cog):
             # XJW01000000000, XWW01000000000 = HDH-001, the Switch Lite
             # As not much about the assembly line is known yet every digit will count for the filter
             if re.match("X[KJW][JWC][0-9]{7}", serial):
-            # Region "C" is Tencent-Nintendo Switch. Mariko.
+                # Region "C" is Tencent-Nintendo Switch. Mariko.
                 mariko = True
             else:
                 return await ctx.send("This is not a valid serial number!\n"

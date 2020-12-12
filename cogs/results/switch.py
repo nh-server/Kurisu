@@ -1377,7 +1377,7 @@ web_applet = Module('web applet', {
     1006: ResultInfo('This error code indicates an issue with the DNS used or that the connection timed out.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/25859/p/897'),
     1028: ResultInfo('This error code generally indicates that your connection to the Nintendo eShop has timed out.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/22503/p/897'),
     2750: ResultInfo('MP4 parsing failed.'),
-    5001: ResultInfo('This error code indicates an error occurred when connecting to the service, likely the result of the network environment.',  'https://en-americas-support.nintendo.com/app/answers/detail/a_id/22392/p/897'),
+    5001: ResultInfo('This error code indicates an error occurred when connecting to the service, likely the result of the network environment.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/22392/p/897'),
 })
 
 youtube_app = Module('youtube', {
