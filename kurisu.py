@@ -14,8 +14,6 @@ from subprocess import check_output, CalledProcessError
 from sys import exit, hexversion
 from traceback import format_exc
 
-import subprocess  # deliberately unused for testing
-
 import os
 import discord
 import sys
