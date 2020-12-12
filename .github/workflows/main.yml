@@ -28,7 +28,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install flake8
-      - name: Check with pyflakes
+      - name: Check with flake8
         run: |
           flake8 . --ignore=E501,E722,E126,E128,W503,E121 --exclude=migrations
       - name: Set up QEMU
