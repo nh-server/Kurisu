@@ -99,3 +99,21 @@ jobs:
         run: docker-compose -f docker-compose-prod.yml up -d
         env:
           DOCKER_HOST: ${{ secrets.SSH_HOST }}
+      - name: Send webhook on failure
+        if: ${{ failure() }}
+        continue-on-error: true
+        uses: appleboy/discord-action@4c19612
+        with:
+          webhook_id: ${{ secrets.WEBHOOK_ID }}
+          webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
+          message: |
+            Failed to build [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
+      - name: Send webhook on cancellation
+        if: ${{ cancelled() }}
+        continue-on-error: true
+        uses: appleboy/discord-action@4c19612
+        with:
+          webhook_id: ${{ secrets.WEBHOOK_ID }}
+          webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
+          message: |
+            Cancelled build for [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})
