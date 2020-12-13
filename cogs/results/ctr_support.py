@@ -61,6 +61,7 @@ account = Module('account', {
 
 # 003: connection related errors
 internet = Module('internet', {
+    399: ResultInfo('Accepted EULA version is too low'),
     1099: ResultInfo('Access point with given SSID not found.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/4249/kw/003-1099'),
     2001: ResultInfo('DNS error. If you\'re using a custom DNS server, make sure the settings are correct.')
 })
