@@ -1255,6 +1255,16 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
         embed.url = "https://glazedbelmont.github.io/vcextract/"
         embed.description = "Basic tutorial to extract a rom out of your VC titles"
         await ctx.send(embed=embed)
+                               
+    @tutorial.command(aliases=["wiiuvcextract"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
+    async def vcextractwiiu(self, ctx)
+        """Links to Wii U Virtual Console Extraction Tutorial"""
+        embed = discord.Embed(title="Wii U VC Extraction Tutorial", color=discord,Color.blue())
+        embed.set_author(name="lendun, Lazr")
+        embed.set_thumbnail(url="https://i.imgur.com/qXc4TY5.png")
+        embed.url = "https://lendunistus.github.io/wiiuvcextract-guide/"
+        embed.description = "Tutorial to extract a ROM out of your Wii U VC titles"
+        await ctx.send(embed=embed)
 
     @tutorial.command(aliases=["gbabios"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def gbabiosdump(self, ctx):
