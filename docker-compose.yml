@@ -28,9 +28,6 @@ services:
         condition: service_healthy
     restart: always
 
-volumes:
-  kurisudb:
-
 secrets:
   kurisu_token:
     file: ./token.txt
