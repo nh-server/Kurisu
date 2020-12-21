@@ -1265,7 +1265,7 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
         embed.url = "https://lendunistus.github.io/wiiuvcextract-guide/"
         embed.description = "Tutorial to extract a ROM out of your Wii U VC titles"
         await ctx.send(embed=embed)
-                    
+
     @tutorial.command(aliases=["gbabios"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def gbabiosdump(self, ctx):
         """Links to GBA Bios Extraction Tutorial"""
