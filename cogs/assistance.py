@@ -153,6 +153,16 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         embed.description = "A guide on how to do the seedminer process to get your 3ds' movable.sed file"
         await ctx.send(embed=embed)
 
+    @commands.command(aliases=['3dslanding'])
+    async def getstarted(self, ctx):
+        """Links the 3DS get-started page"""
+        embed = discord.Embed(title="3DS CFW guide", color=discord.Color(0xb4eb4d))
+        embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/get-started")
+        embed.set_thumbnail(url="https://nintendohomebrew.com/pics/nhplai.png")
+        embed.url = "https://3ds.hacks.guide/get-started"
+        embed.description = "How to hack your 3DS console on any firmware from 1.0.0 to 11.14"
+        await ctx.send(embed=embed)
+
     @commands.command(aliases=['snickerstream'])
     async def ntrstream(self, ctx):
         """Snickerstream/NTR streaming guide"""
@@ -410,10 +420,8 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 ctx.command.reset_cooldown(ctx)
                 return
         if self.check_console(console, channelName, '3ds'):
-            embed = discord.Embed(title="Running stock (unmodified) 11.4+ firmware?", color=discord.Color.dark_orange())
-            embed.add_field(name="Seedminer", value="Requires console to be on latest firmware [Guide](https://3ds.hacks.guide/seedminer)", inline=False)
-            embed.add_field(name="NTRBoot", value="Requires a compatible NDS flashcart and maybe an additional DS(i) or hacked 3DS console depending on the flashcart (All versions, all hardware). [Guide](https://3ds.hacks.guide/ntrboot)", inline=False)
-            embed.add_field(name="Hardmod", value="Requires soldering **Not for beginners!**. [Guide](https://git.io/fhQk9)", inline=False)
+            embed = discord.Embed(title="Running stock (unmodified) 3DS firmware?", color=discord.Color.dark_orange())
+            embed.add_field(name="Hardware Dependant", value="The latest update to common guide methods mean that the best method for you now depends on what hardware you have. Please read the [guide](https://3ds.hacks.guide/get-started)", inline=False)
             await ctx.send(embed=embed)
         elif self.check_console(console, channelName, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Looking to hack your Switch?", color=0xe60012)
