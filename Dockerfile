@@ -12,5 +12,5 @@ ARG BRANCH="unknown"
 ENV COMMIT_BRANCH=${BRANCH}
 ARG COMMIT="unknown"
 ENV COMMIT_SHA=${COMMIT}
-COPY --chown=2849:2849 . .
+COPY . .
 CMD ["python3", "kurisu.py"]
