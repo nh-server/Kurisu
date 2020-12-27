@@ -89,6 +89,38 @@ class KickBan(commands.Cog):
 
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
+    @commands.command(name="superban", aliases=["superyeet"])
+    async def superban(self, ctx, member: FetchMember, days: typing.Optional[int] = 0, *, reason=""):
+        """Bans a user from the server. OP+ only. Optional: [days] Specify up to 7 days of messages to delete."""
+        if await check_bot_or_staff(ctx, member, "ban"):
+            return
+        if days > 7:
+            days = 7
+        elif days < 0:
+            days = 0
+        if isinstance(member, discord.Member):
+            msg = f"You were superbanned from {ctx.guild.name}."
+            if reason != "":
+                msg += " The given reason is: " + reason
+            msg += "\n\nThis ban does not expire.\n\nhttps://eiphax.tech/assets/banned.gif"
+            await utils.send_dm_message(member, msg)
+        try:
+            await crud.remove_timed_restriction(member.id, 'timeban')
+            self.bot.actions.append("ub:" + str(member.id))
+            await ctx.guild.ban(member, reason=reason, delete_message_days=days)
+        except discord.errors.Forbidden:
+            await ctx.send("💢 I don't have permission to do this.")
+            return
+        await ctx.send(f"{member} is now SUPER BANNED. 👍 https://eiphax.tech/assets/banned.gif")
+        msg = f"⛔ **Ban**: {ctx.author.mention} banned {member.mention} | {self.bot.escape_text(member)}\n🏷 __User ID__: {member.id}"
+        if reason != "":
+            msg += "\n✏️ __Reason__: " + reason
+        await self.bot.channels['server-logs'].send(msg)
+        signature = utils.command_signature(ctx.command)
+        await self.bot.channels['mod-logs'].send(msg + (f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user." if reason == "" else ""))
+
+    @is_staff("OP")
+    @commands.bot_has_permissions(ban_members=True)
     @commands.command(name="unban", aliases=["unyeet"])
     async def unban_member(self, ctx, user: FetchMember, *, reason):
         """Unbans a user from the server. OP+ only."""
