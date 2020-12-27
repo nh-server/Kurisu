@@ -149,6 +149,17 @@ class Rules(commands.Cog, command_attrs=dict()):
         """Displays rule 16."""
         await self.simple_embed(ctx, "Trying to evade, look for loopholes, or stay borderline within the rules will be treated as breaking them.", title="Rule 16")
 
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def r17(self, ctx):
+        """Displays rule 17."""
+        await self.simple_embed(ctx, "With regard to all of the recent Nintendo related leaks that have been occurring, and with regard to leaks of intellectual property of **any** company, **__Do Not__**:\n"
+                                     " • ask how to download the leaked content\n"
+                                     " • share leaked content or links to leaked content\n"
+                                     " • discuss the contents of any leaks, link to discussions of any leaks elsewhere, or suggest or otherwise imply how someone may come across discussion or downloads of leaked content\n"
+                                     "\n"
+                                     "Violation of this rule will result in appropriate action being taken by staff. Repeated violation **__will__** result in an irrevocable ban.", title="Rule 17")
+
 
 def setup(bot):
     bot.add_cog(Rules(bot))
