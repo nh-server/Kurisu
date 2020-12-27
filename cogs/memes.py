@@ -446,6 +446,12 @@ class Memes(commands.Cog):
         await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/b93b2a99bc28df4a192fc7eb8ccc01a9.png")
 
     @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
+    async def shovels(self, ctx):
+        """Do you need more?"""
+        await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/b798edd56662f1bde15ae4b6bc9c9fba.png")
+
+    @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=120.0, type=commands.BucketType.channel)
     async def cadealert(self, ctx):
         """stop! cade time."""
