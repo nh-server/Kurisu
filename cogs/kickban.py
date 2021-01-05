@@ -40,8 +40,7 @@ class KickBan(commands.Cog):
         if reason != "":
             msg += " The given reason is: " + reason
         msg += "\n\nYou are able to rejoin the server, but please read the rules in #welcome-and-rules before participating again."
-        if not await utils.send_dm_message(member, msg):
-            await ctx.send(f"Failed to send DM message to {member.mention}")
+        await utils.send_dm_message(member, msg, ctx)
         try:
             self.bot.actions.append("uk:" + str(member.id))
             await member.kick(reason=reason)
@@ -72,8 +71,7 @@ class KickBan(commands.Cog):
             if reason != "":
                 msg += " The given reason is: " + reason
             msg += "\n\nThis ban does not expire."
-            if not await utils.send_dm_message(member, msg):
-                await ctx.send(f"Failed to send DM message to {member.mention}")
+            await utils.send_dm_message(member, msg, ctx)
         try:
             await crud.remove_timed_restriction(member.id, 'timeban')
             self.bot.actions.append("ub:" + str(member.id))
@@ -105,8 +103,7 @@ class KickBan(commands.Cog):
             if reason != "":
                 msg += " The given reason is: " + reason
             msg += "\n\nThis ban does not expire.\n\nhttps://eiphax.tech/assets/banned.gif"
-            if not await utils.send_dm_message(member, msg):
-                await ctx.send(f"Failed to send DM message to {member.mention}")
+            await utils.send_dm_message(member, msg, ctx)
         try:
             await crud.remove_timed_restriction(member.id, 'timeban')
             self.bot.actions.append("ub:" + str(member.id))
@@ -189,8 +186,7 @@ class KickBan(commands.Cog):
             if reason != "":
                 msg += " The given reason is: " + reason
             msg += f"\n\nThis ban expires {unban_time_string} {time.tzname[0]}."
-            if not await utils.send_dm_message(member, msg):
-                await ctx.send(f"Failed to send DM message to {member.mention}")
+            await utils.send_dm_message(member, msg, ctx)
         try:
             self.bot.actions.append("ub:" + str(member.id))
             await ctx.guild.ban(member, reason=reason, delete_message_days=0)
@@ -220,8 +216,7 @@ class KickBan(commands.Cog):
 
         if isinstance(member, discord.Member):
             msg = f"This account is no longer permitted to participate in {ctx.guild.name}. The reason is: {reason}"
-            if not await utils.send_dm_message(member, msg):
-                await ctx.send(f"Failed to send DM message to {member.mention}")
+            await utils.send_dm_message(member, msg, ctx)
             try:
                 await member.kick(reason=reason)
             except discord.errors.Forbidden:

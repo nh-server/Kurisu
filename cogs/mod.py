@@ -201,8 +201,7 @@ class Mod(commands.Cog):
         msg_user = "You were meta muted!"
         if reason != "":
             msg_user += " The given reason is: " + reason
-        if not await utils.send_dm_message(member, msg_user):
-            await ctx.send(f"Failed to send DM message to {member.mention}")
+        await utils.send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} can no longer speak in meta.")
         msg = f"🔇 **Meta muted**: {ctx.author.mention} meta muted {member.mention} | {self.bot.escape_text(member)}"
         signature = utils.command_signature(ctx.command)
@@ -249,8 +248,7 @@ class Mod(commands.Cog):
         msg_user = "You were muted!"
         if reason != "":
             msg_user += " The given reason is: " + reason
-        if not await utils.send_dm_message(member, msg_user):
-            await ctx.send(f"Failed to send DM message to {member.mention}")
+        await utils.send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} can no longer speak.")
         msg = f"🔇 **Muted**: {ctx.author.mention} muted {member.mention} | {self.bot.escape_text(member)}"
         if reason != "":
@@ -288,8 +286,7 @@ class Mod(commands.Cog):
         if reason != "":
             msg_user += " The given reason is: " + reason
         msg_user += f"\n\nThis mute expires {unmute_time_string} {time.tzname[0]}."
-        if not await utils.send_dm_message(member, msg_user):
-            await ctx.send(f"Failed to send DM message to {member.mention}")
+        await utils.send_dm_message(member, msg_user, ctx)
         signature = utils.command_signature(ctx.command)
         if not old_timestamp:
             await ctx.send(f"{member.mention} can no longer speak.")
@@ -402,8 +399,7 @@ class Mod(commands.Cog):
             if reason != "":
                 msg_user += " The given reason is: " + reason
             msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
-            if not await utils.send_dm_message(member, msg_user):
-                await ctx.send(f"Failed to send DM message to {member.mention}")
+            await utils.send_dm_message(member, msg_user, ctx)
             await ctx.send(f"{member.mention} can no longer embed links or attach files.")
             msg = f"🚫 **Removed Embed**: {ctx.author.mention} removed embed from {member.mention} | {self.bot.escape_text(member)}"
             signature = utils.command_signature(ctx.command)
@@ -450,8 +446,7 @@ class Mod(commands.Cog):
             if reason != "":
                 msg_user += " The given reason is: " + reason
             msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
-            if not await utils.send_dm_message(member, msg_user):
-                await ctx.send(f"Failed to send DM message to {member.mention}")
+            await utils.send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} can no longer access the help channels.")
         msg = f"🚫 **Help access removed**: {ctx.author.mention} removed access to help channels from {member.mention} | {self.bot.escape_text(member)}"
         signature = utils.command_signature(ctx.command)
@@ -504,8 +499,7 @@ class Mod(commands.Cog):
             msg_user += " The given reason is: " + reason
         msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
         msg_user += f"\n\nThis restriction expires {unnohelp_time_string} {time.tzname[0]}."
-        if not await utils.send_dm_message(member, msg_user):
-            await ctx.send(f"Failed to send DM message to {member.mention}")
+        await utils.send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} can no longer speak in Assistance Channels.")
         signature = utils.command_signature(ctx.command)
         msg = f"🚫 **Timed No-Help**: {issuer.mention} restricted {member.mention} for {delta}, until {unnohelp_time_string} | {self.bot.escape_text(member)}"
@@ -536,8 +530,7 @@ class Mod(commands.Cog):
             if reason != "":
                 msg_user += " The given reason is: " + reason
             msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
-            if not await utils.send_dm_message(member, msg_user):
-                await ctx.send(f"Failed to send DM message to {member.mention}")
+            await utils.send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} can no longer access the tech channel.")
         msg = f"🚫 **Help access removed**: {ctx.author.mention} removed access to tech channel from {member.mention} | {self.bot.escape_text(member)}"
         signature = utils.command_signature(ctx.command)
@@ -590,8 +583,7 @@ class Mod(commands.Cog):
             msg_user += " The given reason is: " + reason
         msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
         msg_user += f"\n\nThis restriction expires {unnotech_time_string} {time.tzname[0]}."
-        if not await utils.send_dm_message(member, msg_user):
-            await ctx.send(f"Failed to send DM message to {member.mention}")
+        await utils.send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} can no longer speak in the tech channel.")
         signature = utils.command_signature(ctx.command)
         msg = f"🚫 **Timed No-Tech**: {issuer.mention} restricted {member.mention} for {delta}, until {unnotech_time_string} | {self.bot.escape_text(member)}"
@@ -619,8 +611,7 @@ class Mod(commands.Cog):
             if reason != "":
                 msg_user += " The given reason is: " + reason
             msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
-            if not await utils.send_dm_message(member, msg_user):
-                await ctx.send(f"Failed to send DM message to {member.mention}")
+            await utils.send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} can no longer speak in the help channels.")
         msg = f"🚫 **Help mute**: {ctx.author.mention} removed speak access in help channels from {member.mention} | {self.bot.escape_text(member)}"
         signature = utils.command_signature(ctx.command)
@@ -656,8 +647,7 @@ class Mod(commands.Cog):
             msg_user += " The given reason is: " + reason
         msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
         msg_user += f"\n\nThis restriction expires {unhelpmute_time_string} {time.tzname[0]}."
-        if not await utils.send_dm_message(member, msg_user):
-            await ctx.send(f"Failed to send DM message to {member.mention}")
+        await utils.send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} can no longer speak in the help channels.")
         signature = utils.command_signature(ctx.command)
         msg = f"🚫 **Timed Help mute**: {issuer.mention} help muted {member.mention} for {delta}, until {unhelpmute_time_string} | {self.bot.escape_text(member)}"
@@ -726,8 +716,7 @@ class Mod(commands.Cog):
             msg_user = "You are under probation!"
             if reason != "":
                 msg_user += " The given reason is: " + reason
-            if not await utils.send_dm_message(member, msg_user):
-                await ctx.send(f"Failed to send DM message to {member.mention}")
+            await utils.send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} is now in probation.")
         msg = f"🚫 **Probated**: {ctx.author.mention} probated {member.mention} | {self.bot.escape_text(member)}"
         signature = utils.command_signature(ctx.command)

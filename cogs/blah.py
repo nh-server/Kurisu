@@ -42,11 +42,7 @@ class Blah(commands.Cog):
     @is_staff("Owner")
     @commands.command()
     async def dm(self, ctx, member: discord.Member, *, inp):
-        status = await send_dm_message(member, inp)
-        if not status:
-            await ctx.send("Failed to send DM!")
-        else:
-            await ctx.send("Successfully sent DM!")
+        await send_dm_message(member, inp, ctx)
 
 
 def setup(bot):

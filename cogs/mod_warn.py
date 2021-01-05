@@ -46,8 +46,7 @@ class ModWarn(commands.Cog):
                 msg += "\n\nYou were kicked because of this warning. This is your final warning. You can join again, but **one more warn will result in a ban**."
             if warn_count == 5:
                 msg += "\n\nYou were automatically banned due to five warnings."
-            if not await utils.send_dm_message(member, msg):
-                await ctx.send(f"Failed to send DM message to {member.mention}")
+            await utils.send_dm_message(member, msg, ctx)
             if warn_count == 3 or warn_count == 4:
                 try:
                     self.bot.actions.append("wk:" + str(member.id))
@@ -89,8 +88,7 @@ class ModWarn(commands.Cog):
                 msg += " The given reason is: " + reason
             msg += f"\n\nThis is warn #{warn_count}."
             msg += "\n\nThis won't trigger any action."
-            if not await utils.send_dm_message(member, msg):
-                await ctx.send(f"Failed to send DM message to {member.mention}")
+            await utils.send_dm_message(member, msg, ctx)
 
         await ctx.send(f"{member.mention} softwarned. User has {warn_count} warning(s)")
         msg = f"⚠️ **Warned**: {issuer.mention} softwarned {member.mention} in {channel.mention} ({self.bot.escape_text(channel)}) (warn #{warn_count}) | {self.bot.escape_text(member)}"
