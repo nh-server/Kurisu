@@ -201,10 +201,8 @@ class Mod(commands.Cog):
         msg_user = "You were meta muted!"
         if reason != "":
             msg_user += " The given reason is: " + reason
-        try:
-            await member.send(msg_user)
-        except discord.errors.Forbidden:
-            pass  # don't fail in case user has DMs disabled for this server, or blocked the bot
+        if not await utils.send_dm_message(member, msg_user):
+            await ctx.send(f"Failed to send DM message to {member.mention}")
         await ctx.send(f"{member.mention} can no longer speak in meta.")
         msg = f"🔇 **Meta muted**: {ctx.author.mention} meta muted {member.mention} | {self.bot.escape_text(member)}"
         signature = utils.command_signature(ctx.command)

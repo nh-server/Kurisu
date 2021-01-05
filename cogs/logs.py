@@ -42,12 +42,7 @@ Thanks for boosting and have a good time!
         msg = f"✅ **Join**: {member.mention} | {self.bot.escape_text(member)}\n🗓 __Creation__: {member.created_at}\n🏷 __User ID__: {member.id}"
         softban = await crud.get_softban(member.id)
         if softban:
-            message_sent = False
-            try:
-                await member.send(f"This account has not been permitted to participate in {self.bot.guild.name}. The reason is: {softban.reason}")
-                message_sent = True
-            except discord.errors.Forbidden:
-                pass
+            message_sent = await send_dm_message(member, f"This account has not been permitted to participate in {self.bot.guild.name}. The reason is: {softban.reason}")
             self.bot.actions.append("sbk:" + str(member.id))
             await member.kick()
             msg = f"🚨 **Attempted join**: {member.mention} is soft-banned by <@{softban.issuer}> | {self.bot.escape_text(member)}"
