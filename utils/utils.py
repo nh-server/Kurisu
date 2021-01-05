@@ -1,16 +1,21 @@
+from discord.ext.commands import Context
+
 import discord
 import random
 import re
 
 
-async def send_dm_message(member, message, **kwargs) -> bool:
+async def send_dm_message(member: discord.Member, message: str, ctx: Context = None, **kwargs) -> bool:
     """A helper method for sending a message to a member's DMs.
 
-    Returns a boolean indicating success of the DM."""
+    Returns a boolean indicating success of the DM
+    and notifies of the failure if ctx is supplied."""
     try:
         await member.send(message, **kwargs)
         return True
     except (discord.HTTPException, discord.Forbidden, discord.NotFound, AttributeError):
+        if ctx:
+            await ctx.send(f"Failed to send DM message to {member.mention}")
         return False
 
 
