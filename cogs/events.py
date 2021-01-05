@@ -225,7 +225,7 @@ class Events(commands.Cog):
         # check for guide mirrors and post the actual link
         urls = re.findall(r'(https?://\S+)', msg)
         to_replace = []
-        for url in urls:
+        for url in set(urls):
             ps = urlparse(url)
             if ps.netloc.startswith('3ds-guide.b4k.co'):
                 to_replace.append(ps._replace(netloc='3ds.hacks.guide').geturl())
