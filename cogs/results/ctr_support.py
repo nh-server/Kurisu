@@ -109,6 +109,7 @@ eshop_mint = Module('eshop (mint/api?)', {
     2913: ResultInfo('The server is probably down. Try again later.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/10425'),
     2916: ResultInfo('This is typically displayed when an error occurs while attempting to download a title from the Nintendo eShop.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/6557'),
     2920: ResultInfo('This error is typically displayed when a Nintendo eShop download failed, or when the title has an invalid ticket. Delete the title and/or its ticket in FBI and install it again from a legitimate source like the Nintendo eShop, or from your game cartridges if using cart dumps.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/41692'),
+    2924: ResultInfo('Happens when opening eshop with a invalid language setting'),
     3049: ResultInfo('The eShop is down for maintenance.', 'https://support.nintendo.com/networkstatus/'),
 })
 
@@ -121,6 +122,7 @@ eshop_app = Module('eshop (app?)', {
     2913: ResultInfo('An eShop or in-game DLC download failed (or the server is down).', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/7243'),
     2916: eshop_mint.data[2916],
     2920: eshop_mint.data[2920],
+    2924: eshop_mint.data[2924],
     2923: ResultInfo('You are unable to use a function which requires internet services, such as software updates or formatting the system memory.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/17014'),
     2995: ResultInfo('This error can occur if the download code was entered incorrectly, has not yet been activated, has expired, was entered in the wrong place, or is intended for a region other than your own.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/13515'),
     4079: ResultInfo('Unable to access SD card.'),
@@ -138,6 +140,7 @@ eshop_site = Module('eshop (website?)', {
 
 # 014: system transfers?
 data_transfer = Module('system transfer', {
+    13: ResultInfo('Attempting to do a system transfer with with a invalid language setting.'),
     16: ResultInfo('Both consoles have the same movable.sed key. Format the target console and system transfer again.'),
     62: ResultInfo('An error occurred during system transfer. Move closer to the wireless router and try again.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/15664')
 })
@@ -162,6 +165,7 @@ account2 = Module('account', {
     2634: ResultInfo('NNID is not correctly linked on this console.', '[To fix it, follow these steps. Afterwards, reboot and sign into your NNID again.](https://3ds.hacks.guide/godmode9-usage#removing-an-nnid-without-formatting-your-device)'),
     2812: ResultInfo('This console is permanently banned by Nintendo for playing Pokémon Sun & Moon online before the release date illegally.', is_ban=True),
     2815: ResultInfo('This console is banned from accessing Miiverse by Nintendo.'),
+    5363: ResultInfo('Happens when trying to load NNID settings with a invalid language setting.'),
     5515: ResultInfo('Network timeout.'),
 })
 
