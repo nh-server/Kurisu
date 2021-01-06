@@ -426,7 +426,8 @@ eshop_unk = Module('eShop (unknown)', {
 
 fs = Module('fs', {
     1031: ResultInfo('The disc could not be read or is unsupported (i.e. not a Wii or Wii U game). Try cleaning the disc or lens if it is a supported title.'),
-    2031: ResultInfo('The disc could not be read or is unsupported (i.e. not a Wii or Wii U game). Try cleaning the disc or lens if it is a supported title.')
+    2031: ResultInfo('The disc could not be read or is unsupported (i.e. not a Wii or Wii U game). Try cleaning the disc or lens if it is a supported title.'),
+    3032: ResultInfo('Error when attempting to read caused by a permission error.')
 })
 
 syserr = Module('system error', {
