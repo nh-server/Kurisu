@@ -156,6 +156,7 @@ class Kurisu(commands.Bot):
             'off-topic': None,
             'voice-and-music': None,
             'bot-cmds': None,
+            'bot-talk': None,
             'mods': None,
             'mod-mail': None,
             'mod-logs': None,
