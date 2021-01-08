@@ -7,23 +7,23 @@
 from asyncio import Event
 from alembic import config, script, command
 from alembic.runtime import migration
-from sqlalchemy import engine
 from configparser import ConfigParser
 from datetime import datetime
+from discord.ext import commands
+from sqlalchemy import engine
 from subprocess import check_output, CalledProcessError
 from sys import exit, hexversion
 from traceback import format_exc
 
-import os
 import discord
+import os
 import sys
-from discord.ext import commands
 
+from utils import models, crud
 from utils.checks import check_staff_id
 from utils.manager import WordFilterManager, InviteFilterManager
-from utils import models, crud
-from utils.utils import create_error_embed
 from utils.models import db
+from utils.utils import create_error_embed
 
 IS_DOCKER = os.environ.get('IS_DOCKER', 0)
 
@@ -128,7 +128,6 @@ class Kurisu(commands.Bot):
             '#elsewhere': None,
             'Small Help': None,
             'meta-mute': None,
-            'Nitro Booster': None,
             'crc': None,
             'No-Tech': None,
             'help-mute': None,
@@ -220,6 +219,10 @@ class Kurisu(commands.Bot):
                     await db_role.update(name=n).apply()
                 else:
                     await models.Role.create(id=self.roles[n].id, name=self.roles[n].name)
+        # Nitro Booster existence depends if there is any nitro booster
+        self.roles['Nitro-Booster'] = self.guild.premium_subscriber_role
+        if self.roles['Nitro-Booster'] and not await crud.get_dbrole(self.roles['Nitro-Booster'].id):
+            await models.Role.create(id=self.roles['Nitro-Booster'].id, name='Nitro-Booster')
 
     @staticmethod
     def escape_text(text):

@@ -1,9 +1,9 @@
+import discord
 import hashlib
 import struct
 
-from utils.converters import SafeMember
-from utils import crud, utils
 from discord.ext import commands
+from utils import crud, utils
 
 
 class FriendCode(commands.Cog):
@@ -45,7 +45,7 @@ class FriendCode(commands.Cog):
 
     @commands.guild_only()
     @commands.command()
-    async def fcquery(self, ctx, member: SafeMember):
+    async def fcquery(self, ctx, member: discord.Member):
         """Get other user's friend code. You must have one yourself in the database."""
         if not (friendcode := await crud.get_friendcode(ctx.author.id)):
             return await ctx.send("You need to register your own friend code with `.fcregister <friendcode>` before getting others.")

@@ -1,7 +1,7 @@
+import re
+
 from typing import Optional, List
 from utils.models import FilteredWord, ApprovedInvite
-
-import re
 
 
 class WordFilterManager:

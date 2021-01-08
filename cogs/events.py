@@ -3,13 +3,13 @@ import discord
 import re
 
 from collections import deque
+from discord.ext import commands
+from urllib.parse import urlparse
+from string import printable
+from subprocess import call
+from typing import List
 from utils.checks import check_staff_id
 from utils import crud, utils
-from discord.ext import commands
-from subprocess import call
-from string import printable
-from urllib.parse import urlparse
-from typing import List
 
 
 class Events(commands.Cog):

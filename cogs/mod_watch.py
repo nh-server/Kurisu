@@ -1,6 +1,8 @@
+import discord
+
 from discord.ext import commands
+from utils import utils, crud
 from utils.checks import is_staff
-from utils import utils, converters, crud
 
 
 class Modwatch(commands.Cog):
@@ -18,7 +20,7 @@ class Modwatch(commands.Cog):
 
     @is_staff("Helper")
     @commands.command()
-    async def watch(self, ctx, member: converters.SafeMember, *, reason=""):
+    async def watch(self, ctx, member: discord.Member, *, reason=""):
         if await crud.is_watched(member.id):
             await ctx.send("User is already being watched!")
             return
@@ -36,7 +38,7 @@ class Modwatch(commands.Cog):
 
     @is_staff("Helper")
     @commands.command()
-    async def unwatch(self, ctx, member: converters.SafeMember):
+    async def unwatch(self, ctx, member: discord.Member):
         if not await crud.is_watched(member.id):
             await ctx.send("This user was not being watched.")
             return

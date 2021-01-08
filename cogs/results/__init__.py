@@ -1,7 +1,7 @@
 import discord
-from discord.ext import commands
 
 from . import switch, wiiu_support, wiiu_results, ctr_support, ctr_results
+from discord.ext import commands
 
 
 class Results(commands.Cog):

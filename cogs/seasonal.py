@@ -1,9 +1,9 @@
+import discord
+
 from datetime import datetime
+from discord.ext import commands
 from re import compile, finditer, search
 from typing import List, Union
-
-import discord
-from discord.ext import commands
 
 
 class Season:

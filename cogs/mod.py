@@ -1,13 +1,13 @@
 import datetime
+import discord
 import re
 import time
-from subprocess import call
-import discord
 
 from discord.ext import commands
-from utils.checks import is_staff, check_staff_id, check_bot_or_staff
-from utils.converters import SafeMember, FetchMember
+from subprocess import call
+from typing import Union
 from utils import utils, crud, models
+from utils.checks import is_staff, check_staff_id, check_bot_or_staff
 
 
 class Mod(commands.Cog):
@@ -41,7 +41,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=['ui'])
-    async def userinfo(self, ctx, u: FetchMember):
+    async def userinfo(self, ctx, u: Union[discord.Member, discord.User]):
         """Shows information from a user. Staff and Helpers only."""
         basemsg = f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url_as(static_format='png')}\ndefault_avatar= {u.default_avatar}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\n"
         if isinstance(u, discord.Member):
@@ -56,7 +56,7 @@ class Mod(commands.Cog):
 
     @commands.guild_only()
     @commands.command(aliases=['ui2'])
-    async def userinfo2(self, ctx, user: FetchMember = None):
+    async def userinfo2(self, ctx, user: Union[discord.Member, discord.User] = None):
         """Shows information from a user. Staff and Helpers only."""
 
         if user is None:
@@ -95,7 +95,7 @@ class Mod(commands.Cog):
 
         member_type = member_type if not user.bot else "bot"
         embed.title = f"**Userinfo for {member_type} {user}**"
-        embed.set_thumbnail(url=user.avatar_url_as(static_format='png'))
+        embed.set_thumbnail(url=str(user.avatar_url_as(static_format='png')))
         await ctx.send(embed=embed)
 
     @is_staff("HalfOP")
@@ -192,7 +192,7 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def metamute(self, ctx, member: SafeMember, *, reason=""):
+    async def metamute(self, ctx, member: discord.Member, *, reason=""):
         """Mutes a user so they can't speak in meta. Staff only."""
         if not await crud.add_permanent_role(member.id, self.bot.roles['meta-mute'].id):
             await ctx.send("User is already meta muted!")
@@ -215,7 +215,7 @@ class Mod(commands.Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(manage_roles=True)
     @commands.command()
-    async def metaunmute(self, ctx, member: SafeMember):
+    async def metaunmute(self, ctx, member: discord.Member):
         """Unmutes a user so they can speak in meta. Staff only."""
         try:
             if not await crud.remove_permanent_role(member.id, self.bot.roles["meta-mute"].id) and self.bot.roles['meta-mute'] not in member.roles:
@@ -231,7 +231,7 @@ class Mod(commands.Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(manage_roles=True)
     @commands.command()
-    async def mute(self, ctx, member: SafeMember, *, reason=""):
+    async def mute(self, ctx, member: discord.Member, *, reason=""):
         """Mutes a user so they can't speak. Staff only."""
         if await check_bot_or_staff(ctx, member, "mute"):
             return
@@ -263,7 +263,7 @@ class Mod(commands.Cog):
     @commands.bot_has_permissions(manage_roles=True)
     @commands.guild_only()
     @commands.command()
-    async def timemute(self, ctx, member: SafeMember, length, *, reason=""):
+    async def timemute(self, ctx, member: discord.Member, length, *, reason=""):
         """Mutes a user for a limited period of time so they can't speak. Staff only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "mute"):
             return
@@ -303,7 +303,7 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def unmute(self, ctx, member: SafeMember):
+    async def unmute(self, ctx, member: discord.Member):
         """Unmutes a user so they can speak. Staff only."""
         try:
             if not await crud.remove_permanent_role(member.id, self.bot.roles["Muted"].id):
@@ -318,7 +318,7 @@ class Mod(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.command()
-    async def art(self, ctx, member: SafeMember):
+    async def art(self, ctx, member: discord.Member):
         """Restore art-discussion access for a user. Staff only."""
         if not await crud.remove_permanent_role(member.id, self.bot.roles['No-art'].id):
             return await ctx.send("This user is not restricted from art channels.")
@@ -332,7 +332,7 @@ class Mod(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.command()
-    async def noart(self, ctx, member: SafeMember, *, reason=""):
+    async def noart(self, ctx, member: discord.Member, *, reason=""):
         """Removes art-discussion access from a user. Staff only."""
         if not await crud.add_permanent_role(member.id, self.bot.roles['No-art'].id):
             return await ctx.send("This user is already restricted from art channels.")
@@ -352,7 +352,7 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def elsewhere(self, ctx, member: SafeMember):
+    async def elsewhere(self, ctx, member: discord.Member):
         """Restore elsewhere access for a user. Staff only."""
         try:
             if not await crud.remove_permanent_role(member.id, self.bot.roles["No-elsewhere"].id):
@@ -367,7 +367,7 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def noelsewhere(self, ctx, member: SafeMember, *, reason=""):
+    async def noelsewhere(self, ctx, member: discord.Member, *, reason=""):
         """Removes elsewhere access from a user. Staff only."""
         try:
             if not await crud.add_permanent_role(member.id, self.bot.roles['No-elsewhere'].id):
@@ -388,7 +388,7 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def noembed(self, ctx, member: SafeMember, *, reason=""):
+    async def noembed(self, ctx, member: discord.Member, *, reason=""):
         """Removes embed permissions from a user. Staff only."""
         if await check_bot_or_staff(ctx, member, "noembed"):
             return
@@ -414,7 +414,7 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def embed(self, ctx, member: SafeMember):
+    async def embed(self, ctx, member: discord.Member):
         """Restore embed permissions for a user. Staff only."""
         try:
             await crud.remove_permanent_role(member.id, self.bot.roles["No-Embed"].id)
@@ -428,7 +428,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["nohelp", "yesnthelp"])
-    async def takehelp(self, ctx, member: FetchMember, *, reason=""):
+    async def takehelp(self, ctx, member: Union[discord.Member, discord.User], *, reason=""):
         """Remove access to the assistance channels. Staff and Helpers only."""
         if await check_bot_or_staff(ctx, member, "takehelp"):
             return
@@ -459,7 +459,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["yeshelp"])
-    async def givehelp(self, ctx, member: FetchMember):
+    async def givehelp(self, ctx, member: Union[discord.Member, discord.User]):
         """Restore access to the assistance channels. Staff and Helpers only."""
         if not await crud.remove_permanent_role(member.id, self.bot.roles["No-Help"].id):
             return await ctx.send("This user is not take-helped!")
@@ -476,7 +476,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["timenohelp"])
-    async def timetakehelp(self, ctx, member: SafeMember, length, *, reason=""):
+    async def timetakehelp(self, ctx, member: discord.Member, length, *, reason=""):
         """Restricts a user from Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "takehelp"):
             return
@@ -512,7 +512,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["notech", "technt"])
-    async def taketech(self, ctx, member: FetchMember, *, reason=""):
+    async def taketech(self, ctx, member: Union[discord.Member, discord.User], *, reason=""):
         """Remove access to the tech channel. Staff and Helpers only."""
         if await check_bot_or_staff(ctx, member, "taketech"):
             return
@@ -543,7 +543,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["yestech"])
-    async def givetech(self, ctx, member: FetchMember):
+    async def givetech(self, ctx, member: Union[discord.Member, discord.User]):
         """Restore access to the tech channel. Staff and Helpers only."""
         if not await crud.remove_permanent_role(member.id, self.bot.roles["No-Tech"].id):
             return await ctx.send("This user is not take-helped!")
@@ -560,7 +560,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["timenotech"])
-    async def timetaketech(self, ctx, member: SafeMember, length, *, reason=""):
+    async def timetaketech(self, ctx, member: discord.Member, length, *, reason=""):
         """Restricts a user from the tech channel for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "taketech"):
             return
@@ -596,7 +596,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["mutehelp"])
-    async def helpmute(self, ctx, member: FetchMember, *, reason=""):
+    async def helpmute(self, ctx, member: Union[discord.Member, discord.User], *, reason=""):
         """Remove speak perms to the assistance channels. Staff and Helpers only."""
         if await check_bot_or_staff(ctx, member, "helpmute"):
             return
@@ -624,7 +624,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["timemutehelp"])
-    async def timehelpmute(self, ctx, member: SafeMember, length, *, reason=""):
+    async def timehelpmute(self, ctx, member: discord.Member, length, *, reason=""):
         """Restricts a user from speaking in Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "helpmute"):
             return
@@ -660,7 +660,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def helpunmute(self, ctx, member: FetchMember):
+    async def helpunmute(self, ctx, member: Union[discord.Member, discord.User]):
         """Restores speak access to help channels. Helpers+ only."""
         if not await crud.remove_permanent_role(member.id, self.bot.roles["help-mute"].id):
             return await ctx.send("This user is not help muted!")
@@ -677,7 +677,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def takesmallhelp(self, ctx, members: commands.Greedy[SafeMember]):
+    async def takesmallhelp(self, ctx, members: commands.Greedy[discord.Member]):
         """Remove access to small help channel. Staff and Helpers only."""
         if len(members) < 1:
             await ctx.send("Mention at least one user")
@@ -691,7 +691,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def givesmallhelp(self, ctx, members: commands.Greedy[SafeMember]):
+    async def givesmallhelp(self, ctx, members: commands.Greedy[discord.Member]):
         """Provide access to small help channel for 1-on-1 help. Staff and Helpers only."""
         if len(members) < 1:
             await ctx.send("Mention at least one user")
@@ -705,7 +705,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def probate(self, ctx, member: FetchMember, *, reason=""):
+    async def probate(self, ctx, member: Union[discord.Member, discord.User], *, reason=""):
         """Probate a user. Staff and Helpers only."""
         if await check_bot_or_staff(ctx, member, "probate"):
             return
@@ -729,7 +729,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def unprobate(self, ctx, member: FetchMember):
+    async def unprobate(self, ctx, member: Union[discord.Member, discord.User]):
         """Unprobate a user. Staff and Helpers only."""
         if not await crud.remove_permanent_role(member.id, self.bot.roles["Probation"].id) and self.bot.roles["Probation"] not in member.roles:
             return await ctx.send("This user is not probated!")

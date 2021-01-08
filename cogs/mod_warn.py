@@ -1,8 +1,9 @@
 import discord
+
 from discord.ext import commands
-from utils.checks import is_staff, check_staff_id, check_bot_or_staff
-from utils.converters import FetchMember
+from typing import Union
 from utils import utils, crud
+from utils.checks import is_staff, check_staff_id, check_bot_or_staff
 
 
 class ModWarn(commands.Cog):
@@ -20,7 +21,7 @@ class ModWarn(commands.Cog):
 
     @is_staff('Helper')
     @commands.command()
-    async def warn(self, ctx, member: FetchMember, *, reason=""):
+    async def warn(self, ctx, member: Union[discord.Member, discord.User], *, reason=""):
         """Warn a user. Staff and Helpers only."""
         issuer = ctx.author
         channel = ctx.channel
@@ -69,7 +70,7 @@ class ModWarn(commands.Cog):
 
     @is_staff('Helper')
     @commands.command()
-    async def softwarn(self, ctx, member: FetchMember, *, reason=""):
+    async def softwarn(self, ctx, member: Union[discord.Member, discord.User], *, reason=""):
         """Warn a user without automated action. Staff and Helpers only."""
         issuer = ctx.author
         channel = ctx.channel
@@ -100,7 +101,7 @@ class ModWarn(commands.Cog):
             f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user." if reason == "" else ""))
 
     @commands.command()
-    async def listwarns(self, ctx, member: FetchMember = None):
+    async def listwarns(self, ctx, member: Union[discord.Member, discord.User] = None):
         """List warns for a user. Staff and Helpers only."""
         if not member:  # If user is set to None, its a selfcheck
             member = ctx.author
@@ -127,7 +128,7 @@ class ModWarn(commands.Cog):
 
     @is_staff("SuperOP")
     @commands.command()
-    async def copywarns(self, ctx, src: FetchMember, target: FetchMember):
+    async def copywarns(self, ctx, src: Union[discord.Member, discord.User], target: Union[discord.Member, discord.User]):
         """Copy warns from one user ID to another. Overwrites all warns of the target user ID. SOP+ only."""
         if await check_bot_or_staff(ctx, target, "warn"):
             return
@@ -150,7 +151,7 @@ class ModWarn(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.command()
-    async def delwarn(self, ctx, member: FetchMember, idx: int):
+    async def delwarn(self, ctx, member: Union[discord.Member, discord.User], idx: int):
         """Remove a specific warn from a user. Staff only."""
         warns = await crud.get_warns(member.id)
         if not warns:
@@ -174,7 +175,7 @@ class ModWarn(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.command()
-    async def clearwarns(self, ctx, member: FetchMember):
+    async def clearwarns(self, ctx, member: Union[discord.Member, discord.User]):
         """Clear all warns for a user. Staff only."""
         warns = await crud.get_warns(member.id)
         if not warns:

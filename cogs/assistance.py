@@ -3,9 +3,9 @@ import asyncio
 import discord
 import urllib.parse
 
-from utils.checks import check_if_user_can_sr
 from discord.ext import commands
 from inspect import cleandoc
+from utils.checks import check_if_user_can_sr
 
 
 class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 30.0, commands.BucketType.channel))):

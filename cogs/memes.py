@@ -1,6 +1,7 @@
-import random
-import math
 import discord
+import math
+import random
+
 from discord.ext import commands
 
 

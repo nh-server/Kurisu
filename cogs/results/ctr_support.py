@@ -1,8 +1,9 @@
 import re
 
+from .ctr_results import modules as ctr_results_modules
 from .types import Module, ResultInfo, ConsoleErrorInfo, ConsoleErrorField, \
     BANNED_FIELD, WARNING_COLOR, UNKNOWN_CATEGORY_DESCRIPTION
-from .ctr_results import modules as ctr_results_modules
+
 
 """
 This file contains all currently known 2DS/3DS support codes.

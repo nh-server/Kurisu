@@ -1,8 +1,9 @@
 import discord
-from discord.ext import commands
-from utils.checks import is_staff, check_if_user_can_ready
 import re
+
+from discord.ext import commands
 from utils import crud
+from utils.checks import is_staff, check_if_user_can_ready
 
 
 class Newcomers(commands.Cog):

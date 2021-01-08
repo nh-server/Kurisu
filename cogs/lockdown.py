@@ -1,7 +1,8 @@
 import discord
+
 from discord.ext import commands
-from utils.checks import is_staff, check_staff_id
 from utils import crud
+from utils.checks import is_staff, check_staff_id
 
 
 class Lockdown(commands.Cog):

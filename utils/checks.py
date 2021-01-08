@@ -1,5 +1,6 @@
-from discord.ext import commands
 import discord
+
+from discord.ext import commands
 from utils.crud import get_helper, get_staff
 
 staff_ranks = {"Owner": 0, "SuperOP": 1, "OP": 2, "HalfOP": 3, "Helper": 4}

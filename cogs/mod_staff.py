@@ -1,6 +1,7 @@
 import discord
+
 from discord.ext import commands
-from utils import converters, crud
+from utils import crud
 from utils.checks import is_staff, staff_ranks
 
 
@@ -19,7 +20,7 @@ class ModStaff(commands.Cog):
 
     @is_staff("Owner")
     @commands.command()
-    async def addstaff(self, ctx, member: converters.SafeMember, position):
+    async def addstaff(self, ctx, member: discord.Member, position):
         """Add user as staff. Owners only."""
         if position not in self.bot.staff_roles:
             await ctx.send(f"💢 That's not a valid position. You can use __{'__, __'.join(self.bot.staff_roles.keys())}__")
@@ -35,7 +36,7 @@ class ModStaff(commands.Cog):
 
     @is_staff("Owner")
     @commands.command()
-    async def delstaff(self, ctx, member: converters.SafeMember):
+    async def delstaff(self, ctx, member: discord.Member):
         """Remove user from staff. Owners only."""
         await ctx.send(member.name)
         await crud.remove_staff(member.id)

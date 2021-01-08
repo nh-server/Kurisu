@@ -7,9 +7,9 @@ import re
 import string
 import sys
 
-from utils.checks import is_staff
-from discord.ext import commands
 from discord import TextChannel, __version__ as discordpy_version
+from discord.ext import commands
+from utils.checks import is_staff
 
 python_version = sys.version.split()[0]
 
@@ -245,7 +245,7 @@ class Extras(commands.Cog):
     async def nickme(self, ctx, *, nickname):
         """Change your nickname. Nitro Booster and crc only. Works only in DMs. 6 Hours Cooldown."""
         member = self.bot.guild.get_member(ctx.author.id)
-        if self.bot.roles['crc'] not in member.roles and self.bot.roles['Nitro Booster'] not in member.roles:
+        if self.bot.roles['crc'] not in member.roles and not member.premium_since:
             return await ctx.send("This command can only be used by Nitro Boosters and members of crc!")
         if self.check_nickname(nickname):
             try:

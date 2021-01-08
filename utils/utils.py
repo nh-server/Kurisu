@@ -1,8 +1,8 @@
-from discord.ext.commands import Context
-
 import discord
 import random
 import re
+
+from discord.ext.commands import Context
 
 
 async def send_dm_message(member: discord.Member, message: str, ctx: Context = None, **kwargs) -> bool:

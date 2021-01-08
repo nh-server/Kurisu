@@ -1,6 +1,6 @@
 from discord.ext import commands
-from utils.checks import is_staff
 from utils import crud
+from utils.checks import is_staff
 
 
 class ModDB(commands.Cog):

@@ -1,9 +1,8 @@
 import discord
 
-from utils.converters import SafeMember
+from discord.ext import commands
 from utils.checks import is_staff
 from utils import crud
-from discord.ext import commands
 
 
 class HelperList(commands.Cog):
@@ -21,7 +20,7 @@ class HelperList(commands.Cog):
 
     @is_staff(role='Owner')
     @commands.command()
-    async def addhelper(self, ctx, member: SafeMember, console):
+    async def addhelper(self, ctx, member: discord.Member, console):
         """Add user as a helper. Owners only."""
         if console not in self.bot.helper_roles:
             await ctx.send(f"💢 That's not a valid position. You can use __{'__, __'.join(self.bot.helper_roles.keys())}__")
@@ -32,7 +31,7 @@ class HelperList(commands.Cog):
 
     @is_staff(role='Owner')
     @commands.command()
-    async def delhelper(self, ctx, member: SafeMember):
+    async def delhelper(self, ctx, member: discord.Member):
         """Remove user from helpers. Owners only."""
         if not await crud.get_helper(member.id):
             return await ctx.send("This user is not a helper!")
