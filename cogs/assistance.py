@@ -1064,14 +1064,14 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
             embed.url = "https://wiiu.hacks.guide/#/dump-games"
             embed.description = "How to dump/install Wii U game discs using disc2app and WUP Installer GX2"
             await ctx.send(embed=embed)
-        elif self.check_console(console, channelName, ('vwii')):
+        elif self.check_console(console, channelName, 'vwii'):
             embed = discord.Embed(title="vWii dump Guide", color=discord.Color(0x009AC7))
             embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/dump-wii-games")
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
             embed.url = "https://wiiu.hacks.guide/#/dump-wii-games"
             embed.description = "How to dump Wii game discs on vWii using CleanRip"
             await ctx.send(embed=embed)
-        elif self.check_console(console, channelName, ('dsi')):
+        elif self.check_console(console, channelName, 'dsi'):
             embed = discord.Embed(title="GodMode9i dump Guide", color=discord.Color(0x009AC7))
             embed.set_author(name="NightScript", url="https://dsi.cfw.guide/dumping-cartridges")
             embed.url = "https://dsi.cfw.guide/dumping-cartridges"
