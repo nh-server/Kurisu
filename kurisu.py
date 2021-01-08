@@ -220,9 +220,9 @@ class Kurisu(commands.Bot):
                 else:
                     await models.Role.create(id=self.roles[n].id, name=self.roles[n].name)
         # Nitro Booster existence depends if there is any nitro booster
-        self.roles['Nitro-Booster'] = self.guild.premium_subscriber_role
-        if self.roles['Nitro-Booster'] and not await crud.get_dbrole(self.roles['Nitro-Booster'].id):
-            await models.Role.create(id=self.roles['Nitro-Booster'].id, name='Nitro-Booster')
+        self.roles['Nitro Booster'] = self.guild.premium_subscriber_role
+        if self.roles['Nitro Booster'] and not await crud.get_dbrole(self.roles['Nitro Booster'].id):
+            await models.Role.create(id=self.roles['Nitro Booster'].id, name='Nitro Booster')
 
     @staticmethod
     def escape_text(text):
