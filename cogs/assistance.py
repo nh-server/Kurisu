@@ -792,6 +792,19 @@ just missing a file called boot.firm in the root of your SD card.
         embed.add_field(name="How to fix the issue", value="1. Check you inserted the SD card in your console\n 2. Place/replace the file, downloading it from https://github.com/LumaTeam/Luma3DS/releases", inline=False)
         embed.add_field(name="Checking your SD for errors or corruption", value="https://3ds.eiphax.tech/sderrors.html \n Please read the instructions carefully.", inline=False)
         await ctx.send(embed=embed)
+                                
+     @commands.command()
+    async def bricked(self, ctx):
+        """3DS bricked"""
+        embed = discord.Embed(title="Yes, you are bricked")
+        embed.description = cleandoc("""
+                            If you get a blue screen with the text BOOTROM ERROR after messing with NAND files, or \
+                            your 3DS cannot boot for some other reason, your 3DS is bricked.
+                            """)
+        embed.add_field(name="How to fix the issue", value="1. Make an NTRBoot flashcart following https://3ds.hacks.guide/ntrboot.html\n 2. Download GodMode9, but rename GodMode9.firm to boot.firm, and\
+        put it on the root of your SD. 3. Follow Restoring A NAND Backup on https://3ds.hacks.guide/godmode9-usage", inline=False)
+        embed.add_field(name="If your 3DS doesn't respond to the power button", value="Verify your 3DS is charged. If it is, your system is MCU bricked. There is no way to recover from an MCU brick.", inline=False)
+        await ctx.send(embed=embed)                            
 
     @commands.command(aliases=["troubleshooting"])
     async def troubleshoot(self, ctx):
