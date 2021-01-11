@@ -312,12 +312,11 @@ COLOR = 0xCE181E
 
 
 def is_valid(error: str):
-    err_int = None
     try:
         err_int = int(error, 16)
     except ValueError:
         return False
-    return True if err_int.bit_length() <= 32 else False
+    return True if err_int >= 0 and err_int.bit_length() <= 32 else False
 
 
 def hexinfo(error: str):
