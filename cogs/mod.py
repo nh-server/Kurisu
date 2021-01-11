@@ -747,7 +747,7 @@ class Mod(commands.Cog):
         if name not in self.bot.channels:
             await ctx.send("Invalid channel name!")
             return
-        await models.Channel.update.values(id=channel.id).where(models.Channel.name == name).gino.status
+        await models.Channel.update.values(id=channel.id).where(models.Channel.name == name).gino.status()
         self.bot.channels[name] = channel
         await ctx.send(f"Changed {name} channel to {channel.mention} | {channel.id}")
         await self.bot.channels['server-logs'].send(f"⚙ **Changed**: {ctx.author.mention} changed {name} channel to {channel.mention} | {channel.id}")
