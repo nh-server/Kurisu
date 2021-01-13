@@ -16,7 +16,7 @@ services:
 
   kurisu:
     build: .
-    image: kurisutest
+    image: ghcr.io/nh-server/kurisu
     environment:
       KURISU_TOKEN_FILE: /run/secrets/kurisu_token
       DB_USER: kurisu
