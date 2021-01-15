@@ -29,9 +29,14 @@ class Channel(db.Model):
     id = db.Column(db.BigInteger(), primary_key=True)
     name = db.Column(db.Unicode)
     private = db.Column(db.Boolean(), default=False)
+    mod_channel = db.Column(db.Boolean(), default=False)
     default_role = db.Column(db.BigInteger(), db.ForeignKey("roles.id"), default=None)
     lock_level = db.Column(db.Integer, default=0)
     nofilter = db.Column(db.Boolean(), default=False)
+
+    @property
+    def is_mod_channel(self):
+        return self.mod_channel
 
 
 class Role(db.Model):

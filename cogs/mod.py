@@ -752,6 +752,15 @@ class Mod(commands.Cog):
         await ctx.send(f"Changed {name} channel to {channel.mention} | {channel.id}")
         await self.bot.channels['server-logs'].send(f"⚙ **Changed**: {ctx.author.mention} changed {name} channel to {channel.mention} | {channel.id}")
 
+    @is_staff("Owner")
+    @commands.guild_only()
+    @commands.command()
+    async def setmodchannel(self, ctx, channel: discord.TextChannel, value: bool):
+        """Changes the mod flag of a channel"""
+        dbchannel = await crud.get_dbchannel(channel.id)
+        await dbchannel.update(mod_channel=value).apply()
+        await ctx.send(f"{channel.mention} is {'now' if value else 'no longer'} a mod channel.")
+
     @is_staff("OP")
     @commands.command()
     async def playing(self, ctx, *, gamename):

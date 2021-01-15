@@ -114,10 +114,11 @@ class ModWarn(commands.Cog):
         embed.set_author(name=f"Warns for {member}", icon_url=member.avatar_url)
         warns = await crud.get_warns(member.id)
         if warns:
+            dbchannel = await crud.get_dbchannel(ctx.channel.id)
             for idx, warn in enumerate(warns):
                 issuer = await ctx.get_user(warn.issuer)
                 value = ""
-                if ctx.channel in {self.bot.channels['helpers'], self.bot.channels['mods'], self.bot.channels['mod-logs'], self.bot.channels['bot-talk'], self.bot.channels['mod-mail']}:
+                if dbchannel and dbchannel.is_mod_channel:
                     value += f"Issuer: {issuer.name}\n"
                 value += f"Reason: {warn.reason} "
                 embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn.id).strftime('%Y-%m-%d %H:%M:%S')}", value=value)
