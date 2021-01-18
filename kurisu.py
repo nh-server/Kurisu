@@ -314,6 +314,9 @@ class Kurisu(commands.Bot):
             await ctx.send(f'{author.mention} A bad argument was given: `{exc}`\n')
             await ctx.send_help(ctx.command)
 
+        elif isinstance(exc, commands.BadUnionArgument):
+            await ctx.send(f'{author.mention} A bad argument was given: `{exc}`\n')
+
         elif isinstance(exc, discord.ext.commands.errors.CommandOnCooldown):
             if not await check_staff_id('Helper', author.id):
                 try:
