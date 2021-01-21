@@ -861,7 +861,7 @@ class Mod(commands.Cog):
     @commands.guild_only()
     @commands.command()
     async def tempstream(self, ctx, member: discord.Member, length: str = ""):
-        """Gives temporary streaming permissions to a member. Lasts 24 hours by defauly"""
+        """Gives temporary streaming permissions to a member. Lasts 24 hours by default"""
         await member.add_roles(self.bot.roles['streamer(temp)'])
 
         timestamp = datetime.datetime.now()
@@ -883,7 +883,7 @@ class Mod(commands.Cog):
     @commands.guild_only()
     @commands.command()
     async def notempstream(self, ctx, member: discord.Member):
-        """Revokes temporary streaming permissions from a member. Lasts 24 hours by defauly"""
+        """Revokes temporary streaming permissions from a member."""
         await member.remove_roles(self.bot.roles['streamer(temp)'])
 
         await crud.remove_timed_role(member.id, self.bot.roles['streamer(temp)'].id)
