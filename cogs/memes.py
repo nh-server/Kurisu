@@ -1,8 +1,11 @@
+import datetime
 import discord
 import math
 import random
 
 from discord.ext import commands
+from utils import crud
+from utils.checks import is_staff
 
 
 class Memes(commands.Cog):
@@ -457,6 +460,21 @@ class Memes(commands.Cog):
     async def cadealert(self, ctx):
         """stop! cade time."""
         await self._meme(ctx, "excuse me <@&575940388452433940>, it is time for cade", allowed_mentions=discord.AllowedMentions(roles=True))
+
+    @is_staff("OP")
+    @commands.command(hidden=True, aliases=['🍰'])
+    async def birthday(self, ctx, member: discord.Member):
+        """Wishes a happy birthday. Do not abuse pls."""
+
+        await ctx.message.delete()
+        await member.add_roles(self.bot.roles['🍰'])
+
+        timestamp = datetime.datetime.now()
+        delta = datetime.timedelta(seconds=86400)
+        expiring_time = timestamp + delta
+
+        await crud.add_timed_role(member.id, self.bot.roles['🍰'].id, expiring_time)
+        await ctx.send(f"Happy birthday {member.mention}!")
 
 
 def setup(bot):

@@ -856,6 +856,41 @@ class Mod(commands.Cog):
         embed.add_field(name="Status", value=state[dbchannel.lock_level], inline=False)
         await ctx.send(embed=embed)
 
+    @is_staff("OP")
+    @commands.bot_has_permissions(manage_roles=True)
+    @commands.guild_only()
+    @commands.command()
+    async def tempstream(self, ctx, member: discord.Member, length: str = ""):
+        """Gives temporary streaming permissions to a member. Lasts 24 hours by defauly"""
+        await member.add_roles(self.bot.roles['streamer(temp)'])
+
+        timestamp = datetime.datetime.now()
+        seconds = utils.parse_time(length) if length else 86400
+        if seconds == -1:
+            return await ctx.send("💢 I don't understand your time format.")
+
+        delta = datetime.timedelta(seconds=seconds)
+        expiring_time = timestamp + delta
+        expiring_time_string = expiring_time.strftime("%Y-%m-%d %H:%M:%S")
+
+        await crud.add_timed_role(member.id, self.bot.roles['streamer(temp)'].id, expiring_time)
+        msg_user = f"You have been given streaming permissions until {expiring_time_string}!"
+        await utils.send_dm_message(member, msg_user, ctx)
+        await self.bot.channels['mod-logs'].send(f"⭕ **Permission Granted**: {ctx.author.mention} granted streaming permissions to {member.mention} until {expiring_time_string}")
+
+    @is_staff("OP")
+    @commands.bot_has_permissions(manage_roles=True)
+    @commands.guild_only()
+    @commands.command()
+    async def notempstream(self, ctx, member: discord.Member):
+        """Revokes temporary streaming permissions from a member. Lasts 24 hours by defauly"""
+        await member.remove_roles(self.bot.roles['streamer(temp)'])
+
+        await crud.remove_timed_role(member.id, self.bot.roles['streamer(temp)'].id)
+        msg_user = "Your temporary streaming permissions have been revoked!"
+        await utils.send_dm_message(member, msg_user, ctx)
+        await self.bot.channels['mod-logs'].send(f"⭕ **Permission Revoked**: {ctx.author.mention} revoked {member.mention} streaming permissions.")
+
 
 def setup(bot):
     bot.add_cog(Mod(bot))

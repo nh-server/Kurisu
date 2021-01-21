@@ -113,6 +113,7 @@ class Loop(commands.Cog):
                 timenohelps = await crud.get_time_restrictions_by_type('timenohelp')
                 timenotechs = await crud.get_time_restrictions_by_type('timenotech')
                 timehelpmutes = await crud.get_time_restrictions_by_type('timehelpmute')
+                timedroles = await crud.get_timed_roles()
 
                 for timeban in timebans:
                     unban_time = timeban.end_date
@@ -197,6 +198,16 @@ class Loop(commands.Cog):
                         if current_timestamp > warning_time:
                             await crud.set_time_restriction_alert(timenotech.user, 'timenotech')
                             await self.bot.channels['helpers'].send(f"**Note**: <@{timenotech.user}> no-tech restriction will expire in {((timenotech.end_date - current_timestamp).seconds // 60) + 1} minutes.")
+
+                for timedrole in timedroles:
+                    if current_timestamp > timedrole.expiring_date:
+                        await crud.remove_timed_role(timedrole.user_id, timedrole.role_id)
+                        member = self.bot.guild.get_member(timedrole.user_id)
+                        role = self.bot.guild.get_role(timedrole.role_id)
+                        if member and role:
+                            await member.remove_roles(role)
+                        msg = f"⭕ **Timed Role Expired**: <@{timedrole.user_id}>"
+                        await self.bot.channels['mod-logs'].send(msg)
 
                 if current_timestamp.minute == 0 and current_timestamp.hour != self.last_hour:
                     await self.bot.channels['helpers'].send(f"{self.bot.guild.name} has {self.bot.guild.member_count:,} members at this hour!")

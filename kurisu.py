@@ -131,6 +131,8 @@ class Kurisu(commands.Bot):
             'crc': None,
             'No-Tech': None,
             'help-mute': None,
+            'streamer(temp)': None,
+            '🍰': None,
         }
 
         self.actions = []
