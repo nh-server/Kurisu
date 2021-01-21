@@ -147,6 +147,30 @@ async def set_time_restriction_alert(user_id: int, type: str):
         await time_restriction.update(alerted=True).apply()
 
 
+async def add_timed_role(user_id: int, role_id: int, expiring_date: datetime.datetime):
+    await add_dbmember_if_not_exist(user_id)
+    entry = await get_time_role_by_user_type(user_id, role_id)
+    if not entry:
+        return await models.TimedRole.create(id=generate_id(), user_id=user_id, role_id=role_id, expiring_date=expiring_date)
+    await entry.update(expiring_date=expiring_date).apply()
+    return entry
+
+
+async def remove_timed_role(user_id: int, role_id: int):
+    timed_role = await get_time_role_by_user_type(user_id, role_id)
+    if timed_role:
+        await timed_role.delete()
+
+
+async def get_time_role_by_user_type(user_id: int, role_id: int):
+    return await models.TimedRole.query.where(
+        (models.TimedRole.user_id == user_id) & (models.TimedRole.role_id == role_id)).gino.first()
+
+
+async def get_timed_roles():
+    return await models.TimedRole.query.gino.all()
+
+
 async def add_flag(name: str):
     await models.Flag.create(name=name)
 

@@ -61,6 +61,14 @@ class TimedRestriction(db.Model):
     alerted = db.Column(db.Boolean(), default=False)
 
 
+class TimedRole(db.Model):
+    __tablename__ = "timedroles"
+    id = db.Column(db.BigInteger(), primary_key=True)
+    role_id = db.Column(db.BigInteger(), db.ForeignKey("roles.id"))
+    user_id = db.Column(db.BigInteger, db.ForeignKey("members.id"))
+    expiring_date = db.Column(db.DateTime())
+
+
 class Member(db.Model):
     __tablename__ = "members"
     id = db.Column(db.BigInteger(), primary_key=True)
