@@ -876,6 +876,7 @@ class Mod(commands.Cog):
         await crud.add_timed_role(member.id, self.bot.roles['streamer(temp)'].id, expiring_time)
         msg_user = f"You have been given streaming permissions until {expiring_time_string}!"
         await utils.send_dm_message(member, msg_user, ctx)
+        await ctx.send(f"{member.mention} has been given streaming permissions until {expiring_time_string}.")
         await self.bot.channels['mod-logs'].send(f"⭕ **Permission Granted**: {ctx.author.mention} granted streaming permissions to {member.mention} until {expiring_time_string}")
 
     @is_staff("OP")
