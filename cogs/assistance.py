@@ -1241,7 +1241,7 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
         """Links to twlmenu tutorial"""
         embed = discord.Embed(title="TWiLightMenu++ tutorial", color=discord.Color.purple())
         embed.set_thumbnail(url="https://avatars1.githubusercontent.com/u/46971470?s=200&v=4")
-        embed.url = "https://github.com/DS-Homebrew/TWiLightMenu/wiki/Installing-(3DS)#"
+        embed.url = "https://wiki.ds-homebrew.com/twilightmenu/installing-3ds.html"
         embed.description = "Basic tutorial for installing TWiLightMenu++"
         await ctx.send(embed=embed)
 
