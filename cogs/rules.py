@@ -117,7 +117,7 @@ class Rules(commands.Cog, command_attrs=dict()):
                                      " • discuss piracy in the assistance channels\n"
                                      " • in general commit copyright violations\n\n"
 
-                                     "For more informations, see [this page](https://3ds.eiphax.tech/piracy)\n"
+                                     "For more information, see [this page](https://3ds.eiphax.tech/piracy)\n"
 
                                      "If you simply need to tell someone to not ask about piracy, consider `.pirate` instead. `.r11` was changed to match `.pirate` due to its large embed.", title="Rule 11")
 
