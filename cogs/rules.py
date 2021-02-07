@@ -102,7 +102,8 @@ class Rules(commands.Cog, command_attrs=dict()):
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r10(self, ctx):
         """Displays rule 10."""
-        await self.simple_embed(ctx, "Not-safe-for-work content (including gore and other \"shock\" content) is prohibited.", title="Rule 10")
+        await self.simple_embed(ctx, "Not-safe-for-work content (including gore and other \"shock\" content) is prohibited.\n"
+                                "Additionally hornyposting is heavily discouraged in all the channels.", title="Rule 10")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
