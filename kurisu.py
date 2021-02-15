@@ -25,7 +25,7 @@ from utils.manager import WordFilterManager, InviteFilterManager
 from utils.models import db
 from utils.utils import create_error_embed
 
-IS_DOCKER = os.environ.get('IS_DOCKER', 0)
+IS_DOCKER = os.environ.get('IS_DOCKER', '')
 
 # sets working directory to bot's folder
 dir_path = os.path.dirname(os.path.realpath(__file__))
