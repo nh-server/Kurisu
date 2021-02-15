@@ -18,6 +18,9 @@ jobs:
           message: |
             Starting build for commit [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}) by ${{ github.actor }}
             >>> ${{ github.event.head_commit.message }}
+      # https://github.com/docker/compose/issues/6678
+      - name: Install haveged
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends haveged
       - name: Checkout
         uses: actions/checkout@v2
       - name: Set up Python 3.8
