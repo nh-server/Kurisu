@@ -88,6 +88,7 @@ jobs:
         run: docker-compose -f docker-compose-prod.yml pull
         env:
           DOCKER_HOST: ${{ secrets.SSH_HOST }}
+          COMPOSE_PARAMIKO_SSH: '1'
       - name: Send up webhook
         continue-on-error: true
         uses: appleboy/discord-action@3c62873803ab2f276e28cdde23972899fb26e3a5
@@ -99,6 +100,7 @@ jobs:
         run: docker-compose -f docker-compose-prod.yml up -d
         env:
           DOCKER_HOST: ${{ secrets.SSH_HOST }}
+          COMPOSE_PARAMIKO_SSH: '1'
       - name: Send webhook on failure
         if: ${{ failure() }}
         continue-on-error: true
