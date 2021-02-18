@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Send job start webhook
         continue-on-error: true
-        uses: appleboy/discord-action@4c19612
+        uses: appleboy/discord-action@3c62873803ab2f276e28cdde23972899fb26e3a5
         with:
           webhook_id: ${{ secrets.WEBHOOK_ID }}
           webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
@@ -79,7 +79,7 @@ jobs:
           SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
       - name: Send push webhook
         continue-on-error: true
-        uses: appleboy/discord-action@4c19612
+        uses: appleboy/discord-action@3c62873803ab2f276e28cdde23972899fb26e3a5
         with:
           webhook_id: ${{ secrets.WEBHOOK_ID }}
           webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
@@ -90,7 +90,7 @@ jobs:
           DOCKER_HOST: ${{ secrets.SSH_HOST }}
       - name: Send up webhook
         continue-on-error: true
-        uses: appleboy/discord-action@4c19612
+        uses: appleboy/discord-action@3c62873803ab2f276e28cdde23972899fb26e3a5
         with:
           webhook_id: ${{ secrets.WEBHOOK_ID }}
           webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
@@ -102,7 +102,7 @@ jobs:
       - name: Send webhook on failure
         if: ${{ failure() }}
         continue-on-error: true
-        uses: appleboy/discord-action@4c19612
+        uses: appleboy/discord-action@3c62873803ab2f276e28cdde23972899fb26e3a5
         with:
           webhook_id: ${{ secrets.WEBHOOK_ID }}
           webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
@@ -111,7 +111,7 @@ jobs:
       - name: Send webhook on cancellation
         if: ${{ cancelled() }}
         continue-on-error: true
-        uses: appleboy/discord-action@4c19612
+        uses: appleboy/discord-action@3c62873803ab2f276e28cdde23972899fb26e3a5
         with:
           webhook_id: ${{ secrets.WEBHOOK_ID }}
           webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
