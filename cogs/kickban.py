@@ -121,7 +121,7 @@ class KickBan(commands.Cog):
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
     @commands.command(name="unban", aliases=["unyeet"])
-    async def unban_member(self, ctx, user: Union[discord.Member, discord.User], *, reason):
+    async def unban_member(self, ctx, user: Union[discord.Member, discord.User], *, reason=""):
         """Unbans a user from the server. OP+ only."""
 
         try:
