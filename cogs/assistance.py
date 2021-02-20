@@ -1398,6 +1398,15 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
             embed.description = "Tutorial for installing themes on the Switch"
             await ctx.send(embed=embed)
 
+    @commands.command(aliases=["uu"])
+    async def universalupdater(self, ctx):
+        """Community-maintained 3DS homebrew app store"""
+        embed = discord.Embed(title="Universal Updater", color=discord.Color.blue())
+        embed.set_author(name="Universal Team")
+        embed.url = "https://github.com/Universal-Team/Universal-Updater/releases/latest"
+        embed.description = "A Community-maintained 3DS homebrew app store"
+        await ctx.send(embed=embed)
+
     @commands.command()
     async def tinydb(self, ctx):
         """Community-maintained homebrew database"""
