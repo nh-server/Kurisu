@@ -7,7 +7,7 @@ ENV HOME /home/kurisu
 RUN useradd -m -d $HOME -s /bin/sh -u 2849 kurisu
 WORKDIR $HOME
 COPY ./requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-compile --no-cache-dir -r requirements.txt
 USER kurisu
 ARG BRANCH="unknown"
 ENV COMMIT_BRANCH=${BRANCH}
