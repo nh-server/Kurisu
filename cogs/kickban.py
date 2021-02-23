@@ -124,6 +124,9 @@ class KickBan(commands.Cog):
     async def unban_member(self, ctx, user: Union[discord.Member, discord.User], *, reason=""):
         """Unbans a user from the server. OP+ only."""
 
+        if reason = "":
+            reason = "No reason provided."
+
         try:
             await ctx.guild.fetch_ban(user)
         except discord.errors.NotFound:
