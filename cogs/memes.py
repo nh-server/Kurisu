@@ -473,12 +473,6 @@ class Memes(commands.Cog):
         """stop! cade time."""
         await self._meme(ctx, "excuse me <@&575940388452433940>, it is time for cade", allowed_mentions=discord.AllowedMentions(roles=True))
 
-    @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=120.0, type=commands.BucketType.channel)
-    async def birbalert(self, ctx):
-        """stop! birb time."""
-        await self._meme(ctx, "excuse me <@&805294876673572884>, it is time for birb", allowed_mentions=discord.AllowedMentions(roles=True))
-
     @is_staff("OP")
     @commands.command(hidden=True, aliases=['🍰'])
     async def birthday(self, ctx, member: discord.Member):
