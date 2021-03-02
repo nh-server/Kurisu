@@ -84,13 +84,13 @@ class ModStaff(commands.Cog):
         """Updates the staff list based on staff member in the server."""
         removed = []
         for staffmember in await crud.get_staff_all():
-            if ctx.guild.get_member(staffmember) is None:
-                await crud.remove_staff(staffmember)
-                removed.append(await self.bot.fetch_user(staffmember))
+            if ctx.guild.get_member(staffmember.id) is None:
+                await crud.remove_staff(staffmember.id)
+                removed.append(await self.bot.fetch_user(staffmember.id))
         for helper in await crud.get_helpers():
-            if ctx.guild.get_member(helper) is None:
-                await crud.remove_helper(helper)
-                removed.append(await self.bot.fetch_user(helper))
+            if ctx.guild.get_member(helper.id) is None:
+                await crud.remove_helper(helper.id)
+                removed.append(await self.bot.fetch_user(helper.id))
         if not removed:
             await ctx.send("Updated Staff list, no staff removed!")
         else:
