@@ -273,6 +273,7 @@ class Events(commands.Cog):
         # it can trigger it multiple times if I use >. it can't skip to a number so this should work
         if len(self.user_antispam[message.author.id]) == 6:
             await message.author.add_roles(self.bot.roles['Muted'])
+            await member.remove_roles(self.bot.roles['#elsewhere'], self.bot.roles['#art-discussion'])
             await crud.add_permanent_role(message.author.id, self.bot.roles['Muted'].id)
             msg_user = f"You were automatically muted for sending too many messages in a short period of time!\n\n" \
                        f"If you believe this was done in error, send a direct message to one of the staff in {self.bot.channels['welcome-and-rules'].mention}."
