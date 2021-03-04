@@ -33,7 +33,7 @@ class Memes(commands.Cog):
 
     async def _meme2(self, ctx, msg, directed: bool = False, imagelink=None, allowed_mentions=None):
         author = ctx.author
-        if isinstance(ctx.channel, discord.abc.GuildChannel) and (ctx.channel in self.bot.assistance_channels or (self.bot.roles['No-Memes'] in author.roles) or ctx.channel = self.bot.channels['bot-cmds']):
+        if isinstance(ctx.channel, discord.abc.GuildChannel) and (ctx.channel in self.bot.assistance_channels or (self.bot.roles['No-Memes'] in author.roles) or ctx.channel is self.bot.channels['bot-cmds']):
             await ctx.message.delete()
             try:
                 await ctx.author.send("Meme commands are disabled in this channel, or your privileges have been revoked.")
