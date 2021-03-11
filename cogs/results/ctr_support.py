@@ -54,6 +54,7 @@ friends = Module('friends', {
 account = Module('account', {
     102: ResultInfo('This console is permanently banned by Nintendo.', is_ban=True),
     107: ResultInfo('This console is temporarily (?) banned by Nintendo.', is_ban=True),
+    110: ResultInfo('Error when trying to use the discontinued youtube 3ds app.'),
     119: ResultInfo('System update is required. This is typically shown when the friends module is outdated.'),
     120: ResultInfo('Game or title update is required. This is typically shown when the title you\'re trying to launch is outdated.'),
     121: ResultInfo('Local friend code SEED has invalid signature. This should only happen if it has been modified.', is_ban=True),
@@ -62,6 +63,7 @@ account = Module('account', {
 
 # 003: connection related errors
 internet = Module('internet', {
+    299: ResultInfo('The Wireless Connection is currently deactivated. Please activate the wireless connection.'),
     399: ResultInfo('Accepted EULA version is too low'),
     1099: ResultInfo('Access point with given SSID not found.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/4249/kw/003-1099'),
     2001: ResultInfo('DNS error. If you\'re using a custom DNS server, make sure the settings are correct.')
@@ -105,6 +107,7 @@ matchmaking = Module('matchmaking', {
 eshop_mint = Module('eshop (mint/api?)', {
     200: ResultInfo('Could not access the SD card.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/4234'),
     1221: ResultInfo('The download code you entered can only be redeemed within the relevant software title. It cannot be redeemed in Nintendo eShop.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/14600'),
+    2001: ResultInfo('Error when attempting to access eshop on a region changed console. Fixed by changing back to the console original region.'),
     2100: ResultInfo('The connection to the Nintendo eShop timed out. This error code is often times caused by slow download times due to interference or a slow Internet connection.', 'See [the support page](https://en-americas-support.nintendo.com/app/answers/detail/a_id/4432) or [Nintendo\'s network status](https://support.nintendo.com/networkstatus).'),
     2670: ResultInfo('An error occurred while attempting to connect.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/4383'),
     2913: ResultInfo('The server is probably down. Try again later.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/10425'),
@@ -112,6 +115,7 @@ eshop_mint = Module('eshop (mint/api?)', {
     2920: ResultInfo('This error is typically displayed when a Nintendo eShop download failed, or when the title has an invalid ticket. Delete the title and/or its ticket in FBI and install it again from a legitimate source like the Nintendo eShop, or from your game cartridges if using cart dumps.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/41692'),
     2924: ResultInfo('Happens when opening eshop with a invalid language setting'),
     3049: ResultInfo('The eShop is down for maintenance.', 'https://support.nintendo.com/networkstatus/'),
+    6106: ResultInfo('Occurs when attempting to re-download software from the eshop with an invalid or fake ticket')
 })
 
 # 009: errors related to (presumably) the eShop application itself
@@ -147,6 +151,7 @@ data_transfer = Module('system transfer', {
 })
 # 012: a category related to the web browser or ssl module considered 1511
 browser1 = Module('browser (?)', {
+    1004: ResultInfo('SSL connection failed.'),
     1511: ResultInfo('Certificate warning.')
 })
 
@@ -158,7 +163,7 @@ browser2 = Module('browser (?)', {
 # 022: more account stuff?
 account2 = Module('account', {
     2452: ResultInfo('Tried to access the eShop with UNITINFO patch enabled. Turn it off in Luma\'s options.'),
-    2501: ResultInfo('NNID is already linked to another system. This can be the result of using System Transfer (where all NNIDs associated with the system are moved, whether they are currently linked or not), restoring the source console\'s NAND, and then attempting to use applications which require an NNID.'),
+    (2501, 2591): ResultInfo('NNID is already linked to another system. This can be the result of using System Transfer (where all NNIDs associated with the system are moved, whether they are currently linked or not), restoring the source console\'s NAND, and then attempting to use applications which require an NNID.'),
     2511: ResultInfo('System update required (displayed by Miiverse?).'),
     2613: ResultInfo('Incorrect email or password when attempting to link an existing NNID. Can also happen if the NNID is already linked to another system, or if you attempt to download an application from the eShop without a linked NNID on the console.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/4314/kw/022-2613'),
     2631: ResultInfo('The NNID you are attempting to use has been deleted, or is unusable due to a System Transfer. A transferred NNID will only work on the target system.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/4285/kw/022-2631'),

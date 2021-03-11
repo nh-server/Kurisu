@@ -102,7 +102,7 @@ class Rules(commands.Cog, command_attrs=dict()):
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r10(self, ctx):
         """Displays rule 10."""
-        await self.simple_embed(ctx, "Not-safe-for-work content (including gore and other \"shock\" content) is prohibited.", title="Rule 10")
+        await self.simple_embed(ctx, "Not-safe-for-work content (including gore and other \"shock\" content) is prohibited.\nAdditionally hornyposting is heavily discouraged in all the channels.", title="Rule 10")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -116,6 +116,8 @@ class Rules(commands.Cog, command_attrs=dict()):
                                      " • ask to share direct messages to help with piracy\n"
                                      " • discuss piracy in the assistance channels\n"
                                      " • in general commit copyright violations\n\n"
+
+                                     "For more information, see [this page](https://3ds.eiphax.tech/piracy)\n"
 
                                      "If you simply need to tell someone to not ask about piracy, consider `.pirate` instead. `.r11` was changed to match `.pirate` due to its large embed.", title="Rule 11")
 

@@ -7,11 +7,11 @@ on:
 jobs:
   build:
     if: "!contains(github.event.head_commit.message, 'skip ci')"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
       - name: Send job start webhook
         continue-on-error: true
-        uses: appleboy/discord-action@4c19612
+        uses: appleboy/discord-action@3c62873803ab2f276e28cdde23972899fb26e3a5
         with:
           webhook_id: ${{ secrets.WEBHOOK_ID }}
           webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
@@ -51,7 +51,7 @@ jobs:
           password: ${{ secrets.CR_PAT }}
       - name: Build Docker image
         id: docker_build
-        uses: docker/build-push-action@v2.1.0
+        uses: docker/build-push-action@v2
         with:
           context: .
           file: ./Dockerfile
@@ -79,7 +79,7 @@ jobs:
           SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
       - name: Send push webhook
         continue-on-error: true
-        uses: appleboy/discord-action@4c19612
+        uses: appleboy/discord-action@3c62873803ab2f276e28cdde23972899fb26e3a5
         with:
           webhook_id: ${{ secrets.WEBHOOK_ID }}
           webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
@@ -88,9 +88,10 @@ jobs:
         run: docker-compose -f docker-compose-prod.yml pull
         env:
           DOCKER_HOST: ${{ secrets.SSH_HOST }}
+          COMPOSE_PARAMIKO_SSH: '1'
       - name: Send up webhook
         continue-on-error: true
-        uses: appleboy/discord-action@4c19612
+        uses: appleboy/discord-action@3c62873803ab2f276e28cdde23972899fb26e3a5
         with:
           webhook_id: ${{ secrets.WEBHOOK_ID }}
           webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
@@ -99,10 +100,11 @@ jobs:
         run: docker-compose -f docker-compose-prod.yml up -d
         env:
           DOCKER_HOST: ${{ secrets.SSH_HOST }}
+          COMPOSE_PARAMIKO_SSH: '1'
       - name: Send webhook on failure
         if: ${{ failure() }}
         continue-on-error: true
-        uses: appleboy/discord-action@4c19612
+        uses: appleboy/discord-action@3c62873803ab2f276e28cdde23972899fb26e3a5
         with:
           webhook_id: ${{ secrets.WEBHOOK_ID }}
           webhook_token: ${{ secrets.WEBHOOK_TOKEN }}
@@ -111,7 +113,7 @@ jobs:
       - name: Send webhook on cancellation
         if: ${{ cancelled() }}
         continue-on-error: true
-        uses: appleboy/discord-action@4c19612
+        uses: appleboy/discord-action@3c62873803ab2f276e28cdde23972899fb26e3a5
         with:
           webhook_id: ${{ secrets.WEBHOOK_ID }}
           webhook_token: ${{ secrets.WEBHOOK_TOKEN }}

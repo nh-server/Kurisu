@@ -869,9 +869,7 @@ the system can't check for an update.
     async def emptysd(self, ctx):
         """What to do if you delete all your SD card contents"""
         await self.simple_embed(ctx, """
-                                If you have lost the contents of your SD card with CFW, you will need in SD root:
-                                -`boot.firm` and `boot.3dsx` from [luma3ds latest release](https://github.com/LumaTeam/Luma3DS/releases/latest)
-                                Then repeat the [finalizing setup](https://3ds.hacks.guide/finalizing-setup) page.
+                                Please follow the directions on the 3DS Hacks Guide [Restoring CFW](https://3ds.hacks.guide/restoring-cfw) page.
                                 """, color=discord.Color.red())
 
     # Luma downloadlinks
@@ -1397,6 +1395,15 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
             embed.url = "https://nh-server.github.io/switch-guide/extras/theming/"
             embed.description = "Tutorial for installing themes on the Switch"
             await ctx.send(embed=embed)
+
+    @commands.command(aliases=["uu"])
+    async def universalupdater(self, ctx):
+        """Community-maintained 3DS homebrew app store"""
+        embed = discord.Embed(title="Universal Updater", color=discord.Color.blue())
+        embed.set_author(name="Universal Team")
+        embed.url = "https://github.com/Universal-Team/Universal-Updater/releases/latest"
+        embed.description = "A Community-maintained 3DS homebrew app store"
+        await ctx.send(embed=embed)
 
     @commands.command()
     async def tinydb(self, ctx):
