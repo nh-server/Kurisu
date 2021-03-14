@@ -1512,16 +1512,16 @@ in the scene.
 
     @commands.command(name="90dns")
     async def ninetydns(self, ctx):
-        """90DNS IP adresses"""
+        """90DNS IP addresses"""
         await self.simple_embed(ctx, """
-                                The public 90DNS IP adresses are:
+                                The public 90DNS IP addresses are:
                                 - `207.246.121.77` (USA)
                                 - `163.172.141.219`(France)
 
                                 [Follow these steps](https://nh-server.github.io/switch-guide/extras/blocking_updates/) to set up 90dns and ensure it isn't being blocked
 
                                 You will have to manually set these for each WiFi connection you have set up.""",
-                                title="90DNS IP adressses")
+                                title="90DNS IP addresses")
 
     @commands.command(aliases=['missingco'])
     async def missingconfig(self, ctx):
