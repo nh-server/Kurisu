@@ -113,7 +113,7 @@ class Mod(commands.Cog):
 
     @is_staff("Owner")
     @commands.guild_only()
-    @commands.command()
+    @commands.command(aliases=['gigayeet'])
     async def multiban(self, ctx, users: commands.Greedy[int]):
         """Multi-ban users."""
         author = ctx.author
@@ -130,7 +130,7 @@ class Mod(commands.Cog):
     @is_staff("Owner")
     @commands.guild_only()
     @commands.bot_has_permissions(ban_members=True)
-    @commands.command()
+    @commands.command(aliases=['gigayeetre'])
     async def multibanre(self, ctx, *, rgx: str):
         """Multi-ban users by regex."""
         author = ctx.author
