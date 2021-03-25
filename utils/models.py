@@ -104,3 +104,9 @@ class ApprovedInvite(db.Model):
     @property
     def is_temporary(self):
         return self.uses > 0
+
+
+class Rule(db.Model):
+    __tablename__ = "rules"
+    id = db.Column(db.Integer(), primary_key=True)
+    description = db.Column(db.String())
