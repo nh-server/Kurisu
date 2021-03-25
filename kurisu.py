@@ -165,6 +165,7 @@ class Kurisu(commands.Bot):
             'bot-err': None,
             'elsewhere': None,  # I'm a bit worried about how often this changes, shouldn't be a problem tho
             'newcomers': None,
+            'nintendo-discussion': None,
         }
 
         self.failed_cogs = []
