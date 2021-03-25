@@ -19,33 +19,15 @@ class Rules(commands.Cog, command_attrs=dict()):
         self.logo_3ds = discord.utils.get(self.bot.guild.emojis, name="3dslogo")
         self.logo_wiiu = discord.utils.get(self.bot.guild.emojis, name="wiiulogo")
         self.logo_switch = discord.utils.get(self.bot.guild.emojis, name="switchlogo")
-        self.init_rules()
+        await self.init_rules()
 
     async def simple_embed(self, ctx, text, title="", color=discord.Color.default()):
         embed = discord.Embed(title=title, color=color)
         embed.description = text
         await ctx.send(embed=embed)
 
-    def init_rules(self):
-        self.rules_dict = {
-            1: "Be nice to each other. It's fine to disagree, it's not fine to insult or attack other people.",
-            2: "This is an English-speaking server, so please speak English to keep communication simple.",
-            3: "Keep 3DS, Wii U, and Switch support questions to the assistance channels.\n • Don't ask how to bypass network restrictions in place by Nintendo or game developers. This includes bypassing console bans.",
-            4: "Don't ask to ask, just ask. Just post your question instead of asking if you can and you will get an answer faster.\n • Add details when asking. \"x doesn't work\" will slow down help.",
-            5: "Don't spam. Don't post your question twice unless you fully believe you were not intentionally ignored.\n • For excessively long text, use a service like <https://hastebin.com/>.",
-            6: "Remain mindful and polite when asking or answering questions in the assistance channels. Derailing support or otherwise causing issues will get your access removed.",
-            7: "Don't brigade, raid, or otherwise attack other people or communities. Don't discuss participation in these attacks. This may warrant an immediate permanent ban.",
-            8: "One account per user. Bots/fully automated clients run by users are not allowed. Alternate accounts will have access removed. If you are switching accounts, please remove your original from the server.",
-            9: "User-side scripts are fine if they are only accessible by you and are not annoying. Community-accessible triggers on a user account are a violation of the Discord Terms of Service.",
-            10: "Not-safe-for-work content (including gore, and other \"shock\" content) is prohibited.\nAdditionally hornyposting is heavily discouraged in all the channels.",
-            11: "The Piracy rule: Don't... \n• ask how to pirate games\n • share full game data\n • mention piracy sites and tools by name\n • share game tickets and titlekeys\n • ask to share direct messages to help with piracy\n • discuss piracy in the assistance channels\n • in general commit copyright violations",
-            12: "Don't post other people's personal information, including social media accounts with this. This may warrant an immediate ban.",
-            13: "Ask a staff member before advertising in our server or posting invite links to things like servers on Discord, Skype groups, etc.",
-            14: f"Off-topic content goes to {self.bot.channels['off-topic'].mention}. Keep low-quality content like memes out. There is a channel for that, use \".togglechannel elsewhere\" to get access.",
-            15: f"Voice and music commands and other random/contextless command usage belong in {self.bot.channels['voice-and-music'].mention} and {self.bot.channels['bot-cmds'].mention} respectively.",
-            16: "Trying to evade, look for loopholes, or stay borderline within the rules will be treated as breaking them.",
-            17: "With regard to all of the recent Nintendo related leaks that have been occurring, and with regard to leaks of intellectual property of **any** company, __**Do Not**__:\n • ask how to download the leaked content\n • share leaked content or links to leaked content\n • discuss the contents of any leaks, link to discussions of any leaks elsewhere, or suggest or otherwise imply how someone may come across discussion or downloads of leaked content\nViolation of this rule will result in appropriate action being taken by staff. Repeated violation __**will**__ result in an irrevocable ban."
-        }
+    async def init_rules(self):
+        await self.load_rules()
 
         self.rules_intro = f"""{str(self.nh_emoji)} __**Welcome to Nintendo Homebrew!**__
 We're the place to come to for hacking & homebrew on Nintendo's video game consoles, like the Nintendo 3DS, Wii U, and Nintendo Switch. Get assistance with setting up or using homebrew, find news on the latest developments, discuss about what you're making, and more.
@@ -89,6 +71,12 @@ A few commands may be useful for you to get information faster. Random command u
 📨 Invitation link This is a permanent invitation link to the server!
 https://discord.gg/C29hYvh"""
 
+    async def load_rules(self):
+        self.rules_dict = {}
+        for rule in await crud.get_rules():
+            self.rules_dict[rule.id] = rule.description
+        print(self.rules_dict)
+
     @is_staff('SuperOP')
     @commands.command(hidden=False)
     async def updaterules(self, ctx):
@@ -116,6 +104,37 @@ https://discord.gg/C29hYvh"""
         await channel.send(self.useful_commands)
         await channel.send(self.extra)
         await ctx.send("Updated rules successfully!")
+
+    @is_staff('SuperOP')
+    @commands.group(hidden=False)
+    async def rule(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help(ctx.command)
+
+    @rule.command(hidden=False, name='add')
+    async def add_rule(self, ctx, number: int, description: str):
+        """Adds or edits a current rule"""
+        if await crud.get_rule(number):
+            await crud.edit_rule(number, description)
+            await ctx.send(f"Rule {number} edited successfully!")
+        else:
+            await crud.add_rule(number, description)
+            await ctx.send(f"Rule {number} added successfully!")
+        await self.load_rules()
+
+    @rule.command(hidden=False, name='delete')
+    async def delete_rule(self, ctx, number: int):
+        if await crud.get_rule(number):
+            await crud.delete_rule(number)
+            await ctx.send(f"Rule {number} deleted successfully!")
+            await self.load_rules()
+        else:
+            await ctx.send(f"There is no rule {number}!")
+
+    @rule.command(hidden=False, name='list')
+    async def list_rules(self, ctx):
+        rules = [f"**{number}**. {rule}\n" for number, rule in self.rules_dict.items()]
+        await ctx.send("".join(rules))
 
     @commands.command(hidden=False)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -147,103 +166,103 @@ https://discord.gg/C29hYvh"""
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r1(self, ctx):
         """Displays rule 1."""
-        await self.simple_embed(ctx, self.rules[1], title="Rule 1")
+        await self.simple_embed(ctx, self.rules_dict[1], title="Rule 1")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r2(self, ctx):
         """Displays rule 2."""
-        await self.simple_embed(ctx, self.rules[2], title="Rule 2")
+        await self.simple_embed(ctx, self.rules_dict[2], title="Rule 2")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r3(self, ctx):
         """Displays rule 3."""
-        await self.simple_embed(ctx, self.rules[3], title="Rule 3")
+        await self.simple_embed(ctx, self.rules_dict[3], title="Rule 3")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r4(self, ctx):
         """Displays rule 4."""
-        await self.simple_embed(ctx, self.rules[4], title="Rule 4")
+        await self.simple_embed(ctx, self.rules_dict[4], title="Rule 4")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r5(self, ctx):
         """Displays rule 5."""
-        await self.simple_embed(ctx, self.rules[5], title="Rule 5")
+        await self.simple_embed(ctx, self.rules_dict[5], title="Rule 5")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r6(self, ctx):
         """Displays rule 6."""
-        await self.simple_embed(ctx, self.rules[6], title="Rule 6")
+        await self.simple_embed(ctx, self.rules_dict[6], title="Rule 6")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r7(self, ctx):
         """Displays rule 7."""
-        await self.simple_embed(ctx, self.rules[7], title="Rule 7")
+        await self.simple_embed(ctx, self.rules_dict[7], title="Rule 7")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r8(self, ctx):
         """Displays rule 8."""
-        await self.simple_embed(ctx, self.rules[8], title="Rule 8")
+        await self.simple_embed(ctx, self.rules_dict[8], title="Rule 8")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r9(self, ctx):
         """Displays rule 9."""
-        await self.simple_embed(ctx, self.rules[9], title="Rule 9")
+        await self.simple_embed(ctx, self.rules_dict[9], title="Rule 9")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r10(self, ctx):
         """Displays rule 10."""
-        await self.simple_embed(ctx, self.rules[10], title="Rule 10")
+        await self.simple_embed(ctx, self.rules_dict[10], title="Rule 10")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def realr11(self, ctx):
         """Displays rule 11."""
-        await self.simple_embed(ctx, self.rules[11] + "If you simply need to tell someone to not ask about piracy, consider `.pirate` instead. `.r11` was changed to match `.pirate` due to its large embed.", title="Rule 11")
+        await self.simple_embed(ctx, self.rules_dict[11] + "\n\nIf you simply need to tell someone to not ask about piracy, consider `.pirate` instead. `.r11` was changed to match `.pirate` due to its large embed.", title="Rule 11")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r12(self, ctx):
         """Displays rule 12."""
-        await self.simple_embed(ctx, self.rules[12], title="Rule 12")
+        await self.simple_embed(ctx, self.rules_dict[12], title="Rule 12")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r13(self, ctx):
         """Displays rule 13."""
-        await self.simple_embed(ctx, self.rules[13], title="Rule 13")
+        await self.simple_embed(ctx, self.rules_dict[13], title="Rule 13")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r14(self, ctx):
         """Displays rule 14."""
-        await self.simple_embed(ctx, self.rules[14], title="Rule 14")
+        await self.simple_embed(ctx, self.rules_dict[14], title="Rule 14")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r15(self, ctx):
         """Displays rule 15."""
-        await self.simple_embed(ctx, self.rules[15], title="Rule 15")
+        await self.simple_embed(ctx, self.rules_dict[15], title="Rule 15")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r16(self, ctx):
         """Displays rule 16."""
-        await self.simple_embed(ctx, self.rules[16], title="Rule 16")
+        await self.simple_embed(ctx, self.rules_dict[16], title="Rule 16")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r17(self, ctx):
         """Displays rule 17."""
-        await self.simple_embed(ctx, self.rules[17], title="Rule 17")
+        await self.simple_embed(ctx, self.rules_dict[17], title="Rule 17")
 
 
 def setup(bot):

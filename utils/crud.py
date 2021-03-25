@@ -286,3 +286,29 @@ async def delete_friendcode(user_id: int):
     friendcode = await get_friendcode(user_id)
     if friendcode:
         await friendcode.delete()
+
+
+async def add_rule(number: int, description: str):
+    rule = await get_rule(number)
+    if not rule:
+        await models.Rule.create(id=number, description=description)
+
+
+async def edit_rule(number: int, description: str):
+    rule = await get_rule(number)
+    if rule:
+        await rule.update(description=description).apply()
+
+
+async def delete_rule(number: int):
+    rule = await get_rule(number)
+    if rule:
+        await rule.delete()
+
+
+async def get_rules():
+    return await models.Rule.query.order_by(models.Rule.id).gino.all()
+
+
+async def get_rule(number: int):
+    return await models.Rule.get(number)
