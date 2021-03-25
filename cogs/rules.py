@@ -61,11 +61,11 @@ Breaking these rules will result in appropriate measures taken by the staff.
 If staff say something is final, it is final and is not up for debate. Staff instruction is to be followed."""
 
         self.mod_list = f"""🛠️ __*Mod List*__
-**Please do not send a direct message unless asked. General questions should go to {self.bot.channels['3ds-assistance-1'].mention}, {self.bot.channels['3ds-assistance-2'].mention}, {self.bot.channels['wiiu-assistance'].mention}, or {self.bot.channels['switch-assistance-1'].mention} channels.
+**Please do not send a direct message unless asked. General questions should go to {self.bot.channels['3ds-assistance-1'].mention}, {self.bot.channels['3ds-assistance-2'].mention}, {self.bot.channels['wiiu-assistance'].mention}, {self.bot.channels['switch-assistance-1'].mention}, {self.bot.channels['switch-assistance-2'].mention} or {self.bot.channels['legacy-systems'].mention} channels.
 Please contact @NH Mod-Mail if you need to get in touch with the staff team.**\n\n"""
 
-        self.helper_list = """🤝 __*Helper List*__
-**Please do not send a direct message unless asked. General questions should go to #3ds-assistance-1, #3ds-assistance-2, #wiiu-assistance, #switch-assistance, or #legacy-systems channels.
+        self.helper_list = f"""🤝 __*Helper List*__
+**Please do not send a direct message unless asked. General questions should go to {self.bot.channels['3ds-assistance-1'].mention}, {self.bot.channels['3ds-assistance-2'].mention}, {self.bot.channels['wiiu-assistance'].mention}, {self.bot.channels['switch-assistance-1'].mention}, {self.bot.channels['switch-assistance-2'].mention} or {self.bot.channels['legacy-systems'].mention} channels.
 Please contact @NH Mod-Mail if you need to get in touch with the staff team. Mod-Mail is NOT FOR GETTING HELP WITH HACKING.**\n"""
 
         self.nickname_policy = """🏷️ __*Username/Nickname and Avatar policy*__
