@@ -75,7 +75,6 @@ https://discord.gg/C29hYvh"""
         self.rules_dict = {}
         for rule in await crud.get_rules():
             self.rules_dict[rule.id] = rule.description
-        print(self.rules_dict)
 
     @is_staff('SuperOP')
     @commands.command(hidden=False)
