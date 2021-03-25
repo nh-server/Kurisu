@@ -49,11 +49,11 @@ class Rules(commands.Cog, command_attrs=dict()):
 
         self.rules_intro = f"""{str(self.nh_emoji)} __**Welcome to Nintendo Homebrew!**__
 We're the place to come to for hacking & homebrew on Nintendo's video game consoles, like the Nintendo 3DS, Wii U, and Nintendo Switch. Get assistance with setting up or using homebrew, find news on the latest developments, discuss about what you're making, and more.
-     
+
 Be sure you read the following information before participating, especially rules. Not reading them is not an excuse for breaking them!
-     
+
 **Attempting to start drama is reason enough for a ban on sight.**
-    
+
 **By participating in this server, you acknowledge that user data (including messages, user IDs, user tags) will be collected and logged for moderation purposes. If you disagree with this collection, please leave the server immediately.**\n📑 __*Rules*__\n"""
 
         self.staff_action = """🔨 __*Staff Action*__
@@ -207,8 +207,7 @@ https://discord.gg/C29hYvh"""
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def realr11(self, ctx):
         """Displays rule 11."""
-        await self.simple_embed(ctx, self.rules[11] +
-        "If you simply need to tell someone to not ask about piracy, consider `.pirate` instead. `.r11` was changed to match `.pirate` due to its large embed.", title="Rule 11")
+        await self.simple_embed(ctx, self.rules[11] + "If you simply need to tell someone to not ask about piracy, consider `.pirate` instead. `.r11` was changed to match `.pirate` due to its large embed.", title="Rule 11")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
