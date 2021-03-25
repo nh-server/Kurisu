@@ -236,9 +236,8 @@ class Kurisu(commands.Bot):
         assert len(guilds) == 1
         self.guild = guilds[0]
 
-        self.upgrade_database_revision()
-
         try:
+            self.upgrade_database_revision()
             await db.set_bind(DATABASE_URL)
         except:
             sys.exit('Error when connecting to database')
