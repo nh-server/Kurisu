@@ -402,7 +402,7 @@ def main():
 
     intents = discord.Intents(guilds=True, members=True, bans=True, messages=True)
 
-    bot = Kurisu(('.', '!'), case_insensitive=True, description="Kurisu, the bot for Nintendo Homebrew!", allowed_mentions=discord.AllowedMentions(everyone=False, roles=False), commit=commit, branch=branch, intents=intents)
+    bot = Kurisu(('.', '!'), description="Kurisu, the bot for Nintendo Homebrew!", allowed_mentions=discord.AllowedMentions(everyone=False, roles=False), commit=commit, branch=branch, intents=intents)
     bot.help_command = commands.DefaultHelpCommand(dm_help=None)
     print(f'Starting Kurisu on commit {commit} on branch {branch}')
     bot.load_cogs()
