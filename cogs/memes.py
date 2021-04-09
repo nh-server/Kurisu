@@ -354,7 +354,7 @@ class Memes(commands.Cog):
     @staticmethod
     def c_to_f(c):
         """this is where we take memes too far"""
-        return math.floor(9.0 / 30.0 * c + 32)
+        return math.floor(1.8 * c + 32)
 
     @staticmethod
     def c_to_k(c):
