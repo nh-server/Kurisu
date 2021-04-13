@@ -260,7 +260,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
     @commands.command()
     async def cfwuses(self, ctx, console=""):
         """Uses for CFW on Wii U and 3DS"""
-        systems = ("3ds", "wiiu")
+        systems = ("3ds", "wiiu", "nx", "ns", "switch")
         channelName = ""
         if not isinstance(ctx.channel, discord.DMChannel):
             channelName = ctx.channel.name
@@ -275,6 +275,20 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         if self.check_console(console, channelName, '3ds'):
             """Links to eiphax cfw uses page"""
             await self.simple_embed(ctx, "Want to know what CFW can be used for? <https://3ds.eiphax.tech/tips.html>")
+        elif self.check_console(console, channelName, ('switch', 'nx', 'ns')):
+            embed = discord.Embed(title="What can I do with a hacked switch?", color=discord.Color(0xCB0004))
+            embed.description = cleandoc("""
+                There is no complete list about what is possible and what not, but to give you an idea of what you can do, here is an overview:
+
+                -Have custom themes,
+                -Run emulators (up to N64 works, with a bit of modification GCN/Wii work fine as well but it varies from game to game),
+                -Run custom homebrew apps,
+                -Backup, edit and restore game saves,
+                -Dump game cartridges (to look at the contents, for example)
+                -Mod games,
+                -Run Android or Linux on your Switch,
+                -Still have access to normal stock features (e.g. eShop, online services etc.)""")
+            await ctx.send(embed=embed)
         elif self.check_console(console, channelName, ('wiiu',)):
             embed = discord.Embed(title="What can Wii U CFW be used for?", color=discord.Color.blue())
             embed.add_field(name="Among other things, it allows you to do the following:", value=cleandoc("""
