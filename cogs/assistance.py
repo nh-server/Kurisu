@@ -1122,7 +1122,7 @@ One way to fix this is by using an y-cable to connect the HDD to two USB ports.
         await self.simple_embed(ctx, cleandoc("""
                                      **Make sure your version of Atmosphere is up to date and that it supports the latest firmware**
 
-                                     **Atmosphere 0.19.0 (latest release)**
+                                     **Atmosphere 0.19.1 (latest release)**
                                      Supports up to firmware 12.0.0.
 
                                      *To find Atmosphere's version information, while booted into CFW, go into System Settings -> System, and look at \
