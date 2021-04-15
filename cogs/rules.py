@@ -39,16 +39,18 @@ Be sure you read the following information before participating, especially rule
 **By participating in this server, you acknowledge that user data (including messages, user IDs, user tags) will be collected and logged for moderation purposes. If you disagree with this collection, please leave the server immediately.**\n📑 __*Rules*__\n"""
 
         self.staff_action = """🔨 __*Staff Action*__
-Breaking these rules will result in appropriate measures taken by the staff.
-If staff say something is final, it is final and is not up for debate. Staff instruction is to be followed."""
+Breaking these rules will result in appropriate measures taken by the staff, at the discretion of the individual staff member.
+If staff say something is final, it is final and is not up for debate.
+Staff instruction is to be followed; refusal to do so may result in moderation action taken against you.
+"""
 
         self.mod_list = f"""🛠️ __*Mod List*__
 **Please do not send a direct message unless asked. General questions should go to {self.bot.channels['3ds-assistance-1'].mention}, {self.bot.channels['3ds-assistance-2'].mention}, {self.bot.channels['wiiu-assistance'].mention}, {self.bot.channels['switch-assistance-1'].mention}, {self.bot.channels['switch-assistance-2'].mention} or {self.bot.channels['legacy-systems'].mention} channels.
-Please contact @NH Mod-Mail if you need to get in touch with the staff team.**\n\n"""
+Please contact <@!333857992170536961> if you need to get in touch with the staff team.**\n\n"""
 
         self.helper_list = f"""🤝 __*Helper List*__
 **Please do not send a direct message unless asked. General questions should go to {self.bot.channels['3ds-assistance-1'].mention}, {self.bot.channels['3ds-assistance-2'].mention}, {self.bot.channels['wiiu-assistance'].mention}, {self.bot.channels['switch-assistance-1'].mention}, {self.bot.channels['switch-assistance-2'].mention} or {self.bot.channels['legacy-systems'].mention} channels.
-Please contact @NH Mod-Mail if you need to get in touch with the staff team. Mod-Mail is NOT FOR GETTING HELP WITH HACKING.**\n"""
+Please contact <@!333857992170536961> if you need to get in touch with the staff team. Mod-Mail is NOT FOR GETTING HELP WITH HACKING.**\n"""
 
         self.nickname_policy = """🏷️ __*Username/Nickname and Avatar policy*__
 Usernames are to be kept primarily alphanumeric, to keep them easy to tag and read. Excessively long usernames are not acceptable. Usernames and avatars that are annoying, offensive, inappropriate ("nsfw"), and/or disruptive to others are also not allowed.
@@ -57,8 +59,8 @@ If the username disrupts the general chat flow, pings included, the user will be
 Users with avatars against these rules will be asked to change them or be kicked from the server.
 Blank names and avatars are considered disruptive and are not allowed."""
 
-        self.useful_commands = """💻 __*Useful commands*__
-A few commands may be useful for you to get information faster. Random command usage should be in #bot-cmds.
+        self.useful_commands = f"""💻 __*Useful commands*__
+A few commands may be useful for you to get information faster. Random command usage should be in {self.bot.channels['bot-cmds'].mention}.
 • `.err <errcode>` - Show information based on Nintendo error codes.
 • ex: `.err 022-2501`
 • ex: `.err 199-9999`
@@ -88,17 +90,17 @@ https://discord.gg/C29hYvh"""
             await channel.send(f"**{number}**. {rule}\n")
         await channel.send(self.staff_action)
         staff = [f"<@{staff.id}>" for staff in await crud.get_staff_all()]
-        await channel.send(self.mod_list + '\n'.join(staff))
+        await channel.send(self.mod_list + '\n'.join(staff), allowed_mentions=discord.AllowedMentions.none())
         helpers = [helper for helper in await crud.get_helpers() if helper.position == 'Helper']
         helpers_3ds = [f"<@{helper.id}>" for helper in helpers if helper.console == '3DS']
         helpers_wiiu = [f"<@{helper.id}>" for helper in helpers if helper.console == 'WiiU']
         helpers_legacy = [f"<@{helper.id}>" for helper in helpers if helper.console == 'Legacy']
         helpers_switch = [f"<@{helper.id}>" for helper in helpers if helper.console == 'Switch']
         await channel.send(self.helper_list)
-        await channel.send(f"{str(self.logo_3ds)}  Nintendo 3DS\n" + '\n'.join(helpers_3ds))
-        await channel.send(f"{str(self.logo_wiiu)}:  Wii U\n" + '\n'.join(helpers_wiiu))
-        await channel.send(f"{str(self.logo_switch)}  Nintendo Switch\n" + '\n'.join(helpers_switch))
-        await channel.send("Legacy\n" + '\n'.join(helpers_legacy))
+        await channel.send(f"{str(self.logo_3ds)}  Nintendo 3DS\n" + '\n'.join(helpers_3ds), allowed_mentions=discord.AllowedMentions.none())
+        await channel.send(f"{str(self.logo_wiiu)}  Wii U\n" + '\n'.join(helpers_wiiu), allowed_mentions=discord.AllowedMentions.none())
+        await channel.send(f"{str(self.logo_switch)}  Nintendo Switch\n" + '\n'.join(helpers_switch), allowed_mentions=discord.AllowedMentions.none())
+        await channel.send("Legacy\n" + '\n'.join(helpers_legacy), allowed_mentions=discord.AllowedMentions.none())
         await channel.send(self.nickname_policy)
         await channel.send(self.useful_commands)
         await channel.send(self.extra)
@@ -111,7 +113,7 @@ https://discord.gg/C29hYvh"""
             await ctx.send_help(ctx.command)
 
     @rule.command(hidden=False, name='add')
-    async def add_rule(self, ctx, number: int, description: str):
+    async def add_rule(self, ctx, number: int, *, description: str):
         """Adds or edits a current rule"""
         if await crud.get_rule(number):
             await crud.edit_rule(number, description)

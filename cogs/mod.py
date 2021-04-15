@@ -79,7 +79,7 @@ class Mod(commands.Cog):
             embed.description += (
                 f"**Join date:** {user.joined_at}\n"
                 f"**Current Status:** {user.status}\n"
-                f"**User Activity:**: {user.activity}\n"
+                f"**User Activity:** {user.activity}\n"
                 f"**Current Display Name:** {user.display_name}\n"
                 f"**Nitro Boost Info:** {user.premium_since}\n"
                 f"**Current Top Role:** {user.top_role}\n"
