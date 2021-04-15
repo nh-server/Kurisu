@@ -323,9 +323,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         embed.description = "A9LH + b9stool information"
         embed.add_field(name="Guide and Advice", value=cleandoc("""
                 If you are seeing an "arm9loaderhax detected!" message in b9stool, you should attempt to boot into the luma configuration menu before simply pressing A. If you can access the config, you should follow the normal a9lh-to-b9s guide instead of using b9stool.
-
                 If you appear to not actually have a9lh installed, you may press A to continue in b9stool. Once you do so and unlock NAND writing, one of two things will happen. If you reboot into an installer and then a luma config, you did actually have a9lh and it was successfully replaced with b9s. If you reboot to the home menu normally, you did not have a9lh and you should run b9stool again once.
-
                 If you're seeing an "a9lh detected! brick avoided!" error, you are on an old version of b9stool and should update your boot.nds to the latest.
                 """))
         await ctx.send(embed=embed)
@@ -353,7 +351,6 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         await self.simple_embed(ctx, cleandoc("""
                                 To install mods for Smash 3DS, and to manage other LayeredFS mods, \
 [Mod-Moon](https://github.com/Swiftloke/ModMoon/releases) is recommended.
-
                                 Instructions for usage can be found [in this thread.](https://gbatemp.net/threads/modmoon-a-beautiful-simple-and-compact-mods-manager-for-the-nintendo-3ds.519080#)
                                 """))
 
@@ -429,13 +426,10 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             Use [our guide](https://nh-server.github.io/switch-guide/user_guide/getting_started/) to determine if your Switch is a first-gen unit.
             **First generation consoles (RCM exploitable)**
             All of these can run [Atmosphere](https://nh-server.github.io/switch-guide/). Make sure that Atmosphere is compatible with the latest firmware version before you update.
-
             **Second generation consoles ("patched" units, Switch Lite, Mariko, etc.)**
-
             **"Old" Patched Switch (HAC-001)**: Do NOT update past 7.0.1. Units on 7.0.1 and below will eventually get CFW. Units on 8.0.0 and higher are not expected to be hacked and can be updated.
             **"New" Switch (HAC-001-01)**: Do NOT update past 8.0.1. Units on 8.0.1 and below will likely get homebrew. Units on 8.1.0 and higher are not expected to be hacked and can be updated.
             **Switch Lite (HDH-001)**: Do NOT update past 8.0.1. Units on 8.0.1 and below will likely get homebrew. Units on 8.1.0 and higher are not expected to be hacked and can be updated.
-
             Downgrading is **impossible** on patched consoles, and isn't worth your time on unpatched ones.
             """)
             await ctx.send(embed=embed)
@@ -460,11 +454,9 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             embed = discord.Embed(title="Is the new 3DS update safe?", color=0xe60012)
             embed.description = cleandoc("""
             Currently, the latest 3DS system firmware is `11.14.0-46`.
-
             If you currently have CFW installed (boot9strap/Luma):
             Is your Luma version up to date? If your Luma version is 10.2.1 or above, **updating is safe**.
             If it is 10.2 or below, please type `.update` in <#261581918653513729> and follow the information there.
-
             If you DO NOT currently have CFW installed (stock console):
             11.14.0-46 can be hacked with current methods. **Updating is safe**.
             *Last edited: November 16th, 2020*
@@ -474,15 +466,14 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
         elif self.check_console(console, channelName, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Is the new Switch update safe?", color=0xe60012)
             embed.description = cleandoc("""
-            Currently, the latest Switch system firmware is `11.0.1`.
-
+            Currently, the latest Switch system firmware is `12.0.0`.
             If your Switch is **unpatched and can access RCM**:
-            Atmosphere and Hekate currently support 11.0.1, and unpatched units will always be hackable.
-            You should follow the precautions in our update guide, and always update Atmosphere and Hekate before updating the system firmware.
-
+            Atmosphere and Hekate currently **do not support** this version, however unpatched units will always be hackable.
+            It is not currently known when Atmosphere and the related tools will be updated.
+            **Do not update your console if you are below firmware 12.0.0**, even if you currently have CFW.
             If your Switch is **hardware patched and cannot access RCM**:
             Stay on the lowest possible firmware version. Any Switch that is patched and above 7.0.1 is unlikely to be hackable.
-            *Last edited: December 11, 2020*
+            *Last edited: April 6, 2021*
             """)
             await ctx.send(embed=embed)
 
@@ -538,7 +529,6 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             Nintendo has shown a marked lack of care about bans on the 3DS lately.
             However, such things as piracy and cheating online/cheating in multiplayer games have been known causes for NNID/console bans in the past.
             eShop fraud (eg credit card chargebacks) will also get you banned.
-
             You can enable online status and Spotpass/Streetpass as these do not seem to be high risk at this time.
             """)
             await ctx.send(embed=embed)
@@ -572,11 +562,9 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             Although Nintendo says the official SD size limit is 32GB, the 3DS can accept cards up to 2TB.
             In order to use them, you will have to format them to FAT32 first.
             You can do this using these tools:
-
             -GUIFormat for Windows: http://ridgecrop.co.uk/index.htm?guiformat.htm
             -gparted for Linux: https://gparted.org/download.php
             -Disk Utility for macOS: https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010
-
             IMPORTANT: On macOS, always select "MS-DOS (Fat)". Formatting will erase all data on the card. Make a backup first.
             """)
             await ctx.send(embed=embed)
@@ -587,11 +575,9 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             Although Nintendo supports large SD cards in EXFAT format, it is recommended to use FAT32.
             In order to change the card's format, you will need to use an external utility.
             Here are some suggestions:
-
             -GUIFormat for Windows: http://ridgecrop.co.uk/index.htm?guiformat.htm
             -gparted for Linux: https://gparted.org/download.php
             -Disk Utility for macOS: https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010
-
             IMPORTANT: On macOS, always select "MS-DOS (Fat)". Formatting will erase all data on the card. Make a backup first.
             """)
             await ctx.send(embed=embed)
@@ -618,11 +604,9 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             Moving SD cards on a 3DS is easy.
             First, ensure the new SD card is in the FAT32 format.
             If it is above 32GB, you will need to format it using one of these tools:
-
             -GUIFormat for Windows: http://ridgecrop.co.uk/index.htm?guiformat.htm
             -gparted for Linux: https://gparted.org/download.php
             -Disk Utility for macOS: https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010
-
             Once the new card is in FAT32, move all your content from the old SD to the new SD.
             IMPORTANT: On macOS, always select "MS-DOS (Fat)". Formatting will erase all data on the card. Make a backup first.
             IMPORTANT: Do not put the new SD card in the console before moving all your data to it.
@@ -1121,21 +1105,15 @@ One way to fix this is by using an y-cable to connect the HDD to two USB ports.
         """What you should do before updating a Nintendo Switch"""
         await self.simple_embed(ctx, cleandoc("""
                                      **Make sure your version of Atmosphere is up to date and that it supports the latest firmware**
-
                                      **Atmosphere 0.16.1 (latest release)**
                                      Supports up to firmware 11.0.1.
-
                                      *To find Atmosphere's version information, while booted into CFW, go into System Settings -> System, and look at \
 the text under the System Update button. If it says that a system update is ready instead of displaying the CFW version, type .pendingupdate to learn \
 how to delete it.*
-
                                      **Make sure your version of Hekate is up to date and that it supports the latest firmware**
-
                                      **Hekate 5.5.1 (latest release)**
                                      Supports up to firmware 11.0.1.
-
                                      *To find Hekate's version information, once Hekate starts, look in the top left corner of the screen. If you use auto-boot, hold `volume -` to stop it.*
-
                                      **If you use a custom theme (Atmosphere 0.10.0 and above)**
                                      Delete or rename `/atmosphere/contents/0100000000001000` on your SD card prior to updating, \
 as custom themes must be reinstalled for most firmware updates. **Note: On Atmosphere 0.9.4 or below, `contents` is called `titles`.**
@@ -1148,14 +1126,12 @@ as custom themes must be reinstalled for most firmware updates. **Note: On Atmos
         await self.simple_embed(ctx, """
                                 When an update is downloaded, but not installed, the console will not display the \
 firmware version in System Settings.
-
                                 • To reset on a stock system,  *power the console off* (hold the power button, follow on-screen prompts).\
  __Hold__ Volume - and Volume +, then Power. When you see Maintenance Mode, you \
 can reboot, and check System Settings.
                                 • If you're using CFW, launch Hekate, select your boot option, then immediately\
  __Hold__ Volume - and Volume +. When you see Maintenance Mode, you \
 can reboot, and check System Settings.
-
                                 To block automatic update downloads, type '.90dns' in <#261581918653513729> for further information.
                                  """, title="How to delete pending Switch Updates")
 
@@ -1484,9 +1460,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         """exFAT on Switch: why not to use it"""
         reasons = """
                 The recommended filesystem format for the Switch is FAT32.
-
                 While the Switch supports exFAT through an additional update from Nintendo, here are reasons not to use it:
-
                 * CFW may fail to boot due to a missing exFAT update in Horizon
                 * This filesystem is prone to corruption.
                 * Nintendo doesn't use files larger than 4GB, even with large games and exFAT.
@@ -1501,11 +1475,9 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
                                 The Switch is a much more secure system than the 3DS, and Nintendo has upped their game when it comes to bans.
                                 One of the main reasons for this is that there are significantly more monitoring systems, \
 some of which cannot be turned off.
-
                                 Remember that you can only reduce your chances of getting banned; nothing is guaranteed and you could be banned \
 at any time if you decide to hack your device. It will always be a cat and mouse game, until or unless there are big changes \
 in the scene.
-
                                 Refer to <#465640445913858048> for a list of things to avoid doing to reduce your risks.
                                 You cannot ask about unbanning your console here.
                                 """, title="Switch Bans")
@@ -1517,9 +1489,7 @@ in the scene.
                                 The public 90DNS IP addresses are:
                                 - `207.246.121.77` (USA)
                                 - `163.172.141.219`(France)
-
                                 [Follow these steps](https://nh-server.github.io/switch-guide/extras/blocking_updates/) to set up 90dns and ensure it isn't being blocked
-
                                 You will have to manually set these for each WiFi connection you have set up.""",
                                 title="90DNS IP addresses")
 
@@ -1528,7 +1498,6 @@ in the scene.
         """No main boot entries found solution"""
         await self.simple_embed(ctx, """
                                 You forgot to copy the "hekate_ipl.ini" file to the bootloader folder on your sd card, or forgot to insert your sd card before booting hekate.
-
                                 Note that if hekate can't find a config, it'll create one. So likely you now have a hekate_ipl.ini in your bootloader folder, replace it with the one from [the guide](https://nh-server.github.io/switch-guide/user_guide/emummc/sd_preparation/)
                                 """, title="Getting the \"No main boot entries found\" error in hekate?")
 
@@ -1555,7 +1524,6 @@ in the scene.
         """How to boot into Safe Mode on the 3DS"""
         await self.simple_embed(ctx, """
         To boot into Safe Mode on the 3DS, you need to power off your device and power it back on while holding <:3ds_button_a:295004457098543104>+<:3ds_button_r:295004508294086656>+<:3ds_button_l:295004499511214080>+<:3ds_dpad_up:295004548916051981>.
-
         If you did it correctly, you should be prompted with a system update.
         """, title="Safe Mode on the 3DS")
 
@@ -1706,4 +1674,158 @@ in the scene.
 
 
 def setup(bot):
-    bot.add_cog(Assistance(bot))
+    bot.add_cog(Assistance(bot))you own.
+                        - Backup, edit and restore saves for many games.
+                        - Play games for older systems with various emulators, using RetroArch or other standalone emulators.
+                        - Play out-of-region games.
+                        - Dump your Wii U game discs to a format that can be installed on your internal or external Wii U storage drive.
+                    """))
+            await ctx.send(embed=embed)
+
+    @commands.command()
+    async def updateb9s(self, ctx):
+        """Links to the guide for updating b9s versions"""
+        embed = discord.Embed(title="Updating B9S Guide", color=discord.Color(0xCE181E))
+        embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/updating-b9s")
+        embed.set_thumbnail(url="https://nintendohomebrew.com/pics/nhplai.png")
+        embed.url = "https://3ds.hacks.guide/updating-b9s"
+        embed.description = "A guide for updating to new B9S versions."
+        await ctx.send(embed=embed)
+
+    @commands.command(aliases=["lumaupdate"])
+    async def updateluma(self, ctx):
+        """Links to the guide for updating Luma3DS manually (8.0 or later)"""
+        embed = discord.Embed(title="Manually Updating Luma3DS", color=discord.Color(0xCE181E))
+        embed.set_author(name="chenzw + lily", url="https://gist.github.com/lilyuwuu/3a7ba3dcd2476e6b5f4b6f66fa173bd6")
+        embed.set_thumbnail(url="https://avatars0.githubusercontent.com/u/5243259?s=400&v=4")
+        embed.url = "https://gist.github.com/lilyuwuu/3a7ba3dcd2476e6b5f4b6f66fa173bd6"
+        embed.description = "A guide for manually updating Luma3ds. This is necessary if you receive the \"Failed to apply 1 Firm patch(es)\" or \"pm\" errors."
+        await ctx.send(embed=embed)
+
+    @commands.command(aliases=["a9lhtob9s", "updatea9lh"])
+    async def atob(self, ctx):
+        """Links to the guide for updating from a9lh to b9s"""
+        embed = discord.Embed(title="Upgrading a9lh to b9s", color=discord.Color(0xCE181E))
+        embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/a9lh-to-b9s")
+        embed.set_thumbnail(url="https://nintendohomebrew.com/pics/nhplai.png")
+        embed.url = "https://3ds.hacks.guide/a9lh-to-b9s"
+        embed.description = "A guide for upgrading your device from arm9loaderhax to boot9strap."
+        await ctx.send(embed=embed)
+
+    @commands.command(aliases=["atobwhat", "a9lhhow"])
+    async def a9lhrec(self, ctx):
+        """Advice for b9stool with a9lh conflict"""
+        embed = discord.Embed(title="arm9loaderhax Detected!", color=discord.Color.blue())
+        embed.description = "A9LH + b9stool information"
+        embed.add_field(name="Guide and Advice", value=cleandoc("""
+                If you are seeing an "arm9loaderhax detected!" message in b9stool, you should attempt to boot into the luma configuration menu before simply pressing A. If you can access the config, you should follow the normal a9lh-to-b9s guide instead of using b9stool.
+
+                If you appear to not actually have a9lh installed, you may press A to continue in b9stool. Once you do so and unlock NAND writing, one of two things will happen. If you reboot into an installer and then a luma config, you did actually have a9lh and it was successfully replaced with b9s. If you reboot to the home menu normally, you did not have a9lh and you should run b9stool again once.
+
+                If you're seeing an "a9lh detected! brick avoided!" error, you are on an old version of b9stool and should update your boot.nds to the latest.
+                """))
+        await ctx.send(embed=embed)
+
+    # Hardmodder pastebin list
+    @commands.command()
+    async def hmodders(self, ctx):
+        """Links to approved hardmodder list"""
+        await self.simple_embed(ctx, "Don't want to hardmod yourself? Ask one of the installers on the server! <https://pastebin.com/FAiczew4>")
+
+    # Links to ctrtransfer guide
+    @commands.command(aliases=["ctrtransfer", "ctrnandtransfer"])
+    async def ctr(self, ctx):
+        """Links to ctrtransfer guide"""
+        embed = discord.Embed(title="Guide - ctrtransfer", color=discord.Color.orange())
+        embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/")
+        embed.set_thumbnail(url="https://nintendohomebrew.com/pics/nhplai.png")
+        embed.url = "https://3ds.hacks.guide/ctrtransfer"
+        embed.description = "How to do the 11.5.0-38 ctrtransfer"
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def modmoon(self, ctx):
+        """Links to a tool for a mod manager"""
+        await self.simple_embed(ctx, cleandoc("""
+                                To install mods for Smash 3DS, and to manage other LayeredFS mods, \
+[Mod-Moon](https://github.com/Swiftloke/ModMoon/releases) is recommended.
+
+                                Instructions for usage can be found [in this thread.](https://gbatemp.net/threads/modmoon-a-beautiful-simple-and-compact-mods-manager-for-the-nintendo-3ds.519080#)
+                                """))
+
+    @commands.command()
+    async def inoriwarn(self, ctx):
+        """Warns users to keep the channels on-topic - Staff & Helper Declaration Only"""
+        await self.simple_embed(ctx, """
+                                **Please keep the channels clean and on-topic, further derailing will result in \
+intervention.  A staff or helper will be the quickest route to resolution; you can \
+contact available staff by private messaging the Mod-Mail bot.** A full list of staff \
+and helpers can be found in #welcome-and-rules if you don't know who they are.
+                                """)
+
+    @commands.command()
+    async def vguides(self, ctx):
+        """Information about video guides relating to custom firmware"""
+        embed = discord.Embed(title="Why you should not use video guides", color=discord.Color.dark_orange())
+        embed.description = cleandoc("""
+                Reasons to not use video guides:
+                - Most uploaders do not edit their guides after uploading, even if there are mistakes
+                - When methods become outdated, the information is not updated
+                - Difficult to give assistance with
+                - Most videos also refer to a pre-packaged download, which are often outdated and poorly organised
+                """)
+        embed.add_field(name="Recommended Solution", value="Read a trusted written tutorial. Try `.guide` for a list.")
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def vguides2(self, ctx):
+        """Video Guides 2: Electric Boogaloo"""
+        embed = discord.Embed(title="More information about video guides", color=discord.Color.dark_orange())
+        embed.description = cleandoc("""
+                Other problems with video guides:
+                - Uploaders tend to care more about views than helping the community, so they don't remove old content
+                - This usually leads to confusion about which method is best, or most current
+                - Every uploader has a different route through each method, which often makes it very difficult to give assistance
+                - Pre-packaged downloads are often hosted on the uploader's server, which they use to generate clicks and revenue
+                - Pre-packaged downloads ("AIOs") are also very often outdated and not maintained by the creators
+                """)
+        embed.add_field(name="Recommended Solution", value="Read a trusted written tutorial. Try `.guide` for a list.")
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def ip(self, ctx):
+        """How to check your IP"""
+        embed = discord.Embed(title="Check your 3DSs IP (CFW)", color=discord.Color.dark_orange())
+        embed.description = "1. FBI\n2. Remote Install\n3. Receive URLs over the network"
+        embed.add_field(name="Check your 3DSs IP (Homebrew)", value="1. Open Homebrew Launcher\n2. Press Y")
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def stock(self, ctx, console=None):
+        """Advisory for various Nintendo systems on stock firmware"""
+        systems = ("3ds", "nx", "ns", "switch")
+        channelName = ""
+        if not isinstance(ctx.channel, discord.DMChannel):
+            channelName = ctx.channel.name
+        if console not in systems:
+            if channelName.startswith(systems):
+                console = "auto"
+            else:
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+
+                ctx.command.reset_cooldown(ctx)
+                return
+        if self.check_console(console, channelName, '3ds'):
+            embed = discord.Embed(title="Running stock (unmodified) 3DS firmware?", color=discord.Color.dark_orange())
+            embed.add_field(name="Hardware Dependant", value="The latest update to common guide methods mean that the best method for you now depends on what hardware you have. Please read the [guide](https://3ds.hacks.guide/get-started)", inline=False)
+            await ctx.send(embed=embed)
+        elif self.check_console(console, channelName, ('nx', 'switch', 'ns')):
+            embed = discord.Embed(title="Looking to hack your Switch?", color=0xe60012)
+            embed.description = cleandoc("""
+            Use [our guide](https://nh-server.github.io/switch-guide/user_guide/getting_started/) to determine if your Switch is a first-gen unit.
+            **First generation consoles (RCM exploitable)**
+            All of these can run [Atmosphere](https://nh-server.github.io/switch-guide/). Make sure that Atmosphere is compatible with the latest firmware version before you update.
+
+            **Second generation consoles ("patched" units, Switch Lite, Mariko, etc.)**
+
+            **
