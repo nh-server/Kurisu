@@ -111,7 +111,7 @@ https://discord.gg/C29hYvh"""
             await ctx.send_help(ctx.command)
 
     @rule.command(hidden=False, name='add')
-    async def add_rule(self, ctx, number: int, description: str):
+    async def add_rule(self, ctx, number: int, *, description: str):
         """Adds or edits a current rule"""
         if await crud.get_rule(number):
             await crud.edit_rule(number, description)
