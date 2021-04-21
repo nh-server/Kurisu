@@ -1261,8 +1261,8 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
     async def ndsforwarders(self, ctx):
         """Links to nds forwarders"""
         embed = discord.Embed(title="NDS Forwarder Guide", color=discord.Color.purple())
-        embed.set_thumbnail(url="https://avatars3.githubusercontent.com/u/16110127?s=400&v=4")
-        embed.url = "https://gbatemp.net/threads/nds-forwarder-cias-for-your-home-menu.426174/"
+        embed.set_thumbnail(url="https://avatars.githubusercontent.com/u/46971470?s=400&v=4")
+        embed.url = "https://wiki.ds-homebrew.com/ds-index/3ds-forwarders"
         embed.description = "Tutorial for NDS Forwarders"
         await ctx.send(embed=embed)
 
