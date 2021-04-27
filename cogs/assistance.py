@@ -1056,9 +1056,9 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
                 return
         if self.check_console(console, channelName, '3ds'):
             embed = discord.Embed(title="GodMode9 dump/build Guide", color=discord.Color(0x66FFFF))
-            embed.set_author(name="Chroma Ryu", url="https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Godmode9-CIA-Dumping-and-Building")
-            embed.set_thumbnail(url="https://i.imgur.com/U8NA9lx.png")
-            embed.url = "https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Godmode9-CIA-Dumping-and-Building"
+            embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/dumping-titles-and-game-cartridges")
+            embed.set_thumbnail(url="https://nintendohomebrew.com/pics/nhplai.png")
+            embed.url = "https://3ds.hacks.guide/dumping-titles-and-game-cartridges"
             embed.description = "How to dump/build CIAs and Files using GodMode9"
             await ctx.send(embed=embed)
         elif self.check_console(console, channelName, ('switch', 'nx', 'ns')):
