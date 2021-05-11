@@ -142,6 +142,7 @@ eshop_app = Module('eshop (app?)', {
 
 # 011: eshop website, or other misc/overlapping errors
 eshop_site = Module('eshop (website?)', {
+    3010: ResultInfo('Server timeout due to user inactivity.'),
     3021: ResultInfo('Cannot find title on Nintendo eShop (incorrect region, or never existed?).'),
     3136: ResultInfo('Nintendo eShop is currently unavailable. Try again later.'),
     6901: ResultInfo('This console is permanently banned by Nintendo (displayed in Japanese for some reason).', is_ban=True)
