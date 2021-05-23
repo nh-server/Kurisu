@@ -64,12 +64,23 @@ class Extras(commands.Cog):
 
     @commands.guild_only()
     @is_staff("SuperOP")
-    @commands.command(hidden=True)
-    async def copyrole(self, ctx, role: discord.Role, src_channel: discord.TextChannel, des_channels: commands.Greedy[discord.TextChannel]):
+    @commands.command(hidden=True, aliases=['copyrole', 'crp'])
+    async def copyroleperms(self, ctx, role: discord.Role, src_channel: discord.TextChannel, des_channels: commands.Greedy[discord.TextChannel]):
         """Copy role permission from a channel to channels"""
         perms = src_channel.overwrites_for(role)
         for c in des_channels:
             await c.set_permissions(role, overwrite=perms)
+        await ctx.send("Changed permissions successfully")
+
+    @commands.guild_only()
+    @is_staff("SuperOP")
+    @commands.command(hidden=True, aliases=['ccp'])
+    async def copychannelperms(self, ctx, src_channel: discord.TextChannel, des_channels: commands.Greedy[discord.TextChannel]):
+        """Copy role permission from a channel to channels"""
+        overwrites = src_channel.overwrites
+        for c in des_channels:
+            for target, overwrite in overwrites.items():
+                await c.set_permissions(target, overwrite=overwrite)
         await ctx.send("Changed permissions successfully")
 
     @is_staff("HalfOP")
