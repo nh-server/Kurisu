@@ -9,6 +9,7 @@ import sys
 
 from discord import TextChannel, __version__ as discordpy_version
 from discord.ext import commands
+from typing import Union
 from utils.checks import is_staff
 
 python_version = sys.version.split()[0]
@@ -65,23 +66,26 @@ class Extras(commands.Cog):
     @commands.guild_only()
     @is_staff("SuperOP")
     @commands.command(hidden=True, aliases=['copyrole', 'crp'])
-    async def copyroleperms(self, ctx, role: discord.Role, src_channel: discord.TextChannel, des_channels: commands.Greedy[discord.TextChannel]):
+    async def copyroleperms(self, ctx, role: discord.Role, src_channel: Union[discord.TextChannel, discord.VoiceChannel], des_channels: commands.Greedy[Union[discord.TextChannel, discord.VoiceChannel]]):
         """Copy role overwrites from a channel to channels"""
-        perms = src_channel.overwrites_for(role)
+        if not all([type(c) == type(src_channel) for c in des_channels]):
+            return await ctx.send("Voice channels and text channel permissions are incompatible!")
+        role_overwrites = src_channel.overwrites_for(role)
         for c in des_channels:
-            await c.set_permissions(role, overwrite=perms)
-        await ctx.send("Changed permissions successfully")
+            await c.set_permissions(role, overwrite=role_overwrites)
+        await ctx.send("Changed permissions successfully!")
 
     @commands.guild_only()
     @is_staff("SuperOP")
     @commands.command(hidden=True, aliases=['ccp'])
-    async def copychannelperms(self, ctx, src_channel: discord.TextChannel, des_channels: commands.Greedy[discord.TextChannel]):
+    async def copychannelperms(self, ctx, src_channel: Union[discord.TextChannel, discord.VoiceChannel], des_channels: commands.Greedy[Union[discord.TextChannel, discord.VoiceChannel]]):
         """Copy channel overwrites from a channel to channels"""
+        if not all([type(c) == type(src_channel) for c in des_channels]):
+            return await ctx.send("Voice channels and text channel permissions are incompatible!")
         overwrites = src_channel.overwrites
         for c in des_channels:
-            for target, overwrite in overwrites.items():
-                await c.set_permissions(target, overwrite=overwrite)
-        await ctx.send("Changed permissions successfully")
+            await c.edit(overwrites=overwrites)
+        await ctx.send("Changed permissions successfully!")
 
     @is_staff("HalfOP")
     @commands.guild_only()
