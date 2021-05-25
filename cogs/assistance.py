@@ -1367,6 +1367,16 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         embed.description = "A guide to using plugins with NTR"
         await ctx.send(embed=embed)
 
+    @tutorial.command(aliases=["citraobs"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
+    async def obscitra(self, ctx):
+        """OBS and Citra guide"""
+        embed = discord.Embed(title="OBS and Citra Guide", color=discord.Color.purple())
+        embed.set_author(name="Krieg")
+        embed.set_thumbnail(url="https://3ds.eiphax.tech/pic/krieg.png")
+        embed.url = "https://kriegisrei.github.io/obscitra/"
+        embed.description = "A guide to recording Citra with OBS"
+        await ctx.send(embed=embed)
+
     @tutorial.command(cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def gbadump(self, ctx):
         """Links to GBA Dump guide"""
