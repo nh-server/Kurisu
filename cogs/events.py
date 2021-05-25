@@ -1,6 +1,7 @@
 import asyncio
 import discord
 import re
+import random
 
 from collections import deque
 from discord.ext import commands
@@ -56,7 +57,8 @@ class Events(commands.Cog):
     help_notice_anti_repeat = []
 
     async def scan_message(self, message, is_edit=False):
-        embed = discord.Embed()
+        random.seed(message.id)
+        embed = discord.Embed(color=discord.Color((random.randint(0, 255) << 16) + (random.randint(0, 255) << 8) + random.randint(0, 255)))
         embed.description = message.content
         if await crud.is_watched(message.author.id):
             content = f"**Channel**:\n[#{message.channel.name}]({message.jump_url})\n"
