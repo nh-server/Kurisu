@@ -58,7 +58,7 @@ class Events(commands.Cog):
 
     async def scan_message(self, message, is_edit=False):
         random.seed(message.id)
-        embed = discord.Embed(color=discord.Color((random.randint(0, 255) << 16) + (random.randint(0, 255) << 8) + random.randint(0, 255)))
+        embed = discord.Embed(color=utils.gen_color(message.id))
         embed.description = message.content
         if await crud.is_watched(message.author.id):
             content = f"**Channel**:\n[#{message.channel.name}]({message.jump_url})\n"
