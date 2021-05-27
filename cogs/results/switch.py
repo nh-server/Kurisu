@@ -1697,8 +1697,7 @@ COLOR = 0xE60012
 
 def is_valid(error):
     try:
-        int(error, 16)
-        return True
+        return int(error, 16) >= 0
     except ValueError:
         pass
     return RE.match(error) or RE_APP.match(error)

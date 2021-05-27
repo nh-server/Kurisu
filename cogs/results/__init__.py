@@ -90,8 +90,10 @@ Only Nintendo Switch XXXX-YYYY formatted error codes are supported.'
         err = self.fixup_input(err)
         if (meme := self.check_meme(err)) is not None:
             return await ctx.send(meme)
-
-        ret = self.fetch(err)
+        try:
+            ret = self.fetch(err)
+        except ValueError:
+            ret = None
 
         if ret:
             embed = discord.Embed(title=ret.get_title())
