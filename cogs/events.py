@@ -94,6 +94,7 @@ class Events(commands.Cog):
         contains_non_approved_invite = len(res) != len(approved_invites)
 
         contains_piracy_tool_alert_mention = self.search_word(self.bot.wordfilter.filter['piracy tool alert'], msg_no_separators, msg)
+        contains_scamming_site = self.search_word(self.bot.wordfilter.filter['scamming site'], msg_no_separators, msg)
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site',))
         contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub', 'strawpoii', 'hackinformer.com', 'console.guide', 'jacksorrell.co.uk', 'jacksorrell.tv', 'nintendobrew.com', 'reinx.guide', 'NxpeNwz', 'scenefolks.com'))
         contains_unbanning_stuff = self.search_word(self.bot.wordfilter.filter['unbanning tool'], msg_no_separators, msg)
@@ -223,6 +224,21 @@ class Events(commands.Cog):
         if contains_video and message.channel in self.bot.assistance_channels:
             await self.bot.channels['message-logs'].send(
                 f"▶️ **Video posted**: {message.author.mention} posted a video in {message.channel.mention}\n------------------\n{message.clean_content}")
+        if contains_scamming_site:
+            embed.description = self.highlight_matches(contains_scamming_site, msg)
+            try:
+                await message.delete()
+            except discord.errors.NotFound:
+                pass
+            await crud.add_permanent_role(message.author.id, self.bot.roles['Probation'].id)
+            await message.author.add_roles(self.bot.roles['Probation'])
+            await utils.send_dm_message(message.author,
+                                        f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
+                           f"You have been probated for posting a link to a scamming site.",
+                                        embed=embed)
+            await self.bot.channels['message-logs'].send(
+                f"**Bad site**: {message.author.mention} mentioned a scamming site in {message.channel.mention} (message deleted, user probated)",
+                embed=embed)
 
         # check for guide mirrors and post the actual link
         urls = re.findall(r'(https?://\S+)', msg)

@@ -6,7 +6,7 @@ from utils.models import FilteredWord, ApprovedInvite
 
 class WordFilterManager:
     def __init__(self):
-        self.kinds = ('piracy tool', 'piracy video', 'piracy tool alert', 'drama', 'unbanning tool', 'piracy site')
+        self.kinds = ('piracy tool', 'piracy video', 'piracy tool alert', 'drama', 'unbanning tool', 'piracy site', 'scamming site')
         self.filter = {}
         self.word_exp = {}
 
