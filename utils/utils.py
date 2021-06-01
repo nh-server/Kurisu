@@ -5,6 +5,29 @@ import re
 from discord.ext.commands import Context
 
 
+class ConsoleColor(discord.Color):
+
+    @classmethod
+    def n3ds(cls):
+        return cls(0xCE181E)
+
+    @classmethod
+    def wiiu(cls):
+        return cls(0x009AC7)
+
+    @classmethod
+    def switch(cls):
+        return cls(0xE60012)
+
+    @classmethod
+    def wii(cls):
+        return cls(0x009AC7)
+
+    @classmethod
+    def legacy(cls):
+        return cls(0x707070)
+
+
 async def send_dm_message(member: discord.Member, message: str, ctx: Context = None, **kwargs) -> bool:
     """A helper method for sending a message to a member's DMs.
 
