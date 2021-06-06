@@ -1296,12 +1296,13 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         embed = discord.Embed()
         if self.check_console(console, channel_name, "3ds"):
             embed.title = "3DS FTP Guide"
+            embed.url = "https://3ds.eiphax.tech/ftp.html"
         elif self.check_console(console, channel_name, ("nx", "ns", "switch")):
             embed.title = "Switch FTP Guide"
+            embed.url = "https://nx.eiphax.tech/ftp.html"
         embed.colour = discord.Color.purple()
         embed.set_author(name="Krieg")
         embed.set_thumbnail(url="https://3ds.eiphax.tech/pic/krieg.png")
-        embed.url = "https://nx.eiphax.tech/ftp.html"
         embed.description = "A guide to using ftp with FTPD and WinSCP"
         await ctx.send(embed=embed)
 
@@ -1597,7 +1598,7 @@ in the scene.
         channel_name = ctx.channel.name if not isinstance(ctx.channel, discord.DMChannel) else ""
         if console not in systems:
             if channel_name.startswith(systems):
-                console = "au`to"
+                console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
                 ctx.command.reset_cooldown(ctx)
