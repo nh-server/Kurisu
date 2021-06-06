@@ -1598,7 +1598,7 @@ in the scene.
         channel_name = ctx.channel.name if not isinstance(ctx.channel, discord.DMChannel) else ""
         if console not in systems:
             if channel_name.startswith(systems):
-                console = "au`to"
+                console = "auto"
             else:
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
                 ctx.command.reset_cooldown(ctx)
