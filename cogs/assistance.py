@@ -11,7 +11,7 @@ from utils.checks import check_if_user_can_sr
 nx_firmware = "12.0.3"
 ams_ver = "0.19.4"
 hekate_ver = "5.5.7"
-last_revision = "July 9th, 2021"
+last_revision = "June 9th, 2021"
 
 
 class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 30.0, commands.BucketType.channel))):
