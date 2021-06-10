@@ -8,16 +8,17 @@ from inspect import cleandoc
 from utils.utils import ConsoleColor
 from utils.checks import check_if_user_can_sr
 
-nx_firmware = "12.0.3"
-ams_ver = "0.19.4"
-hekate_ver = "5.5.7"
-last_revision = "June 9th, 2021"
-
 
 class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 30.0, commands.BucketType.channel))):
     """
     Commands that will mostly be used in the help channels.
     """
+
+    nx_firmware = "12.0.3"
+    ams_ver = "0.19.4"
+    hekate_ver = "5.5.7"
+    last_revision = "June 9th, 2021"
+
     def __init__(self, bot):
         self.bot = bot
         self.systems = ("3ds", "wiiu", "vwii", "switch", "nx", "ns", "wii", "dsi", "legacy")
@@ -475,15 +476,15 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
         elif self.check_console(console, channel_name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Is the new Switch update safe?", color=ConsoleColor.switch())
             embed.description = cleandoc(f"""
-            Currently, the latest Switch system firmware is `{nx_firmware}`.
+            Currently, the latest Switch system firmware is `{self.nx_firmware}`.
 
             If your Switch is **unpatched and can access RCM**:
-            Atmosphere and Hekate currently support {nx_firmware}, and unpatched units will always be hackable.
+            Atmosphere and Hekate currently support {self.nx_firmware}, and unpatched units will always be hackable.
             You should follow the precautions in our update guide, and always update Atmosphere and Hekate before updating the system firmware.
 
             If your Switch is **hardware patched and cannot access RCM**:
             Stay on the lowest possible firmware version. Any Switch that is patched and above 7.0.1 is unlikely to be hackable.
-            *Last edited: {last_revision}*
+            *Last edited: {self.last_revision}*
             """)
             await ctx.send(embed=embed)
 
@@ -1096,8 +1097,8 @@ One way to fix this is by using an y-cable to connect the HDD to two USB ports.
         await self.simple_embed(ctx, cleandoc(f"""
                                      **Make sure your version of Atmosphere is up to date and that it supports the latest firmware**
 
-                                     **Atmosphere {ams_ver} (latest release)**
-                                     Supports up to firmware {nx_firmware}.
+                                     **Atmosphere {self.ams_ver} (latest release)**
+                                     Supports up to firmware {self.nx_firmware}.
 
                                      *To find Atmosphere's version information, while booted into CFW, go into System Settings -> System, and look at \
 the text under the System Update button. If it says that a system update is ready instead of displaying the CFW version, type .pendingupdate to learn \
@@ -1105,8 +1106,8 @@ how to delete it.*
 
                                      **Make sure your version of Hekate is up to date and that it supports the latest firmware**
 
-                                     **Hekate {hekate_ver} (latest release)**
-                                     Supports up to firmware {nx_firmware}.
+                                     **Hekate {self.hekate_ver} (latest release)**
+                                     Supports up to firmware {self.nx_firmware}.
 
                                      *To find Hekate's version information, once Hekate starts, look in the top left corner of the screen. If you use auto-boot, hold `volume -` to stop it.*
 
