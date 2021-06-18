@@ -2,7 +2,7 @@ import discord
 import random
 import re
 
-from discord.ext.commands import Context
+from discord.ext import commands
 
 
 class ConsoleColor(discord.Color):
@@ -28,7 +28,7 @@ class ConsoleColor(discord.Color):
         return cls(0x707070)
 
 
-async def send_dm_message(member: discord.Member, message: str, ctx: Context = None, **kwargs) -> bool:
+async def send_dm_message(member: discord.Member, message: str, ctx: commands.Context = None, **kwargs) -> bool:
     """A helper method for sending a message to a member's DMs.
 
     Returns a boolean indicating success of the DM
@@ -86,3 +86,10 @@ def create_error_embed(ctx, exc) -> discord.Embed:
     embed.add_field(name=f"{exc.__class__.__name__} Exception ", value=exc, inline=False)
     embed.add_field(name="Information", value=f"channel: {ctx.channel.mention if isinstance(ctx.channel, discord.TextChannel) else 'Direct Message'}\ncommand: {ctx.command}\nmessage: {ctx.message.content}\nuser: {ctx.author.mention}", inline=False)
     return embed
+
+
+def paginate_message(msg):
+    paginator = commands.Paginator()
+    for chunk in [msg[i:i + 4000] for i in range(0, len(msg), 4000)]:
+        paginator.add_line(chunk)
+    return paginator

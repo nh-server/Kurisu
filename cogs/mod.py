@@ -109,7 +109,11 @@ class Mod(commands.Cog):
             if bool(re.search(rgx, m.name, re.IGNORECASE)):
                 msg += f"{m.id} - {m}\n"
         msg += "```"
-        await author.send(msg)
+        if len(msg) > 4000:
+            for page in utils.paginate_message(msg).pages:
+                await author.send(page)
+        else:
+            await author.send(msg)
 
     @is_staff("Owner")
     @commands.guild_only()

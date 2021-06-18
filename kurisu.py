@@ -23,7 +23,7 @@ from utils import models, crud
 from utils.checks import check_staff_id
 from utils.manager import WordFilterManager, InviteFilterManager
 from utils.models import db
-from utils.utils import create_error_embed
+from utils.utils import create_error_embed, paginate_message
 
 IS_DOCKER = os.environ.get('IS_DOCKER', '')
 
@@ -288,13 +288,6 @@ class Kurisu(commands.Bot):
         await self.channels['helpers'].send(startup_message)
         self._is_all_ready.set()
 
-    @staticmethod
-    def format_error(msg):
-        error_paginator = commands.Paginator()
-        for chunk in [msg[i:i + 1800] for i in range(0, len(msg), 1800)]:
-            error_paginator.add_line(chunk)
-        return error_paginator
-
     async def on_command_error(self, ctx: commands.Context, exc: commands.CommandInvokeError):
         author: discord.Member = ctx.author
         command: commands.Command = ctx.command or '<unknown cmd>'
@@ -355,7 +348,7 @@ class Kurisu(commands.Bot):
     async def on_error(self, event_method, *args, **kwargs):
         await self.channels['bot-err'].send(f'Error in {event_method}:')
         msg = format_exc()
-        error_paginator = self.format_error(msg)
+        error_paginator = paginate_message(msg)
         for page in error_paginator.pages:
             await self.channels['bot-err'].send(page)
 
