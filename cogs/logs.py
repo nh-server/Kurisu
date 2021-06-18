@@ -29,7 +29,7 @@ Thanks for stopping by and have a good time!
 """  # ughhhhhhhh
 
     nitro_msg = """
-Thanks for boosting <:nitro:641446520675368971> Nintendo Homebrew!
+Thanks for boosting <:nitrogang:622256815131983893> Nintendo Homebrew!
 As a Nitro Booster you have the following bonuses:
     - React permissions in <#314856589716750346>, <#485138525885431808>, and <#300388576451887104>.
     - Able to use the `.nickme` command in DMs with Kurisu to change your nickname every 6 hours.
