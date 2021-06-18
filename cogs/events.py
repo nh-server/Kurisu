@@ -234,7 +234,7 @@ class Events(commands.Cog):
             await message.author.add_roles(self.bot.roles['Probation'])
             await utils.send_dm_message(message.author,
                                         f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
-                           f"You have been probated for posting a link to a scamming site.",
+                                        f"You have been probated for posting a link to a scamming site.",
                                         embed=embed)
             await self.bot.channels['message-logs'].send(
                 f"**Bad site**: {message.author.mention} mentioned a scamming site in {message.channel.mention} (message deleted, user probated)",
