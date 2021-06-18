@@ -166,6 +166,8 @@ class Kurisu(commands.Bot):
             'elsewhere': None,  # I'm a bit worried about how often this changes, shouldn't be a problem tho
             'newcomers': None,
             'nintendo-discussion': None,
+            'tech-talk': None,
+            'hardware': None,
         }
 
         self.failed_cogs = []
@@ -254,6 +256,8 @@ class Kurisu(commands.Bot):
             self.channels['switch-assistance-2'],
             self.channels['hacking-general'],
             self.channels['legacy-systems'],
+            self.channels['tech-talk'],
+            self.channels['hardware'],
         }
 
         self.staff_roles = {'Owner': self.roles['Owner'],
