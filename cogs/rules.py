@@ -15,10 +15,10 @@ class Rules(commands.Cog, command_attrs=dict()):
     @commands.Cog.listener()
     async def on_ready(self):
         await self.bot.wait_until_all_ready()
-        self.nh_emoji = discord.utils.get(self.bot.guild.emojis, name="nintendo_homebrew")
-        self.logo_3ds = discord.utils.get(self.bot.guild.emojis, name="3dslogo")
-        self.logo_wiiu = discord.utils.get(self.bot.guild.emojis, name="wiiulogo")
-        self.logo_switch = discord.utils.get(self.bot.guild.emojis, name="switchlogo")
+        self.nh_emoji = discord.utils.get(self.bot.guild.emojis, name="nintendo_homebrew") or "⁉"
+        self.logo_3ds = discord.utils.get(self.bot.guild.emojis, name="3dslogo") or "⁉"
+        self.logo_wiiu = discord.utils.get(self.bot.guild.emojis, name="wiiulogo") or "⁉"
+        self.logo_switch = discord.utils.get(self.bot.guild.emojis, name="switchlogo") or "⁉"
         await self.init_rules()
 
     async def simple_embed(self, ctx, text, title="", color=discord.Color.default()):
