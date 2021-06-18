@@ -183,14 +183,13 @@ class Mod(commands.Cog):
         await self.bot.channels["mod-logs"].send(msg)
 
     @is_staff("Helper")
+    @commands.has_permissions(manage_messages=True)
     @commands.guild_only()
     @commands.command(aliases=["clear"])
     async def purge(self, ctx, limit: int):
         """Clears a given number of messages. Helpers in assistance channels and Staff only."""
-        if ctx.channel not in self.bot.assistance_channels and not await check_staff_id("OP", ctx.author.id):
-            return await ctx.send("You cannot use this command outside of assistance channels.")
-        await ctx.channel.purge(limit=limit + 1, check=lambda message: not message.pinned)
-        msg = f"🗑 **Cleared**: {ctx.author.mention} cleared {limit} messages in {ctx.channel.mention}"
+        deleted = await ctx.channel.purge(limit=limit + 1, check=lambda message: not message.pinned)
+        msg = f"🗑 **Cleared**: {ctx.author.mention} cleared {len(deleted)} messages in {ctx.channel.mention}"
         await self.bot.channels['mod-logs'].send(msg)
 
     @is_staff("HalfOP")
