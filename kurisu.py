@@ -256,7 +256,6 @@ class Kurisu(commands.Bot):
             self.channels['switch-assistance-2'],
             self.channels['hacking-general'],
             self.channels['legacy-systems'],
-            self.channels['dev'],
             self.channels['tech-talk'],
             self.channels['hardware'],
         }
