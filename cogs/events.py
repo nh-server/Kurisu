@@ -239,6 +239,12 @@ class Events(commands.Cog):
             await self.bot.channels['message-logs'].send(
                 f"**Bad site**: {message.author.mention} mentioned a scamming site in {message.channel.mention} (message deleted, user probated)",
                 embed=embed)
+            await self.bot.channels['mods'].send(
+                f"🔇 **Auto-probated**: {message.author.mention} probated for linking scamming site | {message.author}\n"
+                f"🗓 __Creation__: {message.author.created_at}\n"
+                f"🏷__User ID__: {message.author.id}\n"
+                f"See {self.bot.channels['message-logs'].mention} for the deleted message. @here",
+                allowed_mentions=discord.AllowedMentions(everyone=True))
 
         # check for guide mirrors and post the actual link
         urls = re.findall(r'(https?://\S+)', msg)
