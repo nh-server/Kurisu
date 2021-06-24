@@ -1049,7 +1049,7 @@ are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safeha
             await ctx.send(embed=embed)
         elif self.check_console(console, channel_name, 'dsi'):
             embed = discord.Embed(title="GodMode9i dump Guide", color=ConsoleColor.legacy())
-            embed.set_author(name="NightScript", url="https://dsi.cfw.guide/dumping-cartridges")
+            embed.set_author(name="NightScript", url="https://dsi.cfw.guide/dumping-game-cards")
             embed.url = "https://dsi.cfw.guide/dumping-cartridges"
             embed.description = "How to dump cartridges on a Nintendo DSi using GodMode9i"
             await ctx.send(embed=embed)
