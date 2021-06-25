@@ -490,6 +490,12 @@ class Memes(commands.Cog):
         await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/f882b32a3f051f474572b018d053bd7b.png")
 
     @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def superiority(self, ctx):
+        """opinions"""
+        await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/e2cbbf7c808e21fb6c5ab603f6a89a3f.jpg")
+
+    @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.channel)
     async def cadealert(self, ctx):
         """stop! cade time."""
