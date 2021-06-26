@@ -143,16 +143,6 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         embed.url = "https://github.com/zoogie/DSP1/releases"
         await ctx.send(embed=embed)
 
-    @commands.command()
-    async def seedminer(self, ctx):
-        """Links the seedminer guide"""
-        embed = discord.Embed(title="Seedminer", color=discord.Color(0xb4eb4d))
-        embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/seedminer")
-        embed.set_thumbnail(url="https://nintendohomebrew.com/pics/nhplai.png")
-        embed.url = "https://3ds.hacks.guide/seedminer"
-        embed.description = "A guide on how to do the seedminer process to get your 3ds' movable.sed file"
-        await ctx.send(embed=embed)
-
     @commands.command(aliases=['3dslanding'])
     async def getstarted(self, ctx):
         """Links the 3DS get-started page"""
@@ -323,20 +313,6 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         embed.set_thumbnail(url="https://nintendohomebrew.com/pics/nhplai.png")
         embed.url = "https://3ds.hacks.guide/a9lh-to-b9s"
         embed.description = "A guide for upgrading your device from arm9loaderhax to boot9strap."
-        await ctx.send(embed=embed)
-
-    @commands.command(aliases=["atobwhat", "a9lhhow"])
-    async def a9lhrec(self, ctx):
-        """Advice for b9stool with a9lh conflict"""
-        embed = discord.Embed(title="arm9loaderhax Detected!", color=ConsoleColor.n3ds())
-        embed.description = "A9LH + b9stool information"
-        embed.add_field(name="Guide and Advice", value=cleandoc("""
-                If you are seeing an "arm9loaderhax detected!" message in b9stool, you should attempt to boot into the luma configuration menu before simply pressing A. If you can access the config, you should follow the normal a9lh-to-b9s guide instead of using b9stool.
-
-                If you appear to not actually have a9lh installed, you may press A to continue in b9stool. Once you do so and unlock NAND writing, one of two things will happen. If you reboot into an installer and then a luma config, you did actually have a9lh and it was successfully replaced with b9s. If you reboot to the home menu normally, you did not have a9lh and you should run b9stool again once.
-
-                If you're seeing an "a9lh detected! brick avoided!" error, you are on an old version of b9stool and should update your boot.nds to the latest.
-                """))
         await ctx.send(embed=embed)
 
     @commands.command()
@@ -660,17 +636,6 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             await ctx.send(embed=embed)
 
     @commands.command()
-    async def hbl(self, ctx):
-        """Get Homebrew Launcher working on 11.4+ firmware"""
-        await self.simple_embed(ctx, """
-                                If you wish to access the Homebrew Launcher on 11.4+, you have two options.
-                                First of all, you can use Steelminer, a free exploit to install the Homebrew Launcher. However, homebrew-only access has disadvantages.
-                                For example, homebrew-only is often unstable and will crash unexpectedly. Also, it is limited in features and system access.
-                                The second option is to install CFW, or custom firmware. Please use `.guide 3ds` for a list of ways to get CFW.
-                                Here is a [Steelhax guide](https://git.io/fhbGY). Do NOT proceed to `Installing boot9strap` if you do not want CFW.
-                                """)
-
-    @commands.command()
     async def readguide(self, ctx):
         """Read the guide please"""
         await self.simple_embed(ctx, """
@@ -793,19 +758,6 @@ just missing a file called boot.firm in the root of your SD card.
         await ctx.send(embed=embed)
 
     @commands.command()
-    async def bfm4(self, ctx):
-        """Information about BruteforceMovable and how the friend code may not always be needed"""
-        await self.simple_embed(ctx, """
-                                If BruteforceMovable is now at step 4, download your `movable.sed` and continue. \
-You do not need to do anything more related to `movable_part1.sed`, Python, or the \
-command line. The `movable.sed` is the final product and requires no further processing.
-                                **You do not need to go back and get the friend code, or do anything more
-                                with the friend code.
-                                It does not matter if the friend does not add you back.
-                                The bot already has your information and has removed you as a friend.**
-                                """, title="BruteforceMovable Advice")
-
-    @commands.command()
     async def emureco(self, ctx, console=None):
         """Quick advice for emunands"""
         systems = ("3ds", "nx", "ns", "switch")
@@ -845,14 +797,6 @@ command line. The `movable.sed` is the final product and requires no further pro
 is trying to download it. This means your blocking method (DNS etc.) is working and \
 the system can't check for an update.
                                  """, color=ConsoleColor.wiiu())
-
-    @commands.command()
-    async def ctrmount(self, ctx):
-        """Failed to mount CTRNAND error"""
-        await self.simple_embed(ctx, """
-                                While following the guide, after installing boot9strap, if you get an error that says \
-"Failed to mount CTRNAND", just continue on with the guide.
-                                """, color=ConsoleColor.n3ds())
 
     @commands.command()
     async def emptysd(self, ctx):
@@ -952,14 +896,6 @@ the system can't check for an update.
         embed.url = "https://3ds.hacks.guide/godmode9-usage"
         embed.description = "GodMode9 usage guide"
         await ctx.send(embed=embed)
-
-    @commands.command()
-    async def pminit(self, ctx):
-        """Fix for the PM init failed error"""
-        await self.simple_embed(ctx, """
-                                If you are receiving a "PM init failed" error when attempting to launch safehax and \
-are not on 11.3, use [this version of safehax.](https://github.com/TiniVi/safehax/releases/tag/r19)
-                                """, color=ConsoleColor.n3ds())
 
     @commands.command()
     async def flashcart(self, ctx):
@@ -1430,13 +1366,6 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         embed.set_image(url="https://i.imgur.com/QXHIvOz.jpg")
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=['whatsid0', 'id0'])
-    async def whatisid0(self, ctx):
-        """Picture to say what the heck is the id0"""
-        embed = discord.Embed()
-        embed.set_image(url="https://media.discordapp.net/attachments/196635695958196224/677996125034250280/unknown-76.png")
-        await ctx.send(embed=embed)
-
     @commands.command()
     async def autorcm(self, ctx):
         """Guide and Warnings about AutoRCM"""
@@ -1670,14 +1599,6 @@ in the scene.
                 - Don’t move the DS Virtual Console game to a USB drive!
             """))
         await ctx.send(embed=embed)
-
-    @commands.command(aliases=['usm'])
-    async def unsafe_mode(self, ctx):
-        """unSAFE_MODE Guide"""
-        await self.simple_embed(ctx, """
-                    3DS Hacks Guide's [unSAFE_MODE](https://git.io/JfNQ4)
-                    """, title="unSAFE_MODE")
-
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
