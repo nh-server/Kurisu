@@ -830,15 +830,10 @@ the system can't check for an update.
                                 Each of these instructions require that you perform a system update after running the apps or restoring the DSiWare
                                 """, title="Fix broken TWL", color=ConsoleColor.legacy())
 
-    @commands.command(aliases=["redscr"])
+    @commands.command(aliases=["redscr", "hbl"])
     async def boot3dsx(self, ctx):
         """Download link for 3DS Homebrew Launcher, boot.3dsx"""
         await self.simple_embed(ctx, "The 3DS Homebrew Launcher, [boot.3dsx](https://github.com/fincs/new-hbmenu/releases/download/v2.1.0/boot.3dsx)")
-
-    @commands.command(aliases=["greenscr", "bootnds"])
-    async def b9stool(self, ctx):
-        """Download link for B9STool, boot.nds"""
-        await self.simple_embed(ctx, "The B9S installation tool for DSiWare exploits.\nB9STool, [boot.nds](https://github.com/zoogie/b9sTool/releases)")
 
     @commands.command(aliases=["faketiks"])
     async def faketik(self, ctx):
@@ -1599,6 +1594,7 @@ in the scene.
                 - Don’t move the DS Virtual Console game to a USB drive!
             """))
         await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
