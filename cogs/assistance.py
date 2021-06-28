@@ -1678,6 +1678,30 @@ in the scene.
                     3DS Hacks Guide's [unSAFE_MODE](https://git.io/JfNQ4)
                     """, title="unSAFE_MODE")
 
+    @commands.command()
+    async def downgrade(self, ctx, console=None):
+        """Why not downgrade"""
+        systems = ("nx", "ns", "switch")
+        channel_name = ctx.channel.name if not isinstance(ctx.channel, discord.DMChannel) else ""
+        if console not in systems:
+            if channel_name.startswith(systems):
+                console = "auto"
+            else:
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+                ctx.command.reset_cooldown(ctx)
+                return
+        if self.check_console(console, channel_name, ('nx', 'switch', 'ns')):
+            embed = discord.Embed(title="Nintendo Switch Downgrade", color=ConsoleColor.switch())
+            embed.description = "Downgrading your firmware on the Switch is not recommended, especially on your sysmmc. This will generaly lead to a lot of issues and won't resolve anything."
+            embed.add_field(name="Why downgrading is not recommended:", value=cleandoc("""
+                * You may not be able to boot without a custom bootloader because of efuses count missmatch.
+                * You may not be able to use your gamecards.
+                * You may have save data compatibility issues.
+                * You may incorrectly flash your boot files.
+                * You may not be able to launch some games.
+            """))
+            await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
