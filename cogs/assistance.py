@@ -1678,7 +1678,7 @@ in the scene.
                     3DS Hacks Guide's [unSAFE_MODE](https://git.io/JfNQ4)
                     """, title="unSAFE_MODE")
 
-    @commands.command()
+    @commands.command(aliases=['dn'])
     async def downgrade(self, ctx, console=None):
         """Why not downgrade"""
         systems = ("nx", "ns", "switch")
@@ -1691,14 +1691,14 @@ in the scene.
                 ctx.command.reset_cooldown(ctx)
                 return
         if self.check_console(console, channel_name, ('nx', 'switch', 'ns')):
-            embed = discord.Embed(title="Nintendo Switch Downgrade", color=ConsoleColor.switch())
-            embed.description = "Downgrading your firmware on the Switch is not recommended, especially on your sysmmc. This will generaly lead to a lot of issues and won't resolve anything."
-            embed.add_field(name="Why downgrading is not recommended:", value=cleandoc("""
-                * You may not be able to boot without a custom bootloader because of efuses count missmatch.
-                * You may not be able to use your gamecards.
-                * You may have save data compatibility issues.
-                * You may incorrectly flash your boot files.
-                * You may not be able to launch some games.
+            embed = discord.Embed(title="Downgrading on the Switch: Why you shouldn't do it", color=ConsoleColor.switch())
+            embed.description = "Downgrading your firmware on the Switch is not recommended. This will generally lead to a lot of issues and won't solve anything."
+            embed.add_field(name="Possible side effects from downgrading:", value=cleandoc("""
+                * Unable to boot if performed incorrectly. 
+                * Unable to boot due to a mismatched efuse count.
+                * Inability to use your gamecards.
+                * Save data compatibility issues.
+                * Games not launching.
             """))
             await ctx.send(embed=embed)
 
