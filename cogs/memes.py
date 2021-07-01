@@ -521,7 +521,7 @@ class Memes(commands.Cog):
 
         await crud.add_timed_role(member.id, self.bot.roles['🍰'].id, expiring_time)
         await ctx.send(f"Happy birthday {member.mention}!")
-        
+
     @commands.command(hidden=True, aliases=["departure"])
     @commands.cooldown(rate=5, per=30.0, type=commands.BucketType.channel)
     async def depart(self, ctx):
