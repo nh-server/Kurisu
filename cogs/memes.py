@@ -522,6 +522,13 @@ class Memes(commands.Cog):
         await crud.add_timed_role(member.id, self.bot.roles['🍰'].id, expiring_time)
         await ctx.send(f"Happy birthday {member.mention}!")
 
+    @commands.command(hidden=True, aliases=["departure"])
+    @commands.cooldown(rate=5, per=30.0, type=commands.BucketType.channel)
+    async def depart(self, ctx):
+        """From the amazing Mr. Burguers"""
+        departure_gifs = ["https://i.imgur.com/Kbyp7i4.gif", "https://i.imgur.com/Wv8DoGC.gif"]
+        await self._meme(ctx, "", imagelink=random.choice(departure_gifs))
+
 
 def setup(bot):
     bot.add_cog(Memes(bot))

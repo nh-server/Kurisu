@@ -402,7 +402,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 return
         if self.check_console(console, channel_name, '3ds'):
             embed = discord.Embed(title="Running stock (unmodified) 3DS firmware?", color=ConsoleColor.n3ds())
-            embed.add_field(name="Hardware Dependant", value="The latest update to common guide methods mean that the best method for you now depends on what hardware you have. Please read the [guide](https://3ds.hacks.guide/get-started)", inline=False)
+            embed.add_field(name="Check Your Firmware", value="The latest update to common guide methods mean that the best method for you now depends on your firmware version. Please read the [guide](https://3ds.hacks.guide/get-started) to learn more.", inline=False)
             await ctx.send(embed=embed)
         elif self.check_console(console, channel_name, ('nx', 'switch', 'ns')):
             await self.simple_embed(ctx,
@@ -980,8 +980,8 @@ the system can't check for an update.
             await ctx.send(embed=embed)
         elif self.check_console(console, channel_name, 'dsi'):
             embed = discord.Embed(title="GodMode9i dump Guide", color=ConsoleColor.legacy())
-            embed.set_author(name="NightScript", url="https://dsi.cfw.guide/dumping-cartridges")
-            embed.url = "https://dsi.cfw.guide/dumping-cartridges"
+            embed.set_author(name="NightScript", url="https://dsi.cfw.guide/dumping-game-cards")
+            embed.url = "https://dsi.cfw.guide/dumping-game-cards"
             embed.description = "How to dump cartridges on a Nintendo DSi using GodMode9i"
             await ctx.send(embed=embed)
 
@@ -1594,6 +1594,46 @@ in the scene.
                 - Don’t move the DS Virtual Console game to a USB drive!
             """))
         await ctx.send(embed=embed)
+
+    @commands.command(aliases=['usm'])
+    async def unsafe_mode(self, ctx):
+        """unSAFE_MODE Guide"""
+        await self.simple_embed(ctx, """
+                    3DS Hacks Guide's [unSAFE_MODE](https://git.io/JfNQ4)
+                    """, title="unSAFE_MODE")
+
+    @commands.command(aliases=['dn'])
+    async def downgrade(self, ctx, console=None):
+        """Why not downgrade"""
+        systems = ("nx", "ns", "switch")
+        channel_name = ctx.channel.name if not isinstance(ctx.channel, discord.DMChannel) else ""
+        if console not in systems:
+            if channel_name.startswith(systems):
+                console = "auto"
+            else:
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+                ctx.command.reset_cooldown(ctx)
+                return
+        if self.check_console(console, channel_name, ('nx', 'switch', 'ns')):
+            embed = discord.Embed(title="Downgrading on the Switch: Why you shouldn't do it", color=ConsoleColor.switch())
+            embed.description = "Downgrading your firmware on the Switch is not recommended. This will generally lead to a lot of issues and won't solve anything."
+            embed.add_field(name="Possible side effects from downgrading:", value=cleandoc("""
+                * Unable to boot if performed incorrectly.
+                * Unable to boot due to a mismatched efuse count.
+                * Inability to use your gamecards.
+                * Save data compatibility issues.
+                * Games not launching.
+            """))
+        elif self.check_console(console, channel_name, '3ds'):
+            embed = discord.Embed(title="Downgrading on the 3DS: Why you shouldn't do it", color=ConsoleColor.n3ds())
+            embed.description = "Downgrading your firmware on the 3DS is not recommended. Although you *can*, you won't get any benefits from it."
+            embed.add_field(name="Possible side effects from downgrading:", value=cleandoc("""
+                * Unable to boot if performed incorrectly.
+                * Unable to access online services.
+                * Save data compatibility issues.
+                * Games not launching.
+            """))
+            await ctx.send(embed=embed)
 
 
 def setup(bot):
