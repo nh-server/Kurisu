@@ -1,7 +1,4 @@
-import aiohttp
-import asyncio
 import discord
-import urllib.parse
 
 from discord.ext import commands
 from inspect import cleandoc
