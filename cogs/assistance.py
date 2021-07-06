@@ -1559,13 +1559,6 @@ in the scene.
             """))
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=['usm'])
-    async def unsafe_mode(self, ctx):
-        """unSAFE_MODE Guide"""
-        await self.simple_embed(ctx, """
-                    3DS Hacks Guide's [unSAFE_MODE](https://git.io/JfNQ4)
-                    """, title="unSAFE_MODE")
-
     @commands.command(aliases=['dn'])
     async def downgrade(self, ctx, console=None):
         """Why not downgrade"""
