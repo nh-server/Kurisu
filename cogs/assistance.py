@@ -315,11 +315,6 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         embed.description = "A guide for upgrading your device from arm9loaderhax to boot9strap."
         await ctx.send(embed=embed)
 
-    @commands.command()
-    async def hmodders(self, ctx):
-        """Links to approved hardmodder list"""
-        await self.simple_embed(ctx, "Don't want to hardmod yourself? Ask one of the installers on the server! <https://pastebin.com/FAiczew4>")
-
     @commands.command(aliases=["ctrtransfer", "ctrnandtransfer"])
     async def ctr(self, ctx):
         """Links to ctrtransfer guide"""
