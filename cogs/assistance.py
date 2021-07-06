@@ -426,7 +426,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 return
         if self.check_console(console, channel_name, '3ds'):
             embed = discord.Embed(title="Running stock (unmodified) 3DS firmware?", color=ConsoleColor.n3ds())
-            embed.add_field(name="Hardware Dependant", value="The latest update to common guide methods mean that the best method for you now depends on what hardware you have. Please read the [guide](https://3ds.hacks.guide/get-started)", inline=False)
+            embed.add_field(name="Check Your Firmware", value="The latest update to common guide methods mean that the best method for you now depends on your firmware version. Please read the [guide](https://3ds.hacks.guide/get-started) to learn more.", inline=False)
             await ctx.send(embed=embed)
         elif self.check_console(console, channel_name, ('nx', 'switch', 'ns')):
             await self.simple_embed(ctx,
