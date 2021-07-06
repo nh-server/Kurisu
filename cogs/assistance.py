@@ -1700,8 +1700,16 @@ in the scene.
                 * Save data compatibility issues.
                 * Games not launching.
             """))
+        elif self.check_console(console, channel_name, '3ds'):
+            embed = discord.Embed(title="Downgrading on the 3DS: Why you shouldn't do it", color=ConsoleColor.n3ds())
+            embed.description = "Downgrading your firmware on the 3DS is not recommended. Although you *can*, you won't get any benefits from it."
+            embed.add_field(name="Possible side effects from downgrading:", value=cleandoc("""
+                * Unable to boot if performed incorrectly.
+                * Unable to access online services.
+                * Save data compatibility issues.
+                * Games not launching.
+            """))
             await ctx.send(embed=embed)
-
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
