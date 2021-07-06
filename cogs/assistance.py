@@ -1309,37 +1309,6 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         await ctx.send(embed=embed)
 
     @commands.command()
-    async def tinydb(self, ctx):
-        """Community-maintained homebrew database"""
-        embed = discord.Embed(title="Tinydb", color=discord.Color.green())
-        embed.set_author(name="DeadPhoenix")
-        embed.set_thumbnail(url="https://files.frozenchen.cl/kNJz8.png")
-        embed.url = "http://tinydb.eiphax.tech"
-        embed.description = "A Community-maintained homebrew database"
-        await ctx.send(embed=embed)
-
-    @commands.command(aliases=["tinydbsearch"])
-    @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
-    async def tinysearch(self, ctx, *, app=""):
-        """Search for your favorite homebrew app in tinydb"""
-        if not app or app.startswith("..") or "/.." in app:
-            return await ctx.send("Enter a search term to search for applications.")
-        encodedapp = urllib.parse.quote(app)
-        async with aiohttp.ClientSession() as session:
-            try:
-                async with session.get(f"https://api.homebrew.space/search/{encodedapp}", timeout=2) as resp:
-                    response = await resp.json()
-            except (aiohttp.ServerConnectionError, aiohttp.ClientConnectorError, aiohttp.ClientResponseError, asyncio.TimeoutError):
-                return await ctx.send("I can't connect to tinydb 💢")
-        if response and len(response) > 0:
-            release = response[0]['latestRelease']['3ds_release_files'][0]
-            embed = discord.Embed(title=response[0]['name'], image=f"https://api.homebrew.space/qr/{response[0]['id']}/", description=f"{response[0]['description']}\n [[Download]({release['download_url']})] [[Source](https://github.com/{response[0]['github_owner']}/{response[0]['github_repository']})]")
-            embed.set_image(url=rf"https://api.homebrew.space/qr/{response[0]['id']}/")
-            embed.set_footer(text=f"by {response[0]['github_owner']}")
-            return await ctx.send(embed=embed)
-        return await ctx.send(f"Couldnt find {self.bot.escape_text(app)} in tinydb!")
-
-    @commands.command()
     async def cios(self, ctx):
         """cIOS installation guide"""
         embed = discord.Embed(title="cIOS Guide", color=ConsoleColor.wii())
