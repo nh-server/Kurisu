@@ -1694,7 +1694,7 @@ in the scene.
             embed = discord.Embed(title="Downgrading on the Switch: Why you shouldn't do it", color=ConsoleColor.switch())
             embed.description = "Downgrading your firmware on the Switch is not recommended. This will generally lead to a lot of issues and won't solve anything."
             embed.add_field(name="Possible side effects from downgrading:", value=cleandoc("""
-                * Unable to boot if performed incorrectly. 
+                * Unable to boot if performed incorrectly.
                 * Unable to boot due to a mismatched efuse count.
                 * Inability to use your gamecards.
                 * Save data compatibility issues.
@@ -1710,6 +1710,7 @@ in the scene.
                 * Games not launching.
             """))
             await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
