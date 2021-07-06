@@ -1678,6 +1678,39 @@ in the scene.
                     3DS Hacks Guide's [unSAFE_MODE](https://git.io/JfNQ4)
                     """, title="unSAFE_MODE")
 
+    @commands.command(aliases=['dn'])
+    async def downgrade(self, ctx, console=None):
+        """Why not downgrade"""
+        systems = ("nx", "ns", "switch")
+        channel_name = ctx.channel.name if not isinstance(ctx.channel, discord.DMChannel) else ""
+        if console not in systems:
+            if channel_name.startswith(systems):
+                console = "auto"
+            else:
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+                ctx.command.reset_cooldown(ctx)
+                return
+        if self.check_console(console, channel_name, ('nx', 'switch', 'ns')):
+            embed = discord.Embed(title="Downgrading on the Switch: Why you shouldn't do it", color=ConsoleColor.switch())
+            embed.description = "Downgrading your firmware on the Switch is not recommended. This will generally lead to a lot of issues and won't solve anything."
+            embed.add_field(name="Possible side effects from downgrading:", value=cleandoc("""
+                * Unable to boot if performed incorrectly.
+                * Unable to boot due to a mismatched efuse count.
+                * Inability to use your gamecards.
+                * Save data compatibility issues.
+                * Games not launching.
+            """))
+        elif self.check_console(console, channel_name, '3ds'):
+            embed = discord.Embed(title="Downgrading on the 3DS: Why you shouldn't do it", color=ConsoleColor.n3ds())
+            embed.description = "Downgrading your firmware on the 3DS is not recommended. Although you *can*, you won't get any benefits from it."
+            embed.add_field(name="Possible side effects from downgrading:", value=cleandoc("""
+                * Unable to boot if performed incorrectly.
+                * Unable to access online services.
+                * Save data compatibility issues.
+                * Games not launching.
+            """))
+            await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Assistance(bot))
