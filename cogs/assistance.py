@@ -822,7 +822,7 @@ the system can't check for an update.
                                 Each of these instructions require that you perform a system update after running the apps or restoring the DSiWare
                                 """, title="Fix broken TWL", color=ConsoleColor.legacy())
 
-    @commands.command(aliases=["redscr", "hbl"])
+    @commands.command(aliases=["hbl"])
     async def boot3dsx(self, ctx):
         """Download link for 3DS Homebrew Launcher, boot.3dsx"""
         await self.simple_embed(ctx, "The 3DS Homebrew Launcher, [boot.3dsx](https://github.com/fincs/new-hbmenu/releases/download/v2.1.0/boot.3dsx)")
