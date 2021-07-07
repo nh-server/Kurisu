@@ -115,7 +115,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 embed.url = "https://dsi.cfw.guide/"
                 embed.description = "The complete guide to modding your Nintendo DSi"
                 await ctx.send(embed=embed)
-            if self.check_console(x, channelName, ('cemu',)):
+            if self.check_console(x, ('cemu')):
                 embed = discord.Embed(title="Guide", color=discord.Color(0xFFFFFF))
                 embed.set_author(name="emiyl", url="https://cemu.cfw.guide/credits")
                 embed.set_thumbnail(url="https://i.imgur.com/NrvfU2f.png")
