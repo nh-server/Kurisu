@@ -23,7 +23,7 @@ from utils import models, crud
 from utils.checks import check_staff_id
 from utils.manager import WordFilterManager, InviteFilterManager
 from utils.models import db
-from utils.utils import create_error_embed
+from utils.utils import create_error_embed, paginate_message
 
 IS_DOCKER = os.environ.get('IS_DOCKER', '')
 
@@ -165,6 +165,9 @@ class Kurisu(commands.Bot):
             'bot-err': None,
             'elsewhere': None,  # I'm a bit worried about how often this changes, shouldn't be a problem tho
             'newcomers': None,
+            'nintendo-discussion': None,
+            'tech-talk': None,
+            'hardware': None,
         }
 
         self.failed_cogs = []
@@ -236,9 +239,8 @@ class Kurisu(commands.Bot):
         assert len(guilds) == 1
         self.guild = guilds[0]
 
-        self.upgrade_database_revision()
-
         try:
+            self.upgrade_database_revision()
             await db.set_bind(DATABASE_URL)
         except:
             sys.exit('Error when connecting to database')
@@ -254,6 +256,8 @@ class Kurisu(commands.Bot):
             self.channels['switch-assistance-2'],
             self.channels['hacking-general'],
             self.channels['legacy-systems'],
+            self.channels['tech-talk'],
+            self.channels['hardware'],
         }
 
         self.staff_roles = {'Owner': self.roles['Owner'],
@@ -283,13 +287,6 @@ class Kurisu(commands.Bot):
         print(startup_message)
         await self.channels['helpers'].send(startup_message)
         self._is_all_ready.set()
-
-    @staticmethod
-    def format_error(msg):
-        error_paginator = commands.Paginator()
-        for chunk in [msg[i:i + 1800] for i in range(0, len(msg), 1800)]:
-            error_paginator.add_line(chunk)
-        return error_paginator
 
     async def on_command_error(self, ctx: commands.Context, exc: commands.CommandInvokeError):
         author: discord.Member = ctx.author
@@ -351,7 +348,7 @@ class Kurisu(commands.Bot):
     async def on_error(self, event_method, *args, **kwargs):
         await self.channels['bot-err'].send(f'Error in {event_method}:')
         msg = format_exc()
-        error_paginator = self.format_error(msg)
+        error_paginator = paginate_message(msg)
         for page in error_paginator.pages:
             await self.channels['bot-err'].send(page)
 

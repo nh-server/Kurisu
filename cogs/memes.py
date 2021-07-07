@@ -354,7 +354,7 @@ class Memes(commands.Cog):
     @staticmethod
     def c_to_f(c):
         """this is where we take memes too far"""
-        return math.floor(9.0 / 30.0 * c + 32)
+        return math.floor(1.8 * c + 32)
 
     @staticmethod
     def c_to_k(c):
@@ -490,6 +490,12 @@ class Memes(commands.Cog):
         await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/f882b32a3f051f474572b018d053bd7b.png")
 
     @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def superiority(self, ctx):
+        """opinions"""
+        await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/e2cbbf7c808e21fb6c5ab603f6a89a3f.jpg")
+
+    @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.channel)
     async def cadealert(self, ctx):
         """stop! cade time."""
@@ -515,6 +521,13 @@ class Memes(commands.Cog):
 
         await crud.add_timed_role(member.id, self.bot.roles['🍰'].id, expiring_time)
         await ctx.send(f"Happy birthday {member.mention}!")
+
+    @commands.command(hidden=True, aliases=["departure"])
+    @commands.cooldown(rate=5, per=30.0, type=commands.BucketType.channel)
+    async def depart(self, ctx):
+        """From the amazing Mr. Burguers"""
+        departure_gifs = ["https://i.imgur.com/Kbyp7i4.gif", "https://i.imgur.com/Wv8DoGC.gif"]
+        await self._meme(ctx, "", imagelink=random.choice(departure_gifs))
 
 
 def setup(bot):

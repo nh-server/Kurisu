@@ -66,7 +66,9 @@ internet = Module('internet', {
     299: ResultInfo('The Wireless Connection is currently deactivated. Please activate the wireless connection.'),
     399: ResultInfo('Accepted EULA version is too low'),
     1099: ResultInfo('Access point with given SSID not found.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/4249/kw/003-1099'),
-    2001: ResultInfo('DNS error. If you\'re using a custom DNS server, make sure the settings are correct.')
+    1101: ResultInfo('Incorrect password for access point or configuration is not compatible with the 3DS.'),
+    2001: ResultInfo('DNS error. If you\'re using a custom DNS server, make sure the settings are correct.'),
+    2103: ResultInfo('Generic connection error(?)')
 })
 
 # Yet another nim hack. Why does this category have so many redundant errors?
@@ -130,14 +132,17 @@ eshop_app = Module('eshop (app?)', {
     2924: eshop_mint.data[2924],
     2923: ResultInfo('You are unable to use a function which requires internet services, such as software updates or formatting the system memory.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/17014'),
     2995: ResultInfo('This error can occur if the download code was entered incorrectly, has not yet been activated, has expired, was entered in the wrong place, or is intended for a region other than your own.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/13515'),
+    4077: ResultInfo('Cannot start or continue eShop download. This happens due to insufficient free space being available on the SD Card.'),
     4079: ResultInfo('Unable to access SD card.'),
     4998: ResultInfo('Local content is newer. Unknown what causes this.'),
     6106: ResultInfo('AM error in NIM. Bad ticket is likely.'),
-    8401: ResultInfo('The update data is corrupted. Delete it and reinstall.')
+    8401: ResultInfo('The update data is corrupted. Delete it and reinstall.'),
+    9001: ResultInfo('Caused by trying to download content with low battery percentage.')
 })
 
 # 011: eshop website, or other misc/overlapping errors
 eshop_site = Module('eshop (website?)', {
+    3010: ResultInfo('Server timeout due to user inactivity.'),
     3021: ResultInfo('Cannot find title on Nintendo eShop (incorrect region, or never existed?).'),
     3136: ResultInfo('Nintendo eShop is currently unavailable. Try again later.'),
     6901: ResultInfo('This console is permanently banned by Nintendo (displayed in Japanese for some reason).', is_ban=True)

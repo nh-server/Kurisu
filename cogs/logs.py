@@ -12,6 +12,7 @@ class Logs(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+
     welcome_msg = """
 Hello {0}, welcome to the {1} server on Discord!
 
@@ -28,14 +29,18 @@ By participating in this server, you acknowledge that user data (including messa
 Thanks for stopping by and have a good time!
 """  # ughhhhhhhh
 
-    nitro_msg = """
-Thanks for boosting <:nitro:641446520675368971> Nintendo Homebrew!
-As a Nitro Booster you have the following bonuses:
-    - React permissions in <#314856589716750346>, <#485138525885431808>, and <#300388576451887104>.
-    - Able to use the `.nickme` command in DMs with Kurisu to change your nickname every 6 hours.
-    - Able to stream in the <#623015122473975818> voice channel.
-Thanks for boosting and have a good time!
-    """
+    @commands.Cog.listener()
+    async def on_ready(self):
+        await self.bot.wait_until_all_ready()
+        self.logo_nitro = discord.utils.get(self.bot.guild.emojis, name="nitro") or "⁉"
+        self.logo_boost = discord.utils.get(self.bot.guild.emojis, name="boost") or "⁉"
+        self.nitro_msg = f"""Thanks for boosting {self.logo_nitro} Nintendo Homebrew!
+        As a Nitro Booster you have the following bonuses:
+        - React permissions in <#314856589716750346>, <#485138525885431808>, and <#300388576451887104>.
+        - Able to use the `.nickme` command in DMs with Kurisu to change your nickname every 6 hours.
+        - Able to stream in the <#623015122473975818> voice channel.
+        Thanks for boosting and have a good time! {self.logo_boost}
+        """
 
     @commands.Cog.listener()
     async def on_member_join(self, member):

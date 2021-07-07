@@ -79,7 +79,7 @@ class Mod(commands.Cog):
             embed.description += (
                 f"**Join date:** {user.joined_at}\n"
                 f"**Current Status:** {user.status}\n"
-                f"**User Activity:**: {user.activity}\n"
+                f"**User Activity:** {user.activity}\n"
                 f"**Current Display Name:** {user.display_name}\n"
                 f"**Nitro Boost Info:** {user.premium_since}\n"
                 f"**Current Top Role:** {user.top_role}\n"
@@ -109,11 +109,15 @@ class Mod(commands.Cog):
             if bool(re.search(rgx, m.name, re.IGNORECASE)):
                 msg += f"{m.id} - {m}\n"
         msg += "```"
-        await author.send(msg)
+        if len(msg) > 4000:
+            for page in utils.paginate_message(msg).pages:
+                await author.send(page)
+        else:
+            await author.send(msg)
 
     @is_staff("Owner")
     @commands.guild_only()
-    @commands.command()
+    @commands.command(aliases=['gigayeet'])
     async def multiban(self, ctx, users: commands.Greedy[int]):
         """Multi-ban users."""
         author = ctx.author
@@ -130,7 +134,7 @@ class Mod(commands.Cog):
     @is_staff("Owner")
     @commands.guild_only()
     @commands.bot_has_permissions(ban_members=True)
-    @commands.command()
+    @commands.command(aliases=['gigayeetre'])
     async def multibanre(self, ctx, *, rgx: str):
         """Multi-ban users by regex."""
         author = ctx.author
@@ -179,14 +183,13 @@ class Mod(commands.Cog):
         await self.bot.channels["mod-logs"].send(msg)
 
     @is_staff("Helper")
+    @commands.has_permissions(manage_messages=True)
     @commands.guild_only()
     @commands.command(aliases=["clear"])
     async def purge(self, ctx, limit: int):
         """Clears a given number of messages. Helpers in assistance channels and Staff only."""
-        if ctx.channel not in self.bot.assistance_channels and not await check_staff_id("OP", ctx.author.id):
-            return await ctx.send("You cannot use this command outside of assistance channels.")
-        await ctx.channel.purge(limit=limit + 1, check=lambda message: not message.pinned)
-        msg = f"🗑 **Cleared**: {ctx.author.mention} cleared {limit} messages in {ctx.channel.mention}"
+        deleted = await ctx.channel.purge(limit=limit + 1, check=lambda message: not message.pinned)
+        msg = f"🗑 **Cleared**: {ctx.author.mention} cleared {len(deleted)} messages in {ctx.channel.mention}"
         await self.bot.channels['mod-logs'].send(msg)
 
     @is_staff("HalfOP")

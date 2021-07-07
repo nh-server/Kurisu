@@ -1,6 +1,7 @@
 import asyncio
 import discord
 import re
+import random
 
 from collections import deque
 from discord.ext import commands
@@ -56,7 +57,8 @@ class Events(commands.Cog):
     help_notice_anti_repeat = []
 
     async def scan_message(self, message, is_edit=False):
-        embed = discord.Embed()
+        random.seed(message.id)
+        embed = discord.Embed(color=utils.gen_color(message.id))
         embed.description = message.content
         if await crud.is_watched(message.author.id):
             content = f"**Channel**:\n[#{message.channel.name}]({message.jump_url})\n"
@@ -92,6 +94,7 @@ class Events(commands.Cog):
         contains_non_approved_invite = len(res) != len(approved_invites)
 
         contains_piracy_tool_alert_mention = self.search_word(self.bot.wordfilter.filter['piracy tool alert'], msg_no_separators, msg)
+        contains_scamming_site = self.search_word(self.bot.wordfilter.filter['scamming site'], msg_no_separators, msg)
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site',))
         contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub', 'strawpoii', 'hackinformer.com', 'console.guide', 'jacksorrell.co.uk', 'jacksorrell.tv', 'nintendobrew.com', 'reinx.guide', 'NxpeNwz', 'scenefolks.com'))
         contains_unbanning_stuff = self.search_word(self.bot.wordfilter.filter['unbanning tool'], msg_no_separators, msg)
@@ -221,6 +224,27 @@ class Events(commands.Cog):
         if contains_video and message.channel in self.bot.assistance_channels:
             await self.bot.channels['message-logs'].send(
                 f"▶️ **Video posted**: {message.author.mention} posted a video in {message.channel.mention}\n------------------\n{message.clean_content}")
+        if contains_scamming_site:
+            embed.description = self.highlight_matches(contains_scamming_site, msg)
+            try:
+                await message.delete()
+            except discord.errors.NotFound:
+                pass
+            await crud.add_permanent_role(message.author.id, self.bot.roles['Probation'].id)
+            await message.author.add_roles(self.bot.roles['Probation'])
+            await utils.send_dm_message(message.author,
+                                        f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
+                                        f"You have been probated for posting a link to a scamming site.",
+                                        embed=embed)
+            await self.bot.channels['message-logs'].send(
+                f"**Bad site**: {message.author.mention} mentioned a scamming site in {message.channel.mention} (message deleted, user probated)",
+                embed=embed)
+            await self.bot.channels['mods'].send(
+                f"🔇 **Auto-probated**: {message.author.mention} probated for linking scamming site | {message.author}\n"
+                f"🗓 __Creation__: {message.author.created_at}\n"
+                f"🏷__User ID__: {message.author.id}\n"
+                f"See {self.bot.channels['message-logs'].mention} for the deleted message. @here",
+                allowed_mentions=discord.AllowedMentions(everyone=True))
 
         # check for guide mirrors and post the actual link
         urls = re.findall(r'(https?://\S+)', msg)
@@ -273,9 +297,10 @@ class Events(commands.Cog):
         # it can trigger it multiple times if I use >. it can't skip to a number so this should work
         if len(self.user_antispam[message.author.id]) == 6:
             await message.author.add_roles(self.bot.roles['Muted'])
+            await message.author.remove_roles(self.bot.roles['#elsewhere'], self.bot.roles['#art-discussion'])
             await crud.add_permanent_role(message.author.id, self.bot.roles['Muted'].id)
-            msg_user = f"You were automatically muted for sending too many messages in a short period of time!\n\n" \
-                       f"If you believe this was done in error, send a direct message to one of the staff in {self.bot.channels['welcome-and-rules'].mention}."
+            msg_user = "You were automatically muted for sending too many messages in a short period of time!\n\n" \
+                       "If you believe this was done in error, send a direct message (DM) to <@!333857992170536961> to contact staff."
             await utils.send_dm_message(message.author, msg_user)
             log_msg = f"🔇 **Auto-muted**: {message.author.mention} muted for spamming | {message.author}\n🗓 __Creation__: {message.author.created_at}\n🏷 __User ID__: {message.author.id}"
             embed = discord.Embed(title="Deleted messages", color=discord.Color.gold())
@@ -309,8 +334,8 @@ class Events(commands.Cog):
         if sum(user_mentions) > 6:
             await crud.add_permanent_role(message.author, self.bot.roles["Probation"].id)
             await message.author.add_roles(self.bot.roles['Probation'])
-            msg_user = f"You were automatically placed under probation for mentioning too many users in a short period of time!\n\n" \
-                       f"If you believe this was done in error, send a direct message to one of the staff in {self.bot.channels['welcome-and-rules'].mention}."
+            msg_user = "You were automatically placed under probation for mentioning too many users in a short period of time!\n\n" \
+                       "If you believe this was done in error, send a direct message (DM) to <@!333857992170536961> to contact staff."
             await utils.send_dm_message(message.author, msg_user)
             log_msg = f"🚫 **Auto-probated**: {message.author.mention} probated for mass user mentions | {message.author}\n" \
                       f"🗓 __Creation__: {message.author.created_at}\n🏷 __User ID__: {message.author.id}"

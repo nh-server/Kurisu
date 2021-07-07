@@ -43,7 +43,7 @@ class Newcomers(commands.Cog):
         await ctx.send(f'🔨 Auto-probation is {active_text if self.autoprobate else inactive_text}')
 
     @is_staff('Helper')
-    @commands.group(invoke_without_command=True, case_insensitive=True)
+    @commands.group(aliases=['autoprobation'], invoke_without_command=True, case_insensitive=True)
     async def autoprobate(self, ctx):
         """
         Manages auto-probation.
@@ -72,7 +72,7 @@ class Newcomers(commands.Cog):
 
     @check_if_user_can_ready()
     @commands.guild_only()
-    @commands.command(aliases=['ready'], cooldown=commands.Cooldown(rate=1, per=300.0, type=commands.BucketType.channel))
+    @commands.command(aliases=['ready'], cooldown=commands.Cooldown(rate=1, per=300.0, type=commands.BucketType.member))
     async def ncready(self, ctx, *, reason=""):
         """Alerts online staff to a ready request in newcomers."""
         newcomers = self.bot.channels['newcomers']
