@@ -1681,7 +1681,7 @@ in the scene.
     @commands.command(aliases=['dn'])
     async def downgrade(self, ctx, console=None):
         """Why not downgrade"""
-        systems = ("nx", "ns", "switch")
+        systems = ("3ds", "nx", "ns", "switch")
         channel_name = ctx.channel.name if not isinstance(ctx.channel, discord.DMChannel) else ""
         if console not in systems:
             if channel_name.startswith(systems):
@@ -1709,7 +1709,7 @@ in the scene.
                 * Save data compatibility issues.
                 * Games not launching.
             """))
-            await ctx.send(embed=embed)
+        await ctx.send(embed=embed)
 
 
 def setup(bot):
