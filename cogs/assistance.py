@@ -1225,24 +1225,31 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
         embed.description = "Tutorial for NDS Forwarders"
         await ctx.send(embed=embed)
 
-    @tutorial.command(aliases=["3dsvcextract"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
-    async def vcextract(self, ctx):
-        """Links to 3DS Virtual Console Extraction Tutorial"""
-        embed = discord.Embed(title="3DS VC Extraction Tutorial", color=ConsoleColor.n3ds())
-        embed.set_author(name="Glazed_Belmont")
-        embed.set_thumbnail(url="https://i.imgur.com/TgdOPkG.png")
-        embed.url = "https://glazedbelmont.github.io/vcextract/"
-        embed.description = "Basic tutorial to extract a rom out of your VC titles"
-        await ctx.send(embed=embed)
+    @tutorial.command(cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
+    async def vcextract(self, ctx, console=""):
+        """Links to Virtual Console Extraction tutorials"""
+        systems = ("3ds", "wiiu")
+        channel_name = ctx.channel.name if not isinstance(ctx.channel, discord.DMChannel) else ""
+        if console not in systems:
+            if channel_name.startswith(systems):
+                console = "auto"
+            else:
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
+                ctx.command.reset_cooldown(ctx)
+                return
 
-    @tutorial.command(aliases=["wiiuvcextract"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
-    async def vcextractwiiu(self, ctx):
-        """Links to Wii U Virtual Console Extraction Tutorial"""
-        embed = discord.Embed(title="Wii U VC Extraction Tutorial", color=ConsoleColor.wiiu())
-        embed.set_author(name="lendun, Lazr")
-        embed.set_thumbnail(url="https://i.imgur.com/qXc4TY5.png")
-        embed.url = "https://lendunistus.github.io/wiiuvcextract-guide/"
-        embed.description = "Tutorial to extract a ROM out of your Wii U VC titles"
+        embed = discord.Embed()
+        if self.check_console(console, channel_name, "3ds"):
+            embed.title = "3DS VC Extraction Tutorial"
+            embed.set_author(name="GlaZed_Belmont")
+            embed.set_thumbnail(url="https://i.imgur.com/TgdOPkG.png")
+            embed.url = "https://glazedbelmont.github.io/vcextract/"
+        elif self.check_console(console, channel_name, ('wiiu',)):
+            embed.title = "Wii U VC Extraction Tutorial"
+            embed.set_author(name="lendun, Lazr")
+            embed.set_thumbnail(url="https://i.imgur.com/qXc4TY5.png")
+            embed.url = "https://lendunistus.github.io/wiiuvcextract-guide/"
+        embed.description = "Tutorial to extract a ROM out of your VC titles"
         await ctx.send(embed=embed)
 
     @tutorial.command(aliases=["gbabios"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
