@@ -533,7 +533,7 @@ class Memes(commands.Cog):
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def arrival(self, ctx):
         """Glazy can add departure but not arrival smh"""
-        arrival_gifs = ["https://imgur.com/kNlrsth", "https://imgur.com/ZlwaTUp"]
+        arrival_gifs = ["https://imgur.com/kNlrsth.gif", "https://imgur.com/ZlwaTUp.gif"]
         await self._meme(ctx, "", imagelink=random.choice(arrival_gifs))
             
     @commands.command(hidden=True)
