@@ -533,7 +533,15 @@ class Memes(commands.Cog):
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def arrival(self, ctx):
         """Glazy can add departure but not arrival smh"""
-        await self._meme(ctx, "", imagelink="https://media1.tenor.com/images/1dc1f01cdd10d980f66959d87edc055a/tenor.gif?itemid=19490664")
+        arrival_gifs = ["https://imgur.com/kNlrsth", "https://imgur.com/ZlwaTUp"]
+        await self._meme(ctx, "", imagelink=random.choice(arrival_gifs))
+            
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def hug(self, ctx, u: discord.Member):
+        """hug"""
+        await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has received a hug.", True, "https://i.imgur.com/wTHzIXx.jpg")
+
 
 def setup(bot):
     bot.add_cog(Memes(bot))
