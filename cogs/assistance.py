@@ -537,7 +537,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             However, such things as piracy and cheating online/cheating in multiplayer games have been known causes for NNID/console bans in the past.
             eShop fraud (eg credit card chargebacks) will also get you banned.
 
-            You can enable online status and Spotpass/Streetpass as these do not seem to be high risk at this time.
+            You **can** enable online status and Spotpass/Streetpass as these do not seem to be high risk at this time.
             """)
             await ctx.send(embed=embed)
 
@@ -658,17 +658,6 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
             https://nx.eiphax.tech/catalyst.html
             """)
             await ctx.send(embed=embed)
-
-    @commands.command()
-    async def hbl(self, ctx):
-        """Get Homebrew Launcher working on 11.4+ firmware"""
-        await self.simple_embed(ctx, """
-                                If you wish to access the Homebrew Launcher on 11.4+, you have two options.
-                                First of all, you can use Steelminer, a free exploit to install the Homebrew Launcher. However, homebrew-only access has disadvantages.
-                                For example, homebrew-only is often unstable and will crash unexpectedly. Also, it is limited in features and system access.
-                                The second option is to install CFW, or custom firmware. Please use `.guide 3ds` for a list of ways to get CFW.
-                                Here is a [Steelhax guide](https://git.io/fhbGY). Do NOT proceed to `Installing boot9strap` if you do not want CFW.
-                                """)
 
     @commands.command()
     async def readguide(self, ctx):
