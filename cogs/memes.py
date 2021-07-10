@@ -528,7 +528,12 @@ class Memes(commands.Cog):
         """From the amazing Mr. Burguers"""
         departure_gifs = ["https://i.imgur.com/Kbyp7i4.gif", "https://i.imgur.com/Wv8DoGC.gif"]
         await self._meme(ctx, "", imagelink=random.choice(departure_gifs))
-
+        
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def arrival(self, ctx):
+        """Glazy can add departure but not arrival smh"""
+        await self._meme(ctx, "", imagelink="https://media1.tenor.com/images/1dc1f01cdd10d980f66959d87edc055a/tenor.gif?itemid=19490664")
 
 def setup(bot):
     bot.add_cog(Memes(bot))
