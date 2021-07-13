@@ -533,11 +533,11 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
         if self.check_console(console, channel_name, '3ds'):
             embed = discord.Embed(title="3DS Bans", color=ConsoleColor.n3ds())
             embed.description = cleandoc("""
-            Nintendo has shown a marked lack of care about bans on the 3DS lately.
+            **Nintendo has shown a marked lack of care about bans on the 3DS lately.**
             However, such things as piracy and cheating online/cheating in multiplayer games have been known causes for NNID/console bans in the past.
             eShop fraud (eg credit card chargebacks) will also get you banned.
 
-            You **can** enable online status and Spotpass/Streetpass as these do not seem to be high risk at this time.
+            You can enable online status and Spotpass/Streetpass as these do not seem to be high risk at this time.
             """)
             await ctx.send(embed=embed)
 
