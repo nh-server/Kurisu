@@ -1566,7 +1566,7 @@ in the scene.
         """Missing payload"""
         await self.simple_embed(ctx, """
         Missing payload file on the SD.
-        Make sure you have a [payload.elf](https://github.com/wiiu-env/homebrew_launcher_installer/releases/latest) in the wiiu folder (Note, if you have multiple wiiu folders, you made a new folder instead of merging.""",
+        Make sure you have a [payload.elf](https://github.com/wiiu-env/homebrew_launcher_installer/releases/latest) in the wiiu folder (Note, if you have multiple wiiu folders, you made a new folder instead of merging.)""",
                                 title="FSOpenFile Failed [...] payload.elf", color=ConsoleColor.wiiu())
 
     @commands.command()
