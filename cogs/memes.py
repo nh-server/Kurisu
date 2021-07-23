@@ -528,14 +528,14 @@ class Memes(commands.Cog):
         """From the amazing Mr. Burguers"""
         departure_gifs = ["https://i.imgur.com/Kbyp7i4.gif", "https://i.imgur.com/Wv8DoGC.gif"]
         await self._meme(ctx, "", imagelink=random.choice(departure_gifs))
-        
+
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def arrival(self, ctx):
         """Glazy can add departure but not arrival smh"""
         arrival_gifs = ["https://imgur.com/kNlrsth.gif", "https://imgur.com/ZlwaTUp.gif"]
         await self._meme(ctx, "", imagelink=random.choice(arrival_gifs))
-            
+
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def hug(self, ctx, u: discord.Member):
