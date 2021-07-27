@@ -140,6 +140,16 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         embed.url = "https://github.com/zoogie/DSP1/releases"
         await ctx.send(embed=embed)
 
+    @commands.command()
+    async def seedminer(self, ctx):
+        """Links the seedminer guide"""
+        embed = discord.Embed(title="Seedminer", color=discord.Color(0xb4eb4d))
+        embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/seedminer")
+        embed.set_thumbnail(url="https://nintendohomebrew.com/pics/nhplai.png")
+        embed.url = "https://3ds.hacks.guide/seedminer"
+        embed.description = "A guide on how to do the seedminer process to get your 3ds' movable.sed file"
+        await ctx.send(embed=embed)
+
     @commands.command(aliases=['3dslanding'])
     async def getstarted(self, ctx):
         """Links the 3DS get-started page"""
@@ -832,6 +842,11 @@ the system can't check for an update.
         """Download link for faketik"""
         await self.simple_embed(ctx, "3DS ticket spoofing utility, faketik: [faketik.3dsx](https://github.com/ihaveamac/faketik/releases)")
 
+    @commands.command(aliases=["greenscr", "bootnds"])
+    async def b9stool(self, ctx):
+        """Download link for B9STool, boot.nds"""
+        await self.simple_embed(ctx, "The B9S installation tool for DSiWare exploits.\nB9STool, [boot.nds](https://github.com/zoogie/b9sTool/releases)")
+
     @commands.command()
     async def homext(self, ctx):
         """Deleting home menu extdata"""
@@ -1332,6 +1347,13 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         embed.description = "Guide and Warnings about AutoRCM"
         await ctx.send(embed=embed)
 
+    @commands.command(aliases=['whatsid0', 'id0'])
+    async def whatisid0(self, ctx):
+        """Picture to say what the heck is the id0"""
+        embed = discord.Embed()
+        embed.set_image(url="https://media.discordapp.net/attachments/196635695958196224/677996125034250280/unknown-76.png")
+        await ctx.send(embed=embed)
+
     @commands.command(aliases=['switchserial'])
     async def serial(self, ctx):
         """Picture to show what the hell a serial is"""
@@ -1555,6 +1577,13 @@ in the scene.
                 - Don’t move the DS Virtual Console game to a USB drive!
             """))
         await ctx.send(embed=embed)
+
+    @commands.command(aliases=['usm'])
+    async def unsafe_mode(self, ctx):
+        """unSAFE_MODE Guide"""
+        await self.simple_embed(ctx, """
+                    3DS Hacks Guide's [unSAFE_MODE](https://git.io/JfNQ4)
+                    """, title="unSAFE_MODE")
 
     @commands.command(aliases=['dn'])
     async def downgrade(self, ctx, console=None):
