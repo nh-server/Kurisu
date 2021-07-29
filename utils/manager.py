@@ -41,7 +41,7 @@ class WordFilterManager:
 
 class LevenshteinFilterManager:
     def __init__(self):
-        self.kinds = ('piracy tool', 'scamming site')
+        self.kinds = ('scamming site',)
         self.filter = {}
 
     async def load(self):
