@@ -68,8 +68,7 @@ class LevenshteinFilterManager:
         entry = await self.fetch_word(word)
         if entry:
             await entry.delete()
-            self.filter[entry.kind].remove(entry.word)
-            del self.word_exp[entry.word]
+            self.filter[entry.kind].remove((entry.word, entry.threshold))
         return entry
 
 class InviteFilterManager:
