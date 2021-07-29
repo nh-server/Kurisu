@@ -86,7 +86,10 @@ class Filter(commands.Cog):
         embed = discord.Embed()
         for kind in self.bot.levenshteinfilter.kinds:
             if self.bot.levenshteinfilter.filter[kind]:
-                embed.add_field(name=kind, value='\n'.join(self.bot.levenshteinfilter.filter[kind]))
+                value = ""
+                for word, threshold in self.bot.levenshteinfilter.filter[kind]:
+                    value += word + " with threshold " + str(threshold) + "\n"
+                embed.add_field(name=kind, value=value)
         if embed:
             await ctx.author.send(embed=embed)
         else:
