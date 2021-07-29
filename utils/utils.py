@@ -1,3 +1,4 @@
+from functools import lru_cache
 import discord
 import random
 import re
@@ -93,3 +94,16 @@ def paginate_message(msg):
     for chunk in [msg[i:i + 4000] for i in range(0, len(msg), 4000)]:
         paginator.add_line(chunk)
     return paginator
+
+
+# Extremely inefficient levenshtein distance function for test purposes.
+@lru_cache(maxsize=None)
+def levenshtein_distance(a, b):
+    if a == "":
+        return len(b)
+    elif b == "":
+        return len(a)
+    elif a[0] == b[0]:
+        return levenshtein_distance(a[1:], b[1:])
+    else:
+        return 1 + min(levenshtein_distance(a, b[1:]), levenshtein_distance(a[1:], b), levenshtein_distance(a[1:], b[1:]))

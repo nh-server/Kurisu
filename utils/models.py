@@ -94,6 +94,12 @@ class FilteredWord(db.Model):
     word = db.Column(db.String(), primary_key=True)
     kind = db.Column(db.String())
 
+class LevenshteinWord(db.Model):
+    __tablename__ = "levenshteinwords"
+    word = db.Column(db.String(), primary_key=True)
+    threshold = db.Column(db.Integer())
+    kind = db.Column(db.String())
+
 
 class ApprovedInvite(db.Model):
     __tablename__ = "approvedinvites"

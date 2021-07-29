@@ -58,6 +58,55 @@ class Filter(commands.Cog):
         else:
             await ctx.send("No word was deleted from the filter!")
 
+    # Command group for the levenshtein word filter
+    @is_staff("Helper")
+    @commands.group()
+    async def levenshteinfilter(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help(ctx.command)
+
+    @is_staff("SuperOP")
+    @levenshteinfilter.command(name='add')
+    async def add_word(self, ctx, word: str, threshold: int, *, kind: str):
+        word = word.lower()
+        if kind not in self.bot.levenshteinfilter.kinds:
+            return await ctx.send(f"Possible word kinds for word filter: {', '.join(self.bot.levenshteinfilter.kinds)}")
+        if ' ' in word or '-' in word:
+            return await ctx.send("Filtered words cant contain dashes or spaces!")
+        if threshold == 0:
+            return await ctx.send("Levenshtein threshold must be above 0!")
+        if await self.bot.levenshteinfilter.fetch_word(word):
+            return await ctx.send("This word is already in the filter!")
+        entry = await self.bot.levenshteinfilter.add(word=word, threshold=threshold, kind=kind)
+        await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added `{entry.word}` to the Levenshtein filter!")
+        await ctx.send("Successfully added word to Levenshtein filter")
+
+    @levenshteinfilter.command(name='list')
+    async def list_words(self, ctx):
+        embed = discord.Embed()
+        for kind in self.bot.levenshteinfilter.kinds:
+            if self.bot.levenshteinfilter.filter[kind]:
+                embed.add_field(name=kind, value='\n'.join(self.bot.levenshteinfilter.filter[kind]))
+        if embed:
+            await ctx.author.send(embed=embed)
+        else:
+            await ctx.send("The Levenshtein filter is empty!")
+
+    @is_staff("SuperOP")
+    @levenshteinfilter.command(name='delete', aliases=['remove'])
+    async def delete_word(self, ctx, *, words: str):
+        words = words.split()
+        deleted = []
+        for word in words:
+            entry = await self.bot.levenshteinfilter.delete(word=word)
+            if entry:
+                deleted.append(entry.word)
+        if deleted:
+            await ctx.send(f"Deleted words `{'`,`'.join(deleted)}` succesfully!")
+            await self.bot.channels['mod-logs'].send(f"⭕ **Deleted**: {ctx.author.mention} deleted words `{'`,`'.join(deleted)}` from the Levenshtein filter!")
+        else:
+            await ctx.send("No word was deleted from the Levenshtein filter!")
+
     @is_staff("Helper")
     @commands.group()
     async def invitefilter(self, ctx):

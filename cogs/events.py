@@ -33,6 +33,21 @@ class Events(commands.Cog):
                     matches.append(match)
         return matches
 
+    def levenshtein_search_word(self, triggers: str, message: str) -> List[re.Match]:
+        matches = []
+        message_split = message.split(' ')
+        for word in message_split:
+            for trigger, threshold in triggers:
+                chance = utils.levenshtein_distance(word, trigger)
+                print(chance)
+                if chance == 0:
+                    continue
+                elif chance <= threshold:
+                    matches.append(word)
+                else:
+                    continue
+        return matches
+
     def highlight_matches(self, matches: List[re.Match], message: str) -> str:
         msg = message
         for match in matches:
@@ -83,6 +98,8 @@ class Events(commands.Cog):
         contains_skype_link = "join.skype.com" in msg
         contains_piracy_site_mention = self.search_word(self.bot.wordfilter.filter['piracy site'], msg_no_separators, msg)
         contains_piracy_tool_mention = self.search_word(self.bot.wordfilter.filter['piracy tool'], msg_no_separators, msg)
+
+        contains_scamming_site_levenshtein = self.levenshtein_search_word(self.bot.levenshteinfilter.filter['scamming site'], msg)
 
         # modified regular expresion made by deme72
         res = re.findall(r'(?:(?:https?://)?(?:www.)?)(?:(?:youtube\.com/watch\?v=)|(?:youtu\.be/))([aA-zZ_\-\d]{11})', message.content)
@@ -163,6 +180,15 @@ class Events(commands.Cog):
                                         embed=embed)
             await self.bot.channels['message-logs'].send(
                 f"**Bad tool**: {message.author.mention} mentioned a piracy tool in {message.channel.mention} (message deleted)",
+                embed=embed)
+        if contains_scamming_site_levenshtein:
+            #embed.description = self.highlight_matches(contains_scamming_site_levenshtein, msg)
+            try:
+                await message.delete()
+            except discord.errors.NotFound:
+                pass
+            await self.bot.channels['message-logs'].send(
+                f"**Scamming Site**: {message.author.mention} likely mentioned a scamming site in {message.channel.mention} (message deleted)",
                 embed=embed)
         if contains_piracy_video_id:
             try:
