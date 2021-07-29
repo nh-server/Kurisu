@@ -1,4 +1,4 @@
-FROM python:3.9-slim
+FROM python:3.9
 LABEL org.opencontainers.image.source https://github.com/nh-server/Kurisu
 ENV IS_DOCKER=1
 ENV PYTHONUNBUFFERED=1

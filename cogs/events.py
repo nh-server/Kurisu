@@ -12,6 +12,8 @@ from typing import List
 from utils.checks import check_staff_id
 from utils import crud, utils
 
+from Levenshtein import distance
+
 
 class Events(commands.Cog):
     """
@@ -33,12 +35,13 @@ class Events(commands.Cog):
                     matches.append(match)
         return matches
 
-    def levenshtein_search_word(self, triggers: str, message: str) -> List[re.Match]:
+    def levenshtein_search_word(self, triggers: str, message: str) -> List[str]:
         matches = []
-        message_split = message.split(' ')
-        for word in message_split:
+        to_check = re.findall('https?:\/\/(www.)?([\w.-]+)', message)
+        for _, word in to_check:
             for trigger, threshold in triggers:
-                chance = utils.levenshtein_distance(word, trigger)
+                #chance = utils.levenshtein_distance(word, trigger)
+                chance = distance(word, trigger)
                 print(chance)
                 if chance == 0:
                     continue
