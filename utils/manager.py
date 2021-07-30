@@ -1,7 +1,7 @@
 import re
 
 from typing import Optional, List
-from utils.models import FilteredWord, ApprovedInvite
+from utils.models import FilteredWord, LevenshteinWord, ApprovedInvite
 
 
 class WordFilterManager:
@@ -37,6 +37,39 @@ class WordFilterManager:
             await entry.delete()
             self.filter[entry.kind].remove(entry.word)
             del self.word_exp[entry.word]
+        return entry
+
+
+class LevenshteinFilterManager:
+    def __init__(self):
+        self.kinds = ('scamming site',)
+        self.filter = {}
+
+    async def load(self):
+        for kind in self.kinds:
+            self.filter[kind] = []
+            for entry in await self.fetch_by_kind(kind=kind):
+                self.filter[kind].append((entry.word, entry.threshold))
+        print("Loaded levenshtein filter")
+
+    async def add(self, word: str, kind: str, threshold: int) -> LevenshteinWord:
+        entry = await LevenshteinWord.create(word=word, kind=kind, threshold=threshold)
+        await self.load()
+        return entry
+
+    @staticmethod
+    async def fetch_by_kind(kind: str) -> List[LevenshteinWord]:
+        return await LevenshteinWord.query.where(LevenshteinWord.kind == kind).gino.all()
+
+    @staticmethod
+    async def fetch_word(word: str) -> Optional[LevenshteinWord]:
+        return await LevenshteinWord.get(word)
+
+    async def delete(self, word: str) -> Optional[LevenshteinWord]:
+        entry = await self.fetch_word(word)
+        if entry:
+            await entry.delete()
+            self.filter[entry.kind].remove((entry.word, entry.threshold))
         return entry
 
 

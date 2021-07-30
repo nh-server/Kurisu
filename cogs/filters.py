@@ -58,6 +58,58 @@ class Filter(commands.Cog):
         else:
             await ctx.send("No word was deleted from the filter!")
 
+    # Command group for the levenshtein word filter
+    @is_staff("Helper")
+    @commands.group()
+    async def levenshteinfilter(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help(ctx.command)
+
+    @is_staff("SuperOP")
+    @levenshteinfilter.command(name='add')
+    async def add_levenshtein(self, ctx, word: str, threshold: int, *, kind: str):
+        word = word.lower()
+        if kind not in self.bot.levenshteinfilter.kinds:
+            return await ctx.send(f"Possible word kinds for word filter: {', '.join(self.bot.levenshteinfilter.kinds)}")
+        if ' ' in word or '-' in word:
+            return await ctx.send("Filtered words cant contain dashes or spaces!")
+        if threshold == 0:
+            return await ctx.send("Levenshtein threshold must be above 0!")
+        if await self.bot.levenshteinfilter.fetch_word(word):
+            return await ctx.send("This word is already in the filter!")
+        entry = await self.bot.levenshteinfilter.add(word=word, threshold=threshold, kind=kind)
+        await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added `{entry.word}` to the Levenshtein filter!")
+        await ctx.send("Successfully added word to Levenshtein filter")
+
+    @levenshteinfilter.command(name='list')
+    async def list_levenshtein(self, ctx):
+        embed = discord.Embed()
+        for kind in self.bot.levenshteinfilter.kinds:
+            if self.bot.levenshteinfilter.filter[kind]:
+                value = ""
+                for word, threshold in self.bot.levenshteinfilter.filter[kind]:
+                    value += word + " with threshold " + str(threshold) + "\n"
+                embed.add_field(name=kind, value=value)
+        if embed:
+            await ctx.author.send(embed=embed)
+        else:
+            await ctx.send("The Levenshtein filter is empty!")
+
+    @is_staff("SuperOP")
+    @levenshteinfilter.command(name='delete', aliases=['remove'])
+    async def delete_levenshtein(self, ctx, *, words: str):
+        words = words.split()
+        deleted = []
+        for word in words:
+            entry = await self.bot.levenshteinfilter.delete(word=word)
+            if entry:
+                deleted.append(entry.word)
+        if deleted:
+            await ctx.send(f"Deleted words `{'`,`'.join(deleted)}` succesfully!")
+            await self.bot.channels['mod-logs'].send(f"⭕ **Deleted**: {ctx.author.mention} deleted words `{'`,`'.join(deleted)}` from the Levenshtein filter!")
+        else:
+            await ctx.send("No word was deleted from the Levenshtein filter!")
+
     @is_staff("Helper")
     @commands.group()
     async def invitefilter(self, ctx):

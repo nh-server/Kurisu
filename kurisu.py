@@ -21,7 +21,7 @@ import sys
 
 from utils import models, crud
 from utils.checks import check_staff_id
-from utils.manager import WordFilterManager, InviteFilterManager
+from utils.manager import WordFilterManager, InviteFilterManager, LevenshteinFilterManager
 from utils.models import db
 from utils.utils import create_error_embed, paginate_message
 
@@ -275,6 +275,9 @@ class Kurisu(commands.Bot):
 
         self.wordfilter = WordFilterManager()
         await self.wordfilter.load()
+
+        self.levenshteinfilter = LevenshteinFilterManager()
+        await self.levenshteinfilter.load()
 
         self.invitefilter = InviteFilterManager()
         await self.invitefilter.load()
