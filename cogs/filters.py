@@ -67,7 +67,7 @@ class Filter(commands.Cog):
 
     @is_staff("SuperOP")
     @levenshteinfilter.command(name='add')
-    async def add_word(self, ctx, word: str, threshold: int, *, kind: str):
+    async def add_levenshtein(self, ctx, word: str, threshold: int, *, kind: str):
         word = word.lower()
         if kind not in self.bot.levenshteinfilter.kinds:
             return await ctx.send(f"Possible word kinds for word filter: {', '.join(self.bot.levenshteinfilter.kinds)}")
@@ -82,7 +82,7 @@ class Filter(commands.Cog):
         await ctx.send("Successfully added word to Levenshtein filter")
 
     @levenshteinfilter.command(name='list')
-    async def list_words(self, ctx):
+    async def list_levenshtein(self, ctx):
         embed = discord.Embed()
         for kind in self.bot.levenshteinfilter.kinds:
             if self.bot.levenshteinfilter.filter[kind]:
@@ -97,7 +97,7 @@ class Filter(commands.Cog):
 
     @is_staff("SuperOP")
     @levenshteinfilter.command(name='delete', aliases=['remove'])
-    async def delete_word(self, ctx, *, words: str):
+    async def delete_levenshtein(self, ctx, *, words: str):
         words = words.split()
         deleted = []
         for word in words:

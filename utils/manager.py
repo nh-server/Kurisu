@@ -39,6 +39,7 @@ class WordFilterManager:
             del self.word_exp[entry.word]
         return entry
 
+
 class LevenshteinFilterManager:
     def __init__(self):
         self.kinds = ('scamming site',)
@@ -70,6 +71,7 @@ class LevenshteinFilterManager:
             await entry.delete()
             self.filter[entry.kind].remove((entry.word, entry.threshold))
         return entry
+
 
 class InviteFilterManager:
     def __init__(self):

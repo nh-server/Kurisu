@@ -38,12 +38,13 @@ class Events(commands.Cog):
     def levenshtein_search_word(self, triggers: str, message: str) -> List[str]:
         matches = []
         to_check = re.findall('https?:\/\/(www.)?([\w.-]+)', message)
+        allowed = list(zip(*triggers))[0]
+        print(message)
         for _, word in to_check:
             for trigger, threshold in triggers:
-                #chance = utils.levenshtein_distance(word, trigger)
                 chance = distance(word, trigger)
-                print(chance)
-                if chance == 0:
+                print(word, chance)
+                if chance == 0 or word in allowed:
                     continue
                 elif chance <= threshold:
                     matches.append(word)
@@ -102,7 +103,7 @@ class Events(commands.Cog):
         contains_piracy_site_mention = self.search_word(self.bot.wordfilter.filter['piracy site'], msg_no_separators, msg)
         contains_piracy_tool_mention = self.search_word(self.bot.wordfilter.filter['piracy tool'], msg_no_separators, msg)
 
-        contains_scamming_site_levenshtein = self.levenshtein_search_word(self.bot.levenshteinfilter.filter['scamming site'], msg)
+        contains_scamming_site_levenshtein = self.levenshtein_search_word(self.bot.levenshteinfilter.filter['scamming site'], message.content)
 
         # modified regular expresion made by deme72
         res = re.findall(r'(?:(?:https?://)?(?:www.)?)(?:(?:youtube\.com/watch\?v=)|(?:youtu\.be/))([aA-zZ_\-\d]{11})', message.content)
@@ -185,7 +186,7 @@ class Events(commands.Cog):
                 f"**Bad tool**: {message.author.mention} mentioned a piracy tool in {message.channel.mention} (message deleted)",
                 embed=embed)
         if contains_scamming_site_levenshtein:
-            #embed.description = self.highlight_matches(contains_scamming_site_levenshtein, msg)
+            embed.description = msg
             try:
                 await message.delete()
             except discord.errors.NotFound:
