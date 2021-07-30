@@ -37,7 +37,7 @@ class Events(commands.Cog):
 
     def levenshtein_search_word(self, triggers: str, message: str) -> List[str]:
         matches = []
-        to_check = re.findall('https?:\/\/(www.)?([\w.-]+)', message)
+        to_check = re.findall(r"https?:\/\/(www.)?([\w.-]+)", message)
         allowed = list(zip(*triggers))[0]
         print(message)
         for _, word in to_check:
