@@ -38,12 +38,13 @@ class Events(commands.Cog):
     def levenshtein_search_word(self, triggers: str, message: str) -> List[str]:
         matches = []
         to_check = re.findall(r"https?:\/\/(www.)?([\w.-]+)", message)
-        allowed = list(zip(*triggers))[0]
-        print(message)
+        if triggers:
+            allowed = list(zip(*triggers))[0]
+        else:
+            allowed = []
         for _, word in to_check:
             for trigger, threshold in triggers:
                 chance = distance(word, trigger)
-                print(word, chance)
                 if chance == 0 or word in allowed:
                     continue
                 elif chance <= threshold:
