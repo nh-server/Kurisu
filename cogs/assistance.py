@@ -1221,7 +1221,7 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
         """Links to nds forwarders"""
         embed = discord.Embed(title="NDS Forwarder Guide", color=discord.Color.purple())
         embed.set_thumbnail(url="https://avatars.githubusercontent.com/u/46971470?s=400&v=4")
-        embed.url = "https://wiki.ds-homebrew.com/ds-index/3ds-forwarders"
+        embed.url = "https://wiki.ds-homebrew.com/ds-index/forwarders"
         embed.description = "Tutorial for NDS Forwarders"
         await ctx.send(embed=embed)
 
