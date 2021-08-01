@@ -280,6 +280,12 @@ class Memes(commands.Cog):
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def eip(self, ctx):
+        """Memes."""
+        await self._meme(ctx, "", imagelink="https://i.imgur.com/SU0Qvc8.png")
+
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def whoops(self, ctx):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/caF9KHk.gif")
