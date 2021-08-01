@@ -343,16 +343,6 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                                 """), color=ConsoleColor.n3ds())
 
     @commands.command()
-    async def inoriwarn(self, ctx):
-        """Warns users to keep the channels on-topic - Staff & Helper Declaration Only"""
-        await self.simple_embed(ctx, """
-                                **Please keep the channels clean and on-topic, further derailing will result in \
-intervention.  A staff or helper will be the quickest route to resolution; you can \
-contact available staff by private messaging the Mod-Mail bot.** A full list of staff \
-and helpers can be found in #welcome-and-rules if you don't know who they are.
-                                """)
-
-    @commands.command()
     async def vguides(self, ctx):
         """Information about video guides relating to custom firmware"""
         embed = discord.Embed(title="Why you should not use video guides", color=discord.Color.dark_orange())
