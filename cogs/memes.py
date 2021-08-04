@@ -274,6 +274,12 @@ class Memes(commands.Cog):
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def appeals(self, ctx):
+        """Reminds user where they are. (3)"""
+        await self._meme(ctx, f"You {'do not ' if ctx.channel != self.bot.channels['appeals'] else ''}seem to be in {self.bot.channels['appeals'].mention}. Please take this subject {'there' if ctx.channel != self.bot.channels['appeals'] else 'somewhere else'}.", True)
+
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def blackalabi(self, ctx):
         """Memes."""
         await self._meme(ctx, "", imagelink="http://i.imgur.com/JzFem4y.png")

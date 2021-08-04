@@ -232,6 +232,44 @@ class Mod(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.guild_only()
+    @commands.command()
+    async def appealmute(self, ctx, member: discord.Member, *, reason=""):
+        """Mutes a user so they can't speak in appeals. Staff only."""
+        if not await crud.add_permanent_role(member.id, self.bot.roles['appeal-mute'].id):
+            await ctx.send("User is already appeal muted!")
+            return
+        await member.add_roles(self.bot.roles['appeal-mute'])
+        msg_user = "You were appeal muted!"
+        if reason != "":
+            msg_user += " The given reason is: " + reason
+        await utils.send_dm_message(member, msg_user, ctx)
+        await ctx.send(f"{member.mention} can no longer speak in appeals.")
+        msg = f"🔇 **appeal muted**: {ctx.author.mention} appeal muted {member.mention} | {self.bot.escape_text(member)}"
+        signature = utils.command_signature(ctx.command)
+        if reason != "":
+            msg += "\n✏️ __Reason__: " + reason
+        else:
+            msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
+        await self.bot.channels['mod-logs'].send(msg)
+
+    @is_staff("HalfOP")
+    @commands.guild_only()
+    @commands.bot_has_permissions(manage_roles=True)
+    @commands.command()
+    async def appealunmute(self, ctx, member: discord.Member):
+        """Unmutes a user so they can speak in appeals. Staff only."""
+        try:
+            if not await crud.remove_permanent_role(member.id, self.bot.roles["appeal-mute"].id) and self.bot.roles['appeal-mute'] not in member.roles:
+                return await ctx.send("This user is not appeal muted!")
+            await member.remove_roles(self.bot.roles['appeal-mute'])
+            await ctx.send(f"{member.mention} can now speak in appeals again.")
+            msg = f"🔈 **appeal unmuted**: {ctx.author.mention} appeal unmuted {member.mention} | {self.bot.escape_text(member)}"
+            await self.bot.channels['mod-logs'].send(msg)
+        except discord.errors.Forbidden:
+            await ctx.send("💢 I don't have permission to do this.")
+
+    @is_staff("HalfOP")
+    @commands.guild_only()
     @commands.bot_has_permissions(manage_roles=True)
     @commands.command()
     async def mute(self, ctx, member: discord.Member, *, reason=""):
