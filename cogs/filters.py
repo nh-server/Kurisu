@@ -60,7 +60,7 @@ class Filter(commands.Cog):
 
     # Command group for the levenshtein word filter
     @is_staff("Helper")
-    @commands.group()
+    @commands.group(aliases=['xnoefilter', 'lfilter'])
     async def levenshteinfilter(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
