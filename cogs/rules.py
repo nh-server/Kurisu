@@ -90,17 +90,17 @@ https://discord.gg/C29hYvh"""
             await channel.send(f"**{number}**. {rule}\n")
         await channel.send(self.staff_action)
         staff = [f"<@{staff.id}>" for staff in await crud.get_staff_all()]
-        await channel.send(self.mod_list + '\n'.join(staff), allowed_mentions=discord.AllowedMentions.none())
+        await channel.send(self.mod_list + '\n'.join(staff))
         helpers = [helper for helper in await crud.get_helpers() if helper.position == 'Helper']
         helpers_3ds = [f"<@{helper.id}>" for helper in helpers if helper.console == '3DS']
         helpers_wiiu = [f"<@{helper.id}>" for helper in helpers if helper.console == 'WiiU']
         helpers_legacy = [f"<@{helper.id}>" for helper in helpers if helper.console == 'Legacy']
         helpers_switch = [f"<@{helper.id}>" for helper in helpers if helper.console == 'Switch']
         await channel.send(self.helper_list)
-        await channel.send(f"{str(self.logo_3ds)}  Nintendo 3DS\n" + '\n'.join(helpers_3ds), allowed_mentions=discord.AllowedMentions.none())
-        await channel.send(f"{str(self.logo_wiiu)}  Wii U\n" + '\n'.join(helpers_wiiu), allowed_mentions=discord.AllowedMentions.none())
-        await channel.send(f"{str(self.logo_switch)}  Nintendo Switch\n" + '\n'.join(helpers_switch), allowed_mentions=discord.AllowedMentions.none())
-        await channel.send("Legacy\n" + '\n'.join(helpers_legacy), allowed_mentions=discord.AllowedMentions.none())
+        await channel.send(f"{str(self.logo_3ds)}  Nintendo 3DS\n" + '\n'.join(helpers_3ds))
+        await channel.send(f"{str(self.logo_wiiu)}  Wii U\n" + '\n'.join(helpers_wiiu))
+        await channel.send(f"{str(self.logo_switch)}  Nintendo Switch\n" + '\n'.join(helpers_switch))
+        await channel.send("Legacy\n" + '\n'.join(helpers_legacy))
         await channel.send(self.nickname_policy)
         await channel.send(self.useful_commands)
         await channel.send(self.extra)
