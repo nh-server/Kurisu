@@ -502,6 +502,18 @@ class Memes(commands.Cog):
         await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/e2cbbf7c808e21fb6c5ab603f6a89a3f.jpg")
 
     @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def dolar(self, ctx):
+        """mcdondal"""
+        await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/3ecd851953906ecc2387cfd592ac97e7.png")
+
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def serotonin(self, ctx):
+        """i really want to know"""
+        await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/2549ac8b197ae68080041d3966a887e8.png")
+
+    @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.channel)
     async def cadealert(self, ctx):
         """stop! cade time."""

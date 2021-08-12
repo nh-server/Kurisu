@@ -385,7 +385,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 - Difficult to give assistance with
                 - Most videos also refer to a pre-packaged download, which are often outdated and poorly organised
                 """)
-        embed.add_field(name="Recommended Solution", value="Read a trusted written tutorial. Try `.guide` for a list.")
+        embed.add_field(name="Recommended Solution", value="Read a trusted written tutorial. Try `.guide` in {self.bot.channels['bot-cmds'].mention} for a list.")
         await ctx.send(embed=embed)
 
     @commands.command()
@@ -400,7 +400,7 @@ and helpers can be found in #welcome-and-rules if you don't know who they are.
                 - Pre-packaged downloads are often hosted on the uploader's server, which they use to generate clicks and revenue
                 - Pre-packaged downloads ("AIOs") are also very often outdated and not maintained by the creators
                 """)
-        embed.add_field(name="Recommended Solution", value="Read a trusted written tutorial. Try `.guide` for a list.")
+        embed.add_field(name="Recommended Solution", value="Read a trusted written tutorial. Try `.guide` in {self.bot.channels['bot-cmds'].mention} for a list.")
         await ctx.send(embed=embed)
 
     @commands.command()
@@ -833,7 +833,7 @@ command line. The `movable.sed` is the final product and requires no further pro
             An emuMMC/emuNAND will take up approximately 30GB on your SD card, so the SD card must be 64GB or above.
             The purpose of an emuMMC/emuNAND is to give you a safe place to use custom firmware functions.
             This will allow you to keep your sysMMC/sysNAND clean, so you can use it online.
-            Following the default NH server guide (type `.guide` for a link) will set you up with an emuMMC/emuNAND.
+            Following the default NH server guide (type `.guide nx` in {self.bot.channels['bot-cmds'].mention} for a link) will set you up with an emuMMC/emuNAND.
             """)
             await ctx.send(embed=embed)
 
