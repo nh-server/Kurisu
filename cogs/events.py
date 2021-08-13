@@ -37,10 +37,15 @@ class Events(commands.Cog):
 
     def levenshtein_search_word(self, triggers: List[str], whitelist: List[str], message: str) -> List[str]:
         matches = []
-        to_check = re.findall(r"https?://(www.)?([\w.-]+)", message)
+        message = message[::-1]
+        to_check = re.findall(r"([\w0-9-]+\.[\w0-9-]+)", message)
 
-        for _, word in to_check:
+        print(message)
+        print(to_check)
+
+        for word in to_check:
             for trigger, threshold in triggers:
+                word = word[::-1]
                 chance = distance(word, trigger)
                 if word in whitelist:
                     continue
