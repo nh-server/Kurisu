@@ -42,7 +42,7 @@ class WordFilterManager:
 
 class LevenshteinFilterManager:
     def __init__(self):
-        self.kinds = ('scamming site','whitelist')
+        self.kinds = ('scamming site', 'whitelist')
         self.filter = {}
 
     async def load(self):

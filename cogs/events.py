@@ -38,7 +38,7 @@ class Events(commands.Cog):
     def levenshtein_search_word(self, triggers: str, message: str) -> List[str]:
         matches = []
         message = message[::-1]
-        #to_check = re.findall(r"((?:[\w0-9-]+\.?){2})\/", message)
+
         to_check = re.findall(r"([\w0-9-]+\.[\w0-9-]+)", message)
         triggers = [*triggers, *self.bot.levenshteinfilter.filter['whitelist']]
         if triggers:

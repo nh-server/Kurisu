@@ -80,7 +80,7 @@ class Filter(commands.Cog):
         entry = await self.bot.levenshteinfilter.add(word=word, threshold=threshold, kind=kind)
         await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added `{entry.word}` to the Levenshtein filter!")
         await ctx.send("Successfully added word to Levenshtein filter")
-    
+
     @is_staff("SuperOP")
     @levenshteinfilter.command(name='whitelist')
     async def whitelist_levenshtein(self, ctx, word: str):
