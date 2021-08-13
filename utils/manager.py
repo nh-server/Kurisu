@@ -1,13 +1,13 @@
 import re
 
-from typing import Optional, List
+from typing import Optional
 from utils.models import FilteredWord, LevenshteinWord, ApprovedInvite
 
 
 class WordFilterManager:
     def __init__(self):
         self.kinds = ('piracy tool', 'piracy video', 'piracy tool alert', 'drama', 'unbanning tool', 'piracy site', 'scamming site')
-        self.filter = {}
+        self.filter: dict[str, list[str]] = {}
         self.word_exp = {}
 
     async def load(self):
@@ -24,7 +24,7 @@ class WordFilterManager:
         return entry
 
     @staticmethod
-    async def fetch_by_kind(kind: str) -> List[FilteredWord]:
+    async def fetch_by_kind(kind: str) -> list[FilteredWord]:
         return await FilteredWord.query.where(FilteredWord.kind == kind).gino.all()
 
     @staticmethod
@@ -43,22 +43,25 @@ class WordFilterManager:
 class LevenshteinFilterManager:
     def __init__(self):
         self.kinds = ('scamming site',)
-        self.filter = {}
+        self.filter: dict[str, list[tuple[str, int]]] = {}
+        self.whitelist: list[str] = []
 
     async def load(self):
         for kind in self.kinds:
             self.filter[kind] = []
             for entry in await self.fetch_by_kind(kind=kind):
                 self.filter[kind].append((entry.word, entry.threshold))
+                if entry.whitelist:
+                    self.whitelist.append(entry.word)
         print("Loaded levenshtein filter")
 
-    async def add(self, word: str, kind: str, threshold: int) -> LevenshteinWord:
-        entry = await LevenshteinWord.create(word=word, kind=kind, threshold=threshold)
+    async def add(self, word: str, kind: str, threshold: int, whitelist: bool) -> LevenshteinWord:
+        entry = await LevenshteinWord.create(word=word, kind=kind, threshold=threshold, whitelist=whitelist)
         await self.load()
         return entry
 
     @staticmethod
-    async def fetch_by_kind(kind: str) -> List[LevenshteinWord]:
+    async def fetch_by_kind(kind: str) -> list[LevenshteinWord]:
         return await LevenshteinWord.query.where(LevenshteinWord.kind == kind).gino.all()
 
     @staticmethod
@@ -75,7 +78,7 @@ class LevenshteinFilterManager:
 
 class InviteFilterManager:
     def __init__(self):
-        self.invites = []
+        self.invites: list[ApprovedInvite] = []
 
     async def load(self):
         self.invites.clear()
@@ -87,7 +90,7 @@ class InviteFilterManager:
         return entry
 
     @staticmethod
-    async def fetch_all() -> List[ApprovedInvite]:
+    async def fetch_all() -> list[ApprovedInvite]:
         return await ApprovedInvite.query.gino.all()
 
     @staticmethod

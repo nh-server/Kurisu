@@ -67,7 +67,7 @@ class Filter(commands.Cog):
 
     @is_staff("SuperOP")
     @levenshteinfilter.command(name='add')
-    async def add_levenshtein(self, ctx, word: str, threshold: int, *, kind: str):
+    async def add_levenshtein(self, ctx, word: str, threshold: int, whitelist: bool = True, *, kind: str):
         word = word.lower()
         if kind not in self.bot.levenshteinfilter.kinds:
             return await ctx.send(f"Possible word kinds for word filter: {', '.join(self.bot.levenshteinfilter.kinds)}")
@@ -77,7 +77,7 @@ class Filter(commands.Cog):
             return await ctx.send("Levenshtein threshold must be above 0!")
         if await self.bot.levenshteinfilter.fetch_word(word):
             return await ctx.send("This word is already in the filter!")
-        entry = await self.bot.levenshteinfilter.add(word=word, threshold=threshold, kind=kind)
+        entry = await self.bot.levenshteinfilter.add(word=word, threshold=threshold, kind=kind, whitelist=whitelist)
         await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added `{entry.word}` to the Levenshtein filter!")
         await ctx.send("Successfully added word to Levenshtein filter")
 

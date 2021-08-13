@@ -100,6 +100,7 @@ class LevenshteinWord(db.Model):
     word = db.Column(db.String(), primary_key=True)
     threshold = db.Column(db.Integer())
     kind = db.Column(db.String())
+    whitelist = db.Column(db.Boolean(), default=True)
 
 
 class ApprovedInvite(db.Model):

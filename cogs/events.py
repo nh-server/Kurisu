@@ -35,17 +35,14 @@ class Events(commands.Cog):
                     matches.append(match)
         return matches
 
-    def levenshtein_search_word(self, triggers: str, message: str) -> List[str]:
+    def levenshtein_search_word(self, triggers: List[str], whitelist: List[str], message: str) -> List[str]:
         matches = []
-        to_check = re.findall(r"https?:\/\/(www.)?([\w.-]+)", message)
-        if triggers:
-            allowed = list(zip(*triggers))[0]
-        else:
-            allowed = []
+        to_check = re.findall(r"https?://(www.)?([\w.-]+)", message)
+
         for _, word in to_check:
             for trigger, threshold in triggers:
                 chance = distance(word, trigger)
-                if chance == 0 or word in allowed:
+                if word in whitelist:
                     continue
                 elif chance <= threshold:
                     matches.append(word)
@@ -104,7 +101,7 @@ class Events(commands.Cog):
         contains_piracy_site_mention = self.search_word(self.bot.wordfilter.filter['piracy site'], msg_no_separators, msg)
         contains_piracy_tool_mention = self.search_word(self.bot.wordfilter.filter['piracy tool'], msg_no_separators, msg)
 
-        contains_scamming_site_levenshtein = self.levenshtein_search_word(self.bot.levenshteinfilter.filter['scamming site'], message.content)
+        contains_scamming_site_levenshtein = self.levenshtein_search_word(self.bot.levenshteinfilter.filter['scamming site'], self.bot.levenshteinfilter.whitelist, message.content)
 
         # modified regular expresion made by deme72
         res = re.findall(r'(?:(?:https?://)?(?:www.)?)(?:(?:youtube\.com/watch\?v=)|(?:youtu\.be/))([aA-zZ_\-\d]{11})', message.content)
