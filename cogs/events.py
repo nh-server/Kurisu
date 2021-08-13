@@ -40,9 +40,6 @@ class Events(commands.Cog):
         message = message[::-1]
         to_check = re.findall(r"([\w0-9-]+\.[\w0-9-]+)", message)
 
-        print(message)
-        print(to_check)
-
         for word in to_check:
             for trigger, threshold in triggers:
                 word = word[::-1]
