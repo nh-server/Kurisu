@@ -80,6 +80,18 @@ class Filter(commands.Cog):
         entry = await self.bot.levenshteinfilter.add(word=word, threshold=threshold, kind=kind)
         await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added `{entry.word}` to the Levenshtein filter!")
         await ctx.send("Successfully added word to Levenshtein filter")
+    
+    @is_staff("SuperOP")
+    @levenshteinfilter.command(name='whitelist')
+    async def whitelist_levenshtein(self, ctx, word: str):
+        word = word.lower()
+        if ' ' in word or '-' in word:
+            return await ctx.send("Filtered words cant contain dashes or spaces!")
+        if await self.bot.levenshteinfilter.fetch_word(word):
+            return await ctx.send("This word is already in the filter!")
+        entry = await self.bot.levenshteinfilter.add(word=word, threshold=0, kind="whitelist")
+        await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added `{entry.word}` to the Levenshtein filter's whitelist!")
+        await ctx.send("Successfully added word to Levenshtein whitelist")
 
     @levenshteinfilter.command(name='list')
     async def list_levenshtein(self, ctx):
