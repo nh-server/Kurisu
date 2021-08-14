@@ -472,14 +472,14 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
 
         if self.check_console(console, channel_name, '3ds'):
             embed = discord.Embed(title="what?", color=ConsoleColor.n3ds())
-            embed.set_thumbnail(url="https://eiphax.tech/assets/eip2.png")
+            embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/eip2.png")
             embed.url = "https://3ds.eiphax.tech/what.html"
             embed.description = "Basic things about the 3DS and CFW"
             await ctx.send(embed=embed)
 
         elif self.check_console(console, channel_name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="The NX Nutshell", color=ConsoleColor.switch())
-            embed.set_thumbnail(url="https://eiphax.tech/assets/eip2.png")
+            embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/eip2.png")
             embed.url = "https://nx.eiphax.tech/nutshell.html"
             embed.description = "Basic things about the Switch and CFW"
             await ctx.send(embed=embed)
@@ -511,7 +511,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
 
         elif self.check_console(console, channel_name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="NX Bans", color=ConsoleColor.switch())
-            embed.set_thumbnail(url="https://eiphax.tech/assets/gunther.png")
+            embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/gunther.png")
             embed.url = "https://nx.eiphax.tech/ban"
             embed.description = "Bans on the Switch are complicated. Please click the embed header link and read the linked page to learn more."
             await ctx.send(embed=embed)

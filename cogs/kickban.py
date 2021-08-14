@@ -101,7 +101,7 @@ class KickBan(commands.Cog):
             msg = f"You were superbanned from {ctx.guild.name}."
             if reason != "":
                 msg += " The given reason is: " + reason
-            msg += "\n\nThis ban does not expire.\n\nhttps://eiphax.tech/assets/banned.gif"
+            msg += "\n\nThis ban does not expire.\n\nhttps://nintendohomebrew.com/assets/img/banned.gif"
             await utils.send_dm_message(member, msg, ctx)
         try:
             await crud.remove_timed_restriction(member.id, 'timeban')
@@ -110,7 +110,7 @@ class KickBan(commands.Cog):
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
             return
-        await ctx.send(f"{member} is now SUPER BANNED. 👍 https://eiphax.tech/assets/banned.gif")
+        await ctx.send(f"{member} is now SUPER BANNED. 👍 https://nintendohomebrew.com/assets/img/banned.gif")
         msg = f"⛔ **Ban**: {ctx.author.mention} banned {member.mention} | {self.bot.escape_text(member)}\n🏷 __User ID__: {member.id}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
