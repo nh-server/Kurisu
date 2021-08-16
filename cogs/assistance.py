@@ -69,7 +69,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
             if self.check_console(x, channel_name, '3ds'):
                 embed = discord.Embed(title="Guide", color=ConsoleColor.n3ds())
                 embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/")
-                embed.set_thumbnail(url="https://nintendohomebrew.com/pics/nhplai.png")
+                embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/nhplai.png")
                 embed.url = "https://3ds.hacks.guide/"
                 embed.description = "A complete guide to 3DS custom firmware, from stock to boot9strap."
                 await ctx.send(embed=embed)
@@ -145,7 +145,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         """Links the seedminer guide"""
         embed = discord.Embed(title="Seedminer", color=discord.Color(0xb4eb4d))
         embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/seedminer")
-        embed.set_thumbnail(url="https://nintendohomebrew.com/pics/nhplai.png")
+        embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/nhplai.png")
         embed.url = "https://3ds.hacks.guide/seedminer"
         embed.description = "A guide on how to do the seedminer process to get your 3ds' movable.sed file"
         await ctx.send(embed=embed)
@@ -155,7 +155,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         """Links the 3DS get-started page"""
         embed = discord.Embed(title="3DS CFW guide", color=ConsoleColor.n3ds())
         embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/get-started")
-        embed.set_thumbnail(url="https://nintendohomebrew.com/pics/nhplai.png")
+        embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/nhplai.png")
         embed.url = "https://3ds.hacks.guide/get-started"
         embed.description = "How to hack your 3DS console on any firmware from 1.0.0 to 11.14"
         await ctx.send(embed=embed)
@@ -297,7 +297,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         """Links to the guide for updating b9s versions"""
         embed = discord.Embed(title="Updating B9S Guide", color=ConsoleColor.n3ds())
         embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/updating-b9s")
-        embed.set_thumbnail(url="https://nintendohomebrew.com/pics/nhplai.png")
+        embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/nhplai.png")
         embed.url = "https://3ds.hacks.guide/updating-b9s"
         embed.description = "A guide for updating to new B9S versions."
         await ctx.send(embed=embed)
@@ -317,7 +317,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         """Links to the guide for updating from a9lh to b9s"""
         embed = discord.Embed(title="Upgrading a9lh to b9s", color=ConsoleColor.n3ds())
         embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/a9lh-to-b9s")
-        embed.set_thumbnail(url="https://nintendohomebrew.com/pics/nhplai.png")
+        embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/nhplai.png")
         embed.url = "https://3ds.hacks.guide/a9lh-to-b9s"
         embed.description = "A guide for upgrading your device from arm9loaderhax to boot9strap."
         await ctx.send(embed=embed)
@@ -327,7 +327,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         """Links to ctrtransfer guide"""
         embed = discord.Embed(title="Guide - ctrtransfer", color=ConsoleColor.n3ds())
         embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/")
-        embed.set_thumbnail(url="https://nintendohomebrew.com/pics/nhplai.png")
+        embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/nhplai.png")
         embed.url = "https://3ds.hacks.guide/ctrtransfer"
         embed.description = "How to do the 11.5.0-38 ctrtransfer"
         await ctx.send(embed=embed)
@@ -884,7 +884,7 @@ the system can't check for an update.
         """Links to the guide on GodMode9"""
         embed = discord.Embed(title="GodMode9 Usage", color=discord.Color(0x66FFFF))
         embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/godmode9-usage")
-        embed.set_thumbnail(url="https://nintendohomebrew.com/pics/nhplai.png")
+        embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/nhplai.png")
         embed.url = "https://3ds.hacks.guide/godmode9-usage"
         embed.description = "GodMode9 usage guide"
         await ctx.send(embed=embed)
@@ -949,7 +949,7 @@ the system can't check for an update.
         if self.check_console(console, channel_name, '3ds'):
             embed = discord.Embed(title="GodMode9 dump/build Guide", color=ConsoleColor.n3ds())
             embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/dumping-titles-and-game-cartridges")
-            embed.set_thumbnail(url="https://nintendohomebrew.com/pics/nhplai.png")
+            embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/nhplai.png")
             embed.url = "https://3ds.hacks.guide/dumping-titles-and-game-cartridges"
             embed.description = "How to dump/build CIAs and Files using GodMode9"
             await ctx.send(embed=embed)
