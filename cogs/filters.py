@@ -13,7 +13,7 @@ class Filter(commands.Cog):
 
     # Command group for the word filter
     @is_staff("Helper")
-    @commands.group()
+    @commands.group(aliases=['wf'])
     async def wordfilter(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
@@ -60,7 +60,7 @@ class Filter(commands.Cog):
 
     # Command group for the levenshtein word filter
     @is_staff("Helper")
-    @commands.group(aliases=['xnoefilter', 'lfilter'])
+    @commands.group(aliases=['xnoefilter', 'lfilter', 'lf'])
     async def levenshteinfilter(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
@@ -111,7 +111,7 @@ class Filter(commands.Cog):
             await ctx.send("No word was deleted from the Levenshtein filter!")
 
     @is_staff("Helper")
-    @commands.group()
+    @commands.group(aliases=['if'])
     async def invitefilter(self, ctx):
         """Command group for managing the invite filter"""
         if ctx.invoked_subcommand is None:
