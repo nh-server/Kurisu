@@ -13,7 +13,7 @@ class Filter(commands.Cog):
 
     # Command group for the word filter
     @is_staff("Helper")
-    @commands.group()
+    @commands.group(aliases=['wf'])
     async def wordfilter(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
@@ -60,7 +60,7 @@ class Filter(commands.Cog):
 
     # Command group for the levenshtein word filter
     @is_staff("Helper")
-    @commands.group(aliases=['xnoefilter', 'lfilter'])
+    @commands.group(aliases=['xnoefilter', 'lfilter', 'lf'])
     async def levenshteinfilter(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
@@ -88,7 +88,7 @@ class Filter(commands.Cog):
             if self.bot.levenshteinfilter.filter[kind]:
                 value = ""
                 for word, threshold in self.bot.levenshteinfilter.filter[kind]:
-                    value += word + " with threshold " + str(threshold) + "\n"
+                    value += f"{word} with threshold {threshold}{' - whitelisted' if word in self.bot.levenshteinfilter.whitelist else ''} \n"
                 embed.add_field(name=kind, value=value)
         if embed:
             await ctx.author.send(embed=embed)
@@ -110,8 +110,49 @@ class Filter(commands.Cog):
         else:
             await ctx.send("No word was deleted from the Levenshtein filter!")
 
+    @levenshteinfilter.group(name='whitelist')
+    async def levenshtein_whitelist(self, ctx):
+        if ctx.invoked_subcommand is None:
+            await ctx.send_help(ctx.command)
+
+    @is_staff("SuperOP")
+    @levenshtein_whitelist.command(name='add')
+    async def whitelist_add(self, ctx, word: str):
+        word = word.lower()
+        if db_word := await self.bot.levenshteinfilter.fetch_word(word=word):
+            if db_word.whitelist:
+                return await ctx.send("This word is already whitelisted!")
+            else:
+                await self.bot.levenshteinfilter.edit(word=db_word.word, threshold=db_word.threshold, whitelist=True)
+        elif await self.bot.levenshteinfilter.fetch_whitelist_word(word=word):
+            return await ctx.send("This word is already whitelisted!")
+        await self.bot.levenshteinfilter.add_whitelist_word(word=word)
+        await ctx.send("Word added to whitelist successfully!")
+
+    @is_staff("SuperOP")
+    @levenshtein_whitelist.command(name='remove')
+    async def whitelist_remove(self, ctx, word: str):
+        word = word.lower()
+        if db_word := await self.bot.levenshteinfilter.fetch_word(word=word):
+            if not db_word.whitelist:
+                return await ctx.send("This word is not whitelisted!")
+            else:
+                await self.bot.levenshteinfilter.edit(word=db_word.word, threshold=db_word.threshold, whitelist=False)
+        elif not await self.bot.levenshteinfilter.fetch_whitelist_word(word=word):
+            return await ctx.send("This word is not whitelisted!")
+        await self.bot.levenshteinfilter.delete_whitelist_word(word=word)
+        await ctx.send("Word removed from whitelist successfully!")
+
+    @levenshtein_whitelist.command(name='list')
+    async def whitelist_list(self, ctx):
+        whitelist = await self.bot.levenshteinfilter.fetch_whitelist()
+        if whitelist:
+            await ctx.author.send('\n'.join([x.word for x in whitelist]))
+        else:
+            await ctx.send("The whitelist is empty.")
+
     @is_staff("Helper")
-    @commands.group()
+    @commands.group(aliases=['if'])
     async def invitefilter(self, ctx):
         """Command group for managing the invite filter"""
         if ctx.invoked_subcommand is None:

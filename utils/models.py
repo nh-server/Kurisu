@@ -103,6 +103,11 @@ class LevenshteinWord(db.Model):
     whitelist = db.Column(db.Boolean(), default=True)
 
 
+class WhitelistWord(db.Model):
+    __tablename__ = "whitelistedwords"
+    word = db.Column(db.String(), primary_key=True)
+
+
 class ApprovedInvite(db.Model):
     __tablename__ = "approvedinvites"
     code = db.Column(db.String(), primary_key=True)
