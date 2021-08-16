@@ -1216,7 +1216,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         """Checkpoint/Rosalina cheat guide"""
         embed = discord.Embed(title="3DS Cheats Guide", color=discord.Color.purple())
         embed.set_author(name="Krieg")
-        embed.set_thumbnail(url="https://3ds.eiphax.tech/pic/krieg.png")
+        embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/krieg.png")
         embed.url = "https://3ds.eiphax.tech/cpcheats.html"
         embed.description = "A guide to using cheats with Checkpoint and Rosalina"
         await ctx.send(embed=embed)
@@ -1243,7 +1243,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
             embed.url = "https://nx.eiphax.tech/ftp.html"
         embed.colour = discord.Color.purple()
         embed.set_author(name="Krieg")
-        embed.set_thumbnail(url="https://3ds.eiphax.tech/pic/krieg.png")
+        embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/krieg.png")
         embed.description = "A guide to using ftp with FTPD and WinSCP"
         await ctx.send(embed=embed)
 
@@ -1252,7 +1252,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         """NTR Plugins guide"""
         embed = discord.Embed(title="3DS NTR Plugins Guide", color=discord.Color.purple())
         embed.set_author(name="Krieg")
-        embed.set_thumbnail(url="https://3ds.eiphax.tech/pic/krieg.png")
+        embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/krieg.png")
         embed.url = "https://3ds.eiphax.tech/ntrplugins"
         embed.description = "A guide to using plugins with NTR"
         await ctx.send(embed=embed)
@@ -1262,7 +1262,7 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         """OBS and Citra guide"""
         embed = discord.Embed(title="OBS and Citra Guide", color=discord.Color.purple())
         embed.set_author(name="Krieg")
-        embed.set_thumbnail(url="https://3ds.eiphax.tech/pic/krieg.png")
+        embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/krieg.png")
         embed.url = "https://kriegisrei.github.io/obscitra/"
         embed.description = "A guide to recording Citra with OBS"
         await ctx.send(embed=embed)
