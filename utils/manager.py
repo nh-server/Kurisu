@@ -1,7 +1,7 @@
 import re
 
 from typing import Optional
-from utils.models import FilteredWord, LevenshteinWord, ApprovedInvite
+from utils.models import FilteredWord, LevenshteinWord, ApprovedInvite, WhitelistWord
 
 
 class WordFilterManager:
@@ -47,6 +47,7 @@ class LevenshteinFilterManager:
         self.whitelist: list[str] = []
 
     async def load(self):
+        self.whitelist = await self.fetch_whitelist()
         for kind in self.kinds:
             self.filter[kind] = []
             for entry in await self.fetch_by_kind(kind=kind):
@@ -60,6 +61,16 @@ class LevenshteinFilterManager:
         await self.load()
         return entry
 
+    async def edit(self, word: str, threshold: int, whitelist: bool) -> LevenshteinWord:
+        entry = await self.fetch_word(word)
+        await entry.update(threshold=threshold, whitelist=whitelist).apply()
+        return entry
+
+    async def add_whitelist_word(self, word: str) -> WhitelistWord:
+        entry = await WhitelistWord.create(word=word)
+        self.whitelist.append(word)
+        return entry
+
     @staticmethod
     async def fetch_by_kind(kind: str) -> list[LevenshteinWord]:
         return await LevenshteinWord.query.where(LevenshteinWord.kind == kind).gino.all()
@@ -68,11 +79,25 @@ class LevenshteinFilterManager:
     async def fetch_word(word: str) -> Optional[LevenshteinWord]:
         return await LevenshteinWord.get(word)
 
+    @staticmethod
+    async def fetch_whitelist_word(word: str) -> Optional[WhitelistWord]:
+        return await WhitelistWord.get(word)
+
+    async def fetch_whitelist(self) -> list[WhitelistWord]:
+        return await WhitelistWord.query.gino.all()
+
     async def delete(self, word: str) -> Optional[LevenshteinWord]:
         entry = await self.fetch_word(word)
         if entry:
             await entry.delete()
             self.filter[entry.kind].remove((entry.word, entry.threshold))
+        return entry
+
+    async def delete_whitelist_word(self, word: str) -> Optional[WhitelistWord]:
+        entry = await self.fetch_whitelist_word(word)
+        if entry:
+            await entry.delete()
+            self.whitelist.remove(word)
         return entry
 
 
