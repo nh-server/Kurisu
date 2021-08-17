@@ -21,7 +21,8 @@ class Warn(db.Model):
 class FriendCode(db.Model):
     __tablename__ = "friendcodes"
     id = db.Column(db.BigInteger, db.ForeignKey("members.id"), primary_key=True)
-    fc_3ds = db.Column(db.BigInteger)
+    fc_3ds = db.Column(db.BigInteger, default=None)
+    fc_switch = db.Column(db.BigInteger, default=None)
 
 
 class Channel(db.Model):

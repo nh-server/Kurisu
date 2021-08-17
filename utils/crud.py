@@ -273,19 +273,40 @@ async def check_nofilter(channel: TextChannel):
     return channel.nofilter if channel else False
 
 
-async def add_friendcode(user_id: int, fc: int):
+async def add_friendcode_3ds(user_id: int, fc: int):
     await add_dbmember_if_not_exist(user_id)
+    if fcs := await get_friendcode(user_id):
+        await fcs.update(fc_3ds=fc).apply()
+        return
     await models.FriendCode.create(id=user_id, fc_3ds=fc)
+
+
+async def add_friendcode_switch(user_id: int, fc: int):
+    await add_dbmember_if_not_exist(user_id)
+    if fcs := await get_friendcode(user_id):
+        await fcs.update(fc_switch=fc).apply()
+        return
+    await models.FriendCode.create(id=user_id, fc_switch=fc)
 
 
 async def get_friendcode(user_id: int):
     return await models.FriendCode.get(user_id)
 
 
-async def delete_friendcode(user_id: int):
-    friendcode = await get_friendcode(user_id)
-    if friendcode:
-        await friendcode.delete()
+async def delete_friendcode_3ds(user_id: int):
+    friendcodes = await get_friendcode(user_id)
+    if friendcodes:
+        await friendcodes.update(fc_3ds=None).apply()
+        if friendcodes.fc_3ds is None and friendcodes.fc_switch is None:
+            await friendcodes.delete()
+
+
+async def delete_friendcode_switch(user_id: int):
+    friendcodes = await get_friendcode(user_id)
+    if friendcodes:
+        await friendcodes.update(fc_switch=None).apply()
+        if friendcodes.fc_3ds is None and friendcodes.fc_switch is None:
+            await friendcodes.delete()
 
 
 async def add_rule(number: int, description: str):
