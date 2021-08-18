@@ -137,7 +137,7 @@ https://discord.gg/C29hYvh"""
     async def list_rules(self, ctx):
         if self.rules_dict:
             rules = [f"**{number}**. {rule}\n" for number, rule in self.rules_dict.items()]
-            for page in paginate_message("".join(rules)):
+            for page in paginate_message("".join(rules), suffix='', prefix='').pages:
                 await ctx.send(page)
         else:
             await ctx.send("There are no rules!")
