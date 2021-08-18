@@ -3,7 +3,7 @@ services:
   db:
     image: postgres:13
     volumes:
-      - ./kurisudb:/var/lib/postgresql/data
+      - kurisutestdb:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: kurisu
       POSTGRES_PASSWORD: dev123
@@ -25,6 +25,9 @@ services:
     depends_on:
       db:
         condition: service_healthy
+
+volumes:
+  kurisutestdb:
 
 secrets:
   kurisu_token:
