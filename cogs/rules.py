@@ -2,10 +2,11 @@ import discord
 
 from utils import crud
 from utils.checks import is_staff
+from utils.utils import paginate_message
 from discord.ext import commands
 
 
-class Rules(commands.Cog, command_attrs=dict()):
+class Rules(commands.Cog):
     """
     Read da rules.
     """
@@ -79,7 +80,7 @@ https://discord.gg/C29hYvh"""
             self.rules_dict[rule.id] = rule.description
 
     @is_staff('SuperOP')
-    @commands.command(hidden=False)
+    @commands.command()
     async def updaterules(self, ctx):
         """Updates the rules in Welcome and Rules"""
         channel = self.bot.channels['welcome-and-rules']
@@ -107,12 +108,12 @@ https://discord.gg/C29hYvh"""
         await ctx.send("Updated rules successfully!")
 
     @is_staff('SuperOP')
-    @commands.group(hidden=False)
+    @commands.group()
     async def rule(self, ctx):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
-    @rule.command(hidden=False, name='add')
+    @rule.command(name='add')
     async def add_rule(self, ctx, number: int, *, description: str):
         """Adds or edits a current rule"""
         if await crud.get_rule(number):
@@ -123,7 +124,7 @@ https://discord.gg/C29hYvh"""
             await ctx.send(f"Rule {number} added successfully!")
         await self.load_rules()
 
-    @rule.command(hidden=False, name='delete')
+    @rule.command(name='delete')
     async def delete_rule(self, ctx, number: int):
         if await crud.get_rule(number):
             await crud.delete_rule(number)
@@ -132,18 +133,22 @@ https://discord.gg/C29hYvh"""
         else:
             await ctx.send(f"There is no rule {number}!")
 
-    @rule.command(hidden=False, name='list')
+    @rule.command(name='list')
     async def list_rules(self, ctx):
-        rules = [f"**{number}**. {rule}\n" for number, rule in self.rules_dict.items()]
-        await ctx.send("".join(rules))
+        if self.rules_dict:
+            rules = [f"**{number}**. {rule}\n" for number, rule in self.rules_dict.items()]
+            for page in paginate_message("".join(rules)):
+                await ctx.send(page)
+        else:
+            await ctx.send("There are no rules!")
 
-    @commands.command(hidden=False)
+    @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def consoleban(self, ctx):
         """States some stuff about no assistance with bans"""
         await ctx.send("Please refrain from asking for or giving assistance with unbanning consoles which have been banned from online services.\nReminder: sharing files that allow other users to evade Nintendo issued bans is a bannable offense.")
 
-    @commands.command(aliases=['r11'], hidden=False)
+    @commands.command(aliases=['r11'])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def pirate(self, ctx):
         """Hey! You can't steal another trainer's Pokémon!"""
@@ -158,7 +163,7 @@ https://discord.gg/C29hYvh"""
                        "Usernames that go against these rules will be assigned a nickname. Users can request a specific nickname that follows these rules by asking in <#270890866820775946> or by sending a direct message to <@333857992170536961>.\n"
                        "Users with avatars against these rules will be asked to change them or be kicked from the server.")
 
-    @commands.command(hidden=False)
+    @commands.command()
     async def rules(self, ctx):
         """Links to the welcome-and-rules channel."""
         await ctx.send(f"Please check {self.bot.channels['welcome-and-rules'].mention} for a full list of rules")
