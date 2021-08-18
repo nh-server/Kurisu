@@ -90,7 +90,7 @@ def create_error_embed(ctx, exc) -> discord.Embed:
 
 def paginate_message(msg: str, prefix: str = '```', suffix: str = '```', max_size: int = 2000):
     paginator = commands.Paginator(prefix=prefix, suffix=suffix, max_size=max_size)
-    sep = max_size-len(prefix)-len(suffix)-2
+    sep = max_size - len(prefix) - len(suffix) - 2
     for chunk in [msg[i:i + sep] for i in range(0, len(msg), sep)]:
         paginator.add_line(chunk)
     return paginator
