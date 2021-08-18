@@ -30,7 +30,8 @@ Start Kurisu with the following command. Assuming a clean setup, this will pull 
 docker-compose up --build
 ```
 
-postgres database files are stored in `./kurisudb`. Use Ctrl-C if not running in detached mode to stop the bot.
+postgres database files are stored in a Docker volume called `kurisutestdb`. Use Ctrl-C if not running in detached mode to stop the bot.
+* [Use volumes | Docker Documentation](https://docs.docker.com/storage/volumes/)
 
 ### Other useful commands
 
