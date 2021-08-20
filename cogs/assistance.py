@@ -825,7 +825,7 @@ the system can't check for an update.
     @commands.command(aliases=["hbl"])
     async def boot3dsx(self, ctx):
         """Download link for 3DS Homebrew Launcher, boot.3dsx"""
-        await self.simple_embed(ctx, "The 3DS Homebrew Launcher, [boot.3dsx](https://github.com/fincs/new-hbmenu/releases/download/v2.1.0/boot.3dsx)")
+        await self.simple_embed(ctx, "The 3DS Homebrew Launcher, [boot.3dsx](https://github.com/fincs/new-hbmenu/releases/latest/download/boot.3dsx)")
 
     @commands.command(aliases=["faketiks"])
     async def faketik(self, ctx):
