@@ -780,7 +780,7 @@ is trying to download it. This means your blocking method (DNS etc.) is working 
 the system can't check for an update.
                                  """, color=ConsoleColor.wiiu())
 
-    @commands.command(aliases=["updateluma"])
+    @commands.command(aliases=["updateluma","lumaupdate"])
     async def emptysd(self, ctx):
         """What to do if you delete all your SD card contents"""
         await self.simple_embed(ctx, """
