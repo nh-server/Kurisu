@@ -302,16 +302,6 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         embed.description = "A guide for updating to new B9S versions."
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["lumaupdate"])
-    async def updateluma(self, ctx):
-        """Links to the guide for updating Luma3DS manually (8.0 or later)"""
-        embed = discord.Embed(title="Manually Updating Luma3DS", color=ConsoleColor.n3ds())
-        embed.set_author(name="chenzw + lily", url="https://gist.github.com/lilyuwuu/3a7ba3dcd2476e6b5f4b6f66fa173bd6")
-        embed.set_thumbnail(url="https://avatars0.githubusercontent.com/u/5243259?s=400&v=4")
-        embed.url = "https://gist.github.com/lilyuwuu/3a7ba3dcd2476e6b5f4b6f66fa173bd6"
-        embed.description = "A guide for manually updating Luma3ds. This is necessary if you receive the \"Failed to apply 1 Firm patch(es)\" or \"pm\" errors."
-        await ctx.send(embed=embed)
-
     @commands.command(aliases=["a9lhtob9s", "updatea9lh"])
     async def atob(self, ctx):
         """Links to the guide for updating from a9lh to b9s"""
@@ -790,11 +780,12 @@ is trying to download it. This means your blocking method (DNS etc.) is working 
 the system can't check for an update.
                                  """, color=ConsoleColor.wiiu())
 
-    @commands.command()
+    @commands.command(aliases=["updateluma", "lumaupdate"])
     async def emptysd(self, ctx):
         """What to do if you delete all your SD card contents"""
         await self.simple_embed(ctx, """
-                                Please follow the directions on the 3DS Hacks Guide [Restoring / Updating CFW](https://3ds.hacks.guide/restoring-updating-cfw) page.
+                                If you need to update your 3DS CFW installation, **or** you have lost the contents of your SD card,\n
+                                please follow the directions on the 3DS Hacks Guide [Restoring / Updating CFW](https://3ds.hacks.guide/restoring-updating-cfw) page.
                                 """, color=ConsoleColor.n3ds())
 
     @commands.command()
