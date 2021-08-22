@@ -780,11 +780,12 @@ is trying to download it. This means your blocking method (DNS etc.) is working 
 the system can't check for an update.
                                  """, color=ConsoleColor.wiiu())
 
-    @commands.command(aliases=["updateluma","lumaupdate"])
+    @commands.command(aliases=["updateluma", "lumaupdate"])
     async def emptysd(self, ctx):
         """What to do if you delete all your SD card contents"""
         await self.simple_embed(ctx, """
-                                Please follow the directions on the 3DS Hacks Guide [Restoring / Updating CFW](https://3ds.hacks.guide/restoring-updating-cfw) page.
+                                If you need to update your 3DS CFW installation, **or** you have lost the contents of your SD card,\n
+                                please follow the directions on the 3DS Hacks Guide [Restoring / Updating CFW](https://3ds.hacks.guide/restoring-updating-cfw) page.
                                 """, color=ConsoleColor.n3ds())
 
     @commands.command()
