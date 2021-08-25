@@ -144,7 +144,7 @@ class Events(commands.Cog):
                 try:
                     await message.author.send(
                         f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
-                        "Server invites must be approved by staff. To contact staff send a message to <@333857992170536961>.")
+                        f"Server invites must be approved by staff. To contact staff send a message to <@333857992170536961>.")
                 except discord.errors.Forbidden:
                     pass
             if approved_invites:
@@ -180,7 +180,8 @@ class Events(commands.Cog):
                 pass
             await utils.send_dm_message(message.author,
                                         f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
-                                        f"You cannot mention tools used for piracy, therefore your message was automatically deleted.",
+                                        f"You cannot mention tools used for piracy directly or indirectly, "
+                                        f"therefore your message was automatically deleted.",
                                         embed=embed)
             await self.bot.channels['message-logs'].send(
                 f"**Bad tool**: {message.author.mention} mentioned a piracy tool in {message.channel.mention} (message deleted)",
@@ -219,7 +220,8 @@ class Events(commands.Cog):
                 pass
             await utils.send_dm_message(message.author,
                                         f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
-                                        f"You cannot mention sites used for piracy directly, therefore your message was automatically deleted.",
+                                        f"You cannot mention sites used for piracy directly or indirectly, "
+                                        f"therefore your message was automatically deleted.",
                                         embed=embed)
             await self.bot.channels['message-logs'].send(
                 f"**Bad site**: {message.author.mention} mentioned a piracy site directly in {message.channel.mention} (message deleted)",
@@ -232,7 +234,7 @@ class Events(commands.Cog):
                     pass
                 await utils.send_dm_message(message.author,
                                             f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
-                                            f"You cannot mention sites used for piracy in the help-and-questions channels directly or indirectly, "
+                                            f"You cannot mention sites used for piracy directly or indirectly, "
                                             f"therefore your message was automatically deleted.",
                                             embed=embed)
             await self.bot.channels['message-logs'].send(
