@@ -807,10 +807,8 @@ the system can't check for an update.
     async def twl(self, ctx):
         """Information on how to fix a broken TWL Partition"""
         await self.simple_embed(ctx, """
-                                If you already have CFW, use [TWLFix-CFW](https://github.com/MechanicalDragon0687/TWLFix-CFW/releases/)
-                                If you already have homebrew but not CFW, use [TWLFix-3DS](https://github.com/MechanicalDragon0687/TWLFix-3DS/releases/)
-                                If you have neither CFW nor homebrew, it is easier to get homebrew and use the previous option. You could also get a DSiWare app and follow: [TWLFix Stock](https://github.com/MechanicalDragon0687/TWLFix/wiki/Instructions/)
-                                Each of these instructions require that you perform a system update after running the apps or restoring the DSiWare
+                                Follow [TWLFix-CFW](https://github.com/MechanicalDragon0687/TWLFix-CFW/releases/).
+                                These instructions require that you **perform a system update** after running the app.
                                 """, title="Fix broken TWL", color=ConsoleColor.legacy())
 
     @commands.command(aliases=["hbl"])
