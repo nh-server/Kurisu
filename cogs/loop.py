@@ -1,13 +1,14 @@
-import aiohttp
 import asyncio
 import discord
 import pytz
-import sys
-import traceback
+import logging
 
 from datetime import datetime, timedelta
 from discord.ext import commands
 from utils import crud
+
+
+logger = logging.getLogger(__name__)
 
 
 class Loop(commands.Cog):
@@ -41,13 +42,12 @@ class Loop(commands.Cog):
         return datetime.strptime(' '.join(timestr.split()), '%A, %B %d, %Y %I :%M %p').replace(tzinfo=self.tz)
 
     async def update_netinfo(self):
-        async with aiohttp.ClientSession() as session:
-            r = await session.get('https://www.nintendo.co.jp/netinfo/en_US/status.json?callback=getJSON')
+        async with self.bot.session.get('https://www.nintendo.co.jp/netinfo/en_US/status.json?callback=getJSON', timeout=45) as r:
             if r.status == 200:
                 j = await r.json()
             else:
-                # No logging setup :/
-                print(f"Netinfo: {r.status} while trying to update netinfo.")
+                # logging setup :)
+                logger.warning(f"Netinfo: {r.status} while trying to update netinfo.")
                 return
 
         now = datetime.now(self.tz)
@@ -215,10 +215,8 @@ class Loop(commands.Cog):
 
                 if current_timestamp.minute % 30 == 0 and current_timestamp.second == 0:
                     self.bot.loop.create_task(self.update_netinfo())
-            except Exception as e:
-                print('Ignoring exception in start_update_loop', file=sys.stderr)
-                traceback.print_tb(e.__traceback__)
-                print(f'{e.__class__.__name__}: {e}', file=sys.stderr)
+            except Exception:
+                logger.error('Ignoring exception in start_update_loop', exc_info=True)
             finally:
                 await asyncio.sleep(1)
 

@@ -1,6 +1,6 @@
-import aiohttp
 import discord
 import qrcode
+import logging
 
 from discord.ext import commands, tasks
 from io import BytesIO
@@ -8,6 +8,9 @@ from inspect import cleandoc
 from Levenshtein import distance
 from utils.utils import ConsoleColor
 from utils.checks import check_if_user_can_sr
+
+
+logger = logging.getLogger(__name__)
 
 
 class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 30.0, commands.BucketType.channel))):
@@ -28,14 +31,14 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
 
     @tasks.loop(hours=2)
     async def apps_update(self):
-        async with aiohttp.ClientSession() as session:
-            r = await session.get('https://raw.githubusercontent.com/Universal-Team/db/master/docs/data/full.json')
+        async with self.bot.session.get("https://raw.githubusercontent.com/Universal-Team/db/master/docs/data/full.json", timeout=45) as r:
             if r.status == 200:
                 # Content type is text/plain instead of application/json
                 self.unidb = await r.json(content_type=None)
+                logger.info("Downloaded Universal Team Database")
             else:
                 self.unidb = {}
-                print("Failed to fetch unidb.")
+                logger.warning("Failed to fetch Universal Team Database.")
 
     def unisearch(self, query: str) -> dict:
         query = query.lower()
