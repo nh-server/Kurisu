@@ -1,7 +1,11 @@
+import aiohttp
 import discord
+import qrcode
 
-from discord.ext import commands
+from discord.ext import commands, tasks
+from io import BytesIO
 from inspect import cleandoc
+from Levenshtein import distance
 from utils.utils import ConsoleColor
 from utils.checks import check_if_user_can_sr
 
@@ -19,6 +23,32 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
     def __init__(self, bot):
         self.bot = bot
         self.systems = ("3ds", "wiiu", "vwii", "switch", "nx", "ns", "wii", "dsi", "legacy")
+        self.unidb = {}
+        self.apps_update.start()
+
+    @tasks.loop(hours=2)
+    async def apps_update(self):
+        async with aiohttp.ClientSession() as session:
+            r = await session.get('https://raw.githubusercontent.com/Universal-Team/db/master/docs/data/full.json')
+            if r.status == 200:
+                # Content type is text/plain instead of application/json
+                self.unidb = await r.json(content_type=None)
+            else:
+                self.unidb = {}
+                print("Failed to fetch unidb.")
+
+    def unisearch(self, query: str) -> dict:
+        query = query.lower()
+        max_rat = 0
+        res = {}
+        for app in self.unidb:
+            title = app['title'].lower()
+            len_tot = len(query) + len(title)
+            ratio = int(((len_tot - distance(query, title)) / len_tot) * 100)
+            if ratio > 50 and ratio > max_rat:
+                res = app
+                max_rat = ratio
+        return res
 
     async def simple_embed(self, ctx, text, *, title="", color=discord.Color.default()):
         embed = discord.Embed(title=title, color=color)
@@ -1602,6 +1632,37 @@ in the scene.
                 * Games not launching.
             """))
         await ctx.send(embed=embed)
+
+    @commands.guild_only()
+    @commands.command()
+    async def unidb(self, ctx, *, query: str):
+        res = self.unisearch(query)
+        if not res:
+            return await ctx.send("No app found!")
+
+        embed = discord.Embed(title=res['title'], color=int(res['color'][1:], 16))
+        embed.description = f"{res['description']}\n [[Download]({res['download_page']})] [[Source](https://github.com/{res['github']})]"
+        embed.set_footer(text=f"by {res['author']}")
+        embed.set_thumbnail(url=res["image"])
+
+        f = None
+        if qr_urls := res.get('qr'):
+            embed.set_image(url=list(qr_urls.values())[0])
+        elif res.get('downloads'):
+            qr_url = ""
+            for file, data in res['downloads'].items():
+                if 'cia' in file:
+                    qr_url = data['url']
+                    break
+                elif '3dsx' in file:
+                    qr_url = data['url']
+            if qr_url:
+                buffer = BytesIO()
+                qrcode.make(data=qr_url).save(buffer, "png")
+                buffer.seek(0)
+                f = discord.File(fp=buffer, filename="qr.png")
+                embed.set_image(url="attachment://qr.png")
+        await ctx.send(file=f, embed=embed)
 
 
 def setup(bot):
