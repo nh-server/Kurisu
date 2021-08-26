@@ -974,10 +974,10 @@ the system can't check for an update.
     @commands.command()
     async def cartinstall(self, ctx):
         """How to install 3DS cartridges to the SD card"""
-        embed = discord.Embed(title="3DS Cart Install Guide", color=discord.Color(0x66FFFF))
-        embed.set_author(name="Chroma Ryu", url="https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/CartInstall-guide")
-        embed.set_thumbnail(url="https://i.imgur.com/U8NA9lx.png")
-        embed.url = "https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/CartInstall-guide"
+        embed = discord.Embed(title="3DS Cart Install Guide", color=ConsoleColor.n3ds())
+        embed.set_author(name="NH & Friends")
+        embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/nhplai.png")
+        embed.url = "https://3ds.hacks.guide/dumping-titles-and-game-cartridges#installing-a-game-cartridge-directly-to-the-system"
         embed.description = "How to install 3DS cartridges to the SD card"
         await ctx.send(embed=embed)
 
