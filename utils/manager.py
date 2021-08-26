@@ -110,7 +110,7 @@ class InviteFilterManager:
         self.invites = await self.fetch_all()
 
     async def add(self, code: str, alias: str, uses: int) -> ApprovedInvite:
-        entry = await ApprovedInvite.create(code=code, uses=uses, alias=alias.lower())
+        entry = await ApprovedInvite.create(code=code, uses=uses, alias=alias)
         self.invites.append(entry)
         return entry
 
