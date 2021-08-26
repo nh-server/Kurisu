@@ -807,8 +807,8 @@ the system can't check for an update.
     async def twl(self, ctx):
         """Information on how to fix a broken TWL Partition"""
         await self.simple_embed(ctx, """
-                                Follow [TWLFix-CFW](https://github.com/MechanicalDragon0687/TWLFix-CFW/releases/)
-                                These instructions require that you **perform a system update** after running the app
+                                Follow [TWLFix-CFW](https://github.com/MechanicalDragon0687/TWLFix-CFW/releases/).
+                                These instructions require that you **perform a system update** after running the app.
                                 """, title="Fix broken TWL", color=ConsoleColor.legacy())
 
     @commands.command(aliases=["hbl"])
