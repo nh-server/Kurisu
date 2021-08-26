@@ -35,7 +35,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
 
     @check_if_user_can_sr()
     @commands.guild_only()
-    @commands.command(aliases=["sr", "Sr", "sR", "SR"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
+    @commands.command(aliases=["sr"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def staffreq(self, ctx, *, msg_request: str = ""):
         """Request staff, with optional additional text. Trusted, Helpers, Staff, Retired Staff, Verified only."""
         author = ctx.author
@@ -1471,7 +1471,6 @@ in the scene.
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def invite(self, ctx, name: str = ""):
         """Post an invite to an approved server"""
-
         if not name:
             ctx.command.reset_cooldown(ctx)
             if self.bot.invitefilter.invites:
@@ -1479,7 +1478,7 @@ in the scene.
             else:
                 return await ctx.send("There is no approved servers!")
 
-        invite = await self.bot.invitefilter.fetch_invite_by_alias(alias=name)
+        invite = await self.bot.invitefilter.fetch_invite_by_alias(alias=name.lower())
 
         if invite:
             await ctx.send(f"https://discord.gg/{invite.code}")
