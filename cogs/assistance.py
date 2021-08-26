@@ -491,7 +491,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         if self.check_console(console, channel_name, '3ds'):
             embed = discord.Embed(title="3DS Bans", color=ConsoleColor.n3ds())
             embed.description = cleandoc("""
-            Nintendo has shown a marked lack of care about bans on the 3DS lately.
+            **Nintendo has shown a marked lack of care about bans on the 3DS lately.**
             However, such things as piracy and cheating online/cheating in multiplayer games have been known causes for NNID/console bans in the past.
             eShop fraud (eg credit card chargebacks) will also get you banned.
 
@@ -1020,7 +1020,7 @@ One way to fix this is by using an y-cable to connect the HDD to two USB ports.
                                      Supports up to firmware {self.nx_firmware}.
 
                                      *To find Atmosphere's version information, while booted into CFW, go into System Settings -> System, and look at \
-the text under the System Update button. If it says that a system update is ready instead of displaying the CFW version, type .pendingupdate to learn \
+the text under the System Update button. If it says that a system update is ready instead of displaying the CFW version, type .pendingupdate in <#261581918653513729> to learn \
 how to delete it.*
 
                                      **Make sure your version of Hekate is up to date and that it supports the latest firmware**
@@ -1454,7 +1454,7 @@ in the scene.
         """Missing payload"""
         await self.simple_embed(ctx, """
         Missing payload file on the SD.
-        Make sure you have a [payload.elf](https://github.com/wiiu-env/homebrew_launcher_installer/releases/latest) in the wiiu folder.""",
+        Make sure you have a [payload.elf](https://github.com/wiiu-env/homebrew_launcher_installer/releases/latest) in the wiiu folder""",
                                 title="FSOpenFile Failed [...] payload.elf", color=ConsoleColor.wiiu())
 
     @commands.command()
