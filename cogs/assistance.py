@@ -16,9 +16,9 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
     """
 
     nx_firmware = "12.1.0"
-    ams_ver = "0.19.5"
-    hekate_ver = "5.5.8"
-    last_revision = "July 16th, 2021"
+    ams_ver = "0.20.0"
+    hekate_ver = "5.6.0"
+    last_revision = "August 28th, 2021"
 
     def __init__(self, bot):
         self.bot = bot
