@@ -279,7 +279,7 @@ class Kurisu(commands.Bot):
             try:
                 self.load_extension(extension)
             except BaseException as e:
-                logger.error(f'{extension} failed to load.')
+                logger.error("%s failed to load.", extension)
                 self.failed_cogs.append((extension, type(e).__name__, e))
 
     async def load_channels(self):
@@ -290,7 +290,7 @@ class Kurisu(commands.Bot):
                 self.channels[n] = discord.utils.get(self.guild.text_channels, name=n)
                 if not self.channels[n]:
                     self.channels_not_found.append(n)
-                    logger.warning(f"Failed to find channel {n}")
+                    logger.warning("Failed to find channel %s", n)
                     continue
                 if db_chan := await crud.get_dbchannel(self.channels[n].id):
                     await db_chan.update(name=n).apply()
@@ -305,7 +305,7 @@ class Kurisu(commands.Bot):
                 self.roles[n] = discord.utils.get(self.guild.roles, name=n)
                 if not self.roles[n]:
                     self.roles_not_found.append(n)
-                    logger.warning(f"Failed to find role {n}")
+                    logger.warning("Failed to find role %s", n)
                     continue
                 if db_role := await crud.get_dbrole(self.roles[n].id):
                     await db_role.update(name=n).apply()
@@ -387,11 +387,11 @@ async def startup():
     setup_logging()
 
     if discord.version_info.major < 1:
-        logger.error(f'discord.py is not at least 1.0.0x. (current version: {discord.__version__})')
+        logger.error("discord.py is not at least 1.0.0x. (current version: %s)", discord.__version__)
         return 2
 
     if sys.hexversion < 0x30900F0:  # 3.9
-        logger.error('Kurisu requires 3.9 or later.')
+        logger.error("Kurisu requires 3.9 or later.")
         return 2
 
     if not IS_DOCKER:
@@ -399,13 +399,13 @@ async def startup():
         try:
             commit = check_output(['git', 'rev-parse', 'HEAD']).decode('ascii')[:-1]
         except CalledProcessError as e:
-            logger.error(f'Checking for git commit failed: {type(e).__name__}: {e}')
+            logger.error("Checking for git commit failed: %s: %s", type(e).__name__, e)
             commit = "<unknown>"
 
         try:
             branch = check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).decode()[:-1]
         except CalledProcessError as e:
-            logger.error(f'Checking for git branch failed: {type(e).__name__}: {e}')
+            logger.error("Checking for git branch failed: %s: %s", type(e).__name__, e)
             branch = "<unknown>"
     else:
         commit = os.environ.get('COMMIT_SHA')
@@ -416,9 +416,9 @@ async def startup():
         engine = await gino.create_engine(DATABASE_URL)
         db.bind = engine
     except Exception:
-        logger.exception("Failed to connect to postgreSQL server")
+        logger.exception("Failed to connect to postgreSQL server", exc_info=True)
         return
-    logger.info(f'Starting Kurisu on commit {commit} on branch {branch}')
+    logger.info("Starting Kurisu on commit %s on branch %s", commit, branch)
     bot = Kurisu(command_prefix=('.', '!'), description="Kurisu, the bot for Nintendo Homebrew!", commit=commit,
                  branch=branch)
     bot.engine = engine

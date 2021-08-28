@@ -47,7 +47,7 @@ class Loop(commands.Cog):
                 j = await r.json()
             else:
                 # logging setup :)
-                logger.warning(f"Netinfo: {r.status} while trying to update netinfo.")
+                logger.warning("Status %s while trying to update netinfo.", r.status)
                 return
 
         now = datetime.now(self.tz)
@@ -216,7 +216,7 @@ class Loop(commands.Cog):
                 if current_timestamp.minute % 30 == 0 and current_timestamp.second == 0:
                     self.bot.loop.create_task(self.update_netinfo())
             except Exception:
-                logger.error('Ignoring exception in start_update_loop', exc_info=True)
+                logger.error("Ignoring exception in start_update_loop", exc_info=True)
             finally:
                 await asyncio.sleep(1)
 
