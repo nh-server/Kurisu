@@ -513,6 +513,12 @@ class Memes(commands.Cog):
         """i really want to know"""
         await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/2549ac8b197ae68080041d3966a887e8.png")
 
+    @commands.command(hidden=True, aliases=['decisions'])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def decision(self, ctx):
+        """duly noted"""
+        await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/5186160fa1b8002fe8fa1867225e45a7.png")
+
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.channel)
     async def cadealert(self, ctx):
