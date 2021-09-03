@@ -58,6 +58,8 @@ class Loop(commands.Cog):
         embed.set_footer(text=f"This information was last updated {now.strftime('%A, %B %d, %Y %I:%M %p')}.")
 
         for status_type in ("operational_statuses", "temporary_maintenances"):
+            descriptor = "Maintenance" if status_type == "temporary_maintenances" else "Status"
+
             for entry in j[status_type]:
                 if "platform" in entry:
                     entry_desc = ', '.join(entry["platform"]).replace("nintendo", "Nintendo").replace("web", "Web")
@@ -72,8 +74,6 @@ class Loop(commands.Cog):
                 if "end" in entry:
                     end = self.netinfo_parse_time(entry["end"])
                     entry_desc += '\nEnds: ' + end.strftime('%A, %B %d, %Y %I:%M %p')
-
-                descriptor = "Maintenance" if status_type == "temporary_maintenances" else "Status"
 
                 if now < end:
                     entry_name = "{} {}: {}".format(

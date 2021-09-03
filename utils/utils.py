@@ -51,8 +51,7 @@ def command_signature(command, *, prefix=".") -> str:
         The command to generate a signature for
     prefix: str
         The prefix to include in the signature"""
-    signature = f"{discord.utils.escape_markdown(prefix)}{command.qualified_name} {command.signature}"
-    return signature
+    return f"{discord.utils.escape_markdown(prefix)}{command.qualified_name} {command.signature}"
 
 
 def gen_color(seed) -> discord.Color:
@@ -72,13 +71,10 @@ def parse_time(time_string) -> int:
         "m": 60,
         "s": 1
     }
-    seconds = 0
     match = re.findall("([0-9]+[smhd])", time_string)  # Thanks to 3dshax server's former bot
     if not match:
         return -1
-    for item in match:
-        seconds += int(item[:-1]) * units[item[-1]]
-    return seconds
+    return sum(int(item[:-1]) * units[item[-1]] for item in match)
 
 
 def create_error_embed(ctx, exc) -> discord.Embed:

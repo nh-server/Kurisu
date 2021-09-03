@@ -60,9 +60,7 @@ Thanks for stopping by and have a good time!
             return
         perm_roles = await crud.get_permanent_roles(member.id)
         if perm_roles:
-            roles = []
-            for perm_role in perm_roles:
-                roles.append(member.guild.get_role(perm_role.id))
+            roles = [member.guild.get_role(perm_role.id) for perm_role in perm_roles]
             await member.add_roles(*roles)
 
         warns = await crud.get_warns(member.id)

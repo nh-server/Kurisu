@@ -111,7 +111,12 @@ class ModStaff(commands.Cog):
                 if rank == staff.position:
                     ranks[rank].append(staff.id)
             if ranks[rank]:
-                embed.add_field(name=rank, value="".join([f"<@{x}>\n" for x in ranks[rank]]), inline=False)
+                embed.add_field(
+                    name=rank,
+                    value="".join(f"<@{x}>\n" for x in ranks[rank]),
+                    inline=False,
+                )
+
         await ctx.send("Here is a list of our staff members:", embed=embed)
 
 

@@ -86,9 +86,10 @@ class Filter(commands.Cog):
         embed = discord.Embed()
         for kind in self.bot.levenshteinfilter.kinds:
             if self.bot.levenshteinfilter.filter[kind]:
-                value = ""
-                for word, threshold in self.bot.levenshteinfilter.filter[kind]:
-                    value += f"{word} with threshold {threshold}{' - whitelisted' if word in self.bot.levenshteinfilter.whitelist else ''} \n"
+                value = "".join(
+                    f"{word} with threshold {threshold}{' - whitelisted' if word in self.bot.levenshteinfilter.whitelist else ''} \n"
+                    for word, threshold in self.bot.levenshteinfilter.filter[kind]
+                )
                 embed.add_field(name=kind, value=value)
         if embed:
             await ctx.author.send(embed=embed)
@@ -147,7 +148,7 @@ class Filter(commands.Cog):
     async def whitelist_list(self, ctx):
         whitelist = await self.bot.levenshteinfilter.fetch_whitelist()
         if whitelist:
-            await ctx.author.send('\n'.join([x.word for x in whitelist]))
+            await ctx.author.send('\n'.join(x.word for x in whitelist))
         else:
             await ctx.send("The whitelist is empty.")
 

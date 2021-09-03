@@ -86,18 +86,17 @@ class Seasonal(commands.Cog):
             if ctx.author.nick:
                 matches = list(finditer(season.emote_regex, ctx.author.nick))
 
-                if matches:
-                    res = matches[-1]
-                    new_nick = (
-                        f"{ctx.author.display_name[:res.start()]}"
-                        f"{ctx.author.display_name[res.end():]}"
-                    )
-                else:
+                if not matches:
                     return await ctx.send(
                         "Your nickname doesn't contain the current/requested"
                         f" seasonal emote [{season.emote} | '{season.emote_str}']"
                     )
 
+                res = matches[-1]
+                new_nick = (
+                    f"{ctx.author.display_name[:res.start()]}"
+                    f"{ctx.author.display_name[res.end():]}"
+                )
                 if len(new_nick) == 0:
                     return await ctx.send("💢 I can't completely remove your nick!")
             elif bool(search(season.emote_regex, ctx.author.name)):

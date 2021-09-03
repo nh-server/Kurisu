@@ -78,7 +78,12 @@ class HelperList(commands.Cog):
                 if console == helper.console:
                     consoles[console].append(helper.id)
             if consoles[console]:
-                embed.add_field(name=console, value="".join([f"<@{x}>\n" for x in consoles[console]]), inline=False)
+                embed.add_field(
+                    name=console,
+                    value="".join(f"<@{x}>\n" for x in consoles[console]),
+                    inline=False,
+                )
+
         await ctx.send("Here is a list of our helpers:", embed=embed)
 
 

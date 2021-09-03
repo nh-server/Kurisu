@@ -38,9 +38,8 @@ Only Nintendo Switch XXXX-YYYY formatted error codes are supported.'
 
     def hex2err(self, error, suppress_error=False):
         # Don't bother processing anything if it's not hex.
-        if self.is_hex(error):
-            if switch.is_valid(error):
-                return switch.hex2err(error)
+        if self.is_hex(error) and switch.is_valid(error):
+            return switch.hex2err(error)
         if not suppress_error:
             return 'This isn\'t a hexadecimal value!'
 

@@ -41,14 +41,14 @@ class ModWarn(commands.Cog):
             msg += f"\n\nPlease read the rules in <#196618637950451712>. This is warn #{warn_count}."
             if warn_count == 2:
                 msg += " __The next warn will automatically kick.__"
-            if warn_count == 3:
+            elif warn_count == 3:
                 msg += "\n\nYou were kicked because of this warning. You can join again right away. Two more warnings will result in an automatic ban."
-            if warn_count == 4:
+            elif warn_count == 4:
                 msg += "\n\nYou were kicked because of this warning. This is your final warning. You can join again, but **one more warn will result in a ban**."
-            if warn_count == 5:
+            elif warn_count == 5:
                 msg += "\n\nYou were automatically banned due to five warnings."
             await utils.send_dm_message(member, msg, ctx)
-            if warn_count == 3 or warn_count == 4:
+            if warn_count in {3, 4}:
                 try:
                     self.bot.actions.append("wk:" + str(member.id))
                     await member.kick(reason=f"{warn_count} warns.")

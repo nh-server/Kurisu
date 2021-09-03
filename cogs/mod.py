@@ -127,7 +127,6 @@ class Mod(commands.Cog):
                 await self.bot.guild.ban(discord.Object(id=m))
             except (discord.errors.NotFound, discord.errors.Forbidden) as e:
                 msg += f"{m}:\n  {e.text}\n"
-                pass
         msg += "```"
         await utils.send_dm_message(author, msg)
 
@@ -481,9 +480,9 @@ class Mod(commands.Cog):
                 return await ctx.send("This user's help is already taken!")
             else:
                 await crud.remove_timed_restriction(member.id, 'timenohelp')
-        msg_user = "You lost access to help channels!"
         if isinstance(member, discord.Member):
             await member.add_roles(self.bot.roles['No-Help'])
+            msg_user = "You lost access to help channels!"
             if reason != "":
                 msg_user += " The given reason is: " + reason
             msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
@@ -565,9 +564,9 @@ class Mod(commands.Cog):
                 return await ctx.send("This user's tech is already taken!")
             else:
                 await crud.remove_timed_restriction(member.id, 'timenotech')
-        msg_user = "You lost access to the tech channel!"
         if isinstance(member, discord.Member):
             await member.add_roles(self.bot.roles['No-Tech'])
+            msg_user = "You lost access to the tech channel!"
             if reason != "":
                 msg_user += " The given reason is: " + reason
             msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
@@ -646,9 +645,9 @@ class Mod(commands.Cog):
                 return await ctx.send("This user is already helpmuted!")
             else:
                 await crud.remove_timed_restriction(member.id, 'timehelpmute')
-        msg_user = "You muted in the help channels!"
         if isinstance(member, discord.Member):
             await member.add_roles(self.bot.roles['help-mute'])
+            msg_user = "You muted in the help channels!"
             if reason != "":
                 msg_user += " The given reason is: " + reason
             msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
