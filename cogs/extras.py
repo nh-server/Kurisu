@@ -68,7 +68,7 @@ class Extras(commands.Cog):
     @commands.command(hidden=True, aliases=['copyrole', 'crp'])
     async def copyroleperms(self, ctx, role: discord.Role, src_channel: Union[discord.TextChannel, discord.VoiceChannel], des_channels: commands.Greedy[Union[discord.TextChannel, discord.VoiceChannel]]):
         """Copy role overwrites from a channel to channels"""
-        if not all([type(c) == type(src_channel) for c in des_channels]):
+        if any(type(c) != type(src_channel) for c in des_channels):
             return await ctx.send("Voice channels and text channel permissions are incompatible!")
         role_overwrites = src_channel.overwrites_for(role)
         for c in des_channels:
@@ -80,7 +80,7 @@ class Extras(commands.Cog):
     @commands.command(hidden=True, aliases=['ccp'])
     async def copychannelperms(self, ctx, src_channel: Union[discord.TextChannel, discord.VoiceChannel], des_channels: commands.Greedy[Union[discord.TextChannel, discord.VoiceChannel]]):
         """Copy channel overwrites from a channel to channels"""
-        if not all([type(c) == type(src_channel) for c in des_channels]):
+        if any(type(c) != type(src_channel) for c in des_channels):
             return await ctx.send("Voice channels and text channel permissions are incompatible!")
         overwrites = src_channel.overwrites
         for c in des_channels:
