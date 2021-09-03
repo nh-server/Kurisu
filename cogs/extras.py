@@ -281,6 +281,8 @@ class Extras(commands.Cog):
         """Sends a reminder after a set time, just for you.\n\nTime format: #d#h#m#s."""
         if (seconds := parse_time(remind_in)) == -1:
             return await ctx.send("💢 I don't understand your time format.")
+        if seconds < 30:
+            return await ctx.send("You can't set a reminder for less than 30 seconds in the future.")
         timestamp = datetime.datetime.now()
         delta = datetime.timedelta(seconds=seconds)
         reminder_time = timestamp + delta
