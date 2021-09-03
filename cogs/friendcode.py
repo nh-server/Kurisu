@@ -44,10 +44,7 @@ class FriendCode(commands.Cog):
     async def fcregister(self, ctx, fc: str):
         """Add your friend code."""
         console = "switch" if fc.startswith("SW") else "3ds"
-        if console == "3ds":
-            fc = self.verify_3ds_fc(fc)
-        else:
-            fc = self.verify_switch_fc(fc)
+        fc = self.verify_3ds_fc(fc) if console == "3ds" else self.verify_switch_fc(fc)
         if not fc:
             await ctx.send("This friend code is invalid. Switch friend codes must be in a SW-XXXX-XXXX-XXXX format and 3ds friends codes in a XXXX-XXXX-XXXX format.")
             return
