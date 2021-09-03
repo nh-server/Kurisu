@@ -1,6 +1,5 @@
-import datetime
-
 from . import models
+import datetime
 from discord import utils, TextChannel
 
 
@@ -333,3 +332,17 @@ async def get_rules():
 
 async def get_rule(number: int):
     return await models.Rule.get(number)
+
+
+async def add_reminder(date: datetime.datetime, author: int, reminder: str):
+    await add_dbmember_if_not_exist(author)
+    await models.RemindMeEntry.create(id=generate_id(), date=date, author=author, reminder=reminder)
+
+
+async def get_reminders() -> list[models.RemindMeEntry]:
+    return await models.RemindMeEntry.query.order_by(models.RemindMeEntry.date).gino.all()
+
+
+async def remove_reminder(reminder_id: int):
+    db_reminder = await models.RemindMeEntry.get(reminder_id)
+    await db_reminder.delete()

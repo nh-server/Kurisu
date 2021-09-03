@@ -124,3 +124,11 @@ class Rule(db.Model):
     __tablename__ = "rules"
     id = db.Column(db.Integer(), primary_key=True)
     description = db.Column(db.String())
+
+
+class RemindMeEntry(db.Model):
+    __tablename__ = "remindmeentries"
+    id = db.Column(db.BigInteger(), primary_key=True)
+    date = db.Column(db.TIMESTAMP, nullable=False)
+    author = db.Column(db.BigInteger, db.ForeignKey("members.id"), nullable=False)
+    reminder = db.Column(db.String, nullable=False)

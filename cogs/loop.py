@@ -8,6 +8,7 @@ import traceback
 from datetime import datetime, timedelta
 from discord.ext import commands
 from utils import crud
+from utils.utils import send_dm_message
 
 
 class Loop(commands.Cog):
@@ -114,6 +115,7 @@ class Loop(commands.Cog):
                 timenotechs = await crud.get_time_restrictions_by_type('timenotech')
                 timehelpmutes = await crud.get_time_restrictions_by_type('timehelpmute')
                 timedroles = await crud.get_timed_roles()
+                reminder_entries = await crud.get_reminders()
 
                 for timeban in timebans:
                     unban_time = timeban.end_date
@@ -208,6 +210,17 @@ class Loop(commands.Cog):
                             await member.remove_roles(role)
                         msg = f"⭕ **Timed Role Expired**: <@{timedrole.user_id}>"
                         await self.bot.channels['mod-logs'].send(msg)
+
+                for reminder_entry in reminder_entries:
+                    if current_timestamp <= reminder_entry.date:
+                        break
+                    await crud.remove_reminder(reminder_entry.id)
+                    member = self.bot.guild.get_member(reminder_entry.author)
+                    if member:
+                        msg = f"You asked to remind you of: {reminder_entry.reminder}"
+                        send = await send_dm_message(member, msg)
+                        if not send:
+                            await self.bot.channels['bot-cmds'].send(msg + member.mention)
 
                 if current_timestamp.minute == 0 and current_timestamp.hour != self.last_hour:
                     await self.bot.channels['helpers'].send(f"{self.bot.guild.name} has {self.bot.guild.member_count:,} members at this hour!")

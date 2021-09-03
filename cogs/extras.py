@@ -11,6 +11,8 @@ from discord import TextChannel, __version__ as discordpy_version
 from discord.ext import commands
 from typing import Union
 from utils.checks import is_staff
+from utils import crud
+from utils.utils import parse_time
 
 python_version = sys.version.split()[0]
 
@@ -272,6 +274,18 @@ class Extras(commands.Cog):
         else:
             await ctx.send("The nickname doesn't comply with our nickname policy or it's too long!")
             ctx.command.reset_cooldown(ctx)
+
+    @is_staff("Helper")
+    @commands.command()
+    async def remindme(self, ctx, remind_in: str, *, reminder: str):
+        """Sends a reminder after a set time, just for you.\n\nTime format: #d#h#m#s."""
+        if not (seconds := parse_time(remind_in)):
+            return await ctx.send("💢 I don't understand your time format.")
+        timestamp = datetime.datetime.now()
+        delta = datetime.timedelta(seconds=seconds)
+        reminder_time = timestamp + delta
+        await crud.add_reminder(reminder_time, ctx.author.id, reminder)
+        await ctx.send("I will send you a reminder then.")
 
 
 def setup(bot):
