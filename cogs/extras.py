@@ -279,7 +279,7 @@ class Extras(commands.Cog):
     @commands.command()
     async def remindme(self, ctx, remind_in: str, *, reminder: str):
         """Sends a reminder after a set time, just for you.\n\nTime format: #d#h#m#s."""
-        if not (seconds := parse_time(remind_in)):
+        if (seconds := parse_time(remind_in)) == -1:
             return await ctx.send("💢 I don't understand your time format.")
         timestamp = datetime.datetime.now()
         delta = datetime.timedelta(seconds=seconds)
