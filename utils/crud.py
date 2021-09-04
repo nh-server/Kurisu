@@ -346,3 +346,21 @@ async def get_reminders() -> list[models.RemindMeEntry]:
 async def remove_reminder(reminder_id: int):
     db_reminder = await models.RemindMeEntry.get(reminder_id)
     await db_reminder.delete()
+
+
+async def create_tag(title: str, content: str, author: int):
+    await add_dbmember_if_not_exist(author)
+    await models.Tag.create(id=generate_id(), title=title, content=content, author=author)
+
+
+async def get_tag(title: str) -> models.Tag:
+    return await models.Tag.query.where(models.Tag.title == title).gino.first()
+
+
+async def search_tags(query: str) -> list[models.Tag]:
+    return await models.Tag.query.where(models.Tag.title.ilike(f"%{query}%")).limit(10).gino.all()
+
+
+async def delete_tag(title: str):
+    db_tag = await get_tag(title)
+    await db_tag.delete()

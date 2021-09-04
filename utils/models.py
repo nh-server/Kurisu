@@ -132,3 +132,11 @@ class RemindMeEntry(db.Model):
     date = db.Column(db.TIMESTAMP, nullable=False)
     author = db.Column(db.BigInteger, db.ForeignKey("members.id"), nullable=False)
     reminder = db.Column(db.String, nullable=False)
+
+
+class Tag(db.Model):
+    __tablename__ = "tags"
+    id = db.Column(db.BigInteger(), primary_key=True)
+    title = db.Column(db.String, unique=True, nullable=False)
+    content = db.Column(db.String, nullable=False)
+    author = db.Column(db.BigInteger, db.ForeignKey("members.id"), nullable=False)

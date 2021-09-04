@@ -12,7 +12,7 @@ from discord.ext import commands
 from typing import Union
 from utils.checks import is_staff
 from utils import crud
-from utils.utils import parse_time
+from utils.utils import parse_time, gen_color
 
 python_version = sys.version.split()[0]
 
@@ -288,6 +288,41 @@ class Extras(commands.Cog):
         reminder_time = timestamp + delta
         await crud.add_reminder(reminder_time, ctx.author.id, reminder)
         await ctx.send("I will send you a reminder then.")
+
+    @commands.group(invoke_without_command=True)
+    async def tag(self, ctx, *, title: str = ""):
+        if ctx.invoked_subcommand is None:
+            if title:
+                if tag := await crud.get_tag(title):
+                    return await ctx.send(tag.content)
+                else:
+                    await ctx.send("This tag doesn't exists!")
+            else:
+                await ctx.send_help(ctx.command)
+
+    @is_staff('Helper')
+    @tag.command()
+    async def create(self, ctx, title: str, *, content: str):
+        if await crud.get_tag(title):
+            await ctx.send("This tag already exists!")
+        await crud.create_tag(title=title, content=content, author=ctx.author.id)
+        await ctx.send("Tag created successfully")
+
+    @tag.command()
+    async def search(self, ctx, query: str):
+        if tags := await crud.search_tags(query):
+            embed = discord.Embed(description='\n'.join(f'{n}. {tag.title}' for n, tag in enumerate(tags, start=1)), color=gen_color(ctx.author.id))
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send("No tags found.")
+
+    @is_staff('Helper')
+    @tag.command()
+    async def delete(self, ctx, *, title: str):
+        if not (await crud.get_tag(title)):
+            return await ctx.send("This tag doesn't exists!")
+        await crud.delete_tag(title=title)
+        await ctx.send("Tag deleted successfully")
 
 
 def setup(bot):
