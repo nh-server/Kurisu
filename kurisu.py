@@ -268,7 +268,8 @@ class Kurisu(commands.Bot):
         await self._is_all_ready.wait()
 
     @staticmethod
-    def escape_text(text: str):
+    def escape_text(text):
+        text = str(text)
         return discord.utils.escape_markdown(text)
 
     async def close(self):
@@ -319,7 +320,6 @@ class Kurisu(commands.Bot):
         command: commands.Command = ctx.command or '<unknown cmd>'
         exc = getattr(exc, 'original', exc)
         channel = self.err_channel or ctx.channel
-
         if isinstance(exc, commands.CommandNotFound):
             return
 
