@@ -314,6 +314,10 @@ class Kurisu(commands.Bot):
                     await db_role.update(name=n).apply()
                 else:
                     await Role.create(id=self.roles[n].id, name=self.roles[n].name)
+        # Nitro Booster existence depends if there is any nitro booster
+        self.roles['Nitro Booster'] = self.guild.premium_subscriber_role
+        if self.roles['Nitro Booster'] and not await crud.get_dbrole(self.roles['Nitro Booster'].id):
+            await Role.create(id=self.roles['Nitro Booster'].id, name='Nitro Booster')
 
     async def on_command_error(self, ctx: commands.Context, exc: discord.DiscordException):
         author: discord.Member = ctx.author
