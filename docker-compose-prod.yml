@@ -19,6 +19,8 @@ services:
 
   kurisu:
     image: ghcr.io/nh-server/kurisu
+    volumes:
+      - /opt/kurisudata:/home/kurisu/data
     environment:
       KURISU_TOKEN_FILE: /run/secrets/kurisu_token
       DB_USER_FILE: /run/secrets/db_user
