@@ -100,7 +100,7 @@ class Kurisu(commands.Bot):
 
     def __init__(self, command_prefix, description, commit, branch):
 
-        intents = discord.Intents(guilds=True, members=True, messages=True, reactions=True)
+        intents = discord.Intents(guilds=True, members=True, messages=True, reactions=True, bans=True)
         allowed_mentions = discord.AllowedMentions(everyone=False, roles=False)
         super().__init__(
             command_prefix=command_prefix,

@@ -74,6 +74,15 @@ class Events(commands.Cog):
     channel_antispam = {}
     help_notice_anti_repeat = []
 
+    async def userbot_yeeter_pop(self, message):
+        await asyncio.sleep(20)
+        self.userbot_yeeter[message.author.id].remove(message.channel)
+        try:
+            if len(self.userbot_yeeter[message.author.id]) == 0:
+                self.userbot_yeeter.pop(message.author.id)
+        except KeyError:
+            pass
+
     async def scan_message(self, message, is_edit=False):
         random.seed(message.id)
         embed = discord.Embed(color=utils.gen_color(message.id))
@@ -253,6 +262,29 @@ class Events(commands.Cog):
         if contains_video and message.channel in self.bot.assistance_channels:
             await self.bot.channels['message-logs'].send(
                 f"▶️ **Video posted**: {message.author.mention} posted a video in {message.channel.mention}\n------------------\n{message.clean_content}")
+
+        if contains_scamming_site_levenshtein or contains_scamming_site:
+            if message.author.id not in self.userbot_yeeter:
+                self.userbot_yeeter[message.author.id] = []
+            if message.channel not in self.userbot_yeeter[message.author.id]:
+                self.userbot_yeeter[message.author.id].append(message.channel)
+                if len(self.userbot_yeeter[message.author.id]) == 2:
+                    msg = ("You have been banned from Nintendo Homebrew for linking scamming sites in multiple channels. "
+                           "If you think this is a mistake contact ❅FrozenFire❆#0700 on discord or send a email to staff@nintendohomebrew.com")
+                    await utils.send_dm_message(message.author, msg)
+                    self.bot.actions.append('wb:' + str(message.author.id))
+                    await message.author.ban(reason="Linking scamming links in multiple channels.")
+                    log_msg = f"⛔ **Auto-ban**: {message.author.mention} banned for spamming scamming sites | {message.author}\n🗓 __Creation__: {message.author.created_at}\n🏷 __User ID__: {message.author.id}"
+                    await self.bot.channels['mod-logs'].send(log_msg)
+                    await self.bot.channels['mods'].send(log_msg)
+                    try:
+                        await message.delete()
+                    except discord.errors.NotFound:
+                        pass
+                    return
+                else:
+                    self.bot.loop.create_task(self.userbot_yeeter_pop(message))
+
         if contains_scamming_site:
             embed.description = self.highlight_matches(contains_scamming_site, msg)
             try:
@@ -318,27 +350,6 @@ class Events(commands.Cog):
                 message.author, f"You were automatically placed under probation in {self.bot.guild.name} for mass user mentions.")
             await crud.add_permanent_role(message.author.id, self.bot.roles['Probation'].id)
             await message.author.add_roles(self.bot.roles['Probation'])
-
-        if contains_scamming_site_levenshtein or contains_scamming_site:
-            if message.author.id not in self.userbot_yeeter:
-                self.userbot_yeeter[message.author.id] = []
-            if message.channel in self.userbot_yeeter[message.author.id]:
-                return
-            self.userbot_yeeter[message.author.id].append(message.channel)
-            if len(self.userbot_yeeter[message.author.id]) == 2:
-                msg = ("You have been banned from Nintendo Homebrew for linking scamming sites in multiple channels. "
-                       "If you think this is a mistake contact ❅FrozenFire❆#0700 on discord or send a email to staff@nintendohomebrew.com")
-                await utils.send_dm_message(message.author, msg)
-                await message.author.ban(reason="Linking scamming links in multiple channels.")
-                log_msg = f"🔇 **Auto-banned**: {message.author.mention} banned for spamming scamming sites| {message.author}\n🗓 __Creation__: {message.author.created_at}\n🏷 __User ID__: {message.author.id}"
-                await self.bot.channels['mod-logs'].send(log_msg)
-            await asyncio.sleep(20)
-            self.userbot_yeeter[message.author.id].remove(message.channel)
-            try:
-                if len(self.userbot_yeeter[message.author.id]) == 0:
-                    self.userbot_yeeter.pop(message.author.id)
-            except KeyError:
-                pass
 
     async def user_spam_check(self, message):
         if message.author.id not in self.user_antispam:
