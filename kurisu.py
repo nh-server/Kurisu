@@ -223,7 +223,7 @@ class Kurisu(commands.Bot):
 
         if self._is_all_ready.is_set():
             return
-        self.err_channel = self.channels['bot-err']
+
         self.guild = self.guilds[0]
 
         # Load Filters
@@ -237,6 +237,8 @@ class Kurisu(commands.Bot):
         # Load channels and roles
         await self.load_channels()
         await self.load_roles()
+
+        self.err_channel = self.channels['bot-err']
 
         startup_message = f'{self.user.name} has started! {self.guild} has {self.guild.member_count:,} members!'
         embed = discord.Embed(title=f"{self.user.name} has started!",
