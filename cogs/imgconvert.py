@@ -1,4 +1,3 @@
-import aiohttp
 import concurrent.futures
 import functools
 
@@ -28,15 +27,14 @@ class ImageConvert(commands.Cog):
         # BMP conversion
         for f in message.attachments:
             if f.filename.lower().endswith('.bmp') and f.size <= 600000:  # 600kb
-                async with aiohttp.ClientSession() as session:
-                    async with session.get(f.url, timeout=45) as img_request:
-                        img_content = await img_request.read()
-                        with concurrent.futures.ProcessPoolExecutor() as pool:
-                            img_out = await self.bot.loop.run_in_executor(pool, functools.partial(self.img_convert, img_content))
-                        out_message = f"{f.filename} from {message.author.mention}"
-                        new_filename = f.filename[:-3] + "png"
-                        img = File(img_out, filename=new_filename)
-                        await message.channel.send(file=img, content=out_message)
+                async with self.bot.session.get(f.url, timeout=45) as img_request:
+                    img_content = await img_request.read()
+                    with concurrent.futures.ProcessPoolExecutor() as pool:
+                        img_out = await self.bot.loop.run_in_executor(pool, functools.partial(self.img_convert, img_content))
+                    out_message = f"{f.filename} from {message.author.mention}"
+                    new_filename = f.filename[:-3] + "png"
+                    img = File(img_out, filename=new_filename)
+                    await message.channel.send(file=img, content=out_message)
 
 
 def setup(bot):

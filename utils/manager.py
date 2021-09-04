@@ -16,7 +16,6 @@ class WordFilterManager:
             for entry in await self.fetch_by_kind(kind=kind):
                 self.filter[kind].append(entry.word)
                 self.word_exp[entry.word] = re.compile(r"[ *_\-~]*".join(list(entry.word)))
-        print("Loaded word filter")
 
     async def add(self, word: str, kind: str) -> FilteredWord:
         entry = await FilteredWord.create(word=word, kind=kind)
@@ -54,7 +53,6 @@ class LevenshteinFilterManager:
                 self.filter[kind].append((entry.word, entry.threshold))
                 if entry.whitelist:
                     self.whitelist.append(entry.word)
-        print("Loaded levenshtein filter")
 
     async def add(self, word: str, kind: str, threshold: int, whitelist: bool) -> LevenshteinWord:
         entry = await LevenshteinWord.create(word=word, kind=kind, threshold=threshold, whitelist=whitelist)
