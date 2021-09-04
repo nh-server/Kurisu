@@ -1739,7 +1739,7 @@ def get(error):
         sec_error = hex2err(error)
 
     ret = ConsoleErrorInfo(error, CONSOLE_NAME, COLOR, secondary_error=sec_error)
-    module = modules.get(mod, Module(''))
+    module = modules.get(mod, Module('Unknown'))
     ret.add_field(ConsoleErrorField('Module', message_str=module.name, supplementary_value=mod))
     summary = module.get_summary(code)
     if summary:
