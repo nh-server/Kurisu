@@ -316,6 +316,14 @@ class Extras(commands.Cog):
         else:
             await ctx.send("No tags found.")
 
+    @tag.command()
+    async def list(self, ctx):
+        if tags := await crud.get_tags():
+            embed = discord.Embed(description='\n'.join(f'{n}. {tag.title}' for n, tag in enumerate(tags, start=1)), color=gen_color(ctx.author.id))
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send("There are no tags.")
+
     @is_staff('Helper')
     @tag.command()
     async def delete(self, ctx, *, title: str):

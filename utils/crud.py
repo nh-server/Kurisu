@@ -357,6 +357,10 @@ async def get_tag(title: str) -> models.Tag:
     return await models.Tag.query.where(models.Tag.title == title).gino.first()
 
 
+async def get_tags() -> list[models.Tag]:
+    return await models.Tag.query.order_by(models.Tag.id).gino.all()
+
+
 async def search_tags(query: str) -> list[models.Tag]:
     return await models.Tag.query.where(models.Tag.title.ilike(f"%{query}%")).limit(10).gino.all()
 
