@@ -14,7 +14,13 @@ RUN set -eux \
 	&& pip install --no-compile --no-cache-dir -r requirements.txt \
 	&& apk del --no-network .build-deps
 USER kurisu
-COPY . .
+
+COPY data data
+COPY alembic.ini alembic.ini
+COPY migrations migrations
+COPY kurisu.py kurisu.py
+COPY utils utils
+COPY cogs cogs
 
 ARG BRANCH="unknown"
 ENV COMMIT_BRANCH=${BRANCH}
