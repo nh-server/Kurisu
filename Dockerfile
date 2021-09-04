@@ -1,13 +1,18 @@
-FROM python:3.9
+FROM python:3.9-alpine
 
 ENV IS_DOCKER=1
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
+
 ENV HOME /home/kurisu
-RUN useradd -m -d $HOME -s /bin/sh -u 2849 kurisu
+RUN addgroup -g 2849 kurisu && adduser -u 2849 -h $HOME -D -G kurisu kurisu
 WORKDIR $HOME
 COPY ./requirements.txt .
-RUN pip install --no-compile --no-cache-dir -r requirements.txt
+RUN set -eux \
+	&& apk add --no-cache libpq libjpeg-turbo \
+	&& apk add --no-cache --virtual .build-deps gcc musl-dev zlib-dev libjpeg-turbo-dev postgresql-dev \
+	&& pip install --no-compile --no-cache-dir -r requirements.txt \
+	&& apk del --no-network .build-deps
 USER kurisu
 COPY . .
 
