@@ -213,6 +213,8 @@ class Kurisu(commands.Bot):
 
         self.guild = None
         self.err_channel = None
+        self.actions = []
+        self.pruning = False
 
         self.session = aiohttp.ClientSession(loop=self.loop)
 
