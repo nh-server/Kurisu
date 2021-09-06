@@ -19,10 +19,18 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
     Commands that will mostly be used in the help channels.
     """
 
-    nx_firmware = "12.1.0"
-    ams_ver = "0.20.1"
-    hekate_ver = "5.6.0"
-    last_revision = "August 30th, 2021"
+    format_map = {
+        'nx_firmware': '12.1.0',
+        'ams_ver': '0.20.1',
+        'hekate_ver': '5.6.0',
+        'last_revision': 'August 30th, 2021',
+    }
+
+    # compatibility until the use of these variables is removed
+    nx_firmware = format_map['nx_firmware']
+    ams_ver = format_map['ams_ver']
+    hekate_ver = format_map['hekate_ver']
+    last_revision = format_map['last_revision']
 
     data_dir = join(dirname(__file__), 'assistance-cmds')
 
@@ -947,31 +955,6 @@ the system can't check for an update.
                                 If you're having trouble getting your HDD to work with your WiiU, it might be due to the HDD not getting enough power. \
 One way to fix this is by using an y-cable to connect the HDD to two USB ports.
                                 """)
-
-    @commands.command(aliases=["updateprep", "nxupdate"])
-    async def nsupdate(self, ctx):
-        """What you should do before updating a Nintendo Switch"""
-        await self.simple_embed(ctx, cleandoc(f"""
-                                     **Make sure your version of Atmosphere is up to date and that it supports the latest firmware**
-
-                                     **Atmosphere {self.ams_ver} (latest release)**
-                                     Supports up to firmware {self.nx_firmware}.
-
-                                     *To find Atmosphere's version information, while booted into CFW, go into System Settings -> System, and look at \
-the text under the System Update button. If it says that a system update is ready instead of displaying the CFW version, type .pendingupdate in <#261581918653513729> to learn \
-how to delete it.*
-
-                                     **Make sure your version of Hekate is up to date and that it supports the latest firmware**
-
-                                     **Hekate {self.hekate_ver} (latest release)**
-                                     Supports up to firmware {self.nx_firmware}.
-
-                                     *To find Hekate's version information, once Hekate starts, look in the top left corner of the screen. If you use auto-boot, hold `volume -` to stop it.*
-
-                                     **If you use a custom theme (Atmosphere 0.10.0 and above)**
-                                     Delete or rename `/atmosphere/contents/0100000000001000` on your SD card prior to updating, \
-as custom themes must be reinstalled for most firmware updates. **Note: On Atmosphere 0.9.4 or below, `contents` is called `titles`.**
-                                """), title="What do I need to do before updating my system firmware when running CFW?", color=ConsoleColor.switch())
 
     @commands.command(aliases=["pendingupdate"])
     async def delupdate(self, ctx):

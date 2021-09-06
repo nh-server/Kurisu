@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from typing import Dict, List, Optional, Tuple, Type
 empty = discord.Embed.Empty
 
-systems_no_aliases = ('3ds', 'wiiu', 'vwii', 'switch', 'wii', 'dsi', 'legacy')
+systems_no_aliases = ('3ds', 'wiiu', 'vwii', 'switch', 'wii', 'dsi')
 aliases = {
     'nx': 'switch',
     'ns': 'switch'
@@ -21,7 +21,7 @@ for k, v in aliases.items():
     name_to_aliases[v].add(k)
 
 # compatibility
-systems = systems_no_aliases + tuple(aliases)
+systems = systems_no_aliases + tuple(aliases) + ('legacy',)
 
 
 def parse_header(header_raw: str):
@@ -94,8 +94,10 @@ def create_embed(header: 'Dict[str, str]', body: 'List[Tuple[str, str]]', embed_
     return embed
 
 
-def parse_md_command(md_text: str, embed_color: discord.Color):
+def parse_md_command(md_text: str, format_map: dict, embed_color: discord.Color):
     header_raw, body_raw = md_text.split('\n\n', maxsplit=1)
+
+    body_raw = body_raw.format_map(format_map)
 
     header = parse_header(header_raw)
     body = parse_body(body_raw)
@@ -107,7 +109,7 @@ def parse_md_command(md_text: str, embed_color: discord.Color):
     return header, create_embed(header, body, embed_color)
 
 
-def md_file_to_embed(md_path: str):
+def md_file_to_embed(md_path: str, format_map: dict):
     colors = {
         '3ds': ConsoleColor.n3ds(),
         'wiiu': ConsoleColor.wiiu(),
@@ -121,7 +123,7 @@ def md_file_to_embed(md_path: str):
     with open(md_path, 'r', encoding='utf-8') as f:
         fn = basename(md_path)
         name, console, _ = fn.rsplit('.', maxsplit=2)
-        return (name, console, *parse_md_command(f.read(), colors[console]))
+        return (name, console, *parse_md_command(f.read(), format_map, colors[console]))
 
 
 def check_console(message, channel, consoles):
@@ -137,7 +139,7 @@ def get_console_name(console):
     return aliases.get(console, console)
 
 
-def add_md_files_as_commands(cog_class: 'Type[commands.Cog]', md_dir: str = None, *, namespace=commands):
+def add_md_files_as_commands(cog_class: 'Type[commands.Cog]', md_dir: str = None, *, namespace=commands, format_map=None):
 
     def make_cmd(name: str, help_desc: 'Optional[str]', embeds: 'Dict[str, discord.Embed]', aliases: list):
         if len(embeds) > 1:
@@ -186,8 +188,14 @@ def add_md_files_as_commands(cog_class: 'Type[commands.Cog]', md_dir: str = None
     if md_dir is None:
         md_dir = cog_class.data_dir
 
+    if format_map is None:
+        try:
+            format_map = cog_class.format_map
+        except AttributeError:
+            format_map = None
+
     for md in iglob(join(md_dir, '*.md')):
-        command, console, header, embed = md_file_to_embed(md)
+        command, console, header, embed = md_file_to_embed(md, format_map)
         new_commands[command][console] = embed
         if header['aliases']:
             aliases[command].extend(header['aliases'].split(','))

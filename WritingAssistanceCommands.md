@@ -25,6 +25,8 @@ Any Markdown syntax supported by Discord embeds is supported. Notably this inclu
 
 Headers define the start of a new embed field. There is only one header size, so any amount of `#` at the beginning will produce the same result.
 
+The body supports certain including certain variables in the format of `{variable_name}`. These will be replaced with the variable contents. Supported variables include: `nx_firmware`, `ams_ver`, `hekate_ver`, and `last_revision`. The contents are stored in `cogs/assistance.py`.
+
 ### Example
 
 This file should be called `mycommand.3ds.md` and placed in `cogs/assistance-cmds`:
