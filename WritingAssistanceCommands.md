@@ -52,4 +52,4 @@ This goes in another section!
 
 When either `.mycommand` or the aliases `.thing` or `.stuff` are used:
 
-<img src="https://github.com/nh-server/Kurisu/raw/main/resources/example-embed.png" width="230">
+<img src="https://github.com/nh-server/Kurisu/raw/main/example-embed.png" width="230">
