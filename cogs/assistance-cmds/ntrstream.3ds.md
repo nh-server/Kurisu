@@ -1,7 +1,9 @@
+---
 title: Snickerstream: NTR Streaming Client
 url: https://gbatemp.net/threads/release-snickerstream-revived-a-proper-release-with-lots-of-improvements-and-new-features.488374/
 help-desc: Snickerstream/NTR streaming guide
 aliases: snickerstream
+---
 
 How to use NTR CFW with Snickerstream to stream your 3DS' screen
 

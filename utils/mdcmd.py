@@ -38,6 +38,8 @@ def parse_header(header_raw: str):
     }
 
     for line in header_raw.splitlines():
+        if line.startswith('---'):
+            continue
         key, value = line.split(':', maxsplit=1)
         key = key.strip()
         value = value.strip()

@@ -1,4 +1,6 @@
+---
 help-desc: Explains how to safely prepare for an update for a hacked console (1)
+---
 
 **Is it safe to update to current 3DS firmware?**
 

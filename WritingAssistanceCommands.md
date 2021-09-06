@@ -8,7 +8,7 @@ A Markdown command file must follow this filename format: `commandname.console.m
 
 A command can have multiple responses for different consoles. This means `commandname.3ds.md` and `commandname.switch.md` can exist. The resulting command will attempt to figure out which one to display in the channel, or the console names can be provided as arguments.
 
-The file is split into two parts: a header and a body. The header ends once a double newline is found. All header keys are optional. Valid header keys are:
+The file is split into two parts: a header and a body. The header ends once a double newline is found. The header should be wrapped with a `---` at the beginning and end. All header keys are optional. Valid header keys are:
 * `title`
 * `url`
 * `author.name` (if setting author fields, this is required)
@@ -32,6 +32,7 @@ The body supports certain including certain variables in the format of `{variabl
 This file should be called `mycommand.3ds.md` and placed in `cogs/assistance-cmds`:
 
 ```md
+---
 title: Title
 url: https://example.com
 author.name: Author Name
@@ -41,6 +42,7 @@ help-desc: Help Description
 aliases: thing,stuff
 color: 93A0D5
 thumbnail-url: https://upload.wikimedia.org/wikipedia/commons/e/e7/Starr_070302-5063_Merremia_tuberosa.jpg
+---
 
 Description goes here...
 

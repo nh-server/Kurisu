@@ -1,5 +1,7 @@
+---
 title: What do I need to do before updating my system firmware when running CFW?
 aliases: updateprep,nxupdate
+---
 
 **Make sure your version of Atmosphere is up to date and that it supports the latest firmware**
 
