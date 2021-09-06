@@ -4,7 +4,7 @@ Kurisu can create commands based on Markdown command files. Currently this suppo
 These commands are placed in the `cogs/assistance-cmds` directory. Tutorial commands are placed in `cogs/assistance-cmds/tutorial`.
 
 ### File format
-A Markdown command file must follow this filename format: `commandname.console.md`. Valid console names are `3ds`, `wiiu`, `vwii`, `switch`, `wii`, and `dsi`.
+A Markdown command file must follow this filename format: `commandname.console.md`. Valid console names are `3ds`, `wiiu`, `vwii`, `switch`, `wii`, `dsi`, and `all`.
 
 A command can have multiple responses for different consoles. This means `commandname.3ds.md` and `commandname.switch.md` can exist. The resulting command will attempt to figure out which one to display in the channel, or the console names can be provided as arguments.
 
