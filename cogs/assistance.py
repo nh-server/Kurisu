@@ -175,20 +175,6 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         embed.description = "How to hack your 3DS console on any firmware from 1.0.0 to 11.14"
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["checkluma"])
-    @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
-    async def lumacheck(self, ctx):
-        """How to check Luma version"""
-        embed = discord.Embed(title="Please check your Luma version.", color=ConsoleColor.n3ds())
-        embed.description = "In order to do this, you will need to load the Luma Configuration screen."
-        embed.add_field(name="Steps to open Luma Configuration", value=cleandoc("""
-                1. Turn your console off.
-                2. Hold the SELECT button.
-                3. While still holding SELECT, turn the console on.
-                4. Provide a photo of your console's screens, or if you can see the version, tell us here.
-                """))
-        await ctx.send(embed=embed)
-
     @commands.command()
     async def cfwuses(self, ctx, console=""):
         """Uses for CFW on Wii U and 3DS"""
@@ -231,36 +217,6 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
             await ctx.send(embed=embed)
 
     @commands.command()
-    async def updateb9s(self, ctx):
-        """Links to the guide for updating b9s versions"""
-        embed = discord.Embed(title="Updating B9S Guide", color=ConsoleColor.n3ds())
-        embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/updating-b9s")
-        embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/nhplai.png")
-        embed.url = "https://3ds.hacks.guide/updating-b9s"
-        embed.description = "A guide for updating to new B9S versions."
-        await ctx.send(embed=embed)
-
-    @commands.command(aliases=["a9lhtob9s", "updatea9lh"])
-    async def atob(self, ctx):
-        """Links to the guide for updating from a9lh to b9s"""
-        embed = discord.Embed(title="Upgrading a9lh to b9s", color=ConsoleColor.n3ds())
-        embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/a9lh-to-b9s")
-        embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/nhplai.png")
-        embed.url = "https://3ds.hacks.guide/a9lh-to-b9s"
-        embed.description = "A guide for upgrading your device from arm9loaderhax to boot9strap."
-        await ctx.send(embed=embed)
-
-    @commands.command(aliases=["ctrtransfer", "ctrnandtransfer"])
-    async def ctr(self, ctx):
-        """Links to ctrtransfer guide"""
-        embed = discord.Embed(title="Guide - ctrtransfer", color=ConsoleColor.n3ds())
-        embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/")
-        embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/nhplai.png")
-        embed.url = "https://3ds.hacks.guide/ctrtransfer"
-        embed.description = "How to do the 11.5.0-38 ctrtransfer"
-        await ctx.send(embed=embed)
-
-    @commands.command()
     async def modmoon(self, ctx):
         """Links to a tool for a mod manager"""
         await self.simple_embed(ctx, cleandoc("""
@@ -269,43 +225,6 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
 
                                 Instructions for usage can be found [in this thread.](https://gbatemp.net/threads/modmoon-a-beautiful-simple-and-compact-mods-manager-for-the-nintendo-3ds.519080#)
                                 """), color=ConsoleColor.n3ds())
-
-    @commands.command()
-    async def vguides(self, ctx):
-        """Information about video guides relating to custom firmware"""
-        embed = discord.Embed(title="Why you should not use video guides", color=discord.Color.dark_orange())
-        embed.description = cleandoc("""
-                Reasons to not use video guides:
-                - Most uploaders do not edit their guides after uploading, even if there are mistakes
-                - When methods become outdated, the information is not updated
-                - Difficult to give assistance with
-                - Most videos also refer to a pre-packaged download, which are often outdated and poorly organised
-                """)
-        embed.add_field(name="Recommended Solution", value=f"Read a trusted written tutorial. Try `.guide` in {self.bot.channels['bot-cmds'].mention} for a list.")
-        await ctx.send(embed=embed)
-
-    @commands.command()
-    async def vguides2(self, ctx):
-        """Video Guides 2: Electric Boogaloo"""
-        embed = discord.Embed(title="More information about video guides", color=discord.Color.dark_orange())
-        embed.description = cleandoc("""
-                Other problems with video guides:
-                - Uploaders tend to care more about views than helping the community, so they don't remove old content
-                - This usually leads to confusion about which method is best, or most current
-                - Every uploader has a different route through each method, which often makes it very difficult to give assistance
-                - Pre-packaged downloads are often hosted on the uploader's server, which they use to generate clicks and revenue
-                - Pre-packaged downloads ("AIOs") are also very often outdated and not maintained by the creators
-                """)
-        embed.add_field(name="Recommended Solution", value=f"Read a trusted written tutorial. Try `.guide` in {self.bot.channels['bot-cmds'].mention} for a list.")
-        await ctx.send(embed=embed)
-
-    @commands.command()
-    async def ip(self, ctx):
-        """How to check your IP"""
-        embed = discord.Embed(title="Check your 3DSs IP (CFW)", color=ConsoleColor.n3ds())
-        embed.description = "1. FBI\n2. Remote Install\n3. Receive URLs over the network"
-        embed.add_field(name="Check your 3DSs IP (Homebrew)", value="1. Open Homebrew Launcher\n2. Press Y")
-        await ctx.send(embed=embed)
 
     @commands.command()
     async def stock(self, ctx, console=None):
@@ -554,34 +473,6 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
             https://nx.eiphax.tech/catalyst.html
             """)
             await ctx.send(embed=embed)
-
-    @commands.command()
-    async def readguide(self, ctx):
-        """Read the guide please"""
-        await self.simple_embed(ctx, """
-                                Asking something that is on the guide will make everyone lose time, so please read and \
-re-read the guide steps 2 or 3 times before coming here.
-                                """, title="Please read the guide")
-
-    @commands.command(aliases=["atmos", "ams"])
-    async def atmosphere(self, ctx):
-        """Download link for the latest Atmosphère version"""
-        embed = discord.Embed(title="Atmosphère", color=discord.Color.blue())
-        embed.set_author(name="Atmosphère-NX Team", url="https://github.com/Atmosphere-NX")
-        embed.set_thumbnail(url="https://avatars2.githubusercontent.com/u/37918415?s=200&v=4")
-        embed.url = "https://github.com/Atmosphere-NX/Atmosphere/releases"
-        embed.description = "Link to Atmosphère latest release"
-        await ctx.send(embed=embed)
-
-    @commands.command()
-    async def hekate(self, ctx):
-        """Download link for the latest Hekate version"""
-        embed = discord.Embed(title="Hekate", color=discord.Color.red())
-        embed.set_author(name="CTCaer", url="https://github.com/CTCaer")
-        embed.set_thumbnail(url="https://imgur.com/kFEZyuC.png")
-        embed.url = "https://github.com/CTCaer/hekate/releases/latest"
-        embed.description = "Link to Hekate's latest release"
-        await ctx.send(embed=embed)
 
     @commands.command()
     async def nxcfw(self, ctx, cfw=""):

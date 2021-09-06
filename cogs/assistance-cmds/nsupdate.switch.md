@@ -1,5 +1,6 @@
 ---
 title: What do I need to do before updating my system firmware when running CFW?
+help-desc: What you should do before updating a Nintendo Switch
 aliases: updateprep,nxupdate
 ---
 
