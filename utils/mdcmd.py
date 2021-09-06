@@ -131,6 +131,8 @@ def md_file_to_embed(md_path: str, format_map: dict):
 
 def check_console(message, channel, consoles):
     message = message.lower()
+    if isinstance(consoles, str):
+        consoles = (consoles,)
     if message in consoles:
         return True
     elif ("wii" not in consoles or channel.startswith("legacy")) and channel.startswith(consoles) and message not in systems:
@@ -169,7 +171,9 @@ def add_md_files_as_commands(cog_class: 'Type[commands.Cog]', md_dir: str = None
 
                 for console in requested_consoles:
                     for embed_console, embed in embeds.items():
+                        await ctx.send(f'chosen console: {console!r} {embed_console!r}')
                         if check_console(console, channel_name, embed_console):
+                            await ctx.send('works')
                             await ctx.send(embed=embed)
         else:
             # single-console commands can simply print the one embed
