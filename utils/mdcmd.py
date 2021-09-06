@@ -119,6 +119,7 @@ def md_file_to_embed(md_path: str, format_map: dict):
         'wii': ConsoleColor.wii(),
         'switch': ConsoleColor.switch(),
         'legacy': ConsoleColor.legacy(),
+        'dsi': ConsoleColor.legacy(),
         'all': empty  # default embed color
     }
 

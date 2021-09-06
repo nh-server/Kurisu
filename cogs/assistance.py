@@ -165,16 +165,6 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         embed.description = "Free 3DS Primary Entrypoint <= 11.3"
         await ctx.send(embed=embed)
 
-    @commands.command()
-    async def seedminer(self, ctx):
-        """Links the seedminer guide"""
-        embed = discord.Embed(title="Seedminer", color=discord.Color(0xb4eb4d))
-        embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/seedminer")
-        embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/nhplai.png")
-        embed.url = "https://3ds.hacks.guide/seedminer"
-        embed.description = "A guide on how to do the seedminer process to get your 3ds' movable.sed file"
-        await ctx.send(embed=embed)
-
     @commands.command(aliases=['3dslanding'])
     async def getstarted(self, ctx):
         """Links the 3DS get-started page"""
@@ -1082,47 +1072,6 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
         embed.description = "Tutorial to extract a ROM out of your VC titles"
         await ctx.send(embed=embed)
 
-    @tutorial.command(aliases=["gbabios"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
-    async def gbabiosdump(self, ctx):
-        """Links to GBA Bios Extraction Tutorial"""
-        embed = discord.Embed(title="GBA Bios Extraction Tutorial", color=discord.Color(0x551A8B))
-        embed.set_author(name="Glazed_Belmont")
-        embed.set_thumbnail(url="https://i.imgur.com/TgdOPkG.png")
-        embed.url = "https://glazedbelmont.github.io/gbabiosdump/"
-        embed.description = "Basic tutorial to extract a GBA bios"
-        await ctx.send(embed=embed)
-
-    @tutorial.command(aliases=["fuse-3ds", "fuse", "fuse3ds"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
-    async def ninfs(self, ctx):
-        """Link to ninfs tutorial."""
-        embed = discord.Embed(title="Extract and Decrypt games, NAND backups, and SD contents with ninfs", color=ConsoleColor.n3ds())
-        embed.description = cleandoc("""
-                            This is a tutorial that shows you how to use ninfs to extract the contents of games, \
-NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
-                            """)
-        embed.url = "https://gbatemp.net/threads/499994/"
-        await ctx.send(embed=embed)
-
-    @tutorial.command(aliases=["appatch", "dsscene"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
-    async def ap(self, ctx):
-        """Anti-piracy patching guide"""
-        embed = discord.Embed(title="AP Guide", color=ConsoleColor.legacy())
-        embed.set_author(name="Glazed_Belmont")
-        embed.set_thumbnail(url="https://i.imgur.com/TgdOPkG.png")
-        embed.url = "https://glazedbelmont.github.io/appatching/"
-        embed.description = "An AP-Patching guide"
-        await ctx.send(embed=embed)
-
-    @tutorial.command(aliases=["cheats", "3dscheats"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
-    async def cpcheats(self, ctx):
-        """Checkpoint/Rosalina cheat guide"""
-        embed = discord.Embed(title="3DS Cheats Guide", color=discord.Color.purple())
-        embed.set_author(name="Krieg")
-        embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/krieg.png")
-        embed.url = "https://3ds.eiphax.tech/cpcheats.html"
-        embed.description = "A guide to using cheats with Checkpoint and Rosalina"
-        await ctx.send(embed=embed)
-
     @tutorial.command(aliases=["ftpd"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def ftp(self, ctx, console=None):
         """FTPD/WinSCP ftp guide"""
@@ -1147,43 +1096,6 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
         embed.set_author(name="Krieg")
         embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/krieg.png")
         embed.description = "A guide to using ftp with FTPD and WinSCP"
-        await ctx.send(embed=embed)
-
-    @tutorial.command(aliases=["ntrplugins"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
-    async def plugins(self, ctx):
-        """NTR Plugins guide"""
-        embed = discord.Embed(title="3DS NTR Plugins Guide", color=discord.Color.purple())
-        embed.set_author(name="Krieg")
-        embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/krieg.png")
-        embed.url = "https://3ds.eiphax.tech/ntrplugins"
-        embed.description = "A guide to using plugins with NTR"
-        await ctx.send(embed=embed)
-
-    @tutorial.command(aliases=["citraobs"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
-    async def obscitra(self, ctx):
-        """OBS and Citra guide"""
-        embed = discord.Embed(title="OBS and Citra Guide", color=discord.Color.purple())
-        embed.set_author(name="Krieg")
-        embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/krieg.png")
-        embed.url = "https://kriegisrei.github.io/obscitra/"
-        embed.description = "A guide to recording Citra with OBS"
-        await ctx.send(embed=embed)
-
-    @tutorial.command(cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
-    async def gbadump(self, ctx):
-        """Links to GBA Dump guide"""
-        embed = discord.Embed(title="Dumping GBA games", color=discord.Color.purple())
-        embed.set_thumbnail(url="https://wiki.no-intro.org/resources/assets/wiki.png")
-        embed.url = "https://wiki.no-intro.org/index.php?title=Game_Boy_Advance_Dumping_Guide"
-        embed.description = "How to dump GBA cartridges"
-        await ctx.send(embed=embed)
-
-    @tutorial.command(aliases=["carttodigitalsave", "ctdsave"])
-    async def transfersave(self, ctx):
-        """Links to cart to digital version save transfer tutorial"""
-        embed = discord.Embed(title="Cart to digital version save transfer tutorial", color=discord.Color.purple())
-        embed.url = "https://redkerry135.github.io/transfersave/"
-        embed.description = "A tutorial about how to transfer a save from the cart version of a game to a digital version of that game."
         await ctx.send(embed=embed)
 
     @tutorial.command(aliases=["theme"])
