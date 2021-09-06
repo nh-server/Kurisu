@@ -9,7 +9,7 @@ from os.path import dirname, join
 from Levenshtein import distance
 from utils.utils import ConsoleColor
 from utils.checks import check_if_user_can_sr
-from utils.mdcmd import add_md_files_as_commands, systems
+from utils.mdcmd import add_md_files_as_commands, check_console, systems
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +31,6 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         self.unidb = {}
         self.apps_update.start()
 
-
     @tasks.loop(hours=2)
     async def apps_update(self):
         async with self.bot.session.get("https://raw.githubusercontent.com/Universal-Team/db/master/docs/data/full.json", timeout=45) as r:
@@ -42,7 +41,6 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
             else:
                 self.unidb = {}
                 logger.warning("Failed to fetch Universal Team Database.")
-
 
     def unisearch(self, query: str) -> dict:
         query = query.lower()
@@ -57,12 +55,10 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 max_rat = ratio
         return res
 
-
     async def simple_embed(self, ctx, text, *, title="", color=discord.Color.default()):
         embed = discord.Embed(title=title, color=color)
         embed.description = cleandoc(text)
         await ctx.send(embed=embed)
-
 
     @check_if_user_can_sr()
     @commands.guild_only()

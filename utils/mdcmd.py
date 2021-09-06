@@ -1,6 +1,6 @@
 from collections import defaultdict
 from glob import iglob
-from os.path import basename, dirname, join
+from os.path import basename, join
 from typing import TYPE_CHECKING
 
 import discord
@@ -8,7 +8,7 @@ from discord.ext import commands
 from utils.utils import ConsoleColor
 
 if TYPE_CHECKING:
-    from typing import Dict, List, Optional, Tuple, Type, Union
+    from typing import Dict, List, Optional, Tuple, Type
 empty = discord.Embed.Empty
 
 systems_no_aliases = ('3ds', 'wiiu', 'vwii', 'switch', 'wii', 'dsi', 'legacy')
@@ -172,10 +172,6 @@ def add_md_files_as_commands(cog_class: 'Type[commands.Cog]', md_dir: str = None
                 # this is kinda ugly, but basically it gets the first (and only) value of the dict
                 await ctx.send(embed=next(iter(embeds.values())))
 
-        parent = None
-        if isinstance(namespace, commands.Group):
-            parent = namespace
-
         cmd.__name__ = name
         # i figured this was easier than dealing with the multiple attributes for command help
         cmd.__doc__ = help_desc
@@ -198,7 +194,7 @@ def add_md_files_as_commands(cog_class: 'Type[commands.Cog]', md_dir: str = None
         if header['help-desc']:
             # in case some don't have a help-desc, don't delete a previous one
             helpdescs[command] = header['help-desc']
-    
+
     for command, embed_dict in new_commands.items():
         new_aliases = list(set(aliases[command]))
         command_obj = make_cmd(command, helpdescs[command], embed_dict, new_aliases)
