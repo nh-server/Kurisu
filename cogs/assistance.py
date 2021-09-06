@@ -14,7 +14,7 @@ from utils.mdcmd import add_md_files_as_commands, check_console, systems
 logger = logging.getLogger(__name__)
 
 
-class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 1.0, commands.BucketType.channel))):
+class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 30.0, commands.BucketType.channel))):
     """
     Commands that will mostly be used in the help channels.
     """
