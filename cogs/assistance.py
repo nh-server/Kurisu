@@ -5,10 +5,11 @@ import logging
 from discord.ext import commands, tasks
 from io import BytesIO
 from inspect import cleandoc
+from os.path import dirname, join
 from Levenshtein import distance
 from utils.utils import ConsoleColor
 from utils.checks import check_if_user_can_sr
-
+from utils.mdcmd import add_md_files_as_commands, systems
 
 logger = logging.getLogger(__name__)
 
@@ -23,11 +24,13 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
     hekate_ver = "5.6.0"
     last_revision = "August 30th, 2021"
 
+    data_dir = join(dirname(__file__), 'assistance-cmds')
+
     def __init__(self, bot):
         self.bot = bot
-        self.systems = ("3ds", "wiiu", "vwii", "switch", "nx", "ns", "wii", "dsi", "legacy")
         self.unidb = {}
         self.apps_update.start()
+
 
     @tasks.loop(hours=2)
     async def apps_update(self):
@@ -39,6 +42,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
             else:
                 self.unidb = {}
                 logger.warning("Failed to fetch Universal Team Database.")
+
 
     def unisearch(self, query: str) -> dict:
         query = query.lower()
@@ -53,18 +57,12 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 max_rat = ratio
         return res
 
+
     async def simple_embed(self, ctx, text, *, title="", color=discord.Color.default()):
         embed = discord.Embed(title=title, color=color)
         embed.description = cleandoc(text)
         await ctx.send(embed=embed)
 
-    def check_console(self, message, channel, consoles):
-        message = message.lower()
-        if message in consoles:
-            return True
-        elif ("wii" not in consoles or channel.startswith("legacy")) and channel.startswith(consoles) and message not in self.systems:
-            return True
-        return False
 
     @check_if_user_can_sr()
     @commands.guild_only()
@@ -87,19 +85,19 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
     async def guide(self, ctx, *, consoles=""):
         """Links to the recommended guides."""
         consoles = consoles.casefold()
-        consoleslist = {x for x in consoles.split() if x in self.systems}
+        consoleslist = {x for x in consoles.split() if x in systems}
         channel_name = ctx.channel.name if not isinstance(ctx.channel, discord.DMChannel) else ""
 
         if not consoleslist:
-            if channel_name.startswith(self.systems):
+            if channel_name.startswith(systems):
                 consoleslist = ['auto']
             else:
-                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in self.systems])}.")
+                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
 
                 ctx.command.reset_cooldown(ctx)
                 return
         for x in consoleslist:
-            if self.check_console(x, channel_name, '3ds'):
+            if check_console(x, channel_name, '3ds'):
                 embed = discord.Embed(title="Guide", color=ConsoleColor.n3ds())
                 embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/")
                 embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/nhplai.png")
@@ -107,7 +105,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 embed.description = "A complete guide to 3DS custom firmware, from stock to boot9strap."
                 await ctx.send(embed=embed)
                 continue
-            if self.check_console(x, channel_name, ('wiiu',)):
+            if check_console(x, channel_name, ('wiiu',)):
                 embed = discord.Embed(title="Guide", color=ConsoleColor.wiiu())
                 embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/")
                 embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
@@ -115,7 +113,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 embed.description = "A complete Wii U custom firmware + coldboothax guide"
                 await ctx.send(embed=embed)
                 continue
-            if self.check_console(x, channel_name, ('vwii',)):
+            if check_console(x, channel_name, ('vwii',)):
                 embed = discord.Embed(title="Guide", color=ConsoleColor.wiiu())
                 embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/vwii-modding")
                 embed.set_thumbnail(url="https://i.imgur.com/FclGzNz.png")
@@ -123,7 +121,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 embed.description = "A complete vWii modding guide"
                 await ctx.send(embed=embed)
                 continue
-            if self.check_console(x, channel_name, ('switch', 'nx', 'ns')):
+            if check_console(x, channel_name, ('switch', 'nx', 'ns')):
                 embed = discord.Embed(title="Guide", color=ConsoleColor.switch())
                 embed.set_author(name="NH Discord Server", url="https://nh-server.github.io/switch-guide/")
                 embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
@@ -131,14 +129,14 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 embed.description = "A Switch guide from stock to Atmosphere"
                 await ctx.send(embed=embed)
                 continue
-            if self.check_console(x, channel_name, ('legacy', 'wii')):
+            if check_console(x, channel_name, ('legacy', 'wii')):
                 embed = discord.Embed(title="Guide", color=ConsoleColor.wii())
                 embed.set_author(name="RiiConnect24", url="https://wii.guide/")
                 embed.set_thumbnail(url="https://i.imgur.com/KI6IXmm.png")
                 embed.url = "https://wii.guide/"
                 embed.description = "A complete original Wii softmod guide"
                 await ctx.send(embed=embed)
-            if self.check_console(x, channel_name, ('legacy', 'dsi')):
+            if check_console(x, channel_name, ('legacy', 'dsi')):
                 embed = discord.Embed(title="Guide", color=ConsoleColor.legacy())
                 embed.set_author(name="emiyl & DS⁽ⁱ⁾ Mode Hacking", url="https://dsi.cfw.guide/credits")
                 embed.set_thumbnail(url="https://i.imgur.com/OGelKVt.png")
@@ -164,16 +162,6 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         await ctx.send(embed=embed)
 
     @commands.command()
-    async def dsp(self, ctx):
-        """Links to Dsp1."""
-        embed = discord.Embed(title="Dsp1", color=discord.Color.green())
-        embed.set_author(name="zoogie", url="https://github.com/zoogie", icon_url="https://gbatemp.net/data/avatars/l/357/357147.jpg?1426471484")
-        embed.description = "Dump 3DS's DSP component to SD for homebrew audio."
-        embed.set_thumbnail(url="https://raw.githubusercontent.com/Cruel/DspDump/master/icon.png")
-        embed.url = "https://github.com/zoogie/DSP1/releases"
-        await ctx.send(embed=embed)
-
-    @commands.command()
     async def seedminer(self, ctx):
         """Links the seedminer guide"""
         embed = discord.Embed(title="Seedminer", color=discord.Color(0xb4eb4d))
@@ -193,70 +181,6 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         embed.description = "How to hack your 3DS console on any firmware from 1.0.0 to 11.14"
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=['snickerstream'])
-    async def ntrstream(self, ctx):
-        """Snickerstream/NTR streaming guide"""
-        embed = discord.Embed(title="Snickerstream: NTR Streaming Client", color=ConsoleColor.n3ds())
-        embed.url = "https://gbatemp.net/threads/release-snickerstream-revived-a-proper-release-with-lots-of-improvements-and-new-features.488374/"
-        embed.description = "How to use NTR CFW with Snickerstream to stream your 3DS' screen"
-        embed.add_field(name="Guide and Advice", value=cleandoc("""
-                Easy [install guide](https://github.com/RattletraPM/Snickerstream/wiki/Streaming-with-NTR) for streaming with Snickerstream.
-                Snickerstream [app download](https://github.com/RattletraPM/Snickerstream/releases/latest)
-                Having issues? Check the following:
-                • Are you connected to the Internet?
-                • Is your antivirus program blocking the program?
-                • Make sure you typed the IP correctly.
-                • Make sure you are using the latest BootNTR Selector with NTR 3.6.
-                More detailed troubleshooting [available here](https://github.com/RattletraPM/Snickerstream/wiki/Troubleshooting)
-                Other information about Snickerstream on [Snickerstream's GitHub Wiki](https://github.com/RattletraPM/Snickerstream/wiki)
-                """))
-        await ctx.send(embed=embed)
-
-    @commands.command()
-    async def update(self, ctx, *, consoles=""):
-        """Explains how to safely prepare for an update for a hacked console"""
-
-        systems = ('3ds', 'nx', 'ns', 'switch')
-        wanted_consoles = list(set(x for x in consoles.split() if x in systems))
-        channel_name = ctx.channel.name if not isinstance(ctx.channel, discord.DMChannel) else ""
-
-        if not wanted_consoles:
-            if channel_name.startswith(systems):
-                wanted_consoles = ["auto"]
-            else:
-                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}")
-
-                ctx.command.reset_cooldown(ctx)
-                return
-
-        for console in wanted_consoles:
-            if self.check_console(console, channel_name, "3ds"):
-                await self.simple_embed(ctx,
-                    "**Is it safe to update to current 3DS firmware?**\n\n"
-
-                    "**Luma3DS 10.2.1 and above**\n"
-                    "You can update safely.\n\n"
-
-                    "**Luma3DS 8.0 - 10.2**\n"
-                    "Please follow the directions on the 3DS Hacks Guide [Restoring / Updating CFW](https://3ds.hacks.guide/restoring-updating-cfw) page, then you can update safely. Being on these Luma3DS "
-                    "versions on 11.8+ will cause an error screen until you update.\n\n"
-
-                    "**Luma3DS 7.1**\n"
-                    "Follow the [B9S upgrade guide](https://3ds.hacks.guide/updating-b9s)\n\n"
-
-                    "**Luma3DS 7.0.5 and below**\n"
-                    "Follow the [a9lh-to-b9s guide](https://3ds.hacks.guide/a9lh-to-b9s)\n\n"
-
-                    "**To find out your Luma3DS version, hold select on bootup and look at the top left corner of the top screen**\n",
-                                        color=ConsoleColor.n3ds())
-            elif self.check_console(console, channel_name, ("switch", "nx", "ns")):
-                embed = discord.Embed(title="Updating Guide", color=ConsoleColor.switch())
-                embed.set_author(name="NH Discord Server", url="https://nh-server.github.io/switch-guide/")
-                embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
-                embed.url = "https://nh-server.github.io/switch-guide/extras/updating/"
-                embed.description = "A guide and general recommendations for updating your switch with emuMMC."
-                await ctx.send(embed=embed)
-
     @commands.command(aliases=["checkluma"])
     @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
     async def lumacheck(self, ctx):
@@ -268,19 +192,6 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 2. Hold the SELECT button.
                 3. While still holding SELECT, turn the console on.
                 4. Provide a photo of your console's screens, or if you can see the version, tell us here.
-                """))
-        await ctx.send(embed=embed)
-
-    @commands.command(aliases=["lowspace", "lowbackup"])
-    @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
-    async def nospace(self, ctx):
-        """Low space NAND Backup"""
-        embed = discord.Embed(title="How to create a 3DS NAND backup without enough space on the SD card", color=ConsoleColor.n3ds())
-        embed.add_field(name="Steps to create the backup", value=cleandoc("""
-                1. Copy the Nintendo 3DS folder from the root of your SD card to your computer then delete it from **the SD card.**
-                2. Boot GodMode9 by holding START on boot then preform a normal NAND backup. After that, power off the system.
-                3. Copy the files in gm9/out on your SD card to a safe spot on your computer. Then, delete the files from **the SD card.**
-                4. Copy the Nintendo 3DS folder to your SD card root then delete it **from your computer.**
                 """))
         await ctx.send(embed=embed)
 
@@ -297,10 +208,10 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
 
                 ctx.command.reset_cooldown(ctx)
                 return
-        if self.check_console(console, channel_name, '3ds'):
+        if check_console(console, channel_name, '3ds'):
             """Links to eiphax cfw uses page"""
             await self.simple_embed(ctx, "Want to know what CFW can be used for? <https://3ds.eiphax.tech/tips.html>")
-        elif self.check_console(console, channel_name, ('switch', 'nx', 'ns')):
+        elif check_console(console, channel_name, ('switch', 'nx', 'ns')):
             embed = discord.Embed(title="What can I do with a hacked switch?", color=ConsoleColor.switch())
             embed.description = cleandoc("""
                 There is no complete list about what is possible and what not, but to give you an idea of what you can do, here is an overview:
@@ -314,7 +225,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 -Run Android or Linux on your Switch,
                 -Still have access to normal stock features (e.g. eShop, online services etc.)""")
             await ctx.send(embed=embed)
-        elif self.check_console(console, channel_name, ('wiiu',)):
+        elif check_console(console, channel_name, ('wiiu',)):
             embed = discord.Embed(title="What can Wii U CFW be used for?", color=ConsoleColor.wiiu())
             embed.add_field(name="Among other things, it allows you to do the following:", value=cleandoc("""
                         - Use “ROM hacks” for games that you own.
@@ -415,11 +326,11 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
 
                 ctx.command.reset_cooldown(ctx)
                 return
-        if self.check_console(console, channel_name, '3ds'):
+        if check_console(console, channel_name, '3ds'):
             embed = discord.Embed(title="Running stock (unmodified) 3DS firmware?", color=ConsoleColor.n3ds())
             embed.add_field(name="Check Your Firmware", value="The latest update to common guide methods mean that the best method for you now depends on your firmware version. Please read the [guide](https://3ds.hacks.guide/get-started) to learn more.", inline=False)
             await ctx.send(embed=embed)
-        elif self.check_console(console, channel_name, ('nx', 'switch', 'ns')):
+        elif check_console(console, channel_name, ('nx', 'switch', 'ns')):
             await self.simple_embed(ctx,
             """
             Use [our guide](https://nh-server.github.io/switch-guide/user_guide/getting_started/) to determine if your Switch is a first-gen unit.
@@ -449,7 +360,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 ctx.command.reset_cooldown(ctx)
                 return
 
-        if self.check_console(console, channel_name, '3ds'):
+        if check_console(console, channel_name, '3ds'):
             embed = discord.Embed(title="Is the new 3DS update safe?", color=ConsoleColor.n3ds())
             embed.description = cleandoc("""
             Currently, the latest 3DS system firmware is `11.15.0-47`.
@@ -464,7 +375,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
             """)
             await ctx.send(embed=embed)
 
-        elif self.check_console(console, channel_name, ('nx', 'switch', 'ns')):
+        elif check_console(console, channel_name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Is the new Switch update safe?", color=ConsoleColor.switch())
             embed.description = cleandoc(f"""
             Currently, the latest Switch system firmware is `{self.nx_firmware}`.
@@ -493,14 +404,14 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 ctx.command.reset_cooldown(ctx)
                 return
 
-        if self.check_console(console, channel_name, '3ds'):
+        if check_console(console, channel_name, '3ds'):
             embed = discord.Embed(title="what?", color=ConsoleColor.n3ds())
             embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/eip2.png")
             embed.url = "https://3ds.eiphax.tech/what.html"
             embed.description = "Basic things about the 3DS and CFW"
             await ctx.send(embed=embed)
 
-        elif self.check_console(console, channel_name, ('nx', 'switch', 'ns')):
+        elif check_console(console, channel_name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="The NX Nutshell", color=ConsoleColor.switch())
             embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/eip2.png")
             embed.url = "https://nx.eiphax.tech/nutshell.html"
@@ -521,7 +432,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 ctx.command.reset_cooldown(ctx)
                 return
 
-        if self.check_console(console, channel_name, '3ds'):
+        if check_console(console, channel_name, '3ds'):
             embed = discord.Embed(title="3DS Bans", color=ConsoleColor.n3ds())
             embed.description = cleandoc("""
             **Nintendo has shown a marked lack of care about bans on the 3DS lately.**
@@ -532,7 +443,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
             """)
             await ctx.send(embed=embed)
 
-        elif self.check_console(console, channel_name, ('nx', 'switch', 'ns')):
+        elif check_console(console, channel_name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="NX Bans", color=ConsoleColor.switch())
             embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/gunther.png")
             embed.url = "https://nx.eiphax.tech/ban"
@@ -553,7 +464,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 ctx.command.reset_cooldown(ctx)
                 return
 
-        if self.check_console(console, channel_name, '3ds'):
+        if check_console(console, channel_name, '3ds'):
             embed = discord.Embed(title="Big SD", color=ConsoleColor.n3ds())
             embed.description = cleandoc("""
             Although Nintendo says the official SD size limit is 32GB, the 3DS can accept cards up to 2TB.
@@ -568,7 +479,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
             """)
             await ctx.send(embed=embed)
 
-        elif self.check_console(console, channel_name, ('nx', 'switch', 'ns')):
+        elif check_console(console, channel_name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Big SD", color=ConsoleColor.switch())
             embed.description = cleandoc("""
             Although Nintendo supports large SD cards in EXFAT format, it is recommended to use FAT32.
@@ -597,7 +508,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                 ctx.command.reset_cooldown(ctx)
                 return
 
-        if self.check_console(console, channel_name, '3ds'):
+        if check_console(console, channel_name, '3ds'):
             embed = discord.Embed(title="Moving SD Cards", color=ConsoleColor.n3ds())
             embed.description = cleandoc("""
             Moving SD cards on a 3DS is easy.
@@ -614,7 +525,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
             """)
             await ctx.send(embed=embed)
 
-        elif self.check_console(console, channel_name, ('nx', 'switch', 'ns')):
+        elif check_console(console, channel_name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Moving SD cards", color=ConsoleColor.switch())
             embed.set_author(name="NH Discord Server", url="https://switchgui.de/switch-guide/")
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
@@ -635,14 +546,14 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
 
                 ctx.command.reset_cooldown(ctx)
                 return
-        if self.check_console(console, channel_name, '3ds'):
+        if check_console(console, channel_name, '3ds'):
             embed = discord.Embed(title="eip's problem solver packs", color=ConsoleColor.n3ds())
             embed.description = cleandoc("""
             Please visit the following page and read the information provided.
             https://3ds.eiphax.tech/catalyst.html
             """)
             await ctx.send(embed=embed)
-        elif self.check_console(console, channel_name, ('nx', 'switch', 'ns')):
+        elif check_console(console, channel_name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="eip's problem solver pack", color=ConsoleColor.switch())
             embed.description = cleandoc("""
             Please visit the following page and read the information provided.
@@ -785,7 +696,7 @@ just missing a file called boot.firm in the root of your SD card.
 
                 ctx.command.reset_cooldown(ctx)
                 return
-        if self.check_console(console, channel_name, '3ds'):
+        if check_console(console, channel_name, '3ds'):
             embed = discord.Embed(title="EmuNAND for 3DS", color=ConsoleColor.n3ds())
             embed.description = cleandoc("""
             With the recent advances in hacking methods and safety, it is no longer recommended to use an emuNAND on a 3DS/2DS system.
@@ -793,7 +704,7 @@ just missing a file called boot.firm in the root of your SD card.
             If you do not know what an emuNAND is, or is used for, you do not need one.
             """)
             await ctx.send(embed=embed)
-        elif self.check_console(console, channel_name, ('nx', 'switch', 'ns')):
+        elif check_console(console, channel_name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="EmuMMC/EmuNAND for Switch", color=ConsoleColor.switch())
             embed.description = cleandoc(f"""
             On the Switch system, it is recommended to use an emuMMC/emuNAND.
@@ -885,7 +796,7 @@ the system can't check for an update.
 
                 ctx.command.reset_cooldown(ctx)
                 return
-        if self.check_console(console, channel_name, '3ds'):
+        if check_console(console, channel_name, '3ds'):
             await self.simple_embed(ctx, """
                             1. Navigate to the following folder on your SD card: \
 `/Nintendo 3DS/(32 Character ID)/(32 Character ID)/extdata/00000000/`
@@ -894,7 +805,7 @@ the system can't check for an update.
                               EUR: `000002ce`
                               JPN: `000002cc`
                               """, title="How to delete Home Menu Theme Data", color=ConsoleColor.n3ds())
-        elif self.check_console(console, channel_name, ('nx', 'switch', 'ns')):
+        elif check_console(console, channel_name, ('nx', 'switch', 'ns')):
             await self.simple_embed(ctx, """
                             1. Navigate to the following folder on your SD card: `/atmosphere/contents`
                             2. Delete the folder with the name `0100000000001000`
@@ -936,7 +847,7 @@ the system can't check for an update.
                 ctx.command.reset_cooldown(ctx)
                 return
         for x in consoleslist:
-            if self.check_console(x, channel_name, ('3ds',)):
+            if check_console(x, channel_name, ('3ds',)):
                 embed = discord.Embed(title="Virtual Console Injects for 3DS", color=ConsoleColor.n3ds())
                 embed.set_author(name="Asdolo", url="https://gbatemp.net/members/asdolo.389539/")
                 embed.set_thumbnail(url="https://i.imgur.com/rHa76XM.png")
@@ -946,7 +857,7 @@ the system can't check for an update.
                 await ctx.send(embed=embed)
                 continue
 
-            if self.check_console(x, channel_name, ('wiiu', 'wii u')):
+            if check_console(x, channel_name, ('wiiu', 'wii u')):
                 embed = discord.Embed(title="Virtual Console Injects for Wii U", color=ConsoleColor.wiiu())
                 embed.set_author(name="NicoAICP", url="https://gbatemp.net/members/nicoaicp.404553/")
                 embed.set_thumbnail(url="https://gbatemp.net/data/avatars/l/404/404553.jpg")
@@ -968,14 +879,14 @@ the system can't check for an update.
 
                 ctx.command.reset_cooldown(ctx)
                 return
-        if self.check_console(console, channel_name, '3ds'):
+        if check_console(console, channel_name, '3ds'):
             embed = discord.Embed(title="GodMode9 dump/build Guide", color=ConsoleColor.n3ds())
             embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/dumping-titles-and-game-cartridges")
             embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/nhplai.png")
             embed.url = "https://3ds.hacks.guide/dumping-titles-and-game-cartridges"
             embed.description = "How to dump/build CIAs and Files using GodMode9"
             await ctx.send(embed=embed)
-        elif self.check_console(console, channel_name, ('switch', 'nx', 'ns')):
+        elif check_console(console, channel_name, ('switch', 'nx', 'ns')):
             embed = discord.Embed(title="Switch dump/build Guide", color=ConsoleColor.switch())
             embed.set_author(name="SuchMeme", url="https://suchmememanyskill.github.io/guides/switchdumpguide/")
             embed.set_thumbnail(url="https://i.imgur.com/FkKB0er.png")
@@ -983,21 +894,21 @@ the system can't check for an update.
             embed.description = ("How to dump/build NSPs using NXDumpTool\n"
                                  "BAN Warning: only for use using offline emummc")
             await ctx.send(embed=embed)
-        elif self.check_console(console, channel_name, ('wiiu',)):
+        elif check_console(console, channel_name, ('wiiu',)):
             embed = discord.Embed(title="Wii U dump/install Guide", color=ConsoleColor.wiiu())
             embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/dump-games")
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
             embed.url = "https://wiiu.hacks.guide/#/dump-games"
             embed.description = "How to dump/install Wii U game discs using disc2app and WUP Installer GX2"
             await ctx.send(embed=embed)
-        elif self.check_console(console, channel_name, 'vwii'):
+        elif check_console(console, channel_name, 'vwii'):
             embed = discord.Embed(title="vWii dump Guide", color=ConsoleColor.wii())
             embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/dump-wii-games")
             embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
             embed.url = "https://wiiu.hacks.guide/#/dump-wii-games"
             embed.description = "How to dump Wii game discs on vWii using CleanRip"
             await ctx.send(embed=embed)
-        elif self.check_console(console, channel_name, 'dsi'):
+        elif check_console(console, channel_name, 'dsi'):
             embed = discord.Embed(title="GodMode9i dump Guide", color=ConsoleColor.legacy())
             embed.set_author(name="NightScript", url="https://dsi.cfw.guide/dumping-game-cards")
             embed.url = "https://dsi.cfw.guide/dumping-game-cards"
@@ -1138,16 +1049,6 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
         embed.description = "Basic tutorial for randomizing with LayeredFS"
         await ctx.send(embed=embed)
 
-    @tutorial.command(aliases=["romhack", "romhacks"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
-    async def layeredfs(self, ctx):
-        """How to use Luma 8.0+ LayeredFs"""
-        embed = discord.Embed(title="LayeredFs Guide", color=discord.Color(0x66FFFF))
-        embed.set_author(name="Chroma Ryu", url="https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Using-Luma3DS'-layeredfs-(Only-version-8.0-and-higher)")
-        embed.set_thumbnail(url="https://i.imgur.com/U8NA9lx.png")
-        embed.url = "https://github.com/knight-ryu12/godmode9-layeredfs-usage/wiki/Using-Luma3DS'-layeredfs-(Only-version-8.0-and-higher)"
-        embed.description = "How to use Luma 8.0+ LayeredFs for ROM Hacking."
-        await ctx.send(embed=embed)
-
     @tutorial.command(aliases=["Animal_crossing"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
     async def acnl(self, ctx):
         """Links to AC:NL editing tutorial"""
@@ -1189,12 +1090,12 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
                 return
 
         embed = discord.Embed()
-        if self.check_console(console, channel_name, "3ds"):
+        if check_console(console, channel_name, "3ds"):
             embed.title = "3DS VC Extraction Tutorial"
             embed.set_author(name="GlaZed_Belmont")
             embed.set_thumbnail(url="https://i.imgur.com/TgdOPkG.png")
             embed.url = "https://glazedbelmont.github.io/vcextract/"
-        elif self.check_console(console, channel_name, ('wiiu',)):
+        elif check_console(console, channel_name, ('wiiu',)):
             embed.title = "Wii U VC Extraction Tutorial"
             embed.set_author(name="lendun, Lazr")
             embed.set_thumbnail(url="https://i.imgur.com/qXc4TY5.png")
@@ -1257,10 +1158,10 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
                 return
 
         embed = discord.Embed()
-        if self.check_console(console, channel_name, "3ds"):
+        if check_console(console, channel_name, "3ds"):
             embed.title = "3DS FTP Guide"
             embed.url = "https://3ds.eiphax.tech/ftp.html"
-        elif self.check_console(console, channel_name, ("nx", "ns", "switch")):
+        elif check_console(console, channel_name, ("nx", "ns", "switch")):
             embed.title = "Switch FTP Guide"
             embed.url = "https://nx.eiphax.tech/ftp.html"
         embed.colour = discord.Color.purple()
@@ -1319,12 +1220,12 @@ NAND backups, and SD card contents. Windows, macOS, and Linux are supported.
 
                 ctx.command.reset_cooldown(ctx)
                 return
-        if self.check_console(console, channel_name, '3ds'):
+        if check_console(console, channel_name, '3ds'):
             embed = discord.Embed(title="3DS Themes Tutorial", color=discord.Color.dark_orange())
             embed.url = "https://itspizzatime1501.github.io/guides/themes/"
             embed.description = "Tutorial for installing themes on the 3DS"
             await ctx.send(embed=embed)
-        elif self.check_console(console, channel_name, ('nx', 'switch', 'ns')):
+        elif check_console(console, channel_name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Switch Themes Tutorial", color=discord.Color.dark_orange())
             embed.url = "https://nh-server.github.io/switch-guide/extras/theming/"
             embed.description = "Tutorial for installing themes on the Switch"
@@ -1534,12 +1435,12 @@ in the scene.
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
                 ctx.command.reset_cooldown(ctx)
                 return
-        if self.check_console(console, channel_name, '3ds'):
+        if check_console(console, channel_name, '3ds'):
             embed = discord.Embed(title="3DS Database", color=ConsoleColor.n3ds())
             embed.url = "http://3dsdb.com/"
             embed.description = "3DS database for game releases."
             await ctx.send(embed=embed)
-        elif self.check_console(console, channel_name, ('nx', 'switch', 'ns')):
+        elif check_console(console, channel_name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Nintendo Switch Database", color=ConsoleColor.switch())
             embed.url = "http://nswdb.com/"
             embed.description = "Nintendo Switch database for game releases."
@@ -1615,7 +1516,7 @@ in the scene.
                 await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
                 ctx.command.reset_cooldown(ctx)
                 return
-        if self.check_console(console, channel_name, ('nx', 'switch', 'ns')):
+        if check_console(console, channel_name, ('nx', 'switch', 'ns')):
             embed = discord.Embed(title="Downgrading on the Switch: Why you shouldn't do it", color=ConsoleColor.switch())
             embed.description = "Downgrading your firmware on the Switch is not recommended. This will generally lead to a lot of issues and won't solve anything."
             embed.add_field(name="Possible side effects from downgrading:", value=cleandoc("""
@@ -1625,7 +1526,7 @@ in the scene.
                 * Save data compatibility issues.
                 * Games not launching.
             """))
-        elif self.check_console(console, channel_name, '3ds'):
+        elif check_console(console, channel_name, '3ds'):
             embed = discord.Embed(title="Downgrading on the 3DS: Why you shouldn't do it", color=ConsoleColor.n3ds())
             embed.description = "Downgrading your firmware on the 3DS is not recommended. Although you *can*, you won't get any benefits from it."
             embed.add_field(name="Possible side effects from downgrading:", value=cleandoc("""
@@ -1666,6 +1567,10 @@ in the scene.
                 f = discord.File(fp=buffer, filename="qr.png")
                 embed.set_image(url="attachment://qr.png")
         await ctx.send(file=f, embed=embed)
+
+
+add_md_files_as_commands(Assistance)
+add_md_files_as_commands(Assistance, join(Assistance.data_dir, 'tutorial'), namespace=Assistance.tutorial)
 
 
 def setup(bot):
