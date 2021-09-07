@@ -818,15 +818,6 @@ in the scene.
                                 Note that if hekate can't find a config, it'll create one. So likely you now have a hekate_ipl.ini in your bootloader folder, replace it with the one from [the guide](https://nh-server.github.io/switch-guide/user_guide/emummc/sd_preparation/)
                                 """, title="Getting the \"No main boot entries found\" error in hekate?", color=ConsoleColor.switch())
 
-    @commands.command(aliases=['ntrboot', 'ntrcartlist', 'ntrbootcartlist'])
-    async def ntrcart(self, ctx):
-        imagelink = "https://i.imgur.com/duMthYp.png"
-        title = "Which flashcarts work with NTRBoot?"
-        embed = discord.Embed(title=title, color=ConsoleColor.n3ds())
-        embed.set_image(url=imagelink)
-        embed.description = "To see an always up to date list of compatible flashcarts go to https://3ds.hacks.guide/ntrboot"
-        await ctx.send(embed=embed)
-
     @commands.command(aliases=['injector'])
     async def injectors(self, ctx):
         embed = discord.Embed(title="List of switch payload injectors", color=ConsoleColor.switch())
@@ -947,21 +938,6 @@ in the scene.
                 5. Select `copy to 0:/gm9/out`
                 6. Power off your console and insert your SD card into your computer
                 7. Navigate to `/gm9/out` on your SD, `essential.exefs` should be there
-            """))
-        await ctx.send(embed=embed)
-
-    @commands.command(aliases=['systransfer'])
-    async def transfer(self, ctx):
-        """If you want to keep homebrew apps when doing a system transfer:"""
-        embed = discord.Embed(title="What to do if you want to keep homebrew apps during a system transfer", color=ConsoleColor.n3ds())
-        embed.description = "Keeping Homebrew Apps after system transfer"
-        embed.add_field(name="Steps to system transfer", value=cleandoc("""
-                1. Install CFW on the new console using [3ds.hacks.guide](https://3ds.hacks.guide/)
-                2. Do a system transfer by navigating to system settings, other settings, system transfer.
-                3. If prompted, choose a PC-Based Transfer.
-                4. To access the Homebrew Launcher on the new console, do `Section III - Homebrew Launcher` in [Finalizing Setup](https://3ds.hacks.guide/finalizing-setup)
-                5. On the console you transfered to, run [faketik](https://github.com/ihaveamac/faketik/releases) in the Homebrew Launcher.
-                6. Your Homebrew apps should appear on the homescreen!
             """))
         await ctx.send(embed=embed)
 
