@@ -4,6 +4,7 @@ import re
 import traceback
 
 from discord.ext import commands
+from typing import Optional, Union
 
 
 class ConsoleColor(discord.Color):
@@ -41,6 +42,13 @@ async def send_dm_message(member: discord.Member, message: str, ctx: commands.Co
         if ctx:
             await ctx.send(f"Failed to send DM message to {member.mention}")
         return False
+
+
+async def get_user(ctx: commands.Context, user_id: int) -> Optional[Union[discord.Member, discord.User]]:
+    if ctx.guild and (user := ctx.guild.get_member(user_id)):
+        return user
+    else:
+        return await ctx.bot.fetch_user(user_id)
 
 
 def command_signature(command, *, prefix=".") -> str:

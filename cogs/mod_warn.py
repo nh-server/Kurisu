@@ -4,6 +4,7 @@ from discord.ext import commands
 from typing import Union
 from utils import utils, crud
 from utils.checks import is_staff, check_staff_id, check_bot_or_staff
+from utils.utils import get_user
 
 
 class ModWarn(commands.Cog):
@@ -116,7 +117,7 @@ class ModWarn(commands.Cog):
         if warns:
             dbchannel = await crud.get_dbchannel(ctx.channel.id)
             for idx, warn in enumerate(warns):
-                issuer = await ctx.get_user(warn.issuer)
+                issuer = await get_user(ctx, warn.issuer)
                 value = ""
                 if dbchannel and dbchannel.is_mod_channel:
                     value += f"Issuer: {issuer.name}\n"
@@ -166,7 +167,7 @@ class ModWarn(commands.Cog):
             await ctx.send("Warn index is below 1!")
             return
         warn = warns[idx - 1]
-        issuer = await ctx.get_user(warn.issuer)
+        issuer = await get_user(ctx, warn.issuer)
         embed = discord.Embed(color=discord.Color.dark_red(), title=f"Warn {idx} on {discord.utils.snowflake_time(warn.id).strftime('%Y-%m-%d %H:%M:%S')}",
                               description=f"Issuer: {issuer}\nReason: {warn.reason}")
         await crud.remove_warn_id(member.id, idx)
