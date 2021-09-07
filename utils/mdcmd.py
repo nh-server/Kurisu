@@ -171,9 +171,7 @@ def add_md_files_as_commands(cog_class: 'Type[commands.Cog]', md_dir: str = None
 
                 for console in requested_consoles:
                     for embed_console, embed in embeds.items():
-                        await ctx.send(f'chosen console: {console!r} {embed_console!r}')
                         if check_console(console, channel_name, embed_console):
-                            await ctx.send('works')
                             await ctx.send(embed=embed)
         else:
             # single-console commands can simply print the one embed
