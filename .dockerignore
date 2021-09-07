@@ -9,3 +9,4 @@ token.txt
 config.ini
 config.ini.example
 dockerbuild.sh
+*.log*

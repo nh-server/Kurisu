@@ -15,7 +15,8 @@ RUN set -eux \
 	&& apk del --no-network .build-deps
 USER kurisu
 
-COPY data data
+#COPY data data
+RUN mkdir data
 COPY alembic.ini alembic.ini
 COPY migrations migrations
 COPY kurisu.py kurisu.py
