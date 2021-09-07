@@ -1,9 +1,8 @@
 *.ini
 *.sh
 !dockerbuild.sh
-*.log
+*.log*
 *.json
-*.png
 *.bin
 ._*
 .DS_Store
