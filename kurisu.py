@@ -433,6 +433,7 @@ async def startup():
     logger.info("Starting Kurisu on commit %s on branch %s", commit, branch)
     bot = Kurisu(command_prefix=('.', '!'), description="Kurisu, the bot for Nintendo Homebrew!", commit=commit,
                  branch=branch)
+    bot.help_command = commands.DefaultHelpCommand(dm_help=None)
     bot.engine = engine
     await bot.start(TOKEN)
 
