@@ -162,7 +162,11 @@ def add_md_files_as_commands(cog_class: 'Type[commands.Cog]', md_dir: str = None
         if len(embeds) > 1:
             # multi-console commands require a check
             async def cmd(self, ctx, *, consoles=''):
-                supported_consoles = tuple(embeds)
+                supported_consoles = list(embeds)
+                for s in supported_consoles:
+                    if s in {'dsi', 'wii'}:
+                        # special case for legacy channel
+                        supported_consoles.append('legacy')
                 # replace aliases with the expected console
                 requested_consoles = {get_console_name(c) for c in consoles.split()}
                 # and then check if any of the consoles are supported here
@@ -170,7 +174,7 @@ def add_md_files_as_commands(cog_class: 'Type[commands.Cog]', md_dir: str = None
                 channel_name = ctx.channel.name if not isinstance(ctx.channel, discord.DMChannel) else ''
 
                 if not requested_consoles:
-                    if channel_name.startswith(supported_consoles):
+                    if channel_name.startswith(tuple(supported_consoles)):
                         requested_consoles = {'auto'}
                     else:
                         valid = set(supported_consoles)
@@ -183,7 +187,11 @@ def add_md_files_as_commands(cog_class: 'Type[commands.Cog]', md_dir: str = None
 
                 for console in requested_consoles:
                     for embed_console, embed in embeds.items():
-                        if check_console(console, channel_name, embed_console):
+                        cons = [embed_console]
+                        if embed_console in {'dsi', 'wii'}:
+                            # special case for legacy channel
+                            cons.append('legacy')
+                        if check_console(console, channel_name, tuple(cons)):
                             await ctx.send(embed=embed)
         else:
             # single-console commands can simply print the one embed

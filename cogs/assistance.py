@@ -86,69 +86,6 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
             pass
 
     @commands.command()
-    async def guide(self, ctx, *, consoles=""):
-        """Links to the recommended guides."""
-        consoles = consoles.casefold()
-        consoleslist = {x for x in consoles.split() if x in systems}
-        channel_name = ctx.channel.name if not isinstance(ctx.channel, discord.DMChannel) else ""
-
-        if not consoleslist:
-            if channel_name.startswith(systems):
-                consoleslist = ['auto']
-            else:
-                await ctx.send(f"Please specify a console. Valid options are: {', '.join([x for x in systems])}.")
-
-                ctx.command.reset_cooldown(ctx)
-                return
-        for x in consoleslist:
-            if check_console(x, channel_name, '3ds'):
-                embed = discord.Embed(title="Guide", color=ConsoleColor.n3ds())
-                embed.set_author(name="NH & Friends", url="https://3ds.hacks.guide/")
-                embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/nhplai.png")
-                embed.url = "https://3ds.hacks.guide/"
-                embed.description = "A complete guide to 3DS custom firmware, from stock to boot9strap."
-                await ctx.send(embed=embed)
-                continue
-            if check_console(x, channel_name, ('wiiu',)):
-                embed = discord.Embed(title="Guide", color=ConsoleColor.wiiu())
-                embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/")
-                embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
-                embed.url = "https://wiiu.hacks.guide/"
-                embed.description = "A complete Wii U custom firmware + coldboothax guide"
-                await ctx.send(embed=embed)
-                continue
-            if check_console(x, channel_name, ('vwii',)):
-                embed = discord.Embed(title="Guide", color=ConsoleColor.wiiu())
-                embed.set_author(name="NH Discord Server", url="https://wiiu.hacks.guide/#/vwii-modding")
-                embed.set_thumbnail(url="https://i.imgur.com/FclGzNz.png")
-                embed.url = "https://wiiu.hacks.guide/#/vwii-modding"
-                embed.description = "A complete vWii modding guide"
-                await ctx.send(embed=embed)
-                continue
-            if check_console(x, channel_name, ('switch', 'nx', 'ns')):
-                embed = discord.Embed(title="Guide", color=ConsoleColor.switch())
-                embed.set_author(name="NH Discord Server", url="https://nh-server.github.io/switch-guide/")
-                embed.set_thumbnail(url="https://i.imgur.com/CVSu1zc.png")
-                embed.url = "https://nh-server.github.io/switch-guide/"
-                embed.description = "A Switch guide from stock to Atmosphere"
-                await ctx.send(embed=embed)
-                continue
-            if check_console(x, channel_name, ('legacy', 'wii')):
-                embed = discord.Embed(title="Guide", color=ConsoleColor.wii())
-                embed.set_author(name="RiiConnect24", url="https://wii.guide/")
-                embed.set_thumbnail(url="https://i.imgur.com/KI6IXmm.png")
-                embed.url = "https://wii.guide/"
-                embed.description = "A complete original Wii softmod guide"
-                await ctx.send(embed=embed)
-            if check_console(x, channel_name, ('legacy', 'dsi')):
-                embed = discord.Embed(title="Guide", color=ConsoleColor.legacy())
-                embed.set_author(name="emiyl & DS⁽ⁱ⁾ Mode Hacking", url="https://dsi.cfw.guide/credits")
-                embed.set_thumbnail(url="https://i.imgur.com/OGelKVt.png")
-                embed.url = "https://dsi.cfw.guide/"
-                embed.description = "The complete guide to modding your Nintendo DSi"
-                await ctx.send(embed=embed)
-
-    @commands.command()
     async def nxcfw(self, ctx, cfw=""):
         """Information on why we don't support or recommend various other Switch CFWs"""
 
