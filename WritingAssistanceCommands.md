@@ -14,10 +14,13 @@ The file is split into two parts: a header and a body. The header ends once a do
 * `author.name` (if setting author fields, this is required)
 * `author.url`
 * `author.icon-url`
+* `thumbnail-url`
+* `image-url`
 * `help-desc` (shows in `.help`, last one to be loaded is the one actually used)
 * `aliases` (comma-separated, merged from all files for the command)
+* `cooldown-per`
+* `cooldown-rate`
 * `color` (RGB hex code, defaults to console color)
-* `thumbnail-url`
 
 A file can have no header keys if it starts with two newlines, but this is not recommended.
 
@@ -57,3 +60,28 @@ This goes in another section!
 When either `.mycommand` or the aliases `.thing` or `.stuff` are used:
 
 <img src="https://github.com/nh-server/Kurisu/raw/main/example-embed.png" width="302">
+
+### Template
+Copy this template to a new file and edit it. Remove any unused fields.
+
+```md
+---
+title: 
+url: 
+author.name: 
+author.url: 
+author.icon-url: 
+thumbnail-url: 
+image-url: 
+help-desc: 
+aliases: 
+cooldown-per: 
+cooldown-rate: 
+color: 
+---
+
+Description
+
+# Section
+Section contents
+```
