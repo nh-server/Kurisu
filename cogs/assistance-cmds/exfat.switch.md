@@ -1,6 +1,6 @@
 ---
 title: exFAT on Switch: Why you shouldn't use it
-help-desc:exFAT on Switch:  why not to use it
+help-desc: exFAT on Switch: why not to use it
 ---
 
 The recommended filesystem format for the Switch is FAT32.
