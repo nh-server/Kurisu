@@ -105,7 +105,6 @@ def create_embed(header: 'Dict[str, str]', body: 'List[Tuple[str, str]]', embed_
 
 
 def parse_md_command(md_text: str, format_map: dict, embed_color: discord.Color):
-    #header_raw, body_raw = md_text.split('\n\n', maxsplit=1)
     parts = md_text.split('\n\n', maxsplit=1)
     if len(parts) == 1:
         # in case there is no body
