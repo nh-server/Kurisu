@@ -757,14 +757,6 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
         embed.set_image(url="https://media.discordapp.net/attachments/196635695958196224/677996125034250280/unknown-76.png")
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=['switchserial'])
-    async def serial(self, ctx):
-        """Picture to show what the hell a serial is"""
-        embed = discord.Embed(title="Don't know where your Switch's serial is?", color=ConsoleColor.switch())
-        embed.description = "This is where the serial is located. Use this number to check if you are patched."
-        embed.set_image(url="https://i.imgur.com/03NfeFN.png")
-        await ctx.send(embed=embed)
-
     @commands.command()
     async def nxban(self, ctx):
         """Switch ban risk snippet"""
