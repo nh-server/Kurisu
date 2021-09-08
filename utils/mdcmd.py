@@ -36,6 +36,8 @@ def parse_header(header_raw: str):
         'color': None,
         'thumbnail-url': empty,
         'image-url': empty,
+        'cooldown-rate': '1',
+        'cooldown-per': '30',
     }
 
     for line in header_raw.splitlines():
@@ -148,7 +150,7 @@ def get_console_name(console):
 
 def add_md_files_as_commands(cog_class: 'Type[commands.Cog]', md_dir: str = None, *, namespace=commands, format_map=None):
 
-    def make_cmd(name: str, help_desc: 'Optional[str]', embeds: 'Dict[str, discord.Embed]', aliases: list):
+    def make_cmd(name: str, help_desc: 'Optional[str]', embeds: 'Dict[str, discord.Embed]', cooldown: 'Tuple[int, int]', aliases: list):
         if len(embeds) > 1:
             # multi-console commands require a check
             async def cmd(self, ctx, *, consoles=''):
@@ -186,10 +188,13 @@ def add_md_files_as_commands(cog_class: 'Type[commands.Cog]', md_dir: str = None
         cmd.__doc__ = help_desc
 
         # this feels _wrong_ but is probably the best way to do this
-        return namespace.command(name=name, aliases=aliases)(cmd)
+        cooldown = commands.cooldown(cooldown[0], cooldown[1], commands.BucketType.channel)(cmd)
+        cmd_obj = namespace.command(name=name, aliases=aliases)(cooldown)
+        return cmd_obj
 
     new_commands = defaultdict(dict)
     aliases = defaultdict(list)
+    cooldowns = {}
     helpdescs = defaultdict(lambda: None)
 
     if md_dir is None:
@@ -209,10 +214,11 @@ def add_md_files_as_commands(cog_class: 'Type[commands.Cog]', md_dir: str = None
         if header['help-desc']:
             # in case some don't have a help-desc, don't delete a previous one
             helpdescs[command] = header['help-desc']
+        cooldowns[command] = (int(header['cooldown-rate']), int(header['cooldown-per']))
 
     for command, embed_dict in new_commands.items():
         new_aliases = list(set(aliases[command]))
-        command_obj = make_cmd(command, helpdescs[command], embed_dict, new_aliases)
+        command_obj = make_cmd(command, helpdescs[command], embed_dict, cooldowns[command], new_aliases)
         setattr(cog_class, command, command_obj)
         # there has to be a better way to do this...
         cog_class.__cog_commands__.append(command_obj)
