@@ -2,6 +2,8 @@
 title: Please check your Luma version.
 help-desc: How to check Luma version
 aliases: checkluma
+cooldown-rate: 1
+cooldown-per: 15
 ---
 
 In order to do this, you will need to load the Luma Configuration screen.

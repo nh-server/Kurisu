@@ -5,6 +5,8 @@ author.name: Krieg
 thumbnail-url: https://nintendohomebrew.com/assets/img/krieg.png
 help-desc: Checkpoint/Rosalina cheat guide
 aliases: cheats,3dscheats
+cooldown-rate: 0
+cooldown-per: 0
 color: 9B59B6
 ---
 

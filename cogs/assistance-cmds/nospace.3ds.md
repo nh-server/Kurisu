@@ -2,6 +2,8 @@
 title: How to create a 3DS NAND backup without enough space on the SD card
 help-desc: Low space NAND Backup
 aliases: lowspace,lowbackup
+cooldown-rate: 1
+cooldown-per: 15
 ---
 
 # Steps to create the backup

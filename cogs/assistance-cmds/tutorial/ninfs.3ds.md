@@ -1,6 +1,8 @@
 ---
 title: Extract and Decrypt games, NAND backups, and SD contents with ninfs
 url: https://gbatemp.net/threads/499994/
+cooldown-rate: 0
+cooldown-per: 0
 help-desc: Link to ninfs tutorial.
 ---
 
