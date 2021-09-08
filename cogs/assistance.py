@@ -766,21 +766,6 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
         await ctx.send(embed=embed)
 
     @commands.command()
-    async def exfat(self, ctx):
-        """exFAT on Switch: why not to use it"""
-        reasons = """
-                The recommended filesystem format for the Switch is FAT32.
-
-                While the Switch supports exFAT through an additional update from Nintendo, here are reasons not to use it:
-
-                * CFW may fail to boot due to a missing exFAT update in Horizon
-                * This filesystem is prone to corruption.
-                * Nintendo doesn't use files larger than 4GB, even with large games and exFAT.
-                """
-
-        await self.simple_embed(ctx, f"{reasons}{self.SDFORMAT_TEXT}", title="exFAT on Switch: Why you shouldn't use it")
-
-    @commands.command()
     async def nxban(self, ctx):
         """Switch ban risk snippet"""
         await self.simple_embed(ctx, """
