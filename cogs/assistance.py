@@ -7,9 +7,8 @@ from io import BytesIO
 from inspect import cleandoc
 from os.path import dirname, join
 from Levenshtein import distance
-from utils.utils import ConsoleColor
 from utils.checks import check_if_user_can_sr
-from utils.mdcmd import add_md_files_as_commands, check_console, systems
+from utils.mdcmd import add_md_files_as_commands
 
 logger = logging.getLogger(__name__)
 
