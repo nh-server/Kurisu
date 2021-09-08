@@ -35,6 +35,7 @@ def parse_header(header_raw: str):
         'aliases': '',
         'color': None,
         'thumbnail-url': empty,
+        'image-url': empty,
     }
 
     for line in header_raw.splitlines():
@@ -88,6 +89,7 @@ def create_embed(header: 'Dict[str, str]', body: 'List[Tuple[str, str]]', embed_
     if header['author.name']:  # this field is required
         embed.set_author(name=header['author.name'], url=header['author.url'], icon_url=header['author.icon-url'])
     embed.set_thumbnail(url=header['thumbnail-url'])
+    embed.set_image(url=header['image-url'])
 
     # first one is used as the embed description
     for field in body[1:]:
