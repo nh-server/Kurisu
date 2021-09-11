@@ -275,7 +275,7 @@ class Extras(commands.Cog):
             await ctx.send("The nickname doesn't comply with our nickname policy or it's too long!")
             ctx.command.reset_cooldown(ctx)
 
-    @is_staff("Helper")
+    @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.member)
     @commands.command()
     async def remindme(self, ctx, remind_in: str, *, reminder: str):
         """Sends a reminder after a set time, just for you.\n\nTime format: #d#h#m#s."""

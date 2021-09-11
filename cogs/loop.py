@@ -4,6 +4,7 @@ import pytz
 import logging
 
 from datetime import datetime, timedelta
+from discord import AllowedMentions
 from discord.ext import commands
 from utils import crud
 from utils.utils import send_dm_message
@@ -220,7 +221,7 @@ class Loop(commands.Cog):
                         msg = f"You asked to remind you of: {reminder_entry.reminder}"
                         send = await send_dm_message(member, msg)
                         if not send:
-                            await self.bot.channels['bot-cmds'].send(msg + member.mention)
+                            await self.bot.channels['bot-cmds'].send(f"{msg}\n{member.mention}", allowed_mentions=AllowedMentions(users=[member]))
 
                 if current_timestamp.minute == 0 and current_timestamp.hour != self.last_hour:
                     await self.bot.channels['helpers'].send(f"{self.bot.guild.name} has {self.bot.guild.member_count:,} members at this hour!")
