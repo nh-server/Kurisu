@@ -158,10 +158,10 @@ https://discord.gg/C29hYvh"""
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def nick(self, ctx):
         """Displays the Nickname and Avatar Policy."""
-        await ctx.send("🏷 ___Username/Nickname and Avatar policy___\n"
-                       "Usernames are to be kept primarily alphanumeric, to keep them easy to tag and read. Excessively long usernames are not acceptable. Usernames and avatars that are annoying, offensive, inappropriate (\"nsfw\"), and/or disruptive to others are also not allowed.\n"
-                       "Usernames that go against these rules will be assigned a nickname. Users can request a specific nickname that follows these rules by asking in <#270890866820775946> or by sending a direct message to <@333857992170536961>.\n"
-                       "Users with avatars against these rules will be asked to change them or be kicked from the server.")
+        await ctx.send(f"🏷 ___Username/Nickname and Avatar policy___\n"
+                       f"Usernames are to be kept primarily alphanumeric, to keep them easy to tag and read. Excessively long usernames are not acceptable. Usernames and avatars that are annoying, offensive, inappropriate (\"nsfw\"), and/or disruptive to others are also not allowed.\n"
+                       f"Usernames that go against these rules will be assigned a nickname. Users can request a specific nickname that follows these rules by asking in {self.bot.channels['meta'].mention} or by sending a direct message to <@333857992170536961>.\n"
+                       f"Users with avatars against these rules will be asked to change them or be kicked from the server.")
 
     @commands.command()
     async def rules(self, ctx):

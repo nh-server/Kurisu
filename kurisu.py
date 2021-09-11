@@ -176,6 +176,7 @@ class Kurisu(commands.Bot):
             'nintendo-discussion': None,
             'tech-talk': None,
             'hardware': None,
+            'streaming-gamer': None,
         }
 
         self.helper_roles: dict[str, discord.Role] = {}

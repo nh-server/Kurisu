@@ -438,7 +438,7 @@ class Mod(commands.Cog):
             msg_user = "You lost embed and upload permissions!"
             if reason != "":
                 msg_user += " The given reason is: " + reason
-            msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
+            msg_user += f"\n\nIf you feel this was unjustified, you may appeal in {self.bot.channels['appeals'].mention}"
             await utils.send_dm_message(member, msg_user, ctx)
             await ctx.send(f"{member.mention} can no longer embed links or attach files.")
             msg = f"🚫 **Removed Embed**: {ctx.author.mention} removed embed from {member.mention} | {self.bot.escape_text(member)}"
@@ -485,7 +485,7 @@ class Mod(commands.Cog):
             msg_user = "You lost access to help channels!"
             if reason != "":
                 msg_user += " The given reason is: " + reason
-            msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
+            msg_user += f"\n\nIf you feel this was unjustified, you may appeal in {self.bot.channels['appeals'].mention}"
             await utils.send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} can no longer access the help channels.")
         msg = f"🚫 **Help access removed**: {ctx.author.mention} removed access to help channels from {member.mention} | {self.bot.escape_text(member)}"
@@ -537,7 +537,7 @@ class Mod(commands.Cog):
         msg_user = "You lost access to help channels temporarily!"
         if reason != "":
             msg_user += " The given reason is: " + reason
-        msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
+        msg_user += f"\n\nIf you feel this was unjustified, you may appeal in {self.bot.channels['appeals'].mention}"
         msg_user += f"\n\nThis restriction expires {unnohelp_time_string} {time.tzname[0]}."
         await utils.send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} can no longer speak in Assistance Channels.")
@@ -569,7 +569,7 @@ class Mod(commands.Cog):
             msg_user = "You lost access to the tech channel!"
             if reason != "":
                 msg_user += " The given reason is: " + reason
-            msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
+            msg_user += f"\n\nIf you feel this was unjustified, you may appeal in {self.bot.channels['appeals'].mention}"
             await utils.send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} can no longer access the tech channel.")
         msg = f"🚫 **Help access removed**: {ctx.author.mention} removed access to tech channel from {member.mention} | {self.bot.escape_text(member)}"
@@ -621,7 +621,7 @@ class Mod(commands.Cog):
         msg_user = "You lost access to the tech channel temporarily!"
         if reason != "":
             msg_user += " The given reason is: " + reason
-        msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
+        msg_user += f"\n\nIf you feel this was unjustified, you may appeal in {self.bot.channels['appeals'].mention}"
         msg_user += f"\n\nThis restriction expires {unnotech_time_string} {time.tzname[0]}."
         await utils.send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} can no longer speak in the tech channel.")
@@ -650,7 +650,7 @@ class Mod(commands.Cog):
             msg_user = "You muted in the help channels!"
             if reason != "":
                 msg_user += " The given reason is: " + reason
-            msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
+            msg_user += f"\n\nIf you feel this was unjustified, you may appeal in {self.bot.channels['appeals'].mention}"
             await utils.send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} can no longer speak in the help channels.")
         msg = f"🚫 **Help mute**: {ctx.author.mention} removed speak access in help channels from {member.mention} | {self.bot.escape_text(member)}"
@@ -685,7 +685,7 @@ class Mod(commands.Cog):
         msg_user = "You lost send access to help channels temporarily!"
         if reason != "":
             msg_user += " The given reason is: " + reason
-        msg_user += "\n\nIf you feel this was unjustified, you may appeal in <#270890866820775946>."
+        msg_user += f"\n\nIf you feel this was unjustified, you may appeal in {self.bot.channels['appeals'].mention}"
         msg_user += f"\n\nThis restriction expires {unhelpmute_time_string} {time.tzname[0]}."
         await utils.send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} can no longer speak in the help channels.")

@@ -36,9 +36,9 @@ Thanks for stopping by and have a good time!
         self.logo_boost = discord.utils.get(self.bot.guild.emojis, name="boost") or "⁉"
         self.nitro_msg = f"""Thanks for boosting {self.logo_nitro} Nintendo Homebrew!
         As a Nitro Booster you have the following bonuses:
-        - React permissions in <#314856589716750346>, <#485138525885431808>, and <#300388576451887104>.
+        - React permissions in {self.bot.channels['off-topic'].mention}, {self.bot.channels['elsewhere'].mention}, and {self.bot.channels['nintendo-discussion'].mention}.
         - Able to use the `.nickme` command in DMs with Kurisu to change your nickname every 6 hours.
-        - Able to stream in the <#623015122473975818> voice channel.
+        - Able to stream in the {self.bot.channels['streaming-gamer'].mention} voice channel.
         Thanks for boosting and have a good time! {self.logo_boost}
         """
 

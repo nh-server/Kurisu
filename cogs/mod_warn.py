@@ -39,7 +39,7 @@ class ModWarn(commands.Cog):
             if reason != "":
                 # much \n
                 msg += " The given reason is: " + reason
-            msg += f"\n\nPlease read the rules in <#196618637950451712>. This is warn #{warn_count}."
+            msg += f"\n\nPlease read the rules in {self.bot.channels['welcome-and-rules'].mention}. This is warn #{warn_count}."
             if warn_count == 2:
                 msg += " __The next warn will automatically kick.__"
             elif warn_count == 3:
