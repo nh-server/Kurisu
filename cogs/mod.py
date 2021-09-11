@@ -782,7 +782,7 @@ class Mod(commands.Cog):
     @is_staff("Owner")
     @commands.guild_only()
     @commands.command()
-    async def updatechannel(self, ctx, name, channel: discord.TextChannel):
+    async def updatechannel(self, ctx, name, channel: Union[discord.TextChannel, discord.VoiceChannel]):
         """Changes the id of a channel"""
         if name not in self.bot.channels:
             await ctx.send("Invalid channel name!")
