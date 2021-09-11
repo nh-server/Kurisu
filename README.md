@@ -8,7 +8,7 @@ Although it is open source, this bot is not really designed to be used in other 
 
 A server template is available for testing Kurisu, with all the channels and roles necessary.
 
-* https://discord.new/gJjzKQWCtJUx
+* https://discord.new/hyTjkbQAbhWr
 
 ## Setting up for local testing in Docker (recommended)
 
