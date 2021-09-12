@@ -238,6 +238,23 @@ class KickBan(commands.Cog):
         msg = f"⚠️ **Un-soft-ban**: {ctx.author.mention} un-soft-banned {self.bot.escape_text(user)}"
         await self.bot.channels['mod-logs'].send(msg)
 
+    @is_staff("SuperOP")
+    @commands.command(name="scamban")
+    async def scamban_member(self, ctx, member: discord.Member, site: str):
+        """Bans member deleting message from last day and add a scamming site to the filter"""
+        if site in self.bot.wordfilter['scamming site']:
+            await ctx.send("Site is already in the filter!")
+        elif ' ' in site or '-' in site:
+            await ctx.send("Filtered words can't contain dashes or spaces, please add the site properly with wordfilter command.")
+        else:
+            await self.bot.wordfilter.add(word=site, kind="scamming site")
+            await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added `{site}` to the word filter!")
+        await member.ban(reason="Linking scamming site", delete_message_days=1)
+        await ctx.send(f"{member} is now b&. 👍")
+        msg = f"⛔ **Ban**: {ctx.author.mention} banned {member.mention} | {self.bot.escape_text(member)}\n🏷 __User ID__: {member.id}\n✏️ __Reason__: Linking scamming site"
+        await self.bot.channels['server-logs'].send(msg)
+        await self.bot.channels['mod-logs'].send(msg)
+
 
 def setup(bot):
     bot.add_cog(KickBan(bot))
