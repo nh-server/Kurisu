@@ -40,7 +40,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
 
     @tasks.loop(hours=2)
     async def apps_update(self):
-        async with self.bot.session.get("https://raw.githubusercontent.com/Universal-Team/db/master/docs/data/full.json", timeout=45) as r:
+        async with self.bot.session.get("https://db.universal-team.net/data/full.json", timeout=45) as r:
             if r.status == 200:
                 # Content type is text/plain instead of application/json
                 self.unidb = await r.json(content_type=None)
