@@ -179,7 +179,9 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
             return await ctx.send("No app found!")
 
         embed = discord.Embed(title=res['title'], color=int(res['color'][1:], 16))
-        embed.description = f"{res['description']}\n [[Download]({res['download_page']})] [[Source](https://github.com/{res['github']})]"
+        embed.description = f"{res['description']}\n [[Download]({res['download_page']})]"
+        if 'source' in res:
+            embed.description += f" [[Source]({res['source']})]"
         embed.set_footer(text=f"by {res['author']}")
         embed.set_thumbnail(url=res["image"])
 
