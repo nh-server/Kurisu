@@ -296,7 +296,7 @@ class Extras(commands.Cog):
                 if tag := await crud.get_tag(title):
                     return await ctx.send(tag.content)
                 else:
-                    await ctx.send("This tag doesn't exists!")
+                    await ctx.send("This tag doesn't exist!")
             else:
                 await ctx.send_help(ctx.command)
 
