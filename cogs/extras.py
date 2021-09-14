@@ -290,13 +290,13 @@ class Extras(commands.Cog):
         await ctx.send("I will send you a reminder then.")
 
     @commands.group(invoke_without_command=True)
-    async def tag(self, ctx, *, title: str = ""):
+    async def tag(self, ctx, title: str = ""):
         if ctx.invoked_subcommand is None:
             if title:
                 if tag := await crud.get_tag(title):
                     return await ctx.send(tag.content)
                 else:
-                    await ctx.send("This tag doesn't exists!")
+                    await ctx.send("This tag doesn't exist!")
             else:
                 await ctx.send_help(ctx.command)
 
