@@ -290,7 +290,7 @@ class Extras(commands.Cog):
         await ctx.send("I will send you a reminder then.")
 
     @commands.group(invoke_without_command=True)
-    async def tag(self, ctx, *, title: str = ""):
+    async def tag(self, ctx, title: str = ""):
         if ctx.invoked_subcommand is None:
             if title:
                 if tag := await crud.get_tag(title):
