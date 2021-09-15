@@ -19,10 +19,10 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
     """
 
     format_map = {
-        'nx_firmware': '12.1.0',
+        'nx_firmware': '13.0.0',
         'ams_ver': '0.20.1',
         'hekate_ver': '5.6.0',
-        'last_revision': 'August 30th, 2021',
+        'last_revision': 'September 15th, 2021',
     }
 
     # compatibility until the use of these variables is removed
