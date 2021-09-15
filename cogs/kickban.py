@@ -242,7 +242,7 @@ class KickBan(commands.Cog):
     @commands.command(name="scamban")
     async def scamban_member(self, ctx, member: discord.Member, site: str):
         """Bans member deleting message from last day and add a scamming site to the filter"""
-        if site in self.bot.wordfilter['scamming site']:
+        if site in self.bot.wordfilter.filter['scamming site']:
             await ctx.send("Site is already in the filter!")
         elif ' ' in site or '-' in site:
             await ctx.send("Filtered words can't contain dashes or spaces, please add the site properly with wordfilter command.")
