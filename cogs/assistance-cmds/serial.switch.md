@@ -4,7 +4,6 @@ image-url: https://i.imgur.com/03NfeFN.png
 aliases: switchserial
 help-desc: Picture to show what the hell a serial is
 ---
-If for whatever reason you can no longer read the sticker, you may view it on your console digitally:
 
 step 1: open System Settings
 
@@ -14,4 +13,6 @@ step 3: scroll down and press on Serial information
 
 Your serial will now be displayed on the screen.
 
-This is where the serial is located. Use your serial along with the `.ssnc` command in <#261581918653513729> to check if you are patched.
+The serial can also be found near the bottom of the switch as shown in the embeded image.
+
+Use your serial along with the `.ssnc` command in <#261581918653513729> to check if you switch is patched or not.
