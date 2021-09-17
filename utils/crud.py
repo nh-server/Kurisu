@@ -1,8 +1,8 @@
 import datetime
-import models
 
-from typing import Optional
+from . import models
 from discord import TextChannel, utils
+from typing import Optional
 
 
 def generate_id() -> int:
