@@ -279,7 +279,7 @@ class Mod(commands.Cog):
             # Check if the user has a timed restriction.
             # If there is one, this will convert it to a permanent one.
             # If not, it will display that it was already taken.
-            if not await crud.get_time_restrictions_by_user_type(member.id, 'timemute'):
+            if not await crud.get_time_restriction_by_user_type(member.id, 'timemute'):
                 return await ctx.send("User is already muted!")
             else:
                 await crud.remove_timed_restriction(member.id, 'timemute')
@@ -476,7 +476,7 @@ class Mod(commands.Cog):
             # Check if the user has a timed restriction.
             # If there is one, this will convert it to a permanent one.
             # If not, it will display that it was already taken.
-            if not await crud.get_time_restrictions_by_user_type(member.id, 'timenohelp'):
+            if not await crud.get_time_restriction_by_user_type(member.id, 'timenohelp'):
                 return await ctx.send("This user's help is already taken!")
             else:
                 await crud.remove_timed_restriction(member.id, 'timenohelp')
@@ -560,7 +560,7 @@ class Mod(commands.Cog):
             # Check if the user has a timed restriction.
             # If there is one, this will convert it to a permanent one.
             # If not, it will display that it was already taken.
-            if not await crud.get_time_restrictions_by_user_type(member.id, 'timenotech'):
+            if not await crud.get_time_restriction_by_user_type(member.id, 'timenotech'):
                 return await ctx.send("This user's tech is already taken!")
             else:
                 await crud.remove_timed_restriction(member.id, 'timenotech')
@@ -641,7 +641,7 @@ class Mod(commands.Cog):
         if await check_bot_or_staff(ctx, member, "helpmute"):
             return
         if not await crud.add_permanent_role(member.id, self.bot.roles['help-mute'].id):
-            if not await crud.get_time_restrictions_by_user_type(member.id, 'timehelpmute'):
+            if not await crud.get_time_restriction_by_user_type(member.id, 'timehelpmute'):
                 return await ctx.send("This user is already helpmuted!")
             else:
                 await crud.remove_timed_restriction(member.id, 'timehelpmute')

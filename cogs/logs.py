@@ -115,7 +115,7 @@ Thanks for stopping by and have a good time!
             self.bot.actions.remove("tbr:" + str(user.id))
             return
         msg = f"⚠️ **Unban**: {user.mention} | {self.bot.escape_text(user)}"
-        if await crud.get_time_restrictions_by_user_type(user.id, 'timeban'):
+        if await crud.get_time_restriction_by_user_type(user.id, 'timeban'):
             msg += "\nTimeban removed."
             await crud.remove_timed_restriction(user.id, 'timeban')
         await self.bot.channels['mod-logs'].send(msg)

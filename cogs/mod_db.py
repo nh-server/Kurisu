@@ -32,7 +32,7 @@ class ModDB(commands.Cog):
     @commands.command()
     async def delflag(self, ctx, name):
         """Removes a config flag from the database. Owners only."""
-        if await crud.get_flag(name) is not None:
+        if await crud.get_flag(name):
             await crud.remove_flag(name)
             await ctx.send('Flag removed from the database. ✅')
         else:
@@ -42,9 +42,9 @@ class ModDB(commands.Cog):
     @commands.command()
     async def getflag(self, ctx, name):
         """Retrieves a config flag from the database. Owners only."""
-        value = await crud.get_flag(name)
-        if value is not None:
-            await ctx.send(f'{name} is set to: {value}.')
+        flag = await crud.get_flag(name)
+        if flag is not None:
+            await ctx.send(f'{name} is set to: {flag.value}.')
         else:
             await ctx.send(self.NOT_FOUND)
 
@@ -52,7 +52,7 @@ class ModDB(commands.Cog):
     @commands.command()
     async def setflag(self, ctx, name, value: bool):
         """Sets a config flag in the database. Owners only."""
-        if await crud.get_flag(name) is not None:
+        if await crud.get_flag(name):
             await crud.set_flag(name, value)
             await ctx.send("Flag's value was set. ✅")
         else:
