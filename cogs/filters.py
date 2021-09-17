@@ -15,12 +15,14 @@ class Filter(commands.Cog):
     @is_staff("Helper")
     @commands.group(aliases=['wf'])
     async def wordfilter(self, ctx):
+        """Command group for managing the word filter"""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
     @is_staff("SuperOP")
     @wordfilter.command(name='add')
     async def add_word(self, ctx, word: str, *, kind: str):
+        """Adds a word to the word filter. A filter list must be specified"""
         word = word.lower()
         if kind not in self.bot.wordfilter.kinds:
             return await ctx.send(f"Possible word kinds for word filter: {', '.join(self.bot.wordfilter.kinds)}")
@@ -34,6 +36,7 @@ class Filter(commands.Cog):
 
     @wordfilter.command(name='list')
     async def list_words(self, ctx):
+        """List the word filter filter lists and their content."""
         embed = discord.Embed()
         for kind in self.bot.wordfilter.kinds:
             if self.bot.wordfilter.filter[kind]:
@@ -46,6 +49,7 @@ class Filter(commands.Cog):
     @is_staff("SuperOP")
     @wordfilter.command(name='delete', aliases=['remove'])
     async def delete_word(self, ctx, *, words: str):
+        """Deletes a word from the word filter"""
         words = words.split()
         deleted = []
         for word in words:
@@ -62,27 +66,31 @@ class Filter(commands.Cog):
     @is_staff("Helper")
     @commands.group(aliases=['xnoefilter', 'lfilter', 'lf'])
     async def levenshteinfilter(self, ctx):
+        """Command group for managing the levenshtein filter"""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
     @is_staff("SuperOP")
     @levenshteinfilter.command(name='add')
-    async def add_levenshtein(self, ctx, word: str, threshold: int, whitelist: bool = True, *, kind: str):
+    async def add_levenshtein(self, ctx, word: str, threshold: int, *, kind: str):
+        """Adds a word to the levenshtein filter. A permutation threshold and a filter list must be specified.
+        Words added are whitelisted by default."""
         word = word.lower()
         if kind not in self.bot.levenshteinfilter.kinds:
             return await ctx.send(f"Possible word kinds for word filter: {', '.join(self.bot.levenshteinfilter.kinds)}")
-        if ' ' in word or '-' in word:
-            return await ctx.send("Filtered words cant contain dashes or spaces!")
+        if ' ' in word:
+            return await ctx.send("Filtered words can't contain spaces!")
         if threshold == 0:
-            return await ctx.send("Levenshtein threshold must be above 0!")
+            return await ctx.send("The permutation threshold must be above 0!")
         if await self.bot.levenshteinfilter.fetch_word(word):
             return await ctx.send("This word is already in the filter!")
-        entry = await self.bot.levenshteinfilter.add(word=word, threshold=threshold, kind=kind, whitelist=whitelist)
+        entry = await self.bot.levenshteinfilter.add(word=word, threshold=threshold, kind=kind, whitelist=True)
         await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added `{entry.word}` to the Levenshtein filter!")
         await ctx.send("Successfully added word to Levenshtein filter")
 
     @levenshteinfilter.command(name='list')
     async def list_levenshtein(self, ctx):
+        """List the levenshtein filter filter lists and their content."""
         embed = discord.Embed()
         for kind in self.bot.levenshteinfilter.kinds:
             if self.bot.levenshteinfilter.filter[kind]:
@@ -99,6 +107,7 @@ class Filter(commands.Cog):
     @is_staff("SuperOP")
     @levenshteinfilter.command(name='delete', aliases=['remove'])
     async def delete_levenshtein(self, ctx, *, words: str):
+        """Deletes a word from the levenshtein filter"""
         words = words.split()
         deleted = []
         for word in words:
@@ -113,12 +122,14 @@ class Filter(commands.Cog):
 
     @levenshteinfilter.group(name='whitelist')
     async def levenshtein_whitelist(self, ctx):
+        """Group of commands to manage the whitelist of the levenshtein filter"""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
     @is_staff("SuperOP")
     @levenshtein_whitelist.command(name='add')
     async def whitelist_add(self, ctx, word: str):
+        """Adds a word to the levenshtein filter whitelist"""
         word = word.lower()
         if db_word := await self.bot.levenshteinfilter.fetch_word(word=word):
             if db_word.whitelist:
@@ -133,6 +144,7 @@ class Filter(commands.Cog):
     @is_staff("SuperOP")
     @levenshtein_whitelist.command(name='remove')
     async def whitelist_remove(self, ctx, word: str):
+        """Removes a word from the levenshtein filter whitelist"""
         word = word.lower()
         if db_word := await self.bot.levenshteinfilter.fetch_word(word=word):
             if not db_word.whitelist:
@@ -146,6 +158,7 @@ class Filter(commands.Cog):
 
     @levenshtein_whitelist.command(name='list')
     async def whitelist_list(self, ctx):
+        """List the whitelisted words in the levenshtein filter"""
         whitelist = await self.bot.levenshteinfilter.fetch_whitelist()
         if whitelist:
             await ctx.author.send('\n'.join(x.word for x in whitelist))
