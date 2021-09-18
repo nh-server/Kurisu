@@ -243,7 +243,7 @@ invalid for the Wii U.')
         error = self.fixup_input(error)
         if self.is_hex(error):
             if ctr_results.is_valid(error):
-                mod, desc, summary, level = ctr_results.hexinfo(error)
+                mod, summary, level, desc = ctr_results.hexinfo(error)
                 embed = discord.Embed(title="3DS hex result info")
                 embed.add_field(name="Module", value=mod, inline=False)
                 embed.add_field(name="Summary", value=summary, inline=False)
