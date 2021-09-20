@@ -278,11 +278,13 @@ class Extras(commands.Cog):
     @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.member)
     @commands.command()
     async def remindme(self, ctx, remind_in: str, *, reminder: str):
-        """Sends a reminder after a set time, just for you.\n\nTime format: #d#h#m#s."""
+        """Sends a reminder after a set time, just for you. Max reminder size is 800 characters.\n\nTime format: #d#h#m#s."""
         if (seconds := parse_time(remind_in)) == -1:
             return await ctx.send("💢 I don't understand your time format.")
-        if seconds < 30:
-            return await ctx.send("You can't set a reminder for less than 30 seconds in the future.")
+        if seconds < 30 or seconds > 3.154e+7:
+            return await ctx.send("You can't set a reminder for less than 30 seconds or for more than a year.")
+        if len(reminder) > 800:
+            return await ctx.send("The reminder is too big! (Longer than 800 characters)")
         timestamp = datetime.datetime.now()
         delta = datetime.timedelta(seconds=seconds)
         reminder_time = timestamp + delta
@@ -291,6 +293,7 @@ class Extras(commands.Cog):
 
     @commands.group(invoke_without_command=True)
     async def tag(self, ctx, title: str = ""):
+        """Command group for commands related to tags."""
         if ctx.invoked_subcommand is None:
             if title:
                 if tag := await crud.get_tag(title):
@@ -303,13 +306,17 @@ class Extras(commands.Cog):
     @is_staff('Helper')
     @tag.command()
     async def create(self, ctx, title: str, *, content: str):
+        """Creates a tag. Max content size is 2000 characters. Helpers+ only."""
         if await crud.get_tag(title):
-            await ctx.send("This tag already exists!")
+            return await ctx.send("This tag already exists!")
+        if len(content) > 2000:
+            return await ctx.send("The tag contents are too big! (Longer than 2000 characters)")
         await crud.create_tag(title=title, content=content, author=ctx.author.id)
         await ctx.send("Tag created successfully")
 
     @tag.command()
     async def search(self, ctx, query: str):
+        """Search tags by title. Returns first 10 results."""
         if tags := await crud.search_tags(query):
             embed = discord.Embed(description='\n'.join(f'{n}. {tag.title}' for n, tag in enumerate(tags, start=1)), color=gen_color(ctx.author.id))
             await ctx.send(embed=embed)
@@ -318,6 +325,7 @@ class Extras(commands.Cog):
 
     @tag.command()
     async def list(self, ctx):
+        """Lists the title of all existent tags."""
         if tags := await crud.get_tags():
             embed = discord.Embed(description='\n'.join(f'{n}. {tag.title}' for n, tag in enumerate(tags, start=1)), color=gen_color(ctx.author.id))
             await ctx.send(embed=embed)
@@ -327,6 +335,7 @@ class Extras(commands.Cog):
     @is_staff('Helper')
     @tag.command()
     async def delete(self, ctx, *, title: str):
+        """Deletes a tag. Helpers+ only."""
         if not (await crud.get_tag(title)):
             return await ctx.send("This tag doesn't exists!")
         await crud.delete_tag(title=title)
