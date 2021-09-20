@@ -125,7 +125,7 @@ class Events(commands.Cog):
         contains_piracy_tool_alert_mention = self.search_word(self.bot.wordfilter.filter['piracy tool alert'], msg_no_separators, msg)
         contains_scamming_site = self.search_word(self.bot.wordfilter.filter['scamming site'], msg_no_separators, msg)
         contains_piracy_site_mention_indirect = any(x in msg for x in ('iso site', 'chaos site',))
-        contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub', 'strawpoii', 'hackinformer.com', 'console.guide', 'jacksorrell.co.uk', 'jacksorrell.tv', 'nintendobrew.com', 'reinx.guide', 'NxpeNwz', 'scenefolks.com'))
+        contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub', 'strawpoii', 'hackinformer.com', 'console.guide', 'jacksorrell.co.uk', 'jacksorrell.tv', 'nintendobrew.com', 'reinx.guide', 'NxpeNwz', 'scenefolks.com', 'rentry.co'))
         contains_unbanning_stuff = self.search_word(self.bot.wordfilter.filter['unbanning tool'], msg_no_separators, msg)
         contains_invite_link = contains_non_approved_invite or contains_skype_link or approved_invites
         # contains_guide_mirror_mention = any(x in msg for x in ('3ds-guide.b4k.co',))
