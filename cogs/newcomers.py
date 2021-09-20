@@ -16,15 +16,16 @@ class Newcomers(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.autoprobate = False
         self.bot.loop.create_task(self.init())  # We can't do proper init here.
 
     async def init(self):
         await self.bot.wait_until_all_ready()
         flag_name = 'auto_probation'
 
-        self.autoprobate = await crud.get_flag(flag_name)
-
-        if self.autoprobate is None:
+        if flag := await crud.get_flag(flag_name):
+            self.autoprobate = flag.value
+        else:
             self.autoprobate = False
             await crud.add_flag(flag_name)
 
