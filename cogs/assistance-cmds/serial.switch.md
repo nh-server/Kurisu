@@ -5,4 +5,14 @@ aliases: switchserial
 help-desc: Picture to show what the hell a serial is
 ---
 
-This is where the serial is located. Use this number to check if you are patched.
+Step 1: Open System Settings
+
+Step 2: Go to the System tab
+
+Step 3: Scroll down and press on Serial information
+
+Your serial will now be displayed on the screen.
+
+The serial can also be found near the bottom of the switch as shown in the embeded image.
+
+Use your serial alongside the `.ssnc` command in <#261581918653513729> to check if you switch is patched or not.
