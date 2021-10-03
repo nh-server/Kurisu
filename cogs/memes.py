@@ -574,8 +574,8 @@ class Memes(commands.Cog):
         
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def hug(self, ctx, n: int):
-        """hug"""
+    async def blahaj(self, ctx, n: int):
+        """blahaj""" #blahaj. takes usd
         await self._meme(ctx, f"You could buy {n//18} Blahajs with that. Think about it.", True, "https://www.ikea.com/au/en/images/products/blahaj-soft-toy-shark__0710175_pe727378_s5.jpg")
 
 
