@@ -579,6 +579,45 @@ class Memes(commands.Cog):
         # blahaj. takes usd
         await self._meme(ctx, f"You could buy {n//18} Blahajs with that. Think about it.", True, "https://www.ikea.com/au/en/images/products/blahaj-soft-toy-shark__0710175_pe727378_s5.jpg")
 
+    @is_staff("Helper")
+    @commands.command()
+    async def xiwarn(self, ctx, citizen: discord.Member):
+        """Sometimes citizens need a reminder how to act"""
+        await crud.add_social_credit(citizen.id, -100)
+        await ctx.send(f"{ctx.author.mention} has assessed {citizen.mention}'s actions and removed 100 social credit from them!")
+
+    @is_staff("Helper")
+    @commands.command()
+    async def xipraise(self, ctx, citizen: discord.Member):
+        """Model citizens will be praised"""
+        await crud.add_social_credit(citizen.id, 100)
+        await ctx.send(f"{ctx.author.mention} has assessed {citizen.mention}'s actions and added 100 social credit to them!")
+
+    @is_staff("Helper")
+    @commands.command(aliases=["sc"])
+    async def socialcredit(self, ctx, citizen: discord.Member):
+        """You better keep this high"""
+        db_citizen = await crud.get_citizen(citizen.id)
+        if not db_citizen:
+            await crud.add_citizen(citizen.id)
+            return await ctx.send(f"{citizen.mention} is now a citizen and has 100 social credit!")
+        await ctx.send(f"{citizen.mention} currently has {db_citizen.social_credit} social credit!")
+        if db_citizen.social_credit < -200:
+            await ctx.send("The citizen is due a visit to the reeducation camp!")
+        elif db_citizen.social_credit > 500:
+            await ctx.send("The citizen is an example for others to follow!")
+
+    @is_staff("Helper")
+    @commands.command()
+    async def gulag(self, ctx, citizen: discord.Member):
+        """When the citizen was not meant to be"""
+        db_citizen = await crud.get_citizen(citizen.id)
+        if not db_citizen:
+            return await ctx.send(f"There is no citizen named {citizen.mention}!")
+        await crud.remove_citizen(citizen.id)
+        await ctx.send(f"{citizen.mention} was sent away for reeducation purposes!")
+
+
 
 def setup(bot):
     bot.add_cog(Memes(bot))

@@ -140,3 +140,9 @@ class Tag(db.Model):
     title = db.Column(db.String, unique=True, nullable=False)
     content = db.Column(db.String, nullable=False)
     author = db.Column(db.BigInteger, db.ForeignKey("members.id"), nullable=False)
+
+
+class Citizen(db.Model):
+    __tablename__ = "citizens"
+    id = db.Column(db.BigInteger, db.ForeignKey("members.id"), primary_key=True)
+    social_credit = db.Column(db.Integer, nullable=False)
