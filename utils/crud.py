@@ -366,3 +366,26 @@ async def search_tags(query: str) -> list[models.Tag]:
 async def delete_tag(title: str):
     db_tag = await get_tag(title)
     await db_tag.delete()
+
+
+async def add_citizen(citizen_id):
+    await add_dbmember_if_not_exist(citizen_id)
+    return await models.Citizen.create(id=citizen_id, social_credit=100)
+
+
+async def get_citizen(citizen_id: int) -> Optional[models.Citizen]:
+    return await models.Citizen.get(citizen_id)
+
+
+async def add_citizen_if_not_exist(citizen_id: int) -> models.Citizen:
+    return await get_citizen(citizen_id) or await add_citizen(citizen_id)
+
+
+async def add_social_credit(citizen_id: int, social_credit: int):
+    citizen = await add_citizen_if_not_exist(citizen_id)
+    await citizen.update(social_credit=citizen.social_credit + social_credit).apply()
+
+
+async def remove_citizen(citizen_id):
+    citizen = await get_citizen(citizen_id)
+    await citizen.delete()
