@@ -580,7 +580,7 @@ class Memes(commands.Cog):
         blahajlink = "https://www.ikea.com/au/en/images/products/blahaj-soft-toy-shark__0710175_pe727378_s5.jpg"
         if money < 18:
             text = "You can't even buy a Blahaj with that! Get more money, then buy a Blahaj."
-        elif money // 18==1:
+        elif money // 18 == 1:
             text = "You could buy one Blahaj with that. Think about it."
         else:
             text = f"You could buy {money//18} Blahajs with that. Think about it."
