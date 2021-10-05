@@ -2,11 +2,10 @@ import discord
 import qrcode
 import logging
 
-from discord.ext import commands, tasks
+from discord.ext import commands
 from io import BytesIO
 from inspect import cleandoc
 from os.path import dirname, join
-from Levenshtein import distance
 from utils.checks import check_if_user_can_sr
 from utils.mdcmd import add_md_files_as_commands
 
@@ -35,31 +34,14 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
 
     def __init__(self, bot):
         self.bot = bot
-        self.unidb = {}
-        self.apps_update.start()
 
-    @tasks.loop(hours=2)
-    async def apps_update(self):
-        async with self.bot.session.get("https://db.universal-team.net/data/full.json", timeout=45) as r:
-            if r.status == 200:
-                # Content type is text/plain instead of application/json
-                self.unidb = await r.json(content_type=None)
-                logger.info("Downloaded Universal Team Database")
-            else:
-                self.unidb = {}
-                logger.warning("Failed to fetch Universal Team Database.")
-
-    def unisearch(self, query: str) -> dict:
+    async def unisearch(self, query: str) -> dict:
         query = query.lower()
-        max_rat = 0
         res = {}
-        for app in self.unidb:
-            title = app['title'].lower()
-            len_tot = len(query) + len(title)
-            ratio = int(((len_tot - distance(query, title)) / len_tot) * 100)
-            if ratio > 50 and ratio > max_rat:
-                res = app
-                max_rat = ratio
+        async with self.bot.session.get('https://udb-api.lightsage.dev/search/' + query, timeout=45) as r:
+            if r.status == 200:
+                j = await r.json()
+                res = j['results'][0]
         return res
 
     async def simple_embed(self, ctx, text, *, title="", color=discord.Color.default()):
@@ -174,7 +156,7 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
     @commands.guild_only()
     @commands.command()
     async def unidb(self, ctx, *, query: str):
-        res = self.unisearch(query)
+        res = await self.unisearch(query)
         if not res:
             return await ctx.send("No app found!")
 
