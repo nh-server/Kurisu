@@ -574,10 +574,17 @@ class Memes(commands.Cog):
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def blahaj(self, ctx, n: int):
-        """blahaj"""
-        # blahaj. takes usd
-        await self._meme(ctx, f"You could buy {n//18} Blahajs with that. Think about it.", True, "https://www.ikea.com/au/en/images/products/blahaj-soft-toy-shark__0710175_pe727378_s5.jpg")
+    async def blahaj(self, ctx, money: int):
+        """Displays how much Blahajs you can buy with that money. ($ or €)"""
+        # blahaj. takes usd or eur
+        blahajlink = "https://www.ikea.com/au/en/images/products/blahaj-soft-toy-shark__0710175_pe727378_s5.jpg"
+        if money < 18:
+            text = "You can't even buy a Blahaj with that! Get more money, then buy a Blahaj."
+        elif money // 18 == 1:
+            text = "You could buy one Blahaj with that. Think about it."
+        else:
+            text = f"You could buy {money//18} Blahajs with that. Think about it."
+        await self._meme(ctx, text, True, blahajlink)
 
     @is_staff("Helper")
     @commands.command()
