@@ -617,5 +617,6 @@ class Memes(commands.Cog):
         await crud.remove_citizen(citizen.id)
         await ctx.send(f"{citizen.mention} was sent away for reeducation purposes!")
 
+        
 def setup(bot):
     bot.add_cog(Memes(bot))
