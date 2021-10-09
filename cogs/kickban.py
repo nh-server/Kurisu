@@ -201,7 +201,7 @@ class KickBan(DatabaseCog):
         """Un-soft-ban a user based on ID. OP+ only."""
         await self.remove_softban(user.id)
         await ctx.send(f"{user} has been unbanned!")
-        msg = f"⚠️ **Un-soft-ban**: {ctx.author.mention} un-soft-banned {self.bot.escape_text(user)}"
+        msg = f"⚠️ **Un-soft-ban**: {ctx.author.mention} un-soft-banned {user.mention} | {self.bot.escape_text(user)}\n🏷 __User ID__: {user.id}"
         await self.bot.channels['mod-logs'].send(msg)
 
 
