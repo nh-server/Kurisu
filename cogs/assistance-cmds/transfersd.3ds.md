@@ -1,6 +1,7 @@
 ---
 title: Moving SD Cards
 help-desc: Embeds sd transfer information
+aliases: sdtransfer
 ---
 
 Moving SD cards on a 3DS is easy.

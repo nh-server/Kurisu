@@ -647,7 +647,7 @@ class Mod(commands.Cog):
                 await crud.remove_timed_restriction(member.id, 'timehelpmute')
         if isinstance(member, discord.Member):
             await member.add_roles(self.bot.roles['help-mute'])
-            msg_user = "You muted in the help channels!"
+            msg_user = "You were muted in the help channels!"
             if reason != "":
                 msg_user += " The given reason is: " + reason
             msg_user += f"\n\nIf you feel this was unjustified, you may appeal in {self.bot.channels['appeals'].mention}"
