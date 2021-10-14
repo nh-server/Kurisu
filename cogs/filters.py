@@ -37,13 +37,15 @@ class Filter(commands.Cog):
     @wordfilter.command(name='list')
     async def list_words(self, ctx):
         """List the word filter filter lists and their content."""
-        embed = discord.Embed()
+        res = False
         for kind in self.bot.wordfilter.kinds:
             if self.bot.wordfilter.filter[kind]:
-                embed.add_field(name=kind, value='\n'.join(self.bot.wordfilter.filter[kind]))
-        if embed:
-            await ctx.author.send(embed=embed)
-        else:
+                res = True
+                embed = discord.Embed(title=kind)
+                embed.description = '\n'.join(self.bot.wordfilter.filter[kind])
+                if embed:
+                    await ctx.author.send(embed=embed)
+        if not res:
             await ctx.send("The word filter is empty!")
 
     @is_staff("SuperOP")
