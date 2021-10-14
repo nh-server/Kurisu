@@ -106,7 +106,8 @@ class Kurisu(commands.Bot):
             command_prefix=command_prefix,
             description=description,
             intents=intents,
-            allowed_mentions=allowed_mentions
+            allowed_mentions=allowed_mentions,
+            case_insensitive=True
         )
         self.IS_DOCKER = IS_DOCKER
         self.commit = commit
