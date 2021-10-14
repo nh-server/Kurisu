@@ -22,7 +22,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         'nx_firmware': '13.0.0',
         'ams_ver': '1.1.1',
         'hekate_ver': '5.6.3',
-        'last_revision': 'November 10th, 2021',
+        'last_revision': 'October 10th, 2021',
     }
 
     # compatibility until the use of these variables is removed

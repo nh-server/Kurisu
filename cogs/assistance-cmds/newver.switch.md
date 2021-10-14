@@ -10,5 +10,5 @@ Atmosphere and Hekate currently support {nx_firmware}, and unpatched units will 
 You should follow the precautions in our update guide if already hacked, and always update Atmosphere and Hekate before updating the system firmware.
 
 If your Switch is **hardware patched**:
-Stay on the lowest possible firmware version. Any Switch that is patched and above 7.0.1 is unlikely to be hackable.
+Any unit that is Mariko or above (aka 'redbox' Switches, Switch Lites, Switch OLED, etc) is *unlikely to ever be hackable*.
 *Last edited: {last_revision}*
