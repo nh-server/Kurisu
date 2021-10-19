@@ -1,6 +1,7 @@
 import discord
 
 from discord.ext import commands
+from textwrap import wrap
 from utils.checks import is_staff
 
 
@@ -40,7 +41,12 @@ class Filter(commands.Cog):
         embed = discord.Embed()
         for kind in self.bot.wordfilter.kinds:
             if self.bot.wordfilter.filter[kind]:
-                embed.add_field(name=kind, value='\n'.join(self.bot.wordfilter.filter[kind]))
+                parts = wrap('\n'.join(self.bot.wordfilter.filter[kind]), 1024, break_long_words=False, replace_whitespace=False)
+                if (pages := len(parts)) > 1:
+                    for n, part in enumerate(parts, start=1):
+                        embed.add_field(name=f"{kind} {n}/{pages}", value=part)
+                else:
+                    embed.add_field(name=kind, value=parts[0])
         if embed:
             await ctx.author.send(embed=embed)
         else:

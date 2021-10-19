@@ -24,7 +24,7 @@ class WordFilterManager:
 
     @staticmethod
     async def fetch_by_kind(kind: str) -> list[FilteredWord]:
-        return await FilteredWord.query.where(FilteredWord.kind == kind).gino.all()
+        return await FilteredWord.query.where(FilteredWord.kind == kind).order_by(FilteredWord.word).gino.all()
 
     @staticmethod
     async def fetch_word(word: str) -> Optional[FilteredWord]:
