@@ -20,7 +20,7 @@ class Filter(commands.Cog):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
-    @is_staff("SuperOP")
+    @is_staff("OP")
     @wordfilter.command(name='add')
     async def add_word(self, ctx, word: str, *, kind: str):
         """Adds a word to the word filter. A filter list must be specified"""
@@ -52,7 +52,7 @@ class Filter(commands.Cog):
         else:
             await ctx.send("The word filter is empty!")
 
-    @is_staff("SuperOP")
+    @is_staff("OP")
     @wordfilter.command(name='delete', aliases=['remove'])
     async def delete_word(self, ctx, *, words: str):
         """Deletes a word from the word filter"""
@@ -76,7 +76,7 @@ class Filter(commands.Cog):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
-    @is_staff("SuperOP")
+    @is_staff("OP")
     @levenshteinfilter.command(name='add')
     async def add_levenshtein(self, ctx, word: str, threshold: int, *, kind: str):
         """Adds a word to the levenshtein filter. A permutation threshold and a filter list must be specified.
@@ -110,7 +110,7 @@ class Filter(commands.Cog):
         else:
             await ctx.send("The Levenshtein filter is empty!")
 
-    @is_staff("SuperOP")
+    @is_staff("OP")
     @levenshteinfilter.command(name='delete', aliases=['remove'])
     async def delete_levenshtein(self, ctx, *, words: str):
         """Deletes a word from the levenshtein filter"""
@@ -132,7 +132,7 @@ class Filter(commands.Cog):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
-    @is_staff("SuperOP")
+    @is_staff("OP")
     @levenshtein_whitelist.command(name='add')
     async def whitelist_add(self, ctx, word: str):
         """Adds a word to the levenshtein filter whitelist"""
@@ -147,7 +147,7 @@ class Filter(commands.Cog):
         await self.bot.levenshteinfilter.add_whitelist_word(word=word)
         await ctx.send("Word added to whitelist successfully!")
 
-    @is_staff("SuperOP")
+    @is_staff("OP")
     @levenshtein_whitelist.command(name='remove')
     async def whitelist_remove(self, ctx, word: str):
         """Removes a word from the levenshtein filter whitelist"""
@@ -178,7 +178,7 @@ class Filter(commands.Cog):
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
-    @is_staff("SuperOP")
+    @is_staff("OP")
     @invitefilter.command(name='add')
     async def add_invite(self, ctx, invite: discord.Invite, alias: str):
         """Adds a invite to the filter whitelist"""
@@ -190,7 +190,7 @@ class Filter(commands.Cog):
         await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added {invite.code}(`{invite.guild.name}`) to the invite whitelist!")
         await ctx.send("Successfully added invite to whitelist")
 
-    @is_staff("SuperOP")
+    @is_staff("OP")
     @invitefilter.command(name='delete')
     async def delete_invite(self, ctx, code: str):
         """Removes a invite from the filter whitelist"""

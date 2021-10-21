@@ -238,7 +238,7 @@ class KickBan(commands.Cog):
         msg = f"⚠️ **Un-soft-ban**: {ctx.author.mention} un-soft-banned {self.bot.escape_text(user)}"
         await self.bot.channels['mod-logs'].send(msg)
 
-    @is_staff("SuperOP")
+    @is_staff("OP")
     @commands.command(name="scamban")
     async def scamban_member(self, ctx, member: discord.Member, site: str):
         """Bans member deleting message from last day and add a scamming site to the filter"""
