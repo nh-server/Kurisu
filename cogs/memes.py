@@ -600,8 +600,8 @@ class Memes(commands.Cog):
         await crud.add_social_credit(citizen.id, 100)
         await ctx.send(f"{ctx.author.mention} has assessed {citizen.mention}'s actions and added 100 social credit to them!")
 
-    @is_staff("Helper")
     @commands.command(aliases=["sc"])
+    @commands.cooldown(rate=1, per=10.0, type=commands.BucketType.channel)
     async def socialcredit(self, ctx, citizen: discord.Member):
         """You better keep this high"""
         db_citizen = await crud.get_citizen(citizen.id)
