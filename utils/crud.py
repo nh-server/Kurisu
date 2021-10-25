@@ -262,7 +262,7 @@ async def add_nofilter(channel: TextChannel):
 async def remove_nofilter(channel: TextChannel):
     db_channel = await get_dbchannel(channel.id)
     if db_channel:
-        await db_channel.update(nofilter=True).apply()
+        await db_channel.update(nofilter=False).apply()
 
 
 async def check_nofilter(channel: TextChannel) -> bool:
