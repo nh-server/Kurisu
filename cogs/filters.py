@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 from textwrap import wrap
 from utils.checks import is_staff
+from utils.manager import check_collisions
 
 
 class Filter(commands.Cog):
@@ -210,6 +211,18 @@ class Filter(commands.Cog):
             await ctx.send(embed=embed)
         else:
             await ctx.send("The invite filter is empty!")
+
+    @commands.command(name='checkcollision', aliases=['filtercollision'])
+    async def check_filter_collision(self, ctx):
+        """Detects collisions between the levenshtein filter and the word filter,
+        shows what words matched a entry in the levenshtein filter"""
+        if collisions := await check_collisions():
+            embed = discord.Embed(title="Filter Collisions")
+            for key in collisions.keys():
+                embed.add_field(name=key, value='\n'.join(collisions[key]))
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send("No collisions were detected!")
 
 
 def setup(bot):

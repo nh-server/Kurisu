@@ -1,7 +1,22 @@
 import re
 
+from Levenshtein import distance
 from typing import Optional
 from utils.models import FilteredWord, LevenshteinWord, ApprovedInvite, WhitelistWord
+
+
+async def check_collisions() -> Optional[dict[str, list]]:
+    filtered_words = await FilteredWord.query.gino.all()
+    levenshtein_words = await LevenshteinWord.query.gino.all()
+    collisions = {}
+    for lword in levenshtein_words:
+        for fword in filtered_words:
+            if distance(lword.word, fword.word) < lword.threshold:
+                if lword.word not in collisions:
+                    collisions[lword.word] = []
+                collisions[lword.word].append(fword.word)
+
+    return collisions
 
 
 class WordFilterManager:
