@@ -242,6 +242,10 @@ class KickBan(commands.Cog):
     @commands.command(name="scamban")
     async def scamban_member(self, ctx, member: discord.Member, site: str):
         """Bans member deleting message from last day and add a scamming site to the filter"""
+
+        if await check_bot_or_staff(ctx, member, "scamban"):
+            return
+
         if site in self.bot.wordfilter.filter['scamming site']:
             await ctx.send("Site is already in the filter!")
         elif ' ' in site or '-' in site:
