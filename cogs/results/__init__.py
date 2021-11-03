@@ -95,7 +95,7 @@ Only Nintendo Switch XXXX-YYYY formatted error codes are supported.'
             ret = None
 
         if ret:
-            embed = discord.Embed(title=ret.get_title())
+            embed = disnake.Embed(title=ret.get_title())
             if ret.extra_description:
                 embed.description = ret.extra_description
             for field in ret:
@@ -129,7 +129,7 @@ invalid or is for a system I don\'t have support for.')
             ret = switch.get(err)
 
         if ret:
-            embed = discord.Embed(title=ret.get_title())
+            embed = disnake.Embed(title=ret.get_title())
             if ret.extra_description:
                 embed.description = ret.extra_description
             for field in ret:
@@ -164,7 +164,7 @@ invalid for the switch.')
             ret = ctr_results.get(err)
 
         if ret:
-            embed = discord.Embed(title=ret.get_title())
+            embed = disnake.Embed(title=ret.get_title())
             if ret.extra_description:
                 embed.description = ret.extra_description
             for field in ret:
@@ -201,7 +201,7 @@ invalid for the 3DS.')
             ret = wiiu_results.get(err)
 
         if ret:
-            embed = discord.Embed(title=ret.get_title())
+            embed = disnake.Embed(title=ret.get_title())
             if ret.extra_description:
                 embed.description = ret.extra_description
             for field in ret:
@@ -244,7 +244,7 @@ invalid for the Wii U.')
         if self.is_hex(error):
             if ctr_results.is_valid(error):
                 mod, summary, level, desc = ctr_results.hexinfo(error)
-                embed = discord.Embed(title="3DS hex result info")
+                embed = disnake.Embed(title="3DS hex result info")
                 embed.add_field(name="Module", value=mod, inline=False)
                 embed.add_field(name="Summary", value=summary, inline=False)
                 embed.add_field(name="Level", value=level, inline=False)

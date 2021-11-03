@@ -20,8 +20,10 @@ async def check_collisions() -> Optional[dict[str, list]]:
 
 
 class WordFilterManager:
+
+    kinds = ('piracy tool', 'piracy video', 'piracy tool alert', 'drama', 'unbanning tool', 'piracy site', 'scamming site')
+
     def __init__(self):
-        self.kinds = ('piracy tool', 'piracy video', 'piracy tool alert', 'drama', 'unbanning tool', 'piracy site', 'scamming site')
         self.filter: dict[str, list[str]] = {}
         self.word_exp = {}
 
@@ -55,8 +57,10 @@ class WordFilterManager:
 
 
 class LevenshteinFilterManager:
+    kinds = ('scamming site',)
+
     def __init__(self):
-        self.kinds = ('scamming site',)
+
         self.filter: dict[str, list[tuple[str, int]]] = {}
         self.whitelist: list[str] = []
 

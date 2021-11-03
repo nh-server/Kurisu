@@ -7,7 +7,7 @@ from disnake.ext import commands
 from typing import Optional, Union
 
 
-class ConsoleColor(discord.Color):
+class ConsoleColor(disnake.Color):
 
     @classmethod
     def n3ds(cls):
@@ -30,7 +30,7 @@ class ConsoleColor(discord.Color):
         return cls(0x707070)
 
 
-async def send_dm_message(member: discord.Member, message: str, ctx: commands.Context = None, **kwargs) -> bool:
+async def send_dm_message(member: disnake.Member, message: str, inter = None, **kwargs) -> bool:
     """A helper method for sending a message to a member's DMs.
 
     Returns a boolean indicating success of the DM
@@ -38,13 +38,13 @@ async def send_dm_message(member: discord.Member, message: str, ctx: commands.Co
     try:
         await member.send(message, **kwargs)
         return True
-    except (discord.HTTPException, discord.Forbidden, discord.NotFound, AttributeError):
-        if ctx:
-            await ctx.send(f"Failed to send DM message to {member.mention}")
+    except (disnake.HTTPException, disnake.Forbidden, disnake.NotFound, AttributeError):
+        if inter:
+            await inter.response.send_message(f"Failed to send DM message to {member.mention}")
         return False
 
 
-async def get_user(ctx: commands.Context, user_id: int) -> Optional[Union[discord.Member, discord.User]]:
+async def get_user(ctx: commands.Context, user_id: int) -> Optional[Union[disnake.Member, disnake.User]]:
     if ctx.guild and (user := ctx.guild.get_member(user_id)):
         return user
     else:
@@ -56,19 +56,19 @@ def command_signature(command, *, prefix=".") -> str:
 
     Parameters
     -----------
-    command: :class:`discord.ext.commands.Command`
+    command: :class:`disnake.ext.commands.Command`
         The command to generate a signature for
     prefix: str
         The prefix to include in the signature"""
-    return f"{discord.utils.escape_markdown(prefix)}{command.qualified_name} {command.signature}"
+    return f"{disnake.utils.escape_markdown(prefix)}{command.qualified_name} {command.signature}"
 
 
-def gen_color(seed) -> discord.Color:
+def gen_color(seed) -> disnake.Color:
     random.seed(seed)
     c_r = random.randint(0, 255)
     c_g = random.randint(0, 255)
     c_b = random.randint(0, 255)
-    return discord.Color((c_r << 16) + (c_g << 8) + c_b)
+    return disnake.Color((c_r << 16) + (c_g << 8) + c_b)
 
 
 def parse_time(time_string) -> int:
@@ -86,12 +86,12 @@ def parse_time(time_string) -> int:
     return sum(int(item[:-1]) * units[item[-1]] for item in match)
 
 
-def create_error_embed(ctx, exc) -> discord.Embed:
-    embed = discord.Embed(title=f"Unexpected exception in command {ctx.command}", color=0xe50730)
+def create_error_embed(inter, exc) -> disnake.Embed:
+    embed = disnake.Embed(title=f"Unexpected exception in command {inter.data.name}", color=0xe50730)
     trace = "".join(traceback.format_exception(etype=None, value=exc, tb=exc.__traceback__))
     embed.description = f'```py\n{trace}```'
     embed.add_field(name="Exception Type", value=exc.__class__.__name__)
-    embed.add_field(name="Information", value=f"channel: {ctx.channel.mention if isinstance(ctx.channel, discord.TextChannel) else 'Direct Message'}\ncommand: {ctx.command}\nmessage: {ctx.message.content}\nauthor: {ctx.author.mention}", inline=False)
+    embed.add_field(name="Information", value=f"channel: {inter.channel.mention if isinstance(inter.channel, disnake.TextChannel) else 'Direct Message'}\ncommand: {inter.application_command.name}\nauthor: {inter.author.mention}", inline=False)
     return embed
 
 

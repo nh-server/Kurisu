@@ -7,11 +7,11 @@ staff_ranks = {"Owner": 0, "SuperOP": 1, "OP": 2, "HalfOP": 3, "Helper": 4}
 
 
 def is_staff(role):
-    async def predicate(ctx):
-        if isinstance(ctx.channel, discord.abc.GuildChannel):
-            return await check_staff(ctx, role) if not ctx.author == ctx.guild.owner else True
+    async def predicate(inter):
+        if isinstance(inter.channel, disnake.abc.GuildChannel):
+            return await check_staff(inter, role) if not inter.author == inter.guild.owner else True
         else:
-            return await check_staff(ctx, role)
+            return await check_staff(inter, role)
 
     return commands.check(predicate)
 
@@ -29,7 +29,7 @@ async def check_staff_id(role: str, user_id: int):
     return False
 
 
-async def check_bot_or_staff(ctx, target: discord.user, action: str):
+async def check_bot_or_staff(ctx, target: disnake.user, action: str):
     if target.bot:
         who = "a bot"
     elif await check_staff_id("Helper", target.id):

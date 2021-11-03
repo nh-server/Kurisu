@@ -85,7 +85,7 @@ class Events(commands.Cog):
 
     async def scan_message(self, message, is_edit=False):
         random.seed(message.id)
-        embed = discord.Embed(color=utils.gen_color(message.id))
+        embed = disnake.Embed(color=utils.gen_color(message.id))
         embed.description = message.content
         if await crud.is_watched(message.author.id):
             content = f"**Channel**:\n[#{message.channel.name}]({message.jump_url})\n"
@@ -133,7 +133,7 @@ class Events(commands.Cog):
 
         for f in message.attachments:
             if not f.filename.lower().endswith(self.ignored_file_extensions):
-                embed2 = discord.Embed(description=f"Size: {f.size}\n"
+                embed2 = disnake.Embed(description=f"Size: {f.size}\n"
                                                    f"Message: [{message.channel.name}]({message.jump_url})\n"
                                                    f"Download: [{f.filename}]({f.url})")
                 await self.bot.channels['upload-logs'].send(f"📎 **Attachment**: {message.author.mention} "
@@ -147,13 +147,13 @@ class Events(commands.Cog):
             if contains_non_approved_invite:
                 try:
                     await message.delete()
-                except discord.NotFound:
+                except disnake.NotFound:
                     pass
                 try:
                     await message.author.send(
                         f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
                         f"Server invites must be approved by staff. To contact staff send a message to <@333857992170536961>.")
-                except discord.errors.Forbidden:
+                except disnake.errors.Forbidden:
                     pass
             if approved_invites:
                 for invite in approved_invites:
@@ -166,7 +166,7 @@ class Events(commands.Cog):
         if contains_misinformation_url_mention:
             try:
                 await message.delete()
-            except discord.errors.NotFound:
+            except disnake.errors.NotFound:
                 pass
             await utils.send_dm_message(message.author,
                                         f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
@@ -184,7 +184,7 @@ class Events(commands.Cog):
             embed.description = self.highlight_matches(contains_piracy_tool_mention, msg)
             try:
                 await message.delete()
-            except discord.errors.NotFound:
+            except disnake.errors.NotFound:
                 pass
             await utils.send_dm_message(message.author,
                                         f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
@@ -198,7 +198,7 @@ class Events(commands.Cog):
             embed.description = msg
             try:
                 await message.delete()
-            except discord.errors.NotFound:
+            except disnake.errors.NotFound:
                 pass
             await self.bot.channels['message-logs'].send(
                 f"**Scamming Site**: {message.author.mention} likely mentioned a scamming site in {message.channel.mention} (message deleted)",
@@ -206,7 +206,7 @@ class Events(commands.Cog):
         if contains_piracy_video_id:
             try:
                 await message.delete()
-            except discord.errors.NotFound:
+            except disnake.errors.NotFound:
                 pass
             await utils.send_dm_message(message.author,
                                         f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
@@ -224,7 +224,7 @@ class Events(commands.Cog):
             embed.description = self.highlight_matches(contains_piracy_site_mention, msg)
             try:
                 await message.delete()
-            except discord.errors.NotFound:
+            except disnake.errors.NotFound:
                 pass
             await utils.send_dm_message(message.author,
                                         f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
@@ -238,7 +238,7 @@ class Events(commands.Cog):
             if is_help_channel:
                 try:
                     await message.delete()
-                except discord.errors.NotFound:
+                except disnake.errors.NotFound:
                     pass
                 await utils.send_dm_message(message.author,
                                             f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
@@ -252,7 +252,7 @@ class Events(commands.Cog):
             embed.description = self.highlight_matches(contains_unbanning_stuff, msg)
             try:
                 await message.delete()
-            except discord.errors.NotFound:
+            except disnake.errors.NotFound:
                 pass
             await utils.send_dm_message(message.author,
                                         f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
@@ -281,7 +281,7 @@ class Events(commands.Cog):
                     await self.bot.channels['mods'].send(log_msg)
                     try:
                         await message.delete()
-                    except discord.errors.NotFound:
+                    except disnake.errors.NotFound:
                         pass
                     return
                 else:
@@ -291,7 +291,7 @@ class Events(commands.Cog):
             embed.description = self.highlight_matches(contains_scamming_site, msg)
             try:
                 await message.delete()
-            except discord.errors.NotFound:
+            except disnake.errors.NotFound:
                 pass
             await crud.add_permanent_role(message.author.id, self.bot.roles['Probation'].id)
             await message.author.add_roles(self.bot.roles['Probation'])
@@ -307,7 +307,7 @@ class Events(commands.Cog):
                 f"🗓 __Creation__: {message.author.created_at}\n"
                 f"🏷__User ID__: {message.author.id}\n"
                 f"See {self.bot.channels['message-logs'].mention} for the deleted message. @here",
-                allowed_mentions=discord.AllowedMentions(everyone=True))
+                allowed_mentions=disnake.AllowedMentions(everyone=True))
 
         # check for guide mirrors and post the actual link
         urls = re.findall(r'(https?://\S+)', msg)
@@ -327,7 +327,7 @@ class Events(commands.Cog):
                 msg_user += '\n• ' + url
             try:
                 await message.delete()
-            except discord.errors.NotFound:
+            except disnake.errors.NotFound:
                 pass
             await utils.send_dm_message(message.author, msg_user, embed=embed)
             await self.bot.channels['message-logs'].send(
@@ -338,15 +338,15 @@ class Events(commands.Cog):
         if len(message.mentions) >= 6:
             log_msg = f"🚫 **Auto-probate**: {message.author.mention} probated for mass user mentions | {message.author}\n" \
                       f"🗓 __Creation__: {message.author.created_at}\n🏷 __User ID__: {message.author.id}"
-            embed = discord.Embed(title="Deleted message", color=discord.Color.gold())
+            embed = disnake.Embed(title="Deleted message", color=disnake.Color.gold())
             embed.add_field(name="#" + message.channel.name, value="\u200b" + message.content)
             await self.bot.channels['mod-logs'].send(log_msg, embed=embed)
             await self.bot.channels['mods'].send(
                 f"{log_msg}\nSee {self.bot.channels['mod-logs'].mention} for the deleted message. @here",
-                allowed_mentions=discord.AllowedMentions(everyone=True))
+                allowed_mentions=disnake.AllowedMentions(everyone=True))
             try:
                 await message.delete()
-            except discord.errors.NotFound:
+            except disnake.errors.NotFound:
                 pass
             await utils.send_dm_message(
                 message.author, f"You were automatically placed under probation in {self.bot.guild.name} for mass user mentions.")
@@ -366,7 +366,7 @@ class Events(commands.Cog):
                        "If you believe this was done in error, send a direct message (DM) to <@!333857992170536961> to contact staff."
             await utils.send_dm_message(message.author, msg_user)
             log_msg = f"🔇 **Auto-muted**: {message.author.mention} muted for spamming | {message.author}\n🗓 __Creation__: {message.author.created_at}\n🏷 __User ID__: {message.author.id}"
-            embed = discord.Embed(title="Deleted messages", color=discord.Color.gold())
+            embed = disnake.Embed(title="Deleted messages", color=disnake.Color.gold())
             # clone list so nothing is removed while going through it
             msgs_to_delete = self.user_antispam[message.author.id][:]
             for msg in msgs_to_delete:
@@ -378,7 +378,7 @@ class Events(commands.Cog):
             for msg in msgs_to_delete:
                 try:
                     await msg.delete()
-                except discord.errors.NotFound:
+                except disnake.errors.NotFound:
                     pass  # don't fail if the message doesn't exist
         await asyncio.sleep(3)
         self.user_antispam[message.author.id].remove(message)
@@ -402,7 +402,7 @@ class Events(commands.Cog):
             await utils.send_dm_message(message.author, msg_user)
             log_msg = f"🚫 **Auto-probated**: {message.author.mention} probated for mass user mentions | {message.author}\n" \
                       f"🗓 __Creation__: {message.author.created_at}\n🏷 __User ID__: {message.author.id}"
-            embed = discord.Embed(title="Deleted messages", color=discord.Color.gold())
+            embed = disnake.Embed(title="Deleted messages", color=disnake.Color.gold())
             # clone list so nothing is removed while going through it
             msgs_to_delete = self.user_antispam[key].copy()
             for msg in msgs_to_delete:
@@ -411,11 +411,11 @@ class Events(commands.Cog):
             await self.bot.channels['mod-logs'].send(log_msg, embed=embed)
             await self.bot.channels['mods'].send(
                 f"{log_msg}\nSee {self.bot.channels['mod-logs'].mention} for a list of deleted messages. @here",
-                allowed_mentions=discord.AllowedMentions(everyone=True))
+                allowed_mentions=disnake.AllowedMentions(everyone=True))
             for msg in msgs_to_delete:
                 try:
                     await msg[0].delete()
-                except discord.errors.NotFound:
+                except disnake.errors.NotFound:
                     pass  # don't fail if the message doesn't exist
             self.user_antispam[key].clear()
         else:
@@ -435,7 +435,7 @@ class Events(commands.Cog):
         if len(self.channel_antispam[message.channel.id]) == 22:
             await message.channel.set_permission(self.bot.guild.default_role, send_messages=False)
             msg_channel = "This channel has been automatically locked for spam. Please wait while staff review the situation."
-            embed = discord.Embed(title="Deleted messages", color=discord.Color.gold())
+            embed = disnake.Embed(title="Deleted messages", color=disnake.Color.gold())
             # msgs_to_delete = self.user_antispam[message.author.id][:]  # clone list so nothing is removed while going through it
             # for msg in msgs_to_delete:
             #     embed.add_field(name="@"+self.bot.help_command.remove_mentions(msg.author), value="\u200b" + msg.content)  # added zero-width char to prevent an error with an empty string (lazy workaround)
@@ -443,12 +443,12 @@ class Events(commands.Cog):
             log_msg = f"🔒 **Auto-locked**: {message.channel.mention} locked for spam"
             await self.bot.channels['mod-logs'].send(log_msg, embed=embed)
             await self.bot.channels['mods'].send(f"{log_msg} @here\nSee {self.bot.channels['mod-logs'].mention} for a list of deleted messages.",
-                                                 allowed_mentions=discord.AllowedMentions(everyone=True))
+                                                 allowed_mentions=disnake.AllowedMentions(everyone=True))
             # msgs_to_delete = self.channel_antispam[message.channel.id][:]  # clone list so nothing is removed while going through it
             # for msg in msgs_to_delete:
             #     try:
             #         await self.bot.delete_message(msg)
-            #     except discord.errors.NotFound:
+            #     except disnake.errors.NotFound:
             #         pass  # don't fail if the message doesn't exist
         await asyncio.sleep(5)
         self.channel_antispam[message.channel.id].remove(message)
@@ -460,7 +460,7 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if isinstance(message.channel, discord.abc.PrivateChannel):
+        if isinstance(message.channel, disnake.abc.PrivateChannel):
             return
         if not self.bot.IS_DOCKER:
             if message.author.name == "GitHub" and message.author.discriminator == "0000":
@@ -481,7 +481,7 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, message_before, message_after):
-        if isinstance(message_before.channel, discord.abc.PrivateChannel):
+        if isinstance(message_before.channel, disnake.abc.PrivateChannel):
             return
         await self.bot.wait_until_all_ready()
         if await crud.check_nofilter(message_before.channel):

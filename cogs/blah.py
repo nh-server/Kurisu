@@ -1,6 +1,8 @@
 import disnake
 
 from disnake.ext import commands
+from disnake.ext.commands import Param
+
 from utils.checks import is_staff
 from utils.utils import send_dm_message
 
@@ -17,32 +19,34 @@ class Blah(commands.Cog):
     ]
 
     @is_staff("OP")
-    @commands.command()
-    async def announce(self, ctx, *, inp):
-        await self.bot.channels['announcements'].send(inp, allowed_mentions=discord.AllowedMentions(everyone=True, roles=True))
+    @commands.slash_command()
+    async def blah(self, inter):
+        pass
 
-    @is_staff("OP")
-    @commands.command()
-    async def speak(self, ctx, channel: discord.TextChannel, *, inp):
-        if channel.id in self.speak_blacklist:
-            await ctx.send(f'You cannot send a message to {channel.mention}.')
-            return
-        await channel.send(inp, allowed_mentions=discord.AllowedMentions(everyone=True, roles=True))
+    @blah.sub_command()
+    async def announce(self, inter, msg: str = Param(desc="Message to announce")):
+        """Sends a message to announcements"""
+        await self.bot.channels['announcements'].send(msg, allowed_mentions=disnake.AllowedMentions(everyone=True, roles=True))
+        await inter.response.send_message("Message send!")
 
-    @is_staff("OP")
-    @commands.command()
-    async def sendtyping(self, ctx, channel: discord.TextChannel = None):
+    @blah.sub_command()
+    async def speak(self, inter, channel: disnake.TextChannel = Param(desc="Channel to send the message"), msg: str = Param(desc="Message to send")):
         if channel.id in self.speak_blacklist:
-            await ctx.send(f'You cannot send a message to {channel.mention}.')
+            await inter.response.send_message(f'You cannot send a message to {channel.mention}.', ephemeral=True)
             return
-        if channel is None:
-            channel = ctx.channel
+        await channel.send(msg, allowed_mentions=disnake.AllowedMentions(everyone=True, roles=True))
+
+    @blah.sub_command()
+    async def sendtyping(self, inter, channel: disnake.TextChannel = Param(default=lambda inter: inter.channel, desc="Channel to send the typing event")):
+        if channel.id in self.speak_blacklist:
+            await inter.response.send_message(f'You cannot send a message to {channel.mention}.', ephemeral=True)
+            return
         await channel.trigger_typing()
 
     @is_staff("Owner")
-    @commands.command()
-    async def dm(self, ctx, member: discord.Member, *, inp):
-        await send_dm_message(member, inp, ctx)
+    @blah.sub_command()
+    async def dm(self, inter, msg: str = Param(desc="Message to send"), member: disnake.Member = Param(default=lambda inter: inter.channel, desc="Member to send message")):
+        await send_dm_message(member, msg, inter)
 
 
 def setup(bot):

@@ -25,7 +25,7 @@ from utils.models import Channel, Role, db
 from utils.utils import create_error_embed
 
 cogs = (
-    'cogs.assistance',
+    #'cogs.assistance',
     'cogs.blah',
     'cogs.events',
     'cogs.extras',
@@ -100,14 +100,14 @@ class Kurisu(commands.Bot):
 
     def __init__(self, command_prefix, description, commit, branch):
 
-        intents = discord.Intents(guilds=True, members=True, messages=True, reactions=True, bans=True)
-        allowed_mentions = discord.AllowedMentions(everyone=False, roles=False)
+        intents = disnake.Intents(guilds=True, members=True, messages=True, reactions=True, bans=True)
+        allowed_mentions = disnake.AllowedMentions(everyone=False, roles=False)
         super().__init__(
             command_prefix=command_prefix,
             description=description,
             intents=intents,
             allowed_mentions=allowed_mentions,
-            case_insensitive=True
+            case_insensitive=True,
         )
         self.IS_DOCKER = IS_DOCKER
         self.commit = commit
@@ -180,9 +180,9 @@ class Kurisu(commands.Bot):
             'streaming-gamer': None,
         }
 
-        self.helper_roles: dict[str, discord.Role] = {}
-        self.assistance_channels: tuple[discord.TextChannel] = tuple()
-        self.staff_roles: dict[str, discord.Role] = {}
+        self.helper_roles: dict[str, disnake.Role] = {}
+        self.assistance_channels: tuple[disnake.TextChannel] = tuple()
+        self.staff_roles: dict[str, disnake.Role] = {}
 
         self.failed_cogs = []
         self.channels_not_found = []
@@ -249,7 +249,7 @@ class Kurisu(commands.Bot):
         self.err_channel = self.channels['bot-err']
 
         startup_message = f'{self.user.name} has started! {self.guild} has {self.guild.member_count:,} members!'
-        embed = discord.Embed(title=f"{self.user.name} has started!",
+        embed = disnake.Embed(title=f"{self.user.name} has started!",
                               description=f"{self.guild} has {self.guild.member_count:,} members!", colour=0xb01ec3)
         if self.failed_cogs or self.roles_not_found or self.channels_not_found:
             embed.colour = 0xe50730
@@ -278,7 +278,7 @@ class Kurisu(commands.Bot):
     @staticmethod
     def escape_text(text):
         text = str(text)
-        return discord.utils.escape_markdown(text)
+        return disnake.utils.escape_markdown(text)
 
     async def close(self):
         await super().close()
@@ -298,7 +298,7 @@ class Kurisu(commands.Bot):
             if channel := await Channel.query.where(Channel.name == n).gino.scalar():
                 self.channels[n] = self.guild.get_channel(channel)
             else:
-                self.channels[n] = discord.utils.get(self.guild.text_channels, name=n)
+                self.channels[n] = disnake.utils.get(self.guild.text_channels, name=n)
                 if not self.channels[n]:
                     self.channels_not_found.append(n)
                     logger.warning("Failed to find channel %s", n)
@@ -313,7 +313,7 @@ class Kurisu(commands.Bot):
             if role := await Role.query.where(Role.name == n).gino.scalar():
                 self.roles[n] = self.guild.get_role(role)
             else:
-                self.roles[n] = discord.utils.get(self.guild.roles, name=n)
+                self.roles[n] = disnake.utils.get(self.guild.roles, name=n)
                 if not self.roles[n]:
                     self.roles_not_found.append(n)
                     logger.warning("Failed to find role %s", n)
@@ -327,8 +327,8 @@ class Kurisu(commands.Bot):
         if self.roles['Nitro Booster'] and not await crud.get_dbrole(self.roles['Nitro Booster'].id):
             await Role.create(id=self.roles['Nitro Booster'].id, name='Nitro Booster')
 
-    async def on_command_error(self, ctx: commands.Context, exc: discord.DiscordException):
-        author: discord.Member = ctx.author
+    async def on_command_error(self, ctx: commands.Context, exc: disnake.DiscordException):
+        author: disnake.Member = ctx.author
         command: commands.Command = ctx.command or '<unknown cmd>'
         exc = getattr(exc, 'original', exc)
         channel = self.err_channel or ctx.channel
@@ -354,11 +354,11 @@ class Kurisu(commands.Bot):
         elif isinstance(exc, commands.BadUnionArgument):
             await ctx.send(f'{author.mention} A bad argument was given: `{exc}`\n')
 
-        elif isinstance(exc, discord.ext.commands.errors.CommandOnCooldown):
+        elif isinstance(exc, disnake.ext.commands.errors.CommandOnCooldown):
             if not await check_staff_id('Helper', author.id):
                 try:
                     await ctx.message.delete()
-                except (discord.errors.NotFound, discord.errors.Forbidden):
+                except (disnake.errors.NotFound, disnake.errors.Forbidden):
                     pass
                 await ctx.send(f"{author.mention} This command was used {exc.cooldown.per - exc.retry_after:.2f}s ago and is on cooldown. "
                                f"Try again in {exc.retry_after:.2f}s.", delete_after=10)
@@ -369,10 +369,10 @@ class Kurisu(commands.Bot):
             await ctx.send(f'{author.mention} You are missing required argument {exc.param.name}.\n')
             await ctx.send_help(ctx.command)
 
-        elif isinstance(exc, discord.NotFound):
+        elif isinstance(exc, disnake.NotFound):
             await ctx.send("ID not found.")
 
-        elif isinstance(exc, discord.Forbidden):
+        elif isinstance(exc, disnake.Forbidden):
             await ctx.send(f"💢 I can't help you if you don't let me!\n`{exc.text}`.")
 
         elif isinstance(exc, commands.CommandInvokeError):
@@ -384,13 +384,43 @@ class Kurisu(commands.Bot):
             embed = create_error_embed(ctx, exc)
             await channel.send(embed=embed)
 
+    async def on_slash_command_error(self, inter, exc):
+        author: disnake.Member = inter.author
+        command: disnake.ApplicationCommand = inter.application_command or '<unknown cmd>'
+        exc = getattr(exc, 'original', exc)
+        channel = self.err_channel or inter.channel
+
+        if isinstance(exc, commands.NoPrivateMessage):
+            await inter.response.send_message(f'`{command}` cannot be used in direct messages.', ephemeral= True)
+
+        elif isinstance(exc, commands.MissingPermissions):
+            await inter.response.send_message(f"{author.mention} You don't have permission to use `{command}`.", ephemeral= True)
+
+        elif isinstance(exc, commands.CheckFailure):
+            await inter.response.send_message(f'{author.mention} You cannot use `{command}`.', ephemeral=True)
+
+        elif isinstance(exc, disnake.ext.commands.errors.CommandOnCooldown):
+            await inter.response.send_message(f"{author.mention} This command was used {exc.cooldown.per - exc.retry_after:.2f}s ago and is on cooldown. "
+                                              f"Try again in {exc.retry_after:.2f}s.", ephemeral=True, delete_after=10)
+
+        elif isinstance(exc, disnake.NotFound):
+            await inter.response.send_message("ID not found.", delete_after=10, ephemeral=True)
+
+        elif isinstance(exc, disnake.Forbidden):
+            await inter.response.send_message(f"💢 I can't help you if you don't let me!\n`{exc.text}`.", ephemeral=True)
+
+        else:
+            await inter.response.send_message(f'{author.mention} Unexpected exception occurred while using the command `{command.name}`')
+            embed = create_error_embed(inter, exc)
+            await channel.send(embed=embed)
+
     async def on_error(self, event_method, *args, **kwargs):
         logger.error("", exc_info=True)
         if not self.err_channel:
             return
 
         exc_type, exc, tb = sys.exc_info()
-        embed = discord.Embed(title="Error Event", colour=0xe50730)
+        embed = disnake.Embed(title="Error Event", colour=0xe50730)
         embed.add_field(name="Event Method", value=event_method)
         trace = "".join(traceback.format_exception(exc_type, exc, tb))
         embed.description = f"```py\n{trace}\n```"
@@ -400,8 +430,8 @@ class Kurisu(commands.Bot):
 async def startup():
     setup_logging()
 
-    if discord.version_info.major < 1:
-        logger.error("discord.py is not at least 1.0.0x. (current version: %s)", discord.__version__)
+    if disnake.version_info.major < 1:
+        logger.error("disnake.py is not at least 1.0.0x. (current version: %s)", disnake.__version__)
         return 2
 
     if sys.hexversion < 0x30900F0:  # 3.9

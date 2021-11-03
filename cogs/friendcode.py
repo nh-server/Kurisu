@@ -1,9 +1,13 @@
+from typing import Literal
+
 import disnake
 import hashlib
 import re
 import struct
 
 from disnake.ext import commands
+from disnake.ext.commands import Param
+
 from utils import crud, utils
 
 
@@ -40,33 +44,37 @@ class FriendCode(commands.Cog):
         fc = str(fc)
         return f"SW - {fc[0:4]} - {fc[4:8]} - {fc[8:12]}"
 
-    @commands.command()
-    async def fcregister(self, ctx, fc: str):
+    @commands.slash_command()
+    async def friendcode(self, inter):
+        pass
+
+    @friendcode.sub_command()
+    async def register(self, inter, fc: str = Param(desc="Your friendcode")):
         """Add your friend code."""
         console = "switch" if fc.startswith("SW") else "3ds"
         fc = self.verify_3ds_fc(fc) if console == "3ds" else self.verify_switch_fc(fc)
         if not fc:
-            await ctx.send("This friend code is invalid. Switch friend codes must be in a SW-XXXX-XXXX-XXXX format and 3ds friends codes in a XXXX-XXXX-XXXX format.")
+            await inter.response.send_message("This friend code is invalid. Switch friend codes must be in a SW-XXXX-XXXX-XXXX format and 3ds friends codes in a XXXX-XXXX-XXXX format.")
             return
-        fcs = await crud.get_friendcode(ctx.author.id)
+        fcs = await crud.get_friendcode(inter.author.id)
         if fcs and (fcs.fc_3ds and console == "3ds" or fcs.fc_switch and console == "switch"):
-            await ctx.send(f"Please delete your current {console} friend code with `.fcdelete {console}` before adding another.")
+            await inter.response.send_message(f"Please delete your current {console} friend code with `.fcdelete {console}` before adding another.")
             return
         if console == "3ds":
-            await crud.add_friendcode_3ds(ctx.author.id, fc)
+            await crud.add_friendcode_3ds(inter.author.id, fc)
         else:
-            await crud.add_friendcode_switch(ctx.author.id, fc)
-        await ctx.send(f"{ctx.author.mention} {console} friend code inserted: {self.n3ds_fc_to_string(fc) if console=='3ds' else self.switch_fc_to_string(fc)}")
+            await crud.add_friendcode_switch(inter.author.id, fc)
+        await inter.response.send_message(f"{inter.author.mention} {console} friend code inserted: {self.n3ds_fc_to_string(fc) if console=='3ds' else self.switch_fc_to_string(fc)}")
 
     @commands.guild_only()
-    @commands.command()
-    async def fcquery(self, ctx, member: discord.Member):
+    @friendcode.sub_command()
+    async def query(self, inter, member: disnake.Member = Param(desc="Member to query friendcodes")):
         """Get other user's friend codes. You must have one yourself in the database."""
 
-        if not (friendcode := await crud.get_friendcode(ctx.author.id)):
-            return await ctx.send("You need to register your own friend code with `.fcregister <friendcode>` before getting others.")
+        if not (friendcode := await crud.get_friendcode(inter.author.id)):
+            return await inter.response.send_message("You need to register your own friend code with `/friendcode register <friendcode>` before getting others." , ephemeral=True)
         if not (friendcode_m := await crud.get_friendcode(member.id)):
-            return await ctx.send("This user does not have a registered friend code.")
+            return await inter.response.send_message("This user does not have a registered friend code." , ephemeral=True)
 
         fcs = ""
         fcs_m = ""
@@ -83,35 +91,33 @@ class FriendCode(commands.Cog):
         if friendcode_m.fc_switch:
             fcs_m += fc_switch.format(self.switch_fc_to_string(friendcode.fc_switch))
 
-        await ctx.send(f"{member.mention} friend codes are\n{fcs}")
-        await utils.send_dm_message(member, f"{ctx.author} has asked for your friend codes! Their codes are\n{fcs_m}")
+        await inter.response.send_message(f"{member.mention} friend codes are\n{fcs}", ephemeral=True)
+        await utils.send_dm_message(member, f"{inter.author} has asked for your friend codes! Their codes are\n{fcs_m}")
 
-    @commands.command()
-    async def fcdelete(self, ctx, console: str):
+    @friendcode.sub_command()
+    async def delete(self, inter, console: Literal['3ds', 'switch'] = Param(desc="Console which friendcode you want to delete")):
         """Delete your friend code."""
         if console == '3ds':
-            await crud.delete_friendcode_3ds(ctx.author.id)
+            await crud.delete_friendcode_3ds(inter.author.id)
         elif console == 'switch':
-            await crud.delete_friendcode_switch(ctx.author.id)
-        else:
-            return await ctx.send("Invalid console.")
-        await ctx.send(f"Your {console} friend code was removed from the database.")
+            await crud.delete_friendcode_switch(inter.author.id)
+        await inter.response.send_message(f"Your {console} friend code was removed from the database.", ephemeral=True)
 
-    @commands.command()
-    async def fctest_3ds(self, ctx, fc):
+    @friendcode.sub_command()
+    async def test_3ds(self, inter, fc = Param(desc="Friendcode to test")):
         fc = self.verify_3ds_fc(fc)
         if fc:
-            await ctx.send(self.n3ds_fc_to_string(fc))
+            await inter.response.send_message(self.n3ds_fc_to_string(fc), ephemeral=True)
         else:
-            await ctx.send("Invalid.")
+            await inter.response.send_message("Invalid.", ephemeral=True)
 
-    @commands.command()
-    async def fctest_switch(self, ctx, fc):
+    @friendcode.sub_command()
+    async def test_switch(self, inter, fc: str = Param(desc="Friendcode to test")):
         fc = self.verify_switch_fc(fc)
         if fc:
-            await ctx.send(self.switch_fc_to_string(fc))
+            await inter.response.send_message(self.switch_fc_to_string(fc), ephemeral=True)
         else:
-            await ctx.send("Invalid.")
+            await inter.response.send_message("Invalid.", ephemeral=True)
 
 
 def setup(bot):

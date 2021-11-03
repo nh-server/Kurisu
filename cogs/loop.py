@@ -37,8 +37,8 @@ class Loop(commands.Cog):
 
     tz = pytz.timezone('US/Pacific')
 
-    netinfo_embed = discord.Embed(description="The Network Maintenance Information page has not been successfully checked yet.")
-    # netinfo_future_embed = discord.Embed(description="This needs to be set up")
+    netinfo_embed = disnake.Embed(description="The Network Maintenance Information page has not been successfully checked yet.")
+    # netinfo_future_embed = disnake.Embed(description="This needs to be set up")
 
     def netinfo_parse_time(self, timestr):
         return datetime.strptime(' '.join(timestr.split()), '%A, %B %d, %Y %I :%M %p').replace(tzinfo=self.tz)
@@ -54,7 +54,7 @@ class Loop(commands.Cog):
 
         now = datetime.now(self.tz)
 
-        embed = discord.Embed(title="Network Maintenance Information / Online Status",
+        embed = disnake.Embed(title="Network Maintenance Information / Online Status",
                               url="https://www.nintendo.co.jp/netinfo/en_US/index.html",
                               description="All times are US/Pacific.")
         embed.set_footer(text=f"This information was last updated {now.strftime('%A, %B %d, %Y %I:%M %p')}.")
@@ -98,7 +98,7 @@ class Loop(commands.Cog):
     @commands.cooldown(rate=1, per=60.0, type=commands.BucketType.channel)
     async def netinfo_refresh(self, ctx):
         await self.update_netinfo()
-        embed = discord.Embed(title="Netinfo Refresh", color=discord.Color.blue())
+        embed = disnake.Embed(title="Netinfo Refresh", color=disnake.Color.blue())
         embed.description = "Refresh complete."
         await ctx.send(embed=embed)
 
@@ -125,7 +125,7 @@ class Loop(commands.Cog):
                         self.bot.actions.append("tbr:" + str(timeban.user))
                         try:
                             await self.bot.guild.unban(user)
-                        except discord.errors.NotFound:
+                        except disnake.errors.NotFound:
                             pass
                         msg = f"⚠️ **Ban expired**: {user.mention} | {user}"
                         await self.bot.channels['mod-logs'].send(msg)

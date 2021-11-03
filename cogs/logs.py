@@ -32,8 +32,8 @@ Thanks for stopping by and have a good time!
     @commands.Cog.listener()
     async def on_ready(self):
         await self.bot.wait_until_all_ready()
-        self.logo_nitro = discord.utils.get(self.bot.guild.emojis, name="nitro") or "⁉"
-        self.logo_boost = discord.utils.get(self.bot.guild.emojis, name="boost") or "⁉"
+        self.logo_nitro = disnake.utils.get(self.bot.guild.emojis, name="nitro") or "⁉"
+        self.logo_boost = disnake.utils.get(self.bot.guild.emojis, name="boost") or "⁉"
         self.nitro_msg = f"""Thanks for boosting {self.logo_nitro} Nintendo Homebrew!
         As a Nitro Booster you have the following bonuses:
         - React permissions in {self.bot.channels['off-topic'].mention}, {self.bot.channels['elsewhere'].mention}, and {self.bot.channels['nintendo-discussion'].mention}.
@@ -54,7 +54,7 @@ Thanks for stopping by and have a good time!
             msg = f"🚨 **Attempted join**: {member.mention} is soft-banned by <@{softban.issuer}> | {self.bot.escape_text(member)}"
             if not message_sent:
                 msg += "\nThis message did not send to the user."
-            embed = discord.Embed(color=discord.Color.red())
+            embed = disnake.Embed(color=disnake.Color.red())
             embed.description = softban.reason
             await self.bot.channels['server-logs'].send(msg, embed=embed)
             return
@@ -67,10 +67,10 @@ Thanks for stopping by and have a good time!
         if len(warns) == 0:
             await self.bot.channels['server-logs'].send(msg)
         else:
-            embed = discord.Embed(color=discord.Color.dark_red())
+            embed = disnake.Embed(color=disnake.Color.dark_red())
             embed.set_author(name=f"Warns for {member}", icon_url=member.avatar_url)
             for idx, warn in enumerate(warns):
-                embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn.id).strftime('%Y-%m-%d %H:%M:%S')}", value=f"Issuer: {self.bot.escape_text((await self.bot.fetch_user(warn.issuer)).display_name)}\nReason: {warn.reason}")
+                embed.add_field(name=f"{idx + 1}: {disnake.utils.snowflake_time(warn.id).strftime('%Y-%m-%d %H:%M:%S')}", value=f"Issuer: {self.bot.escape_text((await self.bot.fetch_user(warn.issuer)).display_name)}\nReason: {warn.reason}")
             await self.bot.channels['server-logs'].send(msg, embed=embed)
         await send_dm_message(member, self.welcome_msg.format(member.name, member.guild.name, self.bot.channels['welcome-and-rules'].mention))
 
@@ -149,7 +149,7 @@ Thanks for stopping by and have a good time!
                 if self.bot.roles["Nitro Booster"] in diff:
                     try:
                         await member_after.send(self.nitro_msg)
-                    except discord.Forbidden:
+                    except disnake.Forbidden:
                         pass
                 for role in roles_after:
                     if role.name == "@everyone":
