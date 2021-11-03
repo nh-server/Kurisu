@@ -1,7 +1,7 @@
-import discord
+import disnake
 import re
 
-from discord.ext import commands
+from disnake.ext import commands
 from textwrap import wrap
 from utils.checks import is_staff
 from utils.manager import check_collisions
@@ -41,7 +41,7 @@ class Filter(commands.Cog):
     @wordfilter.command(name='list')
     async def list_words(self, ctx):
         """List the word filter filter lists and their content."""
-        embed = discord.Embed()
+        embed = disnake.Embed()
         for kind in self.bot.wordfilter.kinds:
             if self.bot.wordfilter.filter[kind]:
                 parts = wrap('\n'.join(self.bot.wordfilter.filter[kind]), 1024, break_long_words=False, replace_whitespace=False)
@@ -100,7 +100,7 @@ class Filter(commands.Cog):
     @levenshteinfilter.command(name='list')
     async def list_levenshtein(self, ctx):
         """List the levenshtein filter filter lists and their content."""
-        embed = discord.Embed()
+        embed = disnake.Embed()
         for kind in self.bot.levenshteinfilter.kinds:
             if self.bot.levenshteinfilter.filter[kind]:
                 value = "".join(
@@ -134,7 +134,7 @@ class Filter(commands.Cog):
                 if not matches[word]:
                     del matches[word]
         if matches:
-            embed = discord.Embed(title="Matches")
+            embed = disnake.Embed(title="Matches")
             for match in matches.keys():
                 embed.add_field(name=match, value='\n'.join(matches[match]))
             await ctx.send(embed=embed)
@@ -211,7 +211,7 @@ class Filter(commands.Cog):
 
     @is_staff("OP")
     @invitefilter.command(name='add')
-    async def add_invite(self, ctx, invite: discord.Invite, alias: str):
+    async def add_invite(self, ctx, invite: disnake.Invite, alias: str):
         """Adds a invite to the filter whitelist"""
         if await self.bot.invitefilter.fetch_invite_by_alias(alias) or await self.bot.invitefilter.fetch_invite_by_code(invite.code):
             return await ctx.send("This invite code or alias is already in use!")
@@ -235,7 +235,7 @@ class Filter(commands.Cog):
     @invitefilter.command(name='list')
     async def list_invites(self, ctx):
         """List invites in the filter whitelist"""
-        embed = discord.Embed()
+        embed = disnake.Embed()
         if self.bot.invitefilter.invites:
             embed.add_field(name='Invites', value='\n'.join(f"name: {invite.alias} code:{invite.code} uses:{invite.uses}" for invite in self.bot.invitefilter.invites))
             await ctx.send(embed=embed)
@@ -247,7 +247,7 @@ class Filter(commands.Cog):
         """Detects collisions between the levenshtein filter and the word filter,
         shows what words matched a entry in the levenshtein filter"""
         if collisions := await check_collisions():
-            embed = discord.Embed(title="Filter Collisions")
+            embed = disnake.Embed(title="Filter Collisions")
             for key in collisions.keys():
                 embed.add_field(name=key, value='\n'.join(collisions[key]))
             await ctx.send(embed=embed)

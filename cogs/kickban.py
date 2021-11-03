@@ -1,8 +1,8 @@
-import discord
+import disnake
 import time
 import datetime
 
-from discord.ext import commands
+from disnake.ext import commands
 from typing import Optional, Union
 from utils import utils, crud
 from utils.checks import is_staff, check_bot_or_staff

@@ -1,11 +1,11 @@
 import asyncio
-import discord
+import disnake
 import pytz
 import logging
 
 from datetime import datetime, timedelta
-from discord import AllowedMentions
-from discord.ext import commands
+from disnake import AllowedMentions
+from disnake.ext import commands
 from utils import crud
 from utils.utils import send_dm_message
 

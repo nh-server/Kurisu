@@ -1,7 +1,7 @@
-import discord
+import disnake
 import re
 
-from discord.ext import commands
+from disnake.ext import commands
 from utils import crud
 from utils.checks import is_staff, check_if_user_can_ready
 

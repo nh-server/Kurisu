@@ -1,8 +1,8 @@
 import concurrent.futures
 import functools
 
-from discord import File
-from discord.ext import commands
+from disnake import File
+from disnake.ext import commands
 from io import BytesIO
 from PIL import Image
 

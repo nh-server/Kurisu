@@ -1,9 +1,9 @@
 import datetime
-import discord
+import disnake
 import re
 import time
 
-from discord.ext import commands
+from disnake.ext import commands
 from subprocess import call
 from typing import Union
 from utils import utils, crud, models

@@ -1,9 +1,9 @@
-import discord
+import disnake
 import hashlib
 import re
 import struct
 
-from discord.ext import commands
+from disnake.ext import commands
 from utils import crud, utils
 
 

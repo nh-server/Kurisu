@@ -3,8 +3,8 @@ from glob import iglob
 from os.path import basename, join
 from typing import TYPE_CHECKING
 
-import discord
-from discord.ext import commands
+import disnake
+from disnake.ext import commands
 from utils.utils import ConsoleColor
 
 if TYPE_CHECKING:

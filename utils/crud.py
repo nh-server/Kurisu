@@ -1,7 +1,7 @@
 import datetime
 
 from . import models
-from discord import TextChannel, utils
+from disnake import TextChannel, utils
 from typing import Optional
 
 

@@ -1,9 +1,9 @@
-import discord
+import disnake
 import random
 import re
 import traceback
 
-from discord.ext import commands
+from disnake.ext import commands
 from typing import Optional, Union
 
 

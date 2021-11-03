@@ -1,4 +1,4 @@
-from discord.ext import commands
+from disnake.ext import commands
 from utils import crud
 from utils.checks import is_staff
 

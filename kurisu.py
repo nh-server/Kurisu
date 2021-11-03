@@ -6,7 +6,7 @@
 
 import aiohttp
 import asyncio
-import discord
+import disnake
 import gino
 import logging
 import os
@@ -15,7 +15,7 @@ import traceback
 
 from alembic.config import main as albmain
 from configparser import ConfigParser
-from discord.ext import commands
+from disnake.ext import commands
 from logging.handlers import TimedRotatingFileHandler
 from subprocess import check_output, CalledProcessError
 from utils import crud

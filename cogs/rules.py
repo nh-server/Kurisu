@@ -1,9 +1,9 @@
-import discord
+import disnake
 
 from utils import crud
 from utils.checks import is_staff
 from utils.utils import paginate_message
-from discord.ext import commands
+from disnake.ext import commands
 
 
 class Rules(commands.Cog):

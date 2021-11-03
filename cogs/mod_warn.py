@@ -1,6 +1,6 @@
-import discord
+import disnake
 
-from discord.ext import commands
+from disnake.ext import commands
 from typing import Union
 from utils import utils, crud
 from utils.checks import is_staff, check_staff_id, check_bot_or_staff

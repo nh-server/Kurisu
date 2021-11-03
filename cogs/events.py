@@ -1,10 +1,10 @@
 import asyncio
-import discord
+import disnake
 import re
 import random
 
 from collections import deque
-from discord.ext import commands
+from disnake.ext import commands
 from urllib.parse import urlparse
 from string import printable
 from subprocess import call

@@ -1,5 +1,5 @@
 import datetime
-import discord
+import disnake
 import inspect
 import os
 import random
@@ -7,8 +7,8 @@ import re
 import string
 import sys
 
-from discord import TextChannel, __version__ as discordpy_version
-from discord.ext import commands
+from disnake import TextChannel, __version__ as discordpy_version
+from disnake.ext import commands
 from typing import Union
 from utils.checks import is_staff
 from utils import crud

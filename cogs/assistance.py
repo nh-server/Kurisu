@@ -1,8 +1,8 @@
-import discord
+import disnake
 import qrcode
 import logging
 
-from discord.ext import commands, tasks
+from disnake.ext import commands, tasks
 from io import BytesIO
 from inspect import cleandoc
 from os.path import dirname, join

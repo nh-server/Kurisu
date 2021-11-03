@@ -1,7 +1,7 @@
-import discord
+import disnake
 
 from datetime import datetime
-from discord.ext import commands
+from disnake.ext import commands
 from re import compile, finditer, search
 from typing import List, Union
 

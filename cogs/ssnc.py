@@ -15,8 +15,8 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 import re
 
-from discord.ext import commands
-from discord.ext.commands import Cog
+from disnake.ext import commands
+from disnake.ext.commands import Cog
 
 
 def setup(bot):
