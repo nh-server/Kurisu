@@ -1,9 +1,11 @@
 import discord
+import re
 
 from discord.ext import commands
 from textwrap import wrap
 from utils.checks import is_staff
 from utils.manager import check_collisions
+from Levenshtein import distance
 
 
 class Filter(commands.Cog):
@@ -110,6 +112,34 @@ class Filter(commands.Cog):
             await ctx.author.send(embed=embed)
         else:
             await ctx.send("The Levenshtein filter is empty!")
+
+    @levenshteinfilter.command(name='test')
+    async def test_levenshtein(self, ctx, message):
+        """Test a message against the levenshtein filter"""
+
+        matches = {}
+        message = message[::-1]
+        to_check = re.findall(r"([\w0-9-]+\.[\w0-9-]+)", message)
+
+        for kind in self.bot.levenshteinfilter.kinds:
+            for word in to_check:
+                word = word[::-1]
+                matches[word] = []
+                for trigger, threshold in self.bot.levenshteinfilter.filter[kind]:
+                    word_distance = distance(word, trigger)
+                    if word in self.bot.levenshteinfilter.whitelist or word_distance > threshold:
+                        continue
+                    else:
+                        matches[word].append(trigger)
+                if not matches[word]:
+                    del matches[word]
+        if matches:
+            embed = discord.Embed(title="Matches")
+            for match in matches.keys():
+                embed.add_field(name=match, value='\n'.join(matches[match]))
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send("Message didn't trigger the levenshtein filter.")
 
     @is_staff("OP")
     @levenshteinfilter.command(name='delete', aliases=['remove'])
