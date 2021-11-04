@@ -243,6 +243,8 @@ class KickBan(commands.Cog):
     async def scamban_member(self, ctx, member: discord.Member, site: str):
         """Bans member deleting message from last day and add a scamming site to the filter"""
 
+        site = site.lower()
+
         if await check_bot_or_staff(ctx, member, "scamban"):
             return
 
