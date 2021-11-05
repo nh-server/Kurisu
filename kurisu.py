@@ -368,6 +368,7 @@ class Kurisu(commands.Bot):
         elif isinstance(exc, commands.MissingRequiredArgument):
             await ctx.send(f'{author.mention} You are missing required argument {exc.param.name}.\n')
             await ctx.send_help(ctx.command)
+            command.reset_cooldown(ctx)
 
         elif isinstance(exc, discord.NotFound):
             await ctx.send("ID not found.")
