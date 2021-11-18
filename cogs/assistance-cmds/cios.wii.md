@@ -1,8 +1,8 @@
 ---
 title: cIOS Guide
-url: https://sites.google.com/site/completesg/backup-launchers/installation
-author.name: tj_cool
-thumbnail-url: https://i.imgur.com/sXSNYyV.jpg
+url: https://wii.guide/cios
+author.name: RiiConnect24
+thumbnail-url: https://i.imgur.com/KI6IXmm.png
 help-desc: cIOS installation guide
 ---
 
