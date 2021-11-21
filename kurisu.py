@@ -329,7 +329,7 @@ class Kurisu(commands.Bot):
 
     async def on_command_error(self, ctx: commands.Context, exc: discord.DiscordException):
         author: discord.Member = ctx.author
-        command: commands.Command = ctx.command or '<unknown cmd>'
+        command: commands.Command = ctx.command
         exc = getattr(exc, 'original', exc)
         channel = self.err_channel or ctx.channel
         if isinstance(exc, commands.CommandNotFound):
@@ -347,12 +347,15 @@ class Kurisu(commands.Bot):
         elif isinstance(exc, commands.CheckFailure):
             await ctx.send(f'{author.mention} You cannot use `{command}`.')
 
-        elif isinstance(exc, commands.BadArgument):
+        elif isinstance(exc, commands.MissingRequiredArgument):
+            await ctx.send(f'{author.mention} You are missing required argument `{exc.param.name}`.\n')
+            await ctx.send_help(ctx.command)
+            command.reset_cooldown(ctx)
+
+        elif isinstance(exc, commands.UserInputError):
             await ctx.send(f'{author.mention} A bad argument was given: `{exc}`\n')
             await ctx.send_help(ctx.command)
-
-        elif isinstance(exc, commands.BadUnionArgument):
-            await ctx.send(f'{author.mention} A bad argument was given: `{exc}`\n')
+            command.reset_cooldown(ctx)
 
         elif isinstance(exc, discord.ext.commands.errors.CommandOnCooldown):
             if not await check_staff_id('Helper', author.id):
@@ -364,10 +367,6 @@ class Kurisu(commands.Bot):
                                f"Try again in {exc.retry_after:.2f}s.", delete_after=10)
             else:
                 await ctx.reinvoke()
-
-        elif isinstance(exc, commands.MissingRequiredArgument):
-            await ctx.send(f'{author.mention} You are missing required argument {exc.param.name}.\n')
-            await ctx.send_help(ctx.command)
 
         elif isinstance(exc, discord.NotFound):
             await ctx.send("ID not found.")
