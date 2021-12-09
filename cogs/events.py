@@ -276,9 +276,6 @@ class Events(commands.Cog):
                     await utils.send_dm_message(message.author, msg)
                     self.bot.actions.append('wb:' + str(message.author.id))
                     await message.author.ban(reason="Linking scamming links in multiple channels.")
-                    log_msg = f"⛔ **Auto-ban**: {message.author.mention} banned for spamming scamming sites | {message.author}\n🗓 __Creation__: {message.author.created_at}\n🏷 __User ID__: {message.author.id}"
-                    await self.bot.channels['mod-logs'].send(log_msg)
-                    await self.bot.channels['mods'].send(log_msg)
                     try:
                         await message.delete()
                     except discord.errors.NotFound:

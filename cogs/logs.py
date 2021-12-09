@@ -97,14 +97,19 @@ Thanks for stopping by and have a good time!
     @commands.Cog.listener()
     async def on_member_ban(self, guild, member):
         await self.bot.wait_until_all_ready()
+        ban = await guild.fetch_ban(member)
+        auto_ban = 'wb:' + str(member.id) in self.bot.actions
         if "ub:" + str(member.id) in self.bot.actions:
             self.bot.actions.remove("ub:" + str(member.id))
             return
-        msg = f"{'⛔ **Auto-ban**' if 'wb:' + str(member.id) in self.bot.actions else '⛔ **Ban**'}: {member.mention} | {self.bot.escape_text(member)}\n🏷 __User ID__: {member.id}"
-        await self.bot.channels['server-logs'].send(msg)
-        if "wb:" + str(member.id) in self.bot.actions:
+        msg = f"{'⛔ **Auto-ban**' if auto_ban else '⛔ **Ban**'}: {member.mention} | {self.bot.escape_text(member)}\n🏷 __User ID__: {member.id}"
+        if ban.reason:
+            msg += "\n✏️ __Reason__: " + ban.reason
+        if auto_ban:
             self.bot.actions.remove("wb:" + str(member.id))
-        else:
+            await self.bot.channels['mods'].send(msg)
+        await self.bot.channels['server-logs'].send(msg)
+        if not ban.reason:
             msg += "\nThe responsible staff member should add an explanation below."
         await self.bot.channels['mod-logs'].send(msg)
 
