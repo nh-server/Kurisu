@@ -289,7 +289,7 @@ class Extras(commands.Cog):
         delta = datetime.timedelta(seconds=seconds)
         reminder_time = timestamp + delta
         await crud.add_reminder(reminder_time, ctx.author.id, reminder)
-        await ctx.send(f"I will send you a reminder in {dtm_to_discord_timestamp(reminder_time, format='F')}.")
+        await ctx.send(f"I will send you a reminder on {dtm_to_discord_timestamp(reminder_time, format='F')}.")
 
     @commands.group(invoke_without_command=True)
     async def tag(self, ctx, title: str = ""):
