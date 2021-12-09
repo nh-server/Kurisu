@@ -10,9 +10,9 @@ import sys
 from discord import TextChannel, __version__ as discordpy_version
 from discord.ext import commands
 from typing import Union
-from utils.checks import is_staff
 from utils import crud
-from utils.utils import parse_time, gen_color
+from utils.checks import is_staff
+from utils.utils import parse_time, gen_color, dtm_to_discord_timestamp
 
 python_version = sys.version.split()[0]
 
@@ -289,7 +289,7 @@ class Extras(commands.Cog):
         delta = datetime.timedelta(seconds=seconds)
         reminder_time = timestamp + delta
         await crud.add_reminder(reminder_time, ctx.author.id, reminder)
-        await ctx.send("I will send you a reminder then.")
+        await ctx.send(f"I will send you a reminder in {dtm_to_discord_timestamp(reminder_time, format='F')}.")
 
     @commands.group(invoke_without_command=True)
     async def tag(self, ctx, title: str = ""):

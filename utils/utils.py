@@ -1,6 +1,8 @@
+import datetime
 import discord
 import random
 import re
+import time
 import traceback
 
 from discord.ext import commands
@@ -101,3 +103,7 @@ def paginate_message(msg: str, prefix: str = '```', suffix: str = '```', max_siz
     for chunk in [msg[i:i + sep] for i in range(0, len(msg), sep)]:
         paginator.add_line(chunk)
     return paginator
+
+
+def dtm_to_discord_timestamp(dtm_obj: datetime.datetime, format: str = "f"):
+    return f"<t:{int(time.mktime(dtm_obj.timetuple()))}:{format}>"

@@ -1,5 +1,4 @@
 import discord
-import time
 import datetime
 
 from discord.ext import commands
@@ -181,13 +180,13 @@ class KickBan(commands.Cog):
         timestamp = datetime.datetime.now()
         delta = datetime.timedelta(seconds=seconds)
         unban_time = timestamp + delta
-        unban_time_string = unban_time.strftime("%Y-%m-%d %H:%M:%S")
+        unban_time_string = utils.dtm_to_discord_timestamp(unban_time)
 
         if isinstance(member, discord.Member):
             msg = f"You were banned from {ctx.guild.name}."
             if reason != "":
                 msg += " The given reason is: " + reason
-            msg += f"\n\nThis ban expires {unban_time_string} {time.tzname[0]}."
+            msg += f"\n\nThis ban lasts until {unban_time_string}."
             await utils.send_dm_message(member, msg, ctx)
         try:
             self.bot.actions.append("ub:" + str(member.id))
@@ -196,7 +195,7 @@ class KickBan(commands.Cog):
             await ctx.send("💢 I don't have permission to do this.")
             return
         await crud.add_timed_restriction(member.id, unban_time, 'timeban')
-        await ctx.send(f"{member} is now b& until {unban_time_string} {time.tzname[0]}. 👍")
+        await ctx.send(f"{member} is now b& until {unban_time_string}. 👍")
         msg = f"⛔ **Time ban**: {ctx.author.mention} banned {member.mention} until {unban_time_string} | {member}\n🏷 __User ID__: {member.id}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason

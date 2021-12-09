@@ -1,7 +1,6 @@
 import datetime
 import discord
 import re
-import time
 
 from discord.ext import commands
 from subprocess import call
@@ -318,22 +317,23 @@ class Mod(commands.Cog):
         timestamp = datetime.datetime.now()
         delta = datetime.timedelta(seconds=seconds)
         unmute_time = timestamp + delta
-        unmute_time_string = unmute_time.strftime("%Y-%m-%d %H:%M:%S")
+        unmute_time_string = utils.dtm_to_discord_timestamp(unmute_time)
 
-        old_timestamp = await crud.add_timed_restriction(member.id, unmute_time, 'timemute')
+        old_mute = await crud.get_time_restriction_by_user_type(member.id, 'timemute')
+        await crud.add_timed_restriction(member.id, unmute_time, 'timemute')
         await crud.add_permanent_role(member.id, self.bot.roles['Muted'].id)
         msg_user = "You were muted!"
         if reason != "":
             msg_user += " The given reason is: " + reason
-        msg_user += f"\n\nThis mute expires {unmute_time_string} {time.tzname[0]}."
+        msg_user += f"\n\nThis mute lasts until {unmute_time_string}."
         await utils.send_dm_message(member, msg_user, ctx)
         signature = utils.command_signature(ctx.command)
-        if not old_timestamp:
+        if not old_mute:
             await ctx.send(f"{member.mention} can no longer speak.")
             msg = f"🔇 **Timed mute**: {issuer.mention} muted {member.mention}| {self.bot.escape_text(member)} for {delta}, until {unmute_time_string} "
         else:
             await ctx.send(f"{member.mention} mute was updated.")
-            msg = f"🔇 **Timed mute**: {issuer.mention} updated {member.mention}| {self.bot.escape_text(member)} time mute from {old_timestamp} until {unmute_time_string}"
+            msg = f"🔇 **Timed mute**: {issuer.mention} updated {member.mention}| {self.bot.escape_text(member)} time mute from {utils.dtm_to_discord_timestamp(old_mute.end_date)} until {unmute_time_string}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         else:
@@ -529,7 +529,7 @@ class Mod(commands.Cog):
         timestamp = datetime.datetime.now()
 
         unnohelp_time = timestamp + delta
-        unnohelp_time_string = unnohelp_time.strftime("%Y-%m-%d %H:%M:%S")
+        unnohelp_time_string = utils.dtm_to_discord_timestamp(unnohelp_time)
 
         await crud.add_timed_restriction(member.id, unnohelp_time, 'timenohelp')
         await crud.add_permanent_role(member.id, self.bot.roles['No-Help'].id)
@@ -538,7 +538,7 @@ class Mod(commands.Cog):
         if reason != "":
             msg_user += " The given reason is: " + reason
         msg_user += f"\n\nIf you feel this was unjustified, you may appeal in {self.bot.channels['appeals'].mention}"
-        msg_user += f"\n\nThis restriction expires {unnohelp_time_string} {time.tzname[0]}."
+        msg_user += f"\n\nThis restriction lasts until {unnohelp_time_string}."
         await utils.send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} can no longer speak in Assistance Channels.")
         signature = utils.command_signature(ctx.command)
@@ -613,7 +613,7 @@ class Mod(commands.Cog):
         timestamp = datetime.datetime.now()
 
         unnotech_time = timestamp + delta
-        unnotech_time_string = unnotech_time.strftime("%Y-%m-%d %H:%M:%S")
+        unnotech_time_string = utils.dtm_to_discord_timestamp(unnotech_time)
 
         await crud.add_timed_restriction(member.id, unnotech_time, 'timenotech')
         await crud.add_permanent_role(member.id, self.bot.roles['No-Tech'].id)
@@ -622,7 +622,7 @@ class Mod(commands.Cog):
         if reason != "":
             msg_user += " The given reason is: " + reason
         msg_user += f"\n\nIf you feel this was unjustified, you may appeal in {self.bot.channels['appeals'].mention}"
-        msg_user += f"\n\nThis restriction expires {unnotech_time_string} {time.tzname[0]}."
+        msg_user += f"\n\nThis restriction lasts until {unnotech_time_string}."
         await utils.send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} can no longer speak in the tech channel.")
         signature = utils.command_signature(ctx.command)
@@ -677,7 +677,7 @@ class Mod(commands.Cog):
         timestamp = datetime.datetime.now()
 
         unhelpmute_time = timestamp + delta
-        unhelpmute_time_string = unhelpmute_time.strftime("%Y-%m-%d %H:%M:%S")
+        unhelpmute_time_string = utils.dtm_to_discord_timestamp(unhelpmute_time)
 
         await crud.add_timed_restriction(member.id, unhelpmute_time, 'timehelpmute')
         await crud.add_permanent_role(member.id, self.bot.roles['help-mute'].id)
@@ -686,7 +686,7 @@ class Mod(commands.Cog):
         if reason != "":
             msg_user += " The given reason is: " + reason
         msg_user += f"\n\nIf you feel this was unjustified, you may appeal in {self.bot.channels['appeals'].mention}"
-        msg_user += f"\n\nThis restriction expires {unhelpmute_time_string} {time.tzname[0]}."
+        msg_user += f"\n\nThis restriction lasts until {unhelpmute_time_string}."
         await utils.send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} can no longer speak in the help channels.")
         signature = utils.command_signature(ctx.command)
