@@ -105,5 +105,7 @@ def paginate_message(msg: str, prefix: str = '```', suffix: str = '```', max_siz
     return paginator
 
 
-def dtm_to_discord_timestamp(dtm_obj: datetime.datetime, format: str = "f"):
+def dtm_to_discord_timestamp(dtm_obj: datetime.datetime, format: str = "f", utc_time: bool = False):
+    if utc_time:
+        dtm_obj = dtm_obj.replace(tzinfo=datetime.timezone.utc).astimezone()
     return f"<t:{int(time.mktime(dtm_obj.timetuple()))}:{format}>"

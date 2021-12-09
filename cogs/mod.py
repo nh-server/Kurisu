@@ -69,18 +69,18 @@ class Mod(commands.Cog):
         embed.description = (
             f"**User:** {user.mention}\n"
             f"**User's ID:** {user.id}\n"
-            f"**Created on:** {user.created_at}\n"
+            f"**Created on:** {utils.dtm_to_discord_timestamp(user.created_at, utc_time=True)}\n"
             f"**Default Profile Picture:** {user.default_avatar}\n"
         )
 
         if isinstance(user, discord.Member):
             member_type = "member"
             embed.description += (
-                f"**Join date:** {user.joined_at}\n"
+                f"**Join date:** {utils.dtm_to_discord_timestamp(user.joined_at, utc_time=True)}\n"
                 f"**Current Status:** {user.status}\n"
                 f"**User Activity:** {user.activity}\n"
                 f"**Current Display Name:** {user.display_name}\n"
-                f"**Nitro Boost Info:** {user.premium_since}\n"
+                f"**Nitro Boost Info:** {f'Boosting since {utils.dtm_to_discord_timestamp(user.premium_since, utc_time=True)}' if user.premium_since else 'Not a booster'}\n"
                 f"**Current Top Role:** {user.top_role}\n"
                 f"**Color:** {user.color}\n"
             )
