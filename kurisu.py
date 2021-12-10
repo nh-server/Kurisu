@@ -298,7 +298,7 @@ class Kurisu(commands.Bot):
             if channel := await Channel.query.where(Channel.name == n).gino.scalar():
                 self.channels[n] = self.guild.get_channel(channel)
             else:
-                self.channels[n] = discord.utils.get(self.guild.text_channels, name=n)
+                self.channels[n] = discord.utils.get(self.guild.channels, name=n)
                 if not self.channels[n]:
                     self.channels_not_found.append(n)
                     logger.warning("Failed to find channel %s", n)
