@@ -155,7 +155,18 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
 
     @commands.guild_only()
     @commands.command()
-    async def unidb(self, ctx, *, query: str):
+    async def unidb(self, ctx, *, query=""):
+        """Links to Universal-DB and/or one of the apps.\n
+        To link to Universal-DB: `unidb`
+        To search for an app: `unidb [query]`"""
+        if query == "":
+            embed = discord.Embed(title="Universal-DB")
+            embed.set_author(name="Universal-Team")
+            embed.set_thumbnail(url="https://avatars.githubusercontent.com/u/49733679?s=400&v=4")
+            embed.description = "A database of DS and 3DS homebrew"
+            embed.url = "https://db.universal-team.net/"
+            embed.color = discord.Color.from_rgb(7, 47, 79)
+            return await ctx.send(embed=embed)
         res = await self.unisearch(query)
         if not res:
             return await ctx.send("No app found!")
