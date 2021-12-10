@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 from utils import utils, crud
 from utils.checks import is_staff
+from textwrap import wrap
 
 
 class Modwatch(commands.Cog):
@@ -47,6 +48,31 @@ class Modwatch(commands.Cog):
         msg = f"❌ **Unwatch**: {ctx.author.mention} removed {member.mention} from watch | {self.bot.escape_text(member)}"
         await self.bot.channels['mod-logs'].send(msg)
         await self.bot.channels['watch-logs'].send(msg)
+
+    @is_staff("Helper")
+    @commands.command()
+    async def listwatch(self, ctx):
+        watchlist = await crud.get_watch_list()
+        messages = wrap("\n".join(f"<@{member.id}> ({member.id})" for member in watchlist), 1810, break_long_words=False, replace_whitespace=False)
+        if not messages:
+            await ctx.send("The watchlist is empty!")
+            return
+        if (n_messages := len(messages)) > 1:
+            for n, message in enumerate(messages, start=1):
+                await ctx.author.send(f"**Watchlist contents {n}/{n_messages}**\n{message}")
+        else:
+            await ctx.author.send(f"**Watchlist contents**\n{messages[0]}")
+
+    @is_staff("OP")
+    @commands.command()
+    async def watch_cleanup(self, ctx):
+        removed = 0
+        watchlist = await crud.get_watch_list()
+        for member in watchlist:
+            if not ctx.guild.get_member(member.id):
+                await crud.remove_watch(member.id)
+                removed += 1
+        await ctx.send(f"Watch list cleanup complete. Removed {removed} entries")
 
 
 def setup(bot):

@@ -252,6 +252,10 @@ async def is_watched(user_id: int) -> bool:
     return db_member.watched if db_member else False
 
 
+async def get_watch_list() -> list[models.Member]:
+    return await models.Member.query.where(models.Member.watched == True).gino.all()  # noqa: E712
+
+
 async def add_nofilter(channel: TextChannel):
     db_channel = await get_dbchannel(channel.id)
     if not db_channel:
