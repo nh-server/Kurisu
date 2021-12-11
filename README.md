@@ -1,6 +1,6 @@
 # Kurisu
 
-A Discord server bot developed for [Nintendo Homebrew on Discord](https://discord.gg/C29hYvh). Originally created by 916253, later updated by ihaveahax, and now is maintained primarily by NH staff and helpers.
+A Discord server bot developed for [Nintendo Homebrew on Discord](https://discord.gg/C29hYvh). Maintained primarily by NH staff and helpers.
 
 Although it is open source, this bot is not really designed to be used in other setups at the moment; the source is mainly just available for those interested in how it works on the Nintendo Homebrew server.
 
