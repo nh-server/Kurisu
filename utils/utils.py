@@ -88,12 +88,14 @@ def parse_time(time_string) -> int:
     return sum(int(item[:-1]) * units[item[-1]] for item in match)
 
 
-def create_error_embed(ctx, exc) -> discord.Embed:
-    embed = discord.Embed(title=f"Unexpected exception in command {ctx.command}", color=0xe50730)
+def create_error_embed(ctx: Union[commands.Context, discord.ApplicationCommandInteraction], exc) -> discord.Embed:
+    interaction = isinstance(ctx, discord.ApplicationCommandInteraction)
+    command: str = ctx.application_command.name if interaction else str(ctx.command)
+    embed = discord.Embed(title=f"Unexpected exception in command {command}", color=0xe50730)
     trace = "".join(traceback.format_exception(etype=None, value=exc, tb=exc.__traceback__))
     embed.description = f'```py\n{trace}```'
     embed.add_field(name="Exception Type", value=exc.__class__.__name__)
-    embed.add_field(name="Information", value=f"channel: {ctx.channel.mention if isinstance(ctx.channel, discord.TextChannel) else 'Direct Message'}\ncommand: {ctx.command}\nmessage: {ctx.message.content}\nauthor: {ctx.author.mention}", inline=False)
+    embed.add_field(name="Information", value=f"channel: {ctx.channel.mention if isinstance(ctx.channel, discord.TextChannel) else 'Direct Message'}\ncommand: {command}\nauthor: {ctx.author.mention}\n{f'message: {ctx.message.content}' if interaction else ''}", inline=False)
     return embed
 
 
