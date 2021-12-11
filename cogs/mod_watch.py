@@ -72,7 +72,7 @@ class Modwatch(commands.Cog):
             if not ctx.guild.get_member(member.id):
                 await crud.remove_watch(member.id)
                 removed += 1
-        await ctx.send(f"Watch list cleanup complete. Removed {removed} entries")
+        await ctx.send(f"Watch list cleanup complete. Removed {removed} entries.")
 
 
 def setup(bot):
