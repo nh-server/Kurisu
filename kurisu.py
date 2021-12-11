@@ -89,7 +89,7 @@ def setup_logging():
     sh = logging.StreamHandler()
     sh.setFormatter(fmt)
     log.addHandler(sh)
-    logging.getLogger('discord').propagate = False
+    logging.getLogger('disnake').propagate = False
     logging.getLogger('gino').propagate = False
 
 
@@ -432,7 +432,7 @@ async def startup():
         logger.exception("Failed to connect to postgreSQL server", exc_info=True)
         return
     logger.info("Starting Kurisu on commit %s on branch %s", commit, branch)
-    bot = Kurisu(command_prefix=('.', '!'), description="Kurisu, the bot for Nintendo Homebrew!", commit=commit,
+    bot = Kurisu(command_prefix=['.', '!'], description="Kurisu, the bot for Nintendo Homebrew!", commit=commit,
                  branch=branch)
     bot.help_command = commands.DefaultHelpCommand(dm_help=None)
     bot.engine = engine

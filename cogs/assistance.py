@@ -12,7 +12,7 @@ from utils.mdcmd import add_md_files_as_commands
 logger = logging.getLogger(__name__)
 
 
-class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 30.0, commands.BucketType.channel))):
+class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapping.from_cooldown(1, 30.0, commands.BucketType.channel))):
     """
     Commands that will mostly be used in the help channels.
     """
@@ -51,7 +51,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
 
     @check_if_user_can_sr()
     @commands.guild_only()
-    @commands.command(aliases=["sr"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
+    @commands.command(aliases=["sr"], cooldown=commands.CooldownMapping.from_cooldown(rate=0, per=0, type=commands.BucketType.channel))
     async def staffreq(self, ctx, *, msg_request: str = ""):
         """Request staff, with optional additional text. Trusted, Helpers, Staff, Retired Staff, Verified only."""
         author = ctx.author
@@ -120,7 +120,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                                     [Luma v7.1](https://github.com/LumaTeam/Luma3DS/releases/tag/v7.1)
                                     """, color=discord.Color.blue())
 
-    @commands.group(cooldown=commands.Cooldown(0, 0, commands.BucketType.channel), invoke_without_command=True, case_insensitive=True)
+    @commands.group(cooldown=commands.CooldownMapping.from_cooldown(0, 0, commands.BucketType.channel), invoke_without_command=True, case_insensitive=True)
     async def tutorial(self, ctx):
         """Links to one of multiple guides"""
         if isinstance(ctx.channel, discord.DMChannel):

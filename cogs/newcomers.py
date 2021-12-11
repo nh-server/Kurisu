@@ -73,7 +73,7 @@ class Newcomers(commands.Cog):
 
     @check_if_user_can_ready()
     @commands.guild_only()
-    @commands.command(aliases=['ready'], cooldown=commands.Cooldown(rate=1, per=300.0, type=commands.BucketType.member))
+    @commands.command(aliases=['ready'], cooldown=commands.CooldownMapping.from_cooldown(rate=1, per=300.0, type=commands.BucketType.member))
     async def ncready(self, ctx, *, reason=""):
         """Alerts online staff to a ready request in newcomers."""
         newcomers = self.bot.channels['newcomers']
