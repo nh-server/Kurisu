@@ -25,10 +25,12 @@ services:
       KURISU_TOKEN_FILE: /run/secrets/kurisu_token
       DB_USER_FILE: /run/secrets/db_user
       DB_PASSWORD_FILE: /run/secrets/db_password
+      SERVER_LOGS_URL_FILE: /run/secrets/server_logs_url
     secrets:
       - kurisu_token
       - db_user
       - db_password
+      - server_logs_url
     depends_on:
       db:
         condition: service_healthy
@@ -44,3 +46,5 @@ secrets:
     file: /opt/secrets/kurisu/db_password
   kurisu_token:
     file: /opt/secrets/kurisu/token
+  server_logs_url:
+    file: /opt/secrets/kurisu/server_logs_url

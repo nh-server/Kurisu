@@ -49,6 +49,7 @@ cogs = (
     'cogs.xkcdparse',
     'cogs.seasonal',
     'cogs.newcomers',
+    'cogs.server_logs'
 )
 
 DEBUG = False
@@ -70,12 +71,14 @@ if IS_DOCKER:
     TOKEN = get_env('KURISU_TOKEN')
     db_user = get_env('DB_USER')
     db_password = get_env('DB_PASSWORD')
+    SERVER_LOGS_URL = get_env('SERVER_LOGS_URL')
     DATABASE_URL = f"postgresql://{db_user}:{db_password}@db/{db_user}"
 else:
     kurisu_config = ConfigParser()
     kurisu_config.read("data/config.ini")
     TOKEN = kurisu_config['Main']['token']
     DATABASE_URL = kurisu_config['Main']['database_url']
+    SERVER_LOGS_URL = kurisu_config['Main']['server_logs_url']
 
 
 def setup_logging():
@@ -107,7 +110,7 @@ class Kurisu(commands.Bot):
             description=description,
             intents=intents,
             allowed_mentions=allowed_mentions,
-            case_insensitive=True
+            case_insensitive=True,
         )
         self.IS_DOCKER = IS_DOCKER
         self.commit = commit
@@ -398,6 +401,8 @@ class Kurisu(commands.Bot):
         elif isinstance(exc, commands.CheckFailure):
             await inter.response.send_message(f'{author.mention} You cannot use `{command}`.', ephemeral=True)
 
+        elif isinstance(exc, discord.ext.commands.MaxConcurrencyReached):
+            await inter.response.send_message(exc, ephemeral=True)
         elif isinstance(exc, discord.ext.commands.errors.CommandOnCooldown):
             await inter.response.send_message(f"{author.mention} This command was used {exc.cooldown.per - exc.retry_after:.2f}s ago and is on cooldown. "
                                               f"Try again in {exc.retry_after:.2f}s.", ephemeral=True)
