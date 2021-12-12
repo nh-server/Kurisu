@@ -88,6 +88,14 @@ def parse_time(time_string) -> int:
     return sum(int(item[:-1]) * units[item[-1]] for item in match)
 
 
+class TimeConverter(commands.Converter):
+    async def convert(self, ctx: commands.Context, arg: str):
+        seconds = parse_time(arg)
+        if seconds > 0:
+            return seconds
+        raise commands.BadArgument("Invalid time format")
+
+
 def create_error_embed(ctx: Union[commands.Context, discord.ApplicationCommandInteraction], exc) -> discord.Embed:
     interaction = isinstance(ctx, discord.ApplicationCommandInteraction)
     command: str = ctx.application_command.name if interaction else str(ctx.command)
