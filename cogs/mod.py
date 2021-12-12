@@ -107,17 +107,31 @@ class Mod(commands.Cog):
             f"**User's ID:** {user.id}\n"
             f"**Created on:** {utils.dtm_to_discord_timestamp(user.created_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(user.created_at, format='R',utc_time=True)})\n"
             f"**Default Profile Picture:** {user.default_avatar}\n"
-            f"**Join date:** {utils.dtm_to_discord_timestamp(user.joined_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(user.joined_at, format='R', utc_time=True)})\n"
-            f"**Current Status:** {user.status}\n"
-            f"**User Activity:** {user.activity}\n"
-            f"**Current Display Name:** {user.display_name}\n"
-            f"**Nitro Boost Info:** {f'Boosting since {utils.dtm_to_discord_timestamp(user.premium_since, utc_time=True)}' if user.premium_since else 'Not a booster'}\n"
-            f"**Current Top Role:** {user.top_role}\n"
-            f"**Color:** {user.color}\n"
         )
-        embed.title = f"**Userinfo for member {user}**"
+
+        if isinstance(user, discord.Member):
+            member_type = "member"
+            embed.description += (
+                f"**Join date:** {utils.dtm_to_discord_timestamp(user.joined_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(user.joined_at, format='R',utc_time=True)})\n"
+                f"**Current Status:** {user.status}\n"
+                f"**User Activity:** {user.activity}\n"
+                f"**Current Display Name:** {user.display_name}\n"
+                f"**Nitro Boost Info:** {f'Boosting since {utils.dtm_to_discord_timestamp(user.premium_since, utc_time=True)}' if user.premium_since else 'Not a booster'}\n"
+                f"**Current Top Role:** {user.top_role}\n"
+                f"**Color:** {user.color}\n"
+            )
+        else:
+            member_type = "user"
+            try:
+                ban = await inter.guild.fetch_ban(user)
+                embed.description += f"\n**Banned**, reason: {ban.reason}"
+            except discord.NotFound:
+                pass
+
+        member_type = member_type if not user.bot else "bot"
+        embed.title = f"**Userinfo for {member_type} {user}**"
         embed.set_thumbnail(url=user.display_avatar.url)
-        await inter.send(embed=embed, ephemeral=True)
+        await inter.send(embed=embed)
 
     @is_staff("HalfOP")
     @commands.guild_only()
