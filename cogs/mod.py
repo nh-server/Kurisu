@@ -131,7 +131,7 @@ class Mod(commands.Cog):
         member_type = member_type if not user.bot else "bot"
         embed.title = f"**Userinfo for {member_type} {user}**"
         embed.set_thumbnail(url=user.display_avatar.url)
-        await inter.send(embed=embed)
+        await inter.send(embed=embed, ephemeral=True)
 
     @is_staff("HalfOP")
     @commands.guild_only()
