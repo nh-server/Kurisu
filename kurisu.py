@@ -422,6 +422,39 @@ class Kurisu(commands.Bot):
                 embed = create_error_embed(inter, exc)
                 await channel.send(embed=embed)
 
+    async def on_user_command_error(self, inter, exc):
+        author: discord.Member = inter.author
+        command: str = inter.application_command.name
+        exc = getattr(exc, 'original', exc)
+        channel = self.err_channel or inter.channel
+
+        if isinstance(exc, commands.NoPrivateMessage):
+            await inter.response.send_message(f'`{command}` cannot be used in direct messages.', ephemeral=True)
+
+        elif isinstance(exc, commands.MissingPermissions):
+            await inter.response.send_message(f"{author.mention} You don't have permission to use `{command}`.", ephemeral=True)
+
+        elif isinstance(exc, commands.CheckFailure):
+            await inter.response.send_message(f'{author.mention} You cannot use `{command}`.', ephemeral=True)
+
+        elif isinstance(exc, discord.ext.commands.errors.CommandOnCooldown):
+            await inter.response.send_message(f"{author.mention} This command was used {exc.cooldown.per - exc.retry_after:.2f}s ago and is on cooldown. "
+                                              f"Try again in {exc.retry_after:.2f}s.", ephemeral=True)
+        else:
+            if isinstance(exc, discord.Forbidden):
+                msg = f"💢 I can't help you if you don't let me!\n`{exc.text}`."
+            elif isinstance(exc, commands.CommandInvokeError):
+                msg = f'{author.mention} `{command}` raised an exception during usage'
+            else:
+                msg = f'{author.mention} Unexpected exception occurred while using the command `{command}`'
+            if inter.response.is_done():
+                await inter.edit_original_message(content=msg, embed=None, view=None)
+            else:
+                await inter.response.send_message(msg, ephemeral=True)
+            if channel:
+                embed = create_error_embed(inter, exc)
+                await channel.send(embed=embed)
+
     async def on_error(self, event_method, *args, **kwargs):
         logger.error("", exc_info=True)
         if not self.err_channel:
