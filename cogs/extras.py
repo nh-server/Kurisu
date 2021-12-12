@@ -49,7 +49,7 @@ class Extras(commands.Cog):
         """About Kurisu"""
         embed = discord.Embed(title="Kurisu", color=discord.Color.green())
         embed.set_author(name="Maintained by Nintendo Homebrew helpers and staff")
-        embed.set_thumbnail(url="http://i.imgur.com/hjVY4Et.jpg")
+        embed.set_thumbnail(url="https://i.imgur.com/hjVY4Et.jpg")
         embed.url = "https://github.com/nh-server/Kurisu"
         embed.description = "Kurisu, the Nintendo Homebrew Discord bot!"
         await ctx.send(embed=embed)
@@ -287,7 +287,7 @@ class Extras(commands.Cog):
         delta = datetime.timedelta(seconds=remind_in)
         reminder_time = timestamp + delta
         await crud.add_reminder(reminder_time, ctx.author.id, reminder)
-        await ctx.send(f"I will send you a reminder on {dtm_to_discord_timestamp(reminder_time, format='F')}.")
+        await ctx.send(f"I will send you a reminder on {dtm_to_discord_timestamp(reminder_time, date_format='F')}.")
 
     @commands.group(invoke_without_command=True)
     async def tag(self, ctx, title: str = ""):

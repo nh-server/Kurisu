@@ -3325,7 +3325,6 @@ COLOR = 0x009AC7
 
 
 def is_valid(error: str):
-    err_int = None
     try:
         err_int = int(error, 16)
     except ValueError:
@@ -3356,7 +3355,6 @@ def construct_result(ret, mod, summary, level, desc, is_legacy):
 
 
 def get(error: str):
-    level = None
     err_int = int(error, 16)
     if ((err_int >> 27) & 0x3) == SIGNATURE_IS_LEGACY:
         mod = (err_int >> 20) & 0x7F

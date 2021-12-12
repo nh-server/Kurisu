@@ -125,7 +125,7 @@ class ModWarn(commands.Cog):
                 embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn.id).strftime('%Y-%m-%d %H:%M:%S')}", value=value)
         else:
             embed.description = "There are none!"
-            embed.color = discord.Color.green()
+            embed.colour = discord.Color.green()
         await ctx.send(embed=embed)
 
     @is_staff("SuperOP")

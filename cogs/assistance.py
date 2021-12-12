@@ -113,7 +113,9 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
         if msg_request != "":
             embed = discord.Embed(color=discord.Color.gold())
             embed.description = msg_request
-        await self.bot.channels['mods'].send(msg, embed=(embed if msg_request != "" else None), allowed_mentions=discord.AllowedMentions(everyone=True))
+        else:
+            embed = None
+        await self.bot.channels['mods'].send(msg, embed=embed, allowed_mentions=discord.AllowedMentions(everyone=True))
         try:
             await author.send(f"✅ Online staff have been notified of your request in {ctx.channel.mention}.", embed=(embed if msg_request != "" else None))
         except discord.errors.Forbidden:

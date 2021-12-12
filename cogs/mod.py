@@ -69,14 +69,14 @@ class Mod(commands.Cog):
         embed.description = (
             f"**User:** {user.mention}\n"
             f"**User's ID:** {user.id}\n"
-            f"**Created on:** {utils.dtm_to_discord_timestamp(user.created_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(user.created_at, format='R',utc_time=True)})\n"
+            f"**Created on:** {utils.dtm_to_discord_timestamp(user.created_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(user.created_at, date_format='R', utc_time=True)})\n"
             f"**Default Profile Picture:** {user.default_avatar}\n"
         )
 
         if isinstance(user, discord.Member):
             member_type = "member"
             embed.description += (
-                f"**Join date:** {utils.dtm_to_discord_timestamp(user.joined_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(user.joined_at, format='R',utc_time=True)})\n"
+                f"**Join date:** {utils.dtm_to_discord_timestamp(user.joined_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(user.joined_at, date_format='R', utc_time=True)})\n"
                 f"**Current Status:** {user.status}\n"
                 f"**User Activity:** {user.activity}\n"
                 f"**Current Display Name:** {user.display_name}\n"
@@ -105,14 +105,14 @@ class Mod(commands.Cog):
         embed.description = (
             f"**User:** {user.mention}\n"
             f"**User's ID:** {user.id}\n"
-            f"**Created on:** {utils.dtm_to_discord_timestamp(user.created_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(user.created_at, format='R',utc_time=True)})\n"
+            f"**Created on:** {utils.dtm_to_discord_timestamp(user.created_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(user.created_at, date_format='R', utc_time=True)})\n"
             f"**Default Profile Picture:** {user.default_avatar}\n"
         )
 
         if isinstance(user, discord.Member):
             member_type = "member"
             embed.description += (
-                f"**Join date:** {utils.dtm_to_discord_timestamp(user.joined_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(user.joined_at, format='R',utc_time=True)})\n"
+                f"**Join date:** {utils.dtm_to_discord_timestamp(user.joined_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(user.joined_at, date_format='R', utc_time=True)})\n"
                 f"**Current Status:** {user.status}\n"
                 f"**User Activity:** {user.activity}\n"
                 f"**Current Display Name:** {user.display_name}\n"

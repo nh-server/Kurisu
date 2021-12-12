@@ -137,7 +137,7 @@ def md_file_to_embed(md_path: str, format_map: dict):
     with open(md_path, 'r', encoding='utf-8') as f:
         fn = basename(md_path)
         name, console, _ = fn.rsplit('.', maxsplit=2)
-        return (name, console, *parse_md_command(f.read(), format_map, colors[console]))
+        return name, console, *parse_md_command(f.read(), format_map, colors[console])
 
 
 def check_console(message, channel, consoles):
