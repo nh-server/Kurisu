@@ -93,9 +93,11 @@ def create_error_embed(ctx: Union[commands.Context, discord.ApplicationCommandIn
     command: str = ctx.application_command.name if interaction else str(ctx.command)
     embed = discord.Embed(title=f"Unexpected exception in command {command}", color=0xe50730)
     trace = "".join(traceback.format_exception(etype=None, value=exc, tb=exc.__traceback__))
+    if len(trace) > 4080:
+        trace = trace[-4080:]
     embed.description = f'```py\n{trace}```'
     embed.add_field(name="Exception Type", value=exc.__class__.__name__)
-    embed.add_field(name="Information", value=f"channel: {ctx.channel.mention if isinstance(ctx.channel, discord.TextChannel) else 'Direct Message'}\ncommand: {command}\nauthor: {ctx.author.mention}\n{f'message: {ctx.message.content}' if interaction else ''}", inline=False)
+    embed.add_field(name="Information", value=f"channel: {ctx.channel.mention if isinstance(ctx.channel, discord.TextChannel) else 'Direct Message'}\ncommand: {command}\nauthor: {ctx.author.mention}\n{f'message: {ctx.message.content}' if not interaction else ''}", inline=False)
     return embed
 
 
