@@ -42,7 +42,7 @@ class Mod(commands.Cog):
     @commands.command(aliases=['ui'])
     async def userinfo(self, ctx, u: Union[discord.Member, discord.User]):
         """Shows information from a user. Staff and Helpers only."""
-        basemsg = f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url_as(static_format='png')}\ndefault_avatar= {u.default_avatar}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\n"
+        basemsg = f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.display_avatar.url}\ndefault_avatar= {u.default_avatar}\ndefault_avatar_url = <{u.default_avatar.url}>\ncreated_at = {u.created_at}\n"
         if isinstance(u, discord.Member):
             role = u.top_role.name
             await ctx.send(f"{basemsg}display_name = {u.display_name}\njoined_at = {u.joined_at}\nstatus ={u.status}\nactivity = {u.activity.name if u.activity else None}\ncolour = {u.colour}\ntop_role = {role}\n")
@@ -94,8 +94,30 @@ class Mod(commands.Cog):
 
         member_type = member_type if not user.bot else "bot"
         embed.title = f"**Userinfo for {member_type} {user}**"
-        embed.set_thumbnail(url=str(user.avatar_url_as(static_format='png')))
+        embed.set_thumbnail(url=user.display_avatar.url)
         await ctx.send(embed=embed)
+
+    @is_staff('Helper')
+    @commands.user_command(name='userinfo')
+    async def userinfo_user_command(self, inter, user: discord.Member):
+
+        embed = discord.Embed(color=utils.gen_color(user.id))
+        embed.description = (
+            f"**User:** {user.mention}\n"
+            f"**User's ID:** {user.id}\n"
+            f"**Created on:** {utils.dtm_to_discord_timestamp(user.created_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(user.created_at, format='R',utc_time=True)})\n"
+            f"**Default Profile Picture:** {user.default_avatar}\n"
+            f"**Join date:** {utils.dtm_to_discord_timestamp(user.joined_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(user.joined_at, format='R', utc_time=True)})\n"
+            f"**Current Status:** {user.status}\n"
+            f"**User Activity:** {user.activity}\n"
+            f"**Current Display Name:** {user.display_name}\n"
+            f"**Nitro Boost Info:** {f'Boosting since {utils.dtm_to_discord_timestamp(user.premium_since, utc_time=True)}' if user.premium_since else 'Not a booster'}\n"
+            f"**Current Top Role:** {user.top_role}\n"
+            f"**Color:** {user.color}\n"
+        )
+        embed.title = f"**Userinfo for member {user}**"
+        embed.set_thumbnail(url=user.display_avatar.url)
+        await inter.send(embed=embed, ephemeral=True)
 
     @is_staff("HalfOP")
     @commands.guild_only()
