@@ -48,7 +48,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
         embed = discord.Embed(title=title, color=color)
         embed.description = cleandoc(text)
         await ctx.send(embed=embed)
-    
+
     class ResultsView(discord.ui.View):
         def __init__(self, inter, results: list[dict]):
             super().__init__(timeout=20)
@@ -101,7 +101,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
         ):
             self.current = self.n_res - 1
             await interaction.response.edit_message(embed=self.embeds[self.current])
-    
+
     @check_if_user_can_sr()
     @commands.guild_only()
     @commands.command(aliases=["sr"], cooldown=commands.CooldownMapping.from_cooldown(rate=0, per=0, type=commands.BucketType.channel))
@@ -218,7 +218,7 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
             embed.set_thumbnail(url="https://avatars.githubusercontent.com/u/49733679?s=400&v=4")
             embed.description = "A database of DS and 3DS homebrew"
             embed.url = "https://db.universal-team.net/"
-            embed.color = discord.Color.from_rgb(7, 47, 79)
+            embed.colour = discord.Color.from_rgb(7, 47, 79)
             return await ctx.send(embed=embed)
         res = await self.unisearch(query)
         if not res:
