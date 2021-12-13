@@ -42,7 +42,7 @@ class Mod(commands.Cog):
     @commands.command(aliases=['ui'])
     async def userinfo(self, ctx, u: Union[discord.Member, discord.User]):
         """Shows information from a user. Staff and Helpers only."""
-        basemsg = f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.avatar_url_as(static_format='png')}\ndefault_avatar= {u.default_avatar}\ndefault_avatar_url = <{u.default_avatar_url}>\ncreated_at = {u.created_at}\n"
+        basemsg = f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.display_avatar.url}\ndefault_avatar= {u.default_avatar}\ndefault_avatar_url = <{u.default_avatar.url}>\ncreated_at = {u.created_at}\n"
         if isinstance(u, discord.Member):
             role = u.top_role.name
             await ctx.send(f"{basemsg}display_name = {u.display_name}\njoined_at = {u.joined_at}\nstatus ={u.status}\nactivity = {u.activity.name if u.activity else None}\ncolour = {u.colour}\ntop_role = {role}\n")
@@ -69,14 +69,14 @@ class Mod(commands.Cog):
         embed.description = (
             f"**User:** {user.mention}\n"
             f"**User's ID:** {user.id}\n"
-            f"**Created on:** {utils.dtm_to_discord_timestamp(user.created_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(user.created_at, format='R',utc_time=True)})\n"
+            f"**Created on:** {utils.dtm_to_discord_timestamp(user.created_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(user.created_at, date_format='R', utc_time=True)})\n"
             f"**Default Profile Picture:** {user.default_avatar}\n"
         )
 
         if isinstance(user, discord.Member):
             member_type = "member"
             embed.description += (
-                f"**Join date:** {utils.dtm_to_discord_timestamp(user.joined_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(user.joined_at, format='R',utc_time=True)})\n"
+                f"**Join date:** {utils.dtm_to_discord_timestamp(user.joined_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(user.joined_at, date_format='R', utc_time=True)})\n"
                 f"**Current Status:** {user.status}\n"
                 f"**User Activity:** {user.activity}\n"
                 f"**Current Display Name:** {user.display_name}\n"
@@ -94,8 +94,44 @@ class Mod(commands.Cog):
 
         member_type = member_type if not user.bot else "bot"
         embed.title = f"**Userinfo for {member_type} {user}**"
-        embed.set_thumbnail(url=str(user.avatar_url_as(static_format='png')))
+        embed.set_thumbnail(url=user.display_avatar.url)
         await ctx.send(embed=embed)
+
+    @is_staff('Helper')
+    @commands.user_command(name='userinfo')
+    async def userinfo_user_command(self, inter, user: discord.Member):
+
+        embed = discord.Embed(color=utils.gen_color(user.id))
+        embed.description = (
+            f"**User:** {user.mention}\n"
+            f"**User's ID:** {user.id}\n"
+            f"**Created on:** {utils.dtm_to_discord_timestamp(user.created_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(user.created_at, date_format='R', utc_time=True)})\n"
+            f"**Default Profile Picture:** {user.default_avatar}\n"
+        )
+
+        if isinstance(user, discord.Member):
+            member_type = "member"
+            embed.description += (
+                f"**Join date:** {utils.dtm_to_discord_timestamp(user.joined_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(user.joined_at, date_format='R', utc_time=True)})\n"
+                f"**Current Status:** {user.status}\n"
+                f"**User Activity:** {user.activity}\n"
+                f"**Current Display Name:** {user.display_name}\n"
+                f"**Nitro Boost Info:** {f'Boosting since {utils.dtm_to_discord_timestamp(user.premium_since, utc_time=True)}' if user.premium_since else 'Not a booster'}\n"
+                f"**Current Top Role:** {user.top_role}\n"
+                f"**Color:** {user.color}\n"
+            )
+        else:
+            member_type = "user"
+            try:
+                ban = await inter.guild.fetch_ban(user)
+                embed.description += f"\n**Banned**, reason: {ban.reason}"
+            except discord.NotFound:
+                pass
+
+        member_type = member_type if not user.bot else "bot"
+        embed.title = f"**Userinfo for {member_type} {user}**"
+        embed.set_thumbnail(url=user.display_avatar.url)
+        await inter.send(embed=embed, ephemeral=True)
 
     @is_staff("HalfOP")
     @commands.guild_only()
@@ -154,7 +190,7 @@ class Mod(commands.Cog):
     @commands.bot_has_permissions(manage_channels=True)
     @commands.guild_only()
     @commands.command()
-    async def slowmode(self, ctx, time, channel: discord.TextChannel = None):
+    async def slowmode(self, ctx, length: utils.TimeConverter, channel: discord.TextChannel = None):
         """Apply a given slowmode time to a channel.
 
         The time format is identical to that used for timed kicks/bans/takehelps.
@@ -167,17 +203,14 @@ class Mod(commands.Cog):
         if channel not in self.bot.assistance_channels and not await check_staff_id("OP", ctx.author.id):
             return await ctx.send("You cannot use this command outside of assistance channels.")
 
-        if (seconds := utils.parse_time(time)) == -1:
-            return await ctx.send("💢 I don't understand your time format.")
-
-        if seconds > 21600:
+        if length > 21600:
             return await ctx.send("💢 You can't slowmode a channel for longer than 6 hours!")
         try:
-            await channel.edit(slowmode_delay=seconds)
-            await ctx.send(f"Slowmode delay for {channel.mention} is now {time} ({seconds}).")
+            await channel.edit(slowmode_delay=length)
+            await ctx.send(f"Slowmode delay for {channel.mention} is now {length} seconds.")
         except discord.errors.Forbidden:
             return await ctx.send("💢 I don't have permission to do this.")
-        msg = f"🕙 **Slowmode**: {ctx.author.mention} set a slowmode delay of {time} ({seconds}) in {channel.mention}"
+        msg = f"🕙 **Slowmode**: {ctx.author.mention} set a slowmode delay of {length} seconds in {channel.mention}"
         await self.bot.channels["mod-logs"].send(msg)
 
     @is_staff("Helper")
@@ -302,7 +335,7 @@ class Mod(commands.Cog):
     @commands.bot_has_permissions(manage_roles=True)
     @commands.guild_only()
     @commands.command()
-    async def timemute(self, ctx, member: discord.Member, length, *, reason=""):
+    async def timemute(self, ctx, member: discord.Member, length: utils.TimeConverter, *, reason=""):
         """Mutes a user for a limited period of time so they can't speak. Staff only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "mute"):
             return
@@ -311,11 +344,8 @@ class Mod(commands.Cog):
 
         issuer = ctx.author
 
-        if (seconds := utils.parse_time(length)) == -1:
-            return await ctx.send("💢 I don't understand your time format.")
-
         timestamp = datetime.datetime.now()
-        delta = datetime.timedelta(seconds=seconds)
+        delta = datetime.timedelta(seconds=length)
         unmute_time = timestamp + delta
         unmute_time_string = utils.dtm_to_discord_timestamp(unmute_time)
 
@@ -516,16 +546,13 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["timenohelp"])
-    async def timetakehelp(self, ctx, member: discord.Member, length, *, reason=""):
+    async def timetakehelp(self, ctx, member: discord.Member, length: utils.TimeConverter, *, reason=""):
         """Restricts a user from Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "takehelp"):
             return
         issuer = ctx.author
 
-        if (seconds := utils.parse_time(length)) == -1:
-            return await ctx.send("💢 I don't understand your time format.")
-
-        delta = datetime.timedelta(seconds=seconds)
+        delta = datetime.timedelta(seconds=length)
         timestamp = datetime.datetime.now()
 
         unnohelp_time = timestamp + delta
@@ -600,16 +627,13 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["timenotech"])
-    async def timetaketech(self, ctx, member: discord.Member, length, *, reason=""):
+    async def timetaketech(self, ctx, member: discord.Member, length: utils.TimeConverter, *, reason=""):
         """Restricts a user from the tech channel for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "taketech"):
             return
         issuer = ctx.author
 
-        if (seconds := utils.parse_time(length)) == -1:
-            return await ctx.send("💢 I don't understand your time format.")
-
-        delta = datetime.timedelta(seconds=seconds)
+        delta = datetime.timedelta(seconds=length)
         timestamp = datetime.datetime.now()
 
         unnotech_time = timestamp + delta
@@ -664,16 +688,13 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["timemutehelp"])
-    async def timehelpmute(self, ctx, member: discord.Member, length, *, reason=""):
+    async def timehelpmute(self, ctx, member: discord.Member, length: utils.TimeConverter, *, reason=""):
         """Restricts a user from speaking in Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "helpmute"):
             return
         issuer = ctx.author
 
-        if (seconds := utils.parse_time(length)) == -1:
-            return await ctx.send("💢 I don't understand your time format.")
-
-        delta = datetime.timedelta(seconds=seconds)
+        delta = datetime.timedelta(seconds=length)
         timestamp = datetime.datetime.now()
 
         unhelpmute_time = timestamp + delta

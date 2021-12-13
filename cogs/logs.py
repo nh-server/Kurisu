@@ -132,6 +132,7 @@ Thanks for stopping by and have a good time!
         dest = self.bot.channels['server-logs']
         roles_before = set(member_before.roles)
         roles_after = set(member_after.roles)
+        msg = ""
         if roles_before ^ roles_after:
             do_log = True
             # role removal
@@ -183,6 +184,7 @@ Thanks for stopping by and have a good time!
         await self.bot.wait_until_all_ready()
         do_log = False  # only usernames and discriminators should be logged
         dest = self.bot.channels['server-logs']
+        msg = ""
         if member_before.name != member_after.name:
             do_log = True
             msg = f"\n📝 __Username change__: {self.bot.escape_text(member_before.name)} → {self.bot.escape_text(member_after.name)}"

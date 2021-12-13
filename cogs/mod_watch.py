@@ -53,7 +53,11 @@ class Modwatch(commands.Cog):
     @commands.command()
     async def listwatch(self, ctx):
         watchlist = await crud.get_watch_list()
-        messages = wrap("\n".join(f"<@{member.id}> ({member.id})" for member in watchlist), 1810, break_long_words=False, replace_whitespace=False)
+        lines = []
+        for db_member in watchlist:
+            member = ctx.guild.get_member(db_member.id)
+            lines.append(f"{f'{member.name}' if member else f'<@{db_member.id}>'} ({db_member.id})")
+        messages = wrap('\n'.join(lines), 1810, break_long_words=False, replace_whitespace=False)
         if not messages:
             await ctx.send("The watchlist is empty!")
             return
@@ -72,7 +76,7 @@ class Modwatch(commands.Cog):
             if not ctx.guild.get_member(member.id):
                 await crud.remove_watch(member.id)
                 removed += 1
-        await ctx.send(f"Watch list cleanup complete. Removed {removed} entries")
+        await ctx.send(f"Watch list cleanup complete. Removed {removed} entries.")
 
 
 def setup(bot):

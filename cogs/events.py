@@ -114,7 +114,7 @@ class Events(commands.Cog):
         contains_scamming_site_levenshtein = self.levenshtein_search_word(self.bot.levenshteinfilter.filter['scamming site'], self.bot.levenshteinfilter.whitelist, message.content)
 
         # modified regular expresion made by deme72
-        res = re.findall(r'(?:(?:https?://)?(?:www.)?)(?:(?:youtube\.com/watch\?v=)|(?:youtu\.be/))([aA-zZ_\-\d]{11})', message.content)
+        res = re.findall(r'((?:https?://)?(?:www.)?)(?:(youtube\.com/watch\?v=)|(youtu\.be/))([aA-zZ_\-\d]{11})', message.content)
         contains_video = any(res)
         contains_piracy_video_id = False if not contains_video else any(x for x in res if x in self.bot.wordfilter.filter['piracy video'])
 

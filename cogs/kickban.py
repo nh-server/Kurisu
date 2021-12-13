@@ -169,16 +169,13 @@ class KickBan(commands.Cog):
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
     @commands.command(name="timeban", aliases=["timeyeet"])
-    async def timeban_member(self, ctx, member: Union[discord.Member, discord.User], length, *, reason=""):
+    async def timeban_member(self, ctx, member: Union[discord.Member, discord.User], length: utils.TimeConverter, *, reason=""):
         """Bans a user for a limited period of time. OP+ only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "timeban"):
             return
 
-        if (seconds := utils.parse_time(length)) == -1:
-            return await ctx.send("💢 I don't understand your time format.")
-
         timestamp = datetime.datetime.now()
-        delta = datetime.timedelta(seconds=seconds)
+        delta = datetime.timedelta(seconds=length)
         unban_time = timestamp + delta
         unban_time_string = utils.dtm_to_discord_timestamp(unban_time)
 

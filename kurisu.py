@@ -49,6 +49,7 @@ cogs = (
     'cogs.xkcdparse',
     'cogs.seasonal',
     'cogs.newcomers',
+    'cogs.server_logs'
 )
 
 DEBUG = False
@@ -70,12 +71,14 @@ if IS_DOCKER:
     TOKEN = get_env('KURISU_TOKEN')
     db_user = get_env('DB_USER')
     db_password = get_env('DB_PASSWORD')
+    SERVER_LOGS_URL = get_env('SERVER_LOGS_URL')
     DATABASE_URL = f"postgresql://{db_user}:{db_password}@db/{db_user}"
 else:
     kurisu_config = ConfigParser()
     kurisu_config.read("data/config.ini")
     TOKEN = kurisu_config['Main']['token']
     DATABASE_URL = kurisu_config['Main']['database_url']
+    SERVER_LOGS_URL = kurisu_config['Main']['server_logs_url']
 
 
 def setup_logging():
@@ -89,7 +92,7 @@ def setup_logging():
     sh = logging.StreamHandler()
     sh.setFormatter(fmt)
     log.addHandler(sh)
-    logging.getLogger('discord').propagate = False
+    logging.getLogger('disnake').propagate = False
     logging.getLogger('gino').propagate = False
 
 
@@ -103,11 +106,11 @@ class Kurisu(commands.Bot):
         intents = discord.Intents(guilds=True, members=True, messages=True, reactions=True, bans=True)
         allowed_mentions = discord.AllowedMentions(everyone=False, roles=False)
         super().__init__(
-            command_prefix=command_prefix,
+            command_prefix=commands.when_mentioned_or(*command_prefix),
             description=description,
             intents=intents,
             allowed_mentions=allowed_mentions,
-            case_insensitive=True
+            case_insensitive=True,
         )
         self.IS_DOCKER = IS_DOCKER
         self.commit = commit
@@ -383,6 +386,75 @@ class Kurisu(commands.Bot):
             embed = create_error_embed(ctx, exc)
             await channel.send(embed=embed)
 
+    async def on_slash_command_error(self, inter, exc):
+        author: discord.Member = inter.author
+        command: str = inter.application_command.name
+        exc = getattr(exc, 'original', exc)
+        channel = self.err_channel or inter.channel
+
+        if isinstance(exc, commands.NoPrivateMessage):
+            await inter.response.send_message(f'`{command}` cannot be used in direct messages.', ephemeral=True)
+
+        elif isinstance(exc, commands.MissingPermissions):
+            await inter.response.send_message(f"{author.mention} You don't have permission to use `{command}`.", ephemeral=True)
+
+        elif isinstance(exc, commands.CheckFailure):
+            await inter.response.send_message(f'{author.mention} You cannot use `{command}`.', ephemeral=True)
+
+        elif isinstance(exc, discord.ext.commands.MaxConcurrencyReached):
+            await inter.response.send_message(exc, ephemeral=True)
+        elif isinstance(exc, discord.ext.commands.errors.CommandOnCooldown):
+            await inter.response.send_message(f"{author.mention} This command was used {exc.cooldown.per - exc.retry_after:.2f}s ago and is on cooldown. "
+                                              f"Try again in {exc.retry_after:.2f}s.", ephemeral=True)
+        else:
+            if isinstance(exc, discord.Forbidden):
+                msg = f"💢 I can't help you if you don't let me!\n`{exc.text}`."
+            elif isinstance(exc, commands.CommandInvokeError):
+                msg = f'{author.mention} `{command}` raised an exception during usage'
+            else:
+                msg = f'{author.mention} Unexpected exception occurred while using the command `{command}`'
+
+            if inter.response.is_done():
+                await inter.edit_original_message(content=msg, embed=None, view=None)
+            else:
+                await inter.response.send_message(msg, ephemeral=True)
+            if channel:
+                embed = create_error_embed(inter, exc)
+                await channel.send(embed=embed)
+
+    async def on_user_command_error(self, inter, exc):
+        author: discord.Member = inter.author
+        command: str = inter.application_command.name
+        exc = getattr(exc, 'original', exc)
+        channel = self.err_channel or inter.channel
+
+        if isinstance(exc, commands.NoPrivateMessage):
+            await inter.response.send_message(f'`{command}` cannot be used in direct messages.', ephemeral=True)
+
+        elif isinstance(exc, commands.MissingPermissions):
+            await inter.response.send_message(f"{author.mention} You don't have permission to use `{command}`.", ephemeral=True)
+
+        elif isinstance(exc, commands.CheckFailure):
+            await inter.response.send_message(f'{author.mention} You cannot use `{command}`.', ephemeral=True)
+
+        elif isinstance(exc, discord.ext.commands.errors.CommandOnCooldown):
+            await inter.response.send_message(f"{author.mention} This command was used {exc.cooldown.per - exc.retry_after:.2f}s ago and is on cooldown. "
+                                              f"Try again in {exc.retry_after:.2f}s.", ephemeral=True)
+        else:
+            if isinstance(exc, discord.Forbidden):
+                msg = f"💢 I can't help you if you don't let me!\n`{exc.text}`."
+            elif isinstance(exc, commands.CommandInvokeError):
+                msg = f'{author.mention} `{command}` raised an exception during usage'
+            else:
+                msg = f'{author.mention} Unexpected exception occurred while using the command `{command}`'
+            if inter.response.is_done():
+                await inter.edit_original_message(content=msg, embed=None, view=None)
+            else:
+                await inter.response.send_message(msg, ephemeral=True)
+            if channel:
+                embed = create_error_embed(inter, exc)
+                await channel.send(embed=embed)
+
     async def on_error(self, event_method, *args, **kwargs):
         logger.error("", exc_info=True)
         if not self.err_channel:
@@ -432,7 +504,7 @@ async def startup():
         logger.exception("Failed to connect to postgreSQL server", exc_info=True)
         return
     logger.info("Starting Kurisu on commit %s on branch %s", commit, branch)
-    bot = Kurisu(command_prefix=('.', '!'), description="Kurisu, the bot for Nintendo Homebrew!", commit=commit,
+    bot = Kurisu(command_prefix=['.', '!'], description="Kurisu, the bot for Nintendo Homebrew!", commit=commit,
                  branch=branch)
     bot.help_command = commands.DefaultHelpCommand(dm_help=None)
     bot.engine = engine

@@ -90,7 +90,6 @@ def create_embed(header: 'Dict[str, str]', body: 'List[Tuple[str, str]]', embed_
         description=description,
         url=header['url'],
         color=embed_color,
-        thumbnail=None,
     )
     if header['author.name']:  # this field is required
         embed.set_author(name=header['author.name'], url=header['author.url'], icon_url=header['author.icon-url'])
@@ -138,7 +137,7 @@ def md_file_to_embed(md_path: str, format_map: dict):
     with open(md_path, 'r', encoding='utf-8') as f:
         fn = basename(md_path)
         name, console, _ = fn.rsplit('.', maxsplit=2)
-        return (name, console, *parse_md_command(f.read(), format_map, colors[console]))
+        return name, console, *parse_md_command(f.read(), format_map, colors[console])
 
 
 def check_console(message, channel, consoles):

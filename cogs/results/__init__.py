@@ -59,7 +59,7 @@ Only Nintendo Switch XXXX-YYYY formatted error codes are supported.'
 
     def is_hex(self, user_input):
         try:
-            user_input = hex(int(user_input, 16))
+            hex(int(user_input, 16))
         except ValueError:
             return False
         return True
@@ -101,7 +101,7 @@ Only Nintendo Switch XXXX-YYYY formatted error codes are supported.'
             for field in ret:
                 embed.add_field(name=field.field_name, value=field.message, inline=False)
 
-            embed.color = ret.color
+            embed.colour = ret.color
             await ctx.send(embed=embed)
         else:
             await ctx.send(f'{ctx.author.mention}, the code you entered is \
@@ -135,7 +135,7 @@ invalid or is for a system I don\'t have support for.')
             for field in ret:
                 embed.add_field(name=field.field_name, value=field.message, inline=False)
 
-            embed.color = ret.color
+            embed.colour = ret.color
             await ctx.send(embed=embed)
         else:
             await ctx.send(f'{ctx.author.mention}, the code you entered is \
@@ -170,7 +170,7 @@ invalid for the switch.')
             for field in ret:
                 embed.add_field(name=field.field_name, value=field.message, inline=False)
 
-            embed.color = ret.color
+            embed.colour = ret.color
             await ctx.send(embed=embed)
         else:
             await ctx.send(f'{ctx.author.mention}, the code you entered is \
@@ -207,7 +207,7 @@ invalid for the 3DS.')
             for field in ret:
                 embed.add_field(name=field.field_name, value=field.message, inline=False)
 
-            embed.color = ret.color
+            embed.colour = ret.color
             await ctx.send(embed=embed)
         else:
             await ctx.send(f'{ctx.author.mention}, the code you entered is \

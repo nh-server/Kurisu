@@ -49,7 +49,6 @@ class Seasonal(commands.Cog):
         self.bot = bot
 
     async def _seasonal_impl(self, ctx, mode: str, target: str = None):
-        season = None
         t = datetime.today()
         curr_time = f"{t.month}.{t.day}"
         for season_ in self.seasons:
@@ -65,6 +64,8 @@ class Seasonal(commands.Cog):
             return await ctx.send(
                 "There is no season with the name you specified."
             )
+
+        new_nick = ""
 
         if mode == "add":
             if target is not None:

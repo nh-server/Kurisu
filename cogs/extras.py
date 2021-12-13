@@ -10,9 +10,9 @@ import sys
 from discord import TextChannel, __version__ as discordpy_version
 from discord.ext import commands
 from typing import Union
-from utils import crud
+from utils import crud, utils
 from utils.checks import is_staff
-from utils.utils import parse_time, gen_color, dtm_to_discord_timestamp
+from utils.utils import gen_color, dtm_to_discord_timestamp
 
 python_version = sys.version.split()[0]
 
@@ -49,7 +49,7 @@ class Extras(commands.Cog):
         """About Kurisu"""
         embed = discord.Embed(title="Kurisu", color=discord.Color.green())
         embed.set_author(name="Maintained by Nintendo Homebrew helpers and staff")
-        embed.set_thumbnail(url="http://i.imgur.com/hjVY4Et.jpg")
+        embed.set_thumbnail(url="https://i.imgur.com/hjVY4Et.jpg")
         embed.url = "https://github.com/nh-server/Kurisu"
         embed.description = "Kurisu, the Nintendo Homebrew Discord bot!"
         await ctx.send(embed=embed)
@@ -277,19 +277,17 @@ class Extras(commands.Cog):
 
     @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.member)
     @commands.command()
-    async def remindme(self, ctx, remind_in: str, *, reminder: str):
+    async def remindme(self, ctx, remind_in: utils.TimeConverter, *, reminder: str):
         """Sends a reminder after a set time, just for you. Max reminder size is 800 characters.\n\nTime format: #d#h#m#s."""
-        if (seconds := parse_time(remind_in)) == -1:
-            return await ctx.send("💢 I don't understand your time format.")
-        if seconds < 30 or seconds > 3.154e+7:
+        if remind_in < 30 or remind_in > 3.154e+7:
             return await ctx.send("You can't set a reminder for less than 30 seconds or for more than a year.")
         if len(reminder) > 800:
             return await ctx.send("The reminder is too big! (Longer than 800 characters)")
         timestamp = datetime.datetime.now()
-        delta = datetime.timedelta(seconds=seconds)
+        delta = datetime.timedelta(seconds=remind_in)
         reminder_time = timestamp + delta
         await crud.add_reminder(reminder_time, ctx.author.id, reminder)
-        await ctx.send(f"I will send you a reminder on {dtm_to_discord_timestamp(reminder_time, format='F')}.")
+        await ctx.send(f"I will send you a reminder on {dtm_to_discord_timestamp(reminder_time, date_format='F')}.")
 
     @commands.group(invoke_without_command=True)
     async def tag(self, ctx, title: str = ""):

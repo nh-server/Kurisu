@@ -1,18 +1,18 @@
 import discord
-import qrcode
 import logging
 
+from discord import ButtonStyle
 from discord.ext import commands
-from io import BytesIO
 from inspect import cleandoc
 from os.path import dirname, join
+
 from utils.checks import check_if_user_can_sr
 from utils.mdcmd import add_md_files_as_commands
 
 logger = logging.getLogger(__name__)
 
 
-class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 30.0, commands.BucketType.channel))):
+class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapping.from_cooldown(1, 30.0, commands.BucketType.channel))):
     """
     Commands that will mostly be used in the help channels.
     """
@@ -35,13 +35,13 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
     def __init__(self, bot):
         self.bot = bot
 
-    async def unisearch(self, query: str) -> dict:
+    async def unisearch(self, query: str) -> list[dict]:
         query = query.lower()
         res = {}
         async with self.bot.session.get('https://udb-api.lightsage.dev/search/' + query, timeout=45) as r:
             if r.status == 200:
                 j = await r.json()
-                res = j['results'][0]
+                res = j['results']
         return res
 
     async def simple_embed(self, ctx, text, *, title="", color=discord.Color.default()):
@@ -49,9 +49,62 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         embed.description = cleandoc(text)
         await ctx.send(embed=embed)
 
+    class ResultsView(discord.ui.View):
+        def __init__(self, inter, results: list[dict]):
+            super().__init__(timeout=20)
+            self.inter = inter
+            self.current = 0
+            self.message = None
+            self.n_res = len(results)
+            self.embeds = self.create_embeds(results)
+
+        async def on_timeout(self):
+            if self.message:
+                await self.message.edit(view=None)
+
+        def create_embeds(self, results):
+            embeds = []
+            for n, app in enumerate(results):
+                embed = discord.Embed(title=app['title'], color=int(app['color'][1:], 16))
+                embed.description = f"{app.get('description', '')}\n [[Download]({app['download_page']})]"
+                if 'source' in app:
+                    embed.description += f" [[Source]({app['source']})]"
+                embed.set_footer(text=f"by {app['author']} result {n+1}/{self.n_res}")
+                embed.set_thumbnail(url=app["image"])
+                embeds.append(embed)
+            return embeds
+
+        @discord.ui.button(label="Previous", style=ButtonStyle.primary)
+        async def previous_button(
+                self, button: discord.ui.Button, interaction: discord.Interaction
+        ):
+            self.current = (self.current - 1) % self.n_res
+            await interaction.response.edit_message(embed=self.embeds[self.current])
+
+        @discord.ui.button(label="Next", style=ButtonStyle.primary)
+        async def next_button(
+                self, button: discord.ui.Button, interaction: discord.Interaction
+        ):
+            self.current = (self.current + 1) % self.n_res
+            await interaction.response.edit_message(embed=self.embeds[self.current])
+
+        @discord.ui.button(label="First", style=ButtonStyle.primary)
+        async def first_button(
+                self, button: discord.ui.Button, interaction: discord.Interaction
+        ):
+            self.current = 0
+            await interaction.response.edit_message(embed=self.embeds[self.current])
+
+        @discord.ui.button(label="Latest", style=ButtonStyle.primary)
+        async def latest_button(
+                self, button: discord.ui.Button, interaction: discord.Interaction
+        ):
+            self.current = self.n_res - 1
+            await interaction.response.edit_message(embed=self.embeds[self.current])
+
     @check_if_user_can_sr()
     @commands.guild_only()
-    @commands.command(aliases=["sr"], cooldown=commands.Cooldown(0, 0, commands.BucketType.channel))
+    @commands.command(aliases=["sr"], cooldown=commands.CooldownMapping.from_cooldown(rate=0, per=0, type=commands.BucketType.channel))
     async def staffreq(self, ctx, *, msg_request: str = ""):
         """Request staff, with optional additional text. Trusted, Helpers, Staff, Retired Staff, Verified only."""
         author = ctx.author
@@ -60,7 +113,9 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
         if msg_request != "":
             embed = discord.Embed(color=discord.Color.gold())
             embed.description = msg_request
-        await self.bot.channels['mods'].send(msg, embed=(embed if msg_request != "" else None), allowed_mentions=discord.AllowedMentions(everyone=True))
+        else:
+            embed = None
+        await self.bot.channels['mods'].send(msg, embed=embed, allowed_mentions=discord.AllowedMentions(everyone=True))
         try:
             await author.send(f"✅ Online staff have been notified of your request in {ctx.channel.mention}.", embed=(embed if msg_request != "" else None))
         except discord.errors.Forbidden:
@@ -120,7 +175,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.Cooldown(1, 
                                     [Luma v7.1](https://github.com/LumaTeam/Luma3DS/releases/tag/v7.1)
                                     """, color=discord.Color.blue())
 
-    @commands.group(cooldown=commands.Cooldown(0, 0, commands.BucketType.channel), invoke_without_command=True, case_insensitive=True)
+    @commands.group(cooldown=commands.CooldownMapping.from_cooldown(0, 0, commands.BucketType.channel), invoke_without_command=True, case_insensitive=True)
     async def tutorial(self, ctx):
         """Links to one of multiple guides"""
         if isinstance(ctx.channel, discord.DMChannel):
@@ -165,37 +220,14 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
             embed.set_thumbnail(url="https://avatars.githubusercontent.com/u/49733679?s=400&v=4")
             embed.description = "A database of DS and 3DS homebrew"
             embed.url = "https://db.universal-team.net/"
-            embed.color = discord.Color.from_rgb(7, 47, 79)
+            embed.colour = discord.Color.from_rgb(7, 47, 79)
             return await ctx.send(embed=embed)
         res = await self.unisearch(query)
         if not res:
             return await ctx.send("No app found!")
 
-        embed = discord.Embed(title=res['title'], color=int(res['color'][1:], 16))
-        embed.description = f"{res['description']}\n [[Download]({res['download_page']})]"
-        if 'source' in res:
-            embed.description += f" [[Source]({res['source']})]"
-        embed.set_footer(text=f"by {res['author']}")
-        embed.set_thumbnail(url=res["image"])
-
-        f = None
-        if qr_urls := res.get('qr'):
-            embed.set_image(url=list(qr_urls.values())[0])
-        elif res.get('downloads'):
-            qr_url = ""
-            for file, data in res['downloads'].items():
-                if 'cia' in file:
-                    qr_url = data['url']
-                    break
-                elif '3dsx' in file:
-                    qr_url = data['url']
-            if qr_url:
-                buffer = BytesIO()
-                qrcode.make(data=qr_url).save(buffer, "png")
-                buffer.seek(0)
-                f = discord.File(fp=buffer, filename="qr.png")
-                embed.set_image(url="attachment://qr.png")
-        await ctx.send(file=f, embed=embed)
+        view = self.ResultsView(ctx, res)
+        view.message = await ctx.send(embed=view.embeds[0], view=view)
 
 
 add_md_files_as_commands(Assistance)

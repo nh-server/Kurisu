@@ -20,10 +20,12 @@ services:
       - ./data:/home/kurisu/data
     environment:
       KURISU_TOKEN_FILE: /run/secrets/kurisu_token
+      SERVER_LOGS_URL_FILE: /run/secrets/server_logs_url
       DB_USER: kurisu
       DB_PASSWORD: dev123
     secrets:
       - kurisu_token
+      - server_logs_url
     depends_on:
       db:
         condition: service_healthy
@@ -34,3 +36,5 @@ volumes:
 secrets:
   kurisu_token:
     file: ./token.txt
+  server_logs_url:
+    file: ./server_logs_url.txt
