@@ -112,7 +112,7 @@ class ModWarn(commands.Cog):
             await ctx.send(msg)
             return
         embed = discord.Embed(color=discord.Color.dark_red())
-        embed.set_author(name=f"Warns for {member}", icon_url=member.avatar_url)
+        embed.set_author(name=f"Warns for {member}", icon_url=member.display_avatar.url)
         warns = await crud.get_warns(member.id)
         if warns:
             dbchannel = await crud.get_dbchannel(ctx.channel.id)

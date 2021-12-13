@@ -68,7 +68,7 @@ Thanks for stopping by and have a good time!
             await self.bot.channels['server-logs'].send(msg)
         else:
             embed = discord.Embed(color=discord.Color.dark_red())
-            embed.set_author(name=f"Warns for {member}", icon_url=member.avatar_url)
+            embed.set_author(name=f"Warns for {member}", icon_url=member.display_avatar.url)
             for idx, warn in enumerate(warns):
                 embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn.id).strftime('%Y-%m-%d %H:%M:%S')}", value=f"Issuer: {self.bot.escape_text((await self.bot.fetch_user(warn.issuer)).display_name)}\nReason: {warn.reason}")
             await self.bot.channels['server-logs'].send(msg, embed=embed)
