@@ -413,6 +413,7 @@ eshop_web = Module('eshop (web)', {
 
 unknown2 = Module('unknown (browser?)', {
     1037: ResultInfo('Incorrect permissions for the default index.html file which prevents the Internet Browser from reading it.', '[To fix it, follow these steps.](https://wiiu.hacks.guide/#/fix-errcode-112-1037)'),
+    1035: ResultInfo('SSL handshake failed due to cipher mismatch.')
 })
 
 olv = Module('olv (miiverse)', {
@@ -436,6 +437,7 @@ syserr = Module('system error', {
     103: ResultInfo('The MLC system memory is corrupted.'),
     104: ResultInfo('The SLC system memory is corrupted.'),
     105: ResultInfo('The USB storage is corrupted.'),
+    2706: ResultInfo('Error when reading from USB storage device'),
     2713: ResultInfo('The USB Storage device has been disconnected.')
 })
 

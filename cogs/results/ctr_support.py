@@ -99,6 +99,7 @@ nim = Module('nim', {
 # 006: online matchmaking and gameplay errors
 matchmaking = Module('matchmaking', {
     112: ResultInfo('Typically displayed when an issue with connecting to Pokémon Bank occurs.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/4203/'),
+    332: ResultInfo('Caused by closed ports when attempting matchmaking(?)'),
     (501, 502): ResultInfo('This may indicate in issue with the network being used blocking traffic necessary for online play.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/4204'),
     612: ResultInfo('This error code generally indicates that your network is not optimal for peer to peer connections, likely due to your network\'s NAT type.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/25881'),
     811: ResultInfo('This error code indicates the service you are attempting to use is currently unavailable due to ongoing maintenance.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/25910/'),
@@ -112,6 +113,7 @@ eshop_mint = Module('eshop (mint/api?)', {
     2001: ResultInfo('Error when attempting to access eshop on a region changed console. Fixed by changing back to the console original region.'),
     2100: ResultInfo('The connection to the Nintendo eShop timed out. This error code is often times caused by slow download times due to interference or a slow Internet connection.', 'See [the support page](https://en-americas-support.nintendo.com/app/answers/detail/a_id/4432) or [Nintendo\'s network status](https://support.nintendo.com/networkstatus).'),
     2670: ResultInfo('An error occurred while attempting to connect.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/4383'),
+    2720: ResultInfo('eShop SSL error.'),
     2913: ResultInfo('The server is probably down. Try again later.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/10425'),
     2916: ResultInfo('This is typically displayed when an error occurs while attempting to download a title from the Nintendo eShop.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/6557'),
     2920: ResultInfo('This error is typically displayed when a Nintendo eShop download failed, or when the title has an invalid ticket. Delete the title and/or its ticket in FBI and install it again from a legitimate source like the Nintendo eShop, or from your game cartridges if using cart dumps.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/41692'),
@@ -145,6 +147,7 @@ eshop_site = Module('eshop (website?)', {
     3010: ResultInfo('Server timeout due to user inactivity.'),
     3021: ResultInfo('Cannot find title on Nintendo eShop (incorrect region, or never existed?).'),
     3136: ResultInfo('Nintendo eShop is currently unavailable. Try again later.'),
+    5998: ResultInfo('Nintendo eShop is currently under maintenance', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/24326/'),
     6901: ResultInfo('This console is permanently banned by Nintendo (displayed in Japanese for some reason).', is_ban=True)
 })
 
