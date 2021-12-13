@@ -1,11 +1,11 @@
 import discord
 import logging
 
-from discord import ButtonStyle
 from discord.ext import commands
 from inspect import cleandoc
 from os.path import dirname, join
 
+from utils.utils import PaginatedEmbedView
 from utils.checks import check_if_user_can_sr
 from utils.mdcmd import add_md_files_as_commands
 
@@ -48,59 +48,6 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
         embed = discord.Embed(title=title, color=color)
         embed.description = cleandoc(text)
         await ctx.send(embed=embed)
-
-    class ResultsView(discord.ui.View):
-        def __init__(self, inter, results: list[dict]):
-            super().__init__(timeout=20)
-            self.inter = inter
-            self.current = 0
-            self.message = None
-            self.n_res = len(results)
-            self.embeds = self.create_embeds(results)
-
-        async def on_timeout(self):
-            if self.message:
-                await self.message.edit(view=None)
-
-        def create_embeds(self, results):
-            embeds = []
-            for n, app in enumerate(results):
-                embed = discord.Embed(title=app['title'], color=int(app['color'][1:], 16))
-                embed.description = f"{app.get('description', '')}\n [[Download]({app['download_page']})]"
-                if 'source' in app:
-                    embed.description += f" [[Source]({app['source']})]"
-                embed.set_footer(text=f"by {app['author']} result {n+1}/{self.n_res}")
-                embed.set_thumbnail(url=app["image"])
-                embeds.append(embed)
-            return embeds
-
-        @discord.ui.button(label="Previous", style=ButtonStyle.primary)
-        async def previous_button(
-                self, button: discord.ui.Button, interaction: discord.Interaction
-        ):
-            self.current = (self.current - 1) % self.n_res
-            await interaction.response.edit_message(embed=self.embeds[self.current])
-
-        @discord.ui.button(label="Next", style=ButtonStyle.primary)
-        async def next_button(
-                self, button: discord.ui.Button, interaction: discord.Interaction
-        ):
-            self.current = (self.current + 1) % self.n_res
-            await interaction.response.edit_message(embed=self.embeds[self.current])
-
-        @discord.ui.button(label="First", style=ButtonStyle.primary)
-        async def first_button(
-                self, button: discord.ui.Button, interaction: discord.Interaction
-        ):
-            self.current = 0
-            await interaction.response.edit_message(embed=self.embeds[self.current])
-
-        @discord.ui.button(label="Latest", style=ButtonStyle.primary)
-        async def latest_button(
-                self, button: discord.ui.Button, interaction: discord.Interaction
-        ):
-            self.current = self.n_res - 1
-            await interaction.response.edit_message(embed=self.embeds[self.current])
 
     @check_if_user_can_sr()
     @commands.guild_only()
@@ -226,7 +173,17 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
         if not res:
             return await ctx.send("No app found!")
 
-        view = self.ResultsView(ctx, res)
+        embeds = []
+        for app in res:
+            embed = discord.Embed(title=app['title'], color=int(app['color'][1:], 16))
+            embed.description = f"{app.get('description', '')}\n [[Download]({app['download_page']})]"
+            if 'source' in app:
+                embed.description += f" [[Source]({app['source']})]"
+            embed.set_footer(text=f"by {app['author']}")
+            embed.set_thumbnail(url=app["image"])
+            embeds.append(embed)
+
+        view = PaginatedEmbedView(embeds)
         view.message = await ctx.send(embed=view.embeds[0], view=view)
 
 

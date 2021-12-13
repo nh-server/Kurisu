@@ -121,3 +121,50 @@ def dtm_to_discord_timestamp(dtm_obj: datetime.datetime, date_format: str = "f",
     if utc_time:
         dtm_obj = dtm_obj.replace(tzinfo=datetime.timezone.utc).astimezone()
     return f"<t:{int(time.mktime(dtm_obj.timetuple()))}:{date_format}>"
+
+
+class PaginatedEmbedView(discord.ui.View):
+    def __init__(self, embeds: list[discord.Embed], timeout: int = 20):
+        super().__init__(timeout=timeout)
+        self.current = 0
+        self.message = None
+        self.n_embeds = len(embeds)
+        self.embeds = embeds
+
+        if self.n_embeds == 1:
+            self.clear_items()
+        else:
+            for n, embed in enumerate(self.embeds):
+                embed.set_footer(text=f"{embed.footer.text}\npage {n+1} of {self.n_embeds}")
+
+    async def on_timeout(self):
+        if self.message:
+            await self.message.edit(view=None)
+
+    @discord.ui.button(label="Previous", style=discord.ButtonStyle.primary)
+    async def previous_button(
+            self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        self.current = (self.current - 1) % self.n_embeds
+        await interaction.response.edit_message(embed=self.embeds[self.current])
+
+    @discord.ui.button(label="Next", style=discord.ButtonStyle.primary)
+    async def next_button(
+            self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        self.current = (self.current + 1) % self.n_embeds
+        await interaction.response.edit_message(embed=self.embeds[self.current])
+
+    @discord.ui.button(label="First", style=discord.ButtonStyle.primary)
+    async def first_button(
+            self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        self.current = 0
+        await interaction.response.edit_message(embed=self.embeds[self.current])
+
+    @discord.ui.button(label="Latest", style=discord.ButtonStyle.primary)
+    async def latest_button(
+            self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        self.current = self.n_embeds - 1
+        await interaction.response.edit_message(embed=self.embeds[self.current])
