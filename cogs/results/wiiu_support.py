@@ -413,7 +413,8 @@ eshop_web = Module('eshop (web)', {
 
 unknown2 = Module('unknown (browser?)', {
     1037: ResultInfo('Incorrect permissions for the default index.html file which prevents the Internet Browser from reading it.', '[To fix it, follow these steps.](https://wiiu.hacks.guide/#/fix-errcode-112-1037)'),
-    1035: ResultInfo('SSL handshake failed due to cipher mismatch.')
+    1035: ResultInfo('SSL handshake failed due to cipher mismatch.'),
+    1209: ResultInfo('Internet Browser is unable to load a file(?).')
 })
 
 olv = Module('olv (miiverse)', {
