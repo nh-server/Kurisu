@@ -56,8 +56,9 @@ class Loop(commands.Cog):
 
         embed = discord.Embed(title="Network Maintenance Information / Online Status",
                               url="https://www.nintendo.co.jp/netinfo/en_US/index.html",
-                              description="All times are US/Pacific.")
-        embed.set_footer(text=f"This information was last updated {now.strftime('%A, %B %d, %Y %I:%M %p')}.")
+                              description="All times are US/Pacific.",
+                              timestamp=now)
+        embed.set_footer(text=f"This information was last updated:")
 
         for status_type in ("operational_statuses", "temporary_maintenances"):
             descriptor = "Maintenance" if status_type == "temporary_maintenances" else "Status"
