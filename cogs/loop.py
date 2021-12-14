@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 from discord import AllowedMentions
 from discord.ext import commands
 from utils import crud
-from utils.utils import send_dm_message
+from utils.utils import send_dm_message, dtm_to_discord_timestamp
 
 
 logger = logging.getLogger(__name__)
@@ -38,17 +38,16 @@ class Loop(commands.Cog):
     tz = pytz.timezone('US/Pacific')
 
     netinfo_embed = discord.Embed(description="The Network Maintenance Information page has not been successfully checked yet.")
-    # netinfo_future_embed = discord.Embed(description="This needs to be set up")
 
-    def netinfo_parse_time(self, timestr):
-        return datetime.strptime(' '.join(timestr.split()), '%A, %B %d, %Y %I :%M %p').replace(tzinfo=self.tz)
+    def netinfo_parse_time(self, time_str: str) -> datetime:
+        return datetime.strptime(' '.join(time_str.split()), '%A, %B %d, %Y %I :%M %p').replace(tzinfo=self.tz)
 
     async def update_netinfo(self):
         async with self.bot.session.get('https://www.nintendo.co.jp/netinfo/en_US/status.json?callback=getJSON', timeout=45) as r:
             if r.status == 200:
                 j = await r.json()
             else:
-                # logging setup :)
+                self.netinfo_embed.description = "Failure when checking the Network Maintenance Information page."
                 logger.warning("Status %s while trying to update netinfo.", r.status)
                 return
 
@@ -56,9 +55,8 @@ class Loop(commands.Cog):
 
         embed = discord.Embed(title="Network Maintenance Information / Online Status",
                               url="https://www.nintendo.co.jp/netinfo/en_US/index.html",
-                              description="All times are US/Pacific.",
                               timestamp=now)
-        embed.set_footer(text=f"This information was last updated:")
+        embed.set_footer(text="This information was last updated:")
 
         for status_type in ("operational_statuses", "temporary_maintenances"):
             descriptor = "Maintenance" if status_type == "temporary_maintenances" else "Status"
@@ -73,10 +71,10 @@ class Loop(commands.Cog):
                 end = datetime(year=2099, month=1, day=1, tzinfo=self.tz)
                 if "begin" in entry:
                     begin = self.netinfo_parse_time(entry["begin"])
-                    entry_desc += '\nBegins: ' + begin.strftime('%A, %B %d, %Y %I:%M %p')
+                    entry_desc += '\nBegins: ' + dtm_to_discord_timestamp(begin)
                 if "end" in entry:
                     end = self.netinfo_parse_time(entry["end"])
-                    entry_desc += '\nEnds: ' + end.strftime('%A, %B %d, %Y %I:%M %p')
+                    entry_desc += '\nEnds: ' + dtm_to_discord_timestamp(end)
 
                 if now < end:
                     entry_name = "{} {}: {}".format(
@@ -87,7 +85,8 @@ class Loop(commands.Cog):
                     if "services" in entry:
                         entry_name += ", " + ', '.join(entry["services"])
                     embed.add_field(name=entry_name, value=entry_desc, inline=False)
-
+        if len(embed.fields) == 0:
+            embed.description = "No ongoing or upcoming maintenances."
         self.netinfo_embed = embed
 
     @commands.command()
