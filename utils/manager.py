@@ -61,7 +61,7 @@ class LevenshteinFilterManager:
         self.whitelist: list[str] = []
 
     async def load(self):
-        self.whitelist = await self.fetch_whitelist()
+        self.whitelist = [entry.word for entry in await self.fetch_whitelist()]
         for kind in self.kinds:
             self.filter[kind] = []
             for entry in await self.fetch_by_kind(kind=kind):
