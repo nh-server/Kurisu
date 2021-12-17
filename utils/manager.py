@@ -139,9 +139,9 @@ class LevenshteinFilterManager:
         to_check = re.findall(r"([\w0-9-]+\.[\w0-9-]+)", message)
 
         for word in to_check:
+            word = word[::-1]
             if word in self.whitelist:
                 continue
-            word = word[::-1]
             for trigger, threshold in lfilter:
                 lf_distance = distance(word, trigger)
                 if lf_distance < threshold:

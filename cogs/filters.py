@@ -123,9 +123,9 @@ class Filter(commands.Cog):
 
         for kind in self.bot.levenshteinfilter.kinds:
             for word in to_check:
+                word = word[::-1]
                 if word in self.bot.levenshteinfilter.whitelist:
                     continue
-                word = word[::-1]
                 matches[word] = []
                 for trigger, threshold in self.bot.levenshteinfilter.filter[kind]:
                     word_distance = distance(word, trigger)
