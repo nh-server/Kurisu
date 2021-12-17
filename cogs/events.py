@@ -194,7 +194,7 @@ class Events(commands.Cog):
             await self.bot.channels['message-logs'].send(
                 f"▶️ **Video posted**: {message.author.mention} posted a video in {message.channel.mention}\n------------------\n{message.clean_content}")
 
-        if wf_matches or wf_matches['scamming site']:
+        if lf_matches or wf_matches['scamming site']:
             if message.author.id not in self.userbot_yeeter:
                 self.userbot_yeeter[message.author.id] = []
             if message.channel not in self.userbot_yeeter[message.author.id]:
