@@ -123,13 +123,13 @@ class Filter(commands.Cog):
 
         for kind in self.bot.levenshteinfilter.kinds:
             for word in to_check:
+                if word in self.bot.levenshteinfilter.whitelist:
+                    continue
                 word = word[::-1]
                 matches[word] = []
                 for trigger, threshold in self.bot.levenshteinfilter.filter[kind]:
                     word_distance = distance(word, trigger)
-                    if word in self.bot.levenshteinfilter.whitelist or word_distance > threshold:
-                        continue
-                    else:
+                    if word_distance < threshold:
                         matches[word].append(trigger)
                 if not matches[word]:
                     del matches[word]

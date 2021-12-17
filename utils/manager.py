@@ -21,7 +21,7 @@ async def check_collisions() -> Optional[dict[str, list]]:
 
 class WordFilterManager:
     def __init__(self):
-        self.kinds = ('piracy tool', 'piracy video', 'piracy tool alert', 'drama', 'unbanning tool', 'piracy site', 'scamming site')
+        self.kinds = ('piracy tool', 'piracy tool alert', 'unbanning tool', 'piracy site', 'scamming site', 'piracy video')
         self.filter: dict[str, list[str]] = {}
         self.word_exp = {}
 
@@ -52,6 +52,25 @@ class WordFilterManager:
             self.filter[entry.kind].remove(entry.word)
             del self.word_exp[entry.word]
         return entry
+
+    def search_word(self, message: str) -> tuple[str, dict]:
+        msg_no_sep = re.sub(r'[ *_\-~]', '', message)
+        matches = {}
+        for kind in self.kinds[:-1]:
+            matches[kind] = []
+            for word in self.filter[kind]:
+                if word in msg_no_sep and (match := self.word_exp[word].search(message)):
+                    matches[kind].append(match)
+                    a, b = match.span(0)
+                    message = f"{message[:a]}**{match.group(0)}**{message[b:]}"
+                    matches[kind].append(word)
+        return message, matches
+
+    def search_video(self, message: str) -> tuple[bool, bool]:
+        res = re.findall(r'((?:https?://)?(?:www.)?)(?:(youtube\.com/watch\?v=)|(youtu\.be/))([aA-zZ_\-\d]{11})', message)
+        contains_video = any(res)
+        contains_piracy_video = False if not contains_video else any(x for x in res if x in self.filter['piracy video'])
+        return contains_video, contains_piracy_video
 
 
 class LevenshteinFilterManager:
@@ -113,6 +132,22 @@ class LevenshteinFilterManager:
             self.whitelist.remove(word)
         return entry
 
+    def search_site(self, message: str, filter_name: str) -> list[str]:
+        lfilter = self.filter[filter_name]
+        matches = []
+        message = message[::-1]
+        to_check = re.findall(r"([\w0-9-]+\.[\w0-9-]+)", message)
+
+        for word in to_check:
+            if word in self.whitelist:
+                continue
+            word = word[::-1]
+            for trigger, threshold in lfilter:
+                lf_distance = distance(word, trigger)
+                if lf_distance < threshold:
+                    matches.append(word)
+        return matches
+
 
 class InviteFilterManager:
     def __init__(self):
@@ -150,3 +185,14 @@ class InviteFilterManager:
             await entry.delete()
             await self.load()
         return entry
+
+    def search_invite(self, message: str):
+        approved_invites = []
+        non_approved_invites = []
+        res = re.findall(r'(?:discordapp\.com/invite|discord\.gg|discord\.com/invite)/([\w]+)', message)
+        for invite_code in res:
+            if any([x for x in self.invites if x.code in res]):
+                approved_invites.append(invite_code)
+            else:
+                non_approved_invites.append(invite_code)
+        return approved_invites, non_approved_invites
