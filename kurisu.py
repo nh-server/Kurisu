@@ -15,6 +15,7 @@ import traceback
 
 from alembic.config import main as albmain
 from configparser import ConfigParser
+from datetime import datetime
 from discord.ext import commands
 from logging.handlers import TimedRotatingFileHandler
 from subprocess import check_output, CalledProcessError
@@ -111,6 +112,7 @@ class Kurisu(commands.Bot):
             allowed_mentions=allowed_mentions,
             case_insensitive=True,
         )
+        self.startup = datetime.now()
         self.IS_DOCKER = IS_DOCKER
         self.commit = commit
         self.branch = branch
