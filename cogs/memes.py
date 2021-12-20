@@ -294,7 +294,7 @@ class Memes(commands.Cog):
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def whoops(self, ctx):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/caF9KHk.gif")
+        await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/2ec4764e884d956fb882f3479fa87ecf.gif")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -524,6 +524,12 @@ class Memes(commands.Cog):
     async def decision(self, ctx):
         """duly noted"""
         await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/5186160fa1b8002fe8fa1867225e45a7.png")
+
+    @commands.command(hidden=True, aliases=['tmyk'])
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def themoreyouknow(self, ctx):
+        """now with ear rape"""
+        await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/fbd4c65ff98d34967fdc8147594261a1.mp4")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.channel)
