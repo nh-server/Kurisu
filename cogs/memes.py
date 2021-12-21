@@ -529,7 +529,7 @@ class Memes(commands.Cog):
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def themoreyouknow(self, ctx):
         """now with ear rape"""
-        await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/fbd4c65ff98d34967fdc8147594261a1.mp4")
+        await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/01432cfa6eb64091301037971f8225c4.webm")
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.channel)
