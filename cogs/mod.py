@@ -388,6 +388,46 @@ class Mod(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.command()
+    async def timeout(self, ctx, member: discord.Member, length: utils.TimeConverter, *, reason: str = None):
+        """Times out a user. Staff only.\n\nLength format: #d#h#m#s"""
+        if await check_bot_or_staff(ctx, member, "timeout"):
+            return
+        if length > 2419200:
+            return await ctx.send("Timeouts can't be longer than 28 days!")
+
+        issuer = ctx.author
+        member = await member.timeout(duration=length, reason=reason)
+        timeout_expiration = utils.dtm_to_discord_timestamp(datetime.datetime.now() + datetime.timedelta(seconds=length))
+
+        msg_user = "You were given a timeout!"
+        if reason is not None:
+            msg_user += " The given reason is: " + reason
+        msg_user += f"\n\nThis timeout lasts until {timeout_expiration}."
+        await utils.send_dm_message(member, msg_user, ctx)
+
+        signature = utils.command_signature(ctx.command)
+        await ctx.send(f"{member.mention} has been given a timeout.")
+
+        msg = f"🔇 **Timeout**: {issuer.mention} timed out {member.mention}| {self.bot.escape_text(member)} until {timeout_expiration}."
+        if reason is not None:
+            msg += "\n✏️ __Reason__: " + reason
+        else:
+            msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
+        await self.bot.channels['mod-logs'].send(msg)
+
+    @is_staff("HalfOP")
+    @commands.command()
+    async def untimeout(self, ctx, member: discord.Member):
+        """Removes a timeout from a user. Staff only."""
+        if member.current_timeout is None:
+            return await ctx.send("This member doesn't have a timeout!")
+        await member.timeout(duration=None)
+        await ctx.send(f"{member.mention} timeout was removed.")
+        msg = f"🔈 **Timeout Removed**: {ctx.author.mention} removed timeout from {member.mention} | {self.bot.escape_text(member)}"
+        await self.bot.channels['mod-logs'].send(msg)
+
+    @is_staff("HalfOP")
+    @commands.command()
     async def art(self, ctx, member: discord.Member):
         """Restore art-discussion access for a user. Staff only."""
         if not await crud.remove_permanent_role(member.id, self.bot.roles['No-art'].id):

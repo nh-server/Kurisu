@@ -2,7 +2,7 @@ import discord
 
 from discord.ext import commands
 from utils import crud
-from utils.utils import send_dm_message
+from utils.utils import send_dm_message, dtm_to_discord_timestamp
 
 
 class Logs(commands.Cog):
@@ -175,6 +175,17 @@ Thanks for stopping by and have a good time!
             else:
                 msg = "\n🏷 __Nickname change__"
             msg += f": {self.bot.escape_text(member_before.nick)} → {self.bot.escape_text(member_after.nick)}"
+        if member_before.current_timeout != member_after.current_timeout:
+            do_log = True
+            if member_before.current_timeout is None:
+                msg = "\n🚷 __Timeout addition__"
+            elif member_after.current_timeout is None:
+                msg = "\n🚷 __Timeout removal__"
+            else:
+                msg = "\n🚷 __Timeout change__"
+            timeout_before = dtm_to_discord_timestamp(member_before.current_timeout, utc_time=True) if member_before.current_timeout else 'None'
+            timeout_after = dtm_to_discord_timestamp(member_after.current_timeout, utc_time=True) if member_after.current_timeout else 'None'
+            msg += f": {timeout_before} → {timeout_after}"
         if do_log:
             msg = f"ℹ️ **Member update**: {member_after.mention} | {self.bot.escape_text(member_after)} {msg}"
             await dest.send(msg)
