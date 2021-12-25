@@ -72,7 +72,7 @@ internet = Module('internet', {
 })
 
 # Yet another nim hack. Why does this category have so many redundant errors?
-NIM_4069 = ResultInfo('This error may appear if the eShop is unavailable. If the issue persists, you might need to replace your console\'s SD card.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/14413'),
+NIM_4069 = ResultInfo('This error may appear if the eShop is unavailable. If the issue persists, you might need to replace your console\'s SD card.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/14413')
 
 # 005: nim
 nim = Module('nim', {
