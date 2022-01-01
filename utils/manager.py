@@ -167,12 +167,17 @@ class InviteFilterManager:
         return await ApprovedInvite.query.gino.all()
 
     @staticmethod
-    async def fetch_invite_by_alias(alias) -> Optional[ApprovedInvite]:
+    async def fetch_invite_by_alias(alias: str) -> Optional[ApprovedInvite]:
         return await ApprovedInvite.query.where(ApprovedInvite.alias == alias).gino.first()
 
     @staticmethod
-    async def fetch_invite_by_code(code) -> Optional[ApprovedInvite]:
+    async def fetch_invite_by_code(code: str) -> Optional[ApprovedInvite]:
         return await ApprovedInvite.get(code)
+
+    def get_invite_by_code(self, code: str) -> Optional[ApprovedInvite]:
+        for invite in self.invites:
+            if invite.code == code:
+                return invite
 
     async def set_uses(self, code: str, uses: int):
         invite = await ApprovedInvite.get(code)
@@ -191,8 +196,8 @@ class InviteFilterManager:
         non_approved_invites = []
         res = re.findall(r'(?:discordapp\.com/invite|discord\.gg|discord\.com/invite)/([\w]+)', message)
         for invite_code in res:
-            if any([x for x in self.invites if x.code in res]):
-                approved_invites.append(invite_code)
+            if invite := self.get_invite_by_code(invite_code):
+                approved_invites.append(invite)
             else:
                 non_approved_invites.append(invite_code)
         return approved_invites, non_approved_invites

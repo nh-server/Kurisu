@@ -71,7 +71,7 @@ class Events(commands.Cog):
         log_msg, wf_matches = self.bot.wordfilter.search_word(msg)
         lf_matches = self.bot.levenshteinfilter.search_site(msg, 'scamming site')
         contains_video, contains_piracy_video = self.bot.wordfilter.search_video(msg)
-        approved_invites, non_approved_invites = self.bot.invitefilter.search_invite(msg)
+        approved_invites, non_approved_invites = self.bot.invitefilter.search_invite(message.content)
         contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub', 'strawpoii', 'hackinformer.com', 'console.guide', 'jacksorrell.co.uk', 'jacksorrell.tv', 'nintendobrew.com', 'reinx.guide', 'NxpeNwz', 'scenefolks.com', 'rentry.co'))
         contains_invite_link = approved_invites or non_approved_invites
 
@@ -99,13 +99,12 @@ class Events(commands.Cog):
                         f"Server invites must be approved by staff. To contact staff send a message to <@333857992170536961>.")
                 except discord.errors.Forbidden:
                     pass
-            if approved_invites:
-                for invite in approved_invites:
-                    if invite.is_temporary:
-                        if invite.uses > 1:
-                            await self.bot.invitefilter.set_uses(code=invite.code, uses=invite.uses - 1)
-                        else:
-                            await self.bot.invitefilter.delete(code=invite.code)
+            for invite in approved_invites:
+                if invite.is_temporary:
+                    if invite.uses > 1:
+                        await self.bot.invitefilter.set_uses(code=invite.code, uses=invite.uses - 1)
+                    else:
+                        await self.bot.invitefilter.delete(code=invite.code)
 
         if contains_misinformation_url_mention:
             try:
