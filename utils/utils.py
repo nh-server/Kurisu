@@ -96,6 +96,10 @@ class TimeConverter(commands.Converter):
         raise commands.BadArgument("Invalid time format")
 
 
+def time_converter(inter, time_string: str) -> int:
+    return parse_time(time_string)
+
+
 def create_error_embed(ctx: Union[commands.Context, discord.ApplicationCommandInteraction], exc) -> discord.Embed:
     interaction = isinstance(ctx, discord.ApplicationCommandInteraction)
     command: str = ctx.application_command.name if interaction else str(ctx.command)

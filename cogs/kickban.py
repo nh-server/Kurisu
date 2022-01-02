@@ -2,6 +2,7 @@ import discord
 import datetime
 
 from discord.ext import commands
+from disnake.ext.commands import Param
 from typing import Optional, Union
 from utils import utils, crud
 from utils.checks import is_staff, check_bot_or_staff
@@ -84,6 +85,61 @@ class KickBan(commands.Cog):
         await self.bot.channels['server-logs'].send(msg)
         signature = utils.command_signature(ctx.command)
         await self.bot.channels['mod-logs'].send(msg + (f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user." if reason == "" else ""))
+
+    @is_staff("OP")
+    @commands.bot_has_permissions(ban_members=True)
+    @commands.guild_only()
+    @commands.slash_command(name='ban')
+    async def ban_member_slash(self, inter,
+                               member: discord.Member = Param(name="Member", desc="Member to ban."),
+                               reason: str = Param(name="Reason", desc="Reason for the ban.", default=""),
+                               delete_messages: int = Param(desc="Specify up to 7 days of messages to delete.", max_value=7, min_value=1, default=0),
+                               duration: int = Param(name="ban_duration", desc="This will convert the ban to a time ban. Length format: #d#h#m#s.", conv=utils.time_converter, default=0)):
+        """Bans a user from the server. OP+ only."""
+        if await check_bot_or_staff(inter, member, "ban"):
+            return
+
+        msg = f"You were banned from {inter.guild.name}."
+        if reason != "":
+            msg += " The given reason is: " + reason
+
+        if duration > 0:
+            timestamp = datetime.datetime.now()
+            delta = datetime.timedelta(seconds=duration)
+            unban_time = timestamp + delta
+            unban_time_string = utils.dtm_to_discord_timestamp(unban_time)
+
+            try:
+                await inter.guild.ban(member, reason=reason, delete_message_days=delete_messages)
+            except discord.errors.Forbidden:
+                await inter.send("💢 I don't have permission to do this.")
+                return
+
+            self.bot.actions.append("ub:" + str(member.id))
+            await crud.add_timed_restriction(member.id, unban_time, 'timeban')
+            msg += f"\n\nThis ban expires in {unban_time_string}."
+            msg_send = await utils.send_dm_message(member, msg)
+            await inter.send(f"{member} is now b& until {unban_time_string}. 👍" + ("\nFailed to send DM message" if not msg_send else ""))
+
+            msg = f"⛔ **Time ban**: {inter.author.mention} banned {member.mention} until {unban_time_string} | {member}\n🏷 __User ID__: {member.id}"
+        else:
+            try:
+                await inter.guild.ban(member, reason=reason, delete_message_days=duration)
+            except discord.errors.Forbidden:
+                await inter.send("💢 I don't have permission to do this.")
+                return
+
+            self.bot.actions.append("ub:" + str(member.id))
+            await crud.remove_timed_restriction(member.id, 'timeban')
+            msg += "\n\nThis ban does not expire."
+            msg_send = await utils.send_dm_message(member, msg)
+            await inter.send(f"{member} is now b&. 👍" + ("\nFailed to send DM message" if not msg_send else ""))
+
+            msg = f"⛔ **Ban**: {inter.author.mention} banned {member.mention} | {self.bot.escape_text(member)}\n🏷 __User ID__: {member.id}"
+        if reason != "":
+            msg += "\n✏️ __Reason__: " + reason
+        await self.bot.channels['server-logs'].send(msg)
+        await self.bot.channels['mod-logs'].send(msg + ("\nPlease add an explanation below. In the future, it is recommended add a reason as it is automatically sent to the user." if reason == "" else ""))
 
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)

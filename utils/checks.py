@@ -36,8 +36,8 @@ async def check_bot_or_staff(ctx, target: discord.user, action: str):
         who = "another staffer"
     else:
         return False
-
-    return await ctx.send(f"You can't {action} {who} with this command!")
+    await ctx.send(f"You can't {action} {who} with this command!")
+    return True
 
 
 def check_if_user_can_sr():
