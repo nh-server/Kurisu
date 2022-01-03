@@ -190,7 +190,7 @@ class Mod(commands.Cog):
     @commands.bot_has_permissions(manage_channels=True)
     @commands.guild_only()
     @commands.command()
-    async def slowmode(self, ctx, length: utils.TimeConverter, channel: discord.TextChannel = None):
+    async def slowmode(self, ctx, length: str, channel: discord.TextChannel = None):
         """Apply a given slowmode time to a channel.
 
         The time format is identical to that used for timed kicks/bans/takehelps.
@@ -200,17 +200,26 @@ class Mod(commands.Cog):
         if not channel:
             channel = ctx.channel
 
+        if (seconds := utils.parse_time(length)) == -1:
+            return await ctx.send("💢 I don't understand your time format.")
+
         if channel not in self.bot.assistance_channels and not await check_staff_id("OP", ctx.author.id):
             return await ctx.send("You cannot use this command outside of assistance channels.")
 
-        if length > 21600:
+        if seconds > 21600:
             return await ctx.send("💢 You can't slowmode a channel for longer than 6 hours!")
+
         try:
-            await channel.edit(slowmode_delay=length)
-            await ctx.send(f"Slowmode delay for {channel.mention} is now {length} seconds.")
+            await channel.edit(slowmode_delay=seconds)
         except discord.errors.Forbidden:
             return await ctx.send("💢 I don't have permission to do this.")
-        msg = f"🕙 **Slowmode**: {ctx.author.mention} set a slowmode delay of {length} seconds in {channel.mention}"
+
+        if seconds > 0:
+            await ctx.send(f"Slowmode delay for {channel.mention} is now {seconds} seconds.")
+            msg = f"🕙 **Slowmode**: {ctx.author.mention} set a slowmode delay of {seconds} seconds in {channel.mention}"
+        else:
+            await ctx.send(f"Slowmode has been removed for {channel.mention}.")
+            msg = f"🕙 **Slowmode**: {ctx.author.mention} removed the slowmode delay in {channel.mention}"
         await self.bot.channels["mod-logs"].send(msg)
 
     @is_staff("Helper")
