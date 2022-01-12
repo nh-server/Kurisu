@@ -7,4 +7,4 @@ author.url: https://wiiu.hacks.guide/
 help-desc: Links to the recommended guides.
 ---
 
-A complete Wii U custom firmware + coldboothax guide
+A complete Wii U custom firmware guide
