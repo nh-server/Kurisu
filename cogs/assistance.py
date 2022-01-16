@@ -181,8 +181,9 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
                 embed.description += f" [[Source]({app['source']})]"
             embed.set_footer(text=f"by {app['author']}")
             embed.set_thumbnail(url=app["image"])
+            if qr_urls := app.get('qr'):
+                embed.set_image(url=list(qr_urls.values())[0])
             embeds.append(embed)
-
         view = PaginatedEmbedView(embeds, author=ctx.author)
         view.message = await ctx.send(embed=view.embeds[0], view=view)
 
