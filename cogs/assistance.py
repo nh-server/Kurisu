@@ -183,7 +183,7 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
             embed.set_thumbnail(url=app["image"])
             embeds.append(embed)
 
-        view = PaginatedEmbedView(embeds)
+        view = PaginatedEmbedView(embeds, author=ctx.author)
         view.message = await ctx.send(embed=view.embeds[0], view=view)
 
 

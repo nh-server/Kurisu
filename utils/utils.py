@@ -128,9 +128,10 @@ def dtm_to_discord_timestamp(dtm_obj: datetime.datetime, date_format: str = "f",
 
 
 class PaginatedEmbedView(discord.ui.View):
-    def __init__(self, embeds: list[discord.Embed], timeout: int = 20):
+    def __init__(self, embeds: list[discord.Embed], timeout: int = 20, author: discord.Member = None):
         super().__init__(timeout=timeout)
         self.current = 0
+        self.author = author
         self.message = None
         self.n_embeds = len(embeds)
         self.embeds = embeds
@@ -144,6 +145,13 @@ class PaginatedEmbedView(discord.ui.View):
     async def on_timeout(self):
         if self.message:
             await self.message.edit(view=None)
+
+    async def interaction_check(self, interaction):
+        if not self.author or self.author == interaction.user:
+            return True
+        else:
+            await interaction.send("Only the message author can use this view!", ephemeral=True)
+            return False
 
     @discord.ui.button(label="Previous", style=discord.ButtonStyle.primary)
     async def previous_button(
