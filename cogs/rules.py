@@ -186,11 +186,11 @@ https://discord.gg/C29hYvh"""
         """Displays rule 3."""
         await self.simple_embed(ctx, self.rules_dict[3], title="Rule 3")
 
-#    @commands.command()
-#    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-#    async def r4(self, ctx):
-#        """Displays rule 4."""
-#        await self.simple_embed(ctx, self.rules_dict[4], title="Rule 4")
+    @commands.command()
+    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    async def r4(self, ctx):
+        """Displays rule 4."""
+        await self.simple_embed(ctx, self.rules_dict[4], title="Rule 4")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
