@@ -169,7 +169,7 @@ def add_md_files_as_commands(cog_class: 'Type[commands.Cog]', md_dir: str = None
                 # replace aliases with the expected console
                 requested_consoles = {get_console_name(c) for c in consoles.split()}
                 # and then check if any of the consoles are supported here
-                requested_consoles = {c for c in requested_consoles if c in supported_consoles}
+                requested_consoles = {c.lower() for c in requested_consoles if c.lower() in supported_consoles}
                 channel_name = ctx.channel.name if not isinstance(ctx.channel, discord.DMChannel) else ''
 
                 if not requested_consoles:
