@@ -232,29 +232,26 @@ class Extras(commands.Cog):
         author = ctx.author
         if ctx.channel != self.bot.channels['bot-cmds']:
             return await ctx.send(f"{ctx.author.mention}: .togglechannel can only be used in {self.bot.channels['bot-cmds'].mention}.", delete_after=10)
-        try:
-            if channelname == "elsewhere":
-                if self.bot.roles['#elsewhere'] in author.roles:
-                    await author.remove_roles(self.bot.roles['#elsewhere'])
-                    await author.send("Access to #elsewhere removed.")
-                elif self.bot.roles['No-elsewhere'] not in author.roles:
-                    await author.add_roles(self.bot.roles['#elsewhere'])
-                    await author.send("Access to #elsewhere granted.")
-                else:
-                    await author.send("Your access to elsewhere is restricted, contact staff to remove it.")
-            elif channelname == "artswhere":
-                if self.bot.roles['#art-discussion'] in author.roles:
-                    await author.remove_roles(self.bot.roles['#art-discussion'])
-                    await author.send("Access to #art-discussion removed.")
-                elif self.bot.roles['No-art'] not in author.roles:
-                    await author.add_roles(self.bot.roles['#art-discussion'])
-                    await author.send("Access to #art-discussion granted.")
-                else:
-                    await author.send("Your access to #art-discussion is restricted, contact staff to remove it.")
+        if channelname == "elsewhere":
+            if self.bot.roles['#elsewhere'] in author.roles:
+                await author.remove_roles(self.bot.roles['#elsewhere'])
+                await author.send("Access to #elsewhere removed.")
+            elif self.bot.roles['No-elsewhere'] not in author.roles:
+                await author.add_roles(self.bot.roles['#elsewhere'])
+                await author.send("Access to #elsewhere granted.")
             else:
-                await author.send(f"{channelname} is not a valid toggleable channel.")
-        except discord.errors.Forbidden:
-            await ctx.send("💢 I don't have permission to do this.")
+                await author.send("Your access to elsewhere is restricted, contact staff to remove it.")
+        elif channelname == "artswhere":
+            if self.bot.roles['#art-discussion'] in author.roles:
+                await author.remove_roles(self.bot.roles['#art-discussion'])
+                await author.send("Access to #art-discussion removed.")
+            elif self.bot.roles['No-art'] not in author.roles:
+                await author.add_roles(self.bot.roles['#art-discussion'])
+                await author.send("Access to #art-discussion granted.")
+            else:
+                await author.send("Your access to #art-discussion is restricted, contact staff to remove it.")
+        else:
+            await author.send(f"{channelname} is not a valid toggleable channel.")
 
     @commands.dm_only()
     @commands.cooldown(rate=1, per=21600.0, type=commands.BucketType.member)
