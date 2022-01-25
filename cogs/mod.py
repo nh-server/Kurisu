@@ -42,10 +42,10 @@ class Mod(commands.Cog):
     @commands.command(aliases=['ui'])
     async def userinfo(self, ctx, u: Union[discord.Member, discord.User]):
         """Shows information from a user. Staff and Helpers only."""
-        basemsg = f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = {u.avatar}\nbot = {u.bot}\navatar_url = {u.display_avatar.url}\ndefault_avatar= {u.default_avatar}\ndefault_avatar_url = <{u.default_avatar.url}>\ncreated_at = {u.created_at}\n"
+        basemsg = f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = <{u.avatar}>\nbot = {u.bot}\ndefault_avatar= <{u.default_avatar}>\ncreated_at = {u.created_at}\n"
         if isinstance(u, discord.Member):
             role = u.top_role.name
-            await ctx.send(f"{basemsg}display_name = {u.display_name}\njoined_at = {u.joined_at}\nstatus ={u.status}\nactivity = {u.activity.name if u.activity else None}\ncolour = {u.colour}\ntop_role = {role}\n")
+            await ctx.send(f"{basemsg}display_name = {u.display_name}\njoined_at = {u.joined_at}\nstatus ={u.status}\nactivity = {u.activity.name if u.activity else None}\ncolour = {u.colour}\ntop_role = {role}\nguild_avatar= {f'<{u.guild_avatar}>' if u.guild_avatar else None}")
         else:
             try:
                 ban = await ctx.guild.fetch_ban(u)
@@ -83,7 +83,10 @@ class Mod(commands.Cog):
                 f"**Nitro Boost Info:** {f'Boosting since {utils.dtm_to_discord_timestamp(user.premium_since, utc_time=True)}' if user.premium_since else 'Not a booster'}\n"
                 f"**Current Top Role:** {user.top_role}\n"
                 f"**Color:** {user.color}\n"
+                f"**Profile Picture:** [link]({user.avatar})"
             )
+            if user.guild_avatar:
+                embed.description += f"\n**Guild Profile Picture:** [link]({user.guild_avatar})"
         else:
             member_type = "user"
             try:
@@ -108,7 +111,6 @@ class Mod(commands.Cog):
             f"**Created on:** {utils.dtm_to_discord_timestamp(user.created_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(user.created_at, date_format='R', utc_time=True)})\n"
             f"**Default Profile Picture:** {user.default_avatar}\n"
         )
-
         if isinstance(user, discord.Member):
             member_type = "member"
             embed.description += (
@@ -119,7 +121,10 @@ class Mod(commands.Cog):
                 f"**Nitro Boost Info:** {f'Boosting since {utils.dtm_to_discord_timestamp(user.premium_since, utc_time=True)}' if user.premium_since else 'Not a booster'}\n"
                 f"**Current Top Role:** {user.top_role}\n"
                 f"**Color:** {user.color}\n"
+                f"**Profile Picture:** [link]({user.avatar.url})"
             )
+            if user.guild_avatar:
+                embed.description += f"\n**Guild Profile Picture:** [link]({user.guild_avatar})"
         else:
             member_type = "user"
             try:
