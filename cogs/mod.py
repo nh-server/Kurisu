@@ -986,7 +986,7 @@ class Mod(commands.Cog):
 
         delta = datetime.timedelta(seconds=seconds)
         expiring_time = timestamp + delta
-        expiring_time_string = expiring_time.strftime("%Y-%m-%d %H:%M:%S")
+        expiring_time_string = utils.dtm_to_discord_timestamp(expiring_time)
 
         await crud.add_timed_role(member.id, self.bot.roles['streamer(temp)'].id, expiring_time)
         msg_user = f"You have been given streaming permissions until {expiring_time_string}!"
