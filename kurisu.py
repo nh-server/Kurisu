@@ -65,6 +65,8 @@ if IS_DOCKER:
                     contents = f.readline().strip()
             except FileNotFoundError:
                 sys.exit(f"Couldn't find environment variables {name} or {name}_FILE.")
+            except IsADirectoryError:
+                sys.exit(f"Attempted to open {contents_file} (env {name}_FILE) but it is a folder.")
 
         return contents
 
