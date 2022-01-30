@@ -580,7 +580,7 @@ class Memes(commands.Cog):
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def blahaj(self, ctx, money: int):
+    async def blahaj(self, ctx, money: float):
         """Displays how much Blahajs you can buy with that money. ($ or €)"""
         # blahaj. takes usd or eur
         blahajlink = "https://nintendohomebrew.com/assets/img/blahaj.png"

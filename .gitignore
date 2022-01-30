@@ -12,3 +12,4 @@ __pycache__
 data/
 kurisudb/
 .idea/
+server_logs_url.txt
