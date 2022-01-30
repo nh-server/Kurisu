@@ -1,6 +1,7 @@
 ---
 title: What to do if essential.exefs is missing
 help-desc: Instructions on what to do if essential.exefs is missing
+aliases: noessential
 ---
 
 In order to do this, you will need to boot back into GodMode9
