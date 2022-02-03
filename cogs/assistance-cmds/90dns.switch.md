@@ -1,9 +1,13 @@
 ---
-title: DNS.mitm and 90DNS
-help-desc: Applying 90DNS protection
-aliases: dnsmitm
+title: 90DNS IP addresses
+help-desc: 90DNS IP addresses
+aliases: ninetydns
 ---
 
-To ensure that your emuMMC/emuNAND does not connect to Nintendo, you should use DNS.mitm (AMS DNS redirection)
+The public 90DNS IP addresses are:
+- `207.246.121.77` (USA)
+- `163.172.141.219`(France)
 
-[Follow these steps](https://nh-server.github.io/switch-guide/extras/blocking_updates/) to set up DNS.mitm on your emuMMC/emuNAND and redirect requests to Nintendo servers blocked by 90DNS
+[Follow these steps](https://nh-server.github.io/switch-guide/extras/blocking_updates/) to set up 90dns and ensure it isn't being blocked
+
+You will have to manually set these for each WiFi connection you have set up.
