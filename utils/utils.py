@@ -140,7 +140,7 @@ class PaginatedEmbedView(discord.ui.View):
             self.clear_items()
         else:
             for n, embed in enumerate(self.embeds):
-                embed.set_footer(text=f"{embed.footer.text}\npage {n+1} of {self.n_embeds}")
+                embed.set_footer(text=f"{embed.footer.text if embed.footer else ''}\npage {n+1} of {self.n_embeds}")
 
     async def on_timeout(self):
         if self.message:
