@@ -341,6 +341,10 @@ async def add_reminder(date: datetime.datetime, author: int, reminder: str):
     await models.RemindMeEntry.create(id=generate_id(), date=date, author=author, reminder=reminder)
 
 
+async def get_user_reminders(user_id: int) -> list[models.RemindMeEntry]:
+    return await models.RemindMeEntry.query.where(models.RemindMeEntry.author == user_id).gino.all()
+
+
 async def get_reminders() -> list[models.RemindMeEntry]:
     return await models.RemindMeEntry.query.order_by(models.RemindMeEntry.date).gino.all()
 

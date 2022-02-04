@@ -316,6 +316,31 @@ class Extras(commands.Cog):
         await crud.add_reminder(reminder_time, ctx.author.id, reminder)
         await ctx.send(f"I will send you a reminder on {dtm_to_discord_timestamp(reminder_time, date_format='F')}.")
 
+    @commands.command()
+    async def listreminders(self, ctx):
+        reminders = await crud.get_user_reminders(ctx.author.id)
+        if not reminders:
+            return await ctx.send("You don't have any reminders scheduled.")
+        embeds = []
+        color = utils.gen_color(ctx.author.id)
+        for n, reminder in enumerate(reminders, start=1):
+            embed = discord.Embed(title=f"Reminder {n}", color=color)
+            embed.add_field(name='Content', value=reminder.reminder, inline=False)
+            embed.add_field(name='Set to', value=utils.dtm_to_discord_timestamp(reminder.date), inline=False)
+            embeds.append(embed)
+        view = utils.PaginatedEmbedView(embeds, author=ctx.author)
+        view.message = await ctx.send(embed=embeds[0], view=view)
+
+    @commands.command()
+    async def unremindme(self, ctx, number: int):
+        reminders = await crud.get_user_reminders(ctx.author.id)
+        if not reminders:
+            return await ctx.send("You don't have any reminders scheduled.")
+        if len(reminders) < number or number < 1:
+            return await ctx.send("Invalid reminder number.")
+        await crud.remove_reminder(reminders[number - 1].id)
+        await ctx.send(f"Deleted reminder {number} successfully!")
+
     @commands.group(invoke_without_command=True)
     async def tag(self, ctx, title: str = ""):
         """Command group for commands related to tags."""
@@ -352,8 +377,15 @@ class Extras(commands.Cog):
     async def list(self, ctx):
         """Lists the title of all existent tags."""
         if tags := await crud.get_tags():
-            embed = discord.Embed(description='\n'.join(f'{n}. {tag.title}' for n, tag in enumerate(tags, start=1)), color=gen_color(ctx.author.id))
-            await ctx.send(embed=embed)
+            embeds = []
+            n = 1
+            color = gen_color(ctx.author.id)
+            for x in [tags[i:i + 10] for i in range(0, len(tags), 10)]:
+                embed = discord.Embed(description='\n'.join(f'{n}. {tag.title}' for n, tag in enumerate(x, start=n)), color=color)
+                n += len(x)
+                embeds.append(embed)
+            view = utils.PaginatedEmbedView(embeds=embeds, author=ctx.author)
+            view.message = await ctx.send(embed=view.embeds[0], view=view)
         else:
             await ctx.send("There are no tags.")
 
