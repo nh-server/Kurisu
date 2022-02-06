@@ -637,7 +637,7 @@ class Memes(commands.Cog):
         self.flushedsquish = discord.utils.get(self.bot.guild.emojis, name="flushedsquish") or "⁉"
         self.flushedball = discord.utils.get(self.bot.guild.emojis, name="flushedball") or "⁉"
         secret_rules = [f"{str(self.flushedball)}", f"{str(self.flushedsquish)}", "ur mom lol", "hot dogs are sandwiches dont @ me", "have you had a coffee today?", "bird app bad", "imagine having opinions in current year"]
-        await ctx.send(ctx, random.choice(secret_rules))
+        await ctx.send(random.choice(secret_rules))
 
 
 def setup(bot):
