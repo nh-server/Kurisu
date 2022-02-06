@@ -447,7 +447,7 @@ class Memes(commands.Cog):
         """eel"""
         await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has been eel slapped.", True, "https://i.imgur.com/QXF2Pcn.gif")
 
-    @commands.command(hidden=True, aliases=["bruh", "yolo", "swag"])
+    @commands.command(hidden=True, aliases=["bruh", "yolo", "swag", "based"])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def dab(self, ctx):
         """Memes."""
@@ -589,7 +589,7 @@ class Memes(commands.Cog):
         elif money // 18 == 1:
             text = "You could buy one Blahaj with that. Think about it."
         else:
-            text = f"You could buy {money//18} Blahajs with that. Think about it."
+            text = f"You could buy {money//18} Blahajes with that. Think about it."
         await self._meme(ctx, text, True, blahajlink)
 
     @is_staff("Helper")
@@ -629,6 +629,13 @@ class Memes(commands.Cog):
             return await ctx.send(f"There is no citizen named {citizen.mention}!")
         await crud.remove_citizen(citizen.id)
         await ctx.send(f"{citizen.mention} was sent away for reeducation purposes!")
+
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
+    async def r18(self, ctx):
+        """super secret rule 18"""
+        secret_rules = [":flushedball:", ":flushedsquish:", "ur mom lol", "hot dogs are sandwiches dont @ me", "have you had a coffee today?", "bird app bad", "imagine having opinions in current year"]
+        await self._meme2(ctx, random.choice(secret_rules))
 
 
 def setup(bot):
