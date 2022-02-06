@@ -634,8 +634,8 @@ class Memes(commands.Cog):
     @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
     async def r18(self, ctx):
         """super secret rule 18"""
-        flushedsquish = discord.utils.get(self.bot.guild.emojis, name="flushedsquish") or "⁉"
-        flushedball = discord.utils.get(self.bot.guild.emojis, name="flushedball") or "⁉"
+        self.flushedsquish = discord.utils.get(self.bot.guild.emojis, name="flushedsquish") or "⁉"
+        self.flushedball = discord.utils.get(self.bot.guild.emojis, name="flushedball") or "⁉"
         secret_rules = [f"{str(self.flushedball)}", f"{str(self.flushedsquish)}", "ur mom lol", "hot dogs are sandwiches dont @ me", "have you had a coffee today?", "bird app bad", "imagine having opinions in current year"]
         await ctx.send(ctx, random.choice(secret_rules))
 
