@@ -636,7 +636,7 @@ class Memes(commands.Cog):
         """super secret rule 18"""
         self.flushedsquish = discord.utils.get(self.bot.guild.emojis, name="flushedsquish") or "⁉"
         self.flushedball = discord.utils.get(self.bot.guild.emojis, name="flushedball") or "⁉"
-        secret_rules = [f"{str(self.flushedball)}", f"{str(self.flushedsquish)}", "ur mom lol", "hot dogs are sandwiches dont @ me", "have you had a coffee today?", "bird app bad", "imagine having opinions in current year"]
+        secret_rules = [f"{str(self.flushedball)}", f"{str(self.flushedsquish)}", "ur mom lol", "hot dogs are sandwiches dont @ me", "have you had a coffee today?", "bird app bad", "imagine having opinions in current year", "based", "pog", "ratio", "remember to moisturize today!", "drink some water u idiot", "take ur meds", "do you like neapolitan ice cream?", "nentondon swonch", "xnoe at 11pm moment", "has junko had a name change today?"]
         await ctx.send(random.choice(secret_rules))
 
 
