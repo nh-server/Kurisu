@@ -149,7 +149,7 @@ class Mod(commands.Cog):
             if bool(re.search(rgx, m.name, re.IGNORECASE)):
                 msg += f"{m.id} - {m}\n"
         msg += "```"
-        if len(msg) > 4000:
+        if len(msg) > 2000:
             for page in utils.paginate_message(msg).pages:
                 await author.send(page)
         else:
