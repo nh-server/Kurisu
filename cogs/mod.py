@@ -2,6 +2,7 @@ import datetime
 import discord
 import re
 
+from disnake.ext.commands import Param
 from discord.ext import commands
 from subprocess import call
 from typing import Union
@@ -1006,6 +1007,40 @@ class Mod(commands.Cog):
         msg_user = "Your temporary streaming permissions have been revoked!"
         await utils.send_dm_message(member, msg_user, ctx)
         await self.bot.channels['mod-logs'].send(f"⭕ **Permission Revoked**: {ctx.author.mention} revoked {member.mention} streaming permissions.")
+
+    restrictions = {'Embed Permissions': 'No-embed',
+                    'Elsewhere access': 'No-elsewhere',
+                    'Meme commands access': 'No-Memes',
+                    'Art-channel access': 'No-art'}
+
+    @is_staff("OP")
+    @commands.slash_command()
+    async def take(self, inter, member: discord.Member = Param(desc="Member to apply restriction."),
+                   restriction: str = Param(desc="Restriction Type.", choices=restrictions),
+                   length: int = Param(desc="Restriction length in ##d##m##ss format.", conv=utils.time_converter),
+                   reason: str = Param(desc="Reason for restriction", default=None)):
+        """Applies a temporary restriction to a member. OP+ Only"""
+
+        role = self.bot.roles[restriction]
+
+        delta = datetime.timedelta(seconds=length)
+        timestamp = datetime.datetime.now()
+
+        end_time = timestamp + delta
+        end_time_str = utils.dtm_to_discord_timestamp(end_time)
+
+        await crud.add_timed_role(member.id, role.id, end_time)
+        await member.add_roles(role, reason=reason)
+
+        msg_user = f"You have been given the {restriction} restriction role temporarily!"
+        msg_log = f"🚫 **Timed Restriction**: {inter.author.mention} gave {restriction} to {member.mention} for {delta}, until {end_time_str} | {self.bot.escape_text(member)}"
+        if reason is not None:
+            msg_user += " The given reason is: " + reason
+            msg_log += "\n✏️ __Reason__: " + reason
+        msg_user += f"\n\nIf you feel this was unjustified, you may appeal in {self.bot.channels['appeals'].mention}\n\nThis restriction lasts until {end_time_str}."
+        dm_sent = await utils.send_dm_message(member, msg_user)
+        await inter.send(f"{member.mention} now has the {restriction} role temporarily.{' Failed to send DM message.' if not dm_sent else ''}")
+        await self.bot.channels['mod-logs'].send(msg_log)
 
 
 def setup(bot):
