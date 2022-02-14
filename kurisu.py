@@ -119,7 +119,7 @@ class Kurisu(commands.Bot):
         self.commit = commit
         self.branch = branch
 
-        self.roles = {
+        self.roles: dict[str, discord.Role] = {
             'Helpers': None,
             'Staff': None,
             'HalfOP': None,
@@ -152,7 +152,7 @@ class Kurisu(commands.Bot):
             '🍰': None,
         }
 
-        self.channels = {
+        self.channels: dict[str, discord.TextChannel] = {
             'announcements': None,
             'welcome-and-rules': None,
             '3ds-assistance-1': None,
