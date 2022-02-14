@@ -632,12 +632,35 @@ class Memes(commands.Cog):
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
-    async def r18(self, ctx):
-        """super secret rule 18"""
+    async def motd(self, ctx):
+        """got milk?"""
         self.flushedsquish = discord.utils.get(self.bot.guild.emojis, name="flushedsquish") or "⁉"
         self.flushedball = discord.utils.get(self.bot.guild.emojis, name="flushedball") or "⁉"
-        secret_rules = [f"{str(self.flushedball)}", f"{str(self.flushedsquish)}", "ur mom lol", "hot dogs are sandwiches dont @ me", "have you had a coffee today?", "bird app bad", "imagine having opinions in current year", "based", "pog", "ratio", "remember to moisturize today!", "drink some water u idiot", "take ur meds", "do you like neapolitan ice cream?", "nentondon swonch", "xnoe at 11pm moment", "has junko had a name change today?"]
+        secret_rules = [f"{str(self.flushedball)}", f"{str(self.flushedsquish)}", "ur mom lol", "hot dogs are sandwiches dont @ me", "have you had a coffee today?", "bird app bad", "imagine having opinions in current year", "based", "pog", "ratio", "remember to moisturize today!", "drink some water u idiot", "take ur meds", "do you like neapolitan ice cream?", "nentondon swonch", "xnoe at 11pm moment", "has junko had a name change today?", "got milk?", "got pilk?", "it has been 0 days since eip broke me", "ETA WEN PLS"]
         await ctx.send(random.choice(secret_rules))
+
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
+    async def wagu(self, ctx):
+        """got milk?"""
+        self.wagu = discord.utils.get(self.bot.guild.emojis, name="wagu") or "⁉"
+        self.waguspooky = discord.utils.get(self.bot.guild.emojis, name="waguspooky") or "⁉"
+        self.waguxmas = discord.utils.get(self.bot.guild.emojis, name="waguxmas") or "⁉"
+        self.waguspin = discord.utils.get(self.bot.guild.emojis, name="waguspin") or "⁉"
+        self.waguspinaaa = discord.utils.get(self.bot.guild.emojis, name="waguspinaaa") or "⁉"
+        self.waguwat = discord.utils.get(self.bot.guild.emojis, name="waguwat") or "⁉"
+        self.waguwu = discord.utils.get(self.bot.guild.emojis, name="waguwu") or "⁉"
+        self.waguw = discord.utils.get(self.bot.guild.emojis, name="waguw") or "⁉"
+        self.hyperwagu = discord.utils.get(self.bot.guild.emojis, name="hyperwagu") or "⁉"
+        self.wagupeek = discord.utils.get(self.bot.guild.emojis, name="wagupeek") or "⁉"
+        self.poggu = discord.utils.get(self.bot.guild.emojis, name="poggu") or "⁉"
+        self.waguburger = discord.utils.get(self.bot.guild.emojis, name="waguburger") or "⁉"
+        self.wagucar = discord.utils.get(self.bot.guild.emojis, name="wagucar") or "⁉"
+        self.shutwagu = discord.utils.get(self.bot.guild.emojis, name="shutwagu") or "⁉"
+        self.waguboat = discord.utils.get(self.bot.guild.emojis, name="waguboat") or "⁉"
+        self.wagutv = discord.utils.get(self.bot.guild.emojis, name="wagutv") or "⁉"
+        wagulist = [f"{str(self.wagu)}", f"{str(self.waguspooky)}", f"{str(self.waguxmas)}", f"{str(self.waguspin)}", f"{str(self.waguspinaaa)}", f"{str(self.waguwat)}", f"{str(self.waguwu)}", f"{str(self.waguw)}", f"{str(self.hyperwagu)}", f"{str(self.wagupeek)}", f"{str(self.poggu)}", f"{str(self.waguburger)}", f"{str(self.wagucar)}", f"{str(self.shutwagu)}", f"{str(self.waguboat)}", f"{str(self.wagutv)}"]
+        await ctx.send(random.choice(wagulist))
 
 
 def setup(bot):
