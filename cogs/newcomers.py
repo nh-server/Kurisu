@@ -1,3 +1,4 @@
+import asyncio
 import discord
 import re
 
@@ -18,6 +19,7 @@ class Newcomers(commands.Cog):
         self.bot = bot
         self.autoprobate = False
         self.bot.loop.create_task(self.init())  # We can't do proper init here.
+        self.join_list = []
 
     async def init(self):
         await self.bot.wait_until_all_ready()
@@ -33,6 +35,17 @@ class Newcomers(commands.Cog):
     async def on_member_join(self, member):
         if self.autoprobate:
             await member.add_roles(self.bot.roles['Probation'], reason="Auto-probation")
+        else:
+            if member.id not in self.join_list:
+                self.join_list.append(member.id)
+                if len(self.join_list) > 10:
+                    await member.add_roles(self.bot.roles['Probation'], reason="Auto-probation")
+                    self.autoprobate = True
+                    await crud.set_flag('auto_probation', True)
+                    await self.bot.channels['mods'].send("@everyone Raid alert multiple joins under 10 seconds! Autoprobation has been enabled.",
+                                                         allowed_mentions=discord.AllowedMentions(everyone=True))
+                await asyncio.sleep(10)
+                self.join_list.remove(member.id)
 
     async def autoprobate_handler(self, ctx, enabled: bool = None):
         if enabled is not None:
