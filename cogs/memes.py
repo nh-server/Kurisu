@@ -589,7 +589,7 @@ class Memes(commands.Cog):
         elif money // 18 == 1:
             text = "You could buy one Blahaj with that. Think about it."
         else:
-            text = f"You could buy {money//18} Blahajes with that. Think about it."
+            text = f"You could buy {int(money//18)} Blahajes with that. Think about it."
         await self._meme(ctx, text, True, blahajlink)
 
     @is_staff("Helper")
