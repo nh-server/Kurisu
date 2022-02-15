@@ -452,7 +452,7 @@ modules = {
     102: act,
     103: Module('ac (internet connection)'),
     104: Module('boss(spotpass)'),
-    105: Module('nim (title installation'),
+    105: Module('nim (title installation)'),
     106: nex,
     107: eshop_api,
     111: eshop_web,
