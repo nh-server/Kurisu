@@ -1008,7 +1008,7 @@ class Mod(commands.Cog):
         await utils.send_dm_message(member, msg_user, ctx)
         await self.bot.channels['mod-logs'].send(f"⭕ **Permission Revoked**: {ctx.author.mention} revoked {member.mention} streaming permissions.")
 
-    restrictions = {'Embed Permissions': 'No-embed',
+    restrictions = {'Embed Permissions': 'No-Embed',
                     'Elsewhere access': 'No-elsewhere',
                     'Meme commands access': 'No-Memes',
                     'Art-channel access': 'No-art'}
@@ -1020,6 +1020,10 @@ class Mod(commands.Cog):
                    length: int = Param(desc="Restriction length in ##d##m##ss format.", conv=utils.time_converter),
                    reason: str = Param(desc="Reason for restriction", default=None)):
         """Applies a temporary restriction to a member. OP+ Only"""
+
+        if length == -1:
+            await inter.send("Invalid restriction length.", ephermeral=True)
+            return
 
         role = self.bot.roles[restriction]
 
