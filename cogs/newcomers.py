@@ -46,7 +46,7 @@ class Newcomers(commands.Cog):
                     for member_id in self.join_list:
                         try:
                             await discord.Member(id=member_id).add_roles(self.bot.roles['Probation'], reason="Auto-probation")
-                        except (discord.Forbidden, discord.HTTPException) as e:
+                        except (discord.Forbidden, discord.HTTPException):
                             pass
                 await asyncio.sleep(10)
                 self.join_list.remove(member.id)
