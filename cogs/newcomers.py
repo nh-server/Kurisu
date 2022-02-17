@@ -39,11 +39,15 @@ class Newcomers(commands.Cog):
             if member.id not in self.join_list:
                 self.join_list.append(member.id)
                 if len(self.join_list) > 10:
-                    await member.add_roles(self.bot.roles['Probation'], reason="Auto-probation")
                     self.autoprobate = True
                     await crud.set_flag('auto_probation', True)
                     await self.bot.channels['mods'].send("@everyone Raid alert multiple joins under 10 seconds! Autoprobation has been enabled.",
                                                          allowed_mentions=discord.AllowedMentions(everyone=True))
+                    for member_id in self.join_list:
+                        try:
+                            await discord.Member(id=member_id).add_roles(self.bot.roles['Probation'], reason="Auto-probation")
+                        except (discord.Forbidden, discord.HTTPException) as e:
+                            pass
                 await asyncio.sleep(10)
                 self.join_list.remove(member.id)
 
