@@ -40,7 +40,7 @@ class Loop(commands.Cog):
     netinfo_embed = discord.Embed(description="The Network Maintenance Information page has not been successfully checked yet.")
 
     def netinfo_parse_time(self, time_str: str) -> datetime:
-        return datetime.strptime(' '.join(time_str.split()), '%A, %B %d, %Y %I :%M %p').replace(tzinfo=self.tz)
+        return self.tz.localize(datetime.strptime(' '.join(time_str.split()), '%A, %B %d, %Y %I :%M %p')).astimezone()
 
     async def update_netinfo(self):
         async with self.bot.session.get('https://www.nintendo.co.jp/netinfo/en_US/status.json?callback=getJSON', timeout=45) as r:
