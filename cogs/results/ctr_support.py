@@ -47,7 +47,9 @@ Ninendo's support knowledgebase at https://en-americas-support.nintendo.com/app/
 # 001: friends module, parental controls, online services in general?
 friends = Module('friends', {
     102: ResultInfo('This error code indicates you were unexpectedly disconnected from network services.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/17043'),
-    721: ResultInfo('This error code indicates the Parental Controls are set to restrict access to the online feature you\'re attempting to use.', 'https://www.nintendo.com.au/help/3ds-error-codes')
+    721: ResultInfo('This error code indicates the Parental Controls are set to restrict access to the online feature you\'re attempting to use.', 'https://www.nintendo.com.au/help/3ds-error-codes'),
+    803: ResultInfo('This error code indicates that the online play server is currently down.', 'https://www.nintendo.co.jp/netinfo/en_US/index.html'),
+    811: ResultInfo('This error code indicates that the online play server is undergoing maintenance.', 'https://www.nintendo.co.jp/netinfo/en_US/index.html')
 })
 
 # 002: bans and other account errors
