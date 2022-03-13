@@ -1,5 +1,6 @@
 import datetime
 import discord
+import io
 import random
 import re
 import time
@@ -125,6 +126,11 @@ def dtm_to_discord_timestamp(dtm_obj: datetime.datetime, date_format: str = "f",
     if utc_time:
         dtm_obj = dtm_obj.replace(tzinfo=datetime.timezone.utc).astimezone()
     return f"<t:{int(time.mktime(dtm_obj.timetuple()))}:{date_format}>"
+
+
+def text_to_discord_file(text: str, *, name: str = 'output.txt'):
+    encoded = text.encode("utf-8")
+    return discord.File(filename=name, fp=io.BytesIO(encoded))
 
 
 class PaginatedEmbedView(discord.ui.View):

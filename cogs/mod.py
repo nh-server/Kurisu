@@ -139,37 +139,35 @@ class Mod(commands.Cog):
         embed.set_thumbnail(url=user.display_avatar.url)
         await inter.send(embed=embed, ephemeral=True)
 
-    @is_staff("HalfOP")
-    @commands.guild_only()
-    @commands.command()
-    async def matchuser(self, ctx, *, rgx: str):
-        """Match users by regex."""
-        author = ctx.author
-        msg = "```\nmembers:\n"
-        for m in self.bot.guild.members:
-            if bool(re.search(rgx, m.name, re.IGNORECASE)):
-                msg += f"{m.id} - {m}\n"
-        msg += "```"
-        if len(msg) > 2000:
-            for page in utils.paginate_message(msg).pages:
-                await author.send(page)
-        else:
-            await author.send(msg)
-
     @is_staff("Owner")
     @commands.guild_only()
     @commands.command(aliases=['gigayeet'])
     async def multiban(self, ctx, users: commands.Greedy[int]):
         """Multi-ban users."""
         author = ctx.author
-        msg = "```\nfailed:\n"
+        msg = "failed:\n"
         for m in users:
             try:
                 await self.bot.guild.ban(discord.Object(id=m))
             except (discord.errors.NotFound, discord.errors.Forbidden) as e:
                 msg += f"{m}:\n  {e.text}\n"
-        msg += "```"
-        await utils.send_dm_message(author, msg)
+        paginator = utils.paginate_message(msg)
+        for page in paginator.pages:
+            await utils.send_dm_message(author, page)
+
+    @is_staff("HalfOP")
+    @commands.guild_only()
+    @commands.command()
+    async def matchuser(self, ctx, *, rgx: str):
+        """Match users by regex."""
+        msg = ""
+        matches = 0
+        for m in self.bot.guild.members:
+            if bool(re.search(rgx, m.name, re.IGNORECASE)):
+                msg += f"{m.id} - {m}\n"
+                matches += 1
+        file = utils.text_to_discord_file(msg, name="matches.txt")
+        await ctx.send(f"Matched {matches} members.", file=file)
 
     @is_staff("Owner")
     @commands.guild_only()
@@ -177,20 +175,23 @@ class Mod(commands.Cog):
     @commands.command(aliases=['gigayeetre'])
     async def multibanre(self, ctx, *, rgx: str):
         """Multi-ban users by regex."""
-        author = ctx.author
-        msg = "```\nbanned:\n"
-        toban = []  # because "dictionary changed size during iteration"
+        to_ban = []
+        banned = 0
         for m in self.bot.guild.members:
             if bool(re.search(rgx, m.name, re.IGNORECASE)):
-                msg += f"{m.id} - {m}\n"
-                toban.append(m)
-        for m in toban:
+                to_ban.append(m)
+        if not to_ban:
+            return await ctx.send("No member matched the regex expression!")
+        msg = ""
+        for m in to_ban:
             try:
                 await m.ban()
-            except discord.errors.NotFound:
+                banned += 1
+                msg += f"{m.id}\n"
+            except (discord.errors.NotFound, discord.errors.Forbidden):
                 pass
-        msg += "```"
-        await utils.send_dm_message(author, msg)
+        file = utils.text_to_discord_file(msg, name="banned.txt")
+        await ctx.send(f"Banned {banned} members.", file=file)
 
     @is_staff("Helper")
     @commands.bot_has_permissions(manage_channels=True)
