@@ -77,16 +77,13 @@ Thanks for stopping by and have a good time!
     @commands.Cog.listener()
     async def on_member_remove(self, member):
         await self.bot.wait_until_all_ready()
+        if self.bot.pruning is True:
+            return
         if "uk:" + str(member.id) in self.bot.actions:
             self.bot.actions.remove("uk:" + str(member.id))
             return
         if "sbk:" + str(member.id) in self.bot.actions:
             self.bot.actions.remove("sbk:" + str(member.id))
-            return
-        if self.bot.pruning != 0 and "wk:" + str(member.id) not in self.bot.actions:
-            self.bot.pruning -= 1
-            if self.bot.pruning == 0:
-                await self.bot.channels['mods'].send("Pruning finished!")
             return
         msg = f"{'👢 **Auto-kick**' if 'wk:' + str(member.id) in self.bot.actions else '⬅️ **Leave**'}: {member.mention} | {self.bot.escape_text(member)}\n🏷 __User ID__: {member.id}"
         await self.bot.channels['server-logs'].send(msg)
