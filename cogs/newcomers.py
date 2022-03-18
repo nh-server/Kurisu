@@ -81,13 +81,6 @@ class Newcomers(commands.Cog):
     async def autoprobate_off(self, ctx):
         await self.autoprobate_handler(ctx, False)
 
-    @is_staff('OP')
-    @commands.guild_only()
-    @commands.command()
-    async def ncprune(self, ctx, days: int = 7):
-        await ctx.guild.prune_members(days=days, compute_prune_count=False, roles=[self.bot.roles['Probation']], reason='Auto-probation pruning')
-        await ctx.send('Prune complete. ✅')
-
     @check_if_user_can_ready()
     @commands.guild_only()
     @commands.command(aliases=['ready'], cooldown=commands.CooldownMapping.from_cooldown(rate=1, per=300.0, type=commands.BucketType.member))
