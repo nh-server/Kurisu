@@ -197,15 +197,21 @@ class Mod(commands.Cog):
     @commands.bot_has_permissions(manage_channels=True)
     @commands.guild_only()
     @commands.command()
-    async def slowmode(self, ctx, length: str, channel: discord.TextChannel = None):
+    async def slowmode(self, ctx, arg: Union[discord.TextChannel, str], *, length: str = None):
         """Apply a given slowmode time to a channel.
 
         The time format is identical to that used for timed kicks/bans/takehelps.
         It is not possible to set a slowmode longer than 6 hours.
 
         Helpers in assistance channels and Staff only."""
-        if not channel:
+
+        if isinstance(arg, discord.TextChannel):
+            channel = arg
+            if length is None:
+                return await ctx.send_help(ctx.command)
+        else:
             channel = ctx.channel
+            length = arg
 
         if (seconds := utils.parse_time(length)) == -1:
             return await ctx.send("💢 I don't understand your time format.")
