@@ -357,7 +357,7 @@ class Mod(commands.Cog):
     @commands.bot_has_permissions(manage_roles=True)
     @commands.guild_only()
     @commands.command()
-    async def timemute(self, ctx, member: discord.Member, length: utils.TimeConverter, *, reason=""):
+    async def oldtimemute(self, ctx, member: discord.Member, length: utils.TimeConverter, *, reason=""):
         """Mutes a user for a limited period of time so they can't speak. Staff only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "mute"):
             return
@@ -409,12 +409,12 @@ class Mod(commands.Cog):
             await ctx.send("💢 I don't have permission to do this.")
 
     @is_staff("HalfOP")
-    @commands.command()
+    @commands.command(aliases=['timemute'])
     async def timeout(self, ctx, member: discord.Member, length: utils.TimeConverter, *, reason: str = None):
         """Times out a user. Staff only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "timeout"):
             return
-        if length > 2419200:
+        if length > 2419200:  # Timeout time can't be more than 28 days
             return await ctx.send("Timeouts can't be longer than 28 days!")
 
         issuer = ctx.author
