@@ -1,6 +1,6 @@
 ---
 title: 3DS NTR Plugins Guide
-url: https://3ds.eiphax.tech/ntrplugins
+url: https://3ds.eiphax.tech/ntrplugins.html
 thumbnail-url: https://nintendohomebrew.com/assets/img/krieg.png
 author.name: Krieg
 aliases: ntrplugins

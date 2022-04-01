@@ -1,6 +1,6 @@
 ---
 title: Seedminer
-url: https://3ds.hacks.guide/seedminer
+url: https://3ds.hacks.guide/seedminer.html
 thumbnail-url: https://nintendohomebrew.com/assets/img/nhplai.png
 author.name: NH & Friends
 author.url: https://3ds.hacks.guide/seedminer
