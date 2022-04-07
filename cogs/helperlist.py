@@ -87,5 +87,5 @@ class HelperList(commands.Cog):
         await ctx.send("Here is a list of our helpers:", embed=embed)
 
 
-def setup(bot):
-    bot.add_cog(HelperList(bot))
+async def setup(bot):
+    await bot.add_cog(HelperList(bot))

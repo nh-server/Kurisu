@@ -257,5 +257,5 @@ invalid for the Wii U.')
             await ctx.send('This isn\'t a hexadecimal value!')
 
 
-def setup(bot):
-    bot.add_cog(Results(bot))
+async def setup(bot):
+    await bot.add_cog(Results(bot))

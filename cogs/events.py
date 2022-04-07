@@ -394,5 +394,5 @@ class Events(commands.Cog):
         await self.scan_message(message_after, is_edit=True)
 
 
-def setup(bot):
-    bot.add_cog(Events(bot))
+async def setup(bot):
+    await bot.add_cog(Events(bot))

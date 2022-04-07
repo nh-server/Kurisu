@@ -16,6 +16,7 @@ import traceback
 from alembic.config import main as albmain
 from configparser import ConfigParser
 from datetime import datetime
+from discord import app_commands
 from discord.ext import commands
 from logging.handlers import TimedRotatingFileHandler
 from subprocess import check_output, CalledProcessError
@@ -95,7 +96,7 @@ def setup_logging():
     sh = logging.StreamHandler()
     sh.setFormatter(fmt)
     log.addHandler(sh)
-    logging.getLogger('disnake').propagate = False
+    logging.getLogger('discord').propagate = False
     logging.getLogger('gino').propagate = False
 
 
@@ -106,7 +107,7 @@ class Kurisu(commands.Bot):
 
     def __init__(self, command_prefix, description, commit, branch):
 
-        intents = discord.Intents(guilds=True, members=True, messages=True, reactions=True, bans=True)
+        intents = discord.Intents(guilds=True, members=True, messages=True, reactions=True, bans=True, message_content=True)
         allowed_mentions = discord.AllowedMentions(everyone=False, roles=False)
         super().__init__(
             command_prefix=commands.when_mentioned_or(*command_prefix),
@@ -114,7 +115,9 @@ class Kurisu(commands.Bot):
             intents=intents,
             allowed_mentions=allowed_mentions,
             case_insensitive=True,
+            tree_cls=Kuritree
         )
+
         self.startup = datetime.now()
         self.IS_DOCKER = IS_DOCKER
         self.commit = commit
@@ -200,14 +203,16 @@ class Kurisu(commands.Bot):
         self.invitefilter = InviteFilterManager()
 
         self.guild = None
+        self.session = None
         self.err_channel = None
         self.actions = []
         self.pruning = False
 
-        self.session = aiohttp.ClientSession(loop=self.loop)
-
         self._is_all_ready = asyncio.Event()
-        self.load_cogs()
+
+    async def setup_hook(self) -> None:
+        self.session = aiohttp.ClientSession()
+        await self.load_cogs()
 
     async def on_ready(self):
 
@@ -215,6 +220,8 @@ class Kurisu(commands.Bot):
             return
 
         self.guild = self.guilds[0]
+
+        await self.tree.sync()
 
         # Load Filters
         await self.wordfilter.load()
@@ -254,6 +261,7 @@ class Kurisu(commands.Bot):
                             }
 
         self.err_channel = self.channels['bot-err']
+        self.tree.err_channel = self.err_channel
 
         startup_message = f'{self.user.name} has started! {self.guild} has {self.guild.member_count:,} members!'
         embed = discord.Embed(title=f"{self.user.name} has started!",
@@ -292,10 +300,10 @@ class Kurisu(commands.Bot):
         await db.pop_bind().close()
         await self.session.close()
 
-    def load_cogs(self):
+    async def load_cogs(self):
         for extension in cogs:
             try:
-                self.load_extension(extension)
+                await self.load_extension(extension)
             except BaseException as e:
                 logger.error("%s failed to load.", extension)
                 self.failed_cogs.append((extension, type(e).__name__, e))
@@ -390,75 +398,6 @@ class Kurisu(commands.Bot):
             embed = create_error_embed(ctx, exc)
             await channel.send(embed=embed)
 
-    async def on_slash_command_error(self, inter, exc):
-        author: discord.Member = inter.author
-        command: str = inter.application_command.name
-        exc = getattr(exc, 'original', exc)
-        channel = self.err_channel or inter.channel
-
-        if isinstance(exc, commands.NoPrivateMessage):
-            await inter.response.send_message(f'`{command}` cannot be used in direct messages.', ephemeral=True)
-
-        elif isinstance(exc, commands.MissingPermissions):
-            await inter.response.send_message(f"{author.mention} You don't have permission to use `{command}`.", ephemeral=True)
-
-        elif isinstance(exc, commands.CheckFailure):
-            await inter.response.send_message(f'{author.mention} You cannot use `{command}`.', ephemeral=True)
-
-        elif isinstance(exc, discord.ext.commands.MaxConcurrencyReached):
-            await inter.response.send_message(exc, ephemeral=True)
-        elif isinstance(exc, discord.ext.commands.errors.CommandOnCooldown):
-            await inter.response.send_message(f"{author.mention} This command was used {exc.cooldown.per - exc.retry_after:.2f}s ago and is on cooldown. "
-                                              f"Try again in {exc.retry_after:.2f}s.", ephemeral=True)
-        else:
-            if isinstance(exc, discord.Forbidden):
-                msg = f"💢 I can't help you if you don't let me!\n`{exc.text}`."
-            elif isinstance(exc, commands.CommandInvokeError):
-                msg = f'{author.mention} `{command}` raised an exception during usage'
-            else:
-                msg = f'{author.mention} Unexpected exception occurred while using the command `{command}`'
-
-            if inter.response.is_done():
-                await inter.edit_original_message(content=msg, embed=None, view=None)
-            else:
-                await inter.response.send_message(msg, ephemeral=True)
-            if channel:
-                embed = create_error_embed(inter, exc)
-                await channel.send(embed=embed)
-
-    async def on_user_command_error(self, inter, exc):
-        author: discord.Member = inter.author
-        command: str = inter.application_command.name
-        exc = getattr(exc, 'original', exc)
-        channel = self.err_channel or inter.channel
-
-        if isinstance(exc, commands.NoPrivateMessage):
-            await inter.response.send_message(f'`{command}` cannot be used in direct messages.', ephemeral=True)
-
-        elif isinstance(exc, commands.MissingPermissions):
-            await inter.response.send_message(f"{author.mention} You don't have permission to use `{command}`.", ephemeral=True)
-
-        elif isinstance(exc, commands.CheckFailure):
-            await inter.response.send_message(f'{author.mention} You cannot use `{command}`.', ephemeral=True)
-
-        elif isinstance(exc, discord.ext.commands.errors.CommandOnCooldown):
-            await inter.response.send_message(f"{author.mention} This command was used {exc.cooldown.per - exc.retry_after:.2f}s ago and is on cooldown. "
-                                              f"Try again in {exc.retry_after:.2f}s.", ephemeral=True)
-        else:
-            if isinstance(exc, discord.Forbidden):
-                msg = f"💢 I can't help you if you don't let me!\n`{exc.text}`."
-            elif isinstance(exc, commands.CommandInvokeError):
-                msg = f'{author.mention} `{command}` raised an exception during usage'
-            else:
-                msg = f'{author.mention} Unexpected exception occurred while using the command `{command}`'
-            if inter.response.is_done():
-                await inter.edit_original_message(content=msg, embed=None, view=None)
-            else:
-                await inter.response.send_message(msg, ephemeral=True)
-            if channel:
-                embed = create_error_embed(inter, exc)
-                await channel.send(embed=embed)
-
     async def on_error(self, event_method, *args, **kwargs):
         logger.error("", exc_info=True)
         if not self.err_channel:
@@ -472,11 +411,68 @@ class Kurisu(commands.Bot):
         await self.err_channel.send(embed=embed)
 
 
+class Kuritree(app_commands.CommandTree):
+
+    def __init__(self, client):
+        super().__init__(client)
+        self.err_channel = None
+        self.logger = logging.getLogger(__name__)
+
+    async def on_error(
+        self,
+        interaction: discord.Interaction,
+        command,
+        error: app_commands.AppCommandError,
+    ):
+
+        author: discord.Member = interaction.user
+        command: str = command.name if command else "unknown command"
+        error = getattr(error, 'original', error)
+        channel = self.err_channel or interaction.channel
+
+        if isinstance(error, app_commands.NoPrivateMessage):
+            await interaction.response.send_message(f'`{command}` cannot be used in direct messages.', ephemeral=True)
+
+        elif isinstance(error, app_commands.TransformerError):
+            await interaction.response.send_message(error, ephemeral=True)
+
+        elif isinstance(error, app_commands.MissingPermissions):
+            await interaction.response.send_message(f"{author.mention} You don't have permission to use `{command}`.", ephemeral=True)
+
+        elif isinstance(error, app_commands.CheckFailure):
+            await interaction.response.send_message(f'{author.mention} You cannot use `{command}`.', ephemeral=True)
+
+        # elif isinstance(error, app_commands.MaxConcurrencyReached):
+        #     await interaction.response.send_message(error, ephemeral=True)
+
+        elif isinstance(error, app_commands.CommandOnCooldown):
+            await interaction.response.send_message(
+                f"{author.mention} This command was used {error.cooldown.per - error.retry_after:.2f}s ago and is on cooldown. "
+                f"Try again in {error.retry_after:.2f}s.", ephemeral=True)
+        else:
+            if isinstance(error, discord.Forbidden):
+                msg = f"💢 I can't help you if you don't let me!\n`{error.text}`."
+            elif isinstance(error, app_commands.CommandInvokeError):
+                msg = f'{author.mention} `{command}` raised an exception during usage'
+            else:
+                msg = f'{author.mention} Unexpected exception occurred while using the command `{command}`'
+
+            if interaction.response.is_done():
+                await interaction.edit_original_message(content=msg, embed=None, view=None)
+            else:
+                await interaction.response.send_message(msg, ephemeral=True)
+            if channel:
+                embed = create_error_embed(interaction, error)
+                await channel.send(embed=embed)
+            else:
+                self.logger.error("Error during application command usage.", exc_info=True)
+
+
 async def startup():
     setup_logging()
 
-    if discord.version_info.major < 1:
-        logger.error("discord.py is not at least 1.0.0x. (current version: %s)", discord.__version__)
+    if discord.version_info.major < 2:
+        logger.error("discord.py is not at least 2.0.0x. (current version: %s)", discord.__version__)
         return 2
 
     if sys.hexversion < 0x30900F0:  # 3.9

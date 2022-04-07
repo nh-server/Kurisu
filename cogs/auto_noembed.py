@@ -13,5 +13,5 @@ class AutoNoEmbed(commands.Cog):
         await member.add_roles(self.bot.roles['No-Embed'], reason="Auto NoEmbed")
 
 
-def setup(bot):
-    bot.add_cog(AutoNoEmbed(bot))
+async def setup(bot):
+    await bot.add_cog(AutoNoEmbed(bot))

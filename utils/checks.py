@@ -1,23 +1,27 @@
 import discord
 
+from discord import app_commands
 from discord.ext import commands
 from utils.crud import get_helper, get_staff
+from typing import Union
 
 staff_ranks = {"Owner": 0, "SuperOP": 1, "OP": 2, "HalfOP": 3, "Helper": 4}
 
 
 def is_staff(role):
-    async def predicate(ctx):
-        if isinstance(ctx.channel, discord.abc.GuildChannel):
-            return await check_staff(ctx, role) if not ctx.author == ctx.guild.owner else True
-        else:
-            return await check_staff(ctx, role)
-
+    async def predicate(ctx: commands.Context) -> bool:
+        return True if ctx.guild and ctx.author == ctx.guild.owner else check_staff(ctx.author, role)
     return commands.check(predicate)
 
 
-async def check_staff(ctx, role: str):
-    return await check_staff_id(role, ctx.author.id)
+def is_staff_app(role):
+    async def predicate(interaction: discord.Interaction) -> bool:
+        return True if interaction.guild and interaction.user == interaction.guild.owner else check_staff(interaction.user, role)
+    return app_commands.check(predicate)
+
+
+async def check_staff(author, role: str):
+    return await check_staff_id(role, author.id)
 
 
 async def check_staff_id(role: str, user_id: int):
@@ -29,14 +33,17 @@ async def check_staff_id(role: str, user_id: int):
     return False
 
 
-async def check_bot_or_staff(ctx, target: discord.user, action: str):
+async def check_bot_or_staff(ctx: Union[commands.Context, discord.Interaction], target: discord.user, action: str):
     if target.bot:
         who = "a bot"
     elif await check_staff_id("Helper", target.id):
         who = "another staffer"
     else:
         return False
-    await ctx.send(f"You can't {action} {who} with this command!")
+    if isinstance(ctx, commands.Context):
+        await ctx.send(f"You can't {action} {who} with this command!")
+    else:
+        await ctx.response.send_message(f"You can't {action} {who} with this command!", ephemeral=True)
     return True
 
 

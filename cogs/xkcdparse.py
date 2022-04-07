@@ -46,5 +46,5 @@ class xkcdparse(commands.Cog):
             await ctx.send("I can't find that one!")
 
 
-def setup(bot):
-    bot.add_cog(xkcdparse(bot))
+async def setup(bot):
+    await bot.add_cog(xkcdparse(bot))

@@ -9,7 +9,6 @@ from utils.utils import ConsoleColor
 
 if TYPE_CHECKING:
     from typing import Dict, List, Optional, Tuple, Type
-empty = discord.Embed.Empty
 
 systems_no_aliases = ('3ds', 'wiiu', 'vwii', 'switch', 'wii', 'dsi')
 aliases = {
@@ -26,16 +25,16 @@ systems = systems_no_aliases + tuple(aliases) + ('legacy',)
 
 def parse_header(header_raw: str):
     header: Dict[str, str] = {
-        'title': empty,
-        'url': empty,
+        'title': None,
+        'url': None,
         'author.name': None,
-        'author.url': empty,
-        'author.icon-url': empty,
+        'author.url': None,
+        'author.icon-url': None,
         'help-desc': None,
         'aliases': '',
         'color': None,
-        'thumbnail-url': empty,
-        'image-url': empty,
+        'thumbnail-url': None,
+        'image-url': None,
         'cooldown-rate': '1',
         'cooldown-per': '30',
     }
@@ -131,7 +130,7 @@ def md_file_to_embed(md_path: str, format_map: dict):
         'switch': ConsoleColor.switch(),
         'legacy': ConsoleColor.legacy(),
         'dsi': ConsoleColor.legacy(),
-        'all': empty  # default embed color
+        'all': None  # default embed color
     }
 
     with open(md_path, 'r', encoding='utf-8') as f:

@@ -114,5 +114,5 @@ class FriendCode(commands.Cog):
             await ctx.send("Invalid.")
 
 
-def setup(bot):
-    bot.add_cog(FriendCode(bot))
+async def setup(bot):
+    await bot.add_cog(FriendCode(bot))

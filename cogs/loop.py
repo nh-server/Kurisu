@@ -235,5 +235,5 @@ class Loop(commands.Cog):
                 await asyncio.sleep(1)
 
 
-def setup(bot):
-    bot.add_cog(Loop(bot))
+async def setup(bot):
+    await bot.add_cog(Loop(bot))

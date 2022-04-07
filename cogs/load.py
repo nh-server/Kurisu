@@ -21,7 +21,7 @@ class Load(commands.Cog):
         try:
             if module[0:7] != "cogs.":
                 module = "cogs." + module
-            self.bot.load_extension(module)
+            await self.bot.load_extension(module)
             await ctx.send('✅ Extension loaded.')
         except Exception as e:
             await ctx.send(f'💢 Failed!\n```\n{type(e).__name__}: {e}\n```')
@@ -36,7 +36,7 @@ class Load(commands.Cog):
             if module == "cogs.load":
                 await ctx.send("❌ I don't think you want to unload that!")
             else:
-                self.bot.unload_extension(module)
+                await self.bot.unload_extension(module)
                 await ctx.send('✅ Extension unloaded.')
         except Exception as e:
             await ctx.send(f'💢 Failed!\n```\n{type(e).__name__}: {e}\n```')
@@ -48,11 +48,11 @@ class Load(commands.Cog):
         try:
             if module[0:7] != "cogs.":
                 module = "cogs." + module
-            self.bot.reload_extension(module)
+            await self.bot.reload_extension(module)
             await ctx.send('✅ Extension reloaded.')
         except Exception as e:
             await ctx.send(f'💢 Failed!\n```\n{type(e).__name__}: {e}\n```')
 
 
-def setup(bot):
-    bot.add_cog(Load(bot))
+async def setup(bot):
+    await bot.add_cog(Load(bot))

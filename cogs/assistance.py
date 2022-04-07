@@ -192,5 +192,5 @@ add_md_files_as_commands(Assistance)
 add_md_files_as_commands(Assistance, join(Assistance.data_dir, 'tutorial'), namespace=Assistance.tutorial)
 
 
-def setup(bot):
-    bot.add_cog(Assistance(bot))
+async def setup(bot):
+    await bot.add_cog(Assistance(bot))

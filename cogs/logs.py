@@ -172,16 +172,16 @@ Thanks for stopping by and have a good time!
             else:
                 msg = "\n🏷 __Nickname change__"
             msg += f": {self.bot.escape_text(member_before.nick)} → {self.bot.escape_text(member_after.nick)}"
-        if member_before.current_timeout != member_after.current_timeout:
+        if member_before.timed_out_until != member_after.timed_out_until:
             do_log = True
-            if member_before.current_timeout is None:
+            if member_before.timed_out_until is None:
                 msg = "\n🚷 __Timeout addition__"
-            elif member_after.current_timeout is None:
+            elif member_after.timed_out_until is None:
                 msg = "\n🚷 __Timeout removal__"
             else:
                 msg = "\n🚷 __Timeout change__"
-            timeout_before = dtm_to_discord_timestamp(member_before.current_timeout, utc_time=True) if member_before.current_timeout else 'None'
-            timeout_after = dtm_to_discord_timestamp(member_after.current_timeout, utc_time=True) if member_after.current_timeout else 'None'
+            timeout_before = dtm_to_discord_timestamp(member_before.timed_out_until, utc_time=True) if member_before.timed_out_until else 'None'
+            timeout_after = dtm_to_discord_timestamp(member_after.timed_out_until, utc_time=True) if member_after.timed_out_until else 'None'
             msg += f": {timeout_before} → {timeout_after}"
         if do_log:
             msg = f"ℹ️ **Member update**: {member_after.mention} | {self.bot.escape_text(member_after)} {msg}"
@@ -204,5 +204,5 @@ Thanks for stopping by and have a good time!
             await dest.send(msg)
 
 
-def setup(bot):
-    bot.add_cog(Logs(bot))
+async def setup(bot):
+    await bot.add_cog(Logs(bot))

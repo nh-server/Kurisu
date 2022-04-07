@@ -59,5 +59,5 @@ class ModDB(commands.Cog):
             await ctx.send(self.NOT_FOUND)
 
 
-def setup(bot):
-    bot.add_cog(ModDB(bot))
+async def setup(bot):
+    await bot.add_cog(ModDB(bot))

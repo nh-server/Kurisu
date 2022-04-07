@@ -120,5 +120,5 @@ class ModStaff(commands.Cog):
         await ctx.send("Here is a list of our staff members:", embed=embed)
 
 
-def setup(bot):
-    bot.add_cog(ModStaff(bot))
+async def setup(bot):
+    await bot.add_cog(ModStaff(bot))

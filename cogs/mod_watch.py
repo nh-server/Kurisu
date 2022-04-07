@@ -79,5 +79,5 @@ class Modwatch(commands.Cog):
         await ctx.send(f"Watch list cleanup complete. Removed {removed} entries.")
 
 
-def setup(bot):
-    bot.add_cog(Modwatch(bot))
+async def setup(bot):
+    await bot.add_cog(Modwatch(bot))

@@ -6,6 +6,7 @@ import re
 import time
 import traceback
 
+from discord import app_commands
 from discord.ext import commands
 from typing import Optional, Union
 
@@ -92,25 +93,31 @@ def parse_time(time_string) -> int:
 class TimeConverter(commands.Converter):
     async def convert(self, ctx: commands.Context, arg: str):
         seconds = parse_time(arg)
-        if seconds > 0:
+        if seconds != -1:
             return seconds
         raise commands.BadArgument("Invalid time format")
 
 
-def time_converter(inter, time_string: str) -> int:
-    return parse_time(time_string)
+class TimeTransformer(app_commands.Transformer):
+    @classmethod
+    async def transform(cls, interaction: discord.Interaction, value: str) -> int:
+        seconds = parse_time(value)
+        if seconds > 0:
+            return seconds
+        raise app_commands.TransformerError("Invalid time format", discord.AppCommandOptionType.integer, cls)
 
 
-def create_error_embed(ctx: Union[commands.Context, discord.ApplicationCommandInteraction], exc) -> discord.Embed:
-    interaction = isinstance(ctx, discord.ApplicationCommandInteraction)
-    command: str = ctx.application_command.name if interaction else str(ctx.command)
+def create_error_embed(ctx: Union[commands.Context, discord.Interaction], exc: Union[discord.DiscordException, app_commands.AppCommandError]) -> discord.Embed:
+    app_command: bool = isinstance(ctx, discord.Interaction)
+    author = ctx.user if app_command else ctx.author
+    command: str = ctx.command.name if ctx.command else "unknown command"
     embed = discord.Embed(title=f"Unexpected exception in command {command}", color=0xe50730)
     trace = "".join(traceback.format_exception(etype=None, value=exc, tb=exc.__traceback__))
     if len(trace) > 4080:
         trace = trace[-4080:]
     embed.description = f'```py\n{trace}```'
     embed.add_field(name="Exception Type", value=exc.__class__.__name__)
-    embed.add_field(name="Information", value=f"channel: {ctx.channel.mention if isinstance(ctx.channel, discord.TextChannel) else 'Direct Message'}\ncommand: {command}\nauthor: {ctx.author.mention}\n{f'message: {ctx.message.content}' if not interaction else ''}", inline=False)
+    embed.add_field(name="Information", value=f"channel: {ctx.channel.mention if isinstance(ctx.channel, discord.TextChannel) else 'Direct Message'}\ncommand: {command}\nauthor: {author.mention}\n{f'message: {ctx.message.content}' if not app_command else ''}", inline=False)
     return embed
 
 
@@ -156,33 +163,33 @@ class PaginatedEmbedView(discord.ui.View):
         if not self.author or self.author == interaction.user:
             return True
         else:
-            await interaction.send("Only the message author can use this view!", ephemeral=True)
+            await interaction.response.send_message("Only the message author can use this view!", ephemeral=True)
             return False
 
     @discord.ui.button(label="Previous", style=discord.ButtonStyle.primary)
     async def previous_button(
-            self, button: discord.ui.Button, interaction: discord.Interaction
+            self, interaction: discord.Interaction, button: discord.ui.Button,
     ):
         self.current = (self.current - 1) % self.n_embeds
         await interaction.response.edit_message(embed=self.embeds[self.current])
 
     @discord.ui.button(label="Next", style=discord.ButtonStyle.primary)
     async def next_button(
-            self, button: discord.ui.Button, interaction: discord.Interaction
+            self, interaction: discord.Interaction, button: discord.ui.Button,
     ):
         self.current = (self.current + 1) % self.n_embeds
         await interaction.response.edit_message(embed=self.embeds[self.current])
 
     @discord.ui.button(label="First", style=discord.ButtonStyle.primary)
     async def first_button(
-            self, button: discord.ui.Button, interaction: discord.Interaction
+            self, interaction: discord.Interaction, button: discord.ui.Button,
     ):
         self.current = 0
         await interaction.response.edit_message(embed=self.embeds[self.current])
 
     @discord.ui.button(label="Latest", style=discord.ButtonStyle.primary)
     async def latest_button(
-            self, button: discord.ui.Button, interaction: discord.Interaction
+            self, interaction: discord.Interaction, button: discord.ui.Button,
     ):
         self.current = self.n_embeds - 1
         await interaction.response.edit_message(embed=self.embeds[self.current])

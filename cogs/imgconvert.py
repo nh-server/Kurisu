@@ -37,5 +37,5 @@ class ImageConvert(commands.Cog):
                     await message.channel.send(file=img, content=out_message)
 
 
-def setup(bot):
-    bot.add_cog(ImageConvert(bot))
+async def setup(bot):
+    await bot.add_cog(ImageConvert(bot))

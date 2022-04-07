@@ -18,11 +18,9 @@ class Newcomers(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.autoprobate = False
-        self.bot.loop.create_task(self.init())  # We can't do proper init here.
         self.join_list = []
 
-    async def init(self):
-        await self.bot.wait_until_all_ready()
+    async def cog_load(self):
         flag_name = 'auto_probation'
 
         if flag := await crud.get_flag(flag_name):
@@ -106,5 +104,5 @@ with a brief message explaining your situation (e.g., `.ready hey guys, i was ha
             ctx.command.reset_cooldown(ctx)
 
 
-def setup(bot):
-    bot.add_cog(Newcomers(bot))
+async def setup(bot):
+    await bot.add_cog(Newcomers(bot))

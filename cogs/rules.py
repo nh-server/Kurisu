@@ -271,5 +271,5 @@ https://discord.gg/C29hYvh"""
         await self.simple_embed(ctx, self.rules_dict[17], title="Rule 17")
 
 
-def setup(bot):
-    bot.add_cog(Rules(bot))
+async def setup(bot):
+    await bot.add_cog(Rules(bot))

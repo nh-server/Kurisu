@@ -2,12 +2,13 @@ import datetime
 import discord
 import re
 
-from disnake.ext.commands import Param
+from discord import app_commands
+from discord.app_commands import Choice
 from discord.ext import commands
 from subprocess import call
 from typing import Union
 from utils import utils, crud, models
-from utils.checks import is_staff, check_staff_id, check_bot_or_staff
+from utils.checks import is_staff, check_staff_id, check_bot_or_staff, is_staff_app
 
 
 class Mod(commands.Cog):
@@ -17,6 +18,15 @@ class Mod(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.userinfo_ctx = app_commands.ContextMenu(
+                name='userinfo',
+                callback=self.userinfo_ctx_menu,
+                guild_ids=[886216686582263809]
+        )
+        self.bot.tree.add_command(self.userinfo_ctx)
+
+    async def cog_unload(self):
+        self.bot.tree.remove_command(self.userinfo_ctx.name, type=self.userinfo_ctx.type)
 
     @is_staff("Owner")
     @commands.command()
@@ -56,11 +66,8 @@ class Mod(commands.Cog):
 
     @commands.guild_only()
     @commands.command(aliases=['ui2'])
-    async def userinfo2(self, ctx, user: Union[discord.Member, discord.User] = None):
+    async def userinfo2(self, ctx, user: Union[discord.Member, discord.User] = commands.Author):
         """Shows information from a user. Staff and Helpers only."""
-
-        if user is None:
-            user = ctx.author
 
         if (not await check_staff_id('Helper', ctx.author.id)) and (ctx.author != user or ctx.channel != self.bot.channels['bot-cmds']):
             await ctx.message.delete()
@@ -101,16 +108,14 @@ class Mod(commands.Cog):
         embed.set_thumbnail(url=user.display_avatar.url)
         await ctx.send(embed=embed)
 
-    @is_staff('Helper')
-    @commands.user_command(name='userinfo')
-    async def userinfo_user_command(self, inter, user: discord.Member):
-
+    @is_staff_app('Helper')
+    async def userinfo_ctx_menu(self, interaction: discord.Interaction, user: discord.Member):
         embed = discord.Embed(color=utils.gen_color(user.id))
         embed.description = (
             f"**User:** {user.mention}\n"
             f"**User's ID:** {user.id}\n"
             f"**Created on:** {utils.dtm_to_discord_timestamp(user.created_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(user.created_at, date_format='R', utc_time=True)})\n"
-            f"**Default Profile Picture:** {user.default_avatar}\n"
+            f"**Default Profile Picture:** [link]({user.default_avatar})\n"
         )
         if isinstance(user, discord.Member):
             member_type = "member"
@@ -129,7 +134,7 @@ class Mod(commands.Cog):
         else:
             member_type = "user"
             try:
-                ban = await inter.guild.fetch_ban(user)
+                ban = await interaction.guild.fetch_ban(user)
                 embed.description += f"\n**Banned**, reason: {ban.reason}"
             except discord.NotFound:
                 pass
@@ -137,7 +142,52 @@ class Mod(commands.Cog):
         member_type = member_type if not user.bot else "bot"
         embed.title = f"**Userinfo for {member_type} {user}**"
         embed.set_thumbnail(url=user.display_avatar.url)
-        await inter.send(embed=embed, ephemeral=True)
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+
+    @is_staff_app('Helper')
+    @commands.command()
+    async def guildinfo(self, ctx, invite: discord.Invite):
+
+        guild = invite.guild
+        embed = discord.Embed(title=f"Guild {guild.name}", color=utils.gen_color(guild.id))
+        embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
+        embed.description = (
+            f"**Guild's ID:** {guild.id}\n"
+            f"**Created on:** {utils.dtm_to_discord_timestamp(guild.created_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(guild.created_at, date_format='R', utc_time=True)})\n"
+            f"**Verification level:** {guild.verification_level}\n"
+            f"**Members:** {invite.approximate_member_count}\n"
+            f"**Nitro boosters:** {guild.premium_subscription_count}\n"
+        )
+
+        if guild.vanity_url_code:
+            embed.description += f"**Vanity url:** {guild.vanity_url_code}\n"
+        if guild.icon:
+            embed.description += f"**Icon:** [Link]({guild.icon.url})\n"
+        if guild.banner:
+            embed.description += f"**Banner:** [Link]({guild.banner.url})\n"
+
+        await ctx.send(embed=embed)
+
+    @commands.command()
+    async def guildinfo2(self, ctx, invite: discord.Invite):
+
+        guild = invite.guild
+        embed = discord.Embed(title=f"Guild {guild.name}", color=utils.gen_color(guild.id))
+        embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
+        embed.add_field(name="ID", value=guild.id)
+        embed.add_field(name="Created on", value=utils.dtm_to_discord_timestamp(guild.created_at, utc_time=True))
+        embed.add_field(name="Verification", value=guild.verification_level)
+        embed.add_field(name="Members", value=invite.approximate_member_count)
+        embed.add_field(name="Nitro boosters", value=guild.premium_subscription_count)
+        embed.add_field(name="Vanity url", value=guild.vanity_url_code)
+        links = ""
+        if guild.icon:
+            links += f"[icon]({guild.icon.url}) "
+        if guild.banner:
+            links += f"[icon]({guild.banner.url})"
+        if links:
+            embed.add_field(name="Links", value=links)
+        await ctx.send(embed=embed)
 
     @is_staff("Owner")
     @commands.guild_only()
@@ -193,11 +243,21 @@ class Mod(commands.Cog):
         file = utils.text_to_discord_file(msg, name="banned.txt")
         await ctx.send(f"Banned {banned} members.", file=file)
 
+    class ChannelorTime(commands.Converter):
+        async def convert(self, ctx, arg: str):
+            try:
+                return ctx.bot.get_channel(int(arg))
+            except ValueError:
+                time = utils.parse_time(arg)
+                if time != -1:
+                    return time
+            raise commands.BadArgument("Invalid channel id or time format.")
+
     @is_staff("Helper")
     @commands.bot_has_permissions(manage_channels=True)
     @commands.guild_only()
     @commands.command()
-    async def slowmode(self, ctx, arg: Union[discord.TextChannel, str], *, length: str = None):
+    async def slowmode(self, ctx, arg: Union[discord.TextChannel, int] = commands.parameter(converter=ChannelorTime), length: int = commands.parameter(converter=utils.TimeConverter, default=None)):
         """Apply a given slowmode time to a channel.
 
         The time format is identical to that used for timed kicks/bans/takehelps.
@@ -213,23 +273,20 @@ class Mod(commands.Cog):
             channel = ctx.channel
             length = arg
 
-        if (seconds := utils.parse_time(length)) == -1:
-            return await ctx.send("💢 I don't understand your time format.")
-
         if channel not in self.bot.assistance_channels and not await check_staff_id("OP", ctx.author.id):
             return await ctx.send("You cannot use this command outside of assistance channels.")
 
-        if seconds > 21600:
+        if length > 21600:
             return await ctx.send("💢 You can't slowmode a channel for longer than 6 hours!")
 
         try:
-            await channel.edit(slowmode_delay=seconds)
+            await channel.edit(slowmode_delay=length)
         except discord.errors.Forbidden:
             return await ctx.send("💢 I don't have permission to do this.")
 
-        if seconds > 0:
-            await ctx.send(f"Slowmode delay for {channel.mention} is now {seconds} seconds.")
-            msg = f"🕙 **Slowmode**: {ctx.author.mention} set a slowmode delay of {seconds} seconds in {channel.mention}"
+        if length > 0:
+            await ctx.send(f"Slowmode delay for {channel.mention} is now {length} seconds.")
+            msg = f"🕙 **Slowmode**: {ctx.author.mention} set a slowmode delay of {length} seconds in {channel.mention}"
         else:
             await ctx.send(f"Slowmode has been removed for {channel.mention}.")
             msg = f"🕙 **Slowmode**: {ctx.author.mention} removed the slowmode delay in {channel.mention}"
@@ -357,7 +414,7 @@ class Mod(commands.Cog):
     @commands.bot_has_permissions(manage_roles=True)
     @commands.guild_only()
     @commands.command()
-    async def oldtimemute(self, ctx, member: discord.Member, length: utils.TimeConverter, *, reason=""):
+    async def oldtimemute(self, ctx, member: discord.Member, length: int = commands.parameter(converter=utils.TimeConverter), *, reason=""):
         """Mutes a user for a limited period of time so they can't speak. Staff only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "mute"):
             return
@@ -410,7 +467,7 @@ class Mod(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.command(aliases=['timemute'])
-    async def timeout(self, ctx, member: discord.Member, length: utils.TimeConverter, *, reason: str = None):
+    async def timeout(self, ctx, member: discord.Member, length: int = commands.parameter(converter=utils.TimeConverter), *, reason: str = None):
         """Times out a user. Staff only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "timeout"):
             return
@@ -418,19 +475,20 @@ class Mod(commands.Cog):
             return await ctx.send("Timeouts can't be longer than 28 days!")
 
         issuer = ctx.author
-        member = await member.timeout(duration=length, reason=reason)
-        timeout_expiration = utils.dtm_to_discord_timestamp(datetime.datetime.now() + datetime.timedelta(seconds=length))
+        timeout_expiration = discord.utils.utcnow() + datetime.timedelta(seconds=length)
+        timeout_expiration_str = utils.dtm_to_discord_timestamp(timeout_expiration, utc_time=True)
+        await member.timeout(timeout_expiration, reason=reason)
 
         msg_user = "You were given a timeout!"
         if reason is not None:
             msg_user += " The given reason is: " + reason
-        msg_user += f"\n\nThis timeout lasts until {timeout_expiration}."
+        msg_user += f"\n\nThis timeout lasts until {timeout_expiration_str}."
         await utils.send_dm_message(member, msg_user, ctx)
 
         signature = utils.command_signature(ctx.command)
         await ctx.send(f"{member.mention} has been given a timeout.")
 
-        msg = f"🔇 **Timeout**: {issuer.mention} timed out {member.mention}| {self.bot.escape_text(member)} until {timeout_expiration}."
+        msg = f"🔇 **Timeout**: {issuer.mention} timed out {member.mention}| {self.bot.escape_text(member)} until {timeout_expiration_str}."
         if reason is not None:
             msg += "\n✏️ __Reason__: " + reason
         else:
@@ -441,9 +499,9 @@ class Mod(commands.Cog):
     @commands.command()
     async def untimeout(self, ctx, member: discord.Member):
         """Removes a timeout from a user. Staff only."""
-        if member.current_timeout is None:
+        if member.timed_out_until is None:
             return await ctx.send("This member doesn't have a timeout!")
-        await member.timeout(duration=None)
+        await member.timeout(None)
         await ctx.send(f"{member.mention} timeout was removed.")
         msg = f"🔈 **Timeout Removed**: {ctx.author.mention} removed timeout from {member.mention} | {self.bot.escape_text(member)}"
         await self.bot.channels['mod-logs'].send(msg)
@@ -608,7 +666,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["timenohelp"])
-    async def timetakehelp(self, ctx, member: discord.Member, length: utils.TimeConverter, *, reason=""):
+    async def timetakehelp(self, ctx, member: discord.Member, length: int = commands.parameter(converter=utils.TimeConverter), *, reason=""):
         """Restricts a user from Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "takehelp"):
             return
@@ -689,7 +747,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["timenotech"])
-    async def timetaketech(self, ctx, member: discord.Member, length: utils.TimeConverter, *, reason=""):
+    async def timetaketech(self, ctx, member: discord.Member, length: int = commands.parameter(converter=utils.TimeConverter), *, reason=""):
         """Restricts a user from the tech channel for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "taketech"):
             return
@@ -750,7 +808,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["timemutehelp"])
-    async def timehelpmute(self, ctx, member: discord.Member, length: utils.TimeConverter, *, reason=""):
+    async def timehelpmute(self, ctx, member: discord.Member, length: int = commands.parameter(converter=utils.TimeConverter), *, reason=""):
         """Restricts a user from speaking in Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "helpmute"):
             return
@@ -963,11 +1021,9 @@ class Mod(commands.Cog):
 
     @is_staff("Helper")
     @commands.command(aliases=['ci'])
-    async def channelinfo(self, ctx, channel: discord.TextChannel = None):
+    async def channelinfo(self, ctx, channel: discord.TextChannel = commands.CurrentChannel):
         """Shows database information about a text channel."""
         state = {0: "Not locked", 1: "softlocked", 2: "locked", 3: "super locked"}
-        if not channel:
-            channel = ctx.channel
         dbchannel = await models.Channel.get(channel.id)
         if not dbchannel:
             return await ctx.send("This channel is not in the database")
@@ -1015,24 +1071,28 @@ class Mod(commands.Cog):
         await utils.send_dm_message(member, msg_user, ctx)
         await self.bot.channels['mod-logs'].send(f"⭕ **Permission Revoked**: {ctx.author.mention} revoked {member.mention} streaming permissions.")
 
-    restrictions = {'Embed Permissions': 'No-Embed',
-                    'Elsewhere access': 'No-elsewhere',
-                    'Meme commands access': 'No-Memes',
-                    'Art-channel access': 'No-art'}
-
-    @is_staff("OP")
-    @commands.slash_command()
-    async def take(self, inter, member: discord.Member = Param(desc="Member to apply restriction."),
-                   restriction: str = Param(desc="Restriction Type.", choices=restrictions),
-                   length: int = Param(desc="Restriction length in ##d##m##ss format.", conv=utils.time_converter),
-                   reason: str = Param(desc="Reason for restriction", default=None)):
+    @is_staff_app("OP")
+    @app_commands.guilds(886216686582263809)
+    @app_commands.command()
+    @app_commands.describe(member="Member to apply restriction.",
+                           restriction="Restriction Type.",
+                           length="Restriction length in ##d##m##ss format.",
+                           reason="Reason for restriction")
+    @app_commands.choices(restriction=[
+        Choice(name='Embed Permissions', value='No-Embed',),
+        Choice(name='Elsewhere access', value='No-elsewhere'),
+        Choice(name='Meme commands access', value='No-Memes'),
+        Choice(name='Art-channel access', value='No-art'),
+    ])
+    async def take(self,
+                   interaction: discord.Interaction,
+                   member: discord.Member,
+                   restriction: Choice[str],
+                   length: app_commands.Transform[int, utils.TimeTransformer],
+                   reason: str = None):
         """Applies a temporary restriction to a member. OP+ Only"""
 
-        if length == -1:
-            await inter.send("Invalid restriction length.", ephermeral=True)
-            return
-
-        role = self.bot.roles[restriction]
+        role = self.bot.roles[restriction.value]
 
         delta = datetime.timedelta(seconds=length)
         timestamp = datetime.datetime.now()
@@ -1043,16 +1103,16 @@ class Mod(commands.Cog):
         await crud.add_timed_role(member.id, role.id, end_time)
         await member.add_roles(role, reason=reason)
 
-        msg_user = f"You have been given the {restriction} restriction role temporarily!"
-        msg_log = f"🚫 **Timed Restriction**: {inter.author.mention} gave {restriction} to {member.mention} for {delta}, until {end_time_str} | {self.bot.escape_text(member)}"
+        msg_user = f"You have been given the {restriction.value} restriction role temporarily!"
+        msg_log = f"🚫 **Timed Restriction**: {interaction.user.mention} gave {restriction.value} to {member.mention} for {delta}, until {end_time_str} | {self.bot.escape_text(member)}"
         if reason is not None:
             msg_user += " The given reason is: " + reason
             msg_log += "\n✏️ __Reason__: " + reason
         msg_user += f"\n\nIf you feel this was unjustified, you may appeal in {self.bot.channels['appeals'].mention}\n\nThis restriction lasts until {end_time_str}."
         dm_sent = await utils.send_dm_message(member, msg_user)
-        await inter.send(f"{member.mention} now has the {restriction} role temporarily.{' Failed to send DM message.' if not dm_sent else ''}")
+        await interaction.response.send_message(f"{member.mention} now has the {restriction.value} role temporarily.{' Failed to send DM message.' if not dm_sent else ''}")
         await self.bot.channels['mod-logs'].send(msg_log)
 
 
-def setup(bot):
-    bot.add_cog(Mod(bot))
+async def setup(bot):
+    await bot.add_cog(Mod(bot))

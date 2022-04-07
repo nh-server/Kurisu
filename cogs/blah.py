@@ -31,12 +31,10 @@ class Blah(commands.Cog):
 
     @is_staff("OP")
     @commands.command()
-    async def sendtyping(self, ctx, channel: discord.TextChannel = None):
+    async def sendtyping(self, ctx, channel: discord.TextChannel = commands.CurrentChannel):
         if channel.id in self.speak_blacklist:
             await ctx.send(f'You cannot send a message to {channel.mention}.')
             return
-        if channel is None:
-            channel = ctx.channel
         await channel.trigger_typing()
 
     @is_staff("Owner")
@@ -45,5 +43,5 @@ class Blah(commands.Cog):
         await send_dm_message(member, inp, ctx)
 
 
-def setup(bot):
-    bot.add_cog(Blah(bot))
+async def setup(bot):
+    await bot.add_cog(Blah(bot))

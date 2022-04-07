@@ -255,5 +255,5 @@ class Filter(commands.Cog):
             await ctx.send("No collisions were detected!")
 
 
-def setup(bot):
-    bot.add_cog(Filter(bot))
+async def setup(bot):
+    await bot.add_cog(Filter(bot))

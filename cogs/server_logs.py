@@ -1,18 +1,20 @@
-import io
 import discord
+import io
 import re
 
+from discord import app_commands
+from discord.app_commands import Choice
 from discord.ext import commands
-from disnake.ext.commands import Param
-from sqlalchemy import create_engine, text
-from utils.checks import is_staff
 from kurisu import SERVER_LOGS_URL
+from sqlalchemy import create_engine, text
+from utils.checks import is_staff_app
 
 
-class ServerLogs(commands.Cog):
-    """ """
+class ServerLogs(commands.Cog, app_commands.Group, name="serverlogs"):
+    """Command group for accesing the server logs"""
 
     def __init__(self, bot):
+        super().__init__(guild_ids=[886216686582263809])
         self.bot = bot
         if SERVER_LOGS_URL:
             self.engine = create_engine(SERVER_LOGS_URL)
@@ -78,54 +80,58 @@ class ServerLogs(commands.Cog):
             return stmt
         return ""
 
-    @commands.slash_command()
-    async def serverlogs(self, ctx):
-        pass
-
-    @is_staff("OP")
-    @commands.guild_only()
-    @commands.max_concurrency(1)
-    @serverlogs.sub_command()
+    @is_staff_app("OP")
+    # @app_commands.max_concurrency(1)
+    @app_commands.describe(query="What to search",
+                           member_id="ID of User to search",
+                           channel_id="ID of channel to search in.",
+                           before="Date in yyyy-mm-dd format",
+                           after="Date in yyyy-mm-dd format",
+                           during="Date in yyyy-mm-dd format. Can't be used with before and after.",
+                           order_by="Show old or new messages first.",
+                           show_mod_channels="show_mod_channels")
+    @app_commands.choices(
+        order_by=[
+            Choice(name='Older first', value='ASC',),
+            Choice(name='New first', value='DESC'),
+        ],
+        view_state=[
+            Choice(name='Public', value=""),
+            Choice(name='Private', value="private")
+        ]
+    )
+    @app_commands.command()
     async def search(
             self,
-            inter,
-            query: str = Param(default="", description="What to search"),
-            member_id: str = Param(default=None, description="ID of User to search"),
-            channel_id: str = Param(
-                default=None, description="ID of channel to search in."
-            ),
-            before: str = Param(default="", description="Date in yyyy-mm-dd format"),
-            after: str = Param(default="", description="Date in yyyy-mm-dd format"),
-            during: str = Param(
-                default="",
-                description="Date in yyyy-mm-dd format. Can't be used with before and after.",
-            ),
-            order_by: str = Param(
-                default="DESC", description="Show old or new messages first.", choices={"Older first": "ASC", "New first": "DESC"}
-            ),
-            view_state: str = Param(
-                default="", description="If public everyone can see the output file", choices={"Public": "", "Private": "private"}
-            ),
-            show_mod_channels: bool = Param(default=False, description="Show mod channels"),
+            interaction: discord.Interaction,
+            query: str = "",
+            member_id: str = "",
+            channel_id: str = "",
+            before: str = "",
+            after: str = "",
+            during: str = "",
+            order_by: str = "DESC",
+            view_state: str = "",
+            show_mod_channels: bool = False
     ):
         """Search the server logs for messages that matches the parameters given then returns them in a file"""
 
-        # Discord IDs are too long to be taken as integer input from a slash command.
+        # Discord IDs are too long to be taken as integer input from an app command.
         try:
             if member_id:
                 member_id = int(member_id)
             if channel_id:
                 channel_id = int(channel_id)
         except ValueError:
-            inter.response.send_message("Invalid input for ID")
+            interaction.response.send_message("Invalid input for IDs")
             return
-        await inter.response.defer(ephemeral=bool(view_state))
+        await interaction.response.defer(ephemeral=bool(view_state))
         stmt = self.build_query(
             query, member_id, channel_id, before, after, during, order_by, show_mod_channels
         )
 
         if not str(stmt):
-            await inter.edit_original_message(content="Invalid search.")
+            await interaction.edit_original_message(content="Invalid search.")
 
         with self.engine.connect() as connection:
             result = connection.execute(stmt).fetchall()
@@ -134,14 +140,14 @@ class ServerLogs(commands.Cog):
                 for date, cname, user, content in result
             )
         if not txt:
-            return await inter.edit_original_message(content="No messages found.")
+            return await interaction.edit_original_message(content="No messages found.")
         encoded = txt.encode("utf-8")
-        if len(encoded) > inter.guild.filesize_limit:
-            return await inter.edit_original_message(content="Result is too big!")
+        if len(encoded) > interaction.guild.filesize_limit:
+            return await interaction.edit_original_message(content="Result is too big!")
         data = io.BytesIO(encoded)
         file = discord.File(filename="output.txt", fp=data)
-        await inter.edit_original_message(file=file)
+        await interaction.edit_original_message(attachments=[file])
 
 
-def setup(bot):
-    bot.add_cog(ServerLogs(bot))
+async def setup(bot: commands.Bot):
+    await bot.add_cog(ServerLogs(bot))

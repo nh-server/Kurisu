@@ -663,5 +663,5 @@ class Memes(commands.Cog):
         await ctx.send(random.choice(wagulist))
 
 
-def setup(bot):
-    bot.add_cog(Memes(bot))
+async def setup(bot):
+    await bot.add_cog(Memes(bot))

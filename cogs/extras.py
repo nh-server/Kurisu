@@ -7,8 +7,7 @@ import re
 import string
 import sys
 
-from discord import TextChannel, __version__ as discordpy_version
-from disnake.ext.commands import Param
+from discord import app_commands, TextChannel, __version__ as discordpy_version
 from discord.ext import commands
 from typing import Union
 from utils import crud, utils
@@ -93,10 +92,8 @@ class Extras(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command(hidden=True)
-    async def userroles(self, ctx, u: discord.Member = None):
+    async def userroles(self, ctx, u: discord.Member = commands.Author):
         """Gets user roles and their id. Staff only."""
-        if not u:
-            u = ctx.author
         msg = f"{u}'s Roles:\n\n"
         for role in u.roles:
             if role.is_default():
@@ -256,32 +253,33 @@ class Extras(commands.Cog):
             await utils.send_dm_message(author, f"{channel_name} is not a valid toggleable channel.")
 
     @commands.guild_only()
-    @commands.slash_command(name="togglechannel")
-    async def togglechannel_sc(self, inter, channel_name: str = Param(description="Channel to toggle")):
+    @app_commands.command(name="togglechannel")
+    @app_commands.describe(channel_name="Channel to toggle")
+    async def togglechannel_ac(self, interaction: discord.Interaction, channel_name: str):
         """Enable or disable access to specific channels."""
 
-        author = inter.author
+        author = interaction.user
 
         if channel_name == "elsewhere":
             if self.bot.roles['#elsewhere'] in author.roles:
                 await author.remove_roles(self.bot.roles['#elsewhere'])
-                await inter.send("Access to #elsewhere removed.", ephemeral=True)
+                await interaction.response.send_message("Access to #elsewhere removed.", ephemeral=True)
             elif self.bot.roles['No-elsewhere'] not in author.roles:
                 await author.add_roles(self.bot.roles['#elsewhere'])
-                await inter.send("Access to #elsewhere granted.", ephemeral=True)
+                await interaction.response.send_message("Access to #elsewhere granted.", ephemeral=True)
             else:
-                await inter.send("Your access to elsewhere is restricted, contact staff to remove it.", ephemeral=True)
+                await interaction.response.send_message("Your access to elsewhere is restricted, contact staff to remove it.", ephemeral=True)
         elif channel_name == "artswhere":
             if self.bot.roles['#art-discussion'] in author.roles:
                 await author.remove_roles(self.bot.roles['#art-discussion'])
                 await utils.send_dm_message(author, "Access to #art-discussion removed.", ephemeral=True)
             elif self.bot.roles['No-art'] not in author.roles:
                 await author.add_roles(self.bot.roles['#art-discussion'])
-                await inter.send("Access to #art-discussion granted.", ephemeral=True)
+                await interaction.response.send_message("Access to #art-discussion granted.", ephemeral=True)
             else:
-                await inter.send("Your access to #art-discussion is restricted, contact staff to remove it.", ephemeral=True)
+                await interaction.response.send_message("Your access to #art-discussion is restricted, contact staff to remove it.", ephemeral=True)
         else:
-            await inter.send(f"{channel_name} is not a valid toggleable channel.", ephemeral=True)
+            await interaction.response.send_message(f"{channel_name} is not a valid toggleable channel.", ephemeral=True)
 
     @commands.dm_only()
     @commands.cooldown(rate=1, per=21600.0, type=commands.BucketType.member)
@@ -304,7 +302,7 @@ class Extras(commands.Cog):
 
     @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.member)
     @commands.command()
-    async def remindme(self, ctx, remind_in: utils.TimeConverter, *, reminder: str):
+    async def remindme(self, ctx, remind_in: int = commands.parameter(converter=utils.TimeConverter), *, reminder: str):
         """Sends a reminder after a set time, just for you. Max reminder size is 800 characters.\n\nTime format: #d#h#m#s."""
         if remind_in < 30 or remind_in > 3.154e+7:
             return await ctx.send("You can't set a reminder for less than 30 seconds or for more than a year.")
@@ -399,5 +397,5 @@ class Extras(commands.Cog):
         await ctx.send("Tag deleted successfully")
 
 
-def setup(bot):
-    bot.add_cog(Extras(bot))
+async def setup(bot):
+    await bot.add_cog(Extras(bot))

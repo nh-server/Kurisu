@@ -102,10 +102,8 @@ class ModWarn(commands.Cog):
             f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user." if reason == "" else ""))
 
     @commands.command()
-    async def listwarns(self, ctx, member: Union[discord.Member, discord.User] = None):
+    async def listwarns(self, ctx, member: Union[discord.Member, discord.User] = commands.Author):
         """List warns for a user. Staff and Helpers only."""
-        if not member:  # If user is set to None, its a selfcheck
-            member = ctx.author
         issuer = ctx.author
         if not await check_staff_id("Helper", ctx.author.id) and (member != issuer):
             msg = f"{issuer.mention} Using this command on others is limited to Staff and Helpers."
@@ -190,5 +188,5 @@ class ModWarn(commands.Cog):
         await self.bot.channels['mod-logs'].send(msg)
 
 
-def setup(bot):
-    bot.add_cog(ModWarn(bot))
+async def setup(bot):
+    await bot.add_cog(ModWarn(bot))

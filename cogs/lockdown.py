@@ -244,5 +244,5 @@ class Lockdown(commands.Cog):
             await self.bot.channels['mod-logs'].send(msg)
 
 
-def setup(bot):
-    bot.add_cog(Lockdown(bot))
+async def setup(bot):
+    await bot.add_cog(Lockdown(bot))

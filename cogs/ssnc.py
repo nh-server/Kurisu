@@ -19,8 +19,8 @@ from discord.ext import commands
 from discord.ext.commands import Cog
 
 
-def setup(bot):
-    bot.add_cog(SwitchSerialNumberCheck(bot))
+async def setup(bot):
+    await bot.add_cog(SwitchSerialNumberCheck(bot))
 
 
 class SwitchSerialNumberCheck(Cog):
