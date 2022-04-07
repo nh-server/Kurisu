@@ -176,7 +176,11 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
         embeds = []
         for app in res:
             embed = discord.Embed(title=app['title'], color=int(app['color'][1:], 16))
-            embed.description = f"{app.get('description', '')}\n [[Download]({app['download_page']})]"
+            embed.description = f"{app.get('description', '')}\n"
+            if 'download_page' in app:
+                embed.description += f" [[Download]({app['download_page']})]"
+            elif 'nightly' in app and 'download_page' in app['nightly']:
+                embed.description += f" [[Download]({app['nightly']['download_page']})]"
             if 'source' in app:
                 embed.description += f" [[Source]({app['source']})]"
             embed.set_footer(text=f"by {app['author']}")
