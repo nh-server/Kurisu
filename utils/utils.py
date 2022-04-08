@@ -198,14 +198,17 @@ class VoteButton(discord.ui.Button):
         await interaction.response.send_message("Vote added.", ephemeral=True)
 
 
-class VoteButtonEnd(discord.ui.Button):
+class VoteButtonEnd(discord.ui.Button['SimpleVoteView']):
     def __init__(self, custom_id: str, style: discord.ButtonStyle = discord.ButtonStyle.red):
-        super().__init__(style=style, label='end', custom_id=custom_id)
+        super().__init__(style=style, label='End', custom_id=custom_id)
 
     async def callback(self, interaction: discord.MessageInteraction):
         if interaction.user.id == self.view.author_id:
-            if self.view.message:
-                await self.view.message.edit(view=None)
+            # Try to remove the view
+            if self.view.message_id:
+                msg = await interaction.channel.fetch_message(self.view.message_id)
+                await msg.edit(view=None)
+
             await self.view.calculate_votes()
             results = "results:\n" + '\n'.join(f"{op}: {count}" for op, count in self.view.count.items())
             await interaction.response.send_message(
@@ -221,7 +224,7 @@ class SimpleVoteView(discord.ui.View):
         super().__init__(timeout=None)
         self.author_id = author_id
         self.custom_id = custom_id
-        self.message = None
+        self.message_id = None
         self.start = start
         self.count: dict[str, int] = {}
         for n, option in enumerate(options):

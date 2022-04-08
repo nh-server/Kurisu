@@ -29,8 +29,10 @@ class Extras(commands.Cog):
 
     async def init(self):
         await self.bot.wait_until_all_ready()
-        for view in await crud.get_vote_views('extras'):
-            self.bot.add_view(utils.SimpleVoteView(view.author_id, options=view.options.split('|'), custom_id=view.id, start=view.start))
+        for view in await crud.get_vote_views('SimpleVoteView'):
+            v = utils.SimpleVoteView(view.author_id, options=view.options.split('|'), custom_id=view.id, start=view.start)
+            self.bot.add_view(v, message_id=view.message_id)
+            v.message_id = view.message_id
 
     prune_key = "nokey"
 
@@ -410,13 +412,15 @@ class Extras(commands.Cog):
                          interaction,
                          name: str = Param(desc="Name of the vote"),
                          description: str = Param(desc="Description of the vote"),
-                         options: str = Param(desc="Options for the vote separated by \'|\'", default="yes|no")):
-        """Creates a simple vote in a embed using a view for the options, only the who made the vote can stop it. OP+ only. """
-        await crud.add_vote_view(view_id=interaction.id, identifier='extras', author_id=interaction.user.id, options=options, start=datetime.datetime.utcnow())
+                         options: str = Param(desc="Options for the vote separated by \'|\'", default="Yes|No")):
+        """Creates a simple vote, only the who made the vote can stop it. OP+ only."""
         options_parsed = options.split('|')
         view = utils.SimpleVoteView(interaction.user.id, options_parsed, interaction.id, start=discord.utils.utcnow())
         embed = discord.Embed(title=name, description=description)
         await interaction.response.send_message(embed=embed, view=view)
+        msg = await interaction.original_message()
+        view.message_id = msg.id
+        await crud.add_vote_view(view_id=interaction.id, identifier='extras', author_id=interaction.user.id, options=options, start=datetime.datetime.utcnow(), message_id=msg.id)
 
 
 def setup(bot):
