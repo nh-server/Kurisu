@@ -411,7 +411,7 @@ class Extras(commands.Cog):
                          name: str = Param(desc="Name of the vote"),
                          description: str = Param(desc="Description of the vote"),
                          options: str = Param(desc="Options for the vote separated by \'|\'", default="yes|no")):
-
+        """Creates a simple vote in a embed using a view for the options, only the who made the vote can stop it. OP+ only. """
         await crud.add_vote_view(view_id=interaction.id, identifier='extras', author_id=interaction.user.id, options=options, start=datetime.datetime.utcnow())
         options_parsed = options.split('|')
         view = utils.SimpleVoteView(interaction.user.id, options_parsed, interaction.id, start=discord.utils.utcnow())
