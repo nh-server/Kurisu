@@ -25,6 +25,12 @@ class Extras(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.nick_pattern = re.compile("^[a-z]{2,}.*$", re.RegexFlag.IGNORECASE)
+        self.bot.loop.create_task(self.init())
+
+    async def init(self):
+        await self.bot.wait_until_all_ready()
+        for view in await crud.get_vote_views('extras'):
+            self.bot.add_view(utils.SimpleVoteView(view.author_id, options=view.options.split('|'), custom_id=view.id, start=view.start))
 
     prune_key = "nokey"
 
@@ -397,6 +403,20 @@ class Extras(commands.Cog):
             return await ctx.send("This tag doesn't exists!")
         await crud.delete_tag(title=title)
         await ctx.send("Tag deleted successfully")
+
+    @is_staff('OP')
+    @commands.slash_command()
+    async def simplevote(self,
+                         interaction,
+                         name: str = Param(desc="Name of the vote"),
+                         description: str = Param(desc="Description of the vote"),
+                         options: str = Param(desc="Options for the vote separated by \'|\'", default="yes|no")):
+
+        await crud.add_vote_view(view_id=interaction.id, identifier='extras', author_id=interaction.user.id, options=options, start=datetime.datetime.utcnow())
+        options_parsed = options.split('|')
+        view = utils.SimpleVoteView(interaction.user.id, options_parsed, interaction.id, start=discord.utils.utcnow())
+        embed = discord.Embed(title=name, description=description)
+        await interaction.response.send_message(embed=embed, view=view)
 
 
 def setup(bot):

@@ -7,7 +7,8 @@ import time
 import traceback
 
 from discord.ext import commands
-from typing import Optional, Union
+from utils import crud
+from typing import Optional, Union, Literal
 
 
 class ConsoleColor(discord.Color):
@@ -122,7 +123,7 @@ def paginate_message(msg: str, prefix: str = '```', suffix: str = '```', max_siz
     return paginator
 
 
-def dtm_to_discord_timestamp(dtm_obj: datetime.datetime, date_format: str = "f", utc_time: bool = False) -> str:
+def dtm_to_discord_timestamp(dtm_obj: datetime.datetime, date_format: Literal['d', 'D', 't', 'T', 'f', 'F', 'R'] = 'f', utc_time: bool = False) -> str:
     if utc_time:
         dtm_obj = dtm_obj.replace(tzinfo=datetime.timezone.utc).astimezone()
     return f"<t:{int(time.mktime(dtm_obj.timetuple()))}:{date_format}>"
@@ -186,3 +187,48 @@ class PaginatedEmbedView(discord.ui.View):
     ):
         self.current = self.n_embeds - 1
         await interaction.response.edit_message(embed=self.embeds[self.current])
+
+
+class VoteButton(discord.ui.Button):
+    def __init__(self, custom_id: str, label: str, style: discord.ButtonStyle = discord.ButtonStyle.secondary):
+        super().__init__(style=style, label=label, custom_id=custom_id)
+
+    async def callback(self, interaction: discord.MessageInteraction):
+        await crud.add_voteview_vote(self.view.custom_id, interaction.user.id, self.label)
+        await interaction.response.send_message("Vote added.", ephemeral=True)
+
+
+class VoteButtonEnd(discord.ui.Button):
+    def __init__(self, custom_id: str, style: discord.ButtonStyle = discord.ButtonStyle.red):
+        super().__init__(style=style, label='end', custom_id=custom_id)
+
+    async def callback(self, interaction: discord.MessageInteraction):
+        if interaction.user.id == self.view.author_id:
+            if self.view.message:
+                await self.view.message.edit(view=None)
+            await self.view.calculate_votes()
+            results = "results:\n" + '\n'.join(f"{op}: {count}" for op, count in self.view.count.items())
+            await interaction.response.send_message(
+                f"Vote started {dtm_to_discord_timestamp(self.view.start, utc_time=True, date_format='R')} has finished.\n{results}")
+            self.view.stop()
+            await crud.remove_vote_view(self.view.custom_id)
+        else:
+            await interaction.response.send_message("Only the vote creator can end it", ephemeral=True)
+
+
+class SimpleVoteView(discord.ui.View):
+    def __init__(self, author_id: int, options: list[str], custom_id: int, start: datetime.datetime):
+        super().__init__(timeout=None)
+        self.author_id = author_id
+        self.custom_id = custom_id
+        self.message = None
+        self.start = start
+        self.count: dict[str, int] = {}
+        for n, option in enumerate(options):
+            self.count[option] = 0
+            self.add_item(VoteButton(label=option, custom_id=f"{custom_id}_{n}"))
+        self.add_item(VoteButtonEnd(custom_id=f"{custom_id}_{len(self.children)+1}"))
+
+    async def calculate_votes(self):
+        for vote in await crud.get_voteview_votes(self.custom_id):
+            self.count[vote.option] = self.count[vote.option] + 1
