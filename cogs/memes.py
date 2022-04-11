@@ -659,7 +659,8 @@ class Memes(commands.Cog):
         self.shutwagu = discord.utils.get(self.bot.guild.emojis, name="shutwagu") or "⁉"
         self.waguboat = discord.utils.get(self.bot.guild.emojis, name="waguboat") or "⁉"
         self.wagutv = discord.utils.get(self.bot.guild.emojis, name="wagutv") or "⁉"
-        wagulist = [f"{str(self.wagu)}", f"{str(self.waguspooky)}", f"{str(self.waguxmas)}", f"{str(self.waguspin)}", f"{str(self.waguspinaaa)}", f"{str(self.waguwat)}", f"{str(self.waguwu)}", f"{str(self.waguw)}", f"{str(self.hyperwagu)}", f"{str(self.wagupeek)}", f"{str(self.poggu)}", f"{str(self.waguburger)}", f"{str(self.wagucar)}", f"{str(self.shutwagu)}", f"{str(self.waguboat)}", f"{str(self.wagutv)}"]
+        self.wagutv = discord.utils.get(self.bot.guild.emojis, name="ghostwagu") or "⁉"
+        wagulist = [f"{str(self.wagu)}", f"{str(self.waguspooky)}", f"{str(self.waguxmas)}", f"{str(self.waguspin)}", f"{str(self.waguspinaaa)}", f"{str(self.waguwat)}", f"{str(self.waguwu)}", f"{str(self.waguw)}", f"{str(self.hyperwagu)}", f"{str(self.wagupeek)}", f"{str(self.poggu)}", f"{str(self.waguburger)}", f"{str(self.wagucar)}", f"{str(self.shutwagu)}", f"{str(self.waguboat)}", f"{str(self.wagutv)}", f"{str(self.ghostwagu)}"]
         await ctx.send(random.choice(wagulist))
 
 
