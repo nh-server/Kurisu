@@ -636,7 +636,7 @@ class Memes(commands.Cog):
         """got milk?"""
         self.flushedsquish = discord.utils.get(self.bot.guild.emojis, name="flushedsquish") or "⁉"
         self.flushedball = discord.utils.get(self.bot.guild.emojis, name="flushedball") or "⁉"
-        self.flushedball = discord.utils.get(self.bot.guild.emojis, name="flushedeyes") or "⁉"
+        self.flushedeyes = discord.utils.get(self.bot.guild.emojis, name="flushedeyes") or "⁉"
         motd_list = [f"{str(self.flushedball)}", f"{str(self.flushedsquish)}", f"{str(self.flushedeyes)}", "ur mom lol", "hot dogs are sandwiches dont @ me", "have you had a coffee today?", "bird app bad", "imagine having opinions in current year", "based", "pog", "ratio", "remember to moisturize today!", "drink some water u idiot", "take ur meds", "do you like neapolitan ice cream?", "nentondon swonch", "xnoe at 11pm moment", "has junko had a name change today?", "got milk?", "got pilk?", "it has been 0 days since eip broke me", "ETA WEN PLS"]
         await ctx.send(random.choice(motd_list))
 
