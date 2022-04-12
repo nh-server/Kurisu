@@ -1,6 +1,7 @@
 import discord
 
 from discord.ext import commands
+from disnake.ext.commands import Param
 from typing import Union
 from utils import utils, crud
 from utils.checks import is_staff, check_staff_id, check_bot_or_staff
@@ -16,7 +17,7 @@ class ModWarn(commands.Cog):
         self.bot = bot
 
     async def cog_check(self, ctx):
-        if ctx.guild is None:
+        if ctx.guild is None and ctx.command.name != "listwarns":
             raise commands.NoPrivateMessage()
         return True
 
@@ -103,7 +104,7 @@ class ModWarn(commands.Cog):
 
     @commands.command()
     async def listwarns(self, ctx, member: Union[discord.Member, discord.User] = None):
-        """List warns for a user. Staff and Helpers only."""
+        """List warns for a user. Helpers+ only for checking others."""
         if not member:  # If user is set to None, its a selfcheck
             member = ctx.author
         issuer = ctx.author
@@ -127,6 +128,31 @@ class ModWarn(commands.Cog):
             embed.description = "There are none!"
             embed.colour = discord.Color.green()
         await ctx.send(embed=embed)
+
+    @commands.slash_command(name='listwarns')
+    async def listwarns_ac(self, interaction, member: discord.Member = Param(default=lambda interaction: interaction.user, desc="Member to list warns of")):
+        """List warns for a user only for you. Helpers+ only for checking others."""
+        author = interaction.user
+        if not await check_staff_id("Helper", author.id) and (member != author):
+            msg = f"{author.mention} Using this command on others is limited to Staff and Helpers."
+            await interaction.response.send_message(msg, ephemeral=True)
+            return
+        embed = discord.Embed(color=discord.Color.dark_red())
+        embed.set_author(name=f"Warns for {member}", icon_url=member.display_avatar.url)
+        warns = await crud.get_warns(member.id)
+        if warns:
+            dbchannel = await crud.get_dbchannel(interaction.channel.id)
+            for idx, warn in enumerate(warns):
+                issuer = await get_user(interaction, warn.issuer)
+                value = ""
+                if dbchannel and dbchannel.is_mod_channel:
+                    value += f"Issuer: {issuer.name}\n"
+                value += f"Reason: {warn.reason} "
+                embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn.id).strftime('%Y-%m-%d %H:%M:%S')}", value=value)
+        else:
+            embed.description = "There are none!"
+            embed.colour = discord.Color.green()
+        await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @is_staff("SuperOP")
     @commands.command()

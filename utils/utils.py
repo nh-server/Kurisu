@@ -48,11 +48,12 @@ async def send_dm_message(member: discord.Member, message: str, ctx: commands.Co
         return False
 
 
-async def get_user(ctx: commands.Context, user_id: int) -> Optional[Union[discord.Member, discord.User]]:
+async def get_user(ctx: Union[commands.Context, discord.Interaction], user_id: int) -> Optional[Union[discord.Member, discord.User]]:
     if ctx.guild and (user := ctx.guild.get_member(user_id)):
         return user
     else:
-        return await ctx.bot.fetch_user(user_id)
+        bot = ctx.bot if isinstance(ctx, commands.Context) else ctx.client
+        return await bot.fetch_user(user_id)
 
 
 def command_signature(command, *, prefix=".") -> str:
