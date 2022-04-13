@@ -433,7 +433,7 @@ class Kuritree(app_commands.CommandTree):
         if isinstance(error, app_commands.NoPrivateMessage):
             await interaction.response.send_message(f'`{command}` cannot be used in direct messages.', ephemeral=True)
 
-        elif isinstance(error, app_commands.TransformerError):
+        elif isinstance(error, (app_commands.TransformerError, app_commands.CommandNotFound)):
             await interaction.response.send_message(error, ephemeral=True)
 
         elif isinstance(error, app_commands.MissingPermissions):
