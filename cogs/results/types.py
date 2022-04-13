@@ -45,7 +45,7 @@ class ResultInfo:
 
 class ConsoleErrorField:
     def __init__(self, name: str, *, message_str: str = '', supplementary_value: int = None):
-        
+
         self.field_name = name
         self.message = message_str
 
