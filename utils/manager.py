@@ -30,7 +30,7 @@ class WordFilterManager:
             self.filter[kind] = []
             for entry in await self.fetch_by_kind(kind=kind):
                 self.filter[kind].append(entry.word)
-                self.word_exp[entry.word] = re.compile(r"[ *_\-~]*".join(list(entry.word)))
+                self.word_exp[entry.word] = re.compile(r"[ *_\-~]*".join(list(re.escape(entry.word))))
 
     async def add(self, word: str, kind: str) -> FilteredWord:
         entry = await FilteredWord.create(word=word, kind=kind)
