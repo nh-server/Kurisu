@@ -118,8 +118,12 @@ class Extras(commands.Cog):
     async def serverroles(self, ctx, exp: str):
         """Gets the server roles and their id by regex. Staff only."""
         msg = f"Server roles matching `{exp}`:\n\n"
+        try:
+            reg_expr = re.compile(exp, re.IGNORECASE)
+        except re.error:
+            return await ctx.send("Invalid regex expression.")
         for role in ctx.guild.roles:
-            if bool(re.search(exp, role.name, re.IGNORECASE)):
+            if bool(reg_expr.search(role.name)):
                 msg += f"{role.name} = {role.id}\n"
         await ctx.author.send(msg)
 

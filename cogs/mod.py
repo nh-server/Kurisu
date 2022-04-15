@@ -162,8 +162,12 @@ class Mod(commands.Cog):
         """Match users by regex."""
         msg = ""
         matches = 0
+        try:
+            reg_expr = re.compile(rgx, re.IGNORECASE)
+        except re.error:
+            return await ctx.send("Invalid regex expression.")
         for m in self.bot.guild.members:
-            if bool(re.search(rgx, m.name, re.IGNORECASE)):
+            if bool(reg_expr.search(m.name)):
                 msg += f"{m.id} - {m}\n"
                 matches += 1
         file = utils.text_to_discord_file(msg, name="matches.txt")
@@ -177,8 +181,12 @@ class Mod(commands.Cog):
         """Multi-ban users by regex."""
         to_ban = []
         banned = 0
+        try:
+            reg_expr = re.compile(rgx, re.IGNORECASE)
+        except re.error:
+            return await ctx.send("Invalid regex expression.")
         for m in self.bot.guild.members:
-            if bool(re.search(rgx, m.name, re.IGNORECASE)):
+            if bool(reg_expr.search(m.name)):
                 to_ban.append(m)
         if not to_ban:
             return await ctx.send("No member matched the regex expression!")

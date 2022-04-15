@@ -27,7 +27,7 @@ class Filter(commands.Cog):
     @wordfilter.command(name='add')
     async def add_word(self, ctx, word: str, *, kind: str):
         """Adds a word to the word filter. A filter list must be specified"""
-        word = word.lower()
+        word = re.escape(word.lower())
         if kind not in self.bot.wordfilter.kinds:
             return await ctx.send(f"Possible word kinds for word filter: {', '.join(self.bot.wordfilter.kinds)}")
         if ' ' in word or '-' in word:
