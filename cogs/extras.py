@@ -295,6 +295,18 @@ class Extras(commands.Cog):
         else:
             await inter.send(f"{channel_name} is not a valid toggleable channel.", ephemeral=True)
 
+    @is_staff("Helper")
+    @commands.command()
+    async def reference(self, ctx, message: discord.Message):
+        """Creates a embed with the contents of message. Helpers+ only"""
+        await ctx.message.delete()
+        if message.content == "":
+            return await ctx.send("This message has no text!", delete_after=10)
+        embed = discord.Embed(colour=gen_color(message.author.id), description=message.content, timestamp=message.created_at)
+        embed.set_author(name=message.author, icon_url=message.author.display_avatar.url, url=message.jump_url)
+        embed.set_footer(text=f"in {message.channel.name}")
+        await ctx.send(embed=embed)
+
     @commands.dm_only()
     @commands.cooldown(rate=1, per=21600.0, type=commands.BucketType.member)
     @commands.command()
