@@ -423,32 +423,36 @@ class Kuritree(app_commands.CommandTree):
     async def on_error(
         self,
         interaction: discord.Interaction,
-        command,
         error: app_commands.AppCommandError,
     ):
 
-        author: discord.Member = interaction.user
-        command: str = command.name if command else "unknown command"
         error = getattr(error, 'original', error)
+
+        if isinstance(error, app_commands.CommandNotFound):
+            return await interaction.response.send_message(error, ephemeral=True)
+
+        author: discord.Member = interaction.user
+        ctx = await commands.Context.from_interaction(interaction)
+        command: str = interaction.command.name
         channel = self.err_channel or interaction.channel
 
         if isinstance(error, app_commands.NoPrivateMessage):
-            await interaction.response.send_message(f'`{command}` cannot be used in direct messages.', ephemeral=True)
+            await ctx.send(f'`{command}` cannot be used in direct messages.', ephemeral=True)
 
-        elif isinstance(error, (app_commands.TransformerError, app_commands.CommandNotFound)):
+        elif isinstance(error, app_commands.TransformerError):
             await interaction.response.send_message(error, ephemeral=True)
 
         elif isinstance(error, app_commands.MissingPermissions):
-            await interaction.response.send_message(f"{author.mention} You don't have permission to use `{command}`.", ephemeral=True)
+            await ctx.send(f"{author.mention} You don't have permission to use `{command}`.", ephemeral=True)
 
         elif isinstance(error, app_commands.CheckFailure):
-            await interaction.response.send_message(f'{author.mention} You cannot use `{command}`.', ephemeral=True)
+            await ctx.send(f'{author.mention} You cannot use `{command}`.', ephemeral=True)
 
         # elif isinstance(error, app_commands.MaxConcurrencyReached):
         #     await interaction.response.send_message(error, ephemeral=True)
 
         elif isinstance(error, app_commands.CommandOnCooldown):
-            await interaction.response.send_message(
+            await ctx.send(
                 f"{author.mention} This command was used {error.cooldown.per - error.retry_after:.2f}s ago and is on cooldown. "
                 f"Try again in {error.retry_after:.2f}s.", ephemeral=True)
         else:
@@ -459,10 +463,7 @@ class Kuritree(app_commands.CommandTree):
             else:
                 msg = f'{author.mention} Unexpected exception occurred while using the command `{command}`'
 
-            if interaction.response.is_done():
-                await interaction.edit_original_message(content=msg, embed=None, view=None)
-            else:
-                await interaction.response.send_message(msg, ephemeral=True)
+            await ctx.send(msg, ephemeral=True)
             if channel:
                 embed = create_error_embed(interaction, error)
                 await channel.send(embed=embed)

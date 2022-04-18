@@ -102,7 +102,7 @@ class ModWarn(commands.Cog):
         await self.bot.channels['mod-logs'].send(msg + (
             f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user." if reason == "" else ""))
 
-    @commands.command()
+    @commands.hybrid_command()
     async def listwarns(self, ctx, member: Union[discord.Member, discord.User] = commands.Author):
         """List warns for a user. Helpers+ only for checking others."""
         issuer = ctx.author
@@ -125,32 +125,7 @@ class ModWarn(commands.Cog):
         else:
             embed.description = "There are none!"
             embed.colour = discord.Color.green()
-        await ctx.send(embed=embed)
-
-    @app_commands.command(name='listwarns')
-    async def listwarns_ac(self, interaction, member: discord.Member):
-        """List warns for a user only for you. Helpers+ only for checking others."""
-        author = interaction.user
-        if not await check_staff_id("Helper", author.id) and (member != author):
-            msg = f"{author.mention} Using this command on others is limited to Staff and Helpers."
-            await interaction.response.send_message(msg, ephemeral=True)
-            return
-        embed = discord.Embed(color=discord.Color.dark_red())
-        embed.set_author(name=f"Warns for {member}", icon_url=member.display_avatar.url)
-        warns = await crud.get_warns(member.id)
-        if warns:
-            dbchannel = await crud.get_dbchannel(interaction.channel.id)
-            for idx, warn in enumerate(warns):
-                issuer = await get_user(interaction, warn.issuer)
-                value = ""
-                if dbchannel and dbchannel.is_mod_channel:
-                    value += f"Issuer: {issuer.name}\n"
-                value += f"Reason: {warn.reason} "
-                embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn.id).strftime('%Y-%m-%d %H:%M:%S')}", value=value)
-        else:
-            embed.description = "There are none!"
-            embed.colour = discord.Color.green()
-        await interaction.response.send_message(embed=embed, ephemeral=True)
+        await ctx.send(embed=embed, ephemeral=True)
 
     @is_staff("SuperOP")
     @commands.command()
