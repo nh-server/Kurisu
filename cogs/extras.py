@@ -296,13 +296,18 @@ class Extras(commands.Cog):
             await inter.send(f"{channel_name} is not a valid toggleable channel.", ephemeral=True)
 
     @is_staff("Helper")
-    @commands.command()
-    async def reference(self, ctx, message: discord.Message):
+    @commands.command(aliases=['ref'])
+    async def reference(self, ctx, message: discord.Message, ref_text: bool = True, ref_image: bool = True):
         """Creates a embed with the contents of message. Helpers+ only"""
         await ctx.message.delete()
-        if message.content == "":
-            return await ctx.send("This message has no text!", delete_after=10)
-        embed = discord.Embed(colour=gen_color(message.author.id), description=message.content, timestamp=message.created_at)
+        embed = discord.Embed(colour=gen_color(message.author.id), timestamp=message.created_at)
+        if ref_text and message.content:
+            embed.description = message.content
+        if ref_image and len(message.attachments) > 0 and message.attachments[0].height and message.attachments[0].content_type.startswith("image/"):
+            file = await message.attachments[0].to_file()
+            embed.set_image(file=file)
+        if embed.description == discord.Embed.Empty and not embed.image.__dict__:
+            return await ctx.send("No information to reference!", delete_after=10)
         embed.set_author(name=message.author, icon_url=message.author.display_avatar.url, url=message.jump_url)
         embed.set_footer(text=f"in {message.channel.name}")
         await ctx.send(embed=embed)
