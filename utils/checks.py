@@ -8,13 +8,13 @@ from typing import Union
 staff_ranks = {"Owner": 0, "SuperOP": 1, "OP": 2, "HalfOP": 3, "Helper": 4}
 
 
-def is_staff(role):
+def is_staff(role: str):
     async def predicate(ctx: commands.Context) -> bool:
         return True if ctx.guild and ctx.author == ctx.guild.owner else check_staff(ctx.author, role)
     return commands.check(predicate)
 
 
-def is_staff_app(role):
+def is_staff_app(role: str):
     async def predicate(interaction: discord.Interaction) -> bool:
         return True if interaction.guild and interaction.user == interaction.guild.owner else check_staff(interaction.user, role)
     return app_commands.check(predicate)

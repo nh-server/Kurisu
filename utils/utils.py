@@ -201,7 +201,7 @@ class VoteButton(discord.ui.Button):
     def __init__(self, custom_id: str, label: str, style: discord.ButtonStyle = discord.ButtonStyle.secondary):
         super().__init__(style=style, label=label, custom_id=custom_id)
 
-    async def callback(self, interaction: discord.MessageInteraction):
+    async def callback(self, interaction: discord.Interaction):
         await crud.add_voteview_vote(self.view.custom_id, interaction.user.id, self.label)
         await interaction.response.send_message("Vote added.", ephemeral=True)
 
@@ -210,7 +210,7 @@ class VoteButtonEnd(discord.ui.Button['SimpleVoteView']):
     def __init__(self, custom_id: str, style: discord.ButtonStyle = discord.ButtonStyle.red):
         super().__init__(style=style, label='End', custom_id=custom_id)
 
-    async def callback(self, interaction: discord.MessageInteraction):
+    async def callback(self, interaction: discord.Interaction):
         if interaction.user.id == self.view.author_id:
             # Try to remove the view
             if self.view.message_id:
