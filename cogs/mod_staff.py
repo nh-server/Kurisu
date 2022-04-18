@@ -48,7 +48,7 @@ class ModStaff(commands.Cog):
     async def sudo(self, ctx):
         """Gain staff powers temporarily. Only needed by HalfOPs."""
         author = ctx.author
-        staff = await crud.get_staff(author.id)
+        staff = await crud.get_staff_member(author.id)
         if not staff:
             await ctx.send("You are not listed as staff, and can't use this. (this message should not appear)")
             return
@@ -65,7 +65,7 @@ class ModStaff(commands.Cog):
     async def unsudo(self, ctx):
         """Remove temporary staff powers. Only needed by HalfOPs."""
         author = ctx.author
-        staff = await crud.get_staff(author.id)
+        staff = await crud.get_staff_member(author.id)
         if not staff:
             await ctx.send("You are not listed as staff, and can't use this. (this message should not appear)")
             return
@@ -83,7 +83,7 @@ class ModStaff(commands.Cog):
     async def updatestaff(self, ctx):
         """Updates the staff list based on staff member in the server."""
         removed = []
-        for staffmember in await crud.get_staff_all():
+        for staffmember in await crud.get_staff():
             if ctx.guild.get_member(staffmember.id) is None:
                 await crud.remove_staff(staffmember.id)
                 removed.append(await self.bot.fetch_user(staffmember.id))
@@ -102,7 +102,7 @@ class ModStaff(commands.Cog):
     @commands.command()
     async def liststaff(self, ctx):
         """List staff members per rank."""
-        staff_list = await crud.get_staff_all()
+        staff_list = await crud.get_staff()
         ranks = dict.fromkeys(staff_ranks.keys())
         embed = discord.Embed()
         for rank in ranks:

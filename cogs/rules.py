@@ -90,7 +90,7 @@ https://discord.gg/C29hYvh"""
         for number, rule in self.rules_dict.items():
             await channel.send(f"**{number}**. {rule}\n")
         await channel.send(self.staff_action)
-        staff = [f"<@{staff.id}>" for staff in await crud.get_staff_all()]
+        staff = [f"<@{staff.id}>" for staff in await crud.get_staff()]
         await channel.send(self.mod_list + '\n'.join(staff))
         helpers = [helper for helper in await crud.get_helpers() if helper.position == 'Helper']
         helpers_3ds = [f"<@{helper.id}>" for helper in helpers if helper.console == '3DS']

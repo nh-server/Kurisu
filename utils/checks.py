@@ -1,7 +1,7 @@
 import discord
 
 from discord.ext import commands
-from utils.crud import get_helper, get_staff
+from utils.crud import get_helper, get_staff_member
 
 staff_ranks = {"Owner": 0, "SuperOP": 1, "OP": 2, "HalfOP": 3, "Helper": 4}
 
@@ -24,7 +24,7 @@ async def check_staff_id(role: str, user_id: int):
     if role == "Helper":
         if await get_helper(user_id):
             return True
-    if staff := await get_staff(user_id):
+    if staff := await get_staff_member(user_id):
         return staff_ranks[staff.position] <= staff_ranks[role]
     return False
 
