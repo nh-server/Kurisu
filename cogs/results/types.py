@@ -45,14 +45,9 @@ class ResultInfo:
 
 class ConsoleErrorField:
     def __init__(self, name: str, *, message_str: str = '', supplementary_value: int = None):
-        self.field_name = name
 
-        try:
-            self.message = message_str
-        except KeyboardInterrupt:
-            raise
-        except:
-            self.message = ''
+        self.field_name = name
+        self.message = message_str
 
         if supplementary_value is None:
             return

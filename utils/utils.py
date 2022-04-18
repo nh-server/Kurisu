@@ -8,7 +8,8 @@ import traceback
 
 from discord import app_commands
 from discord.ext import commands
-from typing import Optional, Union
+from utils import crud
+from typing import Optional, Union, Literal
 
 
 class ConsoleColor(discord.Color):
@@ -48,11 +49,12 @@ async def send_dm_message(member: discord.Member, message: str, ctx: commands.Co
         return False
 
 
-async def get_user(ctx: commands.Context, user_id: int) -> Optional[Union[discord.Member, discord.User]]:
+async def get_user(ctx: Union[commands.Context, discord.Interaction], user_id: int) -> Optional[Union[discord.Member, discord.User]]:
     if ctx.guild and (user := ctx.guild.get_member(user_id)):
         return user
     else:
-        return await ctx.bot.fetch_user(user_id)
+        bot = ctx.bot if isinstance(ctx, commands.Context) else ctx.client
+        return await bot.fetch_user(user_id)
 
 
 def command_signature(command, *, prefix=".") -> str:
@@ -129,7 +131,7 @@ def paginate_message(msg: str, prefix: str = '```', suffix: str = '```', max_siz
     return paginator
 
 
-def dtm_to_discord_timestamp(dtm_obj: datetime.datetime, date_format: str = "f", utc_time: bool = False) -> str:
+def dtm_to_discord_timestamp(dtm_obj: datetime.datetime, date_format: Literal['d', 'D', 't', 'T', 'f', 'F', 'R'] = 'f', utc_time: bool = False) -> str:
     if utc_time:
         dtm_obj = dtm_obj.replace(tzinfo=datetime.timezone.utc).astimezone()
     return f"<t:{int(time.mktime(dtm_obj.timetuple()))}:{date_format}>"
@@ -193,3 +195,51 @@ class PaginatedEmbedView(discord.ui.View):
     ):
         self.current = self.n_embeds - 1
         await interaction.response.edit_message(embed=self.embeds[self.current])
+
+
+class VoteButton(discord.ui.Button):
+    def __init__(self, custom_id: str, label: str, style: discord.ButtonStyle = discord.ButtonStyle.secondary):
+        super().__init__(style=style, label=label, custom_id=custom_id)
+
+    async def callback(self, interaction: discord.MessageInteraction):
+        await crud.add_voteview_vote(self.view.custom_id, interaction.user.id, self.label)
+        await interaction.response.send_message("Vote added.", ephemeral=True)
+
+
+class VoteButtonEnd(discord.ui.Button['SimpleVoteView']):
+    def __init__(self, custom_id: str, style: discord.ButtonStyle = discord.ButtonStyle.red):
+        super().__init__(style=style, label='End', custom_id=custom_id)
+
+    async def callback(self, interaction: discord.MessageInteraction):
+        if interaction.user.id == self.view.author_id:
+            # Try to remove the view
+            if self.view.message_id:
+                msg = await interaction.channel.fetch_message(self.view.message_id)
+                await msg.edit(view=None)
+
+            await self.view.calculate_votes()
+            results = "results:\n" + '\n'.join(f"{op}: {count}" for op, count in self.view.count.items())
+            await interaction.response.send_message(
+                f"Vote started {dtm_to_discord_timestamp(self.view.start, utc_time=True, date_format='R')} has finished.\n{results}")
+            self.view.stop()
+            await crud.remove_vote_view(self.view.custom_id)
+        else:
+            await interaction.response.send_message("Only the vote creator can end it", ephemeral=True)
+
+
+class SimpleVoteView(discord.ui.View):
+    def __init__(self, author_id: int, options: list[str], custom_id: int, start: datetime.datetime):
+        super().__init__(timeout=None)
+        self.author_id = author_id
+        self.custom_id = custom_id
+        self.message_id = None
+        self.start = start
+        self.count: dict[str, int] = {}
+        for n, option in enumerate(options):
+            self.count[option] = 0
+            self.add_item(VoteButton(label=option, custom_id=f"{custom_id}_{n}"))
+        self.add_item(VoteButtonEnd(custom_id=f"{custom_id}_{len(self.children)+1}"))
+
+    async def calculate_votes(self):
+        for vote in await crud.get_voteview_votes(self.custom_id):
+            self.count[vote.option] = self.count[vote.option] + 1

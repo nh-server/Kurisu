@@ -397,3 +397,31 @@ async def add_social_credit(citizen_id: int, social_credit: int):
 async def remove_citizen(citizen_id):
     citizen = await get_citizen(citizen_id)
     await citizen.delete()
+
+
+async def add_vote_view(view_id: int, identifier: str, options: str, start: datetime.datetime, author_id: Optional[int] = None, message_id: Optional[int] = None):
+    await models.VoteView.create(id=view_id, message_id=message_id, identifier=identifier, author_id=author_id, options=options, start=start)
+
+
+async def get_vote_views(identifier: str) -> Optional[list[models.VoteView]]:
+    return await models.VoteView.query.where(models.VoteView.identifier == identifier).gino.all()
+
+
+async def remove_vote_view(view_id: int):
+    view = await models.VoteView.get(view_id)
+    await view.delete()
+
+
+async def get_voteview_vote(view_id: int, voter_id: int):
+    return await models.VoteViewVote.get((view_id, voter_id))
+
+
+async def get_voteview_votes(view_id: int):
+    return await models.VoteViewVote.query.where(models.VoteViewVote.view_id == view_id).gino.all()
+
+
+async def add_voteview_vote(view_id: int, voter_id: int, option: str):
+    if vote := await get_voteview_vote(view_id, voter_id):
+        await vote.update(option=option).apply()
+    else:
+        await models.VoteViewVote.create(view_id=view_id, voter_id=voter_id, option=option)

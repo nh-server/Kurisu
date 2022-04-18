@@ -146,3 +146,20 @@ class Citizen(db.Model):
     __tablename__ = "citizens"
     id = db.Column(db.BigInteger, db.ForeignKey("members.id"), primary_key=True)
     social_credit = db.Column(db.Integer, nullable=False)
+
+
+class VoteView(db.Model):
+    __tablename__ = "voteviews"
+    id = db.Column(db.BigInteger(), primary_key=True)
+    message_id = db.Column(db.BigInteger())
+    identifier = db.Column(db.String, nullable=False)
+    author_id = db.Column(db.BigInteger())
+    options = db.Column(db.String())
+    start = db.Column(db.TIMESTAMP)
+
+
+class VoteViewVote(db.Model):
+    __tablename__ = "voteviewvotes"
+    view_id = db.Column(db.BigInteger(), db.ForeignKey("voteviews.id", ondelete='CASCADE'), primary_key=True)
+    voter_id = db.Column(db.BigInteger(), primary_key=True)
+    option = db.Column(db.String, nullable=False)

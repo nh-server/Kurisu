@@ -19,18 +19,31 @@ async def check_collisions() -> Optional[dict[str, list]]:
     return collisions
 
 
+rgx_special_chars = '()[]{}?*+-|^$\\.&~# \t\n\r\v\f'
+
+
+def separate_and_escape_str(string: str) -> list[str]:
+    separated = []
+    for char in string:
+        if char in rgx_special_chars:
+            separated.append('\\' + char)
+        else:
+            separated.append(char)
+    return separated
+
+
 class WordFilterManager:
     def __init__(self):
         self.kinds = ('piracy tool', 'piracy tool alert', 'unbanning tool', 'piracy site', 'scamming site', 'piracy video')
         self.filter: dict[str, list[str]] = {}
-        self.word_exp = {}
+        self.word_exp: dict[str, re.Pattern] = {}
 
     async def load(self):
         for kind in self.kinds:
             self.filter[kind] = []
             for entry in await self.fetch_by_kind(kind=kind):
                 self.filter[kind].append(entry.word)
-                self.word_exp[entry.word] = re.compile(r"[ *_\-~]*".join(list(entry.word)))
+                self.word_exp[entry.word] = re.compile(r"[ *_\-~]?".join(separate_and_escape_str(entry.word)))
 
     async def add(self, word: str, kind: str) -> FilteredWord:
         entry = await FilteredWord.create(word=word, kind=kind)
@@ -54,12 +67,11 @@ class WordFilterManager:
         return entry
 
     def search_word(self, message: str) -> tuple[str, dict]:
-        msg_no_sep = re.sub(r'[ *_\-~]', '', message)
         matches = {}
         for kind in self.kinds[:-1]:
             matches[kind] = []
             for word in self.filter[kind]:
-                if word in msg_no_sep and (match := self.word_exp[word].search(message)):
+                if match := self.word_exp[word].search(message):
                     matches[kind].append(match)
                     a, b = match.span(0)
                     message = f"{message[:a]}**{match.group(0)}**{message[b:]}"

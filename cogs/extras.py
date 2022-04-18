@@ -24,6 +24,14 @@ class Extras(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.nick_pattern = re.compile("^[a-z]{2,}.*$", re.RegexFlag.IGNORECASE)
+        self.bot.loop.create_task(self.init())
+
+    async def init(self):
+        await self.bot.wait_until_all_ready()
+        for view in await crud.get_vote_views('SimpleVoteView'):
+            v = utils.SimpleVoteView(view.author_id, options=view.options.split('|'), custom_id=view.id, start=view.start)
+            self.bot.add_view(v, message_id=view.message_id)
+            v.message_id = view.message_id
 
     prune_key = "nokey"
 
@@ -107,8 +115,12 @@ class Extras(commands.Cog):
     async def serverroles(self, ctx, exp: str):
         """Gets the server roles and their id by regex. Staff only."""
         msg = f"Server roles matching `{exp}`:\n\n"
+        try:
+            reg_expr = re.compile(exp, re.IGNORECASE)
+        except re.error:
+            return await ctx.send("Invalid regex expression.")
         for role in ctx.guild.roles:
-            if bool(re.search(exp, role.name, re.IGNORECASE)):
+            if bool(reg_expr.search(role.name)):
                 msg += f"{role.name} = {role.id}\n"
         await ctx.author.send(msg)
 
@@ -395,6 +407,25 @@ class Extras(commands.Cog):
             return await ctx.send("This tag doesn't exists!")
         await crud.delete_tag(title=title)
         await ctx.send("Tag deleted successfully")
+
+    @is_staff('OP')
+    @app_commands.describe(name="Name of the vote",
+                           description="Description of the vote",
+                           options="Options for the vote separated by \'|\'")
+    @app_commands.command()
+    async def simplevote(self,
+                         interaction,
+                         name: str,
+                         description: str,
+                         options: str = "Yes|No"):
+        """Creates a simple vote, only the who made the vote can stop it. OP+ only."""
+        options_parsed = options.split('|')
+        view = utils.SimpleVoteView(interaction.user.id, options_parsed, interaction.id, start=discord.utils.utcnow())
+        embed = discord.Embed(title=name, description=description)
+        await interaction.response.send_message(embed=embed, view=view)
+        msg = await interaction.original_message()
+        view.message_id = msg.id
+        await crud.add_vote_view(view_id=interaction.id, identifier='extras', author_id=interaction.user.id, options=options, start=datetime.datetime.utcnow(), message_id=msg.id)
 
 
 async def setup(bot):

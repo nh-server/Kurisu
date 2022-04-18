@@ -20,6 +20,7 @@ from discord import app_commands
 from discord.ext import commands
 from logging.handlers import TimedRotatingFileHandler
 from subprocess import check_output, CalledProcessError
+from typing import Optional
 from utils import crud
 from utils.checks import check_staff_id
 from utils.manager import InviteFilterManager, WordFilterManager, LevenshteinFilterManager
@@ -310,8 +311,9 @@ class Kurisu(commands.Bot):
 
     async def load_channels(self):
         for n in self.channels:
-            if channel := await Channel.query.where(Channel.name == n).gino.scalar():
-                self.channels[n] = self.guild.get_channel(channel)
+            channel_id: Optional[int] = await Channel.query.where(Channel.name == n).gino.scalar()
+            if channel_id and (channel := self.guild.get_channel(channel_id)):
+                self.channels[n] = channel
             else:
                 self.channels[n] = discord.utils.get(self.guild.channels, name=n)
                 if not self.channels[n]:
