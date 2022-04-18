@@ -356,14 +356,13 @@ class Extras(commands.Cog):
     @commands.group(invoke_without_command=True)
     async def tag(self, ctx, title: str = ""):
         """Command group for commands related to tags."""
-        if ctx.invoked_subcommand is None:
-            if title:
-                if tag := await crud.get_tag(title):
-                    return await ctx.send(tag.content)
-                else:
-                    await ctx.send("This tag doesn't exist!")
+        if title:
+            if tag := await crud.get_tag(title):
+                return await ctx.send(tag.content)
             else:
-                await ctx.send_help(ctx.command)
+                await ctx.send("This tag doesn't exist!")
+        else:
+            await ctx.send_help(ctx.command)
 
     @is_staff('Helper')
     @tag.command()
