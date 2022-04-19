@@ -300,7 +300,7 @@ class Extras(commands.Cog):
     async def reference(self, ctx, message: discord.Message, ref_text: bool = True, ref_image: bool = True):
         """Creates a embed with the contents of message. Helpers+ only"""
         await ctx.message.delete()
-        
+
         # xnoeproofing:tm:
         if not message.channel.permissions_for(ctx.author).read_messages:
             return await ctx.send("bad xnoe, bad")
