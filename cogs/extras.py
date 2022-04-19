@@ -301,8 +301,9 @@ class Extras(commands.Cog):
     async def reference(self, ctx, message: discord.Message, ref_text: bool = True, ref_image: bool = True):
         """Creates a embed with the contents of message. Helpers+ only"""
         await ctx.message.delete()
-
-        # xnoeproofing:tm:
+        if isinstance(message.channel, discord.DMChannel):
+            return await ctx.send("Message can't be from a DM.")
+        # xnoeproofing™
         if not message.channel.permissions_for(ctx.author).read_messages:
             return await ctx.send("bad xnoe, bad", delete_after=10)
 
@@ -317,6 +318,15 @@ class Extras(commands.Cog):
         embed.set_author(name=message.author, icon_url=message.author.display_avatar.url, url=message.jump_url)
         embed.set_footer(text=f"in {message.channel.name}")
         await ctx.send(embed=embed)
+
+    @reference.error
+    async def reference_handler(self, ctx, error):
+        if isinstance(error, (commands.ChannelNotFound, commands.MessageNotFound, commands.GuildNotFound)):
+            await ctx.send(f"{ctx.author.mention} Message not found!", delete_after=10)
+        elif isinstance(error, commands.CheckFailure):
+            await ctx.send(f"You can't use {ctx.command.name}.", delete_after=10)
+        else:
+            await ctx.send(error, delete_after=10)
 
     @commands.dm_only()
     @commands.cooldown(rate=1, per=21600.0, type=commands.BucketType.member)

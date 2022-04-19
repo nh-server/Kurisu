@@ -341,6 +341,10 @@ class Kurisu(commands.Bot):
         command: commands.Command = ctx.command
         exc = getattr(exc, 'original', exc)
         channel = self.err_channel or ctx.channel
+
+        if hasattr(ctx.command, 'on_error'):
+            return
+
         if isinstance(exc, commands.CommandNotFound):
             return
 
