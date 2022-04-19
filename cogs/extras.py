@@ -12,7 +12,7 @@ from disnake.ext.commands import Param
 from discord.ext import commands
 from typing import Union
 from utils import crud, utils
-from utils.checks import is_staff
+from utils.checks import is_staff, check_if_user_can_sr
 from utils.utils import gen_color, dtm_to_discord_timestamp
 
 python_version = sys.version.split()[0]
@@ -295,7 +295,7 @@ class Extras(commands.Cog):
         else:
             await inter.send(f"{channel_name} is not a valid toggleable channel.", ephemeral=True)
 
-    @is_staff("Helper")
+    @check_if_user_can_sr()
     @commands.command(aliases=['ref'])
     async def reference(self, ctx, message: discord.Message, ref_text: bool = True, ref_image: bool = True):
         """Creates a embed with the contents of message. Helpers+ only"""
@@ -303,7 +303,7 @@ class Extras(commands.Cog):
 
         # xnoeproofing:tm:
         if not message.channel.permissions_for(ctx.author).read_messages:
-            return await ctx.send("bad xnoe, bad")
+            return await ctx.send("bad xnoe, bad", delete_after=10)
 
         embed = discord.Embed(colour=gen_color(message.author.id), timestamp=message.created_at)
         if ref_text and message.content:
