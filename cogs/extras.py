@@ -296,6 +296,7 @@ class Extras(commands.Cog):
             await inter.send(f"{channel_name} is not a valid toggleable channel.", ephemeral=True)
 
     @check_if_user_can_sr()
+    @commands.guild_only()
     @commands.command(aliases=['ref'])
     async def reference(self, ctx, message: discord.Message, ref_text: bool = True, ref_image: bool = True):
         """Creates a embed with the contents of message. Helpers+ only"""
