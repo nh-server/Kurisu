@@ -12,7 +12,7 @@ from disnake.ext.commands import Param
 from discord.ext import commands
 from typing import Union
 from utils import crud, utils
-from utils.checks import is_staff, check_if_user_can_sr
+from utils.checks import is_staff, check_if_user_can_sr, check_staff_id
 from utils.utils import gen_color, dtm_to_discord_timestamp
 
 python_version = sys.version.split()[0]
@@ -298,9 +298,12 @@ class Extras(commands.Cog):
     @check_if_user_can_sr()
     @commands.guild_only()
     @commands.command(aliases=['ref'])
-    async def reference(self, ctx, message: discord.Message, ref_text: bool = True, ref_image: bool = True):
+    async def reference(self, ctx: commands.Context, message: discord.Message, ref_text: bool = True, ref_image: bool = True, ref_author: bool = False):
         """Creates a embed with the contents of message. Trusted, Helpers, Staff, Retired Staff, Verified only."""
         await ctx.message.delete()
+        msg_reference = ctx.message.reference or None
+        mention_author = any(ctx.message.mentions)
+        ref_author = ref_author if await check_staff_id('Helper', ctx.author.id) else True
         if isinstance(message.channel, discord.DMChannel):
             return await ctx.send("Message can't be from a DM.")
         # xnoeproofing™
@@ -316,8 +319,8 @@ class Extras(commands.Cog):
         if embed.description == discord.Embed.Empty and not embed.image.__dict__:
             return await ctx.send("No information to reference!", delete_after=10)
         embed.set_author(name=message.author, icon_url=message.author.display_avatar.url, url=message.jump_url)
-        embed.set_footer(text=f"in {message.channel.name}")
-        await ctx.send(embed=embed)
+        embed.set_footer(text=f"in {message.channel.name}{f'. Ref by {ctx.author}' if ref_author else ''}")
+        await ctx.send(embed=embed, reference=msg_reference, mention_author=mention_author)
 
     @reference.error
     async def reference_handler(self, ctx, error):
