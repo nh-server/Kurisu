@@ -299,7 +299,7 @@ class Extras(commands.Cog):
     @commands.guild_only()
     @commands.command(aliases=['ref'])
     async def reference(self, ctx, message: discord.Message, ref_text: bool = True, ref_image: bool = True):
-        """Creates a embed with the contents of message. Helpers+ only"""
+        """Creates a embed with the contents of message. Trusted, Helpers, Staff, Retired Staff, Verified only."""
         await ctx.message.delete()
         if isinstance(message.channel, discord.DMChannel):
             return await ctx.send("Message can't be from a DM.")
