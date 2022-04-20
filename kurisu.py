@@ -222,8 +222,6 @@ class Kurisu(commands.Bot):
 
         self.guild = self.guilds[0]
 
-        await self.tree.sync()
-
         # Load Filters
         await self.wordfilter.load()
         logger.info("Loaded wordfilter")

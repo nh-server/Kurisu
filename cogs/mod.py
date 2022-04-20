@@ -978,6 +978,13 @@ class Mod(commands.Cog):
         await self.bot.user.edit(username=username)
 
     @is_staff("SuperOP")
+    @commands.command()
+    async def sync(self, ctx: commands.Context):
+        """Syncs app commands manually. SuperOP only"""
+        await ctx.bot.tree.sync()
+        await ctx.send("App commands synced!")
+
+    @is_staff("SuperOP")
     @commands.guild_only()
     @commands.command()
     async def nofilter(self, ctx, channel: discord.TextChannel):
