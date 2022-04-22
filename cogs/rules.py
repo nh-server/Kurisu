@@ -110,6 +110,7 @@ https://discord.gg/C29hYvh"""
     @is_staff('SuperOP')
     @commands.group()
     async def rule(self, ctx):
+        """Group to manage the server rules."""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 

@@ -44,6 +44,7 @@ class Extras(commands.Cog):
 
     @commands.command(hidden=True)
     async def env(self, ctx):
+        """Sends the bot environment"""
         msg = f'''
         Python {python_version}
         discord.py {discordpy_version}
@@ -366,6 +367,7 @@ class Extras(commands.Cog):
 
     @commands.command()
     async def listreminders(self, ctx):
+        """Lists pending reminders."""
         reminders = await crud.get_user_reminders(ctx.author.id)
         if not reminders:
             return await ctx.send("You don't have any reminders scheduled.")
@@ -381,6 +383,7 @@ class Extras(commands.Cog):
 
     @commands.command()
     async def unremindme(self, ctx, number: int):
+        """Removes a pending reminder."""
         reminders = await crud.get_user_reminders(ctx.author.id)
         if not reminders:
             return await ctx.send("You don't have any reminders scheduled.")

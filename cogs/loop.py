@@ -92,11 +92,13 @@ class Loop(commands.Cog):
     @commands.command()
     @commands.cooldown(rate=1, per=60.0, type=commands.BucketType.channel)
     async def netinfo(self, ctx):
+        """Show the nintendo network status."""
         await ctx.send(embed=self.netinfo_embed)
 
     @commands.command()
     @commands.cooldown(rate=1, per=60.0, type=commands.BucketType.channel)
     async def netinfo_refresh(self, ctx):
+        """Refreshes the nintendo network status information."""
         await self.update_netinfo()
         embed = discord.Embed(title="Netinfo Refresh", color=discord.Color.blue())
         embed.description = "Refresh complete."

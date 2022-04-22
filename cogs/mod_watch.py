@@ -22,6 +22,7 @@ class Modwatch(commands.Cog):
     @is_staff("Helper")
     @commands.command()
     async def watch(self, ctx, member: discord.Member, *, reason=""):
+        """Adds a member to the watchlist."""
         if await crud.is_watched(member.id):
             await ctx.send("User is already being watched!")
             return
@@ -40,6 +41,7 @@ class Modwatch(commands.Cog):
     @is_staff("Helper")
     @commands.command()
     async def unwatch(self, ctx, member: discord.Member):
+        """Removes a member from the watchlist."""
         if not await crud.is_watched(member.id):
             await ctx.send("This user was not being watched.")
             return
@@ -52,6 +54,7 @@ class Modwatch(commands.Cog):
     @is_staff("Helper")
     @commands.command()
     async def listwatch(self, ctx):
+        """List the members in the watchlist."""
         watchlist = await crud.get_watch_list()
         lines = []
         for db_member in watchlist:
@@ -70,6 +73,7 @@ class Modwatch(commands.Cog):
     @is_staff("OP")
     @commands.command()
     async def watch_cleanup(self, ctx):
+        """Removes members that aren't in the server from the watchlist."""
         removed = 0
         watchlist = await crud.get_watch_list()
         for member in watchlist:

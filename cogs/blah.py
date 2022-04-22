@@ -19,11 +19,13 @@ class Blah(commands.Cog):
     @is_staff("OP")
     @commands.command()
     async def announce(self, ctx, *, inp):
+        """Posts a message to the announcement channel."""
         await self.bot.channels['announcements'].send(inp, allowed_mentions=discord.AllowedMentions(everyone=True, roles=True))
 
     @is_staff("OP")
     @commands.command()
     async def speak(self, ctx, channel: discord.TextChannel, *, inp):
+        """Sends a message to a channel."""
         if channel.id in self.speak_blacklist:
             await ctx.send(f'You cannot send a message to {channel.mention}.')
             return
@@ -32,6 +34,7 @@ class Blah(commands.Cog):
     @is_staff("OP")
     @commands.command()
     async def sendtyping(self, ctx, channel: discord.TextChannel = None):
+        """Triggers typing on a channel."""
         if channel.id in self.speak_blacklist:
             await ctx.send(f'You cannot send a message to {channel.mention}.')
             return
@@ -42,6 +45,7 @@ class Blah(commands.Cog):
     @is_staff("Owner")
     @commands.command()
     async def dm(self, ctx, member: discord.Member, *, inp):
+        """Sends a message to the member."""
         await send_dm_message(member, inp, ctx)
 
 

@@ -99,6 +99,7 @@ class FriendCode(commands.Cog):
 
     @commands.command()
     async def fctest_3ds(self, ctx, fc):
+        """Test a 3ds friend code."""
         fc = self.verify_3ds_fc(fc)
         if fc:
             await ctx.send(self.n3ds_fc_to_string(fc))
@@ -107,6 +108,7 @@ class FriendCode(commands.Cog):
 
     @commands.command()
     async def fctest_switch(self, ctx, fc):
+        """Test a switch friend code."""
         fc = self.verify_switch_fc(fc)
         if fc:
             await ctx.send(self.switch_fc_to_string(fc))
