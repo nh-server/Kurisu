@@ -24,6 +24,10 @@ def setup(bot):
 
 
 class SwitchSerialNumberCheck(Cog):
+    """
+    Commands for checking switch serials.
+    """
+
     def __init__(self, bot):
         self.bot = bot
 

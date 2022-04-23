@@ -36,6 +36,10 @@ class Season:
 
 
 class Seasonal(commands.Cog):
+    """
+    Seasonal commands.
+    """
+
     seasons: List[Season] = [
         Season("12.1", "12.31", "🎄", "xmasthing"),
         Season("6.1", "6.31", "🌈", "rainbow"),
