@@ -17,6 +17,7 @@ class Newcomers(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.emoji = discord.PartialEmoji.from_str('🆕')
         self.autoprobate = False
         self.bot.loop.create_task(self.init())  # We can't do proper init here.
         self.join_list = []

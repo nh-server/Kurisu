@@ -13,6 +13,7 @@
 # WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+import discord
 import re
 
 from discord.ext import commands
@@ -30,6 +31,7 @@ class SwitchSerialNumberCheck(Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.emoji = discord.PartialEmoji.from_str('*️⃣')
 
     @commands.command(aliases=["ssnc"])
     async def check_nx_serial(self, ctx, serial):

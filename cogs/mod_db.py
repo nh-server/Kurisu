@@ -1,3 +1,5 @@
+import discord
+
 from discord.ext import commands
 from utils import crud
 from utils.checks import is_staff
@@ -12,6 +14,7 @@ class ModDB(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.emoji = discord.PartialEmoji.from_str('💾‍')
 
     async def cog_check(self, ctx):
         if ctx.guild is None:

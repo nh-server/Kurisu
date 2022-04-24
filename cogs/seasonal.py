@@ -51,6 +51,7 @@ class Seasonal(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.emoji = discord.PartialEmoji.from_str('\u2600\ufe0f')
 
     async def _seasonal_impl(self, ctx, mode: str, target: str = None):
         t = datetime.today()

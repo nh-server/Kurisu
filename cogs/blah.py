@@ -11,6 +11,7 @@ class Blah(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
+        self.emoji = discord.PartialEmoji.from_str('🗣️')
 
     speak_blacklist = [
         647348710602178560,  # #minecraft-console

@@ -14,6 +14,7 @@ class Filter(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
+        self.emoji = discord.PartialEmoji.from_str('🖥️')
 
     # Command group for the word filter
     @is_staff("Helper")

@@ -14,6 +14,7 @@ class Memes(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
+        self.emoji = discord.utils.get(self.bot.guild.emojis, name='fug') or discord.PartialEmoji.from_str("⁉")
 
     async def _meme(self, ctx, msg, directed: bool = False, imagelink=None, allowed_mentions=None):
         author = ctx.author

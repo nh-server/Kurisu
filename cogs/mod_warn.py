@@ -15,6 +15,7 @@ class ModWarn(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.emoji = discord.PartialEmoji.from_str('\u26A0')
 
     async def cog_check(self, ctx):
         if ctx.guild is None and ctx.command.name != "listwarns":

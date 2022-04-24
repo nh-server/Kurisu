@@ -22,6 +22,7 @@ from subprocess import check_output, CalledProcessError
 from typing import Optional
 from utils import crud
 from utils.checks import check_staff_id
+from utils.help import KuriHelp
 from utils.manager import InviteFilterManager, WordFilterManager, LevenshteinFilterManager
 from utils.models import Channel, Role, db
 from utils.utils import create_error_embed
@@ -204,18 +205,20 @@ class Kurisu(commands.Bot):
         self.err_channel = None
         self.actions = []
         self.pruning = False
+        self.emoji = discord.PartialEmoji.from_str("⁉")
 
         self.session = aiohttp.ClientSession(loop=self.loop)
 
         self._is_all_ready = asyncio.Event()
-        self.load_cogs()
 
     async def on_ready(self):
-
         if self._is_all_ready.is_set():
             return
 
         self.guild = self.guilds[0]
+        self.load_cogs()
+
+        self.emoji = discord.utils.get(self.guild.emojis, name='kurisu') or discord.PartialEmoji.from_str("⁉")
 
         # Load Filters
         await self.wordfilter.load()
@@ -516,7 +519,7 @@ async def startup():
     logger.info("Starting Kurisu on commit %s on branch %s", commit, branch)
     bot = Kurisu(command_prefix=['.', '!'], description="Kurisu, the bot for Nintendo Homebrew!", commit=commit,
                  branch=branch)
-    bot.help_command = commands.DefaultHelpCommand(dm_help=None)
+    bot.help_command = KuriHelp()
     bot.engine = engine
     await bot.start(TOKEN)
 

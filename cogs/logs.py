@@ -32,8 +32,8 @@ Thanks for stopping by and have a good time!
     @commands.Cog.listener()
     async def on_ready(self):
         await self.bot.wait_until_all_ready()
-        self.logo_nitro = discord.utils.get(self.bot.guild.emojis, name="nitro") or "⁉"
-        self.logo_boost = discord.utils.get(self.bot.guild.emojis, name="boost") or "⁉"
+        self.logo_nitro = discord.utils.get(self.bot.guild.emojis, name="nitro") or discord.PartialEmoji.from_str("⁉")
+        self.logo_boost = discord.utils.get(self.bot.guild.emojis, name="boost") or discord.PartialEmoji.from_str("⁉")
         self.nitro_msg = f"""Thanks for boosting {self.logo_nitro} Nintendo Homebrew!
         As a Nitro Booster you have the following bonuses:
         - React permissions in {self.bot.channels['off-topic'].mention}, {self.bot.channels['elsewhere'].mention}, and {self.bot.channels['nintendo-discussion'].mention}.

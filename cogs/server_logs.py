@@ -14,6 +14,7 @@ class ServerLogs(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.emoji = discord.PartialEmoji.from_str('⚙')
         if SERVER_LOGS_URL:
             self.engine = create_engine(SERVER_LOGS_URL)
 

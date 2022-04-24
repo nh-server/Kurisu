@@ -1,3 +1,4 @@
+import discord
 import xkcd
 
 from discord.ext import commands
@@ -9,6 +10,7 @@ class xkcdparse(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
+        self.emoji = discord.PartialEmoji.from_str('📡')
 
     word_responses = {
         "pointers": 138,

@@ -12,6 +12,7 @@ class HelperList(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.emoji = discord.PartialEmoji.from_str('📜')
 
     async def cog_check(self, ctx):
         if ctx.guild is None:

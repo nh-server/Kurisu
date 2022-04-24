@@ -20,6 +20,7 @@ class Loop(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.emoji = discord.PartialEmoji.from_str('⌚')
         bot.loop.create_task(self.start_update_loop())
 
     def __unload(self):

@@ -34,6 +34,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
 
     def __init__(self, bot):
         self.bot = bot
+        self.emoji = discord.utils.get(self.bot.guild.emojis, name='3dslogo') or discord.PartialEmoji.from_str("⁉")
 
     async def unisearch(self, query: str) -> list[dict]:
         query = query.lower()

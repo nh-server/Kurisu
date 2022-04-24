@@ -24,6 +24,7 @@ class Extras(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
+        self.emoji = discord.PartialEmoji.from_str('🎲')
         self.nick_pattern = re.compile("^[a-z]{2,}.*$", re.RegexFlag.IGNORECASE)
         self.bot.loop.create_task(self.init())
 

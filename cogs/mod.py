@@ -17,6 +17,7 @@ class Mod(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.emoji = discord.PartialEmoji.from_str('🧙')
 
     @is_staff("Owner")
     @commands.command()

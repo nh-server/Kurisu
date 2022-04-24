@@ -8,6 +8,11 @@ class Results(commands.Cog):
     """
     Parses game console result codes.
     """
+
+    def __init__(self, bot):
+        self.bot = bot
+        self.emoji = discord.PartialEmoji.from_str('⚠')
+
     def fetch(self, error):
         if ctr_support.is_valid(error):
             return ctr_support.get(error)
