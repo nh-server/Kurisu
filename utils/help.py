@@ -109,7 +109,7 @@ class KuriHelp(commands.HelpCommand):
 
         view = HelpView(self)
         view.embed_cache['Bot Help'] = embed
-        view.add_item(CategorySelect(options=options, placeholder='Select an category', mapping=f_mapping))
+        view.add_item(CategorySelect(options=options, placeholder='Select a category', mapping=f_mapping))
 
         channel = self.get_destination()
         msg = await channel.send(embed=embed, view=view, reference=self.context.message)
