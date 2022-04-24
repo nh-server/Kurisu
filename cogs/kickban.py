@@ -225,7 +225,7 @@ class KickBan(commands.Cog):
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
     @commands.command(name="timeban", aliases=["timeyeet"])
-    async def timeban_member(self, ctx, member: Union[discord.Member, discord.User], length: utils.TimeConverter, *, reason=""):
+    async def timeban_member(self, ctx, member: Union[discord.Member, discord.User], length: utils.DateOrTimeConverter, *, reason=""):
         """Bans a user for a limited period of time. OP+ only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "timeban"):
             return

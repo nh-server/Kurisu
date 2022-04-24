@@ -365,7 +365,7 @@ class Mod(commands.Cog):
     @commands.bot_has_permissions(manage_roles=True)
     @commands.guild_only()
     @commands.command()
-    async def oldtimemute(self, ctx, member: discord.Member, length: utils.TimeConverter, *, reason=""):
+    async def oldtimemute(self, ctx, member: discord.Member, length: utils.DateOrTimeConverter, *, reason=""):
         """Mutes a user for a limited period of time so they can't speak. Staff only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "mute"):
             return
@@ -418,7 +418,7 @@ class Mod(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.command(aliases=['timemute'])
-    async def timeout(self, ctx, member: discord.Member, length: utils.TimeConverter, *, reason: str = None):
+    async def timeout(self, ctx, member: discord.Member, length: utils.DateOrTimeConverter, *, reason: str = None):
         """Times out a user. Staff only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "timeout"):
             return
@@ -616,7 +616,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["timenohelp"])
-    async def timetakehelp(self, ctx, member: discord.Member, length: utils.TimeConverter, *, reason=""):
+    async def timetakehelp(self, ctx, member: discord.Member, length: utils.DateOrTimeConverter, *, reason=""):
         """Restricts a user from Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "takehelp"):
             return
@@ -697,7 +697,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["timenotech"])
-    async def timetaketech(self, ctx, member: discord.Member, length: utils.TimeConverter, *, reason=""):
+    async def timetaketech(self, ctx, member: discord.Member, length: utils.DateOrTimeConverter, *, reason=""):
         """Restricts a user from the tech channel for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "taketech"):
             return
@@ -758,7 +758,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["timemutehelp"])
-    async def timehelpmute(self, ctx, member: discord.Member, length: utils.TimeConverter, *, reason=""):
+    async def timehelpmute(self, ctx, member: discord.Member, length: utils.DateOrTimeConverter, *, reason=""):
         """Restricts a user from speaking in Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "helpmute"):
             return
