@@ -12,7 +12,7 @@ class Rules(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
-        self.bot.create_task(self.async_init())
+        self.bot.loop.create_task(self.async_init())
         self.emoji = discord.PartialEmoji.from_str('📖')
 
     async def async_init(self):
