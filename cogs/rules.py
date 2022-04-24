@@ -12,11 +12,10 @@ class Rules(commands.Cog):
     """
     def __init__(self, bot):
         self.bot = bot
+        self.bot.create_task(self.async_init())
         self.emoji = discord.PartialEmoji.from_str('📖')
 
-    @commands.Cog.listener()
-    async def on_ready(self):
-        await self.bot.wait_until_all_ready()
+    async def async_init(self):
         self.nh_emoji = discord.utils.get(self.bot.guild.emojis, name="nintendo_homebrew") or discord.PartialEmoji.from_str("⁉")
         self.logo_3ds = discord.utils.get(self.bot.guild.emojis, name="3dslogo") or discord.PartialEmoji.from_str("⁉")
         self.logo_wiiu = discord.utils.get(self.bot.guild.emojis, name="wiiulogo") or discord.PartialEmoji.from_str("⁉")
