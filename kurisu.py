@@ -216,7 +216,6 @@ class Kurisu(commands.Bot):
             return
 
         self.guild = self.guilds[0]
-        self.load_cogs()
 
         self.emoji = discord.utils.get(self.guild.emojis, name='kurisu') or discord.PartialEmoji.from_str("⁉")
 
@@ -258,6 +257,8 @@ class Kurisu(commands.Bot):
                             }
 
         self.err_channel = self.channels['bot-err']
+
+        self.load_cogs()
 
         startup_message = f'{self.user.name} has started! {self.guild} has {self.guild.member_count:,} members!'
         embed = discord.Embed(title=f"{self.user.name} has started!",
