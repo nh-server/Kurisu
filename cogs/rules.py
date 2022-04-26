@@ -2,7 +2,7 @@ import discord
 
 from utils import crud
 from utils.checks import is_staff
-from utils.utils import paginate_message
+from utils.utils import paginate_message, PaginatedEmbedView
 from discord.ext import commands
 
 
@@ -167,7 +167,10 @@ https://discord.gg/C29hYvh"""
     @commands.command()
     async def rules(self, ctx):
         """Links to the welcome-and-rules channel."""
-        await ctx.send(f"Please check {self.bot.channels['welcome-and-rules'].mention} for a full list of rules")
+        embeds = [discord.Embed(title=f"Rule {rule}", description=description, colour=0x128bed) for rule, description in self.rules_dict.items()]
+        view = PaginatedEmbedView(embeds=embeds, author=ctx.author)
+        msg = await ctx.send(embed=embeds[0], view=view)
+        view.message = msg
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
