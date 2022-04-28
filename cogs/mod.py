@@ -5,7 +5,7 @@ import re
 from disnake.ext.commands import Param
 from discord.ext import commands
 from subprocess import call
-from typing import Union
+from typing import Union, Optional
 from utils import utils, crud, models
 from utils.checks import is_staff, check_staff_id, check_bot_or_staff
 
@@ -206,7 +206,7 @@ class Mod(commands.Cog):
     @commands.bot_has_permissions(manage_channels=True)
     @commands.guild_only()
     @commands.command()
-    async def slowmode(self, ctx, arg: Union[discord.TextChannel, str], *, length: str = None):
+    async def slowmode(self, ctx, channel: Optional[discord.TextChannel], *, length: str = None):
         """Apply a given slowmode time to a channel.
 
         The time format is identical to that used for timed kicks/bans/takehelps.
@@ -214,13 +214,8 @@ class Mod(commands.Cog):
 
         Helpers in assistance channels and Staff only."""
 
-        if isinstance(arg, discord.TextChannel):
-            channel = arg
-            if length is None:
-                return await ctx.send_help(ctx.command)
-        else:
+        if not channel:
             channel = ctx.channel
-            length = arg
 
         if (seconds := utils.parse_time(length)) == -1:
             return await ctx.send("💢 I don't understand your time format.")
