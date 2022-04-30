@@ -5,7 +5,7 @@ from discord.ext import commands
 from inspect import cleandoc
 from os.path import dirname, join
 
-from typing import Optional
+from typing import Optional, Literal
 from utils import crud
 from utils.models import Channel
 from utils.utils import PaginatedEmbedView
@@ -63,7 +63,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
 
     @check_if_user_can_sr()
     @commands.guild_only()
-    @commands.command(aliases=["sr"], cooldown=commands.CooldownMapping.from_cooldown(rate=0, per=0, type=commands.BucketType.channel))
+    @commands.command(aliases=["sr"], cooldown=None)
     async def staffreq(self, ctx, *, msg_request: str = ""):
         """Request staff, with optional additional text. Trusted, Helpers, Staff, Retired Staff, Verified only."""
         author = ctx.author
@@ -82,20 +82,22 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
 
     @is_staff('Helper')
     @commands.guild_only()
-    @commands.command()
-    async def createsmallhelp(self, ctx, name: str, helpee: Optional[discord.Member]):
+    @commands.command(cooldown=None)
+    async def createsmallhelp(self, ctx, console: Literal['3ds', 'switch', 'wiiu', 'legacy'], helpee: discord.Member, desc: str):
         """Creates a small help channel with the option to add a member. Helper+ only."""
         if not self.small_help_category:
             return await ctx.send("The small help category is not set.")
-        channel = await self.small_help_category.create_text_channel(name=name)
-        if helpee:
-            await helpee.add_roles(self.bot.roles['Small Help'])
-            await channel.send(f"{helpee.mention}, come here for help.")
+        channel = await self.small_help_category.create_text_channel(name=f"{console}-{helpee.name}-{desc}")
+        await helpee.add_roles(self.bot.roles['Small Help'])
+        await channel.send(f"{helpee.mention}, come here for help.")
+        await self.bot.channels['mod-logs'].send(f"⭕️ **Small help access granted**: {ctx.author.mention} granted access to small help channel to {helpee.mention}")
+        msg = f"🆕 **Small help channel created**: {ctx.author.mention} created small help channel {channel.mention} | {channel.name} ({channel.id})"
+        await self.bot.channels['mod-logs'].send(msg)
         await ctx.send(f"Created small help {channel.mention}.")
 
     @is_staff('OP')
     @commands.guild_only()
-    @commands.command()
+    @commands.command(cooldown=None)
     async def setsmallhelp(self, ctx, category: discord.CategoryChannel):
         """Sets the small help category for creating channels. OP+ only."""
         if dbchannel := await Channel.query.where(Channel.name == 'small-help').gino.one_or_none():

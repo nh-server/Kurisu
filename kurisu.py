@@ -369,6 +369,10 @@ class Kurisu(commands.Bot):
             await ctx.send_help(ctx.command)
             command.reset_cooldown(ctx)
 
+        elif isinstance(exc, commands.BadLiteralArgument):
+            await ctx.send(f'Argument {exc.param.name} must be one of the following `{"` `".join(exc.literals)}`.')
+            command.reset_cooldown(ctx)
+
         elif isinstance(exc, commands.UserInputError):
             await ctx.send(f'{author.mention} A bad argument was given: `{exc}`\n')
             await ctx.send_help(ctx.command)
