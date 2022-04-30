@@ -5,8 +5,11 @@ from discord.ext import commands
 from inspect import cleandoc
 from os.path import dirname, join
 
+from typing import Optional
+from utils import crud
+from utils.models import Channel
 from utils.utils import PaginatedEmbedView
-from utils.checks import check_if_user_can_sr
+from utils.checks import check_if_user_can_sr, is_staff
 from utils.mdcmd import add_md_files_as_commands
 
 logger = logging.getLogger(__name__)
@@ -35,6 +38,14 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
     def __init__(self, bot):
         self.bot = bot
         self.emoji = discord.utils.get(self.bot.guild.emojis, name='3dslogo') or discord.PartialEmoji.from_str("⁉")
+        self.small_help_category: Optional[discord.CategoryChannel] = None
+        self.bot.loop.create_task(self.setup_assistance())
+
+    async def setup_assistance(self):
+        await self.bot.wait_until_all_ready()
+        channel_id = await Channel.query.where(Channel.name == 'small-help').gino.scalar()
+        if channel_id:
+            self.small_help_category = self.bot.guild.get_channel(channel_id)
 
     async def unisearch(self, query: str) -> list[dict]:
         query = query.lower()
@@ -68,6 +79,31 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
             await author.send(f"✅ Online staff have been notified of your request in {ctx.channel.mention}.", embed=(embed if msg_request != "" else None))
         except discord.errors.Forbidden:
             pass
+
+    @is_staff('Helper')
+    @commands.guild_only()
+    @commands.command()
+    async def createsmallhelp(self, ctx, name: str, helpee: Optional[discord.Member]):
+        """Creates a small help channel with the option to add a member. Helper+ only."""
+        if not self.small_help_category:
+            return await ctx.send("The small help category is not set.")
+        channel = await self.small_help_category.create_text_channel(name=name)
+        if helpee:
+            await helpee.add_roles(self.bot.roles['Small Help'])
+            await channel.send(f"{helpee.mention}, come here for help.")
+        await ctx.send(f"Created small help {channel.mention}.")
+
+    @is_staff('OP')
+    @commands.guild_only()
+    @commands.command()
+    async def setsmallhelp(self, ctx, category: discord.CategoryChannel):
+        """Sets the small help category for creating channels. OP+ only."""
+        if dbchannel := await Channel.query.where(Channel.name == 'small-help').gino.one_or_none():
+            await dbchannel.update(id=category.id).apply()
+        else:
+            await crud.add_dbchannel(category.id, name='small-help')
+        self.small_help_category = category
+        await ctx.send("Small help category set.")
 
     @commands.command()
     async def nxcfw(self, ctx, cfw=""):
