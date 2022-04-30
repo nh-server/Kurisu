@@ -1,3 +1,4 @@
+import aiohttp
 import datetime
 import discord
 import inspect
@@ -464,6 +465,27 @@ class Extras(commands.Cog):
         msg = await interaction.original_message()
         view.message_id = msg.id
         await crud.add_vote_view(view_id=interaction.id, identifier='extras', author_id=interaction.user.id, options=options, start=datetime.datetime.utcnow(), message_id=msg.id)
+
+    @is_staff('OP')
+    @commands.command()
+    async def addemoji(self, ctx: commands.Context, name: str, emoji: Union[discord.PartialEmoji, str], *roles: discord.Role):
+        """Add a emoji to the server. OP+ only."""
+        if isinstance(emoji, discord.PartialEmoji):
+            emoji_bytes = await emoji.read()
+        else:
+            try:
+                async with self.bot.session.get(emoji, timeout=45) as r:
+                    if r.status == 200:
+                        if r.headers["Content-Type"] in ('image/jpeg', 'image/png', 'image/gif'):
+                            emoji_bytes = await r.read()
+                        else:
+                            return await ctx.send("Only `.jpeg`, `.png` and `.gif` images can used for emojis.")
+                    else:
+                        return await ctx.send("Failed to fetch image.")
+            except aiohttp.InvalidURL:
+                return await ctx.send("Invalid url.")
+        emoji = await ctx.guild.create_custom_emoji(name=name, image=emoji_bytes, roles=roles, reason="Probably nothing good.")
+        await ctx.send(f"Added emoji {emoji if emoji.is_usable() else name} successfully!")
 
 
 def setup(bot):
