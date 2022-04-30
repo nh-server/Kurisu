@@ -467,6 +467,7 @@ class Extras(commands.Cog):
         await crud.add_vote_view(view_id=interaction.id, identifier='extras', author_id=interaction.user.id, options=options, start=datetime.datetime.utcnow(), message_id=msg.id)
 
     @is_staff('OP')
+    @commands.guild_only()
     @commands.command()
     async def addemoji(self, ctx: commands.Context, name: str, emoji: Union[discord.PartialEmoji, str], *roles: discord.Role):
         """Add a emoji to the server. OP+ only."""
