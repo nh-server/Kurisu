@@ -201,6 +201,7 @@ class Kurisu(commands.Bot):
         self.actions = []
         self.pruning = False
         self.emoji = discord.PartialEmoji.from_str("⁉")
+        self.colour = discord.Colour(0xb01ec3)
 
         self.session = aiohttp.ClientSession(loop=self.loop)
 
