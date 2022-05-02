@@ -1,9 +1,15 @@
+from __future__ import annotations
+
 import discord
 
 from discord.ext import commands
+from typing import TYPE_CHECKING
 from utils import utils, crud
 from utils.checks import is_staff
 from textwrap import wrap
+
+if TYPE_CHECKING:
+    from kurisu import Kurisu
 
 
 class Modwatch(commands.Cog):
@@ -11,18 +17,18 @@ class Modwatch(commands.Cog):
     User watch management commands.
     """
 
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: Kurisu):
+        self.bot: Kurisu = bot
         self.emoji = discord.PartialEmoji.from_str('👀')
 
-    async def cog_check(self, ctx):
+    async def cog_check(self, ctx: commands.Context):
         if ctx.guild is None:
             raise commands.NoPrivateMessage()
         return True
 
     @is_staff("Helper")
     @commands.command()
-    async def watch(self, ctx, member: discord.Member, *, reason=""):
+    async def watch(self, ctx: commands.Context, member: discord.Member, *, reason=""):
         """Adds a member to the watchlist."""
         if await crud.is_watched(member.id):
             await ctx.send("User is already being watched!")
@@ -41,7 +47,7 @@ class Modwatch(commands.Cog):
 
     @is_staff("Helper")
     @commands.command()
-    async def unwatch(self, ctx, member: discord.Member):
+    async def unwatch(self, ctx: commands.Context, member: discord.Member):
         """Removes a member from the watchlist."""
         if not await crud.is_watched(member.id):
             await ctx.send("This user was not being watched.")
@@ -54,7 +60,7 @@ class Modwatch(commands.Cog):
 
     @is_staff("Helper")
     @commands.command()
-    async def listwatch(self, ctx):
+    async def listwatch(self, ctx: commands.Context):
         """List the members in the watchlist."""
         watchlist = await crud.get_watch_list()
         lines = []
@@ -73,7 +79,7 @@ class Modwatch(commands.Cog):
 
     @is_staff("OP")
     @commands.command()
-    async def watch_cleanup(self, ctx):
+    async def watch_cleanup(self, ctx: commands.Context):
         """Removes members that aren't in the server from the watchlist."""
         removed = 0
         watchlist = await crud.get_watch_list()

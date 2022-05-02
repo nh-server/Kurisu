@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import discord
 import logging
 
@@ -5,12 +7,15 @@ from discord.ext import commands
 from inspect import cleandoc
 from os.path import dirname, join
 
-from typing import Optional, Literal
+from typing import Optional, Literal, TYPE_CHECKING
 from utils import crud
 from utils.models import Channel
 from utils.utils import PaginatedEmbedView
 from utils.checks import check_if_user_can_sr, is_staff
 from utils.mdcmd import add_md_files_as_commands
+
+if TYPE_CHECKING:
+    from kurisu import Kurisu
 
 logger = logging.getLogger(__name__)
 
@@ -35,8 +40,8 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
 
     data_dir = join(dirname(__file__), 'assistance-cmds')
 
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: Kurisu):
+        self.bot: Kurisu = bot
         self.emoji = discord.utils.get(self.bot.guild.emojis, name='3dslogo') or discord.PartialEmoji.from_str("⁉")
         self.small_help_category: Optional[discord.CategoryChannel] = None
         self.bot.loop.create_task(self.setup_assistance())
@@ -56,7 +61,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
                 res = j['results']
         return res
 
-    async def simple_embed(self, ctx, text, *, title="", color=discord.Color.default()):
+    async def simple_embed(self, ctx: commands.Context, text: str, *, title: str = "", color=discord.Color.default()):
         embed = discord.Embed(title=title, color=color)
         embed.description = cleandoc(text)
         await ctx.send(embed=embed)
@@ -64,7 +69,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
     @check_if_user_can_sr()
     @commands.guild_only()
     @commands.command(aliases=["sr"], cooldown=None)
-    async def staffreq(self, ctx, *, msg_request: str = ""):
+    async def staffreq(self, ctx: commands.Context, *, msg_request: str = ""):
         """Request staff, with optional additional text. Trusted, Helpers, Staff, Retired Staff, Verified only."""
         author = ctx.author
         await ctx.message.delete()
@@ -83,7 +88,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
     @is_staff('Helper')
     @commands.guild_only()
     @commands.command(cooldown=None)
-    async def createsmallhelp(self, ctx, console: Literal['3ds', 'switch', 'wiiu', 'legacy'], helpee: discord.Member, desc: str):
+    async def createsmallhelp(self, ctx: commands.Context, console: Literal['3ds', 'switch', 'wiiu', 'legacy'], helpee: discord.Member, desc: str):
         """Creates a small help channel with the option to add a member. Helper+ only."""
         if not self.small_help_category:
             return await ctx.send("The small help category is not set.")
@@ -98,7 +103,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
     @is_staff('OP')
     @commands.guild_only()
     @commands.command(cooldown=None)
-    async def setsmallhelp(self, ctx, category: discord.CategoryChannel):
+    async def setsmallhelp(self, ctx: commands.Context, category: discord.CategoryChannel):
         """Sets the small help category for creating channels. OP+ only."""
         if dbchannel := await Channel.query.where(Channel.name == 'small-help').gino.one_or_none():
             await dbchannel.update(id=category.id).apply()
@@ -108,7 +113,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
         await ctx.send("Small help category set.")
 
     @commands.command()
-    async def nxcfw(self, ctx, cfw=""):
+    async def nxcfw(self, ctx: commands.Context, cfw=""):
         """Information on why we don't support or recommend various other Switch CFWs"""
 
         if cfw == "sx":  # Alias for sxos
@@ -147,7 +152,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
         await self.simple_embed(ctx, info['info'], title=f"Why {info['title']} isn't recommended")
 
     @commands.command()
-    async def luma(self, ctx, lumaversion=""):
+    async def luma(self, ctx: commands.Context, lumaversion=""):
         """Download links for Luma versions"""
         if len(lumaversion) >= 3 and lumaversion[0].isdigit() and lumaversion[1] == "." and lumaversion[2].isdigit():
             await self.simple_embed(ctx, f"Luma v{lumaversion}\nhttps://github.com/LumaTeam/Luma3DS/releases/tag/v{lumaversion}", color=discord.Color.blue())
@@ -162,7 +167,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
                                     """, color=discord.Color.blue())
 
     @commands.group(cooldown=commands.CooldownMapping.from_cooldown(0, 0, commands.BucketType.channel), invoke_without_command=True, case_insensitive=True)
-    async def tutorial(self, ctx):
+    async def tutorial(self, ctx: commands.Context):
         """Links to one of multiple guides"""
         if isinstance(ctx.channel, discord.DMChannel):
             await ctx.send_help(ctx.command)
@@ -172,7 +177,7 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
 
     @commands.command()
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
-    async def invite(self, ctx, name: str = ""):
+    async def invite(self, ctx: commands.Context, name: str = ""):
         """Post an invite to an approved server"""
         if not name:
             ctx.command.reset_cooldown(ctx)
@@ -196,7 +201,7 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
 
     @commands.guild_only()
     @commands.command()
-    async def unidb(self, ctx, *, query=""):
+    async def unidb(self, ctx: commands.Context, *, query=""):
         """Links to Universal-DB and/or one of the apps.\n
         To link to Universal-DB: `unidb`
         To search for an app: `unidb [query]`"""

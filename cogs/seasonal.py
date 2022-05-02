@@ -1,9 +1,14 @@
+from __future__ import annotations
+
 import discord
 
 from datetime import datetime
 from discord.ext import commands
 from re import compile, finditer, search
-from typing import List, Union
+from typing import List, Union, Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from kurisu import Kurisu
 
 
 class Season:
@@ -49,11 +54,11 @@ class Seasonal(commands.Cog):
         Season("3.16", "3.17", "🍀", "shamrock"),
     ]
 
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: Kurisu):
+        self.bot: Kurisu = bot
         self.emoji = discord.PartialEmoji.from_str('\u2600\ufe0f')
 
-    async def _seasonal_impl(self, ctx, mode: str, target: str = None):
+    async def _seasonal_impl(self, ctx: commands.Context, mode: str, target: Optional[str] = None):
         t = datetime.today()
         curr_time = f"{t.month}.{t.day}"
         for season_ in self.seasons:
@@ -118,7 +123,7 @@ class Seasonal(commands.Cog):
 
     @commands.guild_only()
     @commands.command()
-    async def seasonal(self, ctx):
+    async def seasonal(self, ctx: commands.Context):
         """Adds the emote of the current season to your name.
 
         You can see which seasons exist and when they are by typing .seasonals
@@ -127,7 +132,7 @@ class Seasonal(commands.Cog):
 
     @commands.guild_only()
     @commands.command()
-    async def noseasonal(self, ctx, *, target: str = None):
+    async def noseasonal(self, ctx: commands.Context, *, target: Optional[str]):
         """Removes the emote of the current season (or any you want)
         from your name.
 
@@ -136,7 +141,7 @@ class Seasonal(commands.Cog):
         return await self._seasonal_impl(ctx, "remove", target)
 
     @commands.command(aliases=["seasons"])
-    async def seasonals(self, ctx):
+    async def seasonals(self, ctx: commands.Context):
         """Lists all available seasons."""
 
         line_template = "{0:6} | {1:6} | {2:1} | {3}\n"

@@ -1,11 +1,16 @@
+from __future__ import annotations
+
 import discord
 
 from discord.ext import commands
 from disnake.ext.commands import Param
-from typing import Union
+from typing import Union, TYPE_CHECKING
 from utils import utils, crud
 from utils.checks import is_staff, check_staff_id, check_bot_or_staff
 from utils.utils import get_user
+
+if TYPE_CHECKING:
+    from kurisu import Kurisu
 
 
 class ModWarn(commands.Cog):
@@ -13,18 +18,18 @@ class ModWarn(commands.Cog):
     Warn commands.
     """
 
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: Kurisu):
+        self.bot: Kurisu = bot
         self.emoji = discord.PartialEmoji.from_str('\u26A0')
 
-    async def cog_check(self, ctx):
+    async def cog_check(self, ctx: commands.Context):
         if ctx.guild is None and ctx.command.name != "listwarns":
             raise commands.NoPrivateMessage()
         return True
 
     @is_staff('Helper')
     @commands.command()
-    async def warn(self, ctx, member: Union[discord.Member, discord.User], *, reason=""):
+    async def warn(self, ctx: commands.Context, member: Union[discord.Member, discord.User], *, reason=""):
         """Warn a user. Staff and Helpers only."""
         issuer = ctx.author
         channel = ctx.channel
@@ -73,7 +78,7 @@ class ModWarn(commands.Cog):
 
     @is_staff('Helper')
     @commands.command()
-    async def softwarn(self, ctx, member: Union[discord.Member, discord.User], *, reason=""):
+    async def softwarn(self, ctx: commands.Context, member: Union[discord.Member, discord.User], *, reason=""):
         """Warn a user without automated action. Staff and Helpers only."""
         issuer = ctx.author
         channel = ctx.channel
@@ -104,7 +109,7 @@ class ModWarn(commands.Cog):
             f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user." if reason == "" else ""))
 
     @commands.command()
-    async def listwarns(self, ctx, member: Union[discord.Member, discord.User] = None):
+    async def listwarns(self, ctx: commands.Context, member: Union[discord.Member, discord.User] = None):
         """List warns for a user. Helpers+ only for checking others."""
         if not member:  # If user is set to None, its a selfcheck
             member = ctx.author
@@ -117,12 +122,15 @@ class ModWarn(commands.Cog):
         embed.set_author(name=f"Warns for {member}", icon_url=member.display_avatar.url)
         warns = await crud.get_warns(member.id)
         if warns:
-            dbchannel = await crud.get_dbchannel(ctx.channel.id)
+            db_channel = await crud.get_dbchannel(ctx.channel.id)
             for idx, warn in enumerate(warns):
-                issuer = await get_user(ctx, warn.issuer)
+                try:
+                    issuer = await get_user(ctx, warn.issuer)
+                except discord.NotFound:
+                    issuer = None
                 value = ""
-                if dbchannel and dbchannel.is_mod_channel:
-                    value += f"Issuer: {issuer.name}\n"
+                if db_channel and db_channel.is_mod_channel:
+                    value += f"Issuer: {issuer.name if issuer else warn.issuer}\n"
                 value += f"Reason: {warn.reason} "
                 embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn.id).strftime('%Y-%m-%d %H:%M:%S')}", value=value)
         else:
@@ -131,7 +139,7 @@ class ModWarn(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.slash_command(name='listwarns')
-    async def listwarns_ac(self, interaction, member: discord.Member = Param(default=lambda interaction: interaction.user, desc="Member to list warns of")):
+    async def listwarns_ac(self, interaction: discord.CommandInteraction, member: discord.Member = Param(default=lambda interaction: interaction.user, desc="Member to list warns of")):
         """List warns for a user only for you. Helpers+ only for checking others."""
         author = interaction.user
         if not await check_staff_id("Helper", author.id) and (member != author):
@@ -142,12 +150,15 @@ class ModWarn(commands.Cog):
         embed.set_author(name=f"Warns for {member}", icon_url=member.display_avatar.url)
         warns = await crud.get_warns(member.id)
         if warns:
-            dbchannel = await crud.get_dbchannel(interaction.channel.id)
+            db_channel = await crud.get_dbchannel(interaction.channel.id)
             for idx, warn in enumerate(warns):
-                issuer = await get_user(interaction, warn.issuer)
+                try:
+                    issuer = await get_user(interaction, warn.issuer)
+                except discord.NotFound:
+                    issuer = None
                 value = ""
-                if dbchannel and dbchannel.is_mod_channel:
-                    value += f"Issuer: {issuer.name}\n"
+                if db_channel and db_channel.is_mod_channel:
+                    value += f"Issuer: {issuer.name if issuer else warn.issuer}\n"
                 value += f"Reason: {warn.reason} "
                 embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn.id).strftime('%Y-%m-%d %H:%M:%S')}", value=value)
         else:
@@ -157,7 +168,7 @@ class ModWarn(commands.Cog):
 
     @is_staff("SuperOP")
     @commands.command()
-    async def copywarns(self, ctx, src: Union[discord.Member, discord.User], target: Union[discord.Member, discord.User]):
+    async def copywarns(self, ctx: commands.Context, src: Union[discord.Member, discord.User], target: Union[discord.Member, discord.User]):
         """Copy warns from one user ID to another. Overwrites all warns of the target user ID. SOP+ only."""
         if await check_bot_or_staff(ctx, target, "warn"):
             return
@@ -180,7 +191,7 @@ class ModWarn(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.command()
-    async def delwarn(self, ctx, member: Union[discord.Member, discord.User], idx: int):
+    async def delwarn(self, ctx: commands.Context, member: Union[discord.Member, discord.User], idx: int):
         """Remove a specific warn from a user. Staff only."""
         warns = await crud.get_warns(member.id)
         if not warns:
@@ -204,7 +215,7 @@ class ModWarn(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.command()
-    async def clearwarns(self, ctx, member: Union[discord.Member, discord.User]):
+    async def clearwarns(self, ctx: commands.Context, member: Union[discord.Member, discord.User]):
         """Clear all warns for a user. Staff only."""
         warns = await crud.get_warns(member.id)
         if not warns:

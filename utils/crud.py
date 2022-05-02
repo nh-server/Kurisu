@@ -11,15 +11,12 @@ def generate_id() -> int:
 
 
 # Operations for members in the database
-async def add_dbmember(user_id: int) -> None:
+async def add_dbmember(user_id: int) -> models.Member:
     return await models.Member.create(id=user_id)
 
 
 async def add_dbmember_if_not_exist(user_id: int) -> models.Member:
-    db_member = await get_dbmember(user_id)
-    if not db_member:
-        db_member = await add_dbmember(user_id)
-    return db_member
+    return await get_dbmember(user_id) or await add_dbmember(user_id)
 
 
 async def get_dbmember(user_id: int) -> Optional[models.Member]:
@@ -27,7 +24,7 @@ async def get_dbmember(user_id: int) -> Optional[models.Member]:
 
 
 # Operations for managing channels in the database
-async def add_dbchannel(channel_id: int, name: str) -> None:
+async def add_dbchannel(channel_id: int, name: str) -> models.Channel:
     return await models.Channel.create(id=channel_id, name=name)
 
 
@@ -36,11 +33,11 @@ async def get_dbchannel(channel_id: int) -> Optional[models.Channel]:
 
 
 # Operations for managing roles in the database
-async def add_dbrole(role_id: int, name: str) -> None:
+async def add_dbrole(role_id: int, name: str) -> models.Role:
     return await models.Role.create(id=role_id, name=name)
 
 
-async def get_dbrole(role_id: int) -> Optional[models.Channel]:
+async def get_dbrole(role_id: int) -> Optional[models.Role]:
     return await models.Role.get(role_id)
 
 
@@ -73,7 +70,7 @@ async def remove_staff(user_id: int) -> None:
 
 
 # Operations for managing helpers
-async def add_helper(user_id: int, position: str, console: str = None) -> None:
+async def add_helper(user_id: int, position: str, console: Optional[str] = None) -> None:
     await add_dbmember_if_not_exist(user_id)
     if staff := await get_staff_member(user_id):
         await staff.update(console=console).apply()
@@ -271,15 +268,13 @@ async def is_watched(user_id: int) -> bool:
 
 # Operations for managing the channel filter
 async def add_nofilter(channel: TextChannel) -> None:
-    db_channel = await get_dbchannel(channel.id)
-    if not db_channel:
-        db_channel = await add_dbchannel(channel.id, channel.name)
+    db_channel = await get_dbchannel(channel.id) or await add_dbchannel(channel.id, channel.name)
     await db_channel.update(nofilter=True).apply()
 
 
 async def remove_nofilter(channel: TextChannel) -> None:
     db_channel = await get_dbchannel(channel.id)
-    if db_channel:
+    if db_channel is not None:
         await db_channel.update(nofilter=False).apply()
 
 
@@ -387,7 +382,8 @@ async def get_tags() -> list[models.Tag]:
 
 async def delete_tag(title: str) -> None:
     db_tag = await get_tag(title)
-    await db_tag.delete()
+    if db_tag:
+        await db_tag.delete()
 
 
 async def search_tags(query: str) -> list[models.Tag]:
@@ -415,7 +411,8 @@ async def add_social_credit(citizen_id: int, social_credit: int) -> None:
 
 async def remove_citizen(citizen_id) -> None:
     citizen = await get_citizen(citizen_id)
-    await citizen.delete()
+    if citizen:
+        await citizen.delete()
 
 
 # Operations for managing persistent vote views
@@ -423,7 +420,7 @@ async def add_vote_view(view_id: int, identifier: str, options: str, start: date
     await models.VoteView.create(id=view_id, message_id=message_id, identifier=identifier, author_id=author_id, options=options, start=start)
 
 
-async def get_vote_views(identifier: str) -> Optional[list[models.VoteView]]:
+async def get_vote_views(identifier: str) -> list[models.VoteView]:
     return await models.VoteView.query.where(models.VoteView.identifier == identifier).gino.all()
 
 

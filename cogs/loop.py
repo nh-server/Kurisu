@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import discord
 import pytz
@@ -6,9 +8,12 @@ import logging
 from datetime import datetime, timedelta
 from discord import AllowedMentions
 from discord.ext import commands
+from typing import TYPE_CHECKING
 from utils import crud
 from utils.utils import send_dm_message, dtm_to_discord_timestamp
 
+if TYPE_CHECKING:
+    from kurisu import Kurisu
 
 logger = logging.getLogger(__name__)
 
@@ -18,8 +23,8 @@ class Loop(commands.Cog):
     Loop events.
     """
 
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: Kurisu):
+        self.bot: Kurisu = bot
         self.emoji = discord.PartialEmoji.from_str('⌚')
         bot.loop.create_task(self.start_update_loop())
 
@@ -92,13 +97,13 @@ class Loop(commands.Cog):
 
     @commands.command()
     @commands.cooldown(rate=1, per=60.0, type=commands.BucketType.channel)
-    async def netinfo(self, ctx):
+    async def netinfo(self, ctx: commands.Context):
         """Show the nintendo network status."""
         await ctx.send(embed=self.netinfo_embed)
 
     @commands.command()
     @commands.cooldown(rate=1, per=60.0, type=commands.BucketType.channel)
-    async def netinfo_refresh(self, ctx):
+    async def netinfo_refresh(self, ctx: commands.Context):
         """Refreshes the nintendo network status information."""
         await self.update_netinfo()
         embed = discord.Embed(title="Netinfo Refresh", color=discord.Color.blue())

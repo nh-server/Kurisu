@@ -189,10 +189,6 @@ class Kurisu(commands.Bot):
             'streaming-gamer': None,
         }
 
-        self.helper_roles: dict[str, discord.Role] = {}
-        self.assistance_channels: tuple[discord.TextChannel] = tuple()
-        self.staff_roles: dict[str, discord.Role] = {}
-
         self.failed_cogs = []
         self.channels_not_found = []
         self.roles_not_found = []
@@ -201,8 +197,7 @@ class Kurisu(commands.Bot):
         self.levenshteinfilter = LevenshteinFilterManager()
         self.invitefilter = InviteFilterManager()
 
-        self.guild = None
-        self.err_channel = None
+        self.err_channel: Optional[discord.TextChannel] = None
         self.actions = []
         self.pruning = False
         self.emoji = discord.PartialEmoji.from_str("⁉")
@@ -231,13 +226,13 @@ class Kurisu(commands.Bot):
         await self.load_channels()
         await self.load_roles()
 
-        self.helper_roles = {"3DS": self.roles['On-Duty 3DS'],
-                             "WiiU": self.roles['On-Duty Wii U'],
-                             "Switch": self.roles['On-Duty Switch'],
-                             "Legacy": self.roles['On-Duty Legacy']
-                             }
+        self.helper_roles: dict[str, discord.Role] = {"3DS": self.roles['On-Duty 3DS'],
+                                                     "WiiU": self.roles['On-Duty Wii U'],
+                                                     "Switch": self.roles['On-Duty Switch'],
+                                                     "Legacy": self.roles['On-Duty Legacy']
+                                                      }
 
-        self.assistance_channels = (
+        self.assistance_channels: tuple[discord.TextChannel, ...] = (
             self.channels['3ds-assistance-1'],
             self.channels['3ds-assistance-2'],
             self.channels['wiiu-assistance'],
@@ -249,7 +244,7 @@ class Kurisu(commands.Bot):
             self.channels['hardware'],
         )
 
-        self.staff_roles = {'Owner': self.roles['Owner'],
+        self.staff_roles: dict[str, discord.Role] = {'Owner': self.roles['Owner'],
                             'SuperOP': self.roles['SuperOP'],
                             'OP': self.roles['OP'],
                             'HalfOP': self.roles['HalfOP'],
@@ -340,7 +335,7 @@ class Kurisu(commands.Bot):
         if self.roles['Nitro Booster'] and not await crud.get_dbrole(self.roles['Nitro Booster'].id):
             await Role.create(id=self.roles['Nitro Booster'].id, name='Nitro Booster')
 
-    async def on_command_error(self, ctx: commands.Context, exc: discord.DiscordException):
+    async def on_command_error(self, ctx: commands.Context, exc: commands.CommandError):
         author: discord.Member = ctx.author
         command: commands.Command = ctx.command
         exc = getattr(exc, 'original', exc)
@@ -404,7 +399,7 @@ class Kurisu(commands.Bot):
             embed = create_error_embed(ctx, exc)
             await channel.send(embed=embed)
 
-    async def on_slash_command_error(self, inter, exc):
+    async def on_slash_command_error(self, inter: discord.CommandInteraction, exc: commands.CommandError):
         author: discord.Member = inter.author
         command: str = inter.application_command.name
         exc = getattr(exc, 'original', exc)
@@ -440,7 +435,7 @@ class Kurisu(commands.Bot):
                 embed = create_error_embed(inter, exc)
                 await channel.send(embed=embed)
 
-    async def on_user_command_error(self, inter, exc):
+    async def on_user_command_error(self, inter, exc: commands.CommandError):
         author: discord.Member = inter.author
         command: str = inter.application_command.name
         exc = getattr(exc, 'original', exc)

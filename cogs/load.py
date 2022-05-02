@@ -1,25 +1,31 @@
+from __future__ import annotations
+
 import discord
 
 from discord.ext import commands
+from typing import TYPE_CHECKING
 from utils.checks import is_staff
+
+if TYPE_CHECKING:
+    from kurisu import Kurisu
 
 
 class Load(commands.Cog):
     """
     Load commands.
     """
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: Kurisu):
+        self.bot: Kurisu = bot
         self.emoji = discord.PartialEmoji.from_str('⌨')
 
-    async def cog_check(self, ctx):
+    async def cog_check(self, ctx: commands.Context):
         if ctx.guild is None:
             raise commands.NoPrivateMessage()
         return True
 
     @is_staff("OP")
     @commands.command(hidden=True)
-    async def load(self, ctx, *, module: str):
+    async def load(self, ctx: commands.Context, *, module: str):
         """Loads a Cog."""
         try:
             if module[0:7] != "cogs.":
@@ -31,7 +37,7 @@ class Load(commands.Cog):
 
     @is_staff("OP")
     @commands.command(hidden=True)
-    async def unload(self, ctx, *, module: str):
+    async def unload(self, ctx: commands.Context, *, module: str):
         """Unloads a Cog."""
         try:
             if module[0:7] != "cogs.":
@@ -46,7 +52,7 @@ class Load(commands.Cog):
 
     @is_staff("OP")
     @commands.command(name='reload')
-    async def _reload(self, ctx, *, module: str):
+    async def _reload(self, ctx: commands.Context, *, module: str):
         """Reloads a Cog."""
         try:
             if module[0:7] != "cogs.":

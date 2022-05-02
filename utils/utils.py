@@ -121,7 +121,7 @@ def time_converter(inter, time_string: str) -> int:
     return parse_time(time_string)
 
 
-def create_error_embed(ctx: Union[commands.Context, discord.ApplicationCommandInteraction], exc) -> discord.Embed:
+def create_error_embed(ctx: Union[commands.Context, discord.CommandInteraction], exc: commands.CommandError) -> discord.Embed:
     interaction = isinstance(ctx, discord.ApplicationCommandInteraction)
     command: str = ctx.application_command.name if interaction else str(ctx.command)
     embed = discord.Embed(title=f"Unexpected exception in command {command}", color=0xe50730)

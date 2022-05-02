@@ -1,10 +1,11 @@
-import io
 import discord
+import io
 import re
 
 from discord.ext import commands
 from disnake.ext.commands import Param
 from sqlalchemy import create_engine, text
+from typing import Optional
 from utils.checks import is_staff
 from kurisu import SERVER_LOGS_URL
 
@@ -15,16 +16,15 @@ class ServerLogs(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.emoji = discord.PartialEmoji.from_str('⚙')
-        if SERVER_LOGS_URL:
-            self.engine = create_engine(SERVER_LOGS_URL)
+        self.engine = create_engine(SERVER_LOGS_URL) if SERVER_LOGS_URL else None
 
     channel_blacklist = ['minecraft-console', 'dev-trusted']
 
     def build_query(
             self,
             query: str,
-            member: int,
-            channel: int,
+            member: Optional[int],
+            channel: Optional[int],
             before: str,
             after: str,
             during: str,
@@ -80,7 +80,7 @@ class ServerLogs(commands.Cog):
         return ""
 
     @commands.slash_command()
-    async def serverlogs(self, ctx):
+    async def serverlogs(self, inter: discord.CommandInteraction):
         pass
 
     @is_staff("OP")
@@ -89,12 +89,10 @@ class ServerLogs(commands.Cog):
     @serverlogs.sub_command()
     async def search(
             self,
-            inter,
+            inter: discord.CommandInteraction,
             query: str = Param(default="", description="What to search"),
-            member_id: str = Param(default=None, description="ID of User to search"),
-            channel_id: str = Param(
-                default=None, description="ID of channel to search in."
-            ),
+            member_id_str: str = Param(name="member_id", default=None, description="ID of User to search"),
+            channel_id_str: str = Param(name="channel_id", default=None, description="ID of channel to search in."),
             before: str = Param(default="", description="Date in yyyy-mm-dd format"),
             after: str = Param(default="", description="Date in yyyy-mm-dd format"),
             during: str = Param(
@@ -111,12 +109,16 @@ class ServerLogs(commands.Cog):
     ):
         """Search the server logs for messages that matches the parameters given then returns them in a file"""
 
+        if not self.engine:
+            return await inter.response.send_message("There is no database connection.", ephemeral=True)
         # Discord IDs are too long to be taken as integer input from a slash command.
         try:
-            if member_id:
-                member_id = int(member_id)
-            if channel_id:
-                channel_id = int(channel_id)
+            member_id = None
+            channel_id = None
+            if member_id_str:
+                member_id = int(member_id_str)
+            if channel_id_str:
+                channel_id = int(channel_id_str)
         except ValueError:
             inter.response.send_message("Invalid input for ID")
             return

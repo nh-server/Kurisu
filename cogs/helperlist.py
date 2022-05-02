@@ -1,8 +1,14 @@
+from __future__ import annotations
+
 import discord
 
 from discord.ext import commands
 from utils.checks import is_staff
 from utils import crud
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from kurisu import Kurisu
 
 
 class HelperList(commands.Cog):
@@ -10,18 +16,18 @@ class HelperList(commands.Cog):
     Management of active helpers.
     """
 
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: Kurisu):
+        self.bot: Kurisu = bot
         self.emoji = discord.PartialEmoji.from_str('📜')
 
-    async def cog_check(self, ctx):
+    async def cog_check(self, ctx: commands.Context):
         if ctx.guild is None:
             raise commands.NoPrivateMessage()
         return True
 
     @is_staff(role='Owner')
     @commands.command()
-    async def addhelper(self, ctx, member: discord.Member, console):
+    async def addhelper(self, ctx: commands.Context, member: discord.Member, console):
         """Add user as a helper. Owners only."""
         if console not in self.bot.helper_roles:
             await ctx.send(f"💢 That's not a valid position. You can use __{'__, __'.join(self.bot.helper_roles.keys())}__")
@@ -32,7 +38,7 @@ class HelperList(commands.Cog):
 
     @is_staff(role='Owner')
     @commands.command()
-    async def delhelper(self, ctx, member: discord.Member):
+    async def delhelper(self, ctx: commands.Context, member: discord.Member):
         """Remove user from helpers. Owners only."""
         if not await crud.get_helper(member.id):
             return await ctx.send("This user is not a helper!")
@@ -42,7 +48,7 @@ class HelperList(commands.Cog):
         await ctx.send(f"{member.mention} is no longer a helper. Stop by some time!")
 
     @commands.command()
-    async def helpon(self, ctx):
+    async def helpon(self, ctx: commands.Context):
         """Gain highlighted helping role. Only needed by Helpers."""
         author = ctx.author
         helper = await crud.get_helper(author.id)
@@ -55,7 +61,7 @@ class HelperList(commands.Cog):
         await self.bot.channels['mod-logs'].send(msg)
 
     @commands.command()
-    async def helpoff(self, ctx):
+    async def helpoff(self, ctx: commands.Context):
         """Remove highlighted helping role. Only needed by Helpers."""
         author = ctx.author
         helper = await crud.get_helper(author.id)
@@ -68,12 +74,12 @@ class HelperList(commands.Cog):
         await self.bot.channels['mod-logs'].send(msg)
 
     @commands.command()
-    async def listhelpers(self, ctx):
+    async def listhelpers(self, ctx: commands.Context):
         """List helpers per console."""
         helper_list = await crud.get_helpers()
-        consoles = dict.fromkeys(self.bot.helper_roles.keys())
+        consoles: dict[str, list] = {}
         embed = discord.Embed()
-        for console in consoles:
+        for console in self.bot.helper_roles.keys():
             consoles[console] = []
             for helper in helper_list:
                 if console == helper.console:

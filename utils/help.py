@@ -63,7 +63,7 @@ class HelpView(discord.ui.View):
 class KuriHelp(commands.HelpCommand):
 
     async def create_category_embed(self, cog: commands.Cog) -> discord.Embed:
-        embed = discord.Embed(title=f"{cog.qualified_name} commands", colour=0xb01ec3)
+        embed = discord.Embed(title=f"{cog.qualified_name} commands", colour=self.context.bot.colour)
         embed.description = f"{cog.description}"
         embed.set_footer(text=f"Use {self.context.clean_prefix}help [command] for more info about a command or select a category below.")
         commands = await self.filter_commands(cog.get_commands())
@@ -75,7 +75,7 @@ class KuriHelp(commands.HelpCommand):
         return embed
 
     async def create_command_embed(self, command: commands.Command) -> discord.Embed:
-        embed = discord.Embed(title=f"{command} command", colour=0xb01ec3)
+        embed = discord.Embed(title=f"{command} command", colour=self.context.bot.colour)
         embed.description = command.help
         if command.aliases:
             embed.add_field(name="Aliases", value=' '.join(command.aliases), inline=False)
@@ -83,7 +83,7 @@ class KuriHelp(commands.HelpCommand):
         return embed
 
     async def create_group_embed(self, group: commands.Group) -> discord.Embed:
-        embed = discord.Embed(title=f"{group} group", colour=0xb01ec3)
+        embed = discord.Embed(title=f"{group} group", colour=self.context.bot.colour)
         embed.description = group.help
         for cmd in await self.filter_commands(group.commands):
             embed.add_field(name=cmd.name, value=cmd.help)
@@ -152,6 +152,6 @@ class KuriHelp(commands.HelpCommand):
         await channel.send(embed=embed, reference=self.context.message)
 
     async def send_error_message(self, error):
-        embed = discord.Embed(title="Not Found", description=error, colour=0xb01ec3)
+        embed = discord.Embed(title="Not Found", description=error, colour=self.context.bot.colour)
         channel = self.get_destination()
         await channel.send(embed=embed)
