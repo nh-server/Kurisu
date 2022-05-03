@@ -235,9 +235,7 @@ class VoteButtonEnd(discord.ui.Button['SimpleVoteView']):
     async def callback(self, interaction: discord.Interaction):
         if interaction.user.id == self.view.author_id:
             # Try to remove the view
-            if self.view.message_id:
-                msg = await interaction.channel.fetch_message(self.view.message_id)
-                await msg.edit(view=None)
+            await interaction.message.edit(view=None)
 
             await self.view.calculate_votes()
             results = "results:\n" + '\n'.join(f"{op}: {count}" for op, count in self.view.count.items())
