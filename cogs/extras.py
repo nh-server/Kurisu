@@ -295,6 +295,7 @@ class Extras(commands.Cog):
         embed = discord.Embed(colour=gen_color(message.author.id), timestamp=message.created_at)
         if ref_text and message.content:
             embed.description = message.content
+        file = None
         if ref_image and len(message.attachments) > 0 and message.attachments[0].height and message.attachments[0].content_type.startswith("image/"):
             file = await message.attachments[0].to_file()
             embed.set_image(url=f"attachment://{file.filename}")
@@ -302,7 +303,7 @@ class Extras(commands.Cog):
             return await ctx.send("No information to reference!", delete_after=10)
         embed.set_author(name=message.author, icon_url=message.author.display_avatar.url, url=message.jump_url)
         embed.set_footer(text=f"in {message.channel.name}{f'. Ref by {ctx.author}' if ref_author else ''}")
-        await ctx.send(embed=embed, reference=msg_reference, mention_author=mention_author)
+        await ctx.send(file=file, embed=embed, reference=msg_reference, mention_author=mention_author)
 
     @reference.error
     async def reference_handler(self, ctx: commands.Context, error):
