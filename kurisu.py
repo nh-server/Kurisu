@@ -23,6 +23,7 @@ from subprocess import check_output, CalledProcessError
 from typing import Optional
 from utils import crud
 from utils.checks import check_staff_id
+from utils.help import KuriHelp
 from utils.manager import InviteFilterManager, WordFilterManager, LevenshteinFilterManager
 from utils.models import Channel, Role, db
 from utils.utils import create_error_embed
@@ -191,10 +192,6 @@ class Kurisu(commands.Bot):
             'streaming-gamer': None,
         }
 
-        self.helper_roles: dict[str, discord.Role] = {}
-        self.assistance_channels: tuple[discord.TextChannel] = tuple()
-        self.staff_roles: dict[str, discord.Role] = {}
-
         self.failed_cogs = []
         self.channels_not_found = []
         self.roles_not_found = []
@@ -203,11 +200,11 @@ class Kurisu(commands.Bot):
         self.levenshteinfilter = LevenshteinFilterManager()
         self.invitefilter = InviteFilterManager()
 
-        self.guild = None
-        self.session = None
-        self.err_channel = None
+        self.err_channel: Optional[discord.TextChannel] = None
         self.actions = []
         self.pruning = False
+        self.emoji = discord.PartialEmoji.from_str("⁉")
+        self.colour = discord.Colour(0xb01ec3)
 
         self._is_all_ready = asyncio.Event()
 
@@ -216,11 +213,12 @@ class Kurisu(commands.Bot):
         await self.load_cogs()
 
     async def on_ready(self):
-
         if self._is_all_ready.is_set():
             return
 
         self.guild = self.guilds[0]
+
+        self.emoji = discord.utils.get(self.guild.emojis, name='kurisu') or discord.PartialEmoji.from_str("⁉")
 
         # Load Filters
         await self.wordfilter.load()
@@ -234,13 +232,13 @@ class Kurisu(commands.Bot):
         await self.load_channels()
         await self.load_roles()
 
-        self.helper_roles = {"3DS": self.roles['On-Duty 3DS'],
-                             "WiiU": self.roles['On-Duty Wii U'],
-                             "Switch": self.roles['On-Duty Switch'],
-                             "Legacy": self.roles['On-Duty Legacy']
-                             }
+        self.helper_roles: dict[str, discord.Role] = {"3DS": self.roles['On-Duty 3DS'],
+                                                      "WiiU": self.roles['On-Duty Wii U'],
+                                                      "Switch": self.roles['On-Duty Switch'],
+                                                      "Legacy": self.roles['On-Duty Legacy']
+                                                      }
 
-        self.assistance_channels = (
+        self.assistance_channels: tuple[discord.TextChannel, ...] = (
             self.channels['3ds-assistance-1'],
             self.channels['3ds-assistance-2'],
             self.channels['wiiu-assistance'],
@@ -252,12 +250,12 @@ class Kurisu(commands.Bot):
             self.channels['hardware'],
         )
 
-        self.staff_roles = {'Owner': self.roles['Owner'],
-                            'SuperOP': self.roles['SuperOP'],
-                            'OP': self.roles['OP'],
-                            'HalfOP': self.roles['HalfOP'],
-                            'Staff': self.roles['Staff'],
-                            }
+        self.staff_roles: dict[str, discord.Role] = {'Owner': self.roles['Owner'],
+                                                     'SuperOP': self.roles['SuperOP'],
+                                                     'OP': self.roles['OP'],
+                                                     'HalfOP': self.roles['HalfOP'],
+                                                     'Staff': self.roles['Staff'],
+                                                     }
 
         self.err_channel = self.channels['bot-err']
         self.tree.err_channel = self.err_channel
@@ -304,6 +302,7 @@ class Kurisu(commands.Bot):
             try:
                 await self.load_extension(extension)
             except BaseException as e:
+                traceback.print_exc()
                 logger.error("%s failed to load.", extension)
                 self.failed_cogs.append((extension, type(e).__name__, e))
 
@@ -342,11 +341,15 @@ class Kurisu(commands.Bot):
         if self.roles['Nitro Booster'] and not await crud.get_dbrole(self.roles['Nitro Booster'].id):
             await Role.create(id=self.roles['Nitro Booster'].id, name='Nitro Booster')
 
-    async def on_command_error(self, ctx: commands.Context, exc: discord.DiscordException):
+    async def on_command_error(self, ctx: commands.Context, exc: commands.CommandError):
         author: discord.Member = ctx.author
         command: commands.Command = ctx.command
         exc = getattr(exc, 'original', exc)
         channel = self.err_channel or ctx.channel
+
+        if hasattr(ctx.command, 'on_error'):
+            return
+
         if isinstance(exc, commands.CommandNotFound):
             return
 
@@ -365,6 +368,10 @@ class Kurisu(commands.Bot):
         elif isinstance(exc, commands.MissingRequiredArgument):
             await ctx.send(f'{author.mention} You are missing required argument `{exc.param.name}`.\n')
             await ctx.send_help(ctx.command)
+            command.reset_cooldown(ctx)
+
+        elif isinstance(exc, commands.BadLiteralArgument):
+            await ctx.send(f'Argument {exc.param.name} must be one of the following `{"` `".join(exc.literals)}`.')
             command.reset_cooldown(ctx)
 
         elif isinstance(exc, commands.UserInputError):
@@ -507,7 +514,7 @@ async def startup():
     logger.info("Starting Kurisu on commit %s on branch %s", commit, branch)
     bot = Kurisu(command_prefix=['.', '!'], description="Kurisu, the bot for Nintendo Homebrew!", commit=commit,
                  branch=branch)
-    bot.help_command = commands.DefaultHelpCommand(dm_help=None)
+    bot.help_command = KuriHelp()
     bot.engine = engine
     await bot.start(TOKEN)
 

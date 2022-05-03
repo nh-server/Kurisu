@@ -1,25 +1,32 @@
+from __future__ import annotations
+
 import discord
 
 from discord.ext import commands
+from typing import TYPE_CHECKING
 from utils import crud
 from utils.checks import is_staff, check_staff_id
+
+if TYPE_CHECKING:
+    from kurisu import Kurisu
 
 
 class Lockdown(commands.Cog):
     """
     Channel lockdown commands.
     """
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: Kurisu):
+        self.bot: Kurisu = bot
+        self.emoji = discord.PartialEmoji.from_str('🔒')
 
-    async def cog_check(self, ctx):
+    async def cog_check(self, ctx: commands.Context):
         if ctx.guild is None:
             raise commands.NoPrivateMessage()
         return True
 
     @is_staff("HalfOP")
     @commands.command()
-    async def lockdown(self, ctx, channels: commands.Greedy[discord.TextChannel]):
+    async def lockdown(self, ctx: commands.Context, channels: commands.Greedy[discord.TextChannel]):
         """Lock message sending in the channel. Staff only."""
 
         author = ctx.author
@@ -38,7 +45,11 @@ class Lockdown(commands.Cog):
                 await ctx.send(f"🔒 {c.mention} is already locked down. Use `.unlock` to unlock.")
                 continue
 
-            default_role = ctx.guild.get_role(dbchannel.default_role) if dbchannel.default_role else ctx.guild.default_role
+            if dbchannel.default_role:
+                default_role = ctx.guild.get_role(dbchannel.default_role) or ctx.guild.default_role
+            else:
+                default_role = ctx.guild.default_role
+
             overwrites_default = c.overwrites_for(default_role)
 
             if overwrites_default.send_messages is False or overwrites_default.read_messages is False:
@@ -62,7 +73,7 @@ class Lockdown(commands.Cog):
 
     @is_staff("Owner")
     @commands.command()
-    async def slockdown(self, ctx, channels: commands.Greedy[discord.TextChannel]):
+    async def slockdown(self, ctx: commands.Context, channels: commands.Greedy[discord.TextChannel]):
         """Lock message sending in the channel for everyone. Owners only."""
 
         author = ctx.author
@@ -74,7 +85,7 @@ class Lockdown(commands.Cog):
         for c in channels:
 
             dbchannel = await crud.get_dbchannel(c.id)
-            if not dbchannel:
+            if dbchannel is None:
                 dbchannel = await crud.add_dbchannel(c.id, c.name)
 
             if dbchannel.lock_level == 3:
@@ -116,7 +127,7 @@ class Lockdown(commands.Cog):
 
     @is_staff('Helper')
     @commands.command()
-    async def softlock(self, ctx, channels: commands.Greedy[discord.TextChannel]):
+    async def softlock(self, ctx: commands.Context, channels: commands.Greedy[discord.TextChannel]):
         """Lock message sending in the channel, without the "disciplinary action" note. Staff and Helpers only."""
 
         author = ctx.author
@@ -125,23 +136,23 @@ class Lockdown(commands.Cog):
         if not channels:
             channels.append(ctx.channel)
 
-        ishelper = not await check_staff_id('HalfOP', author.id)
+        is_helper = not await check_staff_id('HalfOP', author.id)
 
         for c in channels:
 
-            if c not in self.bot.assistance_channels and ishelper:
+            if c not in self.bot.assistance_channels and is_helper:
                 await ctx.send(f"{ctx.author.mention} {c.mention} can't be locked by a helper.")
                 continue
 
-            dbchannel = await crud.get_dbchannel(c.id)
-            if not dbchannel:
-                dbchannel = await crud.add_dbchannel(c.id, c.name)
+            db_channel = await crud.get_dbchannel(c.id)
+            if db_channel is None:
+                db_channel = await crud.add_dbchannel(c.id, c.name)
 
-            if dbchannel.lock_level > 0:
+            if db_channel.lock_level > 0:
                 await ctx.send(f"🔒 {c.mention} is already locked down. Use `.unlock` to unlock.")
                 continue
 
-            default_role = ctx.guild.get_role(dbchannel.default_role) if dbchannel.default_role else ctx.guild.default_role
+            default_role = ctx.guild.get_role(db_channel.default_role) if db_channel.default_role else ctx.guild.default_role
             overwrites_default = c.overwrites_for(default_role)
             overwrites_helper = c.overwrites_for(self.bot.roles['Helpers'])
 
@@ -152,7 +163,7 @@ class Lockdown(commands.Cog):
             overwrites_default.send_messages = False
 
             if not overwrites_helper.is_empty():
-                overwrites_helper.send_messages = ishelper
+                overwrites_helper.send_messages = is_helper
 
             try:
                 await c.set_permissions(default_role, overwrite=overwrites_default)
@@ -162,7 +173,7 @@ class Lockdown(commands.Cog):
                 await ctx.send(f"💢 I don't have permission to do this for {c.mention}.")
                 continue
 
-            await dbchannel.update(lock_level=1).apply()
+            await db_channel.update(lock_level=1).apply()
 
             locked_down.append(c)
             await c.send("🔒 Channel locked.")
@@ -173,7 +184,7 @@ class Lockdown(commands.Cog):
 
     @is_staff('Helper')
     @commands.command()
-    async def unlock(self, ctx, channels: commands.Greedy[discord.TextChannel]):
+    async def unlock(self, ctx: commands.Context, channels: commands.Greedy[discord.TextChannel]):
         """Unlock message sending in the channel. Staff only and Helpers only."""
         author = ctx.author
 

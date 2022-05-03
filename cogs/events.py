@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import discord
 import re
@@ -7,8 +9,12 @@ from collections import deque
 from discord.ext import commands
 from string import printable
 from subprocess import call
+from typing import TYPE_CHECKING
 from utils.checks import check_staff_id
 from utils import crud, utils
+
+if TYPE_CHECKING:
+    from kurisu import Kurisu
 
 
 class Events(commands.Cog):
@@ -16,8 +22,8 @@ class Events(commands.Cog):
     Special event handling.
     """
 
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: Kurisu):
+        self.bot: Kurisu = bot
 
     ignored_file_extensions = (
         '.jpg',
@@ -32,11 +38,10 @@ class Events(commands.Cog):
 
     # I hate naming variables sometimes
     user_antispam = {}
-    userbot_yeeter = {}
-    channel_antispam = {}
-    help_notice_anti_repeat = []
+    userbot_yeeter: dict[int, list] = {}
+    channel_antispam: dict[int, list] = {}
 
-    async def userbot_yeeter_pop(self, message):
+    async def userbot_yeeter_pop(self, message: discord.Message):
         await asyncio.sleep(20)
         self.userbot_yeeter[message.author.id].remove(message.channel)
         try:
@@ -45,7 +50,7 @@ class Events(commands.Cog):
         except KeyError:
             pass
 
-    async def scan_message(self, message, is_edit=False):
+    async def scan_message(self, message: discord.Message, is_edit=False):
         random.seed(message.id)
         embed = discord.Embed(color=utils.gen_color(message.id))
         embed.description = message.content

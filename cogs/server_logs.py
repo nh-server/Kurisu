@@ -1,3 +1,5 @@
+from typing import Optional
+
 import discord
 import io
 import re
@@ -10,22 +12,21 @@ from sqlalchemy import create_engine, text
 from utils.checks import is_staff_app
 
 
-class ServerLogs(commands.Cog, app_commands.Group, name="serverlogs"):
+class ServerLogs(commands.GroupCog, name="serverlogs"):
     """Command group for accesing the server logs"""
 
     def __init__(self, bot):
-        super().__init__(guild_ids=[886216686582263809])
         self.bot = bot
-        if SERVER_LOGS_URL:
-            self.engine = create_engine(SERVER_LOGS_URL)
+        self.emoji = discord.PartialEmoji.from_str('⚙')
+        self.engine = create_engine(SERVER_LOGS_URL) if SERVER_LOGS_URL else None
 
     channel_blacklist = ['minecraft-console', 'dev-trusted']
 
     def build_query(
             self,
             query: str,
-            member: int,
-            channel: int,
+            member: Optional[int],
+            channel: Optional[int],
             before: str,
             after: str,
             during: str,
@@ -81,10 +82,9 @@ class ServerLogs(commands.Cog, app_commands.Group, name="serverlogs"):
         return ""
 
     @is_staff_app("OP")
-    # @app_commands.max_concurrency(1)
     @app_commands.describe(query="What to search",
-                           member_id="ID of User to search",
-                           channel_id="ID of channel to search in.",
+                           member_id_str="ID of User to search",
+                           channel_id_str="ID of channel to search in.",
                            before="Date in yyyy-mm-dd format",
                            after="Date in yyyy-mm-dd format",
                            during="Date in yyyy-mm-dd format. Can't be used with before and after.",
@@ -105,8 +105,8 @@ class ServerLogs(commands.Cog, app_commands.Group, name="serverlogs"):
             self,
             interaction: discord.Interaction,
             query: str = "",
-            member_id: str = "",
-            channel_id: str = "",
+            member_id_str: str = "",
+            channel_id_str: str = "",
             before: str = "",
             after: str = "",
             during: str = "",
@@ -116,12 +116,16 @@ class ServerLogs(commands.Cog, app_commands.Group, name="serverlogs"):
     ):
         """Search the server logs for messages that matches the parameters given then returns them in a file"""
 
+        if not self.engine:
+            return await interaction.response.send_message("There is no database connection.", ephemeral=True)
         # Discord IDs are too long to be taken as integer input from an app command.
         try:
-            if member_id:
-                member_id = int(member_id)
-            if channel_id:
-                channel_id = int(channel_id)
+            member_id = None
+            channel_id = None
+            if member_id_str:
+                member_id = int(member_id_str)
+            if channel_id_str:
+                channel_id = int(channel_id_str)
         except ValueError:
             interaction.response.send_message("Invalid input for IDs")
             return

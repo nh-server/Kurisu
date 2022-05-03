@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import discord
 import re
@@ -5,6 +7,10 @@ import re
 from discord.ext import commands
 from utils import crud
 from utils.checks import is_staff, check_if_user_can_ready
+from typing import TYPE_CHECKING, Optional
+
+if TYPE_CHECKING:
+    from kurisu import Kurisu
 
 
 class Newcomers(commands.Cog):
@@ -15,10 +21,11 @@ class Newcomers(commands.Cog):
     on_aliases = ('on', 'true', '1', 'enable')
     off_aliases = ('off', 'false', '0', 'disable')
 
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: Kurisu):
+        self.bot: Kurisu = bot
+        self.emoji = discord.PartialEmoji.from_str('🆕')
         self.autoprobate = False
-        self.join_list = []
+        self.join_list: list[int] = []
 
     async def cog_load(self):
         flag_name = 'auto_probation'
@@ -49,7 +56,7 @@ class Newcomers(commands.Cog):
                 await asyncio.sleep(10)
                 self.join_list.remove(member.id)
 
-    async def autoprobate_handler(self, ctx, enabled: bool = None):
+    async def autoprobate_handler(self, ctx: commands.Context, enabled: Optional[bool] = None):
         if enabled is not None:
             self.autoprobate = enabled
             await crud.set_flag('auto_probation', enabled)
@@ -59,8 +66,8 @@ class Newcomers(commands.Cog):
         await ctx.send(f'🔨 Auto-probation is {active_text if self.autoprobate else inactive_text}')
 
     @is_staff('Helper')
-    @commands.group(aliases=['autoprobation'], invoke_without_command=True, case_insensitive=True)
-    async def autoprobate(self, ctx):
+    @commands.group(name="autoprobate", aliases=['autoprobation'], invoke_without_command=True, case_insensitive=True)
+    async def autoprobate_cmd(self, ctx: commands.Context):
         """
         Manages auto-probation.
         on | true | 1 | enable: turns on auto-probation.
@@ -70,19 +77,19 @@ class Newcomers(commands.Cog):
         await self.autoprobate_handler(ctx)
 
     @is_staff('OP')
-    @autoprobate.command(aliases=on_aliases, hidden=True)
-    async def autoprobate_on(self, ctx):
+    @autoprobate_cmd.command(aliases=on_aliases, hidden=True)
+    async def autoprobate_on(self, ctx: commands.Context):
         await self.autoprobate_handler(ctx, True)
 
     @is_staff('OP')
-    @autoprobate.command(aliases=off_aliases, hidden=True)
-    async def autoprobate_off(self, ctx):
+    @autoprobate_cmd.command(aliases=off_aliases, hidden=True)
+    async def autoprobate_off(self, ctx: commands.Context):
         await self.autoprobate_handler(ctx, False)
 
     @check_if_user_can_ready()
     @commands.guild_only()
     @commands.command(aliases=['ready'], cooldown=commands.CooldownMapping.from_cooldown(rate=1, per=300.0, type=commands.BucketType.member))
-    async def ncready(self, ctx, *, reason=""):
+    async def ncready(self, ctx: commands.Context, *, reason=""):
         """Alerts online staff to a ready request in newcomers."""
         newcomers = self.bot.channels['newcomers']
         reason = reason[:300]  # truncate to 300 chars so kurisu doesn't send absurdly huge messages

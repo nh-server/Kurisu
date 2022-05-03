@@ -1,8 +1,14 @@
+from __future__ import annotations
+
 import discord
 
 from discord.ext import commands
+from typing import TYPE_CHECKING
 from utils import crud
 from utils.checks import is_staff, staff_ranks
+
+if TYPE_CHECKING:
+    from kurisu import Kurisu
 
 
 class ModStaff(commands.Cog):
@@ -10,17 +16,18 @@ class ModStaff(commands.Cog):
     Staff management commands.
     """
 
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: Kurisu):
+        self.bot: Kurisu = bot
+        self.emoji = discord.PartialEmoji.from_str('🛠️')
 
-    async def cog_check(self, ctx):
+    async def cog_check(self, ctx: commands.Context):
         if ctx.guild is None:
             raise commands.NoPrivateMessage()
         return True
 
     @is_staff("Owner")
     @commands.command()
-    async def addstaff(self, ctx, member: discord.Member, position):
+    async def addstaff(self, ctx: commands.Context, member: discord.Member, position):
         """Add user as staff. Owners only."""
         if position not in self.bot.staff_roles:
             await ctx.send(f"💢 That's not a valid position. You can use __{'__, __'.join(self.bot.staff_roles.keys())}__")
@@ -36,7 +43,7 @@ class ModStaff(commands.Cog):
 
     @is_staff("Owner")
     @commands.command()
-    async def delstaff(self, ctx, member: discord.Member):
+    async def delstaff(self, ctx: commands.Context, member: discord.Member):
         """Remove user from staff. Owners only."""
         await ctx.send(member.name)
         await crud.remove_staff(member.id)
@@ -45,10 +52,10 @@ class ModStaff(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.command()
-    async def sudo(self, ctx):
+    async def sudo(self, ctx: commands.Context):
         """Gain staff powers temporarily. Only needed by HalfOPs."""
         author = ctx.author
-        staff = await crud.get_staff(author.id)
+        staff = await crud.get_staff_member(author.id)
         if not staff:
             await ctx.send("You are not listed as staff, and can't use this. (this message should not appear)")
             return
@@ -62,10 +69,10 @@ class ModStaff(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.command()
-    async def unsudo(self, ctx):
+    async def unsudo(self, ctx: commands.Context):
         """Remove temporary staff powers. Only needed by HalfOPs."""
         author = ctx.author
-        staff = await crud.get_staff(author.id)
+        staff = await crud.get_staff_member(author.id)
         if not staff:
             await ctx.send("You are not listed as staff, and can't use this. (this message should not appear)")
             return
@@ -80,10 +87,10 @@ class ModStaff(commands.Cog):
     @is_staff("OP")
     @commands.guild_only()
     @commands.command(hidden=True)
-    async def updatestaff(self, ctx):
+    async def updatestaff(self, ctx: commands.Context):
         """Updates the staff list based on staff member in the server."""
         removed = []
-        for staffmember in await crud.get_staff_all():
+        for staffmember in await crud.get_staff():
             if ctx.guild.get_member(staffmember.id) is None:
                 await crud.remove_staff(staffmember.id)
                 removed.append(await self.bot.fetch_user(staffmember.id))
@@ -100,12 +107,12 @@ class ModStaff(commands.Cog):
             await self.bot.channels['mod-logs'].send(modmsg)
 
     @commands.command()
-    async def liststaff(self, ctx):
+    async def liststaff(self, ctx: commands.Context):
         """List staff members per rank."""
-        staff_list = await crud.get_staff_all()
-        ranks = dict.fromkeys(staff_ranks.keys())
+        staff_list = await crud.get_staff()
+        ranks: dict[str, list] = {}
         embed = discord.Embed()
-        for rank in ranks:
+        for rank in staff_ranks.keys():
             ranks[rank] = []
             for staff in staff_list:
                 if rank == staff.position:

@@ -1,3 +1,6 @@
+from __future__ import annotations
+
+import aiohttp
 import datetime
 import discord
 import inspect
@@ -9,10 +12,13 @@ import sys
 
 from discord import app_commands, TextChannel, __version__ as discordpy_version
 from discord.ext import commands
-from typing import Union
+from typing import Union, TYPE_CHECKING
 from utils import crud, utils
-from utils.checks import is_staff
+from utils.checks import is_staff, check_if_user_can_sr, check_staff_id
 from utils.utils import gen_color, dtm_to_discord_timestamp
+
+if TYPE_CHECKING:
+    from kurisu import Kurisu
 
 python_version = sys.version.split()[0]
 
@@ -21,8 +27,9 @@ class Extras(commands.Cog):
     """
     Extra things.
     """
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: Kurisu):
+        self.bot: Kurisu = bot
+        self.emoji = discord.PartialEmoji.from_str('🎲')
         self.nick_pattern = re.compile("^[a-z]{2,}.*$", re.RegexFlag.IGNORECASE)
         self.bot.loop.create_task(self.init())
 
@@ -42,7 +49,8 @@ class Extras(commands.Cog):
             return match
 
     @commands.command(hidden=True)
-    async def env(self, ctx):
+    async def env(self, ctx: commands.Context):
+        """Sends the bot environment"""
         msg = f'''
         Python {python_version}
         discord.py {discordpy_version}
@@ -53,7 +61,7 @@ class Extras(commands.Cog):
         await ctx.send(inspect.cleandoc(msg))
 
     @commands.command(aliases=['about'])
-    async def kurisu(self, ctx):
+    async def kurisu(self, ctx: commands.Context):
         """About Kurisu"""
         embed = discord.Embed(title="Kurisu", color=discord.Color.green())
         embed.set_author(name="Maintained by Nintendo Homebrew helpers and staff")
@@ -64,19 +72,19 @@ class Extras(commands.Cog):
 
     @commands.guild_only()
     @commands.command()
-    async def membercount(self, ctx):
+    async def membercount(self, ctx: commands.Context):
         """Prints the member count of the server."""
         await ctx.send(f"{ctx.guild.name} has {ctx.guild.member_count:,} members!")
 
     @commands.command()
-    async def uptime(self, ctx):
+    async def uptime(self, ctx: commands.Context):
         """Print total uptime of the bot."""
         await ctx.send(f"Uptime: {datetime.datetime.now() - self.bot.startup}")
 
     @commands.guild_only()
     @is_staff("SuperOP")
     @commands.command(hidden=True, aliases=['copyrole', 'crp'])
-    async def copyroleperms(self, ctx, role: discord.Role, src_channel: Union[discord.TextChannel, discord.VoiceChannel], des_channels: commands.Greedy[Union[discord.TextChannel, discord.VoiceChannel]]):
+    async def copyroleperms(self, ctx: commands.Context, role: discord.Role, src_channel: Union[discord.TextChannel, discord.VoiceChannel], des_channels: commands.Greedy[Union[discord.TextChannel, discord.VoiceChannel]]):
         """Copy role overwrites from a channel to channels"""
         if any(type(c) != type(src_channel) for c in des_channels):
             return await ctx.send("Voice channels and text channel permissions are incompatible!")
@@ -88,7 +96,7 @@ class Extras(commands.Cog):
     @commands.guild_only()
     @is_staff("SuperOP")
     @commands.command(hidden=True, aliases=['ccp'])
-    async def copychannelperms(self, ctx, src_channel: Union[discord.TextChannel, discord.VoiceChannel], des_channels: commands.Greedy[Union[discord.TextChannel, discord.VoiceChannel]]):
+    async def copychannelperms(self, ctx: commands.Context, src_channel: Union[discord.TextChannel, discord.VoiceChannel], des_channels: commands.Greedy[Union[discord.TextChannel, discord.VoiceChannel]]):
         """Copy channel overwrites from a channel to channels"""
         if any(type(c) != type(src_channel) for c in des_channels):
             return await ctx.send("Voice channels and text channel permissions are incompatible!")
@@ -100,7 +108,7 @@ class Extras(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command(hidden=True)
-    async def userroles(self, ctx, u: discord.Member = commands.Author):
+    async def userroles(self, ctx: commands.Context, u: discord.Member = commands.Author):
         """Gets user roles and their id. Staff only."""
         msg = f"{u}'s Roles:\n\n"
         for role in u.roles:
@@ -112,7 +120,7 @@ class Extras(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command(hidden=True)
-    async def serverroles(self, ctx, exp: str):
+    async def serverroles(self, ctx: commands.Context, exp: str):
         """Gets the server roles and their id by regex. Staff only."""
         msg = f"Server roles matching `{exp}`:\n\n"
         try:
@@ -126,14 +134,14 @@ class Extras(commands.Cog):
 
     @is_staff("OP")
     @commands.command(hidden=True)
-    async def embedtext(self, ctx, *, text):
+    async def embedtext(self, ctx: commands.Context, *, text):
         """Embed content."""
         await ctx.send(embed=discord.Embed(description=text))
 
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def estprune(self, ctx, days=30):
+    async def estprune(self, ctx: commands.Context, days=30):
         """Estimate count of members that would be pruned based on the amount of days. Staff only."""
         if ctx.guild.member_count > 100000:
             return await ctx.send("The server has too many members, the command would fail!")
@@ -152,7 +160,7 @@ class Extras(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def activecount(self, ctx, days=30):
+    async def activecount(self, ctx: commands.Context, days=30):
         """Shows the number of members active in the past amount of days. Staff only."""
         if ctx.guild.member_count > 100000:
             return await ctx.send("The server has too many members, the command would fail!")
@@ -173,7 +181,7 @@ class Extras(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def prune30(self, ctx, key=""):
+    async def prune30(self, ctx: commands.Context, key=""):
         """Prune members that are inactive for 30 days. Staff only."""
         if self.bot.pruning > 0:
             await ctx.send("Pruning is already in progress.")
@@ -195,37 +203,37 @@ class Extras(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.command()
-    async def disableleavelogs(self, ctx):
+    async def disableleavelogs(self, ctx: commands.Context):
         """DEBUG COMMAND"""
         self.bot.pruning = True
         await ctx.send("disable")
 
     @is_staff("HalfOP")
     @commands.command()
-    async def enableleavelogs(self, ctx):
+    async def enableleavelogs(self, ctx: commands.Context):
         """DEBUG COMMAND"""
         self.bot.pruning = False
         await ctx.send("enable")
 
     @commands.command(name="32c3")
-    async def _32c3(self, ctx):
+    async def _32c3(self, ctx: commands.Context):
         """Console Hacking 2015"""
         await ctx.send("https://www.youtube.com/watch?v=bZczf57HSag")
 
     @commands.command(name="33c3")
-    async def _33c3(self, ctx):
+    async def _33c3(self, ctx: commands.Context):
         """Nintendo Hacking 2016"""
         await ctx.send("https://www.youtube.com/watch?v=8C5cn_Qj0G8")
 
     @commands.command(name="34c3")
-    async def _34c3(self, ctx):
+    async def _34c3(self, ctx: commands.Context):
         """Console Security - Switch"""
         await ctx.send("https://www.youtube.com/watch?v=Ec4NgWRE8ik")
 
     @is_staff("Owner")
     @commands.guild_only()
     @commands.command(hidden=True)
-    async def dumpchannel(self, ctx, channel: TextChannel, limit=100):
+    async def dumpchannel(self, ctx: commands.Context, channel: TextChannel, limit=100):
         """Dump 100 messages from a channel to a file."""
         await ctx.send(f"Dumping {limit} messages from {channel.mention}")
         os.makedirs(f"#{channel.name}-{channel.id}", exist_ok=True)
@@ -237,7 +245,7 @@ class Extras(commands.Cog):
     @commands.guild_only()
     @app_commands.describe(channel_name="Channel to toggle")
     @commands.hybrid_command(hidden=True)
-    async def togglechannel(self, ctx, channel_name: str):
+    async def togglechannel(self, ctx: commands.Context, channel_name: str):
         """Enable or disable access to specific channels."""
 
         if not ctx.interaction:
@@ -256,7 +264,7 @@ class Extras(commands.Cog):
                 await author.add_roles(self.bot.roles['#elsewhere'])
                 await ctx.send("Access to #elsewhere granted.", ephemeral=True)
             else:
-                await utils.send_dm_message("Your access to elsewhere is restricted, contact staff to remove it.")
+                await utils.send_dm_message(ctx.author, "Your access to elsewhere is restricted, contact staff to remove it.")
         elif channel_name == "artswhere":
             if self.bot.roles['#art-discussion'] in author.roles:
                 await author.remove_roles(self.bot.roles['#art-discussion'])
@@ -269,10 +277,46 @@ class Extras(commands.Cog):
         else:
             await ctx.send(f"{channel_name} is not a valid toggleable channel.", ephemeral=True)
 
+    @check_if_user_can_sr()
+    @commands.guild_only()
+    @commands.command(aliases=['ref'])
+    async def reference(self, ctx: commands.Context, message: discord.Message, ref_text: bool = True, ref_image: bool = True, ref_author: bool = False):
+        """Creates a embed with the contents of message. Trusted, Helpers, Staff, Retired Staff, Verified only."""
+        await ctx.message.delete()
+        msg_reference = ctx.message.reference or None
+        mention_author = any(ctx.message.mentions)
+        ref_author = ref_author if await check_staff_id('Helper', ctx.author.id) else True
+        if isinstance(message.channel, discord.DMChannel):
+            return await ctx.send("Message can't be from a DM.")
+        # xnoeproofing™
+        if not message.channel.permissions_for(ctx.author).read_messages:
+            return await ctx.send("bad xnoe, bad", delete_after=10)
+
+        embed = discord.Embed(colour=gen_color(message.author.id), timestamp=message.created_at)
+        if ref_text and message.content:
+            embed.description = message.content
+        if ref_image and len(message.attachments) > 0 and message.attachments[0].height and message.attachments[0].content_type.startswith("image/"):
+            file = await message.attachments[0].to_file()
+            embed.set_image(url=f"attachment://{file.filename}")
+        if embed.description is None and embed.image is None:
+            return await ctx.send("No information to reference!", delete_after=10)
+        embed.set_author(name=message.author, icon_url=message.author.display_avatar.url, url=message.jump_url)
+        embed.set_footer(text=f"in {message.channel.name}{f'. Ref by {ctx.author}' if ref_author else ''}")
+        await ctx.send(embed=embed, reference=msg_reference, mention_author=mention_author)
+
+    @reference.error
+    async def reference_handler(self, ctx: commands.Context, error):
+        if isinstance(error, (commands.ChannelNotFound, commands.MessageNotFound, commands.GuildNotFound)):
+            await ctx.send(f"{ctx.author.mention} Message not found!", delete_after=10)
+        elif isinstance(error, commands.CheckFailure):
+            await ctx.send(f"You can't use {ctx.command.name}.", delete_after=10)
+        else:
+            await ctx.send(error, delete_after=10)
+
     @commands.dm_only()
     @commands.cooldown(rate=1, per=21600.0, type=commands.BucketType.member)
     @commands.command()
-    async def nickme(self, ctx, *, nickname: str):
+    async def nickme(self, ctx: commands.Context, *, nickname: str):
         """Change your nickname. Nitro Booster and crc only. Works only in DMs. 6 Hours Cooldown."""
         member = self.bot.guild.get_member(ctx.author.id)
         if self.bot.roles['crc'] not in member.roles and not member.premium_since:
@@ -290,7 +334,7 @@ class Extras(commands.Cog):
 
     @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.member)
     @commands.command()
-    async def remindme(self, ctx, remind_in: int = commands.parameter(converter=utils.TimeConverter), *, reminder: str):
+    async def remindme(self, ctx: commands.Context, remind_in: int = commands.parameter(converter=utils.DateOrTimeConverter), *, reminder: str):
         """Sends a reminder after a set time, just for you. Max reminder size is 800 characters.\n\nTime format: #d#h#m#s."""
         if remind_in < 30 or remind_in > 3.154e+7:
             return await ctx.send("You can't set a reminder for less than 30 seconds or for more than a year.")
@@ -303,7 +347,8 @@ class Extras(commands.Cog):
         await ctx.send(f"I will send you a reminder on {dtm_to_discord_timestamp(reminder_time, date_format='F')}.")
 
     @commands.command()
-    async def listreminders(self, ctx):
+    async def listreminders(self, ctx: commands.Context):
+        """Lists pending reminders."""
         reminders = await crud.get_user_reminders(ctx.author.id)
         if not reminders:
             return await ctx.send("You don't have any reminders scheduled.")
@@ -318,7 +363,8 @@ class Extras(commands.Cog):
         view.message = await ctx.send(embed=embeds[0], view=view)
 
     @commands.command()
-    async def unremindme(self, ctx, number: int):
+    async def unremindme(self, ctx: commands.Context, number: int):
+        """Removes a pending reminder."""
         reminders = await crud.get_user_reminders(ctx.author.id)
         if not reminders:
             return await ctx.send("You don't have any reminders scheduled.")
@@ -328,20 +374,19 @@ class Extras(commands.Cog):
         await ctx.send(f"Deleted reminder {number} successfully!")
 
     @commands.group(invoke_without_command=True)
-    async def tag(self, ctx, title: str = ""):
+    async def tag(self, ctx: commands.Context, title: str = ""):
         """Command group for commands related to tags."""
-        if ctx.invoked_subcommand is None:
-            if title:
-                if tag := await crud.get_tag(title):
-                    return await ctx.send(tag.content)
-                else:
-                    await ctx.send("This tag doesn't exist!")
+        if title:
+            if tag := await crud.get_tag(title):
+                return await ctx.send(tag.content)
             else:
-                await ctx.send_help(ctx.command)
+                await ctx.send("This tag doesn't exist!")
+        else:
+            await ctx.send_help(ctx.command)
 
     @is_staff('Helper')
     @tag.command()
-    async def create(self, ctx, title: str, *, content: str):
+    async def create(self, ctx: commands.Context, title: str, *, content: str):
         """Creates a tag. Max content size is 2000 characters. Helpers+ only."""
         if await crud.get_tag(title):
             return await ctx.send("This tag already exists!")
@@ -351,7 +396,7 @@ class Extras(commands.Cog):
         await ctx.send("Tag created successfully")
 
     @tag.command()
-    async def search(self, ctx, query: str):
+    async def search(self, ctx: commands.Context, query: str):
         """Search tags by title. Returns first 10 results."""
         if tags := await crud.search_tags(query):
             embed = discord.Embed(description='\n'.join(f'{n}. {tag.title}' for n, tag in enumerate(tags, start=1)), color=gen_color(ctx.author.id))
@@ -360,7 +405,7 @@ class Extras(commands.Cog):
             await ctx.send("No tags found.")
 
     @tag.command()
-    async def list(self, ctx):
+    async def list(self, ctx: commands.Context):
         """Lists the title of all existent tags."""
         if tags := await crud.get_tags():
             embeds = []
@@ -385,6 +430,7 @@ class Extras(commands.Cog):
         await ctx.send("Tag deleted successfully")
 
     @is_staff('OP')
+    @app_commands.default_permissions(ban_members=True)
     @app_commands.describe(name="Name of the vote",
                            description="Description of the vote",
                            options="Options for the vote separated by \'|\'")
@@ -402,6 +448,28 @@ class Extras(commands.Cog):
         msg = await interaction.original_message()
         view.message_id = msg.id
         await crud.add_vote_view(view_id=interaction.id, identifier='extras', author_id=interaction.user.id, options=options, start=datetime.datetime.utcnow(), message_id=msg.id)
+
+    @is_staff('OP')
+    @commands.guild_only()
+    @commands.command()
+    async def addemoji(self, ctx: commands.Context, name: str, emoji: Union[str, discord.PartialEmoji], *roles: discord.Role):
+        """Add a emoji to the server. OP+ only."""
+        if isinstance(emoji, discord.PartialEmoji):
+            emoji_bytes = await emoji.read()
+        else:
+            try:
+                async with self.bot.session.get(emoji, timeout=45) as r:
+                    if r.status == 200:
+                        if r.headers["Content-Type"] in ('image/jpeg', 'image/png', 'image/gif'):
+                            emoji_bytes = await r.read()
+                        else:
+                            return await ctx.send("Only `.jpeg`, `.png` and `.gif` images can used for emojis.")
+                    else:
+                        return await ctx.send("Failed to fetch image.")
+            except aiohttp.InvalidURL:
+                return await ctx.send("Invalid url.")
+        guild_emoji = await ctx.guild.create_custom_emoji(name=name, image=emoji_bytes, roles=roles, reason="Probably nothing good.")
+        await ctx.send(f"Added emoji {guild_emoji if guild_emoji.is_usable() else name} successfully!")
 
 
 async def setup(bot):

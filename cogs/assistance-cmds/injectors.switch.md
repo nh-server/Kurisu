@@ -1,5 +1,6 @@
 ---
 title: List of switch payload injectors
+help-desc: List of switch payload injectors
 url: https://nh-server.github.io/switch-guide/extras/rcm_injectors/
 thumbnail-url: https://i.imgur.com/CVSu1zc.png
 author.name: NH Discord Server

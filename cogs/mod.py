@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import datetime
 import discord
 import re
@@ -6,9 +8,12 @@ from discord import app_commands
 from discord.app_commands import Choice
 from discord.ext import commands
 from subprocess import call
-from typing import Union
+from typing import Union, Optional, TYPE_CHECKING
 from utils import utils, crud, models
 from utils.checks import is_staff, check_staff_id, check_bot_or_staff, is_staff_app
+
+if TYPE_CHECKING:
+    from kurisu import Kurisu
 
 
 class Mod(commands.Cog):
@@ -16,12 +21,12 @@ class Mod(commands.Cog):
     Staff commands.
     """
 
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: Kurisu):
+        self.bot: Kurisu = bot
+        self.emoji = discord.PartialEmoji.from_str('🧙')
         self.userinfo_ctx = app_commands.ContextMenu(
-                name='userinfo',
-                callback=self.userinfo_ctx_menu,
-                guild_ids=[886216686582263809]
+            name='userinfo',
+            callback=self.userinfo_ctx_menu,
         )
         self.bot.tree.add_command(self.userinfo_ctx)
 
@@ -30,14 +35,14 @@ class Mod(commands.Cog):
 
     @is_staff("Owner")
     @commands.command()
-    async def quit(self, ctx):
+    async def quit(self, ctx: commands.Context):
         """Stops the bot."""
         await ctx.send("👋 Bye bye!")
         await self.bot.close()
 
     @is_staff("SuperOP")
     @commands.command()
-    async def pull(self, ctx):
+    async def pull(self, ctx: commands.Context):
         """Pull new changes from GitHub and restart."""
         if self.bot.IS_DOCKER:
             await ctx.send("Pull isn't used when running from a Docker container!")
@@ -51,7 +56,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=['ui'])
-    async def userinfo(self, ctx, u: Union[discord.Member, discord.User]):
+    async def userinfo(self, ctx: commands.Context, u: Union[discord.Member, discord.User]):
         """Shows information from a user. Staff and Helpers only."""
         basemsg = f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = <{u.avatar}>\nbot = {u.bot}\ndefault_avatar= <{u.default_avatar}>\ncreated_at = {u.created_at}\n"
         if isinstance(u, discord.Member):
@@ -66,7 +71,7 @@ class Mod(commands.Cog):
 
     @commands.guild_only()
     @commands.command(aliases=['ui2'])
-    async def userinfo2(self, ctx, user: Union[discord.Member, discord.User] = commands.Author):
+    async def userinfo2(self, ctx: commands.Context, user: Union[discord.Member, discord.User] = commands.Author):
         """Shows information from a user. Staff and Helpers only."""
 
         if (not await check_staff_id('Helper', ctx.author.id)) and (ctx.author != user or ctx.channel != self.bot.channels['bot-cmds']):
@@ -145,10 +150,13 @@ class Mod(commands.Cog):
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
     @is_staff_app('Helper')
+    @commands.guild_only()
     @commands.command()
-    async def guildinfo(self, ctx, invite: discord.Invite):
-
-        guild = invite.guild
+    async def guildinfo(self, ctx, invite: discord.Invite = None):
+        if not invite:
+            guild = ctx.guild
+        else:
+            guild = invite.guild
         embed = discord.Embed(title=f"Guild {guild.name}", color=utils.gen_color(guild.id))
         embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
         embed.description = (
@@ -168,23 +176,27 @@ class Mod(commands.Cog):
 
         await ctx.send(embed=embed)
 
+    @is_staff_app('Helper')
+    @commands.guild_only()
     @commands.command()
-    async def guildinfo2(self, ctx, invite: discord.Invite):
-
-        guild = invite.guild
+    async def guildinfo2(self, ctx, invite: discord.Invite = None):
+        if not invite:
+            guild = ctx.guild
+        else:
+            guild = invite.guild
         embed = discord.Embed(title=f"Guild {guild.name}", color=utils.gen_color(guild.id))
         embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
         embed.add_field(name="ID", value=guild.id)
         embed.add_field(name="Created on", value=utils.dtm_to_discord_timestamp(guild.created_at, utc_time=True))
         embed.add_field(name="Verification", value=guild.verification_level)
-        embed.add_field(name="Members", value=invite.approximate_member_count)
+        embed.add_field(name="Members", value=guild.member_count if isinstance(guild, discord.Guild) else invite.approximate_member_count)
         embed.add_field(name="Nitro boosters", value=guild.premium_subscription_count)
         embed.add_field(name="Vanity url", value=guild.vanity_url_code)
         links = ""
         if guild.icon:
             links += f"[icon]({guild.icon.url}) "
         if guild.banner:
-            links += f"[icon]({guild.banner.url})"
+            links += f"[banner]({guild.banner.url})"
         if links:
             embed.add_field(name="Links", value=links)
         await ctx.send(embed=embed)
@@ -192,7 +204,7 @@ class Mod(commands.Cog):
     @is_staff("Owner")
     @commands.guild_only()
     @commands.command(aliases=['gigayeet'])
-    async def multiban(self, ctx, users: commands.Greedy[int]):
+    async def multiban(self, ctx: commands.Context, users: commands.Greedy[int]):
         """Multi-ban users."""
         author = ctx.author
         msg = "failed:\n"
@@ -208,7 +220,7 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def matchuser(self, ctx, *, rgx: str):
+    async def matchuser(self, ctx: commands.Context, *, rgx: str):
         """Match users by regex."""
         msg = ""
         matches = 0
@@ -227,7 +239,7 @@ class Mod(commands.Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(ban_members=True)
     @commands.command(aliases=['gigayeetre'])
-    async def multibanre(self, ctx, *, rgx: str):
+    async def multibanre(self, ctx: commands.Context, *, rgx: str):
         """Multi-ban users by regex."""
         to_ban = []
         banned = 0
@@ -265,21 +277,13 @@ class Mod(commands.Cog):
     @commands.bot_has_permissions(manage_channels=True)
     @commands.guild_only()
     @commands.command()
-    async def slowmode(self, ctx, arg: Union[discord.TextChannel, int] = commands.parameter(converter=ChannelorTime), length: int = commands.parameter(converter=utils.TimeConverter, default=None)):
+    async def slowmode(self, ctx: commands.Context, channel: Optional[discord.TextChannel] = commands.CurrentChannel, *, length: int = commands.parameter(converter=utils.DateOrTimeConverter)):
         """Apply a given slowmode time to a channel.
 
         The time format is identical to that used for timed kicks/bans/takehelps.
         It is not possible to set a slowmode longer than 6 hours.
 
         Helpers in assistance channels and Staff only."""
-
-        if isinstance(arg, discord.TextChannel):
-            channel = arg
-            if length is None:
-                return await ctx.send_help(ctx.command)
-        else:
-            channel = ctx.channel
-            length = arg
 
         if channel not in self.bot.assistance_channels and not await check_staff_id("OP", ctx.author.id):
             return await ctx.send("You cannot use this command outside of assistance channels.")
@@ -304,7 +308,7 @@ class Mod(commands.Cog):
     @commands.has_permissions(manage_messages=True)
     @commands.guild_only()
     @commands.command(aliases=["clear"])
-    async def purge(self, ctx, limit: int):
+    async def purge(self, ctx: commands.Context, limit: int):
         """Clears a given number of messages. Helpers in assistance channels and Staff only."""
         deleted = await ctx.channel.purge(limit=limit + 1, check=lambda message: not message.pinned)
         msg = f"🗑 **Cleared**: {ctx.author.mention} cleared {len(deleted)} messages in {ctx.channel.mention}"
@@ -313,7 +317,7 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def metamute(self, ctx, member: discord.Member, *, reason=""):
+    async def metamute(self, ctx: commands.Context, member: discord.Member, *, reason=""):
         """Mutes a user so they can't speak in meta. Staff only."""
         if not await crud.add_permanent_role(member.id, self.bot.roles['meta-mute'].id):
             await ctx.send("User is already meta muted!")
@@ -336,7 +340,7 @@ class Mod(commands.Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(manage_roles=True)
     @commands.command()
-    async def metaunmute(self, ctx, member: discord.Member):
+    async def metaunmute(self, ctx: commands.Context, member: discord.Member):
         """Unmutes a user so they can speak in meta. Staff only."""
         try:
             if not await crud.remove_permanent_role(member.id, self.bot.roles["meta-mute"].id) and self.bot.roles['meta-mute'] not in member.roles:
@@ -351,7 +355,7 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def appealmute(self, ctx, member: discord.Member, *, reason=""):
+    async def appealmute(self, ctx: commands.Context, member: discord.Member, *, reason=""):
         """Mutes a user so they can't speak in appeals. Staff only."""
         if not await crud.add_permanent_role(member.id, self.bot.roles['appeal-mute'].id):
             await ctx.send("User is already appeal muted!")
@@ -374,7 +378,7 @@ class Mod(commands.Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(manage_roles=True)
     @commands.command()
-    async def appealunmute(self, ctx, member: discord.Member):
+    async def appealunmute(self, ctx: commands.Context, member: discord.Member):
         """Unmutes a user so they can speak in appeals. Staff only."""
         try:
             if not await crud.remove_permanent_role(member.id, self.bot.roles["appeal-mute"].id) and self.bot.roles['appeal-mute'] not in member.roles:
@@ -390,7 +394,7 @@ class Mod(commands.Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(manage_roles=True)
     @commands.command()
-    async def mute(self, ctx, member: discord.Member, *, reason=""):
+    async def mute(self, ctx: commands.Context, member: discord.Member, *, reason=""):
         """Mutes a user so they can't speak. Staff only."""
         if await check_bot_or_staff(ctx, member, "mute"):
             return
@@ -422,7 +426,7 @@ class Mod(commands.Cog):
     @commands.bot_has_permissions(manage_roles=True)
     @commands.guild_only()
     @commands.command()
-    async def oldtimemute(self, ctx, member: discord.Member, length: int = commands.parameter(converter=utils.TimeConverter), *, reason=""):
+    async def oldtimemute(self, ctx: commands.Context, member: discord.Member, length: int = commands.parameter(converter=utils.DateOrTimeConverter), *, reason=""):
         """Mutes a user for a limited period of time so they can't speak. Staff only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "mute"):
             return
@@ -460,7 +464,7 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def unmute(self, ctx, member: discord.Member):
+    async def unmute(self, ctx: commands.Context, member: discord.Member):
         """Unmutes a user so they can speak. Staff only."""
         try:
             if not await crud.remove_permanent_role(member.id, self.bot.roles["Muted"].id):
@@ -475,7 +479,7 @@ class Mod(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.command(aliases=['timemute'])
-    async def timeout(self, ctx, member: discord.Member, length: int = commands.parameter(converter=utils.TimeConverter), *, reason: str = None):
+    async def timeout(self, ctx, member: discord.Member, length: int = commands.parameter(converter=utils.DateOrTimeConverter), *, reason: Optional[str]):
         """Times out a user. Staff only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "timeout"):
             return
@@ -505,7 +509,7 @@ class Mod(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.command()
-    async def untimeout(self, ctx, member: discord.Member):
+    async def untimeout(self, ctx: commands.Context, member: discord.Member):
         """Removes a timeout from a user. Staff only."""
         if member.timed_out_until is None:
             return await ctx.send("This member doesn't have a timeout!")
@@ -516,7 +520,7 @@ class Mod(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.command()
-    async def art(self, ctx, member: discord.Member):
+    async def art(self, ctx: commands.Context, member: discord.Member):
         """Restore art-discussion access for a user. Staff only."""
         if not await crud.remove_permanent_role(member.id, self.bot.roles['No-art'].id):
             return await ctx.send("This user is not restricted from art channels.")
@@ -530,7 +534,7 @@ class Mod(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.command()
-    async def noart(self, ctx, member: discord.Member, *, reason=""):
+    async def noart(self, ctx: commands.Context, member: discord.Member, *, reason=""):
         """Removes art-discussion access from a user. Staff only."""
         if not await crud.add_permanent_role(member.id, self.bot.roles['No-art'].id):
             return await ctx.send("This user is already restricted from art channels.")
@@ -550,7 +554,7 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def elsewhere(self, ctx, member: discord.Member):
+    async def elsewhere(self, ctx: commands.Context, member: discord.Member):
         """Restore elsewhere access for a user. Staff only."""
         try:
             if not await crud.remove_permanent_role(member.id, self.bot.roles["No-elsewhere"].id):
@@ -565,7 +569,7 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def noelsewhere(self, ctx, member: discord.Member, *, reason=""):
+    async def noelsewhere(self, ctx: commands.Context, member: discord.Member, *, reason=""):
         """Removes elsewhere access from a user. Staff only."""
         try:
             if not await crud.add_permanent_role(member.id, self.bot.roles['No-elsewhere'].id):
@@ -586,7 +590,7 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def noembed(self, ctx, member: discord.Member, *, reason=""):
+    async def noembed(self, ctx: commands.Context, member: discord.Member, *, reason=""):
         """Removes embed permissions from a user. Staff only."""
         if await check_bot_or_staff(ctx, member, "noembed"):
             return
@@ -612,7 +616,7 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def embed(self, ctx, member: discord.Member):
+    async def embed(self, ctx: commands.Context, member: discord.Member):
         """Restore embed permissions for a user. Staff only."""
         try:
             await crud.remove_permanent_role(member.id, self.bot.roles["No-Embed"].id)
@@ -626,7 +630,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["nohelp", "yesnthelp"])
-    async def takehelp(self, ctx, member: Union[discord.Member, discord.User], *, reason=""):
+    async def takehelp(self, ctx: commands.Context, member: Union[discord.Member, discord.User], *, reason=""):
         """Remove access to the assistance channels. Staff and Helpers only."""
         if await check_bot_or_staff(ctx, member, "takehelp"):
             return
@@ -657,7 +661,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["yeshelp"])
-    async def givehelp(self, ctx, member: Union[discord.Member, discord.User]):
+    async def givehelp(self, ctx: commands.Context, member: Union[discord.Member, discord.User]):
         """Restore access to the assistance channels. Staff and Helpers only."""
         if not await crud.remove_permanent_role(member.id, self.bot.roles["No-Help"].id):
             return await ctx.send("This user is not take-helped!")
@@ -674,7 +678,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["timenohelp"])
-    async def timetakehelp(self, ctx, member: discord.Member, length: int = commands.parameter(converter=utils.TimeConverter), *, reason=""):
+    async def timetakehelp(self, ctx: commands.Context, member: discord.Member, length: int = commands.parameter(converter=utils.DateOrTimeConverter), *, reason=""):
         """Restricts a user from Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "takehelp"):
             return
@@ -707,7 +711,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["notech", "technt"])
-    async def taketech(self, ctx, member: Union[discord.Member, discord.User], *, reason=""):
+    async def taketech(self, ctx: commands.Context, member: Union[discord.Member, discord.User], *, reason=""):
         """Remove access to the tech channel. Staff and Helpers only."""
         if await check_bot_or_staff(ctx, member, "taketech"):
             return
@@ -738,7 +742,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["yestech"])
-    async def givetech(self, ctx, member: Union[discord.Member, discord.User]):
+    async def givetech(self, ctx: commands.Context, member: Union[discord.Member, discord.User]):
         """Restore access to the tech channel. Staff and Helpers only."""
         if not await crud.remove_permanent_role(member.id, self.bot.roles["No-Tech"].id):
             return await ctx.send("This user is not take-helped!")
@@ -755,7 +759,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["timenotech"])
-    async def timetaketech(self, ctx, member: discord.Member, length: int = commands.parameter(converter=utils.TimeConverter), *, reason=""):
+    async def timetaketech(self, ctx: commands.Context, member: discord.Member, length: int = commands.parameter(converter=utils.DateOrTimeConverter), *, reason=""):
         """Restricts a user from the tech channel for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "taketech"):
             return
@@ -788,7 +792,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["mutehelp"])
-    async def helpmute(self, ctx, member: Union[discord.Member, discord.User], *, reason=""):
+    async def helpmute(self, ctx: commands.Context, member: Union[discord.Member, discord.User], *, reason=""):
         """Remove speak perms to the assistance channels. Staff and Helpers only."""
         if await check_bot_or_staff(ctx, member, "helpmute"):
             return
@@ -816,7 +820,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["timemutehelp"])
-    async def timehelpmute(self, ctx, member: discord.Member, length: int = commands.parameter(converter=utils.TimeConverter), *, reason=""):
+    async def timehelpmute(self, ctx: commands.Context, member: discord.Member, length: int = commands.parameter(converter=utils.DateOrTimeConverter), *, reason=""):
         """Restricts a user from speaking in Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "helpmute"):
             return
@@ -849,7 +853,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def helpunmute(self, ctx, member: Union[discord.Member, discord.User]):
+    async def helpunmute(self, ctx: commands.Context, member: Union[discord.Member, discord.User]):
         """Restores speak access to help channels. Helpers+ only."""
         if not await crud.remove_permanent_role(member.id, self.bot.roles["help-mute"].id):
             return await ctx.send("This user is not help muted!")
@@ -866,7 +870,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def takesmallhelp(self, ctx, members: commands.Greedy[discord.Member]):
+    async def takesmallhelp(self, ctx: commands.Context, members: commands.Greedy[discord.Member]):
         """Remove access to small help channel. Staff and Helpers only."""
         if len(members) < 1:
             await ctx.send("Mention at least one user")
@@ -880,7 +884,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def givesmallhelp(self, ctx, members: commands.Greedy[discord.Member]):
+    async def givesmallhelp(self, ctx: commands.Context, members: commands.Greedy[discord.Member]):
         """Provide access to small help channel for 1-on-1 help. Staff and Helpers only."""
         if len(members) < 1:
             await ctx.send("Mention at least one user")
@@ -894,7 +898,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def probate(self, ctx, member: Union[discord.Member, discord.User], *, reason=""):
+    async def probate(self, ctx: commands.Context, member: Union[discord.Member, discord.User], *, reason=""):
         """Probate a user. Staff and Helpers only."""
         if await check_bot_or_staff(ctx, member, "probate"):
             return
@@ -918,7 +922,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def unprobate(self, ctx, member: Union[discord.Member, discord.User]):
+    async def unprobate(self, ctx: commands.Context, member: Union[discord.Member, discord.User]):
         """Unprobate a user. Staff and Helpers only."""
         if not await crud.remove_permanent_role(member.id, self.bot.roles["Probation"].id) and self.bot.roles["Probation"] not in member.roles:
             return await ctx.send("This user is not probated!")
@@ -931,7 +935,7 @@ class Mod(commands.Cog):
     @is_staff("Owner")
     @commands.guild_only()
     @commands.command()
-    async def updatechannel(self, ctx, name, channel: Union[discord.TextChannel, discord.VoiceChannel]):
+    async def updatechannel(self, ctx: commands.Context, name, channel: Union[discord.TextChannel, discord.VoiceChannel]):
         """Changes the id of a channel"""
         if name not in self.bot.channels:
             await ctx.send("Invalid channel name!")
@@ -944,21 +948,21 @@ class Mod(commands.Cog):
     @is_staff("Owner")
     @commands.guild_only()
     @commands.command()
-    async def setmodchannel(self, ctx, channel: discord.TextChannel, value: bool):
+    async def setmodchannel(self, ctx: commands.Context, channel: discord.TextChannel, value: bool):
         """Changes the mod flag of a channel"""
-        dbchannel = await crud.get_dbchannel(channel.id)
-        await dbchannel.update(mod_channel=value).apply()
+        db_channel = await crud.get_dbchannel(channel.id) or await crud.add_dbchannel(channel.id, name=channel.name)
+        await db_channel.update(mod_channel=value).apply()
         await ctx.send(f"{channel.mention} is {'now' if value else 'no longer'} a mod channel.")
 
     @is_staff("OP")
     @commands.command()
-    async def playing(self, ctx, *, gamename):
+    async def playing(self, ctx: commands.Context, *, gamename):
         """Sets playing message. Staff only."""
         await self.bot.change_presence(activity=discord.Game(name=gamename))
 
     @is_staff("OP")
     @commands.command()
-    async def status(self, ctx, status):
+    async def status(self, ctx: commands.Context, status):
         """Sets status. Staff only."""
         if status == "online":
             await self.bot.change_presence(status=discord.Status.online)
@@ -973,7 +977,7 @@ class Mod(commands.Cog):
 
     @is_staff("OP")
     @commands.command()
-    async def username(self, ctx, *, username):
+    async def username(self, ctx: commands.Context, *, username):
         """Sets bot name. Staff only."""
         await self.bot.user.edit(username=username)
 
@@ -987,7 +991,7 @@ class Mod(commands.Cog):
     @is_staff("SuperOP")
     @commands.guild_only()
     @commands.command()
-    async def nofilter(self, ctx, channel: discord.TextChannel):
+    async def nofilter(self, ctx: commands.Context, channel: discord.TextChannel):
         """Adds nofilter to the channel"""
         if await crud.check_nofilter(channel):
             return await ctx.send("This channel is already no filtered!")
@@ -997,7 +1001,7 @@ class Mod(commands.Cog):
     @is_staff("SuperOP")
     @commands.guild_only()
     @commands.command()
-    async def filter(self, ctx, channel: discord.TextChannel):
+    async def filter(self, ctx: commands.Context, channel: discord.TextChannel):
         """Removes nofilter from the channel"""
         if not await crud.check_nofilter(channel):
             return await ctx.send("This channel is already filtered!")
@@ -1007,7 +1011,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def approve(self, ctx, alias: str, invite: discord.Invite, times: int = 1):
+    async def approve(self, ctx: commands.Context, alias: str, invite: discord.Invite, times: int = 1):
         """Approves a server invite for a number of times. Staff and Helpers only."""
 
         code = invite.code
@@ -1024,7 +1028,7 @@ class Mod(commands.Cog):
 
     @is_staff("SuperOP")
     @commands.command(aliases=['setrole', 'scr'])
-    async def setchannelrole(self, ctx, channel: discord.TextChannel, role: discord.Role):
+    async def setchannelrole(self, ctx: commands.Context, channel: discord.TextChannel, role: discord.Role):
         """Sets the default role of a channel."""
         dbchannel = await models.Channel.get(channel.id)
         if not dbchannel:
@@ -1036,25 +1040,27 @@ class Mod(commands.Cog):
 
     @is_staff("Helper")
     @commands.command(aliases=['ci'])
-    async def channelinfo(self, ctx, channel: discord.TextChannel = commands.CurrentChannel):
+    async def channelinfo(self, ctx: commands.Context, channel: discord.TextChannel = commands.CurrentChannel):
         """Shows database information about a text channel."""
         state = {0: "Not locked", 1: "softlocked", 2: "locked", 3: "super locked"}
-        dbchannel = await models.Channel.get(channel.id)
-        if not dbchannel:
+        if not channel:
+            channel = ctx.channel
+        db_channel: Optional[models.Channel] = await models.Channel.get(channel.id)
+        if db_channel is None:
             return await ctx.send("This channel is not in the database")
-        role = await crud.get_dbrole(dbchannel.default_role) if dbchannel.default_role else ctx.guild.default_role
-        embed = discord.Embed(title=dbchannel.name)
-        embed.add_field(name="ID", value=dbchannel.id, inline=False)
-        embed.add_field(name="Default Role", value=role.name, inline=False)
-        embed.add_field(name="Filtered", value=str(not dbchannel.nofilter), inline=False)
-        embed.add_field(name="Status", value=state[dbchannel.lock_level], inline=False)
+        role = await crud.get_dbrole(db_channel.default_role) if db_channel.default_role else None
+        embed = discord.Embed(title=db_channel.name)
+        embed.add_field(name="ID", value=db_channel.id, inline=False)
+        embed.add_field(name="Default Role", value=role.name if role else ctx.guild.default_role.name, inline=False)
+        embed.add_field(name="Filtered", value=str(not db_channel.nofilter), inline=False)
+        embed.add_field(name="Status", value=state[db_channel.lock_level], inline=False)
         await ctx.send(embed=embed)
 
     @is_staff("OP")
     @commands.bot_has_permissions(manage_roles=True)
     @commands.guild_only()
     @commands.command()
-    async def tempstream(self, ctx, member: discord.Member, length: str = ""):
+    async def tempstream(self, ctx: commands.Context, member: discord.Member, length: str = ""):
         """Gives temporary streaming permissions to a member. Lasts 24 hours by default"""
         await member.add_roles(self.bot.roles['streamer(temp)'])
 
@@ -1077,7 +1083,7 @@ class Mod(commands.Cog):
     @commands.bot_has_permissions(manage_roles=True)
     @commands.guild_only()
     @commands.command()
-    async def notempstream(self, ctx, member: discord.Member):
+    async def notempstream(self, ctx: commands.Context, member: discord.Member):
         """Revokes temporary streaming permissions from a member."""
         await member.remove_roles(self.bot.roles['streamer(temp)'])
 
@@ -1087,7 +1093,7 @@ class Mod(commands.Cog):
         await self.bot.channels['mod-logs'].send(f"⭕ **Permission Revoked**: {ctx.author.mention} revoked {member.mention} streaming permissions.")
 
     @is_staff_app("OP")
-    @app_commands.guilds(886216686582263809)
+    @app_commands.default_permissions(ban_members=True)
     @app_commands.command()
     @app_commands.describe(member="Member to apply restriction.",
                            restriction="Restriction Type.",

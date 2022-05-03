@@ -1,14 +1,23 @@
+from __future__ import annotations
+
+import discord
 import xkcd
 
 from discord.ext import commands
+from typing import TYPE_CHECKING
+
+
+if TYPE_CHECKING:
+    from kurisu import Kurisu
 
 
 class xkcdparse(commands.Cog):
     """
     xkcd parser.
     """
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: Kurisu):
+        self.bot: Kurisu = bot
+        self.emoji = discord.PartialEmoji.from_str('📡')
 
     word_responses = {
         "pointers": 138,
@@ -31,7 +40,7 @@ class xkcdparse(commands.Cog):
     }
 
     @commands.command()
-    async def xkcd(self, ctx, *, comic):
+    async def xkcd(self, ctx: commands.Context, *, comic):
         """Show xkcd comic by number. Use "latest" to show the latest comic, or "random" to show a random comic."""
         comic = comic.lower()
         if comic == "latest":

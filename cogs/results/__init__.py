@@ -1,13 +1,24 @@
+from __future__ import annotations
+
 import discord
 
 from . import switch, wiiu_support, wiiu_results, ctr_support, ctr_results
 from discord.ext import commands
+from typing import Optional, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from kurisu import Kurisu
 
 
 class Results(commands.Cog):
     """
     Parses game console result codes.
     """
+
+    def __init__(self, bot: Kurisu):
+        self.bot: Kurisu = bot
+        self.emoji: discord.PartialEmoji = discord.PartialEmoji.from_str('⚠')
+
     def fetch(self, error):
         if ctr_support.is_valid(error):
             return ctr_support.get(error)
@@ -23,7 +34,7 @@ class Results(commands.Cog):
         # Console name, module name, result, color
         return None
 
-    def err2hex(self, error, suppress_error=False):
+    def err2hex(self, error: str, suppress_error=False) -> Optional[str]:
         # If it's already hex, just return it.
         if self.is_hex(error):
             return error
@@ -36,14 +47,14 @@ class Results(commands.Cog):
             return 'Invalid or unsupported error code format. \
 Only Nintendo Switch XXXX-YYYY formatted error codes are supported.'
 
-    def hex2err(self, error, suppress_error=False):
+    def hex2err(self, error: str, suppress_error=False) -> Optional[str]:
         # Don't bother processing anything if it's not hex.
         if self.is_hex(error) and switch.is_valid(error):
             return switch.hex2err(error)
         if not suppress_error:
             return 'This isn\'t a hexadecimal value!'
 
-    def fixup_input(self, user_input):
+    def fixup_input(self, user_input: str) -> str:
         # Truncate input to 16 chars so as not to create a huge embed or do
         # eventual regex on a huge string. If we add support for consoles that
         # that have longer error codes, adjust accordingly.
@@ -57,14 +68,14 @@ Only Nintendo Switch XXXX-YYYY formatted error codes are supported.'
 
         return user_input
 
-    def is_hex(self, user_input):
+    def is_hex(self, user_input: str) -> bool:
         try:
             hex(int(user_input, 16))
         except ValueError:
             return False
         return True
 
-    def check_meme(self, err: str) -> str:
+    def check_meme(self, err: str) -> Optional[str]:
         memes = {
             '0xdeadbeef': 'you sure you want to eat that?',
             '0xdeadbabe': 'i think you have bigger problems if that\'s the case',
@@ -73,7 +84,7 @@ Only Nintendo Switch XXXX-YYYY formatted error codes are supported.'
         return memes.get(err.casefold())
 
     @commands.command(aliases=['err', 'res'])
-    async def result(self, ctx, err: str):
+    async def result(self, ctx: commands.Context, err: str):
         """
         Displays information on game console result codes, with a fancy embed.
         0x prefix is not required for hex input.
@@ -108,7 +119,7 @@ Only Nintendo Switch XXXX-YYYY formatted error codes are supported.'
 invalid or is for a system I don\'t have support for.')
 
     @commands.command(aliases=['serr'])
-    async def nxerr(self, ctx, err: str):
+    async def nxerr(self, ctx: commands.Context, err: str):
         """
         Displays information on switch result codes, with a fancy embed.
         0x prefix is not required for hex input.
@@ -142,7 +153,7 @@ invalid or is for a system I don\'t have support for.')
 invalid for the switch.')
 
     @commands.command(aliases=['3dserr'])
-    async def ctrerr(self, ctx, err: str):
+    async def ctrerr(self, ctx: commands.Context, err: str):
         """
         Displays information on 3DS result codes, with a fancy embed.
         0x prefix is not required for hex input.
@@ -177,7 +188,7 @@ invalid for the switch.')
 invalid for the 3DS.')
 
     @commands.command(aliases=['wiiuerr'])
-    async def cafeerr(self, ctx, err: str):
+    async def cafeerr(self, ctx: commands.Context, err: str):
         """
         Displays information on Wii U result codes, with a fancy embed.
         0x prefix is not required for hex input.
@@ -214,7 +225,7 @@ invalid for the 3DS.')
 invalid for the Wii U.')
 
     @commands.command(name='err2hex')
-    async def cmderr2hex(self, ctx, error: str):
+    async def cmderr2hex(self, ctx: commands.Context, error: str):
         """
         Converts a support code of a console to a hex result code.
 
@@ -225,7 +236,7 @@ invalid for the Wii U.')
         await ctx.send(self.err2hex(error))
 
     @commands.command(name='hex2err')
-    async def cmdhex2err(self, ctx, error: str):
+    async def cmdhex2err(self, ctx: commands.Context, error: str):
         """
         Converts a hex result code of a console to a support code.
 
@@ -236,7 +247,7 @@ invalid for the Wii U.')
         await ctx.send(self.hex2err(error))
 
     @commands.command()
-    async def hexinfo(self, ctx, error: str):
+    async def hexinfo(self, ctx: commands.Context, error: str):
         """
         Breaks down a 3DS result code into its components.
         """

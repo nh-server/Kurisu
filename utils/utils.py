@@ -92,12 +92,34 @@ def parse_time(time_string) -> int:
     return sum(int(item[:-1]) * units[item[-1]] for item in match)
 
 
-class TimeConverter(commands.Converter):
+def parse_date(date_string) -> int:
+    date_lst: list = date_string.split(' ')
+    now = datetime.datetime.utcnow()
+
+    if len(date_lst) == 1:
+        date_lst.append('00:00')
+    elif len(date_lst) != 2:
+        return -1
+
+    try:
+        datetime_obj = datetime.datetime.strptime(' '.join(date_lst), "%Y-%m-%d %H:%M")
+    except ValueError:
+        return -1
+    delta = datetime_obj - now
+    return int(delta.total_seconds())
+
+
+class DateOrTimeConverter(commands.Converter):
     async def convert(self, ctx: commands.Context, arg: str):
-        seconds = parse_time(arg)
-        if seconds != -1:
+        if (seconds := parse_date(arg)) != -1:
             return seconds
-        raise commands.BadArgument("Invalid time format")
+        elif (seconds := parse_time(arg)) != -1:
+            return seconds
+        raise commands.BadArgument("Invalid date/time format")
+
+
+def time_converter(inter, time_string: str) -> int:
+    return parse_time(time_string)
 
 
 class TimeTransformer(app_commands.Transformer):

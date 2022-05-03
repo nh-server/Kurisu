@@ -1,31 +1,38 @@
+from __future__ import annotations
+
 import discord
 import re
 
 from discord.ext import commands
 from textwrap import wrap
+from typing import TYPE_CHECKING
 from utils.checks import is_staff
 from utils.manager import check_collisions
 from Levenshtein import distance
+
+if TYPE_CHECKING:
+    from kurisu import Kurisu
 
 
 class Filter(commands.Cog):
     """
     Commands to manage the filter.
     """
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, bot: Kurisu):
+        self.bot: Kurisu = bot
+        self.emoji = discord.PartialEmoji.from_str('🖥️')
 
     # Command group for the word filter
     @is_staff("Helper")
     @commands.group(aliases=['wf'])
-    async def wordfilter(self, ctx):
+    async def wordfilter(self, ctx: commands.Context):
         """Command group for managing the word filter"""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
     @is_staff("OP")
     @wordfilter.command(name='add')
-    async def add_word(self, ctx, word: str, *, kind: str):
+    async def add_word(self, ctx: commands.Context, word: str, *, kind: str):
         """Adds a word to the word filter. A filter list must be specified"""
         word = word.lower()
         if kind not in self.bot.wordfilter.kinds:
@@ -39,7 +46,7 @@ class Filter(commands.Cog):
         await ctx.send("Successfully added word to word filter")
 
     @wordfilter.command(name='list')
-    async def list_words(self, ctx):
+    async def list_words(self, ctx: commands.Context):
         """List the word filter filter lists and their content."""
         embed = discord.Embed()
         for kind in self.bot.wordfilter.kinds:
@@ -57,11 +64,11 @@ class Filter(commands.Cog):
 
     @is_staff("OP")
     @wordfilter.command(name='delete', aliases=['remove'])
-    async def delete_word(self, ctx, *, words: str):
+    async def delete_word(self, ctx: commands.Context, *, words: str):
         """Deletes a word from the word filter"""
-        words = words.split()
+        word_list = words.split()
         deleted = []
-        for word in words:
+        for word in word_list:
             entry = await self.bot.wordfilter.delete(word=word)
             if entry:
                 deleted.append(entry.word)
@@ -74,14 +81,14 @@ class Filter(commands.Cog):
     # Command group for the levenshtein word filter
     @is_staff("Helper")
     @commands.group(aliases=['xnoefilter', 'lfilter', 'lf'])
-    async def levenshteinfilter(self, ctx):
+    async def levenshteinfilter(self, ctx: commands.Context):
         """Command group for managing the levenshtein filter"""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
     @is_staff("OP")
     @levenshteinfilter.command(name='add')
-    async def add_levenshtein(self, ctx, word: str, threshold: int, *, kind: str):
+    async def add_levenshtein(self, ctx: commands.Context, word: str, threshold: int, *, kind: str):
         """Adds a word to the levenshtein filter. A permutation threshold and a filter list must be specified.
         Words added are whitelisted by default."""
         word = word.lower()
@@ -98,7 +105,7 @@ class Filter(commands.Cog):
         await ctx.send("Successfully added word to Levenshtein filter")
 
     @levenshteinfilter.command(name='list')
-    async def list_levenshtein(self, ctx):
+    async def list_levenshtein(self, ctx: commands.Context):
         """List the levenshtein filter filter lists and their content."""
         embed = discord.Embed()
         for kind in self.bot.levenshteinfilter.kinds:
@@ -114,7 +121,7 @@ class Filter(commands.Cog):
             await ctx.send("The Levenshtein filter is empty!")
 
     @levenshteinfilter.command(name='test')
-    async def test_levenshtein(self, ctx, message):
+    async def test_levenshtein(self, ctx: commands.Context, message):
         """Test a message against the levenshtein filter"""
 
         matches = {}
@@ -143,11 +150,11 @@ class Filter(commands.Cog):
 
     @is_staff("OP")
     @levenshteinfilter.command(name='delete', aliases=['remove'])
-    async def delete_levenshtein(self, ctx, *, words: str):
+    async def delete_levenshtein(self, ctx: commands.Context, *, words: str):
         """Deletes a word from the levenshtein filter"""
-        words = words.split()
+        word_list = words.split()
         deleted = []
-        for word in words:
+        for word in word_list:
             entry = await self.bot.levenshteinfilter.delete(word=word)
             if entry:
                 deleted.append(entry.word)
@@ -158,14 +165,14 @@ class Filter(commands.Cog):
             await ctx.send("No word was deleted from the Levenshtein filter!")
 
     @levenshteinfilter.group(name='whitelist')
-    async def levenshtein_whitelist(self, ctx):
+    async def levenshtein_whitelist(self, ctx: commands.Context):
         """Group of commands to manage the whitelist of the levenshtein filter"""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
     @is_staff("OP")
     @levenshtein_whitelist.command(name='add')
-    async def whitelist_add(self, ctx, word: str):
+    async def whitelist_add(self, ctx: commands.Context, word: str):
         """Adds a word to the levenshtein filter whitelist"""
         word = word.lower()
         if db_word := await self.bot.levenshteinfilter.fetch_word(word=word):
@@ -180,7 +187,7 @@ class Filter(commands.Cog):
 
     @is_staff("OP")
     @levenshtein_whitelist.command(name='remove')
-    async def whitelist_remove(self, ctx, word: str):
+    async def whitelist_remove(self, ctx: commands.Context, word: str):
         """Removes a word from the levenshtein filter whitelist"""
         word = word.lower()
         if db_word := await self.bot.levenshteinfilter.fetch_word(word=word):
@@ -194,7 +201,7 @@ class Filter(commands.Cog):
         await ctx.send("Word removed from whitelist successfully!")
 
     @levenshtein_whitelist.command(name='list')
-    async def whitelist_list(self, ctx):
+    async def whitelist_list(self, ctx: commands.Context):
         """List the whitelisted words in the levenshtein filter"""
         whitelist = await self.bot.levenshteinfilter.fetch_whitelist()
         if whitelist:
@@ -204,14 +211,14 @@ class Filter(commands.Cog):
 
     @is_staff("Helper")
     @commands.group(aliases=['if'])
-    async def invitefilter(self, ctx):
+    async def invitefilter(self, ctx: commands.Context):
         """Command group for managing the invite filter"""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
     @is_staff("OP")
     @invitefilter.command(name='add')
-    async def add_invite(self, ctx, invite: discord.Invite, alias: str):
+    async def add_invite(self, ctx: commands.Context, invite: discord.Invite, alias: str):
         """Adds a invite to the filter whitelist"""
         if await self.bot.invitefilter.fetch_invite_by_alias(alias) or await self.bot.invitefilter.fetch_invite_by_code(invite.code):
             return await ctx.send("This invite code or alias is already in use!")
@@ -223,7 +230,7 @@ class Filter(commands.Cog):
 
     @is_staff("OP")
     @invitefilter.command(name='delete')
-    async def delete_invite(self, ctx, code: str):
+    async def delete_invite(self, ctx: commands.Context, code: str):
         """Removes a invite from the filter whitelist"""
         entry = await self.bot.invitefilter.fetch_invite_by_code(code=code)
         if not entry:
@@ -233,7 +240,7 @@ class Filter(commands.Cog):
         await self.bot.channels['mod-logs'].send(f"⭕ **Deleted**: {ctx.author.mention} deleted server `{entry.alias}` from the invite filter!")
 
     @invitefilter.command(name='list')
-    async def list_invites(self, ctx):
+    async def list_invites(self, ctx: commands.Context):
         """List invites in the filter whitelist"""
         embed = discord.Embed()
         if self.bot.invitefilter.invites:
@@ -243,7 +250,7 @@ class Filter(commands.Cog):
             await ctx.send("The invite filter is empty!")
 
     @commands.command(name='checkcollision', aliases=['filtercollision'])
-    async def check_filter_collision(self, ctx):
+    async def check_filter_collision(self, ctx: commands.Context):
         """Detects collisions between the levenshtein filter and the word filter,
         shows what words matched a entry in the levenshtein filter"""
         if collisions := await check_collisions():

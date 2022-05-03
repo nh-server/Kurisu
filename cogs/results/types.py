@@ -1,3 +1,6 @@
+from typing import Optional
+
+
 class Module:
     """
     Describes a Module. A Module contains a dictionary of ResultCodes,
@@ -44,7 +47,7 @@ class ResultInfo:
 
 
 class ConsoleErrorField:
-    def __init__(self, name: str, *, message_str: str = '', supplementary_value: int = None):
+    def __init__(self, name: str, *, message_str: str = '', supplementary_value: Optional[int] = None):
 
         self.field_name = name
         self.message = message_str
@@ -63,7 +66,7 @@ class ConsoleErrorInfo:
     """
     Holds the console name, the embed fields by an iteration of the parsed error or support code
     """
-    def __init__(self, error: str, console_name: str, color: int, extra_description: str = None, secondary_error: str = None):
+    def __init__(self, error: str, console_name: str, color: int, extra_description: Optional[str] = None, secondary_error: Optional[str] = None):
         self.error = error
         self.secondary_error = secondary_error
         self.console_name = console_name

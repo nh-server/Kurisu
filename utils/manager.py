@@ -105,9 +105,10 @@ class LevenshteinFilterManager:
         await self.load()
         return entry
 
-    async def edit(self, word: str, threshold: int, whitelist: bool) -> LevenshteinWord:
+    async def edit(self, word: str, threshold: int, whitelist: bool) -> Optional[LevenshteinWord]:
         entry = await self.fetch_word(word)
-        await entry.update(threshold=threshold, whitelist=whitelist).apply()
+        if entry:
+            await entry.update(threshold=threshold, whitelist=whitelist).apply()
         return entry
 
     async def add_whitelist_word(self, word: str) -> WhitelistWord:
