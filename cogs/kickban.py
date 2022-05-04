@@ -5,7 +5,7 @@ import datetime
 
 from discord.ext import commands
 from disnake.ext.commands import Param
-from typing import Union, Literal, TYPE_CHECKING
+from typing import Union, Literal, TYPE_CHECKING, Optional
 from utils import utils, crud
 from utils.checks import is_staff, check_bot_or_staff
 
@@ -63,7 +63,7 @@ class KickBan(commands.Cog):
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
     @commands.command(name="ban", aliases=["yeet"])
-    async def ban_member(self, ctx: commands.Context, member: Union[discord.Member, discord.User], days: Literal[0, 1, 2, 3, 4, 5, 6, 7] = 0, *, reason=""):
+    async def ban_member(self, ctx: commands.Context, member: Union[discord.Member, discord.User], days: Optional[Literal[0, 1, 2, 3, 4, 5, 6, 7]] = 0, *, reason=""):
         """Bans a user from the server. OP+ only. Optional: [days] Specify up to 7 days of messages to delete."""
         if await check_bot_or_staff(ctx, member, "ban"):
             return
@@ -147,7 +147,7 @@ class KickBan(commands.Cog):
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
     @commands.command(name="superban", aliases=["superyeet"])
-    async def superban(self, ctx: commands.Context, member: Union[discord.Member, discord.User], days: Literal[0, 1, 2, 3, 4, 5, 6, 7] = 0, *, reason=""):
+    async def superban(self, ctx: commands.Context, member: Union[discord.Member, discord.User], days: Optional[Literal[0, 1, 2, 3, 4, 5, 6, 7]] = 0, *, reason=""):
         """Bans a user from the server. OP+ only. Optional: [days] Specify up to 7 days of messages to delete."""
         if await check_bot_or_staff(ctx, member, "ban"):
             return
@@ -198,14 +198,14 @@ class KickBan(commands.Cog):
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
     @commands.command(name="silentban", aliases=["quietyeet"])
-    async def silentban_member(self, ctx: commands.Context, member: discord.Member, days: Literal[0, 1, 2, 3, 4, 5, 6, 7] = 0, *, reason=""):
+    async def silentban_member(self, ctx: commands.Context, member: discord.Member, days: Optional[Literal[0, 1, 2, 3, 4, 5, 6, 7]] = 0, *, reason=""):
         """Bans a user from the server, without a notification. OP+ only.  Optional: [days] Specify up to 7 days of messages to delete."""
         if await check_bot_or_staff(ctx, member, "ban"):
             return
 
         try:
             self.bot.actions.append("ub:" + str(member.id))
-            await ctx.cog.remove_timed_restriction(member.id, 'timeban')
+            await crud.remove_timed_restriction(member.id, 'timeban')
             await member.ban(reason=reason, delete_message_days=days)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
