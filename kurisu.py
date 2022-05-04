@@ -366,7 +366,7 @@ class Kurisu(commands.Bot):
             command.reset_cooldown(ctx)
 
         elif isinstance(exc, commands.BadLiteralArgument):
-            await ctx.send(f'Argument {exc.param.name} must be one of the following `{"` `".join(exc.literals)}`.')
+            await ctx.send(f'Argument {exc.param.name} must be one of the following `{"` `".join(str(literal) for literal in exc.literals)}`.')
             command.reset_cooldown(ctx)
 
         elif isinstance(exc, commands.UserInputError):
