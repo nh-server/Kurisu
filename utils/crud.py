@@ -109,7 +109,7 @@ async def get_permanent_roles(user_id: int) -> list[models.PermanentRole]:
 
 async def remove_permanent_role(user_id: int, role_id: int) -> Optional[models.PermanentRole]:
     permanent_role = await models.PermanentRole.query.where((models.PermanentRole.user_id == user_id) & (
-            models.PermanentRole.role_id == role_id)).gino.first()
+        models.PermanentRole.role_id == role_id)).gino.first()
     if permanent_role:
         await permanent_role.delete()
         return permanent_role
@@ -128,7 +128,7 @@ async def get_time_restrictions_by_user(user_id: int) -> list[models.TimedRestri
 
 async def get_time_restriction_by_user_type(user_id: int, restriction_type: str) -> models.TimedRestriction:
     return await models.TimedRestriction.query.where((models.TimedRestriction.user == user_id) & (
-            models.TimedRestriction.type == restriction_type)).gino.first()
+        models.TimedRestriction.type == restriction_type)).gino.first()
 
 
 async def get_time_restrictions_by_type(restriction_type: str) -> list[models.TimedRestriction]:
