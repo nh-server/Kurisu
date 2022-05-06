@@ -13,10 +13,11 @@ import sys
 from discord import TextChannel, __version__ as discordpy_version
 from disnake.ext.commands import Param
 from discord.ext import commands
+from discord.utils import format_dt
 from typing import Union, TYPE_CHECKING
 from utils import crud, utils
 from utils.checks import is_staff, check_if_user_can_sr, check_staff_id
-from utils.utils import gen_color, dtm_to_discord_timestamp
+from utils.utils import gen_color
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -370,7 +371,7 @@ class Extras(commands.Cog):
         delta = datetime.timedelta(seconds=remind_in)
         reminder_time = timestamp + delta
         await crud.add_reminder(reminder_time, ctx.author.id, reminder)
-        await ctx.send(f"I will send you a reminder on {dtm_to_discord_timestamp(reminder_time, date_format='F')}.")
+        await ctx.send(f"I will send you a reminder on {format_dt(reminder_time, style='F')}.")
 
     @commands.command()
     async def listreminders(self, ctx: commands.Context):
@@ -383,7 +384,7 @@ class Extras(commands.Cog):
         for n, reminder in enumerate(reminders, start=1):
             embed = discord.Embed(title=f"Reminder {n}", color=color)
             embed.add_field(name='Content', value=reminder.reminder, inline=False)
-            embed.add_field(name='Set to', value=utils.dtm_to_discord_timestamp(reminder.date), inline=False)
+            embed.add_field(name='Set to', value=format_dt(reminder.date), inline=False)
             embeds.append(embed)
         view = utils.PaginatedEmbedView(embeds, author=ctx.author)
         view.message = await ctx.send(embed=embeds[0], view=view)

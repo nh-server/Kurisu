@@ -3,12 +3,12 @@ import discord
 import io
 import random
 import re
-import time
 import traceback
 
 from discord.ext import commands
+from discord.utils import format_dt
 from utils import crud
-from typing import Optional, Union, Literal
+from typing import Optional, Union
 
 
 class ConsoleColor(discord.Color):
@@ -142,12 +142,6 @@ def paginate_message(msg: str, prefix: str = '```', suffix: str = '```', max_siz
     return paginator
 
 
-def dtm_to_discord_timestamp(dtm_obj: datetime.datetime, date_format: Literal['d', 'D', 't', 'T', 'f', 'F', 'R'] = 'f', utc_time: bool = False) -> str:
-    if utc_time:
-        dtm_obj = dtm_obj.replace(tzinfo=datetime.timezone.utc).astimezone()
-    return f"<t:{int(time.mktime(dtm_obj.timetuple()))}:{date_format}>"
-
-
 def text_to_discord_file(text: str, *, name: str = 'output.txt'):
     encoded = text.encode("utf-8")
     return discord.File(filename=name, fp=io.BytesIO(encoded))
@@ -231,7 +225,7 @@ class VoteButtonEnd(discord.ui.Button['SimpleVoteView']):
             await self.view.calculate_votes()
             results = "results:\n" + '\n'.join(f"{op}: {count}" for op, count in self.view.count.items())
             await interaction.response.send_message(
-                f"Vote started {dtm_to_discord_timestamp(self.view.start, utc_time=True, date_format='R')} has finished.\n{results}")
+                f"Vote started {format_dt(self.view.start, style='R')} has finished.\n{results}")
             self.view.stop()
             await crud.remove_vote_view(self.view.custom_id)
         else:
