@@ -228,9 +228,9 @@ class Kurisu(commands.Bot):
         await self.load_roles()
 
         self.helper_roles: dict[str, discord.Role] = {"3DS": self.roles['On-Duty 3DS'],
-                                                     "WiiU": self.roles['On-Duty Wii U'],
-                                                     "Switch": self.roles['On-Duty Switch'],
-                                                     "Legacy": self.roles['On-Duty Legacy']
+                                                      "WiiU": self.roles['On-Duty Wii U'],
+                                                      "Switch": self.roles['On-Duty Switch'],
+                                                      "Legacy": self.roles['On-Duty Legacy']
                                                       }
 
         self.assistance_channels: tuple[discord.TextChannel, ...] = (
@@ -246,11 +246,11 @@ class Kurisu(commands.Bot):
         )
 
         self.staff_roles: dict[str, discord.Role] = {'Owner': self.roles['Owner'],
-                            'SuperOP': self.roles['SuperOP'],
-                            'OP': self.roles['OP'],
-                            'HalfOP': self.roles['HalfOP'],
-                            'Staff': self.roles['Staff'],
-                            }
+                                                     'SuperOP': self.roles['SuperOP'],
+                                                     'OP': self.roles['OP'],
+                                                     'HalfOP': self.roles['HalfOP'],
+                                                     'Staff': self.roles['Staff'],
+                                                     }
 
         self.err_channel = self.channels['bot-err']
 

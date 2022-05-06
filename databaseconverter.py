@@ -77,8 +77,8 @@ async def main():
                 dict(id=discord.utils.time_snowflake(
                     datetime.datetime.strptime(entry[3], '%Y-%m-%d %H:%M:%S.%f' if has_seconds(
                         entry[3]) else '%Y-%m-%d %H:%M:%S')),
-                    user=entry[0], issuer=entry[1],
-                    reason=entry[2]))
+                     user=entry[0], issuer=entry[1],
+                     reason=entry[2]))
             if entry[0] not in users:
                 users.append(entry[0])
             if entry[1] not in users:
@@ -93,7 +93,7 @@ async def main():
             timeres_entries.append(
                 dict(id=discord.utils.time_snowflake(datetime.datetime.now() + datetime.timedelta(0, i)), user=entry[0],
                      type=entry[2], end_date=datetime.datetime.strptime(entry[1], '%Y-%m-%d %H:%M:%S.%f' if has_seconds(
-                        entry[1]) else '%Y-%m-%d %H:%M:%S'), alerted=bool(entry[3])))
+                         entry[1]) else '%Y-%m-%d %H:%M:%S'), alerted=bool(entry[3])))
             if entry[0] not in users:
                 users.append(entry[0])
 
