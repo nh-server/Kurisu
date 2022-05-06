@@ -5,6 +5,7 @@ import datetime
 
 from discord.ext import commands
 from disnake.ext.commands import Param
+from discord.utils import format_dt
 from typing import Union, Literal, TYPE_CHECKING, Optional
 from utils import utils, crud
 from utils.checks import is_staff, check_bot_or_staff
@@ -110,7 +111,7 @@ class KickBan(commands.Cog):
             timestamp = datetime.datetime.now()
             delta = datetime.timedelta(seconds=duration)
             unban_time = timestamp + delta
-            unban_time_string = utils.dtm_to_discord_timestamp(unban_time)
+            unban_time_string = format_dt(unban_time)
 
             try:
                 await inter.guild.ban(member, reason=reason, delete_message_days=delete_messages)
@@ -230,7 +231,7 @@ class KickBan(commands.Cog):
         timestamp = datetime.datetime.now()
         delta = datetime.timedelta(seconds=length)
         unban_time = timestamp + delta
-        unban_time_string = utils.dtm_to_discord_timestamp(unban_time)
+        unban_time_string = format_dt(unban_time)
 
         if isinstance(member, discord.Member):
             msg = f"You were banned from {ctx.guild.name}."

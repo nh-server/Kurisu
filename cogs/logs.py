@@ -3,9 +3,10 @@ from __future__ import annotations
 import discord
 
 from discord.ext import commands
+from discord.utils import format_dt
 from typing import TYPE_CHECKING
 from utils import crud
-from utils.utils import send_dm_message, dtm_to_discord_timestamp
+from utils.utils import send_dm_message
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -186,8 +187,8 @@ Thanks for stopping by and have a good time!
                 msg = "\n🚷 __Timeout removal__"
             else:
                 msg = "\n🚷 __Timeout change__"
-            timeout_before = dtm_to_discord_timestamp(member_before.current_timeout, utc_time=True) if member_before.current_timeout else 'None'
-            timeout_after = dtm_to_discord_timestamp(member_after.current_timeout, utc_time=True) if member_after.current_timeout else 'None'
+            timeout_before = format_dt(member_before.current_timeout) if member_before.current_timeout else 'None'
+            timeout_after = format_dt(member_after.current_timeout) if member_after.current_timeout else 'None'
             msg += f": {timeout_before} → {timeout_after}"
         if do_log:
             msg = f"ℹ️ **Member update**: {member_after.mention} | {self.bot.escape_text(member_after)} {msg}"

@@ -8,9 +8,10 @@ import logging
 from datetime import datetime, timedelta
 from discord import AllowedMentions
 from discord.ext import commands
+from discord.utils import format_dt
 from typing import TYPE_CHECKING
 from utils import crud
-from utils.utils import send_dm_message, dtm_to_discord_timestamp
+from utils.utils import send_dm_message
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -77,10 +78,10 @@ class Loop(commands.Cog):
                 end = datetime(year=2099, month=1, day=1, tzinfo=self.tz)
                 if "begin" in entry:
                     begin = self.netinfo_parse_time(entry["begin"])
-                    entry_desc += '\nBegins: ' + dtm_to_discord_timestamp(begin)
+                    entry_desc += '\nBegins: ' + format_dt(begin)
                 if "end" in entry:
                     end = self.netinfo_parse_time(entry["end"])
-                    entry_desc += '\nEnds: ' + dtm_to_discord_timestamp(end)
+                    entry_desc += '\nEnds: ' + format_dt(end)
 
                 if now < end:
                     entry_name = "{} {}: {}".format(
