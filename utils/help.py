@@ -219,7 +219,7 @@ class HelpView(discord.ui.View):
 
     async def interaction_check(self, interaction: discord.MessageInteraction) -> bool:
         if interaction.user.id != self.author.id:
-            await interaction.response.send("This view is not for you.", ephemeral=True)
+            await interaction.response.send_message("This view is not for you.", ephemeral=True)
             return False
         return True
 
