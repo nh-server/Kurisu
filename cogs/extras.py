@@ -37,7 +37,7 @@ class Extras(commands.Cog):
 
     async def init(self):
         await self.bot.wait_until_all_ready()
-        for view in await crud.get_vote_views('SimpleVoteView'):
+        for view in await crud.get_vote_views('extras'):
             v = utils.SimpleVoteView(view.author_id, options=view.options.split('|'), custom_id=view.id, start=view.start)
             self.bot.add_view(v, message_id=view.message_id)
             v.message_id = view.message_id
