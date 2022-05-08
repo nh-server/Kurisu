@@ -1,6 +1,6 @@
 import datetime
 
-from . import models
+from utils import models
 from discord import TextChannel, utils
 from typing import Optional
 
@@ -416,8 +416,10 @@ async def remove_citizen(citizen_id) -> None:
 
 
 # Operations for managing persistent vote views
-async def add_vote_view(view_id: int, identifier: str, options: str, start: datetime.datetime, author_id: Optional[int] = None, message_id: Optional[int] = None) -> None:
-    await models.VoteView.create(id=view_id, message_id=message_id, identifier=identifier, author_id=author_id, options=options, start=start)
+async def add_vote_view(view_id: int, identifier: str, options: str, start: datetime.datetime,
+                        author_id: Optional[int] = None, message_id: Optional[int] = None, staff_only: bool = False) -> None:
+    await models.VoteView.create(id=view_id, message_id=message_id, identifier=identifier, author_id=author_id,
+                                 options=options, start=start, staff_only=staff_only)
 
 
 async def get_vote_views(identifier: str) -> list[models.VoteView]:

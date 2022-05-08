@@ -38,7 +38,7 @@ class Extras(commands.Cog):
     async def init(self):
         await self.bot.wait_until_all_ready()
         for view in await crud.get_vote_views('extras'):
-            v = utils.SimpleVoteView(view.author_id, options=view.options.split('|'), custom_id=view.id, start=view.start)
+            v = utils.SimpleVoteView(view.author_id, options=view.options.split('|'), custom_id=view.id, start=view.start, staff_only=view.staff_only)
             self.bot.add_view(v, message_id=view.message_id)
             v.message_id = view.message_id
 
@@ -462,15 +462,16 @@ class Extras(commands.Cog):
                          interaction: discord.CommandInteraction,
                          name: str = Param(desc="Name of the vote"),
                          description: str = Param(desc="Description of the vote"),
-                         options: str = Param(desc="Options for the vote separated by \'|\'", default="Yes|No")):
+                         options: str = Param(desc="Options for the vote separated by \'|\'", default="Yes|No"),
+                         staff_only: bool = Param(desc="If only staff is allowed to vote.", default=False)):
         """Creates a simple vote, only the who made the vote can stop it. OP+ only."""
         options_parsed = options.split('|')
-        view = utils.SimpleVoteView(interaction.user.id, options_parsed, interaction.id, start=discord.utils.utcnow())
+        view = utils.SimpleVoteView(interaction.user.id, options_parsed, interaction.id, start=discord.utils.utcnow(), staff_only=staff_only)
         embed = discord.Embed(title=name, description=description)
         await interaction.response.send_message(embed=embed, view=view)
         msg = await interaction.original_message()
         view.message_id = msg.id
-        await crud.add_vote_view(view_id=interaction.id, identifier='extras', author_id=interaction.user.id, options=options, start=datetime.datetime.utcnow(), message_id=msg.id)
+        await crud.add_vote_view(view_id=interaction.id, identifier='extras', author_id=interaction.user.id, options=options, start=datetime.datetime.utcnow(), message_id=msg.id, staff_only=staff_only)
 
     @is_staff('OP')
     @commands.guild_only()

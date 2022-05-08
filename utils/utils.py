@@ -7,7 +7,7 @@ import traceback
 
 from discord.ext import commands
 from discord.utils import format_dt
-from utils import crud
+from utils import crud, checks
 from typing import Optional, Union
 
 
@@ -207,6 +207,9 @@ class VoteButton(discord.ui.Button):
         super().__init__(style=style, label=label, custom_id=custom_id)
 
     async def callback(self, interaction: discord.MessageInteraction):
+        if self.view.staff_only and not await checks.check_staff_id('Helper', interaction.user.id):
+            await interaction.response.send_message("You aren't allowed to vote.", ephemeral=True)
+            return
         await crud.add_voteview_vote(self.view.custom_id, interaction.user.id, self.label)
         await interaction.response.send_message("Vote added.", ephemeral=True)
 
@@ -233,12 +236,13 @@ class VoteButtonEnd(discord.ui.Button['SimpleVoteView']):
 
 
 class SimpleVoteView(discord.ui.View):
-    def __init__(self, author_id: int, options: list[str], custom_id: int, start: datetime.datetime):
+    def __init__(self, author_id: int, options: list[str], custom_id: int, start: datetime.datetime, staff_only: bool = False):
         super().__init__(timeout=None)
         self.author_id = author_id
         self.custom_id = custom_id
         self.message_id = None
         self.start = start
+        self.staff_only = staff_only
         self.count: dict[str, int] = {}
         for n, option in enumerate(options):
             self.count[option] = 0
