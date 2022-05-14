@@ -377,7 +377,7 @@ async def get_tag(title: str) -> Optional[models.Tag]:
 
 
 async def get_tags() -> list[models.Tag]:
-    return await models.Tag.query.order_by(models.Tag.id).gino.all()
+    return await models.Tag.query.order_by(models.Tag.title).gino.all()
 
 
 async def delete_tag(title: str) -> None:
