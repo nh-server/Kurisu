@@ -125,7 +125,7 @@ class CommandHelpPaginator(BasePaginator):
         if command.aliases:
             embed.add_field(name="Aliases", value=' '.join(command.aliases), inline=False)
 
-        embed.add_field(name="Usage", value=f"{self.prefix} {command.qualified_name} {command.signature}",
+        embed.add_field(name="Usage", value=f"{self.prefix}{command.qualified_name} {command.signature}",
                         inline=False)
         embed.set_footer(text=f"Category: {command.cog_name if command.cog_name else 'No Category'}")
         return embed
