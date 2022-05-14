@@ -5,34 +5,9 @@ from discord.ui import Select
 from discord.ext import commands
 from itertools import islice
 from typing import Union
+from utils.utils import BasePaginator, BasePaginatedView
 
 SELECT_MAX_VALUES = 25
-
-
-class BasePaginator:
-    """Serves as base paginator for the HelpView"""
-    def __init__(self, n_pages):
-        self.n_pages = n_pages
-        self.idx = 0
-        self.pages: dict[int, discord.Embed] = {}
-
-    def previous(self):
-        self.idx = max(self.idx - 1, 0)
-
-    def next(self):
-        self.idx = min(self.idx + 1, self.n_pages - 1)
-
-    def first(self):
-        self.idx = 0
-
-    def last(self):
-        self.idx = self.n_pages - 1
-
-    def is_first(self):
-        return self.idx == 0
-
-    def is_last(self):
-        return self.idx == self.n_pages - 1
 
 
 class CogHelpPaginator(BasePaginator):
@@ -200,40 +175,7 @@ class CommandSelect(Select['HelpView']):
             await self.view.change_paginator(CommandHelpPaginator(command, self.ctx.clean_prefix), interaction)
 
 
-class HelpView(discord.ui.View):
-
-    def __init__(self, paginator: Union[MainHelpPaginator, CogHelpPaginator, CommandHelpPaginator],
-                 author: Union[discord.Member, discord.User]):
-        super().__init__(timeout=30)
-        self.paginator = paginator
-        self.message = None
-        self.author = author
-
-        if self.paginator.n_pages == 1:
-            self.disable_buttons()
-
-    async def on_timeout(self) -> None:
-        if self.message:
-            await self.message.edit(view=None)
-        self.stop()
-
-    async def interaction_check(self, interaction: discord.MessageInteraction) -> bool:
-        if interaction.user.id != self.author.id:
-            await interaction.response.send_message("This view is not for you.", ephemeral=True)
-            return False
-        return True
-
-    def reset_buttons(self):
-        self.first_page.disabled = True
-        self.prev_page.disabled = True
-        self.next_page.disabled = False
-        self.last_page.disabled = False
-
-    def disable_buttons(self):
-        self.first_page.disabled = True
-        self.prev_page.disabled = True
-        self.next_page.disabled = True
-        self.last_page.disabled = True
+class HelpView(BasePaginatedView):
 
     async def change_paginator(self, paginator: Union[MainHelpPaginator, CogHelpPaginator, CommandHelpPaginator],
                                interaction: discord.MessageInteraction):
@@ -245,49 +187,6 @@ class HelpView(discord.ui.View):
             self.disable_buttons()
 
         await interaction.message.edit(embed=self.paginator.current(), view=self)
-
-    @discord.ui.button(label="<<", style=discord.ButtonStyle.secondary, disabled=True)
-    async def first_page(self, button: discord.ui.Button, interaction: discord.MessageInteraction):
-        self.first_page.disabled = True
-        self.prev_page.disabled = True
-        self.next_page.disabled = False
-        self.last_page.disabled = False
-        self.paginator.first()
-        await interaction.response.edit_message(embed=self.paginator.current(), view=self)
-
-    @discord.ui.button(label='Back', style=discord.ButtonStyle.primary, disabled=True)
-    async def prev_page(self, button: discord.ui.Button, interaction: discord.MessageInteraction):
-        self.next_page.disabled = False
-        self.last_page.disabled = False
-        self.paginator.previous()
-        if self.paginator.is_first():
-            self.first_page.disabled = True
-            self.prev_page.disabled = True
-        await interaction.response.edit_message(embed=self.paginator.current(), view=self)
-
-    @discord.ui.button(label='Next', style=discord.ButtonStyle.primary)
-    async def next_page(self, button: discord.ui.Button, interaction: discord.MessageInteraction):
-        self.first_page.disabled = False
-        self.prev_page.disabled = False
-        self.paginator.next()
-        if self.paginator.is_last():
-            self.next_page.disabled = True
-            self.last_page.disabled = True
-        await interaction.response.edit_message(embed=self.paginator.current(), view=self)
-
-    @discord.ui.button(label=">>", style=discord.ButtonStyle.secondary)
-    async def last_page(self, button: discord.ui.Button, interaction: discord.MessageInteraction):
-        self.first_page.disabled = False
-        self.prev_page.disabled = False
-        self.next_page.disabled = True
-        self.last_page.disabled = True
-        self.paginator.last()
-        await interaction.response.edit_message(embed=self.paginator.current(), view=self)
-
-    @discord.ui.button(label="Exit", style=discord.ButtonStyle.red)
-    async def remove(self, button: discord.ui.Button, interaction: discord.MessageInteraction):
-        await interaction.response.edit_message(view=None)
-        self.stop()
 
 
 class KuriHelp(commands.HelpCommand):

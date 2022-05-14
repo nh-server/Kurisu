@@ -14,6 +14,7 @@ from discord import TextChannel, __version__ as discordpy_version
 from disnake.ext.commands import Param
 from discord.ext import commands
 from discord.utils import format_dt
+from math import ceil
 from typing import Union, TYPE_CHECKING
 from utils import crud, utils
 from utils.checks import is_staff, check_if_user_can_sr, check_staff_id
@@ -21,8 +22,60 @@ from utils.utils import gen_color
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
+    from utils.models import Tag, RemindMeEntry
 
 python_version = sys.version.split()[0]
+
+
+class TagsPaginator(utils.BasePaginator):
+
+    def __init__(self, tags: list[Tag], tags_per_page: int = 10, colour: discord.Color = None):
+        super().__init__(n_pages=ceil(len(tags) / tags_per_page))
+        self.tags = tags
+        self.tags_per_page = tags_per_page
+        self.colour = colour or discord.Colour.purple()
+
+    def current(self):
+        if embed := self.pages.get(self.idx):
+            return embed
+        else:
+            index = self.idx * self.tags_per_page
+            embed = self.create_embed(tags=self.tags[index:index + self.tags_per_page])
+            self.pages[self.idx] = embed
+            return embed
+
+    def create_embed(self, tags: list[Tag]):
+        embed = discord.Embed(title="Tags list", color=self.colour)
+        embed.description = '\n'.join(f'{n+(self.tags_per_page * self.idx)}. {tag.title}' for n, tag in enumerate(tags, start=1))
+
+        if self.n_pages > 1:
+            embed.title += f" [{self.idx + 1}/{self.n_pages}]"
+        return embed
+
+
+class RemindersPaginator(utils.BasePaginator):
+
+    def __init__(self, reminders: list[RemindMeEntry], colour: discord.Color = None):
+        super().__init__(n_pages=len(reminders))
+        self.reminders = reminders
+        self.colour = colour or discord.Colour.purple()
+
+    def current(self):
+        if embed := self.pages.get(self.idx):
+            return embed
+        else:
+            embed = self.create_embed(reminder=self.reminders[self.idx])
+            self.pages[self.idx] = embed
+            return embed
+
+    def create_embed(self, reminder: RemindMeEntry):
+        embed = discord.Embed(title=f"Reminder {self.idx + 1}", color=self.colour)
+        embed.add_field(name='Content', value=reminder.reminder, inline=False)
+        embed.add_field(name='Set to', value=format_dt(reminder.date), inline=False)
+
+        if self.n_pages > 1:
+            embed.title += f" [{self.idx + 1}/{self.n_pages}]"
+        return embed
 
 
 class Extras(commands.Cog):
@@ -379,15 +432,9 @@ class Extras(commands.Cog):
         reminders = await crud.get_user_reminders(ctx.author.id)
         if not reminders:
             return await ctx.send("You don't have any reminders scheduled.")
-        embeds = []
         color = utils.gen_color(ctx.author.id)
-        for n, reminder in enumerate(reminders, start=1):
-            embed = discord.Embed(title=f"Reminder {n}", color=color)
-            embed.add_field(name='Content', value=reminder.reminder, inline=False)
-            embed.add_field(name='Set to', value=format_dt(reminder.date), inline=False)
-            embeds.append(embed)
-        view = utils.PaginatedEmbedView(embeds, author=ctx.author)
-        view.message = await ctx.send(embed=embeds[0], view=view)
+        view = utils.PaginatedEmbedView(paginator=RemindersPaginator(reminders, color), author=ctx.author)
+        view.message = await ctx.send(embed=view.paginator.current(), view=view)
 
     @commands.command()
     async def unremindme(self, ctx: commands.Context, number: int):
@@ -435,15 +482,9 @@ class Extras(commands.Cog):
     async def list(self, ctx: commands.Context):
         """Lists the title of all existent tags."""
         if tags := await crud.get_tags():
-            embeds = []
-            n = 1
-            color = gen_color(ctx.author.id)
-            for x in [tags[i:i + 10] for i in range(0, len(tags), 10)]:
-                embed = discord.Embed(description='\n'.join(f'{n}. {tag.title}' for n, tag in enumerate(x, start=n)), color=color)
-                n += len(x)
-                embeds.append(embed)
-            view = utils.PaginatedEmbedView(embeds=embeds, author=ctx.author)
-            view.message = await ctx.send(embed=view.embeds[0], view=view)
+            colour = gen_color(ctx.author.id)
+            view = utils.PaginatedEmbedView(paginator=TagsPaginator(tags=tags, tags_per_page=10, colour=colour), author=ctx.author)
+            view.message = await ctx.send(embed=view.paginator.current(), view=view)
         else:
             await ctx.send("There are no tags.")
 
