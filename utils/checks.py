@@ -6,13 +6,15 @@ from utils.crud import get_helper, get_staff_member
 staff_ranks = {"Owner": 0, "SuperOP": 1, "OP": 2, "HalfOP": 3, "Helper": 4}
 
 
-def is_staff(role):
-    async def predicate(ctx):
-        if isinstance(ctx.channel, discord.abc.GuildChannel):
-            return await check_staff(ctx, role) if not ctx.author == ctx.guild.owner else True
-        else:
-            return await check_staff(ctx, role)
+class InsufficientStaffRank(commands.CheckFailure):
+    message: str
 
+
+def is_staff(role: str):
+    async def predicate(ctx):
+        if await check_staff(ctx, role) or (ctx.guild and ctx.guild.owner.id == ctx.author.id):
+            return True
+        raise InsufficientStaffRank(f"You must be at least {role} to use this command.")
     return commands.check(predicate)
 
 

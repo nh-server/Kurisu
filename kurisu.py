@@ -21,7 +21,7 @@ from logging.handlers import TimedRotatingFileHandler
 from subprocess import check_output, CalledProcessError
 from typing import Optional
 from utils import crud
-from utils.checks import check_staff_id
+from utils.checks import check_staff_id, InsufficientStaffRank
 from utils.help import KuriHelp
 from utils.manager import InviteFilterManager, WordFilterManager, LevenshteinFilterManager
 from utils.models import Channel, Role, db
@@ -355,6 +355,9 @@ class Kurisu(commands.Bot):
 
         elif isinstance(exc, commands.MissingPermissions):
             await ctx.send(f"{author.mention} You don't have permission to use `{command}`.")
+
+        elif isinstance(exc, InsufficientStaffRank):
+            await ctx.send(exc)
 
         elif isinstance(exc, commands.CheckFailure):
             await ctx.send(f'{author.mention} You cannot use `{command}`.')
