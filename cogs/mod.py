@@ -296,7 +296,6 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command(aliases=["appealsmute"])
-    @commands.command()
     async def appealmute(self, ctx: commands.Context, member: discord.Member, *, reason=""):
         """Mutes a user so they can't speak in appeals. Staff only."""
         if not await crud.add_permanent_role(member.id, self.bot.roles['appeal-mute'].id):
@@ -318,9 +317,8 @@ class Mod(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.guild_only()
-    @commands.command(aliases=["appealsunmute"])
     @commands.bot_has_permissions(manage_roles=True)
-    @commands.command()
+    @commands.command(aliases=["appealsunmute"])
     async def appealunmute(self, ctx: commands.Context, member: discord.Member):
         """Unmutes a user so they can speak in appeals. Staff only."""
         try:
