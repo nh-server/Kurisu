@@ -5,7 +5,8 @@ import datetime
 
 from discord import app_commands
 from discord.ext import commands
-from typing import Union, Literal, TYPE_CHECKING
+from discord.utils import format_dt
+from typing import Union, Literal, TYPE_CHECKING, Optional
 from utils import utils, crud
 from utils.checks import is_staff, is_staff_app, check_bot_or_staff
 
@@ -64,7 +65,7 @@ class KickBan(commands.Cog):
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
     @commands.command(name="ban", aliases=["yeet"])
-    async def ban_member(self, ctx: commands.Context, member: Union[discord.Member, discord.User], days: Literal[0, 1, 2, 3, 4, 5, 6, 7] = 0, *, reason=""):
+    async def ban_member(self, ctx: commands.Context, member: Union[discord.Member, discord.User], days: Optional[Literal[0, 1, 2, 3, 4, 5, 6, 7]] = 0, *, reason=""):
         """Bans a user from the server. OP+ only. Optional: [days] Specify up to 7 days of messages to delete."""
         if await check_bot_or_staff(ctx, member, "ban"):
             return
@@ -116,7 +117,7 @@ class KickBan(commands.Cog):
             timestamp = datetime.datetime.now()
             delta = datetime.timedelta(seconds=duration)
             unban_time = timestamp + delta
-            unban_time_string = utils.dtm_to_discord_timestamp(unban_time)
+            unban_time_string = format_dt(unban_time)
 
             try:
                 await interaction.guild.ban(member, reason=reason, delete_message_days=delete_messages)
@@ -153,7 +154,7 @@ class KickBan(commands.Cog):
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
     @commands.command(name="superban", aliases=["superyeet"])
-    async def superban(self, ctx: commands.Context, member: Union[discord.Member, discord.User], days: Literal[0, 1, 2, 3, 4, 5, 6, 7] = 0, *, reason=""):
+    async def superban(self, ctx: commands.Context, member: Union[discord.Member, discord.User], days: Optional[Literal[0, 1, 2, 3, 4, 5, 6, 7]] = 0, *, reason=""):
         """Bans a user from the server. OP+ only. Optional: [days] Specify up to 7 days of messages to delete."""
         if await check_bot_or_staff(ctx, member, "ban"):
             return
@@ -205,7 +206,7 @@ class KickBan(commands.Cog):
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
     @commands.command(name="silentban", aliases=["quietyeet"])
-    async def silentban_member(self, ctx: commands.Context, member: discord.Member, days: Literal[0, 1, 2, 3, 4, 5, 6, 7] = 0, *, reason=""):
+    async def silentban_member(self, ctx: commands.Context, member: discord.Member, days: Optional[Literal[0, 1, 2, 3, 4, 5, 6, 7]] = 0, *, reason=""):
         """Bans a user from the server, without a notification. OP+ only.  Optional: [days] Specify up to 7 days of messages to delete."""
         if await check_bot_or_staff(ctx, member, "ban"):
             return
@@ -237,7 +238,7 @@ class KickBan(commands.Cog):
         timestamp = datetime.datetime.now()
         delta = datetime.timedelta(seconds=length)
         unban_time = timestamp + delta
-        unban_time_string = utils.dtm_to_discord_timestamp(unban_time)
+        unban_time_string = format_dt(unban_time)
 
         if isinstance(member, discord.Member):
             msg = f"You were banned from {ctx.guild.name}."

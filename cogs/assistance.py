@@ -6,11 +6,10 @@ import logging
 from discord.ext import commands
 from inspect import cleandoc
 from os.path import dirname, join
-
 from typing import Optional, Literal, TYPE_CHECKING
 from utils import crud
 from utils.models import Channel
-from utils.utils import PaginatedEmbedView
+from utils.utils import PaginatedEmbedView, BasePaginator
 from utils.checks import check_if_user_can_sr, is_staff
 from utils.mdcmd import add_md_files_as_commands
 
@@ -18,6 +17,40 @@ if TYPE_CHECKING:
     from kurisu import Kurisu
 
 logger = logging.getLogger(__name__)
+
+
+class UniDBResultsPaginator(BasePaginator):
+    def __init__(self, results: list[dict]):
+        super().__init__(n_pages=len(results))
+        self.results = results
+
+    def current(self):
+        if embed := self.pages.get(self.idx):
+            return embed
+        else:
+            embed = self.create_embed(app=self.results[self.idx])
+            self.pages[self.idx] = embed
+            return embed
+
+    def create_embed(self, app: dict):
+        embed = discord.Embed(title=app['title'], color=int(app['color'][1:], 16))
+        embed.description = f"{app.get('description', 'No description provided.')}\n"
+        if 'download_page' in app:
+            embed.description += f" [[Download]({app['download_page']})]"
+        elif 'nightly' in app and 'download_page' in app['nightly']:
+            embed.description += f" [[Download]({app['nightly']['download_page']})]"
+        if 'source' in app:
+            embed.description += f" [[Source]({app['source']})]"
+        embed.set_footer(text=f"by {app['author']}")
+        embed.set_thumbnail(url=app["image"])
+
+        if qr_urls := app.get('qr'):
+            embed.set_image(url=list(qr_urls.values())[0])
+
+        if self.n_pages > 1:
+            embed.title += f" [{self.idx + 1}/{self.n_pages}]"
+
+        return embed
 
 
 class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapping.from_cooldown(1, 30.0, commands.BucketType.channel))):
@@ -216,24 +249,8 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
         res = await self.unisearch(query)
         if not res:
             return await ctx.send("No app found!")
-
-        embeds = []
-        for app in res:
-            embed = discord.Embed(title=app['title'], color=int(app['color'][1:], 16))
-            embed.description = f"{app.get('description', '')}\n"
-            if 'download_page' in app:
-                embed.description += f" [[Download]({app['download_page']})]"
-            elif 'nightly' in app and 'download_page' in app['nightly']:
-                embed.description += f" [[Download]({app['nightly']['download_page']})]"
-            if 'source' in app:
-                embed.description += f" [[Source]({app['source']})]"
-            embed.set_footer(text=f"by {app['author']}")
-            embed.set_thumbnail(url=app["image"])
-            if qr_urls := app.get('qr'):
-                embed.set_image(url=list(qr_urls.values())[0])
-            embeds.append(embed)
-        view = PaginatedEmbedView(embeds, author=ctx.author)
-        view.message = await ctx.send(embed=view.embeds[0], view=view)
+        view = PaginatedEmbedView(paginator=UniDBResultsPaginator(res), author=ctx.author)
+        view.message = await ctx.send(embed=view.paginator.current(), view=view)
 
 
 add_md_files_as_commands(Assistance)

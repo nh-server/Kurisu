@@ -156,6 +156,7 @@ class VoteView(db.Model):
     author_id = db.Column(db.BigInteger())
     options = db.Column(db.String())
     start = db.Column(db.TIMESTAMP)
+    staff_only = db.Column(db.Boolean, nullable=False)
 
 
 class VoteViewVote(db.Model):

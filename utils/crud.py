@@ -1,6 +1,6 @@
 import datetime
 
-from . import models
+from utils import models
 from discord import TextChannel, utils
 from typing import Optional
 
@@ -109,7 +109,7 @@ async def get_permanent_roles(user_id: int) -> list[models.PermanentRole]:
 
 async def remove_permanent_role(user_id: int, role_id: int) -> Optional[models.PermanentRole]:
     permanent_role = await models.PermanentRole.query.where((models.PermanentRole.user_id == user_id) & (
-            models.PermanentRole.role_id == role_id)).gino.first()
+        models.PermanentRole.role_id == role_id)).gino.first()
     if permanent_role:
         await permanent_role.delete()
         return permanent_role
@@ -128,7 +128,7 @@ async def get_time_restrictions_by_user(user_id: int) -> list[models.TimedRestri
 
 async def get_time_restriction_by_user_type(user_id: int, restriction_type: str) -> models.TimedRestriction:
     return await models.TimedRestriction.query.where((models.TimedRestriction.user == user_id) & (
-            models.TimedRestriction.type == restriction_type)).gino.first()
+        models.TimedRestriction.type == restriction_type)).gino.first()
 
 
 async def get_time_restrictions_by_type(restriction_type: str) -> list[models.TimedRestriction]:
@@ -377,7 +377,7 @@ async def get_tag(title: str) -> Optional[models.Tag]:
 
 
 async def get_tags() -> list[models.Tag]:
-    return await models.Tag.query.order_by(models.Tag.id).gino.all()
+    return await models.Tag.query.order_by(models.Tag.title).gino.all()
 
 
 async def delete_tag(title: str) -> None:
@@ -416,8 +416,10 @@ async def remove_citizen(citizen_id) -> None:
 
 
 # Operations for managing persistent vote views
-async def add_vote_view(view_id: int, identifier: str, options: str, start: datetime.datetime, author_id: Optional[int] = None, message_id: Optional[int] = None) -> None:
-    await models.VoteView.create(id=view_id, message_id=message_id, identifier=identifier, author_id=author_id, options=options, start=start)
+async def add_vote_view(view_id: int, identifier: str, options: str, start: datetime.datetime,
+                        author_id: Optional[int] = None, message_id: Optional[int] = None, staff_only: bool = False) -> None:
+    await models.VoteView.create(id=view_id, message_id=message_id, identifier=identifier, author_id=author_id,
+                                 options=options, start=start, staff_only=staff_only)
 
 
 async def get_vote_views(identifier: str) -> list[models.VoteView]:

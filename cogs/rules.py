@@ -5,11 +5,29 @@ import discord
 from typing import TYPE_CHECKING
 from utils import crud
 from utils.checks import is_staff
-from utils.utils import paginate_message, PaginatedEmbedView
+from utils.utils import paginate_message, PaginatedEmbedView, BasePaginator
 from discord.ext import commands
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
+
+
+class RulePaginator(BasePaginator):
+
+    def __init__(self, rules: dict):
+        super().__init__(n_pages=len(rules))
+        self.rules = rules
+
+    def current(self):
+        if embed := self.pages.get(self.idx):
+            return embed
+        else:
+            embed = self.create_embed(self.rules[self.idx + 1])
+            self.pages[self.idx] = embed
+            return embed
+
+    def create_embed(self, rule: str):
+        return discord.Embed(title=f"Rule {self.idx + 1} of {self.n_pages}", description=rule, colour=0x128bed)
 
 
 class Rules(commands.Cog):
@@ -174,9 +192,8 @@ https://discord.gg/C29hYvh"""
     @commands.command()
     async def rules(self, ctx: commands.Context):
         """Links to the welcome-and-rules channel."""
-        embeds = [discord.Embed(title=f"Rule {rule}", description=description, colour=0x128bed) for rule, description in self.rules_dict.items()]
-        view = PaginatedEmbedView(embeds=embeds, author=ctx.author)
-        msg = await ctx.send(embed=embeds[0], view=view)
+        view = PaginatedEmbedView(paginator=RulePaginator(self.rules_dict), author=ctx.author)
+        msg = await ctx.send(embed=view.paginator.current(), view=view)
         view.message = msg
 
     @commands.command()

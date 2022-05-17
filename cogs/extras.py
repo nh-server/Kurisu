@@ -12,15 +12,69 @@ import sys
 
 from discord import app_commands, TextChannel, __version__ as discordpy_version
 from discord.ext import commands
+from discord.utils import format_dt
+from math import ceil
 from typing import Union, TYPE_CHECKING
 from utils import crud, utils
 from utils.checks import is_staff, check_if_user_can_sr, check_staff_id
-from utils.utils import gen_color, dtm_to_discord_timestamp
+from utils.utils import gen_color
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
+    from utils.models import Tag, RemindMeEntry
 
 python_version = sys.version.split()[0]
+
+
+class TagsPaginator(utils.BasePaginator):
+
+    def __init__(self, tags: list[Tag], tags_per_page: int = 10, colour: discord.Color = None):
+        super().__init__(n_pages=ceil(len(tags) / tags_per_page))
+        self.tags = tags
+        self.tags_per_page = tags_per_page
+        self.colour = colour or discord.Colour.purple()
+
+    def current(self):
+        if embed := self.pages.get(self.idx):
+            return embed
+        else:
+            index = self.idx * self.tags_per_page
+            embed = self.create_embed(tags=self.tags[index:index + self.tags_per_page])
+            self.pages[self.idx] = embed
+            return embed
+
+    def create_embed(self, tags: list[Tag]):
+        embed = discord.Embed(title="Tags list", color=self.colour)
+        embed.description = '\n'.join(f'{n+(self.tags_per_page * self.idx)}. {tag.title}' for n, tag in enumerate(tags, start=1))
+
+        if self.n_pages > 1:
+            embed.title += f" [{self.idx + 1}/{self.n_pages}]"
+        return embed
+
+
+class RemindersPaginator(utils.BasePaginator):
+
+    def __init__(self, reminders: list[RemindMeEntry], colour: discord.Color = None):
+        super().__init__(n_pages=len(reminders))
+        self.reminders = reminders
+        self.colour = colour or discord.Colour.purple()
+
+    def current(self):
+        if embed := self.pages.get(self.idx):
+            return embed
+        else:
+            embed = self.create_embed(reminder=self.reminders[self.idx])
+            self.pages[self.idx] = embed
+            return embed
+
+    def create_embed(self, reminder: RemindMeEntry):
+        embed = discord.Embed(title=f"Reminder {self.idx + 1}", color=self.colour)
+        embed.add_field(name='Content', value=reminder.reminder, inline=False)
+        embed.add_field(name='Set to', value=format_dt(reminder.date), inline=False)
+
+        if self.n_pages > 1:
+            embed.title += f" [{self.idx + 1}/{self.n_pages}]"
+        return embed
 
 
 class Extras(commands.Cog):
@@ -35,8 +89,8 @@ class Extras(commands.Cog):
 
     async def init(self):
         await self.bot.wait_until_all_ready()
-        for view in await crud.get_vote_views('SimpleVoteView'):
-            v = utils.SimpleVoteView(view.author_id, options=view.options.split('|'), custom_id=view.id, start=view.start)
+        for view in await crud.get_vote_views('extras'):
+            v = utils.SimpleVoteView(view.author_id, options=view.options.split('|'), custom_id=view.id, start=view.start, staff_only=view.staff_only)
             self.bot.add_view(v, message_id=view.message_id)
             v.message_id = view.message_id
 
@@ -345,7 +399,7 @@ class Extras(commands.Cog):
         delta = datetime.timedelta(seconds=remind_in)
         reminder_time = timestamp + delta
         await crud.add_reminder(reminder_time, ctx.author.id, reminder)
-        await ctx.send(f"I will send you a reminder on {dtm_to_discord_timestamp(reminder_time, date_format='F')}.")
+        await ctx.send(f"I will send you a reminder on {format_dt(reminder_time, style='F')}.")
 
     @commands.command()
     async def listreminders(self, ctx: commands.Context):
@@ -353,15 +407,9 @@ class Extras(commands.Cog):
         reminders = await crud.get_user_reminders(ctx.author.id)
         if not reminders:
             return await ctx.send("You don't have any reminders scheduled.")
-        embeds = []
         color = utils.gen_color(ctx.author.id)
-        for n, reminder in enumerate(reminders, start=1):
-            embed = discord.Embed(title=f"Reminder {n}", color=color)
-            embed.add_field(name='Content', value=reminder.reminder, inline=False)
-            embed.add_field(name='Set to', value=utils.dtm_to_discord_timestamp(reminder.date), inline=False)
-            embeds.append(embed)
-        view = utils.PaginatedEmbedView(embeds, author=ctx.author)
-        view.message = await ctx.send(embed=embeds[0], view=view)
+        view = utils.PaginatedEmbedView(paginator=RemindersPaginator(reminders, color), author=ctx.author)
+        view.message = await ctx.send(embed=view.paginator.current(), view=view)
 
     @commands.command()
     async def unremindme(self, ctx: commands.Context, number: int):
@@ -409,15 +457,9 @@ class Extras(commands.Cog):
     async def list(self, ctx: commands.Context):
         """Lists the title of all existent tags."""
         if tags := await crud.get_tags():
-            embeds = []
-            n = 1
-            color = gen_color(ctx.author.id)
-            for x in [tags[i:i + 10] for i in range(0, len(tags), 10)]:
-                embed = discord.Embed(description='\n'.join(f'{n}. {tag.title}' for n, tag in enumerate(x, start=n)), color=color)
-                n += len(x)
-                embeds.append(embed)
-            view = utils.PaginatedEmbedView(embeds=embeds, author=ctx.author)
-            view.message = await ctx.send(embed=view.embeds[0], view=view)
+            colour = gen_color(ctx.author.id)
+            view = utils.PaginatedEmbedView(paginator=TagsPaginator(tags=tags, tags_per_page=10, colour=colour), author=ctx.author)
+            view.message = await ctx.send(embed=view.paginator.current(), view=view)
         else:
             await ctx.send("There are no tags.")
 
@@ -443,10 +485,12 @@ class Extras(commands.Cog):
                          options: str = "Yes|No"):
         """Creates a simple vote, only the who made the vote can stop it. OP+ only."""
         options_parsed = options.split('|')
-        view = utils.SimpleVoteView(interaction.user.id, options_parsed, interaction.id, start=discord.utils.utcnow())
+        view = utils.SimpleVoteView(interaction.user.id, options_parsed, interaction.id, start=discord.utils.utcnow(), staff_only=staff_only)
         embed = discord.Embed(title=name, description=description)
         await interaction.response.send_message(embed=embed, view=view)
-        await crud.add_vote_view(view_id=interaction.id, identifier='extras', author_id=interaction.user.id, options=options, start=datetime.datetime.utcnow(), message_id=None)
+        msg = await interaction.original_message()
+        view.message_id = msg.id
+        await crud.add_vote_view(view_id=interaction.id, identifier='extras', author_id=interaction.user.id, options=options, start=datetime.datetime.utcnow(), message_id=msg.id, staff_only=staff_only)
 
     @is_staff('OP')
     @commands.guild_only()

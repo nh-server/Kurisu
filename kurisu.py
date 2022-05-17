@@ -22,7 +22,7 @@ from logging.handlers import TimedRotatingFileHandler
 from subprocess import check_output, CalledProcessError
 from typing import Optional
 from utils import crud
-from utils.checks import check_staff_id
+from utils.checks import check_staff_id, InsufficientStaffRank
 from utils.help import KuriHelp
 from utils.manager import InviteFilterManager, WordFilterManager, LevenshteinFilterManager
 from utils.models import Channel, Role, db
@@ -53,7 +53,6 @@ cogs = (
     'cogs.xkcdparse',
     'cogs.seasonal',
     'cogs.newcomers',
-    'cogs.server_logs',
 )
 
 DEBUG = False
@@ -362,6 +361,9 @@ class Kurisu(commands.Bot):
         elif isinstance(exc, commands.MissingPermissions):
             await ctx.send(f"{author.mention} You don't have permission to use `{command}`.")
 
+        elif isinstance(exc, InsufficientStaffRank):
+            await ctx.send(exc)
+
         elif isinstance(exc, commands.CheckFailure):
             await ctx.send(f'{author.mention} You cannot use `{command}`.')
 
@@ -371,7 +373,7 @@ class Kurisu(commands.Bot):
             command.reset_cooldown(ctx)
 
         elif isinstance(exc, commands.BadLiteralArgument):
-            await ctx.send(f'Argument {exc.param.name} must be one of the following `{"` `".join(exc.literals)}`.')
+            await ctx.send(f'Argument {exc.param.name} must be one of the following `{"` `".join(str(literal) for literal in exc.literals)}`.')
             command.reset_cooldown(ctx)
 
         elif isinstance(exc, commands.UserInputError):

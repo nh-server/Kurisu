@@ -8,9 +8,15 @@ from typing import Union
 staff_ranks = {"Owner": 0, "SuperOP": 1, "OP": 2, "HalfOP": 3, "Helper": 4}
 
 
+class InsufficientStaffRank(commands.CheckFailure):
+    message: str
+
+
 def is_staff(role: str):
-    async def predicate(ctx: commands.Context) -> bool:
-        return True if ctx.guild and ctx.author == ctx.guild.owner else check_staff(ctx.author, role)
+    async def predicate(ctx):
+        if await check_staff(ctx, role) or (ctx.guild and ctx.guild.owner.id == ctx.author.id):
+            return True
+        raise InsufficientStaffRank(f"You must be at least {role} to use this command.")
     return commands.check(predicate)
 
 

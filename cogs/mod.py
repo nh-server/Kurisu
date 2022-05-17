@@ -7,6 +7,7 @@ import re
 from discord import app_commands
 from discord.app_commands import Choice
 from discord.ext import commands
+from discord.utils import format_dt
 from subprocess import call
 from typing import Union, Optional, TYPE_CHECKING
 from utils import utils, crud, models
@@ -82,18 +83,18 @@ class Mod(commands.Cog):
         embed.description = (
             f"**User:** {user.mention}\n"
             f"**User's ID:** {user.id}\n"
-            f"**Created on:** {utils.dtm_to_discord_timestamp(user.created_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(user.created_at, date_format='R', utc_time=True)})\n"
+            f"**Created on:** {utils.format_dt(user.created_at)} ({format_dt(user.created_at, style='R')})\n"
             f"**Default Profile Picture:** {user.default_avatar}\n"
         )
 
         if isinstance(user, discord.Member):
             member_type = "member"
             embed.description += (
-                f"**Join date:** {utils.dtm_to_discord_timestamp(user.joined_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(user.joined_at, date_format='R', utc_time=True)})\n"
+                f"**Join date:** {format_dt(user.joined_at)} ({format_dt(user.joined_at, style='R')})\n"
                 f"**Current Status:** {user.status}\n"
                 f"**User Activity:** {user.activity}\n"
                 f"**Current Display Name:** {user.display_name}\n"
-                f"**Nitro Boost Info:** {f'Boosting since {utils.dtm_to_discord_timestamp(user.premium_since, utc_time=True)}' if user.premium_since else 'Not a booster'}\n"
+                f"**Nitro Boost Info:** {f'Boosting since {format_dt(user.premium_since)}' if user.premium_since else 'Not a booster'}\n"
                 f"**Current Top Role:** {user.top_role}\n"
                 f"**Color:** {user.color}\n"
                 f"**Profile Picture:** [link]({user.avatar})"
@@ -121,15 +122,17 @@ class Mod(commands.Cog):
             f"**User's ID:** {user.id}\n"
             f"**Created on:** {utils.dtm_to_discord_timestamp(user.created_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(user.created_at, date_format='R', utc_time=True)})\n"
             f"**Default Profile Picture:** [link]({user.default_avatar})\n"
+            f"**Created on:** {format_dt(user.created_at)} ({format_dt(user.created_at, style='R')})\n"
+            f"**Default Profile Picture:** {user.default_avatar}\n"
         )
         if isinstance(user, discord.Member):
             member_type = "member"
             embed.description += (
-                f"**Join date:** {utils.dtm_to_discord_timestamp(user.joined_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(user.joined_at, date_format='R', utc_time=True)})\n"
+                f"**Join date:** {format_dt(user.joined_at)} ({format_dt(user.joined_at, style='R')})\n"
                 f"**Current Status:** {user.status}\n"
                 f"**User Activity:** {user.activity}\n"
                 f"**Current Display Name:** {user.display_name}\n"
-                f"**Nitro Boost Info:** {f'Boosting since {utils.dtm_to_discord_timestamp(user.premium_since, utc_time=True)}' if user.premium_since else 'Not a booster'}\n"
+                f"**Nitro Boost Info:** {f'Boosting since {format_dt(user.premium_since)}' if user.premium_since else 'Not a booster'}\n"
                 f"**Current Top Role:** {user.top_role}\n"
                 f"**Color:** {user.color}\n"
                 f"**Profile Picture:** [link]({user.avatar.url})"
@@ -354,7 +357,7 @@ class Mod(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.guild_only()
-    @commands.command()
+    @commands.command(aliases=["appealsmute"])
     async def appealmute(self, ctx: commands.Context, member: discord.Member, *, reason=""):
         """Mutes a user so they can't speak in appeals. Staff only."""
         if not await crud.add_permanent_role(member.id, self.bot.roles['appeal-mute'].id):
@@ -377,7 +380,7 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.bot_has_permissions(manage_roles=True)
-    @commands.command()
+    @commands.command(aliases=["appealsunmute"])
     async def appealunmute(self, ctx: commands.Context, member: discord.Member):
         """Unmutes a user so they can speak in appeals. Staff only."""
         try:
@@ -438,7 +441,7 @@ class Mod(commands.Cog):
         timestamp = datetime.datetime.now()
         delta = datetime.timedelta(seconds=length)
         unmute_time = timestamp + delta
-        unmute_time_string = utils.dtm_to_discord_timestamp(unmute_time)
+        unmute_time_string = format_dt(unmute_time)
 
         old_mute = await crud.get_time_restriction_by_user_type(member.id, 'timemute')
         await crud.add_timed_restriction(member.id, unmute_time, 'timemute')
@@ -454,7 +457,7 @@ class Mod(commands.Cog):
             msg = f"🔇 **Timed mute**: {issuer.mention} muted {member.mention}| {self.bot.escape_text(member)} for {delta}, until {unmute_time_string} "
         else:
             await ctx.send(f"{member.mention} mute was updated.")
-            msg = f"🔇 **Timed mute**: {issuer.mention} updated {member.mention}| {self.bot.escape_text(member)} time mute from {utils.dtm_to_discord_timestamp(old_mute.end_date)} until {unmute_time_string}"
+            msg = f"🔇 **Timed mute**: {issuer.mention} updated {member.mention}| {self.bot.escape_text(member)} time mute from {format_dt(old_mute.end_date)} until {unmute_time_string}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         else:
@@ -488,7 +491,7 @@ class Mod(commands.Cog):
 
         issuer = ctx.author
         timeout_expiration = discord.utils.utcnow() + datetime.timedelta(seconds=length)
-        timeout_expiration_str = utils.dtm_to_discord_timestamp(timeout_expiration, utc_time=True)
+        timeout_expiration_str = format_dt(timeout_expiration)
         await member.timeout(timeout_expiration, reason=reason)
 
         msg_user = "You were given a timeout!"
@@ -688,7 +691,7 @@ class Mod(commands.Cog):
         timestamp = datetime.datetime.now()
 
         unnohelp_time = timestamp + delta
-        unnohelp_time_string = utils.dtm_to_discord_timestamp(unnohelp_time)
+        unnohelp_time_string = format_dt(unnohelp_time)
 
         await crud.add_timed_restriction(member.id, unnohelp_time, 'timenohelp')
         await crud.add_permanent_role(member.id, self.bot.roles['No-Help'].id)
@@ -769,7 +772,7 @@ class Mod(commands.Cog):
         timestamp = datetime.datetime.now()
 
         unnotech_time = timestamp + delta
-        unnotech_time_string = utils.dtm_to_discord_timestamp(unnotech_time)
+        unnotech_time_string = format_dt(unnotech_time)
 
         await crud.add_timed_restriction(member.id, unnotech_time, 'timenotech')
         await crud.add_permanent_role(member.id, self.bot.roles['No-Tech'].id)
@@ -830,7 +833,7 @@ class Mod(commands.Cog):
         timestamp = datetime.datetime.now()
 
         unhelpmute_time = timestamp + delta
-        unhelpmute_time_string = utils.dtm_to_discord_timestamp(unhelpmute_time)
+        unhelpmute_time_string = format_dt(unhelpmute_time)
 
         await crud.add_timed_restriction(member.id, unhelpmute_time, 'timehelpmute')
         await crud.add_permanent_role(member.id, self.bot.roles['help-mute'].id)
@@ -1071,7 +1074,7 @@ class Mod(commands.Cog):
 
         delta = datetime.timedelta(seconds=seconds)
         expiring_time = timestamp + delta
-        expiring_time_string = utils.dtm_to_discord_timestamp(expiring_time)
+        expiring_time_string = format_dt(expiring_time)
 
         await crud.add_timed_role(member.id, self.bot.roles['streamer(temp)'].id, expiring_time)
         msg_user = f"You have been given streaming permissions until {expiring_time_string}!"
@@ -1119,7 +1122,7 @@ class Mod(commands.Cog):
         timestamp = datetime.datetime.now()
 
         end_time = timestamp + delta
-        end_time_str = utils.dtm_to_discord_timestamp(end_time)
+        end_time_str = format_dt(end_time)
 
         await crud.add_timed_role(member.id, role.id, end_time)
         await member.add_roles(role, reason=reason)

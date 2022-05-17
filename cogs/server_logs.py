@@ -23,16 +23,16 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
     channel_blacklist = ['minecraft-console', 'dev-trusted']
 
     def build_query(
-            self,
-            query: str,
-            member: Optional[int],
-            channel: Optional[int],
-            before: str,
-            after: str,
-            during: str,
-            order: str,
-            show_mod: bool,
-                    ):
+        self,
+        query: str,
+        member: Optional[int],
+        channel: Optional[int],
+        before: str,
+        after: str,
+        during: str,
+        order: str,
+        show_mod: bool,
+    ):
         if query or member or channel or (during and not (before or after)) or ((before or after) and not during):
             sql_query = (
                 "select gm.created_at, gc.name, concat(u.name, '#',u.discriminator), gm.content from guild_messages gm "
