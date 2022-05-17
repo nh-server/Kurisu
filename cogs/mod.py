@@ -295,6 +295,7 @@ class Mod(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.guild_only()
+    @commands.command(aliases=["appealsmute"])
     @commands.command()
     async def appealmute(self, ctx: commands.Context, member: discord.Member, *, reason=""):
         """Mutes a user so they can't speak in appeals. Staff only."""
@@ -317,6 +318,7 @@ class Mod(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.guild_only()
+    @commands.command(aliases=["appealsunmute"])
     @commands.bot_has_permissions(manage_roles=True)
     @commands.command()
     async def appealunmute(self, ctx: commands.Context, member: discord.Member):
