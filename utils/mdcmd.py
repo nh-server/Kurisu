@@ -198,6 +198,8 @@ def add_md_files_as_commands(cog_class: 'Type[commands.Cog]', md_dir: str = None
                 await ctx.send(embed=next(iter(embeds.values())))
 
         cmd.__name__ = name
+        cmd.__qualname__ = f"{cog_class.qualified_name}.{cmd.__name__}"
+
         # i figured this was easier than dealing with the multiple attributes for command help
         cmd.__doc__ = help_desc
 
