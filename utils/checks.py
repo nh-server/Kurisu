@@ -14,7 +14,7 @@ class InsufficientStaffRank(commands.CheckFailure):
 
 def is_staff(role: str):
     async def predicate(ctx):
-        if await check_staff(ctx, role) or (ctx.guild and ctx.guild.owner.id == ctx.author.id):
+        if await check_staff(ctx.author, role) or (ctx.guild and ctx.guild.owner.id == ctx.author.id):
             return True
         raise InsufficientStaffRank(f"You must be at least {role} to use this command.")
     return commands.check(predicate)
