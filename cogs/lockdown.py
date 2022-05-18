@@ -9,6 +9,7 @@ from utils.checks import is_staff, check_staff_id
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
+    from utils.utils import KurisuContext, GuildContext
 
 
 class Lockdown(commands.Cog):
@@ -19,14 +20,14 @@ class Lockdown(commands.Cog):
         self.bot: Kurisu = bot
         self.emoji = discord.PartialEmoji.from_str('🔒')
 
-    async def cog_check(self, ctx: commands.Context):
+    async def cog_check(self, ctx: KurisuContext):
         if ctx.guild is None:
             raise commands.NoPrivateMessage()
         return True
 
     @is_staff("HalfOP")
     @commands.command()
-    async def lockdown(self, ctx: commands.Context, channels: commands.Greedy[discord.TextChannel]):
+    async def lockdown(self, ctx: GuildContext, channels: commands.Greedy[discord.TextChannel]):
         """Lock message sending in the channel. Staff only."""
 
         author = ctx.author
@@ -73,7 +74,7 @@ class Lockdown(commands.Cog):
 
     @is_staff("Owner")
     @commands.command()
-    async def slockdown(self, ctx: commands.Context, channels: commands.Greedy[discord.TextChannel]):
+    async def slockdown(self, ctx: GuildContext, channels: commands.Greedy[discord.TextChannel]):
         """Lock message sending in the channel for everyone. Owners only."""
 
         author = ctx.author
@@ -127,7 +128,7 @@ class Lockdown(commands.Cog):
 
     @is_staff('Helper')
     @commands.command()
-    async def softlock(self, ctx: commands.Context, channels: commands.Greedy[discord.TextChannel]):
+    async def softlock(self, ctx: GuildContext, channels: commands.Greedy[discord.TextChannel]):
         """Lock message sending in the channel, without the "disciplinary action" note. Staff and Helpers only."""
 
         author = ctx.author
@@ -144,9 +145,7 @@ class Lockdown(commands.Cog):
                 await ctx.send(f"{ctx.author.mention} {c.mention} can't be locked by a helper.")
                 continue
 
-            db_channel = await crud.get_dbchannel(c.id)
-            if db_channel is None:
-                db_channel = await crud.add_dbchannel(c.id, c.name)
+            db_channel = await crud.get_dbchannel(c.id) or await crud.add_dbchannel(c.id, c.name)
 
             if db_channel.lock_level > 0:
                 await ctx.send(f"🔒 {c.mention} is already locked down. Use `.unlock` to unlock.")
@@ -184,7 +183,7 @@ class Lockdown(commands.Cog):
 
     @is_staff('Helper')
     @commands.command()
-    async def unlock(self, ctx: commands.Context, channels: commands.Greedy[discord.TextChannel]):
+    async def unlock(self, ctx: GuildContext, channels: commands.Greedy[discord.TextChannel]):
         """Unlock message sending in the channel. Staff only and Helpers only."""
         author = ctx.author
 

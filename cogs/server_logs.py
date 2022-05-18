@@ -116,6 +116,9 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
     ):
         """Search the server logs for messages that matches the parameters given then returns them in a file"""
 
+        if interaction.guild is None:
+            return await interaction.response.send_message("This command can't be used in DMs!", ephemeral=True)
+
         if not self.engine:
             return await interaction.response.send_message("There is no database connection.", ephemeral=True)
         # Discord IDs are too long to be taken as integer input from an app command.
@@ -127,7 +130,7 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
             if channel_id_str:
                 channel_id = int(channel_id_str)
         except ValueError:
-            interaction.response.send_message("Invalid input for IDs")
+            await interaction.response.send_message("Invalid input for IDs")
             return
         await interaction.response.defer(ephemeral=bool(view_state))
         stmt = self.build_query(

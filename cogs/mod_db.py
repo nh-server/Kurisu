@@ -9,6 +9,7 @@ from utils.checks import is_staff
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
+    from utils.utils import KurisuContext, GuildContext
 
 
 class ModDB(commands.Cog):
@@ -22,14 +23,14 @@ class ModDB(commands.Cog):
         self.bot: Kurisu = bot
         self.emoji = discord.PartialEmoji.from_str('💾‍')
 
-    async def cog_check(self, ctx: commands.Context):
+    async def cog_check(self, ctx: KurisuContext):
         if ctx.guild is None:
             raise commands.NoPrivateMessage()
         return True
 
     @is_staff('Owner')
     @commands.command()
-    async def addflag(self, ctx: commands.Context, name):
+    async def addflag(self, ctx: GuildContext, name):
         """Adds a config flag to the database. Owners only."""
         if await crud.get_flag(name) is None:
             await crud.add_flag(name)
@@ -39,7 +40,7 @@ class ModDB(commands.Cog):
 
     @is_staff('Owner')
     @commands.command()
-    async def delflag(self, ctx: commands.Context, name):
+    async def delflag(self, ctx: GuildContext, name):
         """Removes a config flag from the database. Owners only."""
         if await crud.get_flag(name):
             await crud.remove_flag(name)
@@ -49,7 +50,7 @@ class ModDB(commands.Cog):
 
     @is_staff('Owner')
     @commands.command()
-    async def getflag(self, ctx: commands.Context, name):
+    async def getflag(self, ctx: GuildContext, name):
         """Retrieves a config flag from the database. Owners only."""
         flag = await crud.get_flag(name)
         if flag is not None:
@@ -59,7 +60,7 @@ class ModDB(commands.Cog):
 
     @is_staff('Owner')
     @commands.command()
-    async def setflag(self, ctx: commands.Context, name, value: bool):
+    async def setflag(self, ctx: GuildContext, name, value: bool):
         """Sets a config flag in the database. Owners only."""
         if await crud.get_flag(name):
             await crud.set_flag(name, value)

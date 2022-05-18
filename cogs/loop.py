@@ -15,6 +15,7 @@ from utils.utils import send_dm_message
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
+    from utils.utils import KurisuContext
 
 logger = logging.getLogger(__name__)
 
@@ -98,13 +99,13 @@ class Loop(commands.Cog):
 
     @commands.command()
     @commands.cooldown(rate=1, per=60.0, type=commands.BucketType.channel)
-    async def netinfo(self, ctx: commands.Context):
+    async def netinfo(self, ctx: KurisuContext):
         """Show the nintendo network status."""
         await ctx.send(embed=self.netinfo_embed)
 
     @commands.command()
     @commands.cooldown(rate=1, per=60.0, type=commands.BucketType.channel)
-    async def netinfo_refresh(self, ctx: commands.Context):
+    async def netinfo_refresh(self, ctx: KurisuContext):
         """Refreshes the nintendo network status information."""
         await self.update_netinfo()
         embed = discord.Embed(title="Netinfo Refresh", color=discord.Color.blue())

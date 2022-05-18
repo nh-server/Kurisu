@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import datetime
 import discord
 import io
@@ -9,7 +11,10 @@ from discord import app_commands
 from discord.ext import commands
 from discord.utils import format_dt
 from utils import crud, checks
-from typing import Optional, Union
+from typing import Optional, Union, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from kurisu import Kurisu
 
 
 class ConsoleColor(discord.Color):
@@ -35,7 +40,7 @@ class ConsoleColor(discord.Color):
         return cls(0x707070)
 
 
-async def send_dm_message(member: discord.Member, message: str, ctx: Optional[commands.Context] = None, **kwargs) -> bool:
+async def send_dm_message(member: Union[discord.Member, discord.User], message: str, ctx: Optional[commands.Context] = None, **kwargs) -> bool:
     """A helper method for sending a message to a member's DMs.
 
     Returns a boolean indicating success of the DM
@@ -186,7 +191,7 @@ class BasePaginator:
 class BasePaginatedView(discord.ui.View):
     """Base class for a paginated view using a BasePaginator subclass"""
 
-    def __init__(self, paginator: BasePaginator, author: Optional[Union[discord.Member, discord.User]], timeout: int = 30):
+    def __init__(self, paginator: BasePaginator, author: Optional[Union[discord.Member, discord.User]] = None, timeout: int = 30):
         super().__init__(timeout=timeout)
         self.paginator = paginator
         self.message: Optional[discord.Message] = None
@@ -263,17 +268,20 @@ class BasePaginatedView(discord.ui.View):
 
 
 class PaginatedEmbedView(BasePaginatedView):
-    def __init__(self, paginator: BasePaginator, timeout: int = 20, author: Optional[discord.Member] = None):
+    def __init__(self, paginator: BasePaginator, timeout: int = 20, author: Optional[Union[discord.Member, discord.User]] = None):
         super().__init__(paginator=paginator, timeout=timeout, author=author)
         if self.paginator.n_pages == 1:
             self.clear_items()
 
 
 class VoteButton(discord.ui.Button['SimpleVoteView']):
+    label: str
+
     def __init__(self, custom_id: str, label: str, style: discord.ButtonStyle = discord.ButtonStyle.secondary):
         super().__init__(style=style, label=label, custom_id=custom_id)
 
     async def callback(self, interaction: discord.Interaction):
+        assert self.view is not None
         if self.view.staff_only and not await checks.check_staff_id('Helper', interaction.user.id):
             await interaction.response.send_message("You aren't allowed to vote.", ephemeral=True)
             return
@@ -286,13 +294,14 @@ class VoteButtonEnd(discord.ui.Button['SimpleVoteView']):
         super().__init__(style=style, label='End', custom_id=custom_id)
 
     async def callback(self, interaction: discord.Interaction):
+        assert self.view is not None
         if interaction.user.id == self.view.author_id:
             # Try to remove the view
-            await interaction.message.edit(view=None)
+            await interaction.response.edit_message(view=None)
 
             await self.view.calculate_votes()
             results = "results:\n" + '\n'.join(f"{op}: {count}" for op, count in self.view.count.items())
-            await interaction.response.send_message(
+            await interaction.followup.send(
                 f"Vote started {format_dt(self.view.start, style='R')} has finished.\n{results}")
             self.view.stop()
             await crud.remove_vote_view(self.view.custom_id)
@@ -305,7 +314,6 @@ class SimpleVoteView(discord.ui.View):
         super().__init__(timeout=None)
         self.author_id = author_id
         self.custom_id = custom_id
-        self.message_id = None
         self.start = start
         self.staff_only = staff_only
         self.count: dict[str, int] = {}
@@ -317,3 +325,25 @@ class SimpleVoteView(discord.ui.View):
     async def calculate_votes(self):
         for vote in await crud.get_voteview_votes(self.custom_id):
             self.count[vote.option] = self.count[vote.option] + 1
+
+
+class KurisuContext(commands.Context):
+    channel: Union[discord.TextChannel, discord.VoiceChannel, discord.Thread, discord.DMChannel]
+    prefix: str
+    command: commands.Command
+    bot: Kurisu
+
+    async def get_user(self, user_id: int) -> Optional[Union[discord.Member, discord.User]]:
+        if self.guild and (user := self.guild.get_member(user_id)):
+            return user
+        else:
+            try:
+                return await self.bot.fetch_user(user_id)
+            except discord.NotFound:
+                return None
+
+
+class GuildContext(KurisuContext):
+    channel: Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]
+    author: discord.Member
+    guild: discord.Guild

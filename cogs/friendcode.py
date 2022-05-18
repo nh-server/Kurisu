@@ -11,6 +11,7 @@ from utils import crud, utils
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
+    from utils.utils import KurisuContext, GuildContext
 
 
 class FriendCode(commands.Cog):
@@ -48,7 +49,7 @@ class FriendCode(commands.Cog):
         return f"SW - {fc_str[0:4]} - {fc_str[4:8]} - {fc_str[8:12]}"
 
     @commands.command()
-    async def fcregister(self, ctx: commands.Context, fc_str: str):
+    async def fcregister(self, ctx: KurisuContext, fc_str: str):
         """Add your friend code."""
         console = "switch" if fc_str.startswith("SW") else "3ds"
         fc = self.verify_3ds_fc(fc_str) if console == "3ds" else self.verify_switch_fc(fc_str)
@@ -67,7 +68,7 @@ class FriendCode(commands.Cog):
 
     @commands.guild_only()
     @commands.command()
-    async def fcquery(self, ctx: commands.Context, member: discord.Member):
+    async def fcquery(self, ctx: GuildContext, member: discord.Member):
         """Get other user's friend codes. You must have one yourself in the database."""
 
         if not (friend_code := await crud.get_friendcode(ctx.author.id)):
@@ -94,7 +95,7 @@ class FriendCode(commands.Cog):
         await utils.send_dm_message(member, f"{ctx.author} has asked for your friend codes! Their codes are\n{fcs_m}")
 
     @commands.command()
-    async def fcdelete(self, ctx: commands.Context, console: str):
+    async def fcdelete(self, ctx: KurisuContext, console: str):
         """Delete your friend code."""
         if console == '3ds':
             await crud.delete_friendcode_3ds(ctx.author.id)
@@ -105,7 +106,7 @@ class FriendCode(commands.Cog):
         await ctx.send(f"Your {console} friend code was removed from the database.")
 
     @commands.command()
-    async def fctest_3ds(self, ctx: commands.Context, fc):
+    async def fctest_3ds(self, ctx: KurisuContext, fc):
         """Test a 3ds friend code."""
         fc = self.verify_3ds_fc(fc)
         if fc:
@@ -114,7 +115,7 @@ class FriendCode(commands.Cog):
             await ctx.send("Invalid.")
 
     @commands.command()
-    async def fctest_switch(self, ctx: commands.Context, fc):
+    async def fctest_switch(self, ctx: KurisuContext, fc):
         """Test a switch friend code."""
         fc = self.verify_switch_fc(fc)
         if fc:

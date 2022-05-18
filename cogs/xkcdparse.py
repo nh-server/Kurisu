@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
+    from utils.utils import KurisuContext
 
 
 class xkcdparse(commands.Cog):
@@ -40,7 +41,7 @@ class xkcdparse(commands.Cog):
     }
 
     @commands.command()
-    async def xkcd(self, ctx: commands.Context, *, comic):
+    async def xkcd(self, ctx: KurisuContext, *, comic):
         """Show xkcd comic by number. Use "latest" to show the latest comic, or "random" to show a random comic."""
         comic = comic.lower()
         if comic == "latest":

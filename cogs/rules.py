@@ -10,6 +10,7 @@ from discord.ext import commands
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
+    from utils.utils import KurisuContext
 
 
 class RulePaginator(BasePaginator):
@@ -41,7 +42,7 @@ class Rules(commands.Cog):
     async def cog_load(self):
         self.bg_task = self.bot.loop.create_task(self.init_rules())
 
-    async def simple_embed(self, ctx: commands.Context, text, title="", color=discord.Color.default()):
+    async def simple_embed(self, ctx: KurisuContext, text, title="", color=discord.Color.default()):
         embed = discord.Embed(title=title, color=color)
         embed.description = text
         await ctx.send(embed=embed)
@@ -106,7 +107,7 @@ https://discord.gg/C29hYvh"""
 
     @is_staff('SuperOP')
     @commands.command()
-    async def updaterules(self, ctx: commands.Context):
+    async def updaterules(self, ctx: KurisuContext):
         """Updates the rules in Welcome and Rules"""
         channel = self.bot.channels['welcome-and-rules']
         async for message in channel.history():
@@ -134,13 +135,13 @@ https://discord.gg/C29hYvh"""
 
     @is_staff('SuperOP')
     @commands.group()
-    async def rule(self, ctx: commands.Context):
+    async def rule(self, ctx: KurisuContext):
         """Group to manage the server rules."""
         if ctx.invoked_subcommand is None:
             await ctx.send_help(ctx.command)
 
     @rule.command(name='add')
-    async def add_rule(self, ctx: commands.Context, number: int, *, description: str):
+    async def add_rule(self, ctx: KurisuContext, number: int, *, description: str):
         """Adds or edits a current rule"""
         if await crud.get_rule(number):
             await crud.edit_rule(number, description)
@@ -151,7 +152,7 @@ https://discord.gg/C29hYvh"""
         await self.load_rules()
 
     @rule.command(name='delete')
-    async def delete_rule(self, ctx: commands.Context, number: int):
+    async def delete_rule(self, ctx: KurisuContext, number: int):
         if await crud.get_rule(number):
             await crud.delete_rule(number)
             await ctx.send(f"Rule {number} deleted successfully!")
@@ -160,7 +161,7 @@ https://discord.gg/C29hYvh"""
             await ctx.send(f"There is no rule {number}!")
 
     @rule.command(name='list')
-    async def list_rules(self, ctx: commands.Context):
+    async def list_rules(self, ctx: KurisuContext):
         if self.rules_dict:
             rules = [f"**{number}**. {rule}\n" for number, rule in self.rules_dict.items()]
             for page in paginate_message("".join(rules), suffix='', prefix='').pages:
@@ -170,19 +171,19 @@ https://discord.gg/C29hYvh"""
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def consoleban(self, ctx: commands.Context):
+    async def consoleban(self, ctx: KurisuContext):
         """States some stuff about no assistance with bans"""
         await ctx.send("Please refrain from asking for or giving assistance with unbanning consoles which have been banned from online services.\nReminder: sharing files that allow other users to evade Nintendo issued bans is a bannable offense.")
 
     @commands.command(aliases=['r11'])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def pirate(self, ctx: commands.Context):
+    async def pirate(self, ctx: KurisuContext):
         """Hey! You can't steal another trainer's Pokémon!"""
         await ctx.send("Please refrain from asking for or giving assistance with installing, using, or obtaining pirated software.")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def nick(self, ctx: commands.Context):
+    async def nick(self, ctx: KurisuContext):
         """Displays the Nickname and Avatar Policy."""
         await ctx.send(f"🏷 ___Username/Nickname and Avatar policy___\n"
                        f"Usernames are to be kept primarily alphanumeric, to keep them easy to tag and read. Excessively long usernames are not acceptable. Usernames and avatars that are annoying, offensive, inappropriate (\"nsfw\"), and/or disruptive to others are also not allowed.\n"
@@ -190,7 +191,7 @@ https://discord.gg/C29hYvh"""
                        f"Users with avatars against these rules will be asked to change them or be kicked from the server.")
 
     @commands.command()
-    async def rules(self, ctx: commands.Context):
+    async def rules(self, ctx: KurisuContext):
         """Links to the welcome-and-rules channel."""
         view = PaginatedEmbedView(paginator=RulePaginator(self.rules_dict), author=ctx.author)
         msg = await ctx.send(embed=view.paginator.current(), view=view)
@@ -198,103 +199,103 @@ https://discord.gg/C29hYvh"""
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def r1(self, ctx: commands.Context):
+    async def r1(self, ctx: KurisuContext):
         """Displays rule 1."""
         await self.simple_embed(ctx, self.rules_dict[1], title="Rule 1")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def r2(self, ctx: commands.Context):
+    async def r2(self, ctx: KurisuContext):
         """Displays rule 2."""
         await self.simple_embed(ctx, self.rules_dict[2], title="Rule 2")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def r3(self, ctx: commands.Context):
+    async def r3(self, ctx: KurisuContext):
         """Displays rule 3."""
         await self.simple_embed(ctx, self.rules_dict[3], title="Rule 3")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def r4(self, ctx: commands.Context):
+    async def r4(self, ctx: KurisuContext):
         """Displays rule 4."""
         await self.simple_embed(ctx, self.rules_dict[4], title="Rule 4")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def r5(self, ctx: commands.Context):
+    async def r5(self, ctx: KurisuContext):
         """Displays rule 5."""
         await self.simple_embed(ctx, self.rules_dict[5], title="Rule 5")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def r6(self, ctx: commands.Context):
+    async def r6(self, ctx: KurisuContext):
         """Displays rule 6."""
         await self.simple_embed(ctx, self.rules_dict[6], title="Rule 6")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def r7(self, ctx: commands.Context):
+    async def r7(self, ctx: KurisuContext):
         """Displays rule 7."""
         await self.simple_embed(ctx, self.rules_dict[7], title="Rule 7")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def r8(self, ctx: commands.Context):
+    async def r8(self, ctx: KurisuContext):
         """Displays rule 8."""
         await self.simple_embed(ctx, self.rules_dict[8], title="Rule 8")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def r9(self, ctx: commands.Context):
+    async def r9(self, ctx: KurisuContext):
         """Displays rule 9."""
         await self.simple_embed(ctx, self.rules_dict[9], title="Rule 9")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def r10(self, ctx: commands.Context):
+    async def r10(self, ctx: KurisuContext):
         """Displays rule 10."""
         await self.simple_embed(ctx, self.rules_dict[10], title="Rule 10")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def realr11(self, ctx: commands.Context):
+    async def realr11(self, ctx: KurisuContext):
         """Displays rule 11."""
         await self.simple_embed(ctx, self.rules_dict[11] + "\n\nIf you simply need to tell someone to not ask about piracy, consider `.pirate` instead. `.r11` was changed to match `.pirate` due to its large embed.", title="Rule 11")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def r12(self, ctx: commands.Context):
+    async def r12(self, ctx: KurisuContext):
         """Displays rule 12."""
         await self.simple_embed(ctx, self.rules_dict[12], title="Rule 12")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def r13(self, ctx: commands.Context):
+    async def r13(self, ctx: KurisuContext):
         """Displays rule 13."""
         await self.simple_embed(ctx, self.rules_dict[13], title="Rule 13")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def r14(self, ctx: commands.Context):
+    async def r14(self, ctx: KurisuContext):
         """Displays rule 14."""
         await self.simple_embed(ctx, self.rules_dict[14], title="Rule 14")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def r15(self, ctx: commands.Context):
+    async def r15(self, ctx: KurisuContext):
         """Displays rule 15."""
         await self.simple_embed(ctx, self.rules_dict[15], title="Rule 15")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def r16(self, ctx: commands.Context):
+    async def r16(self, ctx: KurisuContext):
         """Displays rule 16."""
         await self.simple_embed(ctx, self.rules_dict[16], title="Rule 16")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
-    async def r17(self, ctx: commands.Context):
+    async def r17(self, ctx: KurisuContext):
         """Displays rule 17."""
         await self.simple_embed(ctx, self.rules_dict[17], title="Rule 17")
 

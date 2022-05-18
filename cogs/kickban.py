@@ -12,6 +12,7 @@ from utils.checks import is_staff, is_staff_app, check_bot_or_staff
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
+    from utils.utils import KurisuContext, GuildContext
 
 
 class KickBan(commands.Cog):
@@ -23,7 +24,7 @@ class KickBan(commands.Cog):
         self.bot: Kurisu = bot
         self.emoji = discord.PartialEmoji.from_str('🚷')
 
-    async def cog_check(self, ctx: commands.Context):
+    async def cog_check(self, ctx: KurisuContext):
         if ctx.guild is None:
             raise commands.NoPrivateMessage()
         return True
@@ -37,9 +38,8 @@ class KickBan(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.bot_has_permissions(kick_members=True)
-    @commands.guild_only()
     @commands.command(name="kick")
-    async def kick_member(self, ctx: commands.Context, member: discord.Member, *, reason=""):
+    async def kick_member(self, ctx: GuildContext, member: discord.Member, *, reason=""):
         """Kicks a user from the server. Staff only."""
         if await check_bot_or_staff(ctx, member, "kick"):
             return
@@ -65,7 +65,7 @@ class KickBan(commands.Cog):
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
     @commands.command(name="ban", aliases=["yeet"])
-    async def ban_member(self, ctx: commands.Context, member: Union[discord.Member, discord.User], days: Optional[Literal[0, 1, 2, 3, 4, 5, 6, 7]] = 0, *, reason=""):
+    async def ban_member(self, ctx: GuildContext, member: Union[discord.Member, discord.User], days: Optional[Literal[0, 1, 2, 3, 4, 5, 6, 7]] = 0, *, reason=""):
         """Bans a user from the server. OP+ only. Optional: [days] Specify up to 7 days of messages to delete."""
         if await check_bot_or_staff(ctx, member, "ban"):
             return
@@ -93,6 +93,7 @@ class KickBan(commands.Cog):
 
     @is_staff_app("OP")
     @app_commands.default_permissions(ban_members=True)
+    @app_commands.guild_only()
     @app_commands.command(name='ban')
     @app_commands.describe(member="Member to ban.",
                            reason="Reason for the ban.",
@@ -108,6 +109,9 @@ class KickBan(commands.Cog):
 
         if await check_bot_or_staff(interaction, member, "ban"):
             return
+
+        if interaction.guild is None:
+            return await interaction.response.send_message("This command can't be used in DMs!", ephemeral=True)
 
         msg = f"You were banned from {interaction.guild.name}."
         if reason != "":
@@ -154,7 +158,7 @@ class KickBan(commands.Cog):
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
     @commands.command(name="superban", aliases=["superyeet"])
-    async def superban(self, ctx: commands.Context, member: Union[discord.Member, discord.User], days: Optional[Literal[0, 1, 2, 3, 4, 5, 6, 7]] = 0, *, reason=""):
+    async def superban(self, ctx: GuildContext, member: Union[discord.Member, discord.User], days: Optional[Literal[0, 1, 2, 3, 4, 5, 6, 7]] = 0, *, reason=""):
         """Bans a user from the server. OP+ only. Optional: [days] Specify up to 7 days of messages to delete."""
         if await check_bot_or_staff(ctx, member, "ban"):
             return
@@ -182,9 +186,8 @@ class KickBan(commands.Cog):
 
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
-    @commands.guild_only()
     @commands.command(name="unban", aliases=["unyeet"])
-    async def unban_member(self, ctx: commands.Context, user: Union[discord.Member, discord.User], *, reason=""):
+    async def unban_member(self, ctx: GuildContext, user: Union[discord.Member, discord.User], *, reason=""):
         """Unbans a user from the server. OP+ only."""
 
         if reason == "":
@@ -206,7 +209,7 @@ class KickBan(commands.Cog):
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
     @commands.command(name="silentban", aliases=["quietyeet"])
-    async def silentban_member(self, ctx: commands.Context, member: discord.Member, days: Optional[Literal[0, 1, 2, 3, 4, 5, 6, 7]] = 0, *, reason=""):
+    async def silentban_member(self, ctx: GuildContext, member: discord.Member, days: Optional[Literal[0, 1, 2, 3, 4, 5, 6, 7]] = 0, *, reason=""):
         """Bans a user from the server, without a notification. OP+ only.  Optional: [days] Specify up to 7 days of messages to delete."""
         if await check_bot_or_staff(ctx, member, "ban"):
             return
@@ -230,7 +233,7 @@ class KickBan(commands.Cog):
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
     @commands.command(name="timeban", aliases=["timeyeet"])
-    async def timeban_member(self, ctx: commands.Context, member: Union[discord.Member, discord.User], length: int = commands.parameter(converter=utils.DateOrTimeConverter), *, reason=""):
+    async def timeban_member(self, ctx: GuildContext, member: Union[discord.Member, discord.User], length: int = commands.parameter(converter=utils.DateOrTimeConverter), *, reason=""):
         """Bans a user for a limited period of time. OP+ only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "timeban"):
             return
@@ -264,7 +267,7 @@ class KickBan(commands.Cog):
     @is_staff("OP")
     @commands.bot_has_permissions(kick_members=True)
     @commands.command(name="softban", aliases=["gentleyeet"])
-    async def softban_member(self, ctx: commands.Context, member: Union[discord.Member, discord.User], *, reason):
+    async def softban_member(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason):
         """Soft-ban a user. OP+ only.
 
         This "bans" the user without actually doing a ban on Discord. The bot will instead kick the user every time they join. Discord bans are account- and IP-based."""
@@ -288,7 +291,7 @@ class KickBan(commands.Cog):
 
     @is_staff("OP")
     @commands.command(name="unsoftban")
-    async def unsoftban_member(self, ctx: commands.Context, user: Union[discord.Member, discord.User]):
+    async def unsoftban_member(self, ctx: GuildContext, user: Union[discord.Member, discord.User]):
         """Un-soft-ban a user based on ID. OP+ only."""
         await crud.remove_softban(user.id)
         await ctx.send(f"{user} has been unbanned!")
@@ -297,7 +300,7 @@ class KickBan(commands.Cog):
 
     @is_staff("OP")
     @commands.command(name="scamban")
-    async def scamban_member(self, ctx: commands.Context, member: discord.Member, site: str):
+    async def scamban_member(self, ctx: GuildContext, member: discord.Member, site: str):
         """Bans member deleting message from last day and add a scamming site to the filter"""
 
         site = site.lower()

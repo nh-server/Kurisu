@@ -24,6 +24,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
+    from utils.utils import KurisuContext
 
 
 async def setup(bot):
@@ -40,7 +41,7 @@ class SwitchSerialNumberCheck(Cog):
         self.emoji = discord.PartialEmoji.from_str('*️⃣')
 
     @commands.command(aliases=["ssnc"])
-    async def check_nx_serial(self, ctx: commands.Context, serial):
+    async def check_nx_serial(self, ctx: KurisuContext, serial):
         """Check the given Switch serial to see if it is patched or not. For safety reasons, the invoking message is
         removed."""
 

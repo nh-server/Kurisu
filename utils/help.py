@@ -5,7 +5,7 @@ from discord.ui import Select
 from discord.ext import commands
 from itertools import islice
 from typing import Union
-from utils.utils import BasePaginator, BasePaginatedView
+from utils.utils import BasePaginator, BasePaginatedView, KurisuContext
 
 SELECT_MAX_VALUES = 25
 
@@ -13,11 +13,12 @@ SELECT_MAX_VALUES = 25
 class CogHelpPaginator(BasePaginator):
     commands_per_page = 8
 
-    def __init__(self, cog: Union[commands.Cog, commands.Group], commands: list[commands.Command], prefix: str):
+    def __init__(self, cog: Union[commands.Cog, commands.Group], commands: list[commands.Command], prefix: str, colour: discord.Colour):
         super().__init__(n_pages=math.ceil(len(commands) / self.commands_per_page))
         self.cog = cog
         self.commands = commands
         self.prefix = prefix
+        self.colour = colour
 
     def current(self) -> discord.Embed:
         if embed := self.pages.get(self.idx):
@@ -29,7 +30,10 @@ class CogHelpPaginator(BasePaginator):
             return embed
 
     def create_embed(self, commands: list[commands.Command]) -> discord.Embed:
-        embed = discord.Embed(title=f"{self.cog.qualified_name} commands", description=self.cog.description, colour=discord.Colour(0xb01ec3))
+        embed = discord.Embed(colour=self.colour)
+
+        embed.title = f"{self.cog.qualified_name} commands"
+        embed.description = self.cog.description
 
         if self.n_pages > 1:
             embed.title += f" [{self.idx + 1}/{self.n_pages}]"
@@ -46,10 +50,11 @@ class CogHelpPaginator(BasePaginator):
 class MainHelpPaginator(BasePaginator):
     categories_per_page = 9
 
-    def __init__(self, mapping: dict[commands.Cog, list[commands.Command]], description: str, prefix: str):
+    def __init__(self, mapping: dict[commands.Cog, list[commands.Command]], description: str, prefix: str, colour: discord.Color):
         super().__init__(n_pages=math.ceil(len(mapping) / self.categories_per_page))
         self.description = description
         self.prefix = prefix
+        self.colour = colour
         self.slices = []
         it = iter(mapping)
         # Slice the mapping to mapping 6 cogs each
@@ -65,7 +70,9 @@ class MainHelpPaginator(BasePaginator):
             return embed
 
     def create_embed(self, mapping: dict[commands.Cog, list[commands.Command]]):
-        embed = discord.Embed(title="Kurisu the bot for Nintendo Homebrew", colour=0xb01ec3)
+        embed = discord.Embed(colour=self.colour)
+
+        embed.title = "Kurisu the bot for Nintendo Homebrew"
         embed.description = f"{self.description}\n\nBelow you will find the categories of commands in Kurisu:"
         embed.set_footer(
             text=f"Use {self.prefix}help [category] for more info about a category or select a category below.")
@@ -83,18 +90,19 @@ class MainHelpPaginator(BasePaginator):
 
 class CommandHelpPaginator(BasePaginator):
 
-    def __init__(self, command: commands.Command, prefix: str):
+    def __init__(self, command: commands.Command, prefix: str, colour: discord.Color):
         # Commands have just one page, a paginator is not needed but makes it way easier to integrate with the View
         super().__init__(n_pages=1)
         self.description = command.help or "No help for you."
         self.prefix = prefix
+        self.colour = colour
         self.command = command
 
     def current(self) -> discord.Embed:
         return self.create_embed(command=self.command)
 
     def create_embed(self, command: commands.Command):
-        embed = discord.Embed(title=f"{command.name} command", colour=0xb01ec3)
+        embed = discord.Embed(title=f"{command.name} command", colour=self.colour)
         embed.description = self.description
 
         if command.aliases:
@@ -108,7 +116,7 @@ class CommandHelpPaginator(BasePaginator):
 
 class CategorySelect(Select['HelpView']):
 
-    def __init__(self, mapping: dict[commands.Cog, list[commands.Command]], ctx: commands.Context):
+    def __init__(self, mapping: dict[commands.Cog, list[commands.Command]], ctx: KurisuContext):
         super().__init__(placeholder="Select a Category.")
         self.ctx = ctx
         self.mapping = mapping
@@ -130,21 +138,28 @@ class CategorySelect(Select['HelpView']):
                             emoji=emoji)
 
     async def callback(self, interaction: discord.Interaction):
+        assert self.view is not None
+
         value = self.values[0]
 
         if value == 'main':
             await self.view.change_paginator(
-                MainHelpPaginator(self.mapping, self.ctx.bot.description, self.ctx.clean_prefix), interaction)
+                MainHelpPaginator(self.mapping, self.ctx.bot.description, self.ctx.clean_prefix, colour=self.ctx.bot.colour), interaction)
         else:
             cog = self.ctx.bot.get_cog(value)
+
+            if cog is None:
+                await interaction.response.send_message("Error when fetching cog.", ephemeral=True)
+                return
+
             commands = self.mapping[cog]
-            await self.view.change_paginator(CogHelpPaginator(cog, commands, self.ctx.clean_prefix), interaction)
+            await self.view.change_paginator(CogHelpPaginator(cog, commands, self.ctx.clean_prefix, self.ctx.bot.colour), interaction)
 
 
 class CommandSelect(Select['HelpView']):
 
     def __init__(self, cog: Union[commands.Cog, commands.Group], commands: list[commands.Command],
-                 ctx: commands.Context, suffix: str = ""):
+                 ctx: KurisuContext, suffix: str = ""):
         super().__init__(placeholder="Select a command" + suffix)
         self.ctx = ctx
         self.cog = cog
@@ -163,14 +178,19 @@ class CommandSelect(Select['HelpView']):
             self.add_option(label=command.name, value=command.qualified_name, description=command.description)
 
     async def callback(self, interaction: discord.Interaction):
+        assert self.view is not None
+
         value = self.values[0]
 
         if value == 'main':
-            await self.view.change_paginator(CogHelpPaginator(self.cog, self.commands, self.ctx.clean_prefix),
+            await self.view.change_paginator(CogHelpPaginator(self.cog, self.commands, self.ctx.clean_prefix, self.ctx.bot.colour),
                                              interaction)
         else:
             command = self.ctx.bot.get_command(value)
-            await self.view.change_paginator(CommandHelpPaginator(command, self.ctx.clean_prefix), interaction)
+            if command is None:
+                await interaction.response.send_message("Error when fetching command.", ephemeral=True)
+                return
+            await self.view.change_paginator(CommandHelpPaginator(command, self.ctx.clean_prefix, self.ctx.bot.colour), interaction)
 
 
 class HelpView(BasePaginatedView):
@@ -188,9 +208,10 @@ class HelpView(BasePaginatedView):
 
 
 class KuriHelp(commands.HelpCommand):
+    context: KurisuContext
 
     def __init__(self):
-        super().__init__(show_hidden=True)
+        super().__init__(show_hidden=True, context=KurisuContext)
 
     async def prepare_help_command(self, ctx, command=None):
         await ctx.bot.wait_until_all_ready()
@@ -203,8 +224,9 @@ class KuriHelp(commands.HelpCommand):
                 f_mapping[cog] = f_cmds
 
         bot = self.context.bot
+        colour = self.context.bot.colour
 
-        view = HelpView(MainHelpPaginator(f_mapping, bot.description, self.context.prefix), self.context.author)
+        view = HelpView(MainHelpPaginator(f_mapping, bot.description, self.context.prefix, colour), self.context.author)
         view.add_item(CategorySelect(f_mapping, self.context))
 
         channel = self.get_destination()
@@ -214,7 +236,7 @@ class KuriHelp(commands.HelpCommand):
     async def send_cog_help(self, cog: commands.Cog):
         commands = await self.filter_commands(cog.get_commands(), sort=True)
 
-        view = HelpView(CogHelpPaginator(cog, commands, self.context.prefix), self.context.author)
+        view = HelpView(CogHelpPaginator(cog, commands, self.context.prefix, self.context.bot.colour), self.context.author)
 
         # All my homies hate Assistance
         # If there is >25 commands create multiple Selects and add a suffix indicating what commands are inside [A-C]
@@ -232,7 +254,7 @@ class KuriHelp(commands.HelpCommand):
     async def send_group_help(self, group: commands.Group):
         commands = await self.filter_commands(group.commands, sort=True)
 
-        view = HelpView(CogHelpPaginator(group, commands, prefix=self.context.clean_prefix), self.context.author)
+        view = HelpView(CogHelpPaginator(group, commands, self.context.clean_prefix, self.context.bot.colour), self.context.author)
         view.add_item(CommandSelect(group.cog, commands, self.context))
 
         channel = self.get_destination()
@@ -240,7 +262,7 @@ class KuriHelp(commands.HelpCommand):
         view.message = msg
 
     async def send_command_help(self, command: commands.Command):
-        embed = CommandHelpPaginator(command, self.context.clean_prefix).current()
+        embed = CommandHelpPaginator(command, self.context.clean_prefix, self.context.bot.colour).current()
         channel = self.get_destination()
         await channel.send(embed=embed, reference=self.context.message)
 

@@ -8,6 +8,7 @@ from utils.checks import is_staff
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
+    from utils.utils import KurisuContext, GuildContext
 
 
 class Load(commands.Cog):
@@ -18,14 +19,14 @@ class Load(commands.Cog):
         self.bot: Kurisu = bot
         self.emoji = discord.PartialEmoji.from_str('⌨')
 
-    async def cog_check(self, ctx: commands.Context):
+    async def cog_check(self, ctx: KurisuContext):
         if ctx.guild is None:
             raise commands.NoPrivateMessage()
         return True
 
     @is_staff("OP")
     @commands.command(hidden=True)
-    async def load(self, ctx: commands.Context, *, module: str):
+    async def load(self, ctx: GuildContext, *, module: str):
         """Loads a Cog."""
         try:
             if module[0:7] != "cogs.":
@@ -37,7 +38,7 @@ class Load(commands.Cog):
 
     @is_staff("OP")
     @commands.command(hidden=True)
-    async def unload(self, ctx: commands.Context, *, module: str):
+    async def unload(self, ctx: GuildContext, *, module: str):
         """Unloads a Cog."""
         try:
             if module[0:7] != "cogs.":
@@ -52,7 +53,7 @@ class Load(commands.Cog):
 
     @is_staff("OP")
     @commands.command(name='reload')
-    async def _reload(self, ctx: commands.Context, *, module: str):
+    async def _reload(self, ctx: GuildContext, *, module: str):
         """Reloads a Cog."""
         try:
             if module[0:7] != "cogs.":

@@ -26,7 +26,7 @@ from utils.checks import check_staff_id, InsufficientStaffRank
 from utils.help import KuriHelp
 from utils.manager import InviteFilterManager, WordFilterManager, LevenshteinFilterManager
 from utils.models import Channel, Role, db
-from utils.utils import create_error_embed
+from utils.utils import create_error_embed, KurisuContext
 
 cogs = (
     'cogs.assistance',
@@ -105,6 +105,8 @@ logger = logging.getLogger(__name__)
 
 
 class Kurisu(commands.Bot):
+
+    user: discord.ClientUser
 
     def __init__(self, command_prefix, description, commit, branch):
 
@@ -210,6 +212,9 @@ class Kurisu(commands.Bot):
     async def setup_hook(self) -> None:
         self.session = aiohttp.ClientSession()
         await self.load_cogs()
+
+    async def get_context(self, origin: Union[discord.Interaction, discord.Message], /, *, cls=KurisuContext) -> KurisuContext:
+        return await super().get_context(origin, cls=cls)
 
     async def on_ready(self):
         if self._is_all_ready.is_set():
@@ -323,14 +328,16 @@ class Kurisu(commands.Bot):
 
     async def load_roles(self):
         for n in self.roles:
-            if role := await Role.query.where(Role.name == n).gino.scalar():
-                self.roles[n] = self.guild.get_role(role)
+            if (role_id := await Role.query.where(Role.name == n).gino.scalar()) and (role := self.guild.get_role(role_id)):
+                self.roles[n] = role
             else:
-                self.roles[n] = discord.utils.get(self.guild.roles, name=n)
-                if not self.roles[n]:
+                role = discord.utils.get(self.guild.roles, name=n)
+                if role is None:
                     self.roles_not_found.append(n)
                     logger.warning("Failed to find role %s", n)
                     continue
+                else:
+                    self.roles[n] = role
                 if db_role := await crud.get_dbrole(self.roles[n].id):
                     await db_role.update(name=n).apply()
                 else:
@@ -340,9 +347,9 @@ class Kurisu(commands.Bot):
         if self.roles['Nitro Booster'] and not await crud.get_dbrole(self.roles['Nitro Booster'].id):
             await Role.create(id=self.roles['Nitro Booster'].id, name='Nitro Booster')
 
-    async def on_command_error(self, ctx: commands.Context, exc: commands.CommandError):
-        author: discord.Member = ctx.author
-        command: commands.Command = ctx.command
+    async def on_command_error(self, ctx: KurisuContext, exc: commands.CommandError):
+        author = ctx.author
+        command = ctx.command
         exc = getattr(exc, 'original', exc)
         channel = self.err_channel or ctx.channel
 
@@ -440,7 +447,7 @@ class Kuritree(app_commands.CommandTree):
 
         author = interaction.user
         ctx = await commands.Context.from_interaction(interaction)
-        command: str = interaction.command.name
+        command: str = interaction.command.name if interaction.command is not None else "No command"
         channel = self.err_channel or interaction.channel
 
         if isinstance(error, app_commands.NoPrivateMessage):
