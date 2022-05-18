@@ -27,6 +27,7 @@ class ModWarn(commands.Cog):
         return True
 
     @is_staff('Helper')
+    @commands.guild_only()
     @commands.command()
     async def warn(self, ctx: commands.Context, member: Union[discord.Member, discord.User], *, reason=""):
         """Warn a user. Staff and Helpers only."""

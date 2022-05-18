@@ -476,13 +476,15 @@ class Extras(commands.Cog):
     @app_commands.default_permissions(ban_members=True)
     @app_commands.describe(name="Name of the vote",
                            description="Description of the vote",
-                           options="Options for the vote separated by \'|\'")
+                           options="Options for the vote separated by \'|\'",
+                           staff_only="If only staff is allowed to vote.")
     @app_commands.command()
     async def simplevote(self,
-                         interaction,
+                         interaction: discord.Interaction,
                          name: str,
                          description: str,
-                         options: str = "Yes|No"):
+                         options: str = "Yes|No",
+                         staff_only: bool = False):
         """Creates a simple vote, only the who made the vote can stop it. OP+ only."""
         options_parsed = options.split('|')
         view = utils.SimpleVoteView(interaction.user.id, options_parsed, interaction.id, start=discord.utils.utcnow(), staff_only=staff_only)

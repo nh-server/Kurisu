@@ -68,6 +68,7 @@ class ModStaff(commands.Cog):
         await self.bot.channels['mod-logs'].send(msg)
 
     @is_staff("HalfOP")
+    @commands.guild_only()
     @commands.command()
     async def unsudo(self, ctx: commands.Context):
         """Remove temporary staff powers. Only needed by HalfOPs."""

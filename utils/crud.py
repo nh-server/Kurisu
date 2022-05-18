@@ -279,7 +279,7 @@ async def remove_nofilter(channel: TextChannel) -> None:
 
 
 async def check_nofilter(channel: TextChannel) -> bool:
-    channel = await models.Channel.get(channel.id)
+    channel: models.Channel = await models.Channel.get(channel.id)
     return channel.nofilter if channel else False
 
 

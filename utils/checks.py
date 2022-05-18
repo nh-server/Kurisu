@@ -26,11 +26,11 @@ def is_staff_app(role: str):
     return app_commands.check(predicate)
 
 
-async def check_staff(author, role: str):
+async def check_staff(author, role: str) -> bool:
     return await check_staff_id(role, author.id)
 
 
-async def check_staff_id(role: str, user_id: int):
+async def check_staff_id(role: str, user_id: int) -> bool:
     if role == "Helper":
         if await get_helper(user_id):
             return True
@@ -39,7 +39,7 @@ async def check_staff_id(role: str, user_id: int):
     return False
 
 
-async def check_bot_or_staff(ctx: Union[commands.Context, discord.Interaction], target: discord.user, action: str):
+async def check_bot_or_staff(ctx: Union[commands.Context, discord.Interaction], target: Union[discord.Member, discord.User], action: str):
     if target.bot:
         who = "a bot"
     elif await check_staff_id("Helper", target.id):

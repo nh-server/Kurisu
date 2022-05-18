@@ -178,7 +178,7 @@ class CommandSelect(Select['HelpView']):
 class HelpView(BasePaginatedView):
 
     async def change_paginator(self, paginator: Union[MainHelpPaginator, CogHelpPaginator, CommandHelpPaginator],
-                               interaction: discord.MessageInteraction):
+                               interaction: discord.Interaction):
         self.paginator = paginator
 
         if self.paginator.n_pages > 1:
@@ -186,7 +186,7 @@ class HelpView(BasePaginatedView):
         else:
             self.disable_buttons()
 
-        await interaction.message.edit(embed=self.paginator.current(), view=self)
+        await interaction.response.edit_message(embed=self.paginator.current(), view=self)
 
 
 class KuriHelp(commands.HelpCommand):

@@ -35,7 +35,7 @@ class ConsoleColor(discord.Color):
         return cls(0x707070)
 
 
-async def send_dm_message(member: discord.Member, message: str, ctx: commands.Context = None, **kwargs) -> bool:
+async def send_dm_message(member: discord.Member, message: str, ctx: Optional[commands.Context] = None, **kwargs) -> bool:
     """A helper method for sending a message to a member's DMs.
 
     Returns a boolean indicating success of the DM
@@ -118,10 +118,6 @@ class DateOrTimeConverter(commands.Converter):
         raise commands.BadArgument("Invalid date/time format")
 
 
-def time_converter(inter, time_string: str) -> int:
-    return parse_time(time_string)
-
-
 class TimeTransformer(app_commands.Transformer):
     @classmethod
     async def transform(cls, interaction: discord.Interaction, value: str) -> int:
@@ -193,7 +189,7 @@ class BasePaginatedView(discord.ui.View):
     def __init__(self, paginator: BasePaginator, author: Optional[Union[discord.Member, discord.User]], timeout: int = 30):
         super().__init__(timeout=timeout)
         self.paginator = paginator
-        self.message = None
+        self.message: Optional[discord.Message] = None
         self.author = author
 
         if self.paginator.n_pages == 1:
@@ -204,7 +200,7 @@ class BasePaginatedView(discord.ui.View):
             await self.message.edit(view=None)
         self.stop()
 
-    async def interaction_check(self, interaction: discord.MessageInteraction) -> bool:
+    async def interaction_check(self, interaction: discord.Interaction) -> bool:
         if self.author and interaction.user.id != self.author.id:
             await interaction.response.send_message("This view is not for you.", ephemeral=True)
             return False
@@ -223,7 +219,7 @@ class BasePaginatedView(discord.ui.View):
         self.last_page.disabled = True
 
     @discord.ui.button(label="<<", style=discord.ButtonStyle.secondary, disabled=True)
-    async def first_page(self, button: discord.ui.Button, interaction: discord.MessageInteraction):
+    async def first_page(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.first_page.disabled = True
         self.prev_page.disabled = True
         self.next_page.disabled = False
@@ -232,7 +228,7 @@ class BasePaginatedView(discord.ui.View):
         await interaction.response.edit_message(embed=self.paginator.current(), view=self)
 
     @discord.ui.button(label='Back', style=discord.ButtonStyle.primary, disabled=True)
-    async def prev_page(self, button: discord.ui.Button, interaction: discord.MessageInteraction):
+    async def prev_page(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.next_page.disabled = False
         self.last_page.disabled = False
         self.paginator.previous()
@@ -242,7 +238,7 @@ class BasePaginatedView(discord.ui.View):
         await interaction.response.edit_message(embed=self.paginator.current(), view=self)
 
     @discord.ui.button(label='Next', style=discord.ButtonStyle.primary)
-    async def next_page(self, button: discord.ui.Button, interaction: discord.MessageInteraction):
+    async def next_page(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.first_page.disabled = False
         self.prev_page.disabled = False
         self.paginator.next()
@@ -252,7 +248,7 @@ class BasePaginatedView(discord.ui.View):
         await interaction.response.edit_message(embed=self.paginator.current(), view=self)
 
     @discord.ui.button(label=">>", style=discord.ButtonStyle.secondary)
-    async def last_page(self, button: discord.ui.Button, interaction: discord.MessageInteraction):
+    async def last_page(self, interaction: discord.Interaction, button: discord.ui.Button):
         self.first_page.disabled = False
         self.prev_page.disabled = False
         self.next_page.disabled = True
@@ -261,19 +257,19 @@ class BasePaginatedView(discord.ui.View):
         await interaction.response.edit_message(embed=self.paginator.current(), view=self)
 
     @discord.ui.button(label="Exit", style=discord.ButtonStyle.red)
-    async def remove(self, button: discord.ui.Button, interaction: discord.MessageInteraction):
+    async def remove(self, interaction: discord.Interaction, button: discord.ui.Button):
         await interaction.response.edit_message(view=None)
         self.stop()
 
 
 class PaginatedEmbedView(BasePaginatedView):
-    def __init__(self, paginator: BasePaginator, timeout: int = 20, author: discord.Member = None):
+    def __init__(self, paginator: BasePaginator, timeout: int = 20, author: Optional[discord.Member] = None):
         super().__init__(paginator=paginator, timeout=timeout, author=author)
         if self.paginator.n_pages == 1:
             self.clear_items()
 
 
-class VoteButton(discord.ui.Button):
+class VoteButton(discord.ui.Button['SimpleVoteView']):
     def __init__(self, custom_id: str, label: str, style: discord.ButtonStyle = discord.ButtonStyle.secondary):
         super().__init__(style=style, label=label, custom_id=custom_id)
 

@@ -20,7 +20,7 @@ from discord import app_commands
 from discord.ext import commands
 from logging.handlers import TimedRotatingFileHandler
 from subprocess import check_output, CalledProcessError
-from typing import Optional
+from typing import Optional, Union
 from utils import crud
 from utils.checks import check_staff_id, InsufficientStaffRank
 from utils.help import KuriHelp
@@ -157,7 +157,7 @@ class Kurisu(commands.Bot):
             '🍰': None,
         }
 
-        self.channels: dict[str, discord.TextChannel] = {
+        self.channels: dict[str, Union[discord.TextChannel, discord.VoiceChannel]] = {
             'announcements': None,
             'welcome-and-rules': None,
             '3ds-assistance-1': None,
@@ -362,7 +362,7 @@ class Kurisu(commands.Bot):
             await ctx.send(f"{author.mention} You don't have permission to use `{command}`.")
 
         elif isinstance(exc, InsufficientStaffRank):
-            await ctx.send(exc)
+            await ctx.send(str(exc))
 
         elif isinstance(exc, commands.CheckFailure):
             await ctx.send(f'{author.mention} You cannot use `{command}`.')
@@ -381,7 +381,7 @@ class Kurisu(commands.Bot):
             await ctx.send_help(ctx.command)
             command.reset_cooldown(ctx)
 
-        elif isinstance(exc, discord.ext.commands.errors.CommandOnCooldown):
+        elif isinstance(exc, commands.errors.CommandOnCooldown):
             if not await check_staff_id('Helper', author.id):
                 try:
                     await ctx.message.delete()
@@ -424,7 +424,7 @@ class Kuritree(app_commands.CommandTree):
 
     def __init__(self, client):
         super().__init__(client)
-        self.err_channel = None
+        self.err_channel: Optional[discord.TextChannel] = None
         self.logger = logging.getLogger(__name__)
 
     async def on_error(
@@ -438,7 +438,7 @@ class Kuritree(app_commands.CommandTree):
         if isinstance(error, app_commands.CommandNotFound):
             return await interaction.response.send_message(error, ephemeral=True)
 
-        author: discord.Member = interaction.user
+        author = interaction.user
         ctx = await commands.Context.from_interaction(interaction)
         command: str = interaction.command.name
         channel = self.err_channel or interaction.channel
@@ -454,9 +454,6 @@ class Kuritree(app_commands.CommandTree):
 
         elif isinstance(error, app_commands.CheckFailure):
             await ctx.send(f'{author.mention} You cannot use `{command}`.', ephemeral=True)
-
-        # elif isinstance(error, app_commands.MaxConcurrencyReached):
-        #     await interaction.response.send_message(error, ephemeral=True)
 
         elif isinstance(error, app_commands.CommandOnCooldown):
             await ctx.send(

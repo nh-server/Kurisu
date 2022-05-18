@@ -120,7 +120,7 @@ class Mod(commands.Cog):
         embed.description = (
             f"**User:** {user.mention}\n"
             f"**User's ID:** {user.id}\n"
-            f"**Created on:** {utils.dtm_to_discord_timestamp(user.created_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(user.created_at, date_format='R', utc_time=True)})\n"
+            f"**Created on:** {format_dt(user.created_at)} ({format_dt(user.created_at, style='R')})\n"
             f"**Default Profile Picture:** [link]({user.default_avatar})\n"
             f"**Created on:** {format_dt(user.created_at)} ({format_dt(user.created_at, style='R')})\n"
             f"**Default Profile Picture:** {user.default_avatar}\n"
@@ -164,7 +164,7 @@ class Mod(commands.Cog):
         embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
         embed.description = (
             f"**Guild's ID:** {guild.id}\n"
-            f"**Created on:** {utils.dtm_to_discord_timestamp(guild.created_at, utc_time=True)} ({utils.dtm_to_discord_timestamp(guild.created_at, date_format='R', utc_time=True)})\n"
+            f"**Created on:** {format_dt(guild.created_at)} ({format_dt(guild.created_at, style='R')})\n"
             f"**Verification level:** {guild.verification_level}\n"
             f"**Members:** {invite.approximate_member_count}\n"
             f"**Nitro boosters:** {guild.premium_subscription_count}\n"
@@ -190,7 +190,7 @@ class Mod(commands.Cog):
         embed = discord.Embed(title=f"Guild {guild.name}", color=utils.gen_color(guild.id))
         embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
         embed.add_field(name="ID", value=guild.id)
-        embed.add_field(name="Created on", value=utils.dtm_to_discord_timestamp(guild.created_at, utc_time=True))
+        embed.add_field(name="Created on", value=format_dt(guild.created_at))
         embed.add_field(name="Verification", value=guild.verification_level)
         embed.add_field(name="Members", value=guild.member_count if isinstance(guild, discord.Guild) else invite.approximate_member_count)
         embed.add_field(name="Nitro boosters", value=guild.premium_subscription_count)
@@ -1042,6 +1042,7 @@ class Mod(commands.Cog):
         await ctx.send("Parameter updated succesfully")
 
     @is_staff("Helper")
+    @commands.guild_only()
     @commands.command(aliases=['ci'])
     async def channelinfo(self, ctx: commands.Context, channel: discord.TextChannel = commands.CurrentChannel):
         """Shows database information about a text channel."""
@@ -1113,7 +1114,7 @@ class Mod(commands.Cog):
                    member: discord.Member,
                    restriction: Choice[str],
                    length: app_commands.Transform[int, utils.TimeTransformer],
-                   reason: str = None):
+                   reason: Optional[str] = None):
         """Applies a temporary restriction to a member. OP+ Only"""
 
         role = self.bot.roles[restriction.value]
