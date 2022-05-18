@@ -280,7 +280,7 @@ async def remove_nofilter(channel: TextChannel) -> None:
 
 async def check_nofilter(channel: TextChannel) -> bool:
     db_channel: models.Channel = await models.Channel.get(channel.id)
-    return db_channel.nofilter if channel else False
+    return db_channel.nofilter if db_channel else False
 
 
 # Operations for managing the friendcode list
