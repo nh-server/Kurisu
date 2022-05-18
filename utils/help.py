@@ -130,7 +130,6 @@ class CategorySelect(Select['HelpView']):
                             emoji=emoji)
 
     async def callback(self, interaction: discord.Interaction):
-        await interaction.response.defer()
         value = self.values[0]
 
         if value == 'main':
@@ -164,7 +163,6 @@ class CommandSelect(Select['HelpView']):
             self.add_option(label=command.name, value=command.qualified_name, description=command.description)
 
     async def callback(self, interaction: discord.Interaction):
-        await interaction.response.defer()
         value = self.values[0]
 
         if value == 'main':
