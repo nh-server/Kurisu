@@ -292,34 +292,40 @@ class Extras(commands.Cog):
     async def togglechannel(self, ctx: GuildContext, channel_name: str):
         """Enable or disable access to specific channels."""
 
+        author = ctx.author
+
+        async def message(content: str):
+            if ctx.interaction:
+                await ctx.send(content, ephemeral=True)
+            else:
+                await send_dm_message(author, content)
+
         if not ctx.interaction:
             await ctx.message.delete()
 
-        author = ctx.author
-
         if not ctx.interaction and ctx.channel != self.bot.channels['bot-cmds']:
-            return await ctx.send(f"{ctx.author.mention}: .togglechannel can only be used in {self.bot.channels['bot-cmds'].mention}.", delete_after=10)
+            return await ctx.send(f"{author.mention}: .togglechannel can only be used in {self.bot.channels['bot-cmds'].mention}.", delete_after=10)
 
         if channel_name == "elsewhere":
             if self.bot.roles['#elsewhere'] in author.roles:
                 await author.remove_roles(self.bot.roles['#elsewhere'])
-                await ctx.send("Access to #elsewhere removed.", ephemeral=True)
+                await message("Access to #elsewhere removed.")
             elif self.bot.roles['No-elsewhere'] not in author.roles:
                 await author.add_roles(self.bot.roles['#elsewhere'])
-                await ctx.send("Access to #elsewhere granted.", ephemeral=True)
+                await message("Access to #elsewhere granted.")
             else:
-                await send_dm_message(ctx.author, "Your access to elsewhere is restricted, contact staff to remove it.")
+                await message("Your access to elsewhere is restricted, contact staff to remove it.")
         elif channel_name == "artswhere":
             if self.bot.roles['#art-discussion'] in author.roles:
                 await author.remove_roles(self.bot.roles['#art-discussion'])
-                await ctx.send("Access to #art-discussion removed.", ephemeral=True)
+                await message("Access to #art-discussion removed.")
             elif self.bot.roles['No-art'] not in author.roles:
                 await author.add_roles(self.bot.roles['#art-discussion'])
-                await ctx.send("Access to #art-discussion granted.", ephemeral=True)
+                await message("Access to #art-discussion granted.")
             else:
-                await ctx.send("Your access to #art-discussion is restricted, contact staff to remove it.", ephemeral=True)
+                await message("Your access to #art-discussion is restricted, contact staff to remove it.")
         else:
-            await ctx.send(f"{channel_name} is not a valid toggleable channel.", ephemeral=True)
+            await message(f"{channel_name} is not a valid toggleable channel.")
 
     @check_if_user_can_sr()
     @commands.guild_only()
