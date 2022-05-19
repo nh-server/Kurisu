@@ -172,6 +172,19 @@ async def remove_timed_role(user_id: int, role_id: int) -> None:
         await timed_role.delete()
 
 
+async def add_changed_roles(channel_id: int, data: list[tuple[int, Optional[bool]]]):
+    changed_list = [dict(channel_id=channel_id, role_id=role_id, original_value=value) for role_id, value in data]
+    await models.ChangedRole.insert().gino.all(changed_list)
+
+
+async def clear_changed_roles(channel_id: int):
+    await models.ChangedRole.delete.where(models.ChangedRole.channel_id == channel_id).gino.status()
+
+
+async def get_changed_roles(channel_id: int) -> list[models.ChangedRole]:
+    return await models.ChangedRole.query.where(models.ChangedRole.channel_id == channel_id).gino.all()
+
+
 # Operations for managing warns
 async def add_warn(user_id: int, issuer_id: int, reason: str):
     await add_dbmember_if_not_exist(user_id)

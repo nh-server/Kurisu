@@ -40,6 +40,13 @@ class Channel(db.Model):
         return self.mod_channel
 
 
+class ChangedRole(db.Model):
+    __tablename__ = "changedroles"
+    role_id = db.Column(db.BigInteger(), primary_key=True)
+    channel_id = db.Column(db.BigInteger(), db.ForeignKey("channels.id"), primary_key=True)
+    original_value = db.Column(db.Boolean())
+
+
 class Role(db.Model):
     __tablename__ = "roles"
     id = db.Column(db.BigInteger, primary_key=True)
