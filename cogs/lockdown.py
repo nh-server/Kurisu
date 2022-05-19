@@ -45,6 +45,11 @@ class Lockdown(commands.Cog):
             overwrites_changed = False
             reason = f"Level {level} lockdown"
             for role in c.changed_roles:
+
+                # Bots are spared
+                if role.is_bot_managed():
+                    continue
+
                 if role.position < top_role.position:
                     overwrites = c.overwrites_for(role)
                     if overwrites.send_messages is not False:
