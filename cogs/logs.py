@@ -187,8 +187,8 @@ Thanks for stopping by and have a good time!
                 msg = "\n🚷 __Timeout removal__"
             else:
                 msg = "\n🚷 __Timeout change__"
-            timeout_before = format_dt(member_before.current_timeout) if member_before.current_timeout else 'None'
-            timeout_after = format_dt(member_after.current_timeout) if member_after.current_timeout else 'None'
+            timeout_before = format_dt(member_before.timed_out_until) if member_before.timed_out_until else 'None'
+            timeout_after = format_dt(member_after.timed_out_until) if member_after.timed_out_until else 'None'
             msg += f": {timeout_before} → {timeout_after}"
         if do_log:
             msg = f"ℹ️ **Member update**: {member_after.mention} | {self.bot.escape_text(member_after)} {msg}"
