@@ -26,7 +26,7 @@ class Newcomers(commands.Cog):
         self.bot: Kurisu = bot
         self.emoji = discord.PartialEmoji.from_str('🆕')
         self.autoprobate = False
-        self.join_list: list[int] = []
+        self.join_list: list[discord.Member] = []
 
     async def cog_check(self, ctx: KurisuContext):
         if ctx.guild is None:
@@ -47,20 +47,20 @@ class Newcomers(commands.Cog):
         if self.autoprobate:
             await member.add_roles(self.bot.roles['Probation'], reason="Auto-probation")
         else:
-            if member.id not in self.join_list:
-                self.join_list.append(member.id)
+            if member not in self.join_list:
+                self.join_list.append(member)
                 if len(self.join_list) > 10:
                     self.autoprobate = True
                     await crud.set_flag('auto_probation', True)
                     await self.bot.channels['mods'].send("@everyone Raid alert multiple joins under 10 seconds! Autoprobation has been enabled.",
                                                          allowed_mentions=discord.AllowedMentions(everyone=True))
-                    for member_id in self.join_list:
+                    for member in self.join_list:
                         try:
-                            await discord.Member(id=member_id).add_roles(self.bot.roles['Probation'], reason="Auto-probation")
+                            await member.add_roles(self.bot.roles['Probation'], reason="Auto-probation")
                         except (discord.Forbidden, discord.HTTPException):
                             pass
                 await asyncio.sleep(10)
-                self.join_list.remove(member.id)
+                self.join_list.remove(member)
 
     async def autoprobate_handler(self, ctx: GuildContext, enabled: Optional[bool] = None):
         if enabled is not None:

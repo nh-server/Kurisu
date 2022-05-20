@@ -1,8 +1,9 @@
 import datetime
+import discord
 
 from utils import models
-from discord import TextChannel, utils
-from typing import Optional
+from discord import utils
+from typing import Optional, Union
 
 
 # Utility
@@ -280,18 +281,18 @@ async def is_watched(user_id: int) -> bool:
 
 
 # Operations for managing the channel filter
-async def add_nofilter(channel: TextChannel) -> None:
+async def add_nofilter(channel: Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]) -> None:
     db_channel = await get_dbchannel(channel.id) or await add_dbchannel(channel.id, channel.name)
     await db_channel.update(nofilter=True).apply()
 
 
-async def remove_nofilter(channel: TextChannel) -> None:
+async def remove_nofilter(channel: Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]) -> None:
     db_channel = await get_dbchannel(channel.id)
     if db_channel is not None:
         await db_channel.update(nofilter=False).apply()
 
 
-async def check_nofilter(channel: TextChannel) -> bool:
+async def check_nofilter(channel: Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]) -> bool:
     db_channel: models.Channel = await models.Channel.get(channel.id)
     return db_channel.nofilter if db_channel else False
 

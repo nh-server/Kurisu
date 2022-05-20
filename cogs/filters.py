@@ -223,10 +223,9 @@ class Filter(commands.Cog):
         """Adds a invite to the filter whitelist"""
         if await self.bot.invitefilter.fetch_invite_by_alias(alias) or await self.bot.invitefilter.fetch_invite_by_code(invite.code):
             return await ctx.send("This invite code or alias is already in use!")
-        guild = invite.guild
 
-        if not isinstance(guild, (discord.Guild, discord.PartialInviteGuild)):
-            await ctx.send("No information from the guild could be fetched.")
+        if invite.guild is None or isinstance(invite.guild, discord.Object):
+            return await ctx.send("No information from the guild could be fetched.")
 
         entry = await self.bot.invitefilter.add(code=invite.code, alias=alias, uses=-1)
         if entry is None:

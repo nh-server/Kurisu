@@ -117,6 +117,8 @@ class Mod(commands.Cog):
 
     @is_staff_app('Helper')
     async def userinfo_ctx_menu(self, interaction: discord.Interaction, user: discord.Member):
+        # These can only be used in guilds
+        assert interaction.guild is not None
         embed = discord.Embed(color=utils.gen_color(user.id))
         embed.description = (
             f"**User:** {user.mention}\n"
@@ -136,8 +138,11 @@ class Mod(commands.Cog):
                 f"**Nitro Boost Info:** {f'Boosting since {format_dt(user.premium_since)}' if user.premium_since else 'Not a booster'}\n"
                 f"**Current Top Role:** {user.top_role}\n"
                 f"**Color:** {user.color}\n"
-                f"**Profile Picture:** [link]({user.avatar.url})"
             )
+
+            if user.avatar:
+                embed.description += f"**Profile Picture:** [link]({user.avatar.url})"
+
             if user.guild_avatar:
                 embed.description += f"\n**Guild Profile Picture:** [link]({user.guild_avatar})"
         else:
@@ -159,61 +164,30 @@ class Mod(commands.Cog):
     async def guildinfo(self, ctx: GuildContext, invite: discord.Invite = None):
         if not invite:
             guild = ctx.guild
+            member_count = guild.member_count
         else:
             guild = invite.guild
+            member_count = invite.approximate_member_count
 
-        if isinstance(guild, (discord.Guild, discord.PartialInviteGuild)):
-            embed = discord.Embed(title=f"Guild {guild.name}", color=utils.gen_color(guild.id))
-            embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
-            embed.description = (
-                f"**Guild's ID:** {guild.id}\n"
-                f"**Created on:** {format_dt(guild.created_at)} ({format_dt(guild.created_at, style='R')})\n"
-                f"**Verification level:** {guild.verification_level}\n"
-                f"**Members:** {invite.approximate_member_count}\n"
-                f"**Nitro boosters:** {guild.premium_subscription_count}\n"
-            )
+        if guild is None or isinstance(guild, discord.Object):
+            return await ctx.send("No information from the guild could be fetched.")
 
-            if guild.vanity_url_code is not None:
-                embed.description += f"**Vanity url:** {guild.vanity_url_code}\n"
-            if guild.icon is not None:
-                embed.description += f"**Icon:** [Link]({guild.icon.url})\n"
-            if guild.banner is not None:
-                embed.description += f"**Banner:** [Link]({guild.banner.url})\n"
-
-            await ctx.send(embed=embed)
-
-        else:
-            await ctx.send("No information from the guild could be fetched.")
-
-    @is_staff_app('Helper')
-    @commands.guild_only()
-    @commands.command()
-    async def guildinfo2(self, ctx: GuildContext, invite: discord.Invite = None):
-        if not invite:
-            guild = ctx.guild
-        else:
-            guild = invite.guild
-
-        if isinstance(guild, (discord.Guild, discord.PartialInviteGuild)):
-            embed = discord.Embed(title=f"Guild {guild.name}", color=utils.gen_color(guild.id))
-            embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
-            embed.add_field(name="ID", value=guild.id)
-            embed.add_field(name="Created on", value=format_dt(guild.created_at))
-            embed.add_field(name="Verification", value=guild.verification_level)
-            embed.add_field(name="Members", value=guild.member_count if isinstance(guild, discord.Guild) else invite.approximate_member_count)
-            embed.add_field(name="Nitro boosters", value=guild.premium_subscription_count)
-            embed.add_field(name="Vanity url", value=guild.vanity_url_code)
-            links = ""
-            if guild.icon is not None:
-                links += f"[icon]({guild.icon.url}) "
-            if guild.banner is not None:
-                links += f"[banner]({guild.banner.url})"
-            if links:
-                embed.add_field(name="Links", value=links)
-            await ctx.send(embed=embed)
-
-        else:
-            await ctx.send("No information from the guild could be fetched.")
+        embed = discord.Embed(title=f"Guild {guild.name}", color=utils.gen_color(guild.id))
+        embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
+        embed.add_field(name="ID", value=guild.id)
+        embed.add_field(name="Created on", value=format_dt(guild.created_at))
+        embed.add_field(name="Verification", value=guild.verification_level)
+        embed.add_field(name="Members", value=member_count)
+        embed.add_field(name="Nitro boosters", value=guild.premium_subscription_count)
+        embed.add_field(name="Vanity url", value=guild.vanity_url_code)
+        links = ""
+        if guild.icon is not None:
+            links += f"[icon]({guild.icon.url}) "
+        if guild.banner is not None:
+            links += f"[banner]({guild.banner.url})"
+        if links:
+            embed.add_field(name="Links", value=links)
+        await ctx.send(embed=embed)
 
     @is_staff("Owner")
     @commands.guild_only()
@@ -291,13 +265,16 @@ class Mod(commands.Cog):
     @commands.bot_has_permissions(manage_channels=True)
     @commands.guild_only()
     @commands.command()
-    async def slowmode(self, ctx: GuildContext, channel: Optional[discord.TextChannel], *, length: int = commands.parameter(converter=utils.DateOrTimeConverter)):
+    async def slowmode(self, ctx: GuildContext, channel: Optional[Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]], *, length: int = commands.parameter(converter=utils.DateOrTimeConverter)):
         """Apply a given slowmode time to a channel.
 
         The time format is identical to that used for timed kicks/bans/takehelps.
         It is not possible to set a slowmode longer than 6 hours.
 
         Helpers in assistance channels and Staff only."""
+
+        if channel is None:
+            channel = ctx.channel
 
         if channel not in self.bot.assistance_channels and not await check_staff_id("OP", ctx.author.id):
             return await ctx.send("You cannot use this command outside of assistance channels.")
@@ -306,7 +283,7 @@ class Mod(commands.Cog):
             return await ctx.send("💢 You can't slowmode a channel for longer than 6 hours!")
 
         try:
-            await channel.edit(slowmode_delay=length)
+            await channel.edit(slowmode_delay=length)  # type: ignore
         except discord.errors.Forbidden:
             return await ctx.send("💢 I don't have permission to do this.")
 

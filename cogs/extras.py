@@ -158,7 +158,7 @@ class Extras(commands.Cog):
             return await ctx.send("Voice channels and text channel permissions are incompatible!")
         overwrites = src_channel.overwrites
         for c in des_channels:
-            await c.edit(overwrites=overwrites)
+            await c.edit(overwrites=overwrites)  # type: ignore
         await ctx.send("Changed permissions successfully!")
 
     @is_staff("HalfOP")
@@ -197,46 +197,6 @@ class Extras(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def estprune(self, ctx: GuildContext, days=30):
-        """Estimate count of members that would be pruned based on the amount of days. Staff only."""
-        if ctx.guild.member_count > 100000:
-            return await ctx.send("The server has too many members, the command would fail!")
-        if days > 30:
-            await ctx.send("Maximum 30 days")
-            return
-        if days < 1:
-            await ctx.send("Minimum 1 day")
-            return
-
-        msg = await ctx.send("I'm figuring this out!")
-        async with ctx.channel.typing():
-            count = await ctx.guild.estimate_pruned_members(days=days)
-            await msg.edit(content=f"{count:,} members inactive for {days} day(s) would be kicked from {ctx.guild.name}!")
-
-    @is_staff("HalfOP")
-    @commands.guild_only()
-    @commands.command()
-    async def activecount(self, ctx: GuildContext, days=30):
-        """Shows the number of members active in the past amount of days. Staff only."""
-        if ctx.guild.member_count > 100000:
-            return await ctx.send("The server has too many members, the command would fail!")
-        if days > 30:
-            await ctx.send("Maximum 30 days")
-            return
-        if days < 1:
-            await ctx.send("Minimum 1 day")
-            return
-        msg = await ctx.send("I'm figuring this out!")
-        async with ctx.channel.typing():
-            count = await ctx.guild.estimate_pruned_members(days=days)
-            if days == 1:
-                await msg.edit(content=f"{ctx.guild.member_count - count:,} members were active today in {ctx.guild.name}!")
-            else:
-                await msg.edit(content=f"{ctx.guild.member_count - count:,} members were active in the past {days} days in {ctx.guild.name}!")
-
-    @is_staff("HalfOP")
-    @commands.guild_only()
-    @commands.command()
     async def prune30(self, ctx: GuildContext, key=""):
         """Prune members that are inactive for 30 days. Staff only."""
         if self.bot.pruning > 0:
@@ -251,10 +211,10 @@ class Extras(commands.Cog):
             return
         self.prune_key = ''.join(random.sample(string.ascii_letters, 8))
         await ctx.send("Starting pruning!")
-        count = await ctx.guild.prune_members(days=30)
-        self.bot.pruning = count
-        await self.bot.channels['mods'].send(f"{count:,} are currently being kicked from {ctx.guild.name}!")
-        msg = f"👢 **Prune**: {ctx.author.mention} pruned {count:,} members"
+        await ctx.guild.prune_members(days=30, compute_prune_count=False)
+        self.bot.pruning = True
+        await self.bot.channels['mods'].send(f"Prune started in {ctx.guild.name}!")
+        msg = f"👢 **Prune**: {ctx.author.mention} started a prune."
         await self.bot.channels['mod-logs'].send(msg)
 
     @is_staff("HalfOP")
@@ -342,8 +302,12 @@ class Extras(commands.Cog):
         msg_reference = ctx.message.reference or None
         mention_author = any(ctx.message.mentions)
         ref_author = ref_author if await check_staff_id('Helper', ctx.author.id) else True
-        if isinstance(message.channel, discord.DMChannel):
+        if isinstance(message.channel, discord.abc.PrivateChannel):
             return await ctx.send("Message can't be from a DM.")
+
+        if not isinstance(message.channel, discord.abc.GuildChannel):
+            return await ctx.send("Failed to fetch channel information.")
+
         # xnoeproofing™
         if not message.channel.permissions_for(ctx.author).read_messages:
             return await ctx.send("bad xnoe, bad", delete_after=10)

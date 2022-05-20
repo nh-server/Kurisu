@@ -34,7 +34,8 @@ class UniDBResultsPaginator(BasePaginator):
             return embed
 
     def create_embed(self, app: dict):
-        embed = discord.Embed(title=app['title'], color=int(app['color'][1:], 16))
+        embed = discord.Embed(color=int(app['color'][1:], 16))
+        embed.title = app['title']
         embed.description = f"{app.get('description', 'No description provided.')}\n"
         if 'download_page' in app:
             embed.description += f" [[Download]({app['download_page']})]"
@@ -84,7 +85,9 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
         self.emoji = discord.utils.get(self.bot.guild.emojis, name='3dslogo') or discord.PartialEmoji.from_str("⁉")
         channel_id = await Channel.query.where(Channel.name == 'small-help').gino.scalar()
         if channel_id:
-            self.small_help_category = self.bot.guild.get_channel(channel_id)
+            channel = self.bot.guild.get_channel(channel_id)
+            if channel and channel.type == discord.ChannelType.category:
+                self.small_help_category = channel
 
     async def unisearch(self, query: str) -> list[dict]:
         query = query.lower()
@@ -113,9 +116,9 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
             embed.description = msg_request
         else:
             embed = None
-        await self.bot.channels['mods'].send(msg, embed=embed, allowed_mentions=discord.AllowedMentions(everyone=True))
+        await self.bot.channels['mods'].send(msg, embed=embed, allowed_mentions=discord.AllowedMentions(everyone=True))  # type: ignore
         try:
-            await author.send(f"✅ Online staff have been notified of your request in {ctx.channel.mention}.", embed=(embed if msg_request != "" else None))
+            await author.send(f"✅ Online staff have been notified of your request in {ctx.channel.mention}.", embed=embed)  # type: ignore
         except discord.errors.Forbidden:
             pass
 
@@ -255,7 +258,7 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
 
 
 add_md_files_as_commands(Assistance)
-add_md_files_as_commands(Assistance, join(Assistance.data_dir, 'tutorial'), namespace=Assistance.tutorial)
+add_md_files_as_commands(Assistance, join(Assistance.data_dir, 'tutorial'), namespace=Assistance.tutorial)  # type: ignore
 
 
 async def setup(bot):

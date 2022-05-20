@@ -79,7 +79,7 @@ class KickBan(commands.Cog):
         try:
             await crud.remove_timed_restriction(member.id, 'timeban')
             self.bot.actions.append("ub:" + str(member.id))
-            await ctx.guild.ban(member, reason=reason, delete_message_days=days)
+            await ctx.guild.ban(member, reason=reason, delete_message_days=days)  # type: ignore
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
             return
@@ -172,7 +172,7 @@ class KickBan(commands.Cog):
         try:
             await crud.remove_timed_restriction(member.id, 'timeban')
             self.bot.actions.append("ub:" + str(member.id))
-            await ctx.guild.ban(member, reason=reason, delete_message_days=days)
+            await ctx.guild.ban(member, reason=reason, delete_message_days=days)   # type: ignore
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
             return
@@ -217,7 +217,8 @@ class KickBan(commands.Cog):
         try:
             self.bot.actions.append("ub:" + str(member.id))
             await crud.remove_timed_restriction(member.id, 'timeban')
-            await member.ban(reason=reason, delete_message_days=days)
+            await member.ban(reason=reason, delete_message_days=days)  # type: ignore
+
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
             return

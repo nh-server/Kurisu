@@ -63,13 +63,16 @@ if IS_DOCKER:
         contents = os.environ.get(name)
         if contents is None:
             contents_file = os.environ.get(name + '_FILE')
-            try:
-                with open(contents_file, 'r', encoding='utf-8') as f:
-                    contents = f.readline().strip()
-            except FileNotFoundError:
-                sys.exit(f"Couldn't find environment variables {name} or {name}_FILE.")
-            except IsADirectoryError:
-                sys.exit(f"Attempted to open {contents_file} (env {name}_FILE) but it is a folder.")
+            if contents_file:
+                try:
+                    with open(contents_file, 'r', encoding='utf-8') as f:
+                        contents = f.readline().strip()
+                except FileNotFoundError:
+                    sys.exit(f"Couldn't find environment variables {name} or {name}_FILE.")
+                except IsADirectoryError:
+                    sys.exit(f"Attempted to open {contents_file} (env {name}_FILE) but it is a folder.")
+            else:
+                sys.exit(f"Missing {name}.")
 
         return contents
 
@@ -126,72 +129,9 @@ class Kurisu(commands.Bot):
         self.commit = commit
         self.branch = branch
 
-        self.roles: dict[str, discord.Role] = {
-            'Helpers': None,
-            'Staff': None,
-            'HalfOP': None,
-            'OP': None,
-            'SuperOP': None,
-            'Owner': None,
-            'On-Duty 3DS': None,
-            'On-Duty Wii U': None,
-            'On-Duty Switch': None,
-            'On-Duty Legacy': None,
-            'Probation': None,
-            'Retired Staff': None,
-            'Verified': None,
-            'Trusted': None,
-            'Muted': None,
-            'No-Help': None,
-            'No-elsewhere': None,
-            'No-Memes': None,
-            'No-art': None,
-            '#art-discussion': None,
-            'No-Embed': None,
-            '#elsewhere': None,
-            'Small Help': None,
-            'meta-mute': None,
-            'appeal-mute': None,
-            'crc': None,
-            'No-Tech': None,
-            'help-mute': None,
-            'streamer(temp)': None,
-            '🍰': None,
-        }
+        self.roles: dict[str, discord.Role] = {}
 
-        self.channels: dict[str, Union[discord.TextChannel, discord.VoiceChannel]] = {
-            'announcements': None,
-            'welcome-and-rules': None,
-            '3ds-assistance-1': None,
-            '3ds-assistance-2': None,
-            'wiiu-assistance': None,
-            'switch-assistance-1': None,
-            'switch-assistance-2': None,
-            'helpers': None,
-            'watch-logs': None,
-            'message-logs': None,
-            'upload-logs': None,
-            'hacking-general': None,
-            'meta': None,
-            'appeals': None,
-            'legacy-systems': None,
-            'dev': None,
-            'off-topic': None,
-            'voice-and-music': None,
-            'bot-cmds': None,
-            'bot-talk': None,
-            'mods': None,
-            'mod-mail': None,
-            'mod-logs': None,
-            'server-logs': None,
-            'bot-err': None,
-            'elsewhere': None,
-            'newcomers': None,
-            'nintendo-discussion': None,
-            'tech-talk': None,
-            'hardware': None,
-            'streaming-gamer': None,
-        }
+        self.channels: dict[str, Union[discord.TextChannel, discord.VoiceChannel]] = {}
 
         self.failed_cogs = []
         self.channels_not_found = []
@@ -201,7 +141,7 @@ class Kurisu(commands.Bot):
         self.levenshteinfilter = LevenshteinFilterManager()
         self.invitefilter = InviteFilterManager()
 
-        self.err_channel: Optional[discord.TextChannel] = None
+        self.err_channel: Optional[Union[discord.TextChannel, discord.VoiceChannel]] = None
         self.actions = []
         self.pruning = False
         self.emoji = discord.PartialEmoji.from_str("⁉")
@@ -242,7 +182,7 @@ class Kurisu(commands.Bot):
                                                       "Legacy": self.roles['On-Duty Legacy']
                                                       }
 
-        self.assistance_channels: tuple[discord.TextChannel, ...] = (
+        self.assistance_channels: tuple[Union[discord.TextChannel, discord.VoiceChannel], ...] = (
             self.channels['3ds-assistance-1'],
             self.channels['3ds-assistance-2'],
             self.channels['wiiu-assistance'],
@@ -311,7 +251,13 @@ class Kurisu(commands.Bot):
                 self.failed_cogs.append((extension, type(e).__name__, e))
 
     async def load_channels(self):
-        for n in self.channels:
+        channels = ['announcements', 'welcome-and-rules', '3ds-assistance-1', '3ds-assistance-2', 'wiiu-assistance',
+                    'switch-assistance-1', 'switch-assistance-2', 'helpers', 'watch-logs', 'message-logs',
+                    'upload-logs', 'hacking-general', 'meta', 'appeals', 'legacy-systems', 'dev', 'off-topic',
+                    'voice-and-music', 'bot-cmds', 'bot-talk', 'mods', 'mod-mail', 'mod-logs', 'server-logs', 'bot-err',
+                    'elsewhere', 'newcomers', 'nintendo-discussion', 'tech-talk', 'hardware', 'streaming-gamer']
+
+        for n in channels:
             channel_id: Optional[int] = await Channel.query.where(Channel.name == n).gino.scalar()
             if channel_id and (channel := self.guild.get_channel(channel_id)):
                 self.channels[n] = channel
@@ -327,7 +273,12 @@ class Kurisu(commands.Bot):
                     await Channel.create(id=self.channels[n].id, name=self.channels[n].name)
 
     async def load_roles(self):
-        for n in self.roles:
+        roles = ['Helpers', 'Staff', 'HalfOP', 'OP', 'SuperOP', 'Owner', 'On-Duty 3DS', 'On-Duty Wii U',
+                 'On-Duty Switch', 'On-Duty Legacy', 'Probation', 'Retired Staff', 'Verified', 'Trusted', 'Muted',
+                 'No-Help', 'No-elsewhere', 'No-Memes', 'No-art', '#art-discussion', 'No-Embed', '#elsewhere',
+                 'Small Help', 'meta-mute', 'appeal-mute', 'crc', 'No-Tech', 'help-mute', 'streamer(temp)', '🍰']
+
+        for n in roles:
             if (role_id := await Role.query.where(Role.name == n).gino.scalar()) and (role := self.guild.get_role(role_id)):
                 self.roles[n] = role
             else:

@@ -51,6 +51,9 @@ class Events(commands.Cog):
             pass
 
     async def scan_message(self, message: discord.Message, is_edit=False):
+        # Some assumptions that should be true always
+        assert isinstance(message.channel, (discord.TextChannel, discord.VoiceChannel, discord.Thread))
+        assert isinstance(message.author, discord.Member)
         random.seed(message.id)
         embed = discord.Embed(color=utils.gen_color(message.id))
         embed.description = message.content

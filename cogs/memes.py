@@ -49,23 +49,8 @@ class Memes(commands.Cog):
 
     async def _meme(self, ctx: KurisuContext, msg, directed: bool = False, imagelink=None, allowed_mentions=None):
         author = ctx.author
-        if isinstance(ctx.channel, discord.abc.GuildChannel) and (ctx.channel in self.bot.assistance_channels or (self.bot.roles['No-Memes'] in author.roles)):
-            await ctx.message.delete()
-            try:
-                await ctx.author.send("Meme commands are disabled in this channel, or your privileges have been revoked.")
-            except discord.errors.Forbidden:
-                await ctx.send(f"{ctx.author.mention} Meme commands are disabled in this channel, or your privileges have been revoked.")
-        elif imagelink is not None:
-            title = f"{self.bot.escape_text(ctx.author.display_name) + ':' if not directed else ''} {msg}"
-            embed = discord.Embed(title=title, color=discord.Color.default())
-            embed.set_image(url=imagelink)
-            await ctx.send(embed=embed)
-        else:
-            await ctx.send(f"{self.bot.escape_text(ctx.author.display_name) + ':' if not directed else ''} {msg}", allowed_mentions=allowed_mentions)
 
-    async def _meme2(self, ctx: KurisuContext, msg, directed: bool = False, imagelink=None, allowed_mentions=None):
-        author = ctx.author
-        if isinstance(ctx.channel, discord.abc.GuildChannel) and (ctx.channel in self.bot.assistance_channels or (self.bot.roles['No-Memes'] in author.roles) or ctx.channel is self.bot.channels['bot-cmds']):
+        if ctx.channel in self.bot.assistance_channels or (isinstance(author, discord.Member) and self.bot.roles['No-Memes'] in author.roles):
             await ctx.message.delete()
             try:
                 await ctx.author.send("Meme commands are disabled in this channel, or your privileges have been revoked.")
@@ -567,13 +552,13 @@ class Memes(commands.Cog):
     @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.channel)
     async def cadealert(self, ctx: KurisuContext):
         """stop! cade time."""
-        await self._meme2(ctx, "excuse me <@&575940388452433940>, it is time for cade", allowed_mentions=discord.AllowedMentions(roles=True))
+        await self._meme(ctx, "excuse me <@&575940388452433940>, it is time for cade", allowed_mentions=discord.AllowedMentions(roles=True))
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.channel)
     async def birbalert(self, ctx: KurisuContext):
         """stop! birb time."""
-        await self._meme2(ctx, "excuse me <@&805294876673572884>, it is time for birb", allowed_mentions=discord.AllowedMentions(roles=True))
+        await self._meme(ctx, "excuse me <@&805294876673572884>, it is time for birb", allowed_mentions=discord.AllowedMentions(roles=True))
 
     @is_staff("OP")
     @commands.command(hidden=True, aliases=['🍰'])
