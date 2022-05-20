@@ -87,6 +87,7 @@ class Extras(commands.Cog):
     def __init__(self, bot: Kurisu):
         self.bot: Kurisu = bot
         self.emoji = discord.PartialEmoji.from_str('🎲')
+        self.banned_tag_names = []
         self.nick_pattern = re.compile("^[a-z]{2,}.*$", re.RegexFlag.IGNORECASE)
         self.bot.loop.create_task(self.init())
 
@@ -95,6 +96,10 @@ class Extras(commands.Cog):
         for view in await crud.get_vote_views('extras'):
             v = utils.SimpleVoteView(view.author_id, options=view.options.split('|'), custom_id=view.id, start=view.start, staff_only=view.staff_only)
             self.bot.add_view(v, message_id=view.message_id)
+
+        for cmd in self.tag.walk_commands():
+            self.banned_tag_names.append(cmd.name)
+            self.banned_tag_names.extend(cmd.aliases)
 
     prune_key = "nokey"
 
@@ -409,6 +414,8 @@ class Extras(commands.Cog):
         """Creates a tag. Max content size is 2000 characters. Helpers+ only."""
         if await crud.get_tag(title):
             return await ctx.send("This tag already exists!")
+        if title in self.banned_tag_names:
+            return await ctx.send("You can't use this name for a tag!")
         if len(content) > 2000:
             return await ctx.send("The tag contents are too big! (Longer than 2000 characters)")
         await crud.create_tag(title=title, content=content, author=ctx.author.id)
