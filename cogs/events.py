@@ -368,7 +368,7 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if isinstance(message.channel, discord.abc.PrivateChannel):
+        if isinstance(message.channel, discord.abc.PrivateChannel) or message.author.bot:
             return
         if not self.bot.IS_DOCKER:
             if message.author.name == "GitHub" and message.author.discriminator == "0000":
@@ -389,7 +389,7 @@ class Events(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, message_before, message_after):
-        if isinstance(message_before.channel, discord.abc.PrivateChannel):
+        if isinstance(message_before.channel, discord.abc.PrivateChannel) or message_after.author.bot:
             return
         await self.bot.wait_until_all_ready()
         if await crud.check_nofilter(message_before.channel):
