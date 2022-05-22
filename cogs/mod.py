@@ -118,7 +118,8 @@ class Mod(commands.Cog):
     @is_staff_app('Helper')
     async def userinfo_ctx_menu(self, interaction: discord.Interaction, user: discord.Member):
         # These can only be used in guilds
-        assert interaction.guild is not None
+        if interaction.guild is None:
+            return await interaction.response.send_message("This context menu can't be used in a DM.")
         embed = discord.Embed(color=utils.gen_color(user.id))
         embed.description = (
             f"**User:** {user.mention}\n"
