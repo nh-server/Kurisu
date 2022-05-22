@@ -22,7 +22,7 @@ def is_staff(role: str):
 
 def is_staff_app(role: str):
     async def predicate(interaction: discord.Interaction) -> bool:
-        if interaction.guild and interaction.user == interaction.guild.owner or check_staff(interaction.user, role):
+        if (interaction.guild and interaction.user == interaction.guild.owner) or await check_staff(interaction.user, role):
             return True
         raise InsufficientStaffRank(f"You must be at least {role} to use this command.")
     return app_commands.check(predicate)

@@ -410,6 +410,9 @@ class Kuritree(app_commands.CommandTree):
         elif isinstance(error, app_commands.MissingPermissions):
             await ctx.send(f"{author.mention} You don't have permission to use `{command}`.", ephemeral=True)
 
+        elif isinstance(error, InsufficientStaffRank):
+            await ctx.send(str(error), ephemeral=True)
+
         elif isinstance(error, app_commands.CheckFailure):
             await ctx.send(f'{author.mention} You cannot use `{command}`.', ephemeral=True)
 
