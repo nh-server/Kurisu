@@ -402,7 +402,7 @@ class Extras(commands.Cog):
         """Command group for commands related to tags."""
         if title:
             if tag := await crud.get_tag(title):
-                return await ctx.send(tag.content)
+                return await ctx.send(tag.content, reference=ctx.message.reference)
             else:
                 await ctx.send("This tag doesn't exist!")
         else:
