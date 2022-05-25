@@ -111,6 +111,7 @@ logger = logging.getLogger(__name__)
 class Kurisu(commands.Bot):
 
     user: discord.ClientUser
+    engine: gino.GinoEngine
 
     def __init__(self, command_prefix, description, commit, branch):
 
@@ -467,8 +468,7 @@ async def startup():
 
     try:
         albmain(['--raiseerr', 'upgrade', 'head'])
-        engine = await gino.create_engine(DATABASE_URL)
-        db.bind = engine
+        engine = await db.set_bind(DATABASE_URL, )
     except Exception:
         logger.exception("Failed to connect to postgreSQL server", exc_info=True)
         return
