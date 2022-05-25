@@ -6,13 +6,14 @@ import re
 from discord.ext import commands
 from textwrap import wrap
 from typing import TYPE_CHECKING
+from Levenshtein import distance
 from utils.checks import is_staff
 from utils.manager import check_collisions
-from Levenshtein import distance
+
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
-    from utils.utils import KurisuContext
+    from utils.context import KurisuContext
 
 
 class Filter(commands.Cog):

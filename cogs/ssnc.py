@@ -24,7 +24,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
-    from utils.utils import KurisuContext
+    from utils.context import KurisuContext
 
 
 async def setup(bot):

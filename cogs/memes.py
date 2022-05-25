@@ -12,7 +12,7 @@ from utils.checks import is_staff
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
-    from utils.utils import KurisuContext
+    from utils.context import KurisuContext
 
 
 class Memes(commands.Cog):

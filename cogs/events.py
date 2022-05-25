@@ -11,7 +11,8 @@ from string import printable
 from subprocess import call
 from typing import TYPE_CHECKING
 from utils.checks import check_staff_id
-from utils import crud, utils
+from utils import crud
+from utils.utils import send_dm_message, gen_color
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -55,7 +56,7 @@ class Events(commands.Cog):
         assert isinstance(message.channel, (discord.TextChannel, discord.VoiceChannel, discord.Thread))
         assert isinstance(message.author, discord.Member)
         random.seed(message.id)
-        embed = discord.Embed(color=utils.gen_color(message.id))
+        embed = discord.Embed(color=gen_color(message.id))
         embed.description = message.content
         if await crud.is_watched(message.author.id):
             content = f"**Channel**:\n[#{message.channel.name}]({message.jump_url})\n"
@@ -119,10 +120,10 @@ class Events(commands.Cog):
                 await message.delete()
             except discord.errors.NotFound:
                 pass
-            await utils.send_dm_message(message.author,
-                                        f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
-                                        f"This site may be misinterpreted as legitimate and cause users harm, therefore your message was automatically deleted.",
-                                        embed=embed)
+            await send_dm_message(message.author,
+                                  f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
+                                  f"This site may be misinterpreted as legitimate and cause users harm, therefore your message was automatically deleted.",
+                                  embed=embed)
             await self.bot.channels['message-logs'].send(
                 f"**Bad site**: {message.author.mention} mentioned a blocked site in {message.channel.mention} (message deleted)",
                 embed=embed)
@@ -133,11 +134,11 @@ class Events(commands.Cog):
                 await message.delete()
             except discord.errors.NotFound:
                 pass
-            await utils.send_dm_message(message.author,
-                                        f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
-                                        f"You cannot mention tools used for piracy directly or indirectly, "
-                                        f"therefore your message was automatically deleted.",
-                                        embed=embed)
+            await send_dm_message(message.author,
+                                  f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
+                                  f"You cannot mention tools used for piracy directly or indirectly, "
+                                  f"therefore your message was automatically deleted.",
+                                  embed=embed)
             await self.bot.channels['message-logs'].send(
                 f"**Bad tool**: {message.author.mention} mentioned a piracy tool in {message.channel.mention} (message deleted)",
                 embed=embed)
@@ -157,10 +158,10 @@ class Events(commands.Cog):
                 await message.delete()
             except discord.errors.NotFound:
                 pass
-            await utils.send_dm_message(message.author,
-                                        f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
-                                        f"You cannot link videos that mention piracy, therefore your message was automatically deleted.",
-                                        embed=embed)
+            await send_dm_message(message.author,
+                                  f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
+                                  f"You cannot link videos that mention piracy, therefore your message was automatically deleted.",
+                                  embed=embed)
             await self.bot.channels['message-logs'].send(
                 f"**Bad video**: {message.author.mention} linked a banned video in {message.channel.mention} (message deleted)",
                 embed=embed)
@@ -175,11 +176,11 @@ class Events(commands.Cog):
                 await message.delete()
             except discord.errors.NotFound:
                 pass
-            await utils.send_dm_message(message.author,
-                                        f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
-                                        f"You cannot mention sites used for piracy directly or indirectly, "
-                                        f"therefore your message was automatically deleted.",
-                                        embed=embed)
+            await send_dm_message(message.author,
+                                  f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
+                                  f"You cannot mention sites used for piracy directly or indirectly, "
+                                  f"therefore your message was automatically deleted.",
+                                  embed=embed)
             await self.bot.channels['message-logs'].send(
                 f"**Bad site**: {message.author.mention} mentioned a piracy site directly in {message.channel.mention} (message deleted)",
                 embed=embed)
@@ -190,10 +191,10 @@ class Events(commands.Cog):
                 await message.delete()
             except discord.errors.NotFound:
                 pass
-            await utils.send_dm_message(message.author,
-                                        f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
-                                        f"You cannot mention sites, programs or services used for unbanning, therefore your message was automatically deleted.",
-                                        embed=embed)
+            await send_dm_message(message.author,
+                                  f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
+                                  f"You cannot mention sites, programs or services used for unbanning, therefore your message was automatically deleted.",
+                                  embed=embed)
             await self.bot.channels['message-logs'].send(
                 f"**Bad site**: {message.author.mention} mentioned an unbanning site/service/program directly in {message.channel.mention} (message deleted)",
                 embed=embed)
@@ -209,7 +210,7 @@ class Events(commands.Cog):
                 if len(self.userbot_yeeter[message.author.id]) == 2:
                     msg = ("You have been banned from Nintendo Homebrew for linking scamming sites in multiple channels. "
                            "If you think this is a mistake contact ❅FrozenFire❆#0700 on discord or send a email to staff@nintendohomebrew.com")
-                    await utils.send_dm_message(message.author, msg)
+                    await send_dm_message(message.author, msg)
                     self.bot.actions.append('wb:' + str(message.author.id))
                     await message.author.ban(reason="Linking scamming links in multiple channels.")
                     try:
@@ -228,10 +229,10 @@ class Events(commands.Cog):
                 pass
             await crud.add_permanent_role(message.author.id, self.bot.roles['Probation'].id)
             await message.author.add_roles(self.bot.roles['Probation'])
-            await utils.send_dm_message(message.author,
-                                        f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
-                                        f"You have been probated for posting a link to a scamming site.",
-                                        embed=embed)
+            await send_dm_message(message.author,
+                                  f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
+                                  f"You have been probated for posting a link to a scamming site.",
+                                  embed=embed)
             await self.bot.channels['message-logs'].send(
                 f"**Bad site**: {message.author.mention} mentioned a scamming site in {message.channel.mention} (message deleted, user probated)",
                 embed=embed)
@@ -256,7 +257,7 @@ class Events(commands.Cog):
                 await message.delete()
             except discord.errors.NotFound:
                 pass
-            await utils.send_dm_message(
+            await send_dm_message(
                 message.author, f"You were automatically placed under probation in {self.bot.guild.name} for mass user mentions.")
             await crud.add_permanent_role(message.author.id, self.bot.roles['Probation'].id)
             await message.author.add_roles(self.bot.roles['Probation'])
@@ -272,7 +273,7 @@ class Events(commands.Cog):
             await crud.add_permanent_role(message.author.id, self.bot.roles['Muted'].id)
             msg_user = "You were automatically muted for sending too many messages in a short period of time!\n\n" \
                        "If you believe this was done in error, send a direct message (DM) to <@!333857992170536961> to contact staff."
-            await utils.send_dm_message(message.author, msg_user)
+            await send_dm_message(message.author, msg_user)
             log_msg = f"🔇 **Auto-muted**: {message.author.mention} muted for spamming | {message.author}\n🗓 __Creation__: {message.author.created_at}\n🏷 __User ID__: {message.author.id}"
             embed = discord.Embed(title="Deleted messages", color=discord.Color.gold())
             # clone list so nothing is removed while going through it
@@ -307,7 +308,7 @@ class Events(commands.Cog):
             await message.author.add_roles(self.bot.roles['Probation'])
             msg_user = "You were automatically placed under probation for mentioning too many users in a short period of time!\n\n" \
                        "If you believe this was done in error, send a direct message (DM) to <@!333857992170536961> to contact staff."
-            await utils.send_dm_message(message.author, msg_user)
+            await send_dm_message(message.author, msg_user)
             log_msg = f"🚫 **Auto-probated**: {message.author.mention} probated for mass user mentions | {message.author}\n" \
                       f"🗓 __Creation__: {message.author.created_at}\n🏷 __User ID__: {message.author.id}"
             embed = discord.Embed(title="Deleted messages", color=discord.Color.gold())

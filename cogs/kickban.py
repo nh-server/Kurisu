@@ -7,12 +7,14 @@ from discord import app_commands
 from discord.ext import commands
 from discord.utils import format_dt
 from typing import Union, Literal, TYPE_CHECKING, Optional
-from utils import utils, crud
+from utils import crud
+from utils.converters import TimeTransformer, DateOrTimeConverter
 from utils.checks import is_staff, is_staff_app, check_bot_or_staff
+from utils.utils import send_dm_message, command_signature
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
-    from utils.utils import KurisuContext, GuildContext
+    from utils.context import KurisuContext, GuildContext
 
 
 class KickBan(commands.Cog):
@@ -47,7 +49,7 @@ class KickBan(commands.Cog):
         if reason != "":
             msg += " The given reason is: " + reason
         msg += "\n\nYou are able to rejoin the server, but please read the rules in #welcome-and-rules before participating again."
-        await utils.send_dm_message(member, msg, ctx)
+        await send_dm_message(member, msg, ctx)
         try:
             self.bot.actions.append("uk:" + str(member.id))
             await member.kick(reason=reason)
@@ -59,7 +61,7 @@ class KickBan(commands.Cog):
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         await self.bot.channels['server-logs'].send(msg)
-        signature = utils.command_signature(ctx.command)
+        signature = command_signature(ctx.command)
         await self.bot.channels['mod-logs'].send(msg + (f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user." if reason == "" else ""))
 
     @is_staff("OP")
@@ -75,7 +77,7 @@ class KickBan(commands.Cog):
             if reason != "":
                 msg += " The given reason is: " + reason
             msg += "\n\nThis ban does not expire."
-            await utils.send_dm_message(member, msg, ctx)
+            await send_dm_message(member, msg, ctx)
         try:
             await crud.remove_timed_restriction(member.id, 'timeban')
             self.bot.actions.append("ub:" + str(member.id))
@@ -88,7 +90,7 @@ class KickBan(commands.Cog):
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         await self.bot.channels['server-logs'].send(msg)
-        signature = utils.command_signature(ctx.command)
+        signature = command_signature(ctx.command)
         await self.bot.channels['mod-logs'].send(msg + (f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user." if reason == "" else ""))
 
     @is_staff_app("OP")
@@ -104,7 +106,7 @@ class KickBan(commands.Cog):
                                member: discord.Member,
                                reason: str = "",
                                delete_messages: app_commands.Range[int, 0, 7] = 0,
-                               duration: app_commands.Transform[int, utils.TimeTransformer] = None):
+                               duration: app_commands.Transform[int, TimeTransformer] = None):
         """Bans a user from the server. OP+ only."""
 
         if await check_bot_or_staff(interaction, member, "ban"):
@@ -132,7 +134,7 @@ class KickBan(commands.Cog):
             self.bot.actions.append("ub:" + str(member.id))
             await crud.add_timed_restriction(member.id, unban_time, 'timeban')
             msg += f"\n\nThis ban expires in {unban_time_string}."
-            msg_send = await utils.send_dm_message(member, msg)
+            msg_send = await send_dm_message(member, msg)
             await interaction.response.send_message(f"{member} is now b& until {unban_time_string}. 👍" + ("\nFailed to send DM message" if not msg_send else ""))
 
             msg = f"⛔ **Time ban**: {interaction.user.mention} banned {member.mention} until {unban_time_string} | {member}\n🏷 __User ID__: {member.id}"
@@ -146,7 +148,7 @@ class KickBan(commands.Cog):
             self.bot.actions.append("ub:" + str(member.id))
             await crud.remove_timed_restriction(member.id, 'timeban')
             msg += "\n\nThis ban does not expire."
-            msg_send = await utils.send_dm_message(member, msg)
+            msg_send = await send_dm_message(member, msg)
             await interaction.response.send_message(f"{member} is now b&. 👍" + ("\nFailed to send DM message" if not msg_send else ""))
 
             msg = f"⛔ **Ban**: {interaction.user.mention} banned {member.mention} | {self.bot.escape_text(member)}\n🏷 __User ID__: {member.id}"
@@ -168,7 +170,7 @@ class KickBan(commands.Cog):
             if reason != "":
                 msg += " The given reason is: " + reason
             msg += "\n\nThis ban does not expire.\n\nhttps://nintendohomebrew.com/assets/img/banned.gif"
-            await utils.send_dm_message(member, msg, ctx)
+            await send_dm_message(member, msg, ctx)
         try:
             await crud.remove_timed_restriction(member.id, 'timeban')
             self.bot.actions.append("ub:" + str(member.id))
@@ -181,7 +183,7 @@ class KickBan(commands.Cog):
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         await self.bot.channels['server-logs'].send(msg)
-        signature = utils.command_signature(ctx.command)
+        signature = command_signature(ctx.command)
         await self.bot.channels['mod-logs'].send(msg + (f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user." if reason == "" else ""))
 
     @is_staff("OP")
@@ -228,13 +230,13 @@ class KickBan(commands.Cog):
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         await self.bot.channels['server-logs'].send(msg)
-        signature = utils.command_signature(ctx.command)
+        signature = command_signature(ctx.command)
         await self.bot.channels['mod-logs'].send(msg + (f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}`." if reason == "" else ""))
 
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
     @commands.command(name="timeban", aliases=["timeyeet"])
-    async def timeban_member(self, ctx: GuildContext, member: Union[discord.Member, discord.User], length: int = commands.parameter(converter=utils.DateOrTimeConverter), *, reason=""):
+    async def timeban_member(self, ctx: GuildContext, member: Union[discord.Member, discord.User], length: int = commands.parameter(converter=DateOrTimeConverter), *, reason=""):
         """Bans a user for a limited period of time. OP+ only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "timeban"):
             return
@@ -249,7 +251,7 @@ class KickBan(commands.Cog):
             if reason != "":
                 msg += " The given reason is: " + reason
             msg += f"\n\nThis ban lasts until {unban_time_string}."
-            await utils.send_dm_message(member, msg, ctx)
+            await send_dm_message(member, msg, ctx)
         try:
             self.bot.actions.append("ub:" + str(member.id))
             await ctx.guild.ban(member, reason=reason, delete_message_days=0)
@@ -262,7 +264,7 @@ class KickBan(commands.Cog):
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         await self.bot.channels['server-logs'].send(msg)
-        signature = utils.command_signature(ctx.command)
+        signature = command_signature(ctx.command)
         await self.bot.channels['mod-logs'].send(msg + (f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user." if reason == "" else ""))
 
     @is_staff("OP")
@@ -279,7 +281,7 @@ class KickBan(commands.Cog):
 
         if isinstance(member, discord.Member):
             msg = f"This account is no longer permitted to participate in {ctx.guild.name}. The reason is: {reason}"
-            await utils.send_dm_message(member, msg, ctx)
+            await send_dm_message(member, msg, ctx)
             try:
                 await member.kick(reason=reason)
             except discord.errors.Forbidden:
@@ -318,7 +320,7 @@ class KickBan(commands.Cog):
             await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added `{site}` to the word filter!")
         ban_msg = ("You have been banned from Nintendo Homebrew for linking scamming sites in the server."
                    "If you think this is a mistake contact ❅FrozenFire❆#0700 on discord or send a email to staff@nintendohomebrew.com")
-        await utils.send_dm_message(member, ban_msg)
+        await send_dm_message(member, ban_msg)
         await member.ban(reason="Linking scamming site", delete_message_days=1)
         await ctx.send(f"{member} is now b&. 👍")
         msg = f"⛔ **Ban**: {ctx.author.mention} banned {member.mention} | {self.bot.escape_text(member)}\n🏷 __User ID__: {member.id}\n✏️ __Reason__: Linking scamming site"

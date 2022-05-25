@@ -26,7 +26,8 @@ from utils.checks import check_staff_id, InsufficientStaffRank
 from utils.help import KuriHelp
 from utils.manager import InviteFilterManager, WordFilterManager, LevenshteinFilterManager
 from utils.models import Channel, Role, db
-from utils.utils import create_error_embed, KurisuContext
+from utils.utils import create_error_embed
+from utils.context import KurisuContext
 
 cogs = (
     'cogs.assistance',

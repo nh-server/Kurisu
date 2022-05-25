@@ -2,15 +2,17 @@ from __future__ import annotations
 
 import discord
 
+from discord.ext import commands
 from typing import TYPE_CHECKING
 from utils import crud
 from utils.checks import is_staff
-from utils.utils import paginate_message, PaginatedEmbedView, BasePaginator
-from discord.ext import commands
+from utils.utils import paginate_message
+from utils.views import BasePaginator, PaginatedEmbedView
+
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
-    from utils.utils import KurisuContext
+    from utils.context import KurisuContext
 
 
 class RulePaginator(BasePaginator):

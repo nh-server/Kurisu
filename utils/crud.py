@@ -1,9 +1,9 @@
 import datetime
 import discord
 
-from utils import models
 from discord import utils
 from typing import Optional, Union
+from utils import models
 
 
 # Utility

@@ -9,13 +9,13 @@ from os.path import dirname, join
 from typing import Optional, Literal, TYPE_CHECKING
 from utils import crud
 from utils.models import Channel
-from utils.utils import PaginatedEmbedView, BasePaginator
+from utils.views import BasePaginator, PaginatedEmbedView
 from utils.checks import check_if_user_can_sr, is_staff
 from utils.mdcmd import add_md_files_as_commands
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
-    from utils.utils import GuildContext, KurisuContext
+    from utils.context import KurisuContext, GuildContext
 
 logger = logging.getLogger(__name__)
 

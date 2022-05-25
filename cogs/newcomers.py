@@ -5,13 +5,14 @@ import discord
 import re
 
 from discord.ext import commands
+from typing import TYPE_CHECKING, Optional
 from utils import crud
 from utils.checks import is_staff, check_if_user_can_ready
-from typing import TYPE_CHECKING, Optional
+
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
-    from utils.utils import KurisuContext, GuildContext
+    from utils.context import KurisuContext, GuildContext
 
 
 class Newcomers(commands.Cog):

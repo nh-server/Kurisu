@@ -9,7 +9,7 @@ from typing import List, Union, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
-    from utils.utils import KurisuContext, GuildContext
+    from utils.context import KurisuContext, GuildContext
 
 
 class Season:

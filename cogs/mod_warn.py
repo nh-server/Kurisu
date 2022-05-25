@@ -4,12 +4,13 @@ import discord
 
 from discord.ext import commands
 from typing import Union, TYPE_CHECKING
-from utils import utils, crud
+from utils import crud
 from utils.checks import is_staff, check_staff_id, check_bot_or_staff
+from utils.utils import send_dm_message, command_signature
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
-    from utils.utils import KurisuContext, GuildContext
+    from utils.context import KurisuContext, GuildContext
 
 
 class ModWarn(commands.Cog):
@@ -55,7 +56,7 @@ class ModWarn(commands.Cog):
                 msg += "\n\nYou were kicked because of this warning. This is your final warning. You can join again, but **one more warn will result in a ban**."
             elif warn_count == 5:
                 msg += "\n\nYou were automatically banned due to five warnings."
-            await utils.send_dm_message(member, msg, ctx)
+            await send_dm_message(member, msg, ctx)
             if warn_count in {3, 4}:
                 try:
                     self.bot.actions.append("wk:" + str(member.id))
@@ -70,7 +71,7 @@ class ModWarn(commands.Cog):
                 await ctx.send("I can't ban this user!")
         await ctx.send(f"{member.mention} warned. User has {warn_count} warning(s)")
         msg = f"⚠️ **Warned**: {issuer.mention} warned {member.mention} in {channel.mention} ({self.bot.escape_text(channel)}) (warn #{warn_count}) | {self.bot.escape_text(member)}"
-        signature = utils.command_signature(ctx.command)
+        signature = command_signature(ctx.command)
         if reason != "":
             # much \n
             msg += "\n✏️ __Reason__: " + reason
@@ -97,11 +98,11 @@ class ModWarn(commands.Cog):
                 msg += " The given reason is: " + reason
             msg += f"\n\nThis is warn #{warn_count}."
             msg += "\n\nThis won't trigger any action."
-            await utils.send_dm_message(member, msg, ctx)
+            await send_dm_message(member, msg, ctx)
 
         await ctx.send(f"{member.mention} softwarned. User has {warn_count} warning(s)")
         msg = f"⚠️ **Warned**: {issuer.mention} softwarned {member.mention} in {channel.mention} ({self.bot.escape_text(channel)}) (warn #{warn_count}) | {self.bot.escape_text(member)}"
-        signature = utils.command_signature(self.warn)
+        signature = command_signature(self.warn)
         if reason != "":
             # much \n
             msg += "\n✏️ __Reason__: " + reason

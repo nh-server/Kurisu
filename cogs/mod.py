@@ -10,12 +10,14 @@ from discord.ext import commands
 from discord.utils import format_dt
 from subprocess import call
 from typing import Union, Optional, TYPE_CHECKING
-from utils import utils, crud, models
+from utils import crud, models
+from utils.converters import DateOrTimeConverter, TimeTransformer
 from utils.checks import is_staff, check_staff_id, check_bot_or_staff, is_staff_app
+from utils.utils import command_signature, paginate_message, send_dm_message, parse_time, text_to_discord_file, gen_color
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
-    from utils.utils import KurisuContext, GuildContext
+    from utils.context import KurisuContext, GuildContext
 
 
 class Mod(commands.Cog):
@@ -80,11 +82,11 @@ class Mod(commands.Cog):
             await ctx.message.delete()
             return await ctx.send(f"{ctx.author.mention} This command can only be used in {self.bot.channels['bot-cmds'].mention} and only on yourself.", delete_after=10)
 
-        embed = discord.Embed(color=utils.gen_color(user.id))
+        embed = discord.Embed(color=gen_color(user.id))
         embed.description = (
             f"**User:** {user.mention}\n"
             f"**User's ID:** {user.id}\n"
-            f"**Created on:** {utils.format_dt(user.created_at)} ({format_dt(user.created_at, style='R')})\n"
+            f"**Created on:** {format_dt(user.created_at)} ({format_dt(user.created_at, style='R')})\n"
             f"**Default Profile Picture:** {user.default_avatar}\n"
         )
 
@@ -120,7 +122,7 @@ class Mod(commands.Cog):
         # These can only be used in guilds
         if interaction.guild is None:
             return await interaction.response.send_message("This context menu can't be used in a DM.")
-        embed = discord.Embed(color=utils.gen_color(user.id))
+        embed = discord.Embed(color=gen_color(user.id))
         embed.description = (
             f"**User:** {user.mention}\n"
             f"**User's ID:** {user.id}\n"
@@ -173,7 +175,7 @@ class Mod(commands.Cog):
         if guild is None or isinstance(guild, discord.Object):
             return await ctx.send("No information from the guild could be fetched.")
 
-        embed = discord.Embed(title=f"Guild {guild.name}", color=utils.gen_color(guild.id))
+        embed = discord.Embed(title=f"Guild {guild.name}", color=gen_color(guild.id))
         embed.set_thumbnail(url=guild.icon.url if guild.icon else None)
         embed.add_field(name="ID", value=guild.id)
         embed.add_field(name="Created on", value=format_dt(guild.created_at))
@@ -202,9 +204,9 @@ class Mod(commands.Cog):
                 await self.bot.guild.ban(discord.Object(id=m))
             except (discord.errors.NotFound, discord.errors.Forbidden) as e:
                 msg += f"{m}:\n  {e.text}\n"
-        paginator = utils.paginate_message(msg)
+        paginator = paginate_message(msg)
         for page in paginator.pages:
-            await utils.send_dm_message(author, page)
+            await send_dm_message(author, page)
 
     @is_staff("HalfOP")
     @commands.guild_only()
@@ -221,7 +223,7 @@ class Mod(commands.Cog):
             if bool(reg_expr.search(m.name)):
                 msg += f"{m.id} - {m}\n"
                 matches += 1
-        file = utils.text_to_discord_file(msg, name="matches.txt")
+        file = text_to_discord_file(msg, name="matches.txt")
         await ctx.send(f"Matched {matches} members.", file=file)
 
     @is_staff("Owner")
@@ -249,7 +251,7 @@ class Mod(commands.Cog):
                 msg += f"{m.id}\n"
             except (discord.errors.NotFound, discord.errors.Forbidden):
                 pass
-        file = utils.text_to_discord_file(msg, name="banned.txt")
+        file = text_to_discord_file(msg, name="banned.txt")
         await ctx.send(f"Banned {banned} members.", file=file)
 
     class ChannelorTime(commands.Converter):
@@ -257,7 +259,7 @@ class Mod(commands.Cog):
             try:
                 return ctx.bot.get_channel(int(arg))
             except ValueError:
-                time = utils.parse_time(arg)
+                time = parse_time(arg)
                 if time != -1:
                     return time
             raise commands.BadArgument("Invalid channel id or time format.")
@@ -266,7 +268,7 @@ class Mod(commands.Cog):
     @commands.bot_has_permissions(manage_channels=True)
     @commands.guild_only()
     @commands.command()
-    async def slowmode(self, ctx: GuildContext, channel: Optional[Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]], *, length: int = commands.parameter(converter=utils.DateOrTimeConverter)):
+    async def slowmode(self, ctx: GuildContext, channel: Optional[Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]], *, length: int = commands.parameter(converter=DateOrTimeConverter)):
         """Apply a given slowmode time to a channel.
 
         The time format is identical to that used for timed kicks/bans/takehelps.
@@ -318,10 +320,10 @@ class Mod(commands.Cog):
         msg_user = "You were meta muted!"
         if reason != "":
             msg_user += " The given reason is: " + reason
-        await utils.send_dm_message(member, msg_user, ctx)
+        await send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} can no longer speak in meta.")
         msg = f"🔇 **Meta muted**: {ctx.author.mention} meta muted {member.mention} | {self.bot.escape_text(member)}"
-        signature = utils.command_signature(ctx.command)
+        signature = command_signature(ctx.command)
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         else:
@@ -356,10 +358,10 @@ class Mod(commands.Cog):
         msg_user = "You were appeal muted!"
         if reason != "":
             msg_user += " The given reason is: " + reason
-        await utils.send_dm_message(member, msg_user, ctx)
+        await send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} can no longer speak in appeals.")
         msg = f"🔇 **appeal muted**: {ctx.author.mention} appeal muted {member.mention} | {self.bot.escape_text(member)}"
-        signature = utils.command_signature(ctx.command)
+        signature = command_signature(ctx.command)
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         else:
@@ -403,13 +405,13 @@ class Mod(commands.Cog):
         msg_user = "You were muted!"
         if reason != "":
             msg_user += " The given reason is: " + reason
-        await utils.send_dm_message(member, msg_user, ctx)
+        await send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} can no longer speak.")
         msg = f"🔇 **Muted**: {ctx.author.mention} muted {member.mention} | {self.bot.escape_text(member)}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         else:
-            signature = utils.command_signature(ctx.command)
+            signature = command_signature(ctx.command)
             msg += f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user."
         await self.bot.channels['mod-logs'].send(msg)
         # change to permanent mute
@@ -418,7 +420,7 @@ class Mod(commands.Cog):
     @commands.bot_has_permissions(manage_roles=True)
     @commands.guild_only()
     @commands.command()
-    async def oldtimemute(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=utils.DateOrTimeConverter), *, reason=""):
+    async def oldtimemute(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=DateOrTimeConverter), *, reason=""):
         """Mutes a user for a limited period of time so they can't speak. Staff only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "mute"):
             return
@@ -439,8 +441,8 @@ class Mod(commands.Cog):
         if reason != "":
             msg_user += " The given reason is: " + reason
         msg_user += f"\n\nThis mute lasts until {unmute_time_string}."
-        await utils.send_dm_message(member, msg_user, ctx)
-        signature = utils.command_signature(ctx.command)
+        await send_dm_message(member, msg_user, ctx)
+        signature = command_signature(ctx.command)
         if not old_mute:
             await ctx.send(f"{member.mention} can no longer speak.")
             msg = f"🔇 **Timed mute**: {issuer.mention} muted {member.mention}| {self.bot.escape_text(member)} for {delta}, until {unmute_time_string} "
@@ -472,7 +474,7 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command(aliases=['timemute'])
-    async def timeout(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=utils.DateOrTimeConverter), *, reason: Optional[str]):
+    async def timeout(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=DateOrTimeConverter), *, reason: Optional[str]):
         """Times out a user. Staff only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "timeout"):
             return
@@ -488,9 +490,9 @@ class Mod(commands.Cog):
         if reason is not None:
             msg_user += " The given reason is: " + reason
         msg_user += f"\n\nThis timeout lasts until {timeout_expiration_str}."
-        await utils.send_dm_message(member, msg_user, ctx)
+        await send_dm_message(member, msg_user, ctx)
 
-        signature = utils.command_signature(ctx.command)
+        signature = command_signature(ctx.command)
         await ctx.send(f"{member.mention} has been given a timeout.")
 
         msg = f"🔇 **Timeout**: {issuer.mention} timed out {member.mention}| {self.bot.escape_text(member)} until {timeout_expiration_str}."
@@ -540,7 +542,7 @@ class Mod(commands.Cog):
             await ctx.send("💢 I don't have permission to do this.")
         await ctx.send(f"{member.mention} can no longer access art-discussion.")
         msg = f"🚫 **Removed art**: {ctx.message.author.mention} removed art access from {member.mention} | {self.bot.escape_text(member)}"
-        signature = utils.command_signature(ctx.command)
+        signature = command_signature(ctx.command)
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         else:
@@ -574,7 +576,7 @@ class Mod(commands.Cog):
             await member.remove_roles(self.bot.roles['#elsewhere'])
             await ctx.send(f"{member.mention} can no longer access elsewhere.")
             msg = f"🚫 **Removed elsewhere**: {ctx.author.mention} removed elsewhere access from {member.mention} | {self.bot.escape_text(member)}"
-            signature = utils.command_signature(ctx.command)
+            signature = command_signature(ctx.command)
             if reason != "":
                 msg += "\n✏️ __Reason__: " + reason
             else:
@@ -597,10 +599,10 @@ class Mod(commands.Cog):
             if reason != "":
                 msg_user += " The given reason is: " + reason
             msg_user += f"\n\nIf you feel this was unjustified, you may appeal in {self.bot.channels['appeals'].mention}"
-            await utils.send_dm_message(member, msg_user, ctx)
+            await send_dm_message(member, msg_user, ctx)
             await ctx.send(f"{member.mention} can no longer embed links or attach files.")
             msg = f"🚫 **Removed Embed**: {ctx.author.mention} removed embed from {member.mention} | {self.bot.escape_text(member)}"
-            signature = utils.command_signature(ctx.command)
+            signature = command_signature(ctx.command)
             if reason != "":
                 msg += "\n✏️ __Reason__: " + reason
             else:
@@ -644,10 +646,10 @@ class Mod(commands.Cog):
             if reason != "":
                 msg_user += " The given reason is: " + reason
             msg_user += f"\n\nIf you feel this was unjustified, you may appeal in {self.bot.channels['appeals'].mention}"
-            await utils.send_dm_message(member, msg_user, ctx)
+            await send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} can no longer access the help channels.")
         msg = f"🚫 **Help access removed**: {ctx.author.mention} removed access to help channels from {member.mention} | {self.bot.escape_text(member)}"
-        signature = utils.command_signature(ctx.command)
+        signature = command_signature(ctx.command)
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         else:
@@ -674,7 +676,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["timenohelp"])
-    async def timetakehelp(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=utils.DateOrTimeConverter), *, reason=""):
+    async def timetakehelp(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=DateOrTimeConverter), *, reason=""):
         """Restricts a user from Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "takehelp"):
             return
@@ -694,9 +696,9 @@ class Mod(commands.Cog):
             msg_user += " The given reason is: " + reason
         msg_user += f"\n\nIf you feel this was unjustified, you may appeal in {self.bot.channels['appeals'].mention}"
         msg_user += f"\n\nThis restriction lasts until {unnohelp_time_string}."
-        await utils.send_dm_message(member, msg_user, ctx)
+        await send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} can no longer speak in Assistance Channels.")
-        signature = utils.command_signature(ctx.command)
+        signature = command_signature(ctx.command)
         msg = f"🚫 **Timed No-Help**: {issuer.mention} restricted {member.mention} for {delta}, until {unnohelp_time_string} | {self.bot.escape_text(member)}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
@@ -725,10 +727,10 @@ class Mod(commands.Cog):
             if reason != "":
                 msg_user += " The given reason is: " + reason
             msg_user += f"\n\nIf you feel this was unjustified, you may appeal in {self.bot.channels['appeals'].mention}"
-            await utils.send_dm_message(member, msg_user, ctx)
+            await send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} can no longer access the tech channel.")
         msg = f"🚫 **Help access removed**: {ctx.author.mention} removed access to tech channel from {member.mention} | {self.bot.escape_text(member)}"
-        signature = utils.command_signature(ctx.command)
+        signature = command_signature(ctx.command)
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         else:
@@ -755,7 +757,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["timenotech"])
-    async def timetaketech(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=utils.DateOrTimeConverter), *, reason=""):
+    async def timetaketech(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=DateOrTimeConverter), *, reason=""):
         """Restricts a user from the tech channel for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "taketech"):
             return
@@ -775,9 +777,9 @@ class Mod(commands.Cog):
             msg_user += " The given reason is: " + reason
         msg_user += f"\n\nIf you feel this was unjustified, you may appeal in {self.bot.channels['appeals'].mention}"
         msg_user += f"\n\nThis restriction lasts until {unnotech_time_string}."
-        await utils.send_dm_message(member, msg_user, ctx)
+        await send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} can no longer speak in the tech channel.")
-        signature = utils.command_signature(ctx.command)
+        signature = command_signature(ctx.command)
         msg = f"🚫 **Timed No-Tech**: {issuer.mention} restricted {member.mention} for {delta}, until {unnotech_time_string} | {self.bot.escape_text(member)}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
@@ -803,10 +805,10 @@ class Mod(commands.Cog):
             if reason != "":
                 msg_user += " The given reason is: " + reason
             msg_user += f"\n\nIf you feel this was unjustified, you may appeal in {self.bot.channels['appeals'].mention}"
-            await utils.send_dm_message(member, msg_user, ctx)
+            await send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} can no longer speak in the help channels.")
         msg = f"🚫 **Help mute**: {ctx.author.mention} removed speak access in help channels from {member.mention} | {self.bot.escape_text(member)}"
-        signature = utils.command_signature(ctx.command)
+        signature = command_signature(ctx.command)
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         else:
@@ -816,7 +818,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["timemutehelp"])
-    async def timehelpmute(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=utils.DateOrTimeConverter), *, reason=""):
+    async def timehelpmute(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=DateOrTimeConverter), *, reason=""):
         """Restricts a user from speaking in Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "helpmute"):
             return
@@ -836,9 +838,9 @@ class Mod(commands.Cog):
             msg_user += " The given reason is: " + reason
         msg_user += f"\n\nIf you feel this was unjustified, you may appeal in {self.bot.channels['appeals'].mention}"
         msg_user += f"\n\nThis restriction lasts until {unhelpmute_time_string}."
-        await utils.send_dm_message(member, msg_user, ctx)
+        await send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} can no longer speak in the help channels.")
-        signature = utils.command_signature(ctx.command)
+        signature = command_signature(ctx.command)
         msg = f"🚫 **Timed Help mute**: {issuer.mention} help muted {member.mention} for {delta}, until {unhelpmute_time_string} | {self.bot.escape_text(member)}"
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
@@ -905,10 +907,10 @@ class Mod(commands.Cog):
             msg_user = "You are under probation!"
             if reason != "":
                 msg_user += " The given reason is: " + reason
-            await utils.send_dm_message(member, msg_user, ctx)
+            await send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} is now in probation.")
         msg = f"🚫 **Probated**: {ctx.author.mention} probated {member.mention} | {self.bot.escape_text(member)}"
-        signature = utils.command_signature(ctx.command)
+        signature = command_signature(ctx.command)
         if reason != "":
             msg += "\n✏️ __Reason__: " + reason
         else:
@@ -1061,7 +1063,7 @@ class Mod(commands.Cog):
         await member.add_roles(self.bot.roles['streamer(temp)'])
 
         timestamp = datetime.datetime.now()
-        seconds = utils.parse_time(length) if length else 86400
+        seconds = parse_time(length) if length else 86400
         if seconds == -1:
             return await ctx.send("💢 I don't understand your time format.")
 
@@ -1071,7 +1073,7 @@ class Mod(commands.Cog):
 
         await crud.add_timed_role(member.id, self.bot.roles['streamer(temp)'].id, expiring_time)
         msg_user = f"You have been given streaming permissions until {expiring_time_string}!"
-        await utils.send_dm_message(member, msg_user, ctx)
+        await send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} has been given streaming permissions until {expiring_time_string}.")
         await self.bot.channels['mod-logs'].send(f"⭕ **Permission Granted**: {ctx.author.mention} granted streaming permissions to {member.mention} until {expiring_time_string}")
 
@@ -1085,7 +1087,7 @@ class Mod(commands.Cog):
 
         await crud.remove_timed_role(member.id, self.bot.roles['streamer(temp)'].id)
         msg_user = "Your temporary streaming permissions have been revoked!"
-        await utils.send_dm_message(member, msg_user, ctx)
+        await send_dm_message(member, msg_user, ctx)
         await self.bot.channels['mod-logs'].send(f"⭕ **Permission Revoked**: {ctx.author.mention} revoked {member.mention} streaming permissions.")
 
     @is_staff_app("OP")
@@ -1105,7 +1107,7 @@ class Mod(commands.Cog):
                    interaction: discord.Interaction,
                    member: discord.Member,
                    restriction: Choice[str],
-                   length: app_commands.Transform[int, utils.TimeTransformer],
+                   length: app_commands.Transform[int, TimeTransformer],
                    reason: Optional[str] = None):
         """Applies a temporary restriction to a member. OP+ Only"""
 
@@ -1126,7 +1128,7 @@ class Mod(commands.Cog):
             msg_user += " The given reason is: " + reason
             msg_log += "\n✏️ __Reason__: " + reason
         msg_user += f"\n\nIf you feel this was unjustified, you may appeal in {self.bot.channels['appeals'].mention}\n\nThis restriction lasts until {end_time_str}."
-        dm_sent = await utils.send_dm_message(member, msg_user)
+        dm_sent = await send_dm_message(member, msg_user)
         await interaction.response.send_message(f"{member.mention} now has the {restriction.value} role temporarily.{' Failed to send DM message.' if not dm_sent else ''}")
         await self.bot.channels['mod-logs'].send(msg_log)
 

@@ -15,19 +15,21 @@ from discord.ext import commands
 from discord.utils import format_dt
 from math import ceil
 from typing import Union, Optional, TYPE_CHECKING
-from utils import crud, utils
+from utils import crud
 from utils.checks import is_staff, check_if_user_can_sr, check_staff_id
-from utils.utils import gen_color
+from utils.converters import DateOrTimeConverter
+from utils.utils import gen_color, send_dm_message
+from utils.views import BasePaginator, SimpleVoteView, PaginatedEmbedView
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
     from utils.models import Tag, RemindMeEntry
-    from utils.utils import KurisuContext, GuildContext
+    from utils.context import KurisuContext, GuildContext
 
 python_version = sys.version.split()[0]
 
 
-class TagsPaginator(utils.BasePaginator):
+class TagsPaginator(BasePaginator):
 
     def __init__(self, tags: list[Tag], tags_per_page: int = 10, colour: Optional[discord.Color] = None):
         super().__init__(n_pages=ceil(len(tags) / tags_per_page))
@@ -54,7 +56,7 @@ class TagsPaginator(utils.BasePaginator):
         return embed
 
 
-class RemindersPaginator(utils.BasePaginator):
+class RemindersPaginator(BasePaginator):
 
     def __init__(self, reminders: list[RemindMeEntry], colour: discord.Color = None):
         super().__init__(n_pages=len(reminders))
@@ -94,7 +96,7 @@ class Extras(commands.Cog):
     async def init(self):
         await self.bot.wait_until_all_ready()
         for view in await crud.get_vote_views('extras'):
-            v = utils.SimpleVoteView(view.author_id, options=view.options.split('|'), custom_id=view.id, start=view.start, staff_only=view.staff_only)
+            v = SimpleVoteView(view.author_id, options=view.options.split('|'), custom_id=view.id, start=view.start, staff_only=view.staff_only)
             self.bot.add_view(v, message_id=view.message_id)
 
         for cmd in self.tag.walk_commands():
@@ -285,7 +287,7 @@ class Extras(commands.Cog):
                 await author.add_roles(self.bot.roles['#elsewhere'])
                 await ctx.send("Access to #elsewhere granted.", ephemeral=True)
             else:
-                await utils.send_dm_message(ctx.author, "Your access to elsewhere is restricted, contact staff to remove it.")
+                await send_dm_message(ctx.author, "Your access to elsewhere is restricted, contact staff to remove it.")
         elif channel_name == "artswhere":
             if self.bot.roles['#art-discussion'] in author.roles:
                 await author.remove_roles(self.bot.roles['#art-discussion'])
@@ -364,7 +366,7 @@ class Extras(commands.Cog):
 
     @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.member)
     @commands.command()
-    async def remindme(self, ctx: KurisuContext, remind_in: int = commands.parameter(converter=utils.DateOrTimeConverter), *, reminder: str):
+    async def remindme(self, ctx: KurisuContext, remind_in: int = commands.parameter(converter=DateOrTimeConverter), *, reminder: str):
         """Sends a reminder after a set time, just for you. Max reminder size is 800 characters.\n\nTime format: #d#h#m#s."""
         if remind_in < 30 or remind_in > 3.154e+7:
             return await ctx.send("You can't set a reminder for less than 30 seconds or for more than a year.")
@@ -382,8 +384,8 @@ class Extras(commands.Cog):
         reminders = await crud.get_user_reminders(ctx.author.id)
         if not reminders:
             return await ctx.send("You don't have any reminders scheduled.")
-        color = utils.gen_color(ctx.author.id)
-        view = utils.PaginatedEmbedView(paginator=RemindersPaginator(reminders, color), author=ctx.author)
+        color = gen_color(ctx.author.id)
+        view = PaginatedEmbedView(paginator=RemindersPaginator(reminders, color), author=ctx.author)
         view.message = await ctx.send(embed=view.paginator.current(), view=view)
 
     @commands.command()
@@ -435,7 +437,7 @@ class Extras(commands.Cog):
         """Lists the title of all existent tags."""
         if tags := await crud.get_tags():
             colour = gen_color(ctx.author.id)
-            view = utils.PaginatedEmbedView(paginator=TagsPaginator(tags=tags, tags_per_page=10, colour=colour), author=ctx.author)
+            view = PaginatedEmbedView(paginator=TagsPaginator(tags=tags, tags_per_page=10, colour=colour), author=ctx.author)
             view.message = await ctx.send(embed=view.paginator.current(), view=view)
         else:
             await ctx.send("There are no tags.")
@@ -464,7 +466,7 @@ class Extras(commands.Cog):
                          staff_only: bool = False):
         """Creates a simple vote, only the who made the vote can stop it. OP+ only."""
         options_parsed = options.split('|')
-        view = utils.SimpleVoteView(interaction.user.id, options_parsed, interaction.id, start=discord.utils.utcnow(), staff_only=staff_only)
+        view = SimpleVoteView(interaction.user.id, options_parsed, interaction.id, start=discord.utils.utcnow(), staff_only=staff_only)
         embed = discord.Embed(title=name, description=description)
         await interaction.response.send_message(embed=embed, view=view)
         msg = await interaction.original_message()

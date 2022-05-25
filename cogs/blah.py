@@ -9,7 +9,7 @@ from utils.utils import send_dm_message
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
-    from utils.utils import KurisuContext
+    from utils.context import KurisuContext
 
 
 class Blah(commands.Cog):

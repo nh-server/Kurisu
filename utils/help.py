@@ -5,7 +5,8 @@ from discord.ui import Select
 from discord.ext import commands
 from itertools import islice
 from typing import Union
-from utils.utils import BasePaginator, BasePaginatedView, KurisuContext
+from utils.context import KurisuContext
+from utils.views import BasePaginator, BasePaginatedView
 
 SELECT_MAX_VALUES = 25
 

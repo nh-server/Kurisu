@@ -8,7 +8,7 @@ from utils.checks import is_staff
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
-    from utils.utils import KurisuContext, GuildContext
+    from utils.context import KurisuContext, GuildContext
 
 
 class Load(commands.Cog):

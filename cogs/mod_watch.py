@@ -4,13 +4,14 @@ import discord
 
 from discord.ext import commands
 from typing import TYPE_CHECKING
-from utils import utils, crud
+from utils import crud
 from utils.checks import is_staff
+from utils.utils import command_signature
 from textwrap import wrap
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
-    from utils.utils import KurisuContext, GuildContext
+    from utils.context import KurisuContext, GuildContext
 
 
 class Modwatch(commands.Cog):
@@ -40,7 +41,7 @@ class Modwatch(commands.Cog):
         if reason != "":
             # much \n
             msg += "\n✏️ __Reason__: " + reason
-        signature = utils.command_signature(ctx.command)
+        signature = command_signature(ctx.command)
         await self.bot.channels['mod-logs'].send(msg + (
             f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is very useful for saving time." if reason == "" else ""))
         await self.bot.channels['watch-logs'].send(msg + (

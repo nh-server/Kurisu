@@ -9,7 +9,7 @@ from utils.checks import is_staff, check_staff_id
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
-    from utils.utils import KurisuContext, GuildContext
+    from utils.context import KurisuContext, GuildContext
 
 
 class Lockdown(commands.Cog):
