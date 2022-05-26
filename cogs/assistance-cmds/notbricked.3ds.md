@@ -3,7 +3,7 @@ title: No, you are not bricked
 help-desc: Missing boot.firm
 ---
 
-If your power LED turns on and off after you installed b9s, you are not bricked and are just missing a file called boot.firm in the root of your SD card.
+If your power LED turns on and off after you installed b9s or your notification LED glows [any color but green](https://github.com/SciresM/boot9strap#led-status-codes), you are not bricked and are just missing a file called `boot.firm` in the root of your SD card.
 
 # How to fix the issue
 1. Check you inserted the SD card in your console
