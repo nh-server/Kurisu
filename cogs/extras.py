@@ -82,6 +82,23 @@ class RemindersPaginator(BasePaginator):
         return embed
 
 
+async def tag_autocomplete(interaction: discord.Interaction, current: str) -> list[app_commands.Choice[str]]:
+    cog = interaction.client.get_cog('Extras')  # type: ignore
+    if current:
+        # very crude search but does the job
+        choices = []
+        n = 0
+        for tag_name in cog.tags.keys():
+            if current in tag_name:
+                choices.append(app_commands.Choice(name=tag_name, value=tag_name))
+                n = n + 1
+            if n == 25:
+                break
+        return choices
+    else:
+        return [app_commands.Choice(name=tag_title, value=tag_title) for tag_title in list(cog.tags.keys())[:25]]
+
+
 class Extras(commands.Cog):
     """
     Extra things.
@@ -90,6 +107,7 @@ class Extras(commands.Cog):
         self.bot: Kurisu = bot
         self.emoji = discord.PartialEmoji.from_str('🎲')
         self.banned_tag_names = []
+        self.tags: dict[str, Tag] = {}
         self.nick_pattern = re.compile("^[a-z]{2,}.*$", re.RegexFlag.IGNORECASE)
         self.bot.loop.create_task(self.init())
 
@@ -98,6 +116,8 @@ class Extras(commands.Cog):
         for view in await crud.get_vote_views('extras'):
             v = SimpleVoteView(view.author_id, options=view.options.split('|'), custom_id=view.id, start=view.start, staff_only=view.staff_only)
             self.bot.add_view(v, message_id=view.message_id)
+
+        self.tags = {tag.title: tag for tag in await crud.get_tags()}
 
         for cmd in self.tag.walk_commands():
             self.banned_tag_names.append(cmd.name)
@@ -400,31 +420,46 @@ class Extras(commands.Cog):
         await ctx.send(f"Deleted reminder {number} successfully!")
 
     @commands.group(invoke_without_command=True)
-    async def tag(self, ctx: KurisuContext, title: str = ""):
+    async def tag(self, ctx: KurisuContext, tag_name: str = ""):
         """Command group for commands related to tags."""
-        if title:
-            if tag := await crud.get_tag(title):
-                return await ctx.send(tag.content, reference=ctx.message.reference)
+        if tag_name:
+            if tag := self.tags.get(tag_name):
+                await ctx.send(tag.content, reference=ctx.message.reference)
+            elif tags := await crud.search_tags(tag_name, limit=5):
+                embed = discord.Embed(
+                    description='\n'.join(f'{n}. {tag.title}' for n, tag in enumerate(tags, start=1)),
+                    color=gen_color(ctx.author.id))
+                await ctx.send("Tag not found, similar tags:", embed=embed)
             else:
-                await ctx.send("This tag doesn't exist!")
+                await ctx.send("There is no tag with this name or with a similar name.")
         else:
             await ctx.send_help(ctx.command)
 
+    @app_commands.autocomplete(tag_name=tag_autocomplete)
+    @app_commands.command(name='tag')
+    async def tag_app_command(self, interaction: discord.Interaction, tag_name: str):
+        """Looks up a tag by name"""
+        if tag := self.tags.get(tag_name):
+            await interaction.response.send_message(tag.content)
+        else:
+            await interaction.response.send_message("This tag doesn't exist!", ephemeral=True)
+
     @is_staff('Helper')
-    @tag.command()
-    async def create(self, ctx: KurisuContext, title: str, *, content: str):
+    @tag.command(name='create')
+    async def create_tag(self, ctx: KurisuContext, title: str, *, content: str):
         """Creates a tag. Max content size is 2000 characters. Helpers+ only."""
-        if await crud.get_tag(title):
+        if self.tags.get(title):
             return await ctx.send("This tag already exists!")
         if title in self.banned_tag_names:
             return await ctx.send("You can't use this name for a tag!")
         if len(content) > 2000:
-            return await ctx.send("The tag contents are too big! (Longer than 2000 characters)")
-        await crud.create_tag(title=title, content=content, author=ctx.author.id)
+            return await ctx.send("A tag contents can't be bigger than 2000 characters.")
+        tag = await crud.create_tag(title=title, content=content, author=ctx.author.id)
+        self.tags[tag.title] = tag
         await ctx.send("Tag created successfully")
 
-    @tag.command()
-    async def search(self, ctx: KurisuContext, query: str):
+    @tag.command(name='search')
+    async def search_tags(self, ctx: KurisuContext, query: str):
         """Search tags by title. Returns first 10 results."""
         if tags := await crud.search_tags(query):
             embed = discord.Embed(description='\n'.join(f'{n}. {tag.title}' for n, tag in enumerate(tags, start=1)), color=gen_color(ctx.author.id))
@@ -432,24 +467,47 @@ class Extras(commands.Cog):
         else:
             await ctx.send("No tags found.")
 
-    @tag.command()
-    async def list(self, ctx: KurisuContext):
+    @tag.command(name='list')
+    async def list_tags(self, ctx: KurisuContext):
         """Lists the title of all existent tags."""
-        if tags := await crud.get_tags():
+        if self.tags:
             colour = gen_color(ctx.author.id)
-            view = PaginatedEmbedView(paginator=TagsPaginator(tags=tags, tags_per_page=10, colour=colour), author=ctx.author)
+            view = PaginatedEmbedView(paginator=TagsPaginator(tags=list(self.tags.values()), tags_per_page=10, colour=colour), author=ctx.author)
             view.message = await ctx.send(embed=view.paginator.current(), view=view)
         else:
             await ctx.send("There are no tags.")
 
     @is_staff('Helper')
-    @tag.command()
-    async def delete(self, ctx: KurisuContext, *, title: str):
-        """Deletes a tag. Helpers+ only."""
-        if not (await crud.get_tag(title)):
+    @tag.command(name='edit')
+    async def edit_tag(self, ctx: KurisuContext, tag_name: str, *, content: str):
+        """Edits a tag. Helpers+ only."""
+        if not (await crud.get_tag(tag_name)):
             return await ctx.send("This tag doesn't exists!")
-        await crud.delete_tag(title=title)
-        await ctx.send("Tag deleted successfully")
+        if len(content) > 2000:
+            return await ctx.send("A tag contents can't be bigger than 2000 characters.")
+        # if tag.author != ctx.author.id:
+        #     if await check_staff_id('Helper', ctx.author.id):
+        #         await crud.change_tag_ownership(tag_name, ctx.author.id)
+        #     else:
+        #         return await ctx.send("You can't edit a tag that isn't yours.")
+        edited_tag = await crud.edit_tag(title=tag_name, content=content)
+        if edited_tag is not None:
+            self.tags[edited_tag.title] = edited_tag
+            await ctx.send("Tag edited successfully.")
+        else:
+            await ctx.send("Failed to edit tag.")
+
+    @is_staff('Helper')
+    @tag.command(name='delete')
+    async def delete_tag(self, ctx: KurisuContext, *, tag_name: str):
+        """Deletes a tag. Helpers+ only."""
+        if not (await crud.get_tag(tag_name)):
+            return await ctx.send("This tag doesn't exists!")
+        # if tag.author != ctx.author.id and not (await check_staff_id('Helper', ctx.author.id)):
+        #     return await ctx.send("You can't delete a tag that isn't yours.")
+        await crud.delete_tag(title=tag_name)
+        del self.tags[tag_name]
+        await ctx.send("Tag deleted successfully.")
 
     @is_staff('OP')
     @app_commands.default_permissions(ban_members=True)

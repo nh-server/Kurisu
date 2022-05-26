@@ -381,9 +381,23 @@ async def remove_reminder(reminder_id: int) -> None:
 
 
 # Operations for managing tags
-async def create_tag(title: str, content: str, author: int) -> None:
+async def create_tag(title: str, content: str, author: int) -> models.Tag:
     await add_dbmember_if_not_exist(author)
-    await models.Tag.create(id=generate_id(), title=title, content=content, author=author)
+    tag = await models.Tag.create(id=generate_id(), title=title, content=content, author=author)
+    return tag
+
+
+async def edit_tag(title: str, content: str) -> Optional[models.Tag]:
+    tag = await get_tag(title)
+    if tag is not None:
+        await tag.update(content=content).apply()
+    return tag
+
+
+async def change_tag_ownership(title: str, author_id: int):
+    tag = await get_tag(title)
+    if tag:
+        await tag.update(author=author_id).apply()
 
 
 async def get_tag(title: str) -> Optional[models.Tag]:
@@ -400,8 +414,8 @@ async def delete_tag(title: str) -> None:
         await db_tag.delete()
 
 
-async def search_tags(query: str) -> list[models.Tag]:
-    return await models.Tag.query.where(models.Tag.title.ilike(f"%{query}%")).limit(10).gino.all()
+async def search_tags(query: str, limit: int = 10) -> list[models.Tag]:
+    return await models.Tag.query.where(models.Tag.title.ilike(f"%{query}%")).limit(limit).gino.all()
 
 
 # Operations for managing citizens
