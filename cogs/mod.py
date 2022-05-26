@@ -118,6 +118,7 @@ class Mod(commands.Cog):
         await ctx.send(embed=embed)
 
     @is_staff_app('Helper')
+    @app_commands.default_permissions(manage_nicknames=True)
     async def userinfo_ctx_menu(self, interaction: discord.Interaction, user: discord.Member):
         # These can only be used in guilds
         if interaction.guild is None:
