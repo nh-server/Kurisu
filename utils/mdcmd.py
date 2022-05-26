@@ -5,10 +5,13 @@ from typing import TYPE_CHECKING
 
 import discord
 from discord.ext import commands
+from discord.ext.commands import CooldownMapping, Cooldown
+
 from utils.utils import ConsoleColor
 
 if TYPE_CHECKING:
-    from typing import Dict, List, Optional, Tuple, Type
+    from typing import Optional
+    from cogs. assistance import Assistance
 
 systems_no_aliases = ('3ds', 'wiiu', 'vwii', 'switch', 'wii', 'dsi')
 aliases = {
@@ -23,8 +26,8 @@ for k, v in aliases.items():
 systems = systems_no_aliases + tuple(aliases) + ('legacy',)
 
 
-def parse_header(header_raw: str):
-    header: Dict[str, str] = {
+def parse_header(header_raw: str) -> 'dict[str, Optional[str]]':
+    header: dict[str, Optional[str]] = {
         'title': None,
         'url': None,
         'author.name': None,
@@ -82,7 +85,7 @@ def parse_body(body_raw: str):
     return parts
 
 
-def create_embed(header: 'Dict[str, str]', body: 'List[Tuple[str, str]]', embed_color: discord.Color):
+def create_embed(header: 'dict[str, Optional[str]]', body: 'list[tuple[str, str]]', embed_color: discord.Color):
     description = body[0][1]
     embed = discord.Embed(
         title=header['title'],
@@ -102,7 +105,7 @@ def create_embed(header: 'Dict[str, str]', body: 'List[Tuple[str, str]]', embed_
     return embed
 
 
-def parse_md_command(md_text: str, format_map: dict, embed_color: discord.Color):
+def parse_md_command(md_text: str, format_map: dict, embed_color: discord.Color) -> tuple[dict, discord.Embed]:
     parts = md_text.split('\n\n', maxsplit=1)
     if len(parts) == 1:
         # in case there is no body
@@ -121,7 +124,7 @@ def parse_md_command(md_text: str, format_map: dict, embed_color: discord.Color)
     return header, create_embed(header, body, embed_color)
 
 
-def md_file_to_embed(md_path: str, format_map: dict):
+def md_file_to_embed(md_path: str, format_map: dict) -> tuple[str, str, dict, discord.Embed]:
     colors = {
         '3ds': ConsoleColor.n3ds(),
         'wiiu': ConsoleColor.wiiu(),
@@ -136,7 +139,8 @@ def md_file_to_embed(md_path: str, format_map: dict):
     with open(md_path, 'r', encoding='utf-8') as f:
         fn = basename(md_path)
         name, console, _ = fn.rsplit('.', maxsplit=2)
-        return name, console, *parse_md_command(f.read(), format_map, colors[console])
+        header, embed = parse_md_command(f.read(), format_map, colors[console])
+        return name, console, header, embed
 
 
 def check_console(message, channel, consoles):
@@ -154,12 +158,12 @@ def get_console_name(console):
     return aliases.get(console, console)
 
 
-def add_md_files_as_commands(cog_class: 'Type[commands.Cog]', md_dir: str = None, *, namespace=commands, format_map=None):
+def add_md_files_as_commands(cog_class: 'Assistance', md_dir: str = None, *, namespace=commands, format_map=None):
 
-    def make_cmd(name: str, help_desc: 'Optional[str]', embeds: 'Dict[str, discord.Embed]', cooldown: 'Tuple[int, int]', aliases: list):
+    def make_cmd(name: str, help_desc: 'Optional[str]', embeds: 'dict[str, discord.Embed]', cooldown: 'tuple[int, int]', aliases: list[str]) -> commands.Command:
         if len(embeds) > 1:
             # multi-console commands require a check
-            async def cmd(self, ctx, *, consoles=''):
+            async def multi_cmd(self, ctx, *, consoles=''):
                 supported_consoles = list(embeds)
                 for s in supported_consoles:
                     if s in {'dsi', 'wii'}:
@@ -191,12 +195,15 @@ def add_md_files_as_commands(cog_class: 'Type[commands.Cog]', md_dir: str = None
                             cons.append('legacy')
                         if check_console(console, channel_name, tuple(cons)):
                             await ctx.send(embed=embed)
+            cmd = multi_cmd
         else:
             # single-console commands can simply print the one embed
-            async def cmd(self, ctx):
+            async def simple_cmd(self, ctx):
                 # this is kinda ugly, but basically it gets the first (and only) value of the dict
                 await ctx.send(embed=next(iter(embeds.values())))
+            cmd = simple_cmd
 
+        # gotta trick the lib so it thinks the callback is inside a class
         cmd.__name__ = name
         cmd.__qualname__ = f"{cog_class.qualified_name}.{cmd.__name__}"
 
@@ -204,14 +211,16 @@ def add_md_files_as_commands(cog_class: 'Type[commands.Cog]', md_dir: str = None
         cmd.__doc__ = help_desc
 
         # this feels _wrong_ but is probably the best way to do this
-        cooldown = commands.cooldown(cooldown[0], cooldown[1], commands.BucketType.channel)(cmd)
-        cmd_obj = namespace.command(name=name, aliases=aliases)(cooldown)
+        cmd_obj = namespace.command(name=name, aliases=aliases)(cmd)
+        rate = cooldown[0]
+        per = cooldown[1]
+        cmd_obj._buckets = CooldownMapping(Cooldown(rate, per), commands.BucketType.channel)
         return cmd_obj
 
-    new_commands = defaultdict(dict)
-    aliases = defaultdict(list)
-    cooldowns = {}
-    helpdescs = defaultdict(lambda: None)
+    new_commands: 'dict[str, dict[str, discord.Embed]]' = defaultdict(dict)
+    aliases: 'dict[str, list[str]]' = defaultdict(list)
+    cooldowns: 'dict[str, tuple[int, int]]' = {}
+    helpdescs: 'dict[str, Optional[str]]' = defaultdict(lambda: None)
 
     if md_dir is None:
         md_dir = cog_class.data_dir
