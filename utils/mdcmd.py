@@ -10,7 +10,7 @@ from discord.ext.commands import CooldownMapping, Cooldown
 from utils.utils import ConsoleColor
 
 if TYPE_CHECKING:
-    from typing import Optional
+    from typing import Optional, Type
     from cogs. assistance import Assistance
 
 systems_no_aliases = ('3ds', 'wiiu', 'vwii', 'switch', 'wii', 'dsi')
@@ -158,7 +158,7 @@ def get_console_name(console):
     return aliases.get(console, console)
 
 
-def add_md_files_as_commands(cog_class: 'Assistance', md_dir: str = None, *, namespace=commands, format_map=None):
+def add_md_files_as_commands(cog_class: 'Type[Assistance]', md_dir: str = None, *, namespace=commands, format_map=None):
 
     def make_cmd(name: str, help_desc: 'Optional[str]', embeds: 'dict[str, discord.Embed]', cooldown: 'tuple[int, int]', aliases: list[str]) -> commands.Command:
         if len(embeds) > 1:
