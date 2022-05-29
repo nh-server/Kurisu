@@ -17,7 +17,7 @@ from math import ceil
 from typing import Union, Optional, TYPE_CHECKING
 from utils import crud
 from utils.checks import is_staff, check_if_user_can_sr, check_staff_id
-from utils.converters import DateOrTimeConverter
+from utils.converters import DateOrTimeToSecondsConverter
 from utils.utils import gen_color, send_dm_message
 from utils.views import BasePaginator, SimpleVoteView, PaginatedEmbedView
 
@@ -386,7 +386,7 @@ class Extras(commands.Cog):
 
     @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.member)
     @commands.command()
-    async def remindme(self, ctx: KurisuContext, remind_in: int = commands.parameter(converter=DateOrTimeConverter), *, reminder: str):
+    async def remindme(self, ctx: KurisuContext, remind_in: int = commands.parameter(converter=DateOrTimeToSecondsConverter), *, reminder: str):
         """Sends a reminder after a set time, just for you. Max reminder size is 800 characters.\n\nTime format: #d#h#m#s."""
         if remind_in < 30 or remind_in > 3.154e+7:
             return await ctx.send("You can't set a reminder for less than 30 seconds or for more than a year.")

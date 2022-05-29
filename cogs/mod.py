@@ -11,7 +11,7 @@ from discord.utils import format_dt
 from subprocess import call
 from typing import Union, Optional, TYPE_CHECKING
 from utils import crud, models
-from utils.converters import DateOrTimeConverter, TimeTransformer
+from utils.converters import DateOrTimeToSecondsConverter, TimeTransformer
 from utils.checks import is_staff, check_staff_id, check_bot_or_staff, is_staff_app
 from utils.utils import command_signature, paginate_message, send_dm_message, parse_time, text_to_discord_file, gen_color
 
@@ -269,7 +269,7 @@ class Mod(commands.Cog):
     @commands.bot_has_permissions(manage_channels=True)
     @commands.guild_only()
     @commands.command()
-    async def slowmode(self, ctx: GuildContext, channel: Optional[Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]], *, length: int = commands.parameter(converter=DateOrTimeConverter)):
+    async def slowmode(self, ctx: GuildContext, channel: Optional[Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]], *, length: int = commands.parameter(converter=DateOrTimeToSecondsConverter)):
         """Apply a given slowmode time to a channel.
 
         The time format is identical to that used for timed kicks/bans/takehelps.
@@ -421,7 +421,7 @@ class Mod(commands.Cog):
     @commands.bot_has_permissions(manage_roles=True)
     @commands.guild_only()
     @commands.command()
-    async def oldtimemute(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=DateOrTimeConverter), *, reason=""):
+    async def oldtimemute(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=DateOrTimeToSecondsConverter), *, reason=""):
         """Mutes a user for a limited period of time so they can't speak. Staff only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "mute"):
             return
@@ -475,7 +475,7 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command(aliases=['timemute'])
-    async def timeout(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=DateOrTimeConverter), *, reason: Optional[str]):
+    async def timeout(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=DateOrTimeToSecondsConverter), *, reason: Optional[str]):
         """Times out a user. Staff only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "timeout"):
             return
@@ -677,7 +677,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["timenohelp"])
-    async def timetakehelp(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=DateOrTimeConverter), *, reason=""):
+    async def timetakehelp(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=DateOrTimeToSecondsConverter), *, reason=""):
         """Restricts a user from Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "takehelp"):
             return
@@ -758,7 +758,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["timenotech"])
-    async def timetaketech(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=DateOrTimeConverter), *, reason=""):
+    async def timetaketech(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=DateOrTimeToSecondsConverter), *, reason=""):
         """Restricts a user from the tech channel for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "taketech"):
             return
@@ -819,7 +819,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["timemutehelp"])
-    async def timehelpmute(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=DateOrTimeConverter), *, reason=""):
+    async def timehelpmute(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=DateOrTimeToSecondsConverter), *, reason=""):
         """Restricts a user from speaking in Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "helpmute"):
             return

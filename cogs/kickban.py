@@ -8,7 +8,7 @@ from discord.ext import commands
 from discord.utils import format_dt
 from typing import Union, Literal, TYPE_CHECKING, Optional
 from utils import crud
-from utils.converters import TimeTransformer, DateOrTimeConverter
+from utils.converters import TimeTransformer, DateOrTimeToSecondsConverter
 from utils.checks import is_staff, is_staff_app, check_bot_or_staff
 from utils.utils import send_dm_message, command_signature
 
@@ -236,7 +236,7 @@ class KickBan(commands.Cog):
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
     @commands.command(name="timeban", aliases=["timeyeet"])
-    async def timeban_member(self, ctx: GuildContext, member: Union[discord.Member, discord.User], length: int = commands.parameter(converter=DateOrTimeConverter), *, reason=""):
+    async def timeban_member(self, ctx: GuildContext, member: Union[discord.Member, discord.User], length: int = commands.parameter(converter=DateOrTimeToSecondsConverter), *, reason=""):
         """Bans a user for a limited period of time. OP+ only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "timeban"):
             return

@@ -90,33 +90,18 @@ def parse_time(time_string) -> int:
     return sum(int(item[:-1]) * units[item[-1]] for item in match)
 
 
-def parse_date(date_string: str) -> int:
+def parse_date(date_string: str) -> Optional[datetime.datetime]:
     date_lst = date_string.split(' ')
-    now = datetime.datetime.utcnow()
 
     if len(date_lst) == 1:
         date_lst.append('00:00')
     elif len(date_lst) != 2:
-        return -1
-
+        return None
     try:
         datetime_obj = datetime.datetime.strptime(' '.join(date_lst), "%Y-%m-%d %H:%M")
     except ValueError:
-        return -1
-    delta = datetime_obj - now
-    return int(delta.total_seconds())
-
-
-# Javascript is a cursed language
-class HackIDTransformer(app_commands.Transformer):
-    @classmethod
-    async def transform(cls, interaction: discord.Interaction, value: str) -> int:
-        ctx = await commands.Context.from_interaction(interaction)
-        try:
-            discord_object = await commands.ObjectConverter().convert(ctx, value)
-            return discord_object.id
-        except commands.ObjectNotFound:
-            raise app_commands.TransformerError("Invalid ID", discord.AppCommandOptionType.string, cls)
+        return None
+    return datetime_obj
 
 
 def create_error_embed(ctx: Union[commands.Context, discord.Interaction], exc: Union[discord.DiscordException, app_commands.AppCommandError]) -> discord.Embed:

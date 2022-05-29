@@ -1,14 +1,15 @@
 import discord
 
+from datetime import datetime
 from discord import app_commands
 from discord.ext import commands
 from utils.utils import parse_date, parse_time
 
 
-class DateOrTimeConverter(commands.Converter):
+class DateOrTimeToSecondsConverter(commands.Converter):
     async def convert(self, ctx: commands.Context, arg: str):
-        if (seconds := parse_date(arg)) != -1:
-            return seconds
+        if (datetime_obj := parse_date(arg)) is not None:
+            return int((datetime_obj - datetime.utcnow()).total_seconds())
         elif (seconds := parse_time(arg)) != -1:
             return seconds
         raise commands.BadArgument("Invalid date/time format")
