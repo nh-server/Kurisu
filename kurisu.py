@@ -54,6 +54,7 @@ cogs = (
     'cogs.xkcdparse',
     'cogs.seasonal',
     'cogs.newcomers',
+    'cogs.server_logs'
 )
 
 DEBUG = False
