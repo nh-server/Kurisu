@@ -112,9 +112,6 @@ class KickBan(commands.Cog):
         if await check_bot_or_staff(interaction, member, "ban"):
             return
 
-        if interaction.guild is None:
-            return await interaction.response.send_message("This command can't be used in DMs!", ephemeral=True)
-
         msg = f"You were banned from {interaction.guild.name}."
         if reason != "":
             msg += " The given reason is: " + reason

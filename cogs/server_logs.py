@@ -1,7 +1,6 @@
 import asyncpg
 import discord
 import io
-import re
 
 from datetime import datetime
 from discord import app_commands
@@ -124,9 +123,6 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
     ):
         """Search the server logs for messages that matches the parameters given then returns them in a file"""
 
-        if interaction.guild is None:
-            return await interaction.response.send_message("This command can't be used in DMs!", ephemeral=True)
-
         await interaction.response.defer(ephemeral=bool(view_state))
 
         if (after or before) and during:
@@ -170,9 +166,6 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
             view_state: str = "",
     ):
         """Search the server logs for channels that matches the name given then returns them in a file"""
-
-        if interaction.guild is None:
-            return await interaction.response.send_message("This command can't be used in DMs!", ephemeral=True)
 
         await interaction.response.defer(ephemeral=bool(view_state))
 
