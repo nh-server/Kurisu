@@ -107,6 +107,18 @@ def parse_date(date_string: str) -> int:
     return int(delta.total_seconds())
 
 
+# Javascript is a cursed language
+class HackIDTransformer(app_commands.Transformer):
+    @classmethod
+    async def transform(cls, interaction: discord.Interaction, value: str) -> int:
+        ctx = await commands.Context.from_interaction(interaction)
+        try:
+            discord_object = await commands.ObjectConverter().convert(ctx, value)
+            return discord_object.id
+        except commands.ObjectNotFound:
+            raise app_commands.TransformerError("Invalid ID", discord.AppCommandOptionType.string, cls)
+
+
 def create_error_embed(ctx: Union[commands.Context, discord.Interaction], exc: Union[discord.DiscordException, app_commands.AppCommandError]) -> discord.Embed:
     app_command: bool = isinstance(ctx, discord.Interaction)
     author = ctx.user if app_command else ctx.author

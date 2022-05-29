@@ -1,5 +1,3 @@
-from typing import Optional
-
 import discord
 import io
 import re
@@ -9,7 +7,9 @@ from discord.app_commands import Choice
 from discord.ext import commands
 from kurisu import SERVER_LOGS_URL
 from sqlalchemy import create_engine, text
+from typing import Optional
 from utils.checks import is_staff_app
+from utils.utils import HackIDTransformer
 
 
 class ServerLogs(commands.GroupCog, name="serverlogs"):
@@ -35,9 +35,9 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
     ):
         if query or member or channel or (during and not (before or after)) or ((before or after) and not during):
             sql_query = (
-                "select gm.created_at, gc.name, concat(u.name, '#',u.discriminator), gm.content from guild_messages gm "
-                "inner join guild_channels gc ON gc.channel_id =gm.channel_id "
-                "inner join users u on u.user_id = gm.user_id WHERE "
+                "SELECT gm.created_at, gc.name, concat(u.name, '#',u.discriminator), gm.content FROM guild_messages gm "
+                "INNER JOIN guild_channels gc ON gc.channel_id = gm.channel_id "
+                "INNER JOIN users u ON u.user_id = gm.user_id WHERE "
             )
             conditions = []
             dict_keys = {}
@@ -83,8 +83,8 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
 
     @is_staff_app("OP")
     @app_commands.describe(query="What to search",
-                           member_id_str="ID of User to search",
-                           channel_id_str="ID of channel to search in.",
+                           member_id="ID or mention of User to search",
+                           channel_id="ID or mention of channel to search in.",
                            before="Date in yyyy-mm-dd format",
                            after="Date in yyyy-mm-dd format",
                            during="Date in yyyy-mm-dd format. Can't be used with before and after.",
@@ -101,12 +101,12 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
         ]
     )
     @app_commands.command()
-    async def search(
+    async def search_messages(
             self,
             interaction: discord.Interaction,
             query: str = "",
-            member_id_str: str = "",
-            channel_id_str: str = "",
+            member_id: app_commands.Transform[Optional[int], HackIDTransformer] = None,
+            channel_id: app_commands.Transform[Optional[int], HackIDTransformer] = None,
             before: str = "",
             after: str = "",
             during: str = "",
@@ -121,17 +121,7 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
 
         if not self.engine:
             return await interaction.response.send_message("There is no database connection.", ephemeral=True)
-        # Discord IDs are too long to be taken as integer input from an app command.
-        try:
-            member_id = None
-            channel_id = None
-            if member_id_str:
-                member_id = int(member_id_str)
-            if channel_id_str:
-                channel_id = int(channel_id_str)
-        except ValueError:
-            await interaction.response.send_message("Invalid input for IDs")
-            return
+
         await interaction.response.defer(ephemeral=bool(view_state))
         stmt = self.build_query(
             query, member_id, channel_id, before, after, during, order_by, show_mod_channels
@@ -150,6 +140,55 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
             return await interaction.edit_original_message(content="No messages found.")
         encoded = txt.encode("utf-8")
         if len(encoded) > interaction.guild.filesize_limit:
+            return await interaction.edit_original_message(content="Result is too big!")
+        data = io.BytesIO(encoded)
+        file = discord.File(filename="output.txt", fp=data)
+        await interaction.edit_original_message(attachments=[file])
+
+    @is_staff_app("OP")
+    @app_commands.describe(name="Name of the channel to search")
+    @app_commands.choices(
+        view_state=[
+            Choice(name='Public', value=""),
+            Choice(name='Private', value="private")
+        ],
+    )
+    @app_commands.command()
+    async def search_channels(
+            self,
+            interaction: discord.Interaction,
+            name: str = "",
+            view_state: str = "",
+    ):
+        """Search the server logs for channels that matches the name given then returns them in a file"""
+
+        if interaction.guild is None:
+            return await interaction.response.send_message("This command can't be used in DMs!", ephemeral=True)
+
+        if not self.engine:
+            return await interaction.response.send_message("There is no database connection.", ephemeral=True)
+
+        await interaction.response.defer(ephemeral=bool(view_state))
+
+        query = "SELECT channel_id, name, last_updated FROM guild_channels"
+        dict_keys = {}
+
+        if name:
+            query += " where guild_channels.name ~* :name"
+            dict_keys["name"] = f".*{name}.*"
+        stmt = text(query).bindparams(**dict_keys)
+
+        with self.engine.connect() as connection:
+            result = connection.execute(stmt).fetchall()
+            txt = "\n".join(
+                f"{channel_id} | {name} | {last_updated}"
+                for channel_id, name, last_updated in result
+            )
+
+        if not txt:
+            return await interaction.edit_original_message(content="No messages found.")
+        encoded = txt.encode("utf-8")
+        if len(encoded) > interaction.guild.filesize_limit * 1024:
             return await interaction.edit_original_message(content="Result is too big!")
         data = io.BytesIO(encoded)
         file = discord.File(filename="output.txt", fp=data)
