@@ -1093,6 +1093,7 @@ class Mod(commands.Cog):
 
     @is_staff_app("OP")
     @app_commands.default_permissions(ban_members=True)
+    @app_commands.guild_only
     @app_commands.command()
     @app_commands.describe(member="Member to apply restriction.",
                            restriction="Restriction Type.",

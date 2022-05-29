@@ -12,6 +12,7 @@ from utils.checks import is_staff_app
 from utils.utils import HackIDTransformer
 
 
+@app_commands.guild_only
 class ServerLogs(commands.GroupCog, name="serverlogs"):
     """Command group for accesing the server logs"""
 

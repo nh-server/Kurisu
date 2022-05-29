@@ -515,6 +515,7 @@ class Extras(commands.Cog):
                            description="Description of the vote",
                            options="Options for the vote separated by \'|\'",
                            staff_only="If only staff is allowed to vote.")
+    @app_commands.guild_only
     @app_commands.command()
     async def simplevote(self,
                          interaction: discord.Interaction,
