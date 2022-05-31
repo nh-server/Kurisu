@@ -133,7 +133,7 @@ class Lockdown(commands.Cog):
         if is_helper and any(c not in self.bot.assistance_channels for c in channels):
             return await ctx.send("You can only lock assistance channels.")
 
-        role = self.bot.roles['Helper'] if is_helper else self.bot.roles['Staff']
+        role = self.bot.roles['Helpers'] if is_helper else self.bot.roles['Staff']
 
         locked_down = await self.lockdown_channels(ctx, channels=channels, level=1, top_role=role)
 
