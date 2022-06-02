@@ -237,7 +237,7 @@ complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
             await ctx.send(f"Invalid invite name. Valid server names are: {', '.join(x.alias for x in self.bot.invitefilter.invites)}")
 
     @commands.command()
-    async def unidb(self, ctx: GuildContext, *, query=""):
+    async def unidb(self, ctx: KurisuContext, *, query=""):
         """Links to Universal-DB and/or one of the apps.\n
         To link to Universal-DB: `unidb`
         To search for an app: `unidb [query]`"""
