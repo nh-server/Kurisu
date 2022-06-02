@@ -108,7 +108,7 @@ class Newcomers(commands.Cog):
     @check_if_user_can_ready()
     @commands.guild_only()
     @commands.command(aliases=['ready'], cooldown=commands.CooldownMapping.from_cooldown(rate=1, per=300.0, type=commands.BucketType.member))
-    async def ncready(self, ctx: GuildContext, *, reason=""):
+    async def ncready(self, ctx: GuildContext, *, reason: str = ""):
         """Alerts online staff to a ready request in newcomers."""
         newcomers = self.bot.channels['newcomers']
         reason = reason[:300]  # truncate to 300 chars so kurisu doesn't send absurdly huge messages
