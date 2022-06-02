@@ -2,7 +2,7 @@ import discord
 import math
 
 from discord.ui import Select
-from discord.ext import commands
+from discord.ext.commands import Cog, Group, Command, HelpCommand
 from itertools import islice
 from typing import Union
 from utils.context import KurisuContext
@@ -14,7 +14,7 @@ SELECT_MAX_VALUES = 25
 class CogHelpPaginator(BasePaginator):
     commands_per_page = 8
 
-    def __init__(self, cog: Union[commands.Cog, commands.Group], commands: list[commands.Command], prefix: str, colour: discord.Colour):
+    def __init__(self, cog: Union[Cog, Group], commands: list[Command], prefix: str, colour: discord.Colour):
         super().__init__(n_pages=math.ceil(len(commands) / self.commands_per_page))
         self.cog = cog
         self.commands = commands
@@ -30,11 +30,11 @@ class CogHelpPaginator(BasePaginator):
             self.pages[self.idx] = embed
             return embed
 
-    def create_embed(self, commands: list[commands.Command]) -> discord.Embed:
+    def create_embed(self, commands: list[Command]) -> discord.Embed:
         embed = discord.Embed(colour=self.colour)
 
         embed.title = f"{self.cog.qualified_name} commands"
-        embed.description = self.cog.description or self.cog.help
+        embed.description = self.cog.help if isinstance(self.cog, Group) else self.cog.description
 
         if self.n_pages > 1:
             embed.title += f" [{self.idx + 1}/{self.n_pages}]"
@@ -51,7 +51,7 @@ class CogHelpPaginator(BasePaginator):
 class MainHelpPaginator(BasePaginator):
     categories_per_page = 9
 
-    def __init__(self, mapping: dict[commands.Cog, list[commands.Command]], description: str, prefix: str, colour: discord.Color):
+    def __init__(self, mapping: dict[Cog, list[Command]], description: str, prefix: str, colour: discord.Color):
         super().__init__(n_pages=math.ceil(len(mapping) / self.categories_per_page))
         self.description = description
         self.prefix = prefix
@@ -70,7 +70,7 @@ class MainHelpPaginator(BasePaginator):
             self.pages[self.idx] = embed
             return embed
 
-    def create_embed(self, mapping: dict[commands.Cog, list[commands.Command]]):
+    def create_embed(self, mapping: dict[Cog, list[Command]]):
         embed = discord.Embed(colour=self.colour)
 
         embed.title = "Kurisu the bot for Nintendo Homebrew"
@@ -91,7 +91,7 @@ class MainHelpPaginator(BasePaginator):
 
 class CommandHelpPaginator(BasePaginator):
 
-    def __init__(self, command: commands.Command, prefix: str, colour: discord.Color):
+    def __init__(self, command: Command, prefix: str, colour: discord.Color):
         # Commands have just one page, a paginator is not needed but makes it way easier to integrate with the View
         super().__init__(n_pages=1)
         self.description = command.help or "No help for you."
@@ -102,7 +102,7 @@ class CommandHelpPaginator(BasePaginator):
     def current(self) -> discord.Embed:
         return self.create_embed(command=self.command)
 
-    def create_embed(self, command: commands.Command):
+    def create_embed(self, command: Command):
         embed = discord.Embed(title=f"{command.name} command", colour=self.colour)
         embed.description = self.description
 
@@ -121,7 +121,7 @@ class CommandHelpPaginator(BasePaginator):
 
 class CategorySelect(Select['HelpView']):
 
-    def __init__(self, mapping: dict[commands.Cog, list[commands.Command]], ctx: KurisuContext):
+    def __init__(self, mapping: dict[Cog, list[Command]], ctx: KurisuContext):
         super().__init__(placeholder="Select a Category.")
         self.ctx = ctx
         self.mapping = mapping
@@ -163,7 +163,7 @@ class CategorySelect(Select['HelpView']):
 
 class CommandSelect(Select['HelpView']):
 
-    def __init__(self, cog: Union[commands.Cog, commands.Group], commands: list[commands.Command],
+    def __init__(self, cog: Union[Cog, Group], commands: list[Command],
                  ctx: KurisuContext, suffix: str = ""):
         super().__init__(placeholder="Select a command" + suffix)
         self.ctx = ctx
@@ -212,7 +212,7 @@ class HelpView(BasePaginatedView):
         await interaction.response.edit_message(embed=self.paginator.current(), view=self)
 
 
-class KuriHelp(commands.HelpCommand):
+class KuriHelp(HelpCommand):
     context: KurisuContext
 
     def __init__(self):
@@ -221,7 +221,7 @@ class KuriHelp(commands.HelpCommand):
     async def prepare_help_command(self, ctx, command=None):
         await ctx.bot.wait_until_all_ready()
 
-    async def send_bot_help(self, mapping: dict[commands.Cog, list[commands.Command]]):
+    async def send_bot_help(self, mapping: dict[Cog, list[Command]]):
         f_mapping = {}
         # Create a mapping with the commands filtered
         for cog, cmds in mapping.items():
@@ -238,7 +238,7 @@ class KuriHelp(commands.HelpCommand):
         msg = await channel.send(embed=view.paginator.current(), view=view, reference=self.context.message)
         view.message = msg
 
-    async def send_cog_help(self, cog: commands.Cog):
+    async def send_cog_help(self, cog: Cog):
         commands = await self.filter_commands(cog.get_commands(), sort=True)
 
         view = HelpView(CogHelpPaginator(cog, commands, self.context.prefix, self.context.bot.colour), self.context.author)
@@ -256,7 +256,7 @@ class KuriHelp(commands.HelpCommand):
         msg = await channel.send(embed=view.paginator.current(), view=view, reference=self.context.message)
         view.message = msg
 
-    async def send_group_help(self, group: commands.Group):
+    async def send_group_help(self, group: Group):
         commands = await self.filter_commands(group.commands, sort=True)
 
         view = HelpView(CogHelpPaginator(group, commands, self.context.clean_prefix, self.context.bot.colour), self.context.author)
@@ -266,7 +266,7 @@ class KuriHelp(commands.HelpCommand):
         msg = await channel.send(embed=view.paginator.current(), view=view, reference=self.context.message)
         view.message = msg
 
-    async def send_command_help(self, command: commands.Command):
+    async def send_command_help(self, command: Command):
         embed = CommandHelpPaginator(command, self.context.clean_prefix, self.context.bot.colour).current()
         channel = self.get_destination()
         await channel.send(embed=embed, reference=self.context.message)
