@@ -34,7 +34,7 @@ class CogHelpPaginator(BasePaginator):
         embed = discord.Embed(colour=self.colour)
 
         embed.title = f"{self.cog.qualified_name} commands"
-        embed.description = self.cog.description
+        embed.description = self.cog.description or self.cog.help
 
         if self.n_pages > 1:
             embed.title += f" [{self.idx + 1}/{self.n_pages}]"
