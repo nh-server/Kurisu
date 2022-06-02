@@ -65,7 +65,9 @@ class Mod(commands.Cog):
         basemsg = f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = <{u.avatar}>\nbot = {u.bot}\ndefault_avatar= <{u.default_avatar}>\ncreated_at = {u.created_at}\n"
         if isinstance(u, discord.Member):
             role = u.top_role.name
-            await ctx.send(f"{basemsg}display_name = {u.display_name}\njoined_at = {u.joined_at}\nstatus ={u.status}\nactivity = {u.activity.name if u.activity else None}\ncolour = {u.colour}\ntop_role = {role}\nguild_avatar= {f'<{u.guild_avatar}>' if u.guild_avatar else None}")
+            await ctx.send(f"{basemsg}display_name = {u.display_name}\njoined_at = {u.joined_at}\nstatus ={u.status}\n"
+                           f"activity = {u.activity.name if u.activity else None}\ncolour = {u.colour}\ntop_role = {role}\n"
+                           f"guild_avatar= {f'<{u.guild_avatar}>' if u.guild_avatar else None}")
         else:
             try:
                 ban = await ctx.guild.fetch_ban(u)

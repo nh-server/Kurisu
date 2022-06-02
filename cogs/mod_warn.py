@@ -75,7 +75,10 @@ class ModWarn(commands.Cog):
         if reason != "":
             # much \n
             msg += "\n✏️ __Reason__: " + reason
-        await self.bot.channels['mod-logs'].send(msg + (f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user." if reason == "" else ""))
+        await self.bot.channels['mod-logs'].send(msg + (f"\nPlease add an explanation below."
+                                                        f" In the future, it is recommended to use `{signature}`"
+                                                        f" as the reason is automatically sent to the user."
+                                                        if reason == "" else ""))
 
     @is_staff('Helper')
     @commands.command()

@@ -158,25 +158,26 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
 
         cfwinfo = {
             'kosmos': {
-                'info': """
-                        * Kosmos bundles several extras, including system modules which can cause issues with booting if they are not compatible
-                        with the currently running firmware. As a result, troubleshooting is often required to figure out which one is causing the issue.""",
+                'info':
+                    ('* Kosmos bundles several extras, including system modules which can cause issues'
+                     ' with booting if they are not compatible with the currently running firmware. '
+                     'As a result, troubleshooting is often required to figure out which one is causing the issue.'),
                 'title': "Kosmos"
             },
             'reinx': {
-                'info': """
-                        * Older versions have caused bans due to the incorrectly implemented user agent string.
-                        * The author has expressed no interest in adding emuMMC/emuNAND.
-                        * The author has expressed that they feel it doesn't matter if consoles get banned.
-                        * It often takes weeks to several months for it to get support for the latest firmware.""",
+                'info':
+                    ('* Older versions have caused bans due to the incorrectly implemented user agent string.'
+                     '* The author has expressed no interest in adding emuMMC/emuNAND.'
+                     '* The author has expressed that they feel it doesn\'t matter if consoles get banned.'
+                     '* It often takes weeks to several months for it to get support for the latest firmware.'),
                 'title': "ReiNX"
             },
             'sxos': {
-                'info': """
-                        * SX OS is illegal to purchase and own. It bundles various keys and copyrighted data that cannot be legally shared.
-                        * It has known compatibility issues with homebrew, due to its non-standard and proprietary nature.
-                        * It does not support loading custom system modules.
-                        * Several versions of the CFW have caused users to be banned without their knowledge.""",
+                'info':
+                    ('* SX OS is illegal to purchase and own. It bundles various keys and copyrighted data that cannot be legally shared.'
+                     '* It has known compatibility issues with homebrew, due to its non-standard and proprietary nature.'
+                     '* It does not support loading custom system modules.'
+                     '* Several versions of the CFW have caused users to be banned without their knowledge.'),
                 'title': "SX OS"
             }
         }
@@ -196,21 +197,22 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
         elif lumaversion == "latest":
             await self.simple_embed(ctx, "Latest Luma Version:\nhttps://github.com/LumaTeam/Luma3DS/releases/latest", color=discord.Color.blue())
         else:
-            await self.simple_embed(ctx, """
-                                    Download links for the most common Luma3DS releases:
-                                    [Latest Luma](https://github.com/LumaTeam/Luma3DS/releases/latest)
-                                    [Luma v7.0.5](https://github.com/LumaTeam/Luma3DS/releases/tag/v7.0.5)
-                                    [Luma v7.1](https://github.com/LumaTeam/Luma3DS/releases/tag/v7.1)
-                                    """, color=discord.Color.blue())
+            await self.simple_embed(ctx,
+                                    "Download links for the most common Luma3DS releases:"
+                                    "[Latest Luma](https://github.com/LumaTeam/Luma3DS/releases/latest)"
+                                    "[Luma v7.0.5](https://github.com/LumaTeam/Luma3DS/releases/tag/v7.0.5)"
+                                    "[Luma v7.1](https://github.com/LumaTeam/Luma3DS/releases/tag/v7.1)",
+                                    color=discord.Color.blue())
 
     @commands.group(cooldown=commands.CooldownMapping.from_cooldown(0, 0, commands.BucketType.channel), invoke_without_command=True, case_insensitive=True)
     async def tutorial(self, ctx: KurisuContext):
         """Links to one of multiple guides"""
-        if isinstance(ctx.channel, discord.DMChannel):
+        if isinstance(ctx.channel, discord.DMChannel) or ctx.channel == self.bot.channels['bot-cmds']:
             await ctx.send_help(ctx.command)
         else:
-            await ctx.send(f'{ctx.author.mention}, if you wish to view the \
-complete list of tutorials, send `.tutorial` to me in a DM.', delete_after=10)
+            await ctx.send(f'{ctx.author.mention}, if you wish to view the '
+                           f'complete list of tutorials, send `.help tutorial` to me in a {self.bot.channels["bot-cmds"]}.',
+                           delete_after=10)
 
     @commands.command()
     @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)

@@ -306,8 +306,10 @@ class Events(commands.Cog):
         if sum(user_mentions) > 6:
             await crud.add_permanent_role(message.author, self.bot.roles["Probation"].id)
             await message.author.add_roles(self.bot.roles['Probation'])
-            msg_user = "You were automatically placed under probation for mentioning too many users in a short period of time!\n\n" \
-                       "If you believe this was done in error, send a direct message (DM) to <@!333857992170536961> to contact staff."
+            msg_user = ("You were automatically placed under probation "
+                        "for mentioning too many users in a short period of time!\n\n"
+                        "If you believe this was done in error, send a direct "
+                        "message (DM) to <@!333857992170536961> to contact staff.")
             await send_dm_message(message.author, msg_user)
             log_msg = f"🚫 **Auto-probated**: {message.author.mention} probated for mass user mentions | {message.author}\n" \
                       f"🗓 __Creation__: {message.author.created_at}\n🏷 __User ID__: {message.author.id}"

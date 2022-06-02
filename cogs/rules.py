@@ -175,7 +175,10 @@ https://discord.gg/C29hYvh"""
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def consoleban(self, ctx: KurisuContext):
         """States some stuff about no assistance with bans"""
-        await ctx.send("Please refrain from asking for or giving assistance with unbanning consoles which have been banned from online services.\nReminder: sharing files that allow other users to evade Nintendo issued bans is a bannable offense.")
+        await ctx.send("Please refrain from asking for or giving assistance with"
+                       " unbanning consoles which have been banned from online services.\n"
+                       "Reminder: sharing files that allow other users to evade "
+                       "Nintendo issued bans is a bannable offense.")
 
     @commands.command(aliases=['r11'])
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -188,8 +191,12 @@ https://discord.gg/C29hYvh"""
     async def nick(self, ctx: KurisuContext):
         """Displays the Nickname and Avatar Policy."""
         await ctx.send(f"🏷 ___Username/Nickname and Avatar policy___\n"
-                       f"Usernames are to be kept primarily alphanumeric, to keep them easy to tag and read. Excessively long usernames are not acceptable. Usernames and avatars that are annoying, offensive, inappropriate (\"nsfw\"), and/or disruptive to others are also not allowed.\n"
-                       f"Usernames that go against these rules will be assigned a nickname. Users can request a specific nickname that follows these rules by asking in {self.bot.channels['meta'].mention} or by sending a direct message to <@333857992170536961>.\n"
+                       f"Usernames are to be kept primarily alphanumeric, to keep them easy to tag and read. "
+                       f"Excessively long usernames are not acceptable. Usernames and avatars "
+                       f"that are annoying, offensive, inappropriate (\"nsfw\"), and/or disruptive to others are also not allowed.\n"
+                       f"Usernames that go against these rules will be assigned a nickname. "
+                       f"Users can request a specific nickname that follows these rules "
+                       f"by asking in {self.bot.channels['meta'].mention} or by sending a direct message to <@333857992170536961>.\n"
                        f"Users with avatars against these rules will be asked to change them or be kicked from the server.")
 
     @commands.command()
@@ -263,7 +270,9 @@ https://discord.gg/C29hYvh"""
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def realr11(self, ctx: KurisuContext):
         """Displays rule 11."""
-        await self.simple_embed(ctx, self.rules_dict[11] + "\n\nIf you simply need to tell someone to not ask about piracy, consider `.pirate` instead. `.r11` was changed to match `.pirate` due to its large embed.", title="Rule 11")
+        await self.simple_embed(ctx, self.rules_dict[11] + "\n\nIf you simply need to tell someone to not ask about piracy,"
+                                                           " consider `.pirate` instead. `.r11` was changed to match "
+                                                           "`.pirate` due to its large embed.", title="Rule 11")
 
     @commands.command()
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)

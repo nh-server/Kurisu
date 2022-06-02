@@ -89,7 +89,8 @@ class Lockdown(commands.Cog):
                 channels.append(ctx.channel)
 
         locked_down = await self.lockdown_channels(ctx, channels=channels, level=2, top_role=self.bot.roles['Staff'],
-                                                   message="🔒 Channel locked down. Only staff members may speak. Do not bring the topic to other channels or risk disciplinary actions.")
+                                                   message="🔒 Channel locked down. Only staff members may speak."
+                                                           " Do not bring the topic to other channels or risk disciplinary actions.")
 
         if locked_down:
             msg = f"🔒 **Lockdown**: {ctx.author.mention} locked down channels | {author}\n📝 __Channels__: {', '.join(c.mention for c in locked_down)}"
@@ -109,7 +110,8 @@ class Lockdown(commands.Cog):
                 channels.append(ctx.channel)
 
         locked_down = await self.lockdown_channels(ctx, channels=channels, level=3, top_role=self.bot.roles['Owner'],
-                                                   message="🔒 Channel locked down. Only the server Owners may speak. Do not bring the topic to other channels or risk disciplinary actions.")
+                                                   message="🔒 Channel locked down. Only the server Owners may speak."
+                                                           " Do not bring the topic to other channels or risk disciplinary actions.")
 
         if locked_down:
             msg = f"🔒 **Lockdown**: {ctx.author.mention} locked down channels | {author}\n📝 __Channels__: {', '.join(c.mention for c in locked_down)}"

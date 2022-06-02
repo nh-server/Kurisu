@@ -55,7 +55,8 @@ class FriendCode(commands.Cog):
         console = "switch" if fc_str.startswith("SW") else "3ds"
         fc = self.verify_3ds_fc(fc_str) if console == "3ds" else self.verify_switch_fc(fc_str)
         if fc is None:
-            await ctx.send("This friend code is invalid. Switch friend codes must be in a SW-XXXX-XXXX-XXXX format and 3ds friends codes in a XXXX-XXXX-XXXX format.")
+            await ctx.send("This friend code is invalid. Switch friend codes must be "
+                           "in a SW-XXXX-XXXX-XXXX format and 3ds friends codes in a XXXX-XXXX-XXXX format.")
             return
         fcs = await crud.get_friendcode(ctx.author.id)
         if fcs and (fcs.fc_3ds and console == "3ds" or fcs.fc_switch and console == "switch"):

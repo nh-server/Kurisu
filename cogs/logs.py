@@ -41,13 +41,14 @@ Thanks for stopping by and have a good time!
         await self.bot.wait_until_all_ready()
         self.logo_nitro = discord.utils.get(self.bot.guild.emojis, name="nitro") or discord.PartialEmoji.from_str("⁉")
         self.logo_boost = discord.utils.get(self.bot.guild.emojis, name="boost") or discord.PartialEmoji.from_str("⁉")
-        self.nitro_msg = f"""Thanks for boosting {self.logo_nitro} Nintendo Homebrew!
-        As a Nitro Booster you have the following bonuses:
-        - React permissions in {self.bot.channels['off-topic'].mention}, {self.bot.channels['elsewhere'].mention}, and {self.bot.channels['nintendo-discussion'].mention}.
-        - Able to use the `.nickme` command in DMs with Kurisu to change your nickname every 6 hours.
-        - Able to stream in the {self.bot.channels['streaming-gamer'].mention} voice channel.
-        Thanks for boosting and have a good time! {self.logo_boost}
-        """
+        self.nitro_msg = (
+            f"Thanks for boosting {self.logo_nitro} Nintendo Homebrew!\n"
+            f"As a Nitro Booster you have the following bonuses:\n"
+            f"- React permissions in {self.bot.channels['off-topic'].mention}, {self.bot.channels['elsewhere'].mention},"
+            f" and {self.bot.channels['nintendo-discussion'].mention}.\n"
+            f"- Able to use the `.nickme` command in DMs with Kurisu to change your nickname every 6 hours.\n"
+            f"- Able to stream in the {self.bot.channels['streaming-gamer'].mention} voice channel.\n"
+            f"Thanks for boosting and have a good time! {self.logo_boost}")
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
@@ -55,7 +56,8 @@ Thanks for stopping by and have a good time!
         msg = f"✅ **Join**: {member.mention} | {self.bot.escape_text(member)}\n🗓 __Creation__: {member.created_at}\n🏷 __User ID__: {member.id}"
         softban = await crud.get_softban(member.id)
         if softban:
-            message_sent = await send_dm_message(member, f"This account has not been permitted to participate in {self.bot.guild.name}. The reason is: {softban.reason}")
+            message_sent = await send_dm_message(member, f"This account has not been permitted to participate in {self.bot.guild.name}."
+                                                         f" The reason is: {softban.reason}")
             self.bot.actions.append("sbk:" + str(member.id))
             await member.kick()
             msg = f"🚨 **Attempted join**: {member.mention} is soft-banned by <@{softban.issuer}> | {self.bot.escape_text(member)}"
@@ -77,7 +79,9 @@ Thanks for stopping by and have a good time!
             embed = discord.Embed(color=discord.Color.dark_red())
             embed.set_author(name=f"Warns for {member}", icon_url=member.display_avatar.url)
             for idx, warn in enumerate(warns):
-                embed.add_field(name=f"{idx + 1}: {discord.utils.snowflake_time(warn.id).strftime('%Y-%m-%d %H:%M:%S')}", value=f"Issuer: {self.bot.escape_text((await self.bot.fetch_user(warn.issuer)).display_name)}\nReason: {warn.reason}")
+                when = discord.utils.snowflake_time(warn.id).strftime('%Y-%m-%d %H:%M:%S')
+                name = self.bot.escape_text((await self.bot.fetch_user(warn.issuer)).display_name)
+                embed.add_field(name=f"{idx + 1}: {when}", value=f"Issuer: {name}\nReason: {warn.reason}")
             await self.bot.channels['server-logs'].send(msg, embed=embed)
         await send_dm_message(member, self.welcome_msg.format(member.name, member.guild.name, self.bot.channels['welcome-and-rules'].mention))
 

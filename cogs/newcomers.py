@@ -61,7 +61,8 @@ class Newcomers(commands.Cog):
             if len(self.join_list) > 10:
                 self.autoprobate = True
                 await crud.set_flag('auto_probation', True)
-                await self.bot.channels['mods'].send("@everyone Raid alert multiple joins under 10 seconds! Autoprobation has been enabled.",
+                await self.bot.channels['mods'].send("@everyone Raid alert multiple joins under 10 seconds! "
+                                                     "Autoprobation has been enabled.",
                                                      allowed_mentions=discord.AllowedMentions(everyone=True))
                 for member in self.join_list:
                     try:
@@ -118,15 +119,17 @@ class Newcomers(commands.Cog):
         await ctx.message.delete()
 
         if reason:
-            await newcomers.send(f'{ctx.author} (ID: {ctx.author.id}) is ready for unprobation.\n\nMessage: `{reason}` @here', allowed_mentions=discord.AllowedMentions(everyone=True))
+            await newcomers.send(f'{ctx.author} (ID: {ctx.author.id}) is ready for unprobation.\n\n'
+                                 'Message: `{reason}` @here', allowed_mentions=discord.AllowedMentions(everyone=True))
             try:
                 await ctx.author.send('✅ Online staff have been notified of your request.')
             except discord.errors.Forbidden:
                 pass
         else:
-            await newcomers.send(f'{ctx.author.mention}, please run this command again \
-with a brief message explaining your situation (e.g., `.ready hey guys, i was having trouble hacking my console`). \
-**Copying and pasting the example will not remove your probation.**', delete_after=10)
+            await newcomers.send(f'{ctx.author.mention}, please run this command again with a brief message '
+                                 'explaining your situation (e.g., `.ready hey guys, i was '
+                                 'having trouble hacking my console`). **Copying and pasting '
+                                 'the example will not remove your probation.**', delete_after=10)
             ctx.command.reset_cooldown(ctx)
 
     @is_staff('SuperOP')

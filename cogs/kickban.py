@@ -41,7 +41,7 @@ class KickBan(commands.Cog):
     @is_staff("HalfOP")
     @commands.bot_has_permissions(kick_members=True)
     @commands.command(name="kick")
-    async def kick_member(self, ctx: GuildContext, member: discord.Member, *, reason=""):
+    async def kick_member(self, ctx: GuildContext, member: discord.Member, *, reason: str = ""):
         """Kicks a user from the server. Staff only."""
         if await check_bot_or_staff(ctx, member, "kick"):
             return
@@ -62,7 +62,10 @@ class KickBan(commands.Cog):
             msg += "\n✏️ __Reason__: " + reason
         await self.bot.channels['server-logs'].send(msg)
         signature = command_signature(ctx.command)
-        await self.bot.channels['mod-logs'].send(msg + (f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user." if reason == "" else ""))
+        await self.bot.channels['mod-logs'].send(msg + (f"\nPlease add an explanation below. "
+                                                        f"In the future, it is recommended to use `{signature}`"
+                                                        f" as the reason is automatically sent to the user."
+                                                        if reason == "" else ""))
 
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
@@ -91,7 +94,10 @@ class KickBan(commands.Cog):
             msg += "\n✏️ __Reason__: " + reason
         await self.bot.channels['server-logs'].send(msg)
         signature = command_signature(ctx.command)
-        await self.bot.channels['mod-logs'].send(msg + (f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user." if reason == "" else ""))
+        await self.bot.channels['mod-logs'].send(msg + (f"\nPlease add an explanation below. "
+                                                        f"In the future, it is recommended to use `{signature}`"
+                                                        f" as the reason is automatically sent to the user."
+                                                        if reason == "" else ""))
 
     @is_staff_app("OP")
     @app_commands.default_permissions(ban_members=True)
@@ -181,9 +187,11 @@ class KickBan(commands.Cog):
             msg += "\n✏️ __Reason__: " + reason
         await self.bot.channels['server-logs'].send(msg)
         signature = command_signature(ctx.command)
-        await self.bot.channels['mod-logs'].send(msg + (f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user." if reason == "" else ""))
+        await self.bot.channels['mod-logs'].send(msg + (f"\nPlease add an explanation below. "
+                                                        f"In the future, it is recommended to use `{signature}`"
+                                                        f" as the reason is automatically sent to the user."
+                                                        if reason == "" else ""))
 
-    @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
     @commands.command(name="unban", aliases=["unyeet"])
     async def unban_member(self, ctx: GuildContext, user: Union[discord.Member, discord.User], *, reason=""):
@@ -262,7 +270,10 @@ class KickBan(commands.Cog):
             msg += "\n✏️ __Reason__: " + reason
         await self.bot.channels['server-logs'].send(msg)
         signature = command_signature(ctx.command)
-        await self.bot.channels['mod-logs'].send(msg + (f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is automatically sent to the user." if reason == "" else ""))
+        await self.bot.channels['mod-logs'].send(msg + (f"\nPlease add an explanation below. "
+                                                        f"In the future, it is recommended to use `{signature}`"
+                                                        f" as the reason is automatically sent to the user."
+                                                        if reason == "" else ""))
 
     @is_staff("OP")
     @commands.bot_has_permissions(kick_members=True)
@@ -270,7 +281,9 @@ class KickBan(commands.Cog):
     async def softban_member(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason):
         """Soft-ban a user. OP+ only.
 
-        This "bans" the user without actually doing a ban on Discord. The bot will instead kick the user every time they join. Discord bans are account- and IP-based."""
+        This "bans" the user without actually doing a ban on Discord.
+        The bot will instead kick the user every time they join.
+        Discord bans are account- and IP-based."""
         if await check_bot_or_staff(ctx, member, "softban"):
             return
 

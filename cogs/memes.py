@@ -287,13 +287,15 @@ class Memes(commands.Cog):
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def meta(self, ctx: KurisuContext):
         """Reminds user where they are. (2)"""
-        await self._meme(ctx, f"You {'do not ' if ctx.channel != self.bot.channels['meta'] else ''}seem to be in {self.bot.channels['meta'].mention}. Please take this subject {'there' if ctx.channel != self.bot.channels['meta'] else 'somewhere else'}.", True)
+        await self._meme(ctx, f"You {'do not ' if ctx.channel != self.bot.channels['meta'] else ''}seem to be in {self.bot.channels['meta'].mention}."
+                              f" Please take this subject {'there' if ctx.channel != self.bot.channels['meta'] else 'somewhere else'}.", True)
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def appeals(self, ctx: KurisuContext):
         """Reminds user where they are. (3)"""
-        await self._meme(ctx, f"You {'do not ' if ctx.channel != self.bot.channels['appeals'] else ''}seem to be in {self.bot.channels['appeals'].mention}. Please take this subject {'there' if ctx.channel != self.bot.channels['appeals'] else 'somewhere else'}.", True)
+        await self._meme(ctx, f"You {'do not ' if ctx.channel != self.bot.channels['appeals'] else ''}seem to be in {self.bot.channels['appeals'].mention}."
+                              f" Please take this subject {'there' if ctx.channel != self.bot.channels['appeals'] else 'somewhere else'}.", True)
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
@@ -651,7 +653,13 @@ class Memes(commands.Cog):
     @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
     async def motd(self, ctx: KurisuContext):
         """got milk?"""
-        motd_list = [f"{str(self.flushedball)}", f"{str(self.flushedsquish)}", f"{str(self.flushedeyes)}", "ur mom lol", "hot dogs are sandwiches dont @ me", "have you had a coffee today?", "bird app bad", "imagine having opinions in current year", "based", "pog", "ratio", "remember to moisturize today!", "drink some water u idiot", "take ur meds", "do you like neapolitan ice cream?", "nentondon swonch", "xnoe at 11pm moment", "has junko had a name change today?", "got milk?", "got pilk?", "it has been 0 days since eip broke me", "ETA WEN PLS"]
+        motd_list = [f"{str(self.flushedball)}", f"{str(self.flushedsquish)}", f"{str(self.flushedeyes)}",
+                     "ur mom lol", "hot dogs are sandwiches dont @ me", "have you had a coffee today?",
+                     "bird app bad", "imagine having opinions in current year", "based", "pog", "ratio",
+                     "remember to moisturize today!", "drink some water u idiot", "take ur meds",
+                     "do you like neapolitan ice cream?", "nentondon swonch", "xnoe at 11pm moment",
+                     "has junko had a name change today?", "got milk?", "got pilk?",
+                     "it has been 0 days since eip broke me", "ETA WEN PLS"]
         await ctx.send(random.choice(motd_list))
 
     @commands.command(hidden=True)

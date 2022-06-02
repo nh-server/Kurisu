@@ -233,8 +233,9 @@ class Extras(commands.Cog):
             if key != "":
                 await ctx.send("That's not the correct key.")
             self.prune_key = ''.join(random.sample(string.ascii_letters, 8))
-            await ctx.send(
-                f"Are you sure you want to prune members inactive for 30 days?\nTo see how many members get kicked, use `.estprune`.\nTo confirm the prune, use the command `.prune30 {self.prune_key}`.")
+            await ctx.send(f"Are you sure you want to prune members inactive for 30 days?\n"
+                           "To see how many members get kicked, use `.estprune`.\n"
+                           f"To confirm the prune, use the command `.prune30 {self.prune_key}`.")
             return
         self.prune_key = ''.join(random.sample(string.ascii_letters, 8))
         await ctx.send("Starting pruning!")
@@ -472,7 +473,8 @@ class Extras(commands.Cog):
         """Lists the title of all existent tags."""
         if self.tags:
             colour = gen_color(ctx.author.id)
-            view = PaginatedEmbedView(paginator=TagsPaginator(tags=list(self.tags.values()), tags_per_page=10, colour=colour), author=ctx.author)
+            view = PaginatedEmbedView(paginator=TagsPaginator(tags=list(self.tags.values()),
+                                                              tags_per_page=10, colour=colour), author=ctx.author)
             view.message = await ctx.send(embed=view.paginator.current(), view=view)
         else:
             await ctx.send("There are no tags.")
@@ -529,7 +531,9 @@ class Extras(commands.Cog):
         embed = discord.Embed(title=name, description=description)
         await interaction.response.send_message(embed=embed, view=view)
         msg = await interaction.original_message()
-        await crud.add_vote_view(view_id=interaction.id, identifier='extras', author_id=interaction.user.id, options=options, start=datetime.datetime.utcnow(), message_id=msg.id, staff_only=staff_only)
+        await crud.add_vote_view(view_id=interaction.id, identifier='extras',
+                                 author_id=interaction.user.id, options=options,
+                                 start=datetime.datetime.utcnow(), message_id=msg.id, staff_only=staff_only)
 
     @is_staff('OP')
     @commands.guild_only()
