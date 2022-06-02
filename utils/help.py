@@ -111,6 +111,10 @@ class CommandHelpPaginator(BasePaginator):
 
         embed.add_field(name="Usage", value=f"{self.prefix}{command.qualified_name} {command.signature}",
                         inline=False)
+
+        if examples := command.extras.get('examples'):
+            embed.add_field(name="Examples", value='\n'.join(examples))
+
         embed.set_footer(text=f"Category: {command.cog_name if command.cog_name else 'No Category'}")
         return embed
 
