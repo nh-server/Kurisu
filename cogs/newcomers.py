@@ -6,7 +6,6 @@ import re
 
 from discord.ext import commands
 from typing import TYPE_CHECKING, Optional, Literal
-
 from utils import crud
 from utils.checks import is_staff, check_if_user_can_ready
 from utils.utils import text_to_discord_file, parse_time
@@ -134,7 +133,7 @@ with a brief message explaining your situation (e.g., `.ready hey guys, i was ha
     @commands.guild_only()
     @commands.command(extras={'examples': ['.raidpop kick --reason mass raid --younger_than 2d', '!raidpop ban --regex GiveAwayBot --dry_run True']})
     async def raidpop(self, ctx: GuildContext, action: Literal['kick', 'ban'], *, flags: RaidPopFlags):
-        """Kicks or bans all probated members in the join list.
+        """Kicks or bans all probated members in the join list. SuperOP+ only.
 
         **Flags**
         --reason [str] Reason for the kick/ban.
