@@ -5,14 +5,23 @@ import discord
 import re
 
 from discord.ext import commands
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Literal
+
 from utils import crud
 from utils.checks import is_staff, check_if_user_can_ready
+from utils.utils import text_to_discord_file, parse_time
 
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
     from utils.context import KurisuContext, GuildContext
+
+
+class RaidPopFlags(commands.FlagConverter, prefix='--', delimiter=' '):
+    reason: Optional[str]
+    regex: Optional[str]
+    dry_run: bool = commands.flag(name='dry_run', default=False)
+    younger_than: Optional[int] = commands.flag(name='younger_than', converter=parse_time, default=None)
 
 
 class Newcomers(commands.Cog):
@@ -45,23 +54,27 @@ class Newcomers(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
+        if member not in self.join_list:
+            self.join_list.append(member)
         if self.autoprobate:
             await member.add_roles(self.bot.roles['Probation'], reason="Auto-probation")
         else:
-            if member not in self.join_list:
-                self.join_list.append(member)
-                if len(self.join_list) > 10:
-                    self.autoprobate = True
-                    await crud.set_flag('auto_probation', True)
-                    await self.bot.channels['mods'].send("@everyone Raid alert multiple joins under 10 seconds! Autoprobation has been enabled.",
-                                                         allowed_mentions=discord.AllowedMentions(everyone=True))
-                    for member in self.join_list:
-                        try:
-                            await member.add_roles(self.bot.roles['Probation'], reason="Auto-probation")
-                        except (discord.Forbidden, discord.HTTPException):
-                            pass
-                await asyncio.sleep(10)
+            if len(self.join_list) > 10:
+                self.autoprobate = True
+                await crud.set_flag('auto_probation', True)
+                await self.bot.channels['mods'].send("@everyone Raid alert multiple joins under 10 seconds! Autoprobation has been enabled.",
+                                                     allowed_mentions=discord.AllowedMentions(everyone=True))
+                for member in self.join_list:
+                    try:
+                        await member.add_roles(self.bot.roles['Probation'], reason="Auto-probation")
+                    except (discord.Forbidden, discord.HTTPException):
+                        pass
+        await asyncio.sleep(10)
+        if not self.autoprobate:
+            try:
                 self.join_list.remove(member)
+            except ValueError:
+                pass
 
     async def autoprobate_handler(self, ctx: GuildContext, enabled: Optional[bool] = None):
         if enabled is not None:
@@ -116,6 +129,67 @@ class Newcomers(commands.Cog):
 with a brief message explaining your situation (e.g., `.ready hey guys, i was having trouble hacking my console`). \
 **Copying and pasting the example will not remove your probation.**', delete_after=10)
             ctx.command.reset_cooldown(ctx)
+
+    @is_staff('SuperOP')
+    @commands.guild_only()
+    @commands.command(extras={'examples': ['.raidpop kick --reason mass raid --younger_than 2d', '!raidpop ban --regex GiveAwayBot --dry_run True']})
+    async def raidpop(self, ctx: GuildContext, action: Literal['kick', 'ban'], *, flags: RaidPopFlags):
+        """Kicks or bans all probated members in the join list.
+
+        **Flags**
+        --reason [str] Reason for the kick/ban.
+        --regex [str] A regex pattern that the members usernames must partially match.
+        --dry_run [True|False] Runs the command without doing any changes. False by default.
+        --younger_than [#d#h#m#s] Affect accounts that were created less than the amount of time specified."""
+
+        if not self.autoprobate:
+            return await ctx.send("This can only be used with autoprobation on.")
+
+        if len(self.join_list) == 0:
+            return await ctx.send("The probation list is empty.")
+
+        members = self.join_list.copy()
+
+        if not flags.dry_run:
+            self.join_list.clear()
+
+        if action == 'ban':
+            method = ctx.guild.ban
+        else:
+            method = ctx.guild.kick
+
+        if flags.regex:
+            try:
+                pattern = re.compile(flags.regex, re.IGNORECASE)
+            except re.error:
+                return await ctx.send("Invalid regex expression passed in flag `--regex`.")
+            members = [member for member in members if pattern.search(member.name)]
+
+        if flags.younger_than:
+            now = discord.utils.utcnow()
+            members = [member for member in members if (now - member.created_at).total_seconds() < flags.younger_than]
+
+        if len(members) == 0:
+            return await ctx.send("No member matched all parameters.")
+
+        file_txt = ""
+        failed = 0
+
+        for member in members:
+            if not flags.dry_run:
+                try:
+                    await method(member, reason=flags.reason)
+                except (discord.NotFound, discord.Forbidden):
+                    failed = failed + 1
+                    continue
+            file_txt += f"{member.id} - {member}\n"
+
+        file = text_to_discord_file(file_txt, name=f'{action}.txt')
+
+        if not flags.dry_run:
+            await ctx.send(f"Cleaned up recent probations {'kicking' if action == 'kick' else 'banning'} {len(members) - failed} members.", file=file)
+        else:
+            await ctx.send(f"Dry run completed. {len(members)} matched the given parameters", file=file)
 
 
 async def setup(bot):
