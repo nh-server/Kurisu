@@ -302,6 +302,12 @@ class Extras(commands.Cog):
 
         if not ctx.interaction:
             await ctx.message.delete()
+            try:
+                await ctx.author.send(None)
+            except discord.Forbidden as exc:
+                return await ctx.send(f"💢 I can't help you if you don't let me!\n`{exc.text}`.", delete_after=10)
+            except discord.HTTPException:
+                pass
 
         if not ctx.interaction and ctx.channel != self.bot.channels['bot-cmds']:
             return await ctx.send(f"{author.mention}: .togglechannel can only be used in {self.bot.channels['bot-cmds'].mention}.", delete_after=10)
