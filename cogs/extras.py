@@ -303,23 +303,23 @@ class Extras(commands.Cog):
         if channel_name == "elsewhere":
             if self.bot.roles['#elsewhere'] in author.roles:
                 await author.remove_roles(self.bot.roles['#elsewhere'])
-                await ctx.send("Access to #elsewhere removed.", ephemeral=True)
+                await ctx.send("Access to #elsewhere removed.", ephemeral=True, delete_after=10)
             elif self.bot.roles['No-elsewhere'] not in author.roles:
                 await author.add_roles(self.bot.roles['#elsewhere'])
-                await ctx.send("Access to #elsewhere granted.", ephemeral=True)
+                await ctx.send("Access to #elsewhere granted.", ephemeral=True, delete_after=10)
             else:
                 await send_dm_message(ctx.author, "Your access to elsewhere is restricted, contact staff to remove it.")
         elif channel_name == "artswhere":
             if self.bot.roles['#art-discussion'] in author.roles:
                 await author.remove_roles(self.bot.roles['#art-discussion'])
-                await ctx.send("Access to #art-discussion removed.", ephemeral=True)
+                await ctx.send("Access to #art-discussion removed.", ephemeral=True, delete_after=10)
             elif self.bot.roles['No-art'] not in author.roles:
                 await author.add_roles(self.bot.roles['#art-discussion'])
-                await ctx.send("Access to #art-discussion granted.", ephemeral=True)
+                await ctx.send("Access to #art-discussion granted.", ephemeral=True, delete_after=10)
             else:
-                await ctx.send("Your access to #art-discussion is restricted, contact staff to remove it.", ephemeral=True)
+                await ctx.send("Your access to #art-discussion is restricted, contact staff to remove it.", ephemeral=True, delete_after=10)
         else:
-            await ctx.send(f"{channel_name} is not a valid toggleable channel.", ephemeral=True)
+            await ctx.send(f"{channel_name} is not a valid toggleable channel.", ephemeral=True, delete_after=10)
 
     @check_if_user_can_sr()
     @commands.guild_only()
