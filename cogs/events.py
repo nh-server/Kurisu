@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import datetime
 import discord
 import re
 import random
@@ -262,19 +263,17 @@ class Events(commands.Cog):
             await crud.add_permanent_role(message.author.id, self.bot.roles['Probation'].id)
             await message.author.add_roles(self.bot.roles['Probation'])
 
-    async def user_spam_check(self, message):
+    async def user_spam_check(self, message: discord.Message):
         if message.author.id not in self.user_antispam:
             self.user_antispam[message.author.id] = []
         self.user_antispam[message.author.id].append(message)
         # it can trigger it multiple times if I use >. it can't skip to a number so this should work
         if len(self.user_antispam[message.author.id]) == 6:
-            await message.author.add_roles(self.bot.roles['Muted'])
-            await message.author.remove_roles(self.bot.roles['#elsewhere'], self.bot.roles['#art-discussion'])
-            await crud.add_permanent_role(message.author.id, self.bot.roles['Muted'].id)
-            msg_user = "You were automatically muted for sending too many messages in a short period of time!\n\n" \
+            await message.author.timeout(datetime.timedelta(days=2))
+            msg_user = "You were automatically timed-out for sending too many messages in a short period of time!\n\n" \
                        "If you believe this was done in error, send a direct message (DM) to <@!333857992170536961> to contact staff."
             await send_dm_message(message.author, msg_user)
-            log_msg = f"🔇 **Auto-muted**: {message.author.mention} muted for spamming | {message.author}\n🗓 __Creation__: {message.author.created_at}\n🏷 __User ID__: {message.author.id}"
+            log_msg = f"🔇 **Auto-timeout**: {message.author.mention} timed out for spamming | {message.author}\n🗓 __Creation__: {message.author.created_at}\n🏷 __User ID__: {message.author.id}"
             embed = discord.Embed(title="Deleted messages", color=discord.Color.gold())
             # clone list so nothing is removed while going through it
             msgs_to_delete = self.user_antispam[message.author.id][:]
