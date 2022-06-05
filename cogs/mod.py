@@ -308,7 +308,7 @@ class Mod(commands.Cog):
 
     @is_staff("Helper")
     @commands.guild_only()
-    @commands.command(aliases=['clear'], extras={'example': ['.purge #hacking-general 10 --exclude Kurisu#1234', '.purge 10']})
+    @commands.command(aliases=['clear'], extras={'examples': ['.purge #hacking-general 10 --exclude Kurisu#1234', '.purge 10', '.purge 10 --before 983086930910654594']})
     async def purge(self, ctx: GuildContext, channel: Optional[Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]], limit: commands.Range[int, 1], *, flags: PurgeFlags):
         """Clears at most a given number of messages in current channel or a channel if given. Helpers in assistance channels and Staff only.
 
