@@ -198,9 +198,9 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
             await self.simple_embed(ctx, "Latest Luma Version:\nhttps://github.com/LumaTeam/Luma3DS/releases/latest", color=discord.Color.blue())
         else:
             await self.simple_embed(ctx,
-                                    "Download links for the most common Luma3DS releases:"
-                                    "[Latest Luma](https://github.com/LumaTeam/Luma3DS/releases/latest)"
-                                    "[Luma v7.0.5](https://github.com/LumaTeam/Luma3DS/releases/tag/v7.0.5)"
+                                    "Download links for the most common Luma3DS releases:\n"
+                                    "[Latest Luma](https://github.com/LumaTeam/Luma3DS/releases/latest)\n"
+                                    "[Luma v7.0.5](https://github.com/LumaTeam/Luma3DS/releases/tag/v7.0.5)\n"
                                     "[Luma v7.1](https://github.com/LumaTeam/Luma3DS/releases/tag/v7.1)",
                                     color=discord.Color.blue())
 
