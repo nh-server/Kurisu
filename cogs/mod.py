@@ -20,6 +20,13 @@ if TYPE_CHECKING:
     from utils.context import KurisuContext, GuildContext
 
 
+class PurgeFlags(commands.FlagConverter, prefix='--', delimiter=' '):
+    before: Optional[discord.Message]
+    after: Optional[discord.Message]
+    ignore_list: list[discord.Member] = commands.flag(name='ignore', default=lambda ctx: [])
+    exclusive_list: list[discord.Member] = commands.flag(name='only', default=lambda ctx: [])
+
+
 class Mod(commands.Cog):
     """
     Staff commands.
@@ -300,14 +307,49 @@ class Mod(commands.Cog):
         await self.bot.channels["mod-logs"].send(msg)
 
     @is_staff("Helper")
-    @commands.has_permissions(manage_messages=True)
     @commands.guild_only()
-    @commands.command(aliases=["clear"])
-    async def purge(self, ctx: GuildContext, limit: int):
-        """Clears a given number of messages. Helpers in assistance channels and Staff only."""
-        deleted = await ctx.channel.purge(limit=limit + 1, check=lambda message: not message.pinned)
-        msg = f"🗑 **Cleared**: {ctx.author.mention} cleared {len(deleted)} messages in {ctx.channel.mention}"
-        await self.bot.channels['mod-logs'].send(msg)
+    @commands.command(aliases=['clear'], extras={'example': ['.purge #hacking-general 10 --exclude Kurisu#1234', '.purge 10']})
+    async def purge(self, ctx: GuildContext, channel: Optional[Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]], limit: commands.Range[int, 1], *, flags: PurgeFlags):
+        """Clears at most a given number of messages in current channel or a channel if given. Helpers in assistance channels and Staff only.
+
+        **Flags**
+        --before [Message] Deletes messages created before the provided message.
+        --after [Message] Deletes messages created after the provided message. If this is used oldest messages are deleted first.
+        --ignore [Member] Ignores the member messages when deleting. Can be used multiple times. Can't be used with --only.
+        --only [Member] Only deletes the messages by this member. Can be used multiple times. Can't be used with --ignore."""
+
+        if not channel:
+            channel = ctx.channel
+        if not channel.permissions_for(ctx.author).manage_messages:
+            return await ctx.send("You don't have permission to delete messages in this channel.")
+        if flags.exclusive_list and flags.ignore_list:
+            return await ctx.send("You can't use the flags --include and --exclude together.")
+
+        # Try to recreate original behaviour in all cases
+        if channel == ctx.channel:
+            await ctx.message.delete()
+
+        checks = [lambda m: not m.pinned]
+
+        if flags.exclusive_list:
+            checks.append(lambda m: not m.pinned or m.author in flags.exclusive_list)
+
+        if flags.ignore_list:
+            checks.append(lambda m: not m.author not in flags.ignore_list)
+
+        def check(message):
+            return all(c(message) for c in checks)
+
+        try:
+            deleted = await channel.purge(limit=limit, before=flags.before, after=flags.after,
+                                          check=check)
+        except discord.HTTPException as exc:
+            return await ctx.send(f"Deleting messages failed {exc}")
+        if deleted:
+            msg = f"🗑 **Cleared**: {ctx.author.mention} cleared {len(deleted)} messages in {channel.mention}"
+            await self.bot.channels['mod-logs'].send(msg)
+        else:
+            await ctx.send("No messages were deleted.", delete_after=10)
 
     @is_staff("HalfOP")
     @commands.guild_only()
