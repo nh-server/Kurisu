@@ -13,7 +13,7 @@ from typing import Union, Optional, TYPE_CHECKING
 from utils import crud, models
 from utils.converters import DateOrTimeToSecondsConverter, TimeTransformer
 from utils.checks import is_staff, check_staff_id, check_bot_or_staff, is_staff_app
-from utils.utils import command_signature, paginate_message, send_dm_message, parse_time, text_to_discord_file, gen_color
+from utils.utils import command_signature, paginate_message, send_dm_message, parse_time, text_to_discord_file, gen_color, create_error_embed
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -1021,6 +1021,41 @@ class Mod(commands.Cog):
     async def username(self, ctx: KurisuContext, *, username):
         """Sets bot name. Staff only."""
         await self.bot.user.edit(username=username)
+
+    @is_staff_app("Owner")
+    @app_commands.default_permissions(administrator=True)
+    @app_commands.describe(file='Image to set as the new avatar.')
+    @app_commands.command()
+    async def avatar(self, interaction: discord.Interaction, file: discord.Attachment):
+        """Sets bot avatar. Owner only"""
+
+        if not file.content_type or file.content_type not in (
+            "image/jpeg",
+            "image/png",
+            "image/gif",
+        ):
+            return await interaction.response.send_message(
+                "File provided is not a valid image.", ephemeral=True
+            )
+
+        image_bytes = await file.read()
+        try:
+            await self.bot.user.edit(avatar=image_bytes)
+        except ValueError:
+            await interaction.response.send_message(
+                "The image has a invalid format.", ephemeral=True
+            )
+        except discord.HTTPException as exc:
+            embed = create_error_embed(interaction, exc)
+            await interaction.response.send_message(
+                "Failure to edit the bot's profile.",
+                embed=embed,
+                ephemeral=True
+            )
+        else:
+            await interaction.response.send_message(
+                "Profile picture changed successfully.", ephemeral=True
+            )
 
     @is_staff("SuperOP")
     @commands.command()
