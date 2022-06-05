@@ -52,7 +52,7 @@ class Newcomers(commands.Cog):
             await crud.add_flag(flag_name)
 
     @commands.Cog.listener()
-    async def on_member_join(self, member):
+    async def on_member_join(self, member: discord.Member):
         if member not in self.join_list:
             self.join_list.append(member)
         if self.autoprobate:
@@ -64,6 +64,7 @@ class Newcomers(commands.Cog):
                 await self.bot.channels['mods'].send("@everyone Raid alert multiple joins under 10 seconds! "
                                                      "Autoprobation has been enabled.",
                                                      allowed_mentions=discord.AllowedMentions(everyone=True))
+                await member.guild.edit(verification_level=discord.VerificationLevel.high)
                 for member in self.join_list:
                     try:
                         await member.add_roles(self.bot.roles['Probation'], reason="Auto-probation")
@@ -99,11 +100,13 @@ class Newcomers(commands.Cog):
     @is_staff('OP')
     @autoprobate_cmd.command(aliases=on_aliases, hidden=True)
     async def autoprobate_on(self, ctx: GuildContext):
+        await ctx.guild.edit(verification_level=discord.VerificationLevel.high)
         await self.autoprobate_handler(ctx, True)
 
     @is_staff('OP')
     @autoprobate_cmd.command(aliases=off_aliases, hidden=True)
     async def autoprobate_off(self, ctx: GuildContext):
+        await ctx.guild.edit(verification_level=discord.VerificationLevel.medium)
         await self.autoprobate_handler(ctx, False)
 
     @check_if_user_can_ready()
