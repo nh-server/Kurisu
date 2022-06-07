@@ -46,6 +46,7 @@ class Memes(commands.Cog):
         self.flushedsquish = discord.utils.get(self.bot.guild.emojis, name="flushedsquish") or "⁉"
         self.flushedball = discord.utils.get(self.bot.guild.emojis, name="flushedball") or "⁉"
         self.flushedeyes = discord.utils.get(self.bot.guild.emojis, name="flushedeyes") or "⁉"
+        self.staticbean = discord.utils.get(self.bot.guild.emojis, name="staticbean") or "!?"
 
     async def _meme(self, ctx: KurisuContext, msg, directed: bool = False, imagelink=None, allowed_mentions=None):
         author = ctx.author
