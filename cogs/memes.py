@@ -669,6 +669,11 @@ class Memes(commands.Cog):
         wagulist = [f"{str(self.wagu_emoji)}", f"{str(self.waguspooky)}", f"{str(self.waguxmas)}", f"{str(self.waguspin)}", f"{str(self.waguspinaaa)}", f"{str(self.waguwat)}", f"{str(self.waguwu)}", f"{str(self.waguw)}", f"{str(self.hyperwagu)}", f"{str(self.wagupeek)}", f"{str(self.poggu)}", f"{str(self.waguburger)}", f"{str(self.wagucar)}", f"{str(self.shutwagu)}", f"{str(self.waguboat)}", f"{str(self.wagutv)}", f"{str(self.ghostwagu)}"]
         await ctx.send(random.choice(wagulist))
 
+  @commands.command(hidden=True, aliases=['america'])
+    @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.channel)
+    async def shootings(self, ctx: KurisuContext):
+        """a solid 0 days since the last one"""
+        await ctx.send("https://i.imgur.com/Qzz4WZx.png")
 
 async def setup(bot):
     await bot.add_cog(Memes(bot))
