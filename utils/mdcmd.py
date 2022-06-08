@@ -5,8 +5,6 @@ from typing import TYPE_CHECKING
 
 import discord
 from discord.ext import commands
-from discord.ext.commands import CooldownMapping, Cooldown
-
 from utils.utils import ConsoleColor
 
 if TYPE_CHECKING:
@@ -211,10 +209,8 @@ def add_md_files_as_commands(cog_class: 'Type[Assistance]', md_dir: str = None, 
         cmd.__doc__ = help_desc
 
         # this feels _wrong_ but is probably the best way to do this
-        cmd_obj = namespace.command(name=name, aliases=aliases)(cmd)
-        rate = cooldown[0]
-        per = cooldown[1]
-        cmd_obj._buckets = CooldownMapping(Cooldown(rate, per), commands.BucketType.channel)
+        cooldown = commands.cooldown(cooldown[0], cooldown[1], commands.BucketType.channel)(cmd)
+        cmd_obj = namespace.command(name=name, aliases=aliases)(cooldown)
         return cmd_obj
 
     new_commands: 'dict[str, dict[str, discord.Embed]]' = defaultdict(dict)
