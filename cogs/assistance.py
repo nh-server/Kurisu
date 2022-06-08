@@ -204,7 +204,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
                                     "[Luma v7.1](https://github.com/LumaTeam/Luma3DS/releases/tag/v7.1)",
                                     color=discord.Color.blue())
 
-    @commands.group(cooldown=commands.CooldownMapping.from_cooldown(0, 0, commands.BucketType.channel), invoke_without_command=True, case_insensitive=True)
+    @commands.group(cooldown=None, invoke_without_command=True, case_insensitive=True)
     async def tutorial(self, ctx: KurisuContext):
         """Links to one of multiple guides"""
         if isinstance(ctx.channel, discord.DMChannel) or ctx.channel == self.bot.channels['bot-cmds']:
