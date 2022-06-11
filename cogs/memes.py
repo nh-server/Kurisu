@@ -46,6 +46,20 @@ class Memes(commands.Cog):
         self.flushedsquish = discord.utils.get(self.bot.guild.emojis, name="flushedsquish") or "⁉"
         self.flushedball = discord.utils.get(self.bot.guild.emojis, name="flushedball") or "⁉"
         self.flushedeyes = discord.utils.get(self.bot.guild.emojis, name="flushedeyes") or "⁉"
+        self.plusher_flusher = discord.utils.get(self.bot.guild.emojis, name="plusher_flusher") or "⁉"
+        self.isforme = discord.utils.get(self.bot.guild.emojis, name="isforme") or "⁉"
+        self.flushedtriangle = discord.utils.get(self.bot.guild.emojis, name="flushedtriangle") or "⁉"
+        self.flushedstuffed = discord.utils.get(self.bot.guild.emojis, name="flushedstuffed") or "⁉"
+        self.flushedsquare = discord.utils.get(self.bot.guild.emojis, name="flushedsquare") or "⁉"
+        self.flushedskull = discord.utils.get(self.bot.guild.emojis, name="flushedskull") or "⁉"
+        self.flushedmoon = discord.utils.get(self.bot.guild.emojis, name="flushedmoon") or "⁉"
+        self.flushedhot = discord.utils.get(self.bot.guild.emojis, name="flushedhot") or "⁉"
+        self.flushedhand = discord.utils.get(self.bot.guild.emojis, name="flushedhand") or "⁉"
+        self.flushedhalf = discord.utils.get(self.bot.guild.emojis, name="flushedhalf") or "⁉"
+        self.flushedgoomba = discord.utils.get(self.bot.guild.emojis, name="flushedgoomba") or "⁉"
+        self.flushedflat = discord.utils.get(self.bot.guild.emojis, name="flushedflat") or "⁉"
+        self.flushedcowboy = discord.utils.get(self.bot.guild.emojis, name="flushedcowboy") or "⁉"
+        self.flushedwater = discord.utils.get(self.bot.guild.emojis, name="flushedwater") or "⁉"
 
     async def _meme(self, ctx: KurisuContext, msg, directed: bool = False, imagelink=None, allowed_mentions=None):
         author = ctx.author
@@ -665,9 +679,26 @@ class Memes(commands.Cog):
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
     async def wagu(self, ctx: KurisuContext):
-        """got milk?"""
-        wagulist = [f"{str(self.wagu_emoji)}", f"{str(self.waguspooky)}", f"{str(self.waguxmas)}", f"{str(self.waguspin)}", f"{str(self.waguspinaaa)}", f"{str(self.waguwat)}", f"{str(self.waguwu)}", f"{str(self.waguw)}", f"{str(self.hyperwagu)}", f"{str(self.wagupeek)}", f"{str(self.poggu)}", f"{str(self.waguburger)}", f"{str(self.wagucar)}", f"{str(self.shutwagu)}", f"{str(self.waguboat)}", f"{str(self.wagutv)}", f"{str(self.ghostwagu)}"]
+        """got wagu?"""
+        wagulist = [f"{str(self.wagu_emoji)}", f"{str(self.waguspooky)}", f"{str(self.waguxmas)}",
+                    f"{str(self.waguspin)}", f"{str(self.waguspinaaa)}", f"{str(self.waguwat)}",
+                    f"{str(self.waguwu)}", f"{str(self.waguw)}", f"{str(self.hyperwagu)}",
+                    f"{str(self.wagupeek)}", f"{str(self.poggu)}", f"{str(self.waguburger)}",
+                    f"{str(self.wagucar)}", f"{str(self.shutwagu)}", f"{str(self.waguboat)}",
+                    f"{str(self.wagutv)}", f"{str(self.ghostwagu)}"]
         await ctx.send(random.choice(wagulist))
+
+    @commands.command(hidden=True)
+    @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
+    async def flushed(self, ctx: KurisuContext):
+        """got flushed?"""
+        flushedlist = [f"{str(self.flushedsquish)}", f"{str(self.plusher_flusher)}", f"{str(self.isforme)}",
+                    f"{str(self.flushedtriangle)}", f"{str(self.flushedstuffed)}", f"{str(self.flushedball)}",
+                    f"{str(self.flushedeyes)}", f"{str(self.flushedsquare)}", f"{str(self.flushedskull)}",
+                    f"{str(self.flushedmoon)}", f"{str(self.flushedhot)}", f"{str(self.flushedhand)}",
+                    f"{str(self.flushedhalf)}", f"{str(self.flushedgoomba)}", f"{str(self.flushedflat)}",
+                    f"{str(self.flushedcowboy)}", f"{str(self.flushedwater)}"]
+        await ctx.send(random.choice(flushedlist))
 
 
 async def setup(bot):
