@@ -60,6 +60,8 @@ class Memes(commands.Cog):
         self.flushedflat = discord.utils.get(self.bot.guild.emojis, name="flushedflat") or "⁉"
         self.flushedcowboy = discord.utils.get(self.bot.guild.emojis, name="flushedcowboy") or "⁉"
         self.flushedwater = discord.utils.get(self.bot.guild.emojis, name="flushedwater") or "⁉"
+        self.flushedw = discord.utils.get(self.bot.guild.emojis, name="FlushedW") or "⁉"
+        self.flushedhalf2 = discord.utils.get(self.bot.guild.emojis, name="flushedhalf2") or "⁉"
 
     async def _meme(self, ctx: KurisuContext, msg, directed: bool = False, imagelink=None, allowed_mentions=None):
         author = ctx.author
@@ -697,7 +699,8 @@ class Memes(commands.Cog):
                     f"{str(self.flushedeyes)}", f"{str(self.flushedsquare)}", f"{str(self.flushedskull)}",
                     f"{str(self.flushedmoon)}", f"{str(self.flushedhot)}", f"{str(self.flushedhand)}",
                     f"{str(self.flushedhalf)}", f"{str(self.flushedgoomba)}", f"{str(self.flushedflat)}",
-                    f"{str(self.flushedcowboy)}", f"{str(self.flushedwater)}"]
+                    f"{str(self.flushedcowboy)}", f"{str(self.flushedwater)}", f"{str(self.flushedw)}",
+                    f"{str(self.flushedhalf2)}"]
         await ctx.send(random.choice(flushedlist))
 
 
