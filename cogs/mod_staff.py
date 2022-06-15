@@ -4,8 +4,8 @@ import discord
 
 from discord.ext import commands
 from typing import TYPE_CHECKING
-from utils import crud
-from utils.checks import is_staff, staff_ranks
+from utils import StaffRank, OptionalMember
+from utils.checks import is_staff
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -20,6 +20,7 @@ class ModStaff(commands.Cog):
     def __init__(self, bot: Kurisu):
         self.bot: Kurisu = bot
         self.emoji = discord.PartialEmoji.from_str('🛠️')
+        self.configuration = self.bot.configuration
 
     async def cog_check(self, ctx: KurisuContext):
         if ctx.guild is None:
@@ -28,18 +29,13 @@ class ModStaff(commands.Cog):
 
     @is_staff("Owner")
     @commands.command()
-    async def addstaff(self, ctx: GuildContext, member: discord.Member, position):
+    async def addstaff(self, ctx: GuildContext, member: discord.Member, position: str):
         """Add user as staff. Owners only."""
         if position not in self.bot.staff_roles:
             await ctx.send(f"💢 That's not a valid position. You can use __{'__, __'.join(self.bot.staff_roles.keys())}__")
             return
-        await crud.add_staff(member.id, position)
-        # remove leftover staff roles
-        await member.remove_roles(*self.bot.staff_roles.values())
-        if position == "HalfOP":  # this role requires the use of sudo
-            await member.add_roles(self.bot.roles['Staff'])
-        else:
-            await member.add_roles(*(self.bot.roles['Staff'], self.bot.roles[position]))
+        await self.bot.configuration.add_staff(member, position)
+        await self.bot.configuration.update_staff_roles(member)
         await ctx.send(f"{member.mention} is now on staff as {position}. Welcome to the secret party room!")
 
     @is_staff("Owner")
@@ -47,8 +43,8 @@ class ModStaff(commands.Cog):
     async def delstaff(self, ctx: GuildContext, member: discord.Member):
         """Remove user from staff. Owners only."""
         await ctx.send(member.name)
-        await crud.remove_staff(member.id)
-        await member.remove_roles(*self.bot.staff_roles.values())
+        await self.bot.configuration.delete_staff(member)
+        await self.bot.configuration.update_staff_roles(member)
         await ctx.send(f"{member.mention} is no longer staff. Stop by some time!")
 
     @is_staff("HalfOP")
@@ -56,11 +52,11 @@ class ModStaff(commands.Cog):
     async def sudo(self, ctx: GuildContext):
         """Gain staff powers temporarily. Only needed by HalfOPs."""
         author = ctx.author
-        staff = await crud.get_staff_member(author.id)
-        if not staff:
+        position = self.bot.configuration.staff.get(author.id)
+        if not position:
             await ctx.send("You are not listed as staff, and can't use this. (this message should not appear)")
             return
-        if staff.position != "HalfOP":
+        if position is not StaffRank.HalfOP:
             await ctx.send("You are not HalfOP, therefore this command is not required.")
             return
         await author.add_roles(self.bot.roles['HalfOP'])
@@ -74,11 +70,11 @@ class ModStaff(commands.Cog):
     async def unsudo(self, ctx: GuildContext):
         """Remove temporary staff powers. Only needed by HalfOPs."""
         author = ctx.author
-        staff = await crud.get_staff_member(author.id)
-        if not staff:
+        position = self.bot.configuration.staff.get(author.id)
+        if not position:
             await ctx.send("You are not listed as staff, and can't use this. (this message should not appear)")
             return
-        if staff.position != "HalfOP":
+        if position is not StaffRank.HalfOP:
             await ctx.send("You are not HalfOP, therefore this command is not required.")
             return
         await author.remove_roles(self.bot.roles['HalfOP'])
@@ -91,34 +87,35 @@ class ModStaff(commands.Cog):
     @commands.command(hidden=True)
     async def updatestaff(self, ctx: GuildContext):
         """Updates the staff list based on staff member in the server."""
-        removed = []
-        for staffmember in await crud.get_staff():
-            if ctx.guild.get_member(staffmember.id) is None:
-                await crud.remove_staff(staffmember.id)
-                removed.append(await self.bot.fetch_user(staffmember.id))
-        for helper in await crud.get_helpers():
-            if ctx.guild.get_member(helper.id) is None:
-                await crud.remove_helper(helper.id)
-                removed.append(await self.bot.fetch_user(helper.id))
+        removed: list[str] = []
+        for user_id in self.configuration.staff:
+            if ctx.guild.get_member(user_id) is None:
+                staff_member = OptionalMember(id=user_id)
+                await self.configuration.delete_staff(staff_member)
+                removed.append(str(user_id))
+        for user_id in self.configuration.helpers:
+            if ctx.guild.get_member(user_id) is None:
+                helper = OptionalMember(id=user_id)
+                await self.bot.configuration.delete_helper(helper)
+                removed.append(str(user_id))
         if not removed:
-            await ctx.send("Updated Staff list, no staff removed!")
+            await ctx.send("No staff members removed.")
         else:
-            msg = f"Updated staff list. Removed {', '.join([x.name for x in removed])}."
+            msg = f"Updated staff list. Removed {', '.join(removed)}."
             await ctx.send(msg)
-            modmsg = f"🛠 **Updated Staff list**: {ctx.author.mention} updated the staff list.\n:pencil: __Users removed__: {', '.join([f'{x.id} | {x}'for x in removed])}"
-            await self.bot.channels['mod-logs'].send(modmsg)
+            mod_msg = f"🛠 **Updated Staff list**: {ctx.author.mention} updated the staff list.\n:pencil: __Users removed__: {', '.join(removed)}"
+            await self.bot.channels['mod-logs'].send(mod_msg)
 
     @commands.command()
     async def liststaff(self, ctx: GuildContext):
         """List staff members per rank."""
-        staff_list = await crud.get_staff()
         ranks: dict[str, list] = {}
         embed = discord.Embed()
-        for rank in staff_ranks.keys():
+        for rank in self.bot.staff_roles.keys():
             ranks[rank] = []
-            for staff in staff_list:
-                if rank == staff.position:
-                    ranks[rank].append(staff.id)
+            for user_id, staff_rank in self.configuration.staff.items():
+                if rank == staff_rank.name:
+                    ranks[rank].append(user_id)
             if ranks[rank]:
                 embed.add_field(
                     name=rank,

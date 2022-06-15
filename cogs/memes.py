@@ -7,7 +7,6 @@ import random
 
 from discord.ext import commands
 from typing import TYPE_CHECKING
-from utils import crud
 from utils.checks import is_staff
 
 if TYPE_CHECKING:
@@ -22,6 +21,7 @@ class Memes(commands.Cog):
     def __init__(self, bot: Kurisu):
         self.bot: Kurisu = bot
         self.bot.loop.create_task(self.init_memes())
+        self.extras = bot.extras
 
     async def init_memes(self):
         await self.bot.wait_until_all_ready()
@@ -574,7 +574,7 @@ class Memes(commands.Cog):
         delta = datetime.timedelta(seconds=86400)
         expiring_time = timestamp + delta
 
-        await crud.add_timed_role(member.id, self.bot.roles['🍰'].id, expiring_time)
+        await self.extras.add_timed_role(member, self.bot.roles['🍰'], expiring_time)
         await ctx.send(f"Happy birthday {member.mention}!")
 
     @commands.command(hidden=True, aliases=["departure"])
@@ -615,23 +615,24 @@ class Memes(commands.Cog):
     @commands.command()
     async def xiwarn(self, ctx: KurisuContext, citizen: discord.Member):
         """Sometimes citizens need a reminder how to act"""
-        await crud.add_social_credit(citizen.id, -100)
+        await self.extras.add_social_credit(citizen.id, -100)
         await ctx.send(f"{ctx.author.mention} has assessed {citizen.mention}'s actions and removed 100 social credit from them!")
 
     @is_staff("Helper")
     @commands.command()
     async def xipraise(self, ctx: KurisuContext, citizen: discord.Member):
         """Model citizens will be praised"""
-        await crud.add_social_credit(citizen.id, 100)
+        await self.extras.add_social_credit(citizen.id, 100)
         await ctx.send(f"{ctx.author.mention} has assessed {citizen.mention}'s actions and added 100 social credit to them!")
 
     @is_staff("Helper")
     @commands.command(aliases=["sc"])
     async def socialcredit(self, ctx: KurisuContext, citizen: discord.Member):
         """You better keep this high"""
-        db_citizen = await crud.get_citizen(citizen.id)
+        db_citizen = await self.extras.get_citizen(citizen.id)
         if not db_citizen:
-            await crud.add_citizen(citizen.id)
+            await self.extras.add_citizen(citizen.id)
+            await self.extras.get_citizen(citizen.id)
             return await ctx.send(f"{citizen.mention} is now a citizen and has 100 social credit!")
         await ctx.send(f"{citizen.mention} currently has {db_citizen.social_credit} social credit!")
         if db_citizen.social_credit < -200:
@@ -643,10 +644,10 @@ class Memes(commands.Cog):
     @commands.command()
     async def gulag(self, ctx: KurisuContext, citizen: discord.Member):
         """When the citizen was not meant to be"""
-        db_citizen = await crud.get_citizen(citizen.id)
+        db_citizen = await self.extras.get_citizen(citizen.id)
         if not db_citizen:
             return await ctx.send(f"There is no citizen named {citizen.mention}!")
-        await crud.remove_citizen(citizen.id)
+        await self.extras.delete_citizen(citizen.id)
         await ctx.send(f"{citizen.mention} was sent away for reeducation purposes!")
 
     @commands.command(hidden=True)

@@ -4,8 +4,7 @@ import discord
 
 from discord.ext import commands
 from typing import TYPE_CHECKING, Optional, Union
-from utils import crud
-from utils.checks import is_staff, check_staff_id
+from utils.checks import is_staff, check_staff
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -19,6 +18,7 @@ class Lockdown(commands.Cog):
     def __init__(self, bot: Kurisu):
         self.bot: Kurisu = bot
         self.emoji = discord.PartialEmoji.from_str('🔒')
+        self.configuration = self.bot.configuration
 
     async def cog_check(self, ctx: KurisuContext):
         if ctx.guild is None:
@@ -33,12 +33,13 @@ class Lockdown(commands.Cog):
 
         for c in channels:
 
-            db_channel = await crud.get_dbchannel(c.id)
+            db_channel = await self.configuration.get_channel(c.id)
 
             if not db_channel:
-                db_channel = await crud.add_dbchannel(c.id, c.name)
+                await self.configuration.add_channel(c.name, c)
+                db_channel = await self.configuration.get_channel(c.id)
 
-            if db_channel.lock_level > 0:
+            if db_channel and db_channel.lock_level > 0:
                 await ctx.send(f"🔒 {c.mention} is already locked down. Use `.unlock` to unlock.")
                 continue
 
@@ -66,8 +67,8 @@ class Lockdown(commands.Cog):
                 await ctx.send(f"No changes done to {c.mention}")
                 continue
 
-            await crud.add_changed_roles(c.id, to_add)
-            await db_channel.update(lock_level=level).apply()
+            await self.configuration.add_changed_roles(to_add, c)
+            await self.configuration.set_channel_lock_level(c, lock_level=level)
             locked_down.append(c)
 
             if message:
@@ -130,7 +131,7 @@ class Lockdown(commands.Cog):
             else:
                 channels.append(ctx.channel)
 
-        is_helper = not await check_staff_id('HalfOP', author.id)
+        is_helper = not check_staff(self.bot, 'HalfOP', author.id)
 
         if is_helper and any(c not in self.bot.assistance_channels for c in channels):
             return await ctx.send("You can only lock assistance channels.")
@@ -155,7 +156,7 @@ class Lockdown(commands.Cog):
             else:
                 channels.append(ctx.channel)
 
-        is_helper = not await check_staff_id("HalfOP", author.id)
+        is_helper = not check_staff(self.bot, "HalfOP", author.id)
 
         if is_helper and any(c not in self.bot.assistance_channels for c in channels):
             return await ctx.send("You can only unlock assistance channels.")
@@ -164,18 +165,16 @@ class Lockdown(commands.Cog):
 
         for c in channels:
 
-            db_channel = await crud.get_dbchannel(c.id)
+            db_channel = await self.configuration.get_channel(c.id)
 
             if not db_channel or db_channel.lock_level == 0:
                 await ctx.send(f"{c.mention} is not locked.")
                 continue
-            elif db_channel.lock_level == 3 and not await check_staff_id("Owner", author.id):
+            elif db_channel.lock_level == 3 and not check_staff(self.bot, "Owner", author.id):
                 await ctx.send(f"{c.mention} can only be unlocked by a Owner.")
                 continue
 
-            changed_roles = await crud.get_changed_roles(c.id)
-
-            for changed_role in changed_roles:
+            async for changed_role in self.configuration.get_changed_roles(c):
                 role_id = changed_role.role_id
                 role = ctx.guild.get_role(role_id)
                 if not role:
@@ -187,9 +186,9 @@ class Lockdown(commands.Cog):
                 except discord.Forbidden:
                     continue
 
-            await crud.clear_changed_roles(c.id)
+            await self.configuration.clear_changed_roles(c)
             await c.send("🔓 Channel unlocked.")
-            await db_channel.update(lock_level=0).apply()
+            await self.configuration.set_channel_lock_level(c, lock_level=0)
             unlocked.append(c)
 
         if unlocked:

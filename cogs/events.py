@@ -11,9 +11,10 @@ from discord.ext import commands
 from string import printable
 from subprocess import call
 from typing import TYPE_CHECKING
-from utils.checks import check_staff_id
-from utils import crud
+from utils.checks import check_staff
 from utils.utils import send_dm_message, gen_color
+from utils import Restriction
+from utils.database import FilterKind
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -26,6 +27,8 @@ class Events(commands.Cog):
 
     def __init__(self, bot: Kurisu):
         self.bot: Kurisu = bot
+        self.configuration = bot.configuration
+        self.filters = self.bot.filters
 
     ignored_file_extensions = (
         '.jpg',
@@ -59,7 +62,7 @@ class Events(commands.Cog):
         random.seed(message.id)
         embed = discord.Embed(color=gen_color(message.id))
         embed.description = message.content
-        if await crud.is_watched(message.author.id):
+        if message.author.id in self.configuration.watch_list:
             content = f"**Channel**:\n[#{message.channel.name}]({message.jump_url})\n"
             msg = message.author.mention
             if message.attachments:
@@ -78,9 +81,8 @@ class Events(commands.Cog):
         msg = ''.join(char for char in message.content.lower() if char in printable)
         msg_no_separators = re.sub(r'[ *_\-~]', '', msg)
 
-        log_msg, wf_matches = self.bot.wordfilter.search_word(msg)
-        lf_matches = self.bot.levenshteinfilter.search_site(msg, 'scamming site')
-        contains_video, contains_piracy_video = self.bot.wordfilter.search_video(msg)
+        filter_result = self.filters.match_filtered_words(msg_no_separators) | self.filters.match_levenshtein_words(message.content)
+        contains_video = any(re.findall(r'((?:https?://)?(?:www.)?)(?:(youtube\.com/watch\?v=)|(youtu\.be/))([aA-zZ_\-\d]{11})', message.content))
         approved_invites, non_approved_invites = self.bot.invitefilter.search_invite(message.content)
         contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub', 'strawpoii', 'hackinformer.com', 'console.guide', 'jacksorrell.co.uk', 'jacksorrell.tv', 'nintendobrew.com', 'reinx.guide', 'NxpeNwz', 'scenefolks.com', 'rentry.co'))
         contains_invite_link = approved_invites or non_approved_invites
@@ -129,8 +131,8 @@ class Events(commands.Cog):
                 f"**Bad site**: {message.author.mention} mentioned a blocked site in {message.channel.mention} (message deleted)",
                 embed=embed)
 
-        if wf_matches['piracy tool']:
-            embed.description = log_msg
+        if FilterKind.PiracyTool in filter_result:
+            embed.description = message.content
             try:
                 await message.delete()
             except discord.errors.NotFound:
@@ -144,17 +146,7 @@ class Events(commands.Cog):
                 f"**Bad tool**: {message.author.mention} mentioned a piracy tool in {message.channel.mention} (message deleted)",
                 embed=embed)
 
-        if lf_matches:
-            embed.description = msg
-            try:
-                await message.delete()
-            except discord.errors.NotFound:
-                pass
-            await self.bot.channels['message-logs'].send(
-                f"**Scamming Site**: {message.author.mention} likely mentioned a scamming site in {message.channel.mention} (message deleted)",
-                embed=embed)
-
-        if contains_piracy_video:
+        if FilterKind.PiracyVideo in filter_result:
             try:
                 await message.delete()
             except discord.errors.NotFound:
@@ -166,13 +158,13 @@ class Events(commands.Cog):
             await self.bot.channels['message-logs'].send(
                 f"**Bad video**: {message.author.mention} linked a banned video in {message.channel.mention} (message deleted)",
                 embed=embed)
-        if wf_matches['piracy tool alert']:
-            embed.description = log_msg
+        if FilterKind.PiracyToolAlert in filter_result:
+            embed.description = message.content
             await self.bot.channels['message-logs'].send(
                 f"**Bad tool**: {message.author.mention} likely mentioned a piracy tool in {message.channel.mention}",
                 embed=embed)
-        if wf_matches['piracy site']:
-            embed.description = log_msg
+        if FilterKind.PiracySite in filter_result:
+            embed.description = message.content
             try:
                 await message.delete()
             except discord.errors.NotFound:
@@ -186,8 +178,8 @@ class Events(commands.Cog):
                 f"**Bad site**: {message.author.mention} mentioned a piracy site directly in {message.channel.mention} (message deleted)",
                 embed=embed)
 
-        if wf_matches['unbanning tool']:
-            embed.description = log_msg
+        if FilterKind.UnbanningTool in filter_result:
+            embed.description = message.content
             try:
                 await message.delete()
             except discord.errors.NotFound:
@@ -199,11 +191,19 @@ class Events(commands.Cog):
             await self.bot.channels['message-logs'].send(
                 f"**Bad site**: {message.author.mention} mentioned an unbanning site/service/program directly in {message.channel.mention} (message deleted)",
                 embed=embed)
+
         if contains_video and message.channel in self.bot.assistance_channels:
             await self.bot.channels['message-logs'].send(
                 f"▶️ **Video posted**: {message.author.mention} posted a video in {message.channel.mention}\n------------------\n{message.clean_content}")
 
-        if lf_matches or wf_matches['scamming site']:
+        if FilterKind.ScammingSite in filter_result:
+            embed.description = message.content
+
+            try:
+                await message.delete()
+            except discord.errors.NotFound:
+                pass
+
             if message.author.id not in self.userbot_yeeter:
                 self.userbot_yeeter[message.author.id] = []
             if message.channel not in self.userbot_yeeter[message.author.id]:
@@ -221,14 +221,7 @@ class Events(commands.Cog):
                     return
                 else:
                     self.bot.loop.create_task(self.userbot_yeeter_pop(message))
-
-        if wf_matches['scamming site']:
-            embed.description = log_msg
-            try:
-                await message.delete()
-            except discord.errors.NotFound:
-                pass
-            await crud.add_permanent_role(message.author.id, self.bot.roles['Probation'].id)
+            await self.bot.restrictions.add_restriction(message.author, Restriction.Probation, reason="Linking scamming site")
             await message.author.add_roles(self.bot.roles['Probation'])
             await send_dm_message(message.author,
                                   f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
@@ -260,10 +253,11 @@ class Events(commands.Cog):
                 pass
             await send_dm_message(
                 message.author, f"You were automatically placed under probation in {self.bot.guild.name} for mass user mentions.")
-            await crud.add_permanent_role(message.author.id, self.bot.roles['Probation'].id)
+            await self.bot.restrictions.add_restriction(message.author, Restriction.Probation, reason="Mention spam")
             await message.author.add_roles(self.bot.roles['Probation'])
 
     async def user_spam_check(self, message: discord.Message):
+        assert isinstance(message.author, discord.Member)
         if message.author.id not in self.user_antispam:
             self.user_antispam[message.author.id] = []
         self.user_antispam[message.author.id].append(message)
@@ -297,21 +291,21 @@ class Events(commands.Cog):
             pass  # if the array doesn't exist, don't raise an error
 
     async def user_ping_check(self, message):
-        key = "p" + str(message.author.id)
+        key = "p" + str(message.author_id.id)
         if key not in self.user_antispam:
             self.user_antispam[key] = deque()
         self.user_antispam[key].append((message, len(message.mentions)))
         _, user_mentions = zip(*self.user_antispam[key])
         if sum(user_mentions) > 6:
-            await crud.add_permanent_role(message.author, self.bot.roles["Probation"].id)
-            await message.author.add_roles(self.bot.roles['Probation'])
+            await self.bot.restrictions.add_restriction(message.author_id, Restriction.Probation, reason="User ping check")
+            await message.author_id.add_roles(self.bot.roles['Probation'])
             msg_user = ("You were automatically placed under probation "
                         "for mentioning too many users in a short period of time!\n\n"
                         "If you believe this was done in error, send a direct "
                         "message (DM) to <@!333857992170536961> to contact staff.")
-            await send_dm_message(message.author, msg_user)
-            log_msg = f"🚫 **Auto-probated**: {message.author.mention} probated for mass user mentions | {message.author}\n" \
-                      f"🗓 __Creation__: {message.author.created_at}\n🏷 __User ID__: {message.author.id}"
+            await send_dm_message(message.author_id, msg_user)
+            log_msg = f"🚫 **Auto-probated**: {message.author_id.mention} probated for mass user mentions | {message.author_id}\n" \
+                      f"🗓 __Creation__: {message.author_id.created_at}\n🏷 __User ID__: {message.author_id.id}"
             embed = discord.Embed(title="Deleted messages", color=discord.Color.gold())
             # clone list so nothing is removed while going through it
             msgs_to_delete = self.user_antispam[key].copy()
@@ -369,35 +363,34 @@ class Events(commands.Cog):
             pass  # if the array doesn't exist, don't raise an error
 
     @commands.Cog.listener()
-    async def on_message(self, message):
-        if isinstance(message.channel, discord.abc.PrivateChannel) or message.author.bot:
+    async def on_message(self, message: discord.Message):
+        if message.guild is None or message.author.bot:
             return
         if not self.bot.IS_DOCKER:
             if message.author.name == "GitHub" and message.author.discriminator == "0000":
-                if message.embeds[0].title.startswith('[Kurisu:port]'):
+                if message.embeds and message.embeds[0].title.startswith('[Kurisu:port]'):
                     await self.bot.channels['helpers'].send("Automatically pulling changes!")
                     call(['git', 'pull'])
                     await self.bot.channels['helpers'].send("Restarting bot...")
                     await self.bot.close()
                 return
         await self.bot.wait_until_all_ready()
-        if message.author == message.guild.me or await check_staff_id('Helper', message.author.id) \
-                or await crud.check_nofilter(message.channel):
+        if message.author == message.guild.me or check_staff(self.bot, 'Helper', message.author.id) \
+                or message.channel.id in self.bot.configuration.nofilter_list:
             return
+        return
         await self.scan_message(message)
         self.bot.loop.create_task(self.user_ping_check(message))
         self.bot.loop.create_task(self.user_spam_check(message))
         self.bot.loop.create_task(self.channel_spam_check(message))
 
     @commands.Cog.listener()
-    async def on_message_edit(self, message_before, message_after):
-        if isinstance(message_before.channel, discord.abc.PrivateChannel) or message_after.author.bot:
+    async def on_message_edit(self, message_before: discord.Message, message_after: discord.Message):
+        if message_after.guild is None or message_after.author.bot:
             return
         await self.bot.wait_until_all_ready()
-        if await crud.check_nofilter(message_before.channel):
-            return
-        if message_after.author == self.bot.guild.me or await check_staff_id('Helper', message_after.author.id) \
-                or await crud.check_nofilter(message_after.channel):
+        if message_after.author == message_after.guild.me or check_staff(self.bot, 'Helper', message_after.author.id) \
+                or message_after.channel.id in self.bot.configuration.nofilter_list:
             return
         if message_before.content == message_after.content:
             return

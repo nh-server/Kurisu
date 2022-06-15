@@ -7,7 +7,6 @@ import struct
 
 from discord.ext import commands
 from typing import TYPE_CHECKING
-from utils import crud
 from utils.utils import send_dm_message
 
 if TYPE_CHECKING:
@@ -89,12 +88,12 @@ class FriendCode(commands.Cog):
             fcs += fc_switch.format(self.switch_fc_to_string(friend_code.fc_switch))
 
         if friend_code_m.fc_3ds:
-            fcs_m += fc_3ds.format(self.n3ds_fc_to_string(friend_code_m.fc_3ds))
+            fcs_m += fc_3ds.format(self.n3ds_fc_to_string(friend_code.fc_3ds))
         if friend_code_m.fc_switch:
-            fcs_m += fc_switch.format(self.switch_fc_to_string(friend_code_m.fc_switch))
+            fcs_m += fc_switch.format(self.switch_fc_to_string(friend_code.fc_switch))
 
-        await ctx.send(f"{member.mention} friend codes are\n{fcs_m}")
-        await send_dm_message(member, f"{ctx.author} has asked for your friend codes! Their codes are\n{fcs}")
+        await ctx.send(f"{member.mention} friend codes are\n{fcs}")
+        await send_dm_message(member, f"{ctx.author} has asked for your friend codes! Their codes are\n{fcs_m}")
 
     @commands.command()
     async def fcdelete(self, ctx: KurisuContext, console: str):

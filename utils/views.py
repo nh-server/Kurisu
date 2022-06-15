@@ -2,9 +2,11 @@ import datetime
 import discord
 
 from discord.utils import format_dt
-from typing import Optional, Union
-from utils import crud
-from utils.checks import check_staff_id
+from typing import Optional, Union, TYPE_CHECKING
+from utils.checks import check_staff
+
+if TYPE_CHECKING:
+    from kurisu import Kurisu
 
 
 class BasePaginator:
@@ -130,10 +132,10 @@ class VoteButton(discord.ui.Button['SimpleVoteView']):
 
     async def callback(self, interaction: discord.Interaction):
         assert self.view is not None
-        if self.view.staff_only and not await check_staff_id('Helper', interaction.user.id):
+        if self.view.staff_only and not check_staff(interaction.client, 'Helper', interaction.user.id):  # type: ignore
             await interaction.response.send_message("You aren't allowed to vote.", ephemeral=True)
             return
-        await crud.add_voteview_vote(self.view.custom_id, interaction.user.id, self.label)
+        await interaction.client.extras.add_vote(self.view.custom_id, interaction.user, self.label)  # type: ignore
         await interaction.response.send_message("Vote added.", ephemeral=True)
 
 
@@ -152,14 +154,15 @@ class VoteButtonEnd(discord.ui.Button['SimpleVoteView']):
             await interaction.followup.send(
                 f"Vote started {format_dt(self.view.start, style='R')} has finished.\n{results}")
             self.view.stop()
-            await crud.remove_vote_view(self.view.custom_id)
+            await interaction.client.extras.delete_vote_view(self.view.custom_id)  # type: ignore
         else:
             await interaction.response.send_message("Only the vote creator can end it", ephemeral=True)
 
 
 class SimpleVoteView(discord.ui.View):
-    def __init__(self, author_id: int, options: list[str], custom_id: int, start: datetime.datetime, staff_only: bool = False):
+    def __init__(self, bot: 'Kurisu', author_id: int, options: list[str], custom_id: int, start: datetime.datetime, staff_only: bool = False):
         super().__init__(timeout=None)
+        self.extras = bot.extras
         self.author_id = author_id
         self.custom_id = custom_id
         self.start = start
@@ -171,5 +174,5 @@ class SimpleVoteView(discord.ui.View):
         self.add_item(VoteButtonEnd(custom_id=f"{custom_id}_{len(self.children)+1}"))
 
     async def calculate_votes(self):
-        for vote in await crud.get_voteview_votes(self.custom_id):
+        async for vote in self.extras.get_votes(self.custom_id):
             self.count[vote.option] = self.count[vote.option] + 1

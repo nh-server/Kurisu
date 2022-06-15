@@ -2,10 +2,11 @@ import discord
 
 from discord import app_commands
 from discord.ext import commands
-from utils.crud import get_helper, get_staff_member
-from typing import Union
+from utils.configuration import StaffRank
+from typing import Union, TYPE_CHECKING
 
-staff_ranks = {"Owner": 0, "SuperOP": 1, "OP": 2, "HalfOP": 3, "Helper": 4}
+if TYPE_CHECKING:
+    from kurisu import Kurisu
 
 
 class InsufficientStaffRank(commands.CheckFailure):
@@ -13,8 +14,8 @@ class InsufficientStaffRank(commands.CheckFailure):
 
 
 def is_staff(role: str):
-    async def predicate(ctx):
-        if await check_staff(ctx.author, role) or (ctx.guild and ctx.guild.owner.id == ctx.author.id):
+    async def predicate(ctx: commands.Context):
+        if check_staff(ctx.bot, role, ctx.author.id) or (ctx.guild and ctx.author == ctx.guild.owner):
             return True
         raise InsufficientStaffRank(f"You must be at least {role} to use this command.")
     return commands.check(predicate)
@@ -22,29 +23,24 @@ def is_staff(role: str):
 
 def is_staff_app(role: str):
     async def predicate(interaction: discord.Interaction) -> bool:
-        if (interaction.guild and interaction.user == interaction.guild.owner) or await check_staff(interaction.user, role):
+        if (interaction.guild and interaction.user == interaction.guild.owner) or check_staff(interaction.client, role, interaction.user.id):  # type: ignore
             return True
         raise InsufficientStaffRank(f"You must be at least {role} to use this command.")
     return app_commands.check(predicate)
 
 
-async def check_staff(author, role: str) -> bool:
-    return await check_staff_id(role, author.id)
-
-
-async def check_staff_id(role: str, user_id: int) -> bool:
-    if role == "Helper":
-        if await get_helper(user_id):
-            return True
-    if staff := await get_staff_member(user_id):
-        return staff_ranks[staff.position] <= staff_ranks[role]
-    return False
+def check_staff(bot: 'Kurisu', role: str, user_id: int) -> bool:
+    position = bot.configuration.staff.get(user_id)
+    if position is None:
+        return False
+    return position <= StaffRank[role]
 
 
 async def check_bot_or_staff(ctx: Union[commands.Context, discord.Interaction], target: Union[discord.Member, discord.User], action: str):
+    bot = ctx.bot if isinstance(ctx, commands.Context) else ctx.client
     if target.bot:
         who = "a bot"
-    elif await check_staff_id("Helper", target.id):
+    elif check_staff(bot, "Helper", target.id):
         who = "another staffer"
     else:
         return False
@@ -57,8 +53,8 @@ async def check_bot_or_staff(ctx: Union[commands.Context, discord.Interaction], 
 
 def check_if_user_can_sr():
     async def predicate(ctx):
-        author = ctx.author
-        if not await check_staff_id('Helper', author.id) and (ctx.bot.roles['Verified'] not in author.roles) and (
+        author = ctx.author_id
+        if not check_staff(ctx.bot, 'Helper', author.id) and (ctx.bot.roles['Verified'] not in author.roles) and (
                 ctx.bot.roles['Trusted'] not in author.roles) and (ctx.bot.roles['Retired Staff'] not in author.roles):
             return False
         return True

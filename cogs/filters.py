@@ -8,7 +8,8 @@ from textwrap import wrap
 from typing import TYPE_CHECKING
 from Levenshtein import distance
 from utils.checks import is_staff
-from utils.manager import check_collisions
+from utils.database import FilterKind
+#  from utils.manager import check_collisions
 
 
 if TYPE_CHECKING:
@@ -23,6 +24,7 @@ class Filter(commands.Cog):
     def __init__(self, bot: Kurisu):
         self.bot: Kurisu = bot
         self.emoji = discord.PartialEmoji.from_str('🖥️')
+        self.filters = bot.filters
 
     # Command group for the word filter
     @is_staff("Helper")
@@ -37,13 +39,15 @@ class Filter(commands.Cog):
     async def add_word(self, ctx: KurisuContext, word: str, *, kind: str):
         """Adds a word to the word filter. A filter list must be specified"""
         word = word.lower()
-        if kind not in self.bot.wordfilter.kinds:
-            return await ctx.send(f"Possible word kinds for word filter: {', '.join(self.bot.wordfilter.kinds)}")
+        try:
+            filter_kind = FilterKind(kind)
+        except ValueError:
+            return await ctx.send(f"Possible word kinds for word filter: {', '.join([k.value for k in FilterKind])}")
         if ' ' in word or '-' in word:
             return await ctx.send("Filtered words cant contain dashes or spaces!")
-        if await self.bot.wordfilter.fetch_word(word):
+        if discord.utils.get(self.filters.filtered_words, word=word):
             return await ctx.send("This word is already in the filter!")
-        entry = await self.bot.wordfilter.add(word=word, kind=kind)
+        entry = await self.filters.add_filtered_word(word, filter_kind)
         await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added `{entry.word}` to the word filter!")
         await ctx.send("Successfully added word to word filter")
 
@@ -51,7 +55,7 @@ class Filter(commands.Cog):
     async def list_words(self, ctx: KurisuContext):
         """List the word filter filter lists and their content."""
         embed = discord.Embed()
-        for kind in self.bot.wordfilter.kinds:
+        for kind in FilterKind:
             if self.bot.wordfilter.filter[kind]:
                 parts = wrap('\n'.join(self.bot.wordfilter.filter[kind]), 1024, break_long_words=False, replace_whitespace=False)
                 if (pages := len(parts)) > 1:
@@ -71,9 +75,9 @@ class Filter(commands.Cog):
         word_list = words.split()
         deleted = []
         for word in word_list:
-            entry = await self.bot.wordfilter.delete(word=word)
-            if entry:
-                deleted.append(entry.word)
+            res = await self.filters.delete_filtered_word(word=word)
+            if res:
+                deleted.append(word)
         if deleted:
             await ctx.send(f"Deleted words `{'`,`'.join(deleted)}` succesfully!")
             await self.bot.channels['mod-logs'].send(f"⭕ **Deleted**: {ctx.author.mention} deleted words `{'`,`'.join(deleted)}` from the filter!")
@@ -94,29 +98,32 @@ class Filter(commands.Cog):
         """Adds a word to the levenshtein filter. A permutation threshold and a filter list must be specified.
         Words added are whitelisted by default."""
         word = word.lower()
-        if kind not in self.bot.levenshteinfilter.kinds:
-            return await ctx.send(f"Possible word kinds for word filter: {', '.join(self.bot.levenshteinfilter.kinds)}")
+        try:
+            filter_kind = FilterKind(kind)
+        except ValueError:
+            return await ctx.send(f"Possible word kinds for word filter: {', '.join([f.value for f in FilterKind])}")
         if ' ' in word:
             return await ctx.send("Filtered words can't contain spaces!")
         if threshold == 0:
             return await ctx.send("The permutation threshold must be above 0!")
-        if await self.bot.levenshteinfilter.fetch_word(word):
+        if discord.utils.get(self.filters.lsh_words, word=word):
             return await ctx.send("This word is already in the filter!")
-        entry = await self.bot.levenshteinfilter.add(word=word, threshold=threshold, kind=kind, whitelist=True)
-        await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added `{entry.word}` to the Levenshtein filter!")
+        res = await self.filters.add_levenshtein_word(word, threshold, filter_kind)
+        if not res:
+            return await ctx.send("Failed to add word to levenshtein filter.")
+        await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added `{word}` to the Levenshtein filter!")
         await ctx.send("Successfully added word to Levenshtein filter")
 
     @levenshteinfilter.command(name='list')
     async def list_levenshtein(self, ctx: KurisuContext):
         """List the levenshtein filter filter lists and their content."""
         embed = discord.Embed()
-        for kind in self.bot.levenshteinfilter.kinds:
-            if self.bot.levenshteinfilter.filter[kind]:
-                value = "".join(
-                    f"{word} with threshold {threshold}{' - whitelisted' if word in self.bot.levenshteinfilter.whitelist else ''} \n"
-                    for word, threshold in self.bot.levenshteinfilter.filter[kind]
-                )
-                embed.add_field(name=kind, value=value)
+        for kind in FilterKind:
+            value = "".join(
+                f"{f_word.word} with threshold {f_word.threshold}{' - whitelisted' if f_word.word in self.filters.whitelist else ''} \n"
+                for f_word in filter(lambda word: word.kind is kind, self.filters.lsh_words)
+            )
+            embed.add_field(name=kind, value=value)
         if embed:
             await ctx.author.send(embed=embed)
         else:
@@ -130,18 +137,15 @@ class Filter(commands.Cog):
         message = message[::-1]
         to_check = re.findall(r"([\w0-9-]+\.[\w0-9-]+)", message)
 
-        for kind in self.bot.levenshteinfilter.kinds:
-            for word in to_check:
-                word = word[::-1]
-                if word in self.bot.levenshteinfilter.whitelist:
-                    continue
-                matches[word] = []
-                for trigger, threshold in self.bot.levenshteinfilter.filter[kind]:
-                    word_distance = distance(word, trigger)
-                    if word_distance < threshold:
-                        matches[word].append(trigger)
-                if not matches[word]:
-                    del matches[word]
+        for word in to_check:
+            word = word[::-1]
+            if word in self.filters.whitelist:
+                continue
+            matches[word] = []
+            for lsh_word in self.filters.lsh_words:
+                word_distance = distance(word, lsh_word.word)
+                if word_distance < lsh_word.threshold:
+                    matches[word].append(lsh_word)
         if matches:
             embed = discord.Embed(title="Matches")
             for match in matches.keys():
@@ -157,9 +161,9 @@ class Filter(commands.Cog):
         word_list = words.split()
         deleted = []
         for word in word_list:
-            entry = await self.bot.levenshteinfilter.delete(word=word)
-            if entry:
-                deleted.append(entry.word)
+            res = await self.filters.delete_levenshtein_word(word)
+            if res:
+                deleted.append(word)
         if deleted:
             await ctx.send(f"Deleted words `{'`,`'.join(deleted)}` succesfully!")
             await self.bot.channels['mod-logs'].send(f"⭕ **Deleted**: {ctx.author.mention} deleted words `{'`,`'.join(deleted)}` from the Levenshtein filter!")
@@ -177,14 +181,9 @@ class Filter(commands.Cog):
     async def whitelist_add(self, ctx: KurisuContext, word: str):
         """Adds a word to the levenshtein filter whitelist"""
         word = word.lower()
-        if db_word := await self.bot.levenshteinfilter.fetch_word(word=word):
-            if db_word.whitelist:
-                return await ctx.send("This word is already whitelisted!")
-            else:
-                await self.bot.levenshteinfilter.edit(word=db_word.word, threshold=db_word.threshold, whitelist=True)
-        elif await self.bot.levenshteinfilter.fetch_whitelist_word(word=word):
+        if word in self.filters.whitelist:
             return await ctx.send("This word is already whitelisted!")
-        await self.bot.levenshteinfilter.add_whitelist_word(word=word)
+        await self.filters.add_whitelisted_word(word)
         await ctx.send("Word added to whitelist successfully!")
 
     @is_staff("OP")
@@ -192,22 +191,16 @@ class Filter(commands.Cog):
     async def whitelist_remove(self, ctx: KurisuContext, word: str):
         """Removes a word from the levenshtein filter whitelist"""
         word = word.lower()
-        if db_word := await self.bot.levenshteinfilter.fetch_word(word=word):
-            if not db_word.whitelist:
-                return await ctx.send("This word is not whitelisted!")
-            else:
-                await self.bot.levenshteinfilter.edit(word=db_word.word, threshold=db_word.threshold, whitelist=False)
-        elif not await self.bot.levenshteinfilter.fetch_whitelist_word(word=word):
+        if word in self.filters.whitelist:
             return await ctx.send("This word is not whitelisted!")
-        await self.bot.levenshteinfilter.delete_whitelist_word(word=word)
+        await self.filters.delete_whitelisted_word(word)
         await ctx.send("Word removed from whitelist successfully!")
 
     @levenshtein_whitelist.command(name='list')
     async def whitelist_list(self, ctx: KurisuContext):
         """List the whitelisted words in the levenshtein filter"""
-        whitelist = await self.bot.levenshteinfilter.fetch_whitelist()
-        if whitelist:
-            await ctx.author.send('\n'.join(x.word for x in whitelist))
+        if self.filters.whitelist:
+            await ctx.author.send('\n'.join(word for word in self.filters.whitelist))
         else:
             await ctx.send("The whitelist is empty.")
 

@@ -6,26 +6,22 @@
 
 import aiohttp
 import asyncio
+import asyncpg
 import discord
-import gino
 import logging
 import os
 import sys
 import traceback
 
-from alembic.config import main as albmain
 from configparser import ConfigParser
 from datetime import datetime
 from discord import app_commands
 from discord.ext import commands
-from logging.handlers import TimedRotatingFileHandler
 from subprocess import check_output, CalledProcessError
 from typing import Optional, Union
-from utils import crud
-from utils.checks import check_staff_id, InsufficientStaffRank
+from utils import WarnsManager, ConfigurationManager, RestrictionsManager, ExtrasManager, FiltersManager, UserLogManager
+from utils.checks import check_staff, InsufficientStaffRank
 from utils.help import KuriHelp
-from utils.manager import InviteFilterManager, WordFilterManager, LevenshteinFilterManager
-from utils.models import Channel, Role, db
 from utils.utils import create_error_embed
 from utils.context import KurisuContext
 
@@ -94,11 +90,8 @@ else:
 def setup_logging():
     log = logging.getLogger()
     log.setLevel(logging.INFO)
-    fh = TimedRotatingFileHandler(filename='data/kurisu.log', when='midnight', encoding='utf-8', backupCount=7)
-    fmt = logging.Formatter('[{asctime}] [{levelname:^7s}] {module}.{funcName}: {message}', datefmt="%Y-%m-%d %H:%M:%S",
+    fmt = logging.Formatter('[{asctime}] [{levelname:^7s}] {name}.{funcName}: {message}', datefmt="%Y-%m-%d %H:%M:%S",
                             style='{')
-    fh.setFormatter(fmt)
-    log.addHandler(fh)
     sh = logging.StreamHandler()
     sh.setFormatter(fmt)
     log.addHandler(sh)
@@ -112,9 +105,11 @@ logger = logging.getLogger(__name__)
 class Kurisu(commands.Bot):
 
     user: discord.ClientUser
-    engine: gino.GinoEngine
+    pool: asyncpg.Pool
+    db_closed: bool
+    tree: 'Kuritree'
 
-    def __init__(self, command_prefix, description, commit, branch):
+    def __init__(self, command_prefix, description, commit, branch, pool):
 
         intents = discord.Intents(guilds=True, members=True, messages=True, reactions=True, bans=True, message_content=True)
         allowed_mentions = discord.AllowedMentions(everyone=False, roles=False)
@@ -140,9 +135,15 @@ class Kurisu(commands.Bot):
         self.channels_not_found = []
         self.roles_not_found = []
 
-        self.wordfilter = WordFilterManager()
-        self.levenshteinfilter = LevenshteinFilterManager()
-        self.invitefilter = InviteFilterManager()
+        self.pool = pool
+
+        self.logs = UserLogManager(self)
+
+        self.warns = WarnsManager(self)
+        self.configuration = ConfigurationManager(self)
+        self.restrictions = RestrictionsManager(self)
+        self.extras = ExtrasManager(self)
+        self.filters = FiltersManager(self)
 
         self.err_channel: Optional[Union[discord.TextChannel, discord.VoiceChannel]] = None
         self.actions = []
@@ -168,12 +169,12 @@ class Kurisu(commands.Bot):
         self.emoji = discord.utils.get(self.guild.emojis, name='kurisu') or discord.PartialEmoji.from_str("⁉")
 
         # Load Filters
-        await self.wordfilter.load()
-        logger.info("Loaded wordfilter")
-        await self.levenshteinfilter.load()
-        logger.info("Loaded levenshtein filter")
-        await self.invitefilter.load()
-        logger.info("Loaded invite filter")
+        # await self.wordfilter.load()
+        # logger.info("Loaded wordfilter")
+        # await self.levenshteinfilter.load()
+        # logger.info("Loaded levenshtein filter")
+        # await self.invitefilter.load()
+        # logger.info("Loaded invite filter")
 
         # Load channels and roles
         await self.load_channels()
@@ -240,9 +241,10 @@ class Kurisu(commands.Bot):
         return discord.utils.escape_markdown(text)
 
     async def close(self):
+        self.db_closed = True
         await super().close()
-        await db.pop_bind().close()
         await self.session.close()
+        await self.pool.close()
 
     async def load_cogs(self):
         for extension in cogs:
@@ -261,19 +263,20 @@ class Kurisu(commands.Bot):
                     'elsewhere', 'newcomers', 'nintendo-discussion', 'tech-talk', 'hardware', 'streaming-gamer']
 
         for n in channels:
-            channel_id: Optional[int] = await Channel.query.where(Channel.name == n).gino.scalar()
-            if channel_id and (channel := self.guild.get_channel(channel_id)):
-                self.channels[n] = channel
-            else:
-                self.channels[n] = discord.utils.get(self.guild.channels, name=n)
-                if not self.channels[n]:
-                    self.channels_not_found.append(n)
-                    logger.warning("Failed to find channel %s", n)
+            db_channel = await self.configuration.get_channel_by_name(n)
+            if db_channel:
+                channel_id = db_channel[0]
+                channel = self.guild.get_channel(channel_id)
+                if channel and isinstance(channel, (discord.TextChannel, discord.VoiceChannel)):
+                    self.channels[n] = channel
                     continue
-                if db_chan := await crud.get_dbchannel(self.channels[n].id):
-                    await db_chan.update(name=n).apply()
-                else:
-                    await Channel.create(id=self.channels[n].id, name=self.channels[n].name)
+            channel = discord.utils.get(self.guild.channels, name=n)
+            if channel and isinstance(channel, (discord.TextChannel, discord.VoiceChannel)):
+                self.channels[n] = channel
+                await self.configuration.add_channel(name=n, channel=channel)
+            else:
+                self.channels_not_found.append(n)
+                logger.warning("Failed to find channel %s", n)
 
     async def load_roles(self):
         roles = ['Helpers', 'Staff', 'HalfOP', 'OP', 'SuperOP', 'Owner', 'On-Duty 3DS', 'On-Duty Wii U',
@@ -282,24 +285,24 @@ class Kurisu(commands.Bot):
                  'Small Help', 'meta-mute', 'appeal-mute', 'crc', 'No-Tech', 'help-mute', 'streamer(temp)', '🍰']
 
         for n in roles:
-            if (role_id := await Role.query.where(Role.name == n).gino.scalar()) and (role := self.guild.get_role(role_id)):
-                self.roles[n] = role
+            db_role = await self.configuration.get_role(n)
+            if db_role:
+                role_id = db_role[0]
+                role = self.guild.get_role(role_id)
+                if role:
+                    self.roles[n] = role
+                    continue
             else:
                 role = discord.utils.get(self.guild.roles, name=n)
-                if role is None:
+                if not role:
                     self.roles_not_found.append(n)
                     logger.warning("Failed to find role %s", n)
-                    continue
                 else:
                     self.roles[n] = role
-                if db_role := await crud.get_dbrole(self.roles[n].id):
-                    await db_role.update(name=n).apply()
-                else:
-                    await Role.create(id=self.roles[n].id, name=self.roles[n].name)
+                    await self.configuration.add_role(name=n, role=role)
+
         # Nitro Booster existence depends if there is any nitro booster
         self.roles['Nitro Booster'] = self.guild.premium_subscriber_role
-        if self.roles['Nitro Booster'] and not await crud.get_dbrole(self.roles['Nitro Booster'].id):
-            await Role.create(id=self.roles['Nitro Booster'].id, name='Nitro Booster')
 
     async def on_command_error(self, ctx: KurisuContext, exc: commands.CommandError):
         author = ctx.author
@@ -343,7 +346,7 @@ class Kurisu(commands.Bot):
             command.reset_cooldown(ctx)
 
         elif isinstance(exc, commands.errors.CommandOnCooldown):
-            if not await check_staff_id('Helper', author.id):
+            if not check_staff(self, 'Helper', author.id):
                 try:
                     await ctx.message.delete()
                 except (discord.errors.NotFound, discord.errors.Forbidden):
@@ -357,6 +360,8 @@ class Kurisu(commands.Bot):
             await ctx.send("ID not found.")
 
         elif isinstance(exc, discord.Forbidden):
+            embed = create_error_embed(ctx, exc)
+            await channel.send(embed=embed)
             await ctx.send(f"💢 I can't help you if you don't let me!\n`{exc.text}`.")
 
         elif isinstance(exc, commands.CommandInvokeError):
@@ -385,7 +390,7 @@ class Kuritree(app_commands.CommandTree):
 
     def __init__(self, client):
         super().__init__(client)
-        self.err_channel: Optional[discord.TextChannel] = None
+        self.err_channel: Optional[Union[discord.TextChannel, discord.VoiceChannel]] = None
         self.logger = logging.getLogger(__name__)
 
     async def on_error(
@@ -403,6 +408,7 @@ class Kuritree(app_commands.CommandTree):
         ctx = await commands.Context.from_interaction(interaction)
         command: str = interaction.command.name if interaction.command is not None else "No command"
         channel = self.err_channel or interaction.channel
+        assert isinstance(channel, (discord.TextChannel, discord.VoiceChannel, discord.Thread))
 
         if isinstance(error, app_commands.NoPrivateMessage):
             await ctx.send(f'`{command}` cannot be used in direct messages.', ephemeral=True)
@@ -468,16 +474,15 @@ async def startup():
         branch = os.environ.get('COMMIT_BRANCH')
 
     try:
-        albmain(['--raiseerr', 'upgrade', 'head'])
-        engine = await db.set_bind(DATABASE_URL, )
+        pool = await asyncpg.create_pool(DATABASE_URL, min_size=20, max_size=20)
     except Exception:
         logger.exception("Failed to connect to postgreSQL server", exc_info=True)
         return
     logger.info("Starting Kurisu on commit %s on branch %s", commit, branch)
     bot = Kurisu(command_prefix=['.', '!'], description="Kurisu, the bot for Nintendo Homebrew!", commit=commit,
-                 branch=branch)
+                 branch=branch, pool=pool)
     bot.help_command = KuriHelp()
-    bot.engine = engine
+    bot.db_closed = False
     await bot.start(TOKEN)
 
 

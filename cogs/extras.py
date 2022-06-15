@@ -15,23 +15,22 @@ from discord.ext import commands
 from discord.utils import format_dt
 from math import ceil
 from typing import Union, Optional, TYPE_CHECKING
-from utils import crud
-from utils.checks import is_staff, check_if_user_can_sr, check_staff_id
+from utils.checks import is_staff, check_if_user_can_sr, check_staff
 from utils.converters import DateOrTimeToSecondsConverter
 from utils.utils import gen_color, send_dm_message
 from utils.views import BasePaginator, SimpleVoteView, PaginatedEmbedView
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
-    from utils.models import Tag, RemindMeEntry
     from utils.context import KurisuContext, GuildContext
+    from utils import Reminder
 
 python_version = sys.version.split()[0]
 
 
 class TagsPaginator(BasePaginator):
 
-    def __init__(self, tags: list[Tag], tags_per_page: int = 10, colour: Optional[discord.Color] = None):
+    def __init__(self, tags: list[str], tags_per_page: int = 10, colour: Optional[discord.Color] = None):
         super().__init__(n_pages=ceil(len(tags) / tags_per_page))
         self.tags = tags
         self.tags_per_page = tags_per_page
@@ -46,10 +45,10 @@ class TagsPaginator(BasePaginator):
             self.pages[self.idx] = embed
             return embed
 
-    def create_embed(self, tags: list[Tag]):
+    def create_embed(self, tags: list[str]):
         embed = discord.Embed(color=self.colour)
         embed.title = "Tags list"
-        embed.description = '\n'.join(f'{n+(self.tags_per_page * self.idx)}. {tag.title}' for n, tag in enumerate(tags, start=1))
+        embed.description = '\n'.join(f'{n+(self.tags_per_page * self.idx)}. {tag}' for n, tag in enumerate(tags, start=1))
 
         if self.n_pages > 1:
             embed.title += f" [{self.idx + 1}/{self.n_pages}]"
@@ -58,10 +57,10 @@ class TagsPaginator(BasePaginator):
 
 class RemindersPaginator(BasePaginator):
 
-    def __init__(self, reminders: list[RemindMeEntry], colour: discord.Color = None):
+    def __init__(self, reminders: 'list[Reminder]', colour: discord.Color = discord.Colour.purple()):
         super().__init__(n_pages=len(reminders))
         self.reminders = reminders
-        self.colour = colour or discord.Colour.purple()
+        self.colour = colour
 
     def current(self):
         if embed := self.pages.get(self.idx):
@@ -71,10 +70,10 @@ class RemindersPaginator(BasePaginator):
             self.pages[self.idx] = embed
             return embed
 
-    def create_embed(self, reminder: RemindMeEntry):
+    def create_embed(self, reminder: Reminder):
         embed = discord.Embed(color=self.colour)
         embed.title = f"Reminder {self.idx + 1}"
-        embed.add_field(name='Content', value=reminder.reminder, inline=False)
+        embed.add_field(name='Content', value=reminder.content, inline=False)
         embed.add_field(name='Set to', value=format_dt(reminder.date), inline=False)
 
         if self.n_pages > 1:
@@ -83,12 +82,12 @@ class RemindersPaginator(BasePaginator):
 
 
 async def tag_autocomplete(interaction: discord.Interaction, current: str) -> list[app_commands.Choice[str]]:
-    cog = interaction.client.get_cog('Extras')  # type: ignore
+    cog: Extras = interaction.client.get_cog('Extras')  # type: ignore
     if current:
         # very crude search but does the job
         choices = []
         n = 0
-        for tag_name in cog.tags.keys():
+        for tag_name in cog.extras.tags:
             if current in tag_name:
                 choices.append(app_commands.Choice(name=tag_name, value=tag_name))
                 n = n + 1
@@ -96,7 +95,7 @@ async def tag_autocomplete(interaction: discord.Interaction, current: str) -> li
                 break
         return choices
     else:
-        return [app_commands.Choice(name=tag_title, value=tag_title) for tag_title in list(cog.tags.keys())[:25]]
+        return [app_commands.Choice(name=tag_title, value=tag_title) for tag_title in list(cog.extras.tags.keys())[:25]]
 
 
 class Extras(commands.Cog):
@@ -107,17 +106,17 @@ class Extras(commands.Cog):
         self.bot: Kurisu = bot
         self.emoji = discord.PartialEmoji.from_str('🎲')
         self.banned_tag_names = []
-        self.tags: dict[str, Tag] = {}
         self.nick_pattern = re.compile("^[a-z]{2,}.*$", re.RegexFlag.IGNORECASE)
+        self.extras = self.bot.extras
         self.bot.loop.create_task(self.init())
 
     async def init(self):
         await self.bot.wait_until_all_ready()
-        for view in await crud.get_vote_views('extras'):
-            v = SimpleVoteView(view.author_id, options=view.options.split('|'), custom_id=view.id, start=view.start, staff_only=view.staff_only)
-            self.bot.add_view(v, message_id=view.message_id)
+        # for view in await crud.get_vote_views('extras'):
+        #     v = SimpleVoteView(view.author_id, options=view.options.split('|'), custom_id=view.id, start=view.start, staff_only=view.staff_only)
+        #     self.bot.add_view(v, message_id=view.message_id)
 
-        self.tags = {tag.title: tag for tag in await crud.get_tags()}
+        # self.tags = {tag.title: tag for tag in await crud.get_tags()}
 
         for cmd in self.tag.walk_commands():
             self.banned_tag_names.append(cmd.name)
@@ -329,7 +328,7 @@ class Extras(commands.Cog):
         await ctx.message.delete()
         msg_reference = ctx.message.reference or None
         mention_author = any(ctx.message.mentions)
-        ref_author = ref_author if await check_staff_id('Helper', ctx.author.id) else True
+        ref_author = ref_author if check_staff(ctx.bot, 'Helper', ctx.author.id) else True
         if isinstance(message.channel, discord.abc.PrivateChannel):
             return await ctx.send("Message can't be from a DM.")
 
@@ -396,13 +395,13 @@ class Extras(commands.Cog):
         timestamp = datetime.datetime.now()
         delta = datetime.timedelta(seconds=remind_in)
         reminder_time = timestamp + delta
-        await crud.add_reminder(reminder_time, ctx.author.id, reminder)
+        await self.extras.add_reminder(reminder_time, ctx.author, reminder)
         await ctx.send(f"I will send you a reminder on {format_dt(reminder_time, style='F')}.")
 
     @commands.command()
     async def listreminders(self, ctx: KurisuContext):
         """Lists pending reminders."""
-        reminders = await crud.get_user_reminders(ctx.author.id)
+        reminders = self.extras.reminders.get(ctx.author.id)
         if not reminders:
             return await ctx.send("You don't have any reminders scheduled.")
         color = gen_color(ctx.author.id)
@@ -412,21 +411,22 @@ class Extras(commands.Cog):
     @commands.command()
     async def unremindme(self, ctx: KurisuContext, number: int):
         """Removes a pending reminder."""
-        reminders = await crud.get_user_reminders(ctx.author.id)
+        reminders = self.extras.reminders.get(ctx.author.id)
         if not reminders:
             return await ctx.send("You don't have any reminders scheduled.")
         if len(reminders) < number or number < 1:
             return await ctx.send("Invalid reminder number.")
-        await crud.remove_reminder(reminders[number - 1].id)
+        reminder = reminders[number - 1]
+        await self.extras.delete_reminder(reminder.id, reminder.author_id)
         await ctx.send(f"Deleted reminder {number} successfully!")
 
     @commands.group(invoke_without_command=True)
     async def tag(self, ctx: KurisuContext, tag_name: str = ""):
         """Command group for commands related to tags."""
         if tag_name:
-            if tag := self.tags.get(tag_name):
+            if tag := self.extras.tags.get(tag_name):
                 await ctx.send(tag.content, reference=ctx.message.reference)
-            elif tags := await crud.search_tags(tag_name, limit=5):
+            elif tags := self.bot.extras.search_tags(tag_name, limit=5):
                 embed = discord.Embed(
                     description='\n'.join(f'{n}. {tag.title}' for n, tag in enumerate(tags, start=1)),
                     color=gen_color(ctx.author.id))
@@ -440,7 +440,7 @@ class Extras(commands.Cog):
     @app_commands.command(name='tag')
     async def tag_app_command(self, interaction: discord.Interaction, tag_name: str):
         """Looks up a tag by name"""
-        if tag := self.tags.get(tag_name):
+        if tag := self.extras.tags.get(tag_name):
             await interaction.response.send_message(tag.content)
         else:
             await interaction.response.send_message("This tag doesn't exist!", ephemeral=True)
@@ -449,21 +449,23 @@ class Extras(commands.Cog):
     @tag.command(name='create')
     async def create_tag(self, ctx: KurisuContext, title: str, *, content: str):
         """Creates a tag. Max content size is 2000 characters. Helpers+ only."""
-        if self.tags.get(title):
+        if self.extras.tags.get(title):
             return await ctx.send("This tag already exists!")
         if title in self.banned_tag_names:
             return await ctx.send("You can't use this name for a tag!")
         if len(content) > 2000:
             return await ctx.send("A tag contents can't be bigger than 2000 characters.")
-        tag = await crud.create_tag(title=title, content=content, author=ctx.author.id)
-        self.tags[tag.title] = tag
-        await ctx.send("Tag created successfully")
+        res = await self.extras.add_tag(title=title, content=content, author=ctx.author.id)
+        if res:
+            await ctx.send("Tag created successfully")
+        else:
+            await ctx.send("Failed to create tag")
 
     @tag.command(name='search')
     async def search_tags(self, ctx: KurisuContext, query: str):
         """Search tags by title. Returns first 10 results."""
-        if tags := await crud.search_tags(query):
-            embed = discord.Embed(description='\n'.join(f'{n}. {tag.title}' for n, tag in enumerate(tags, start=1)), color=gen_color(ctx.author.id))
+        if tags := self.extras.search_tags(query):
+            embed = discord.Embed(description='\n'.join(f'{n}. {tag}' for n, tag in enumerate(tags, start=1)), color=gen_color(ctx.author.id))
             await ctx.send(embed=embed)
         else:
             await ctx.send("No tags found.")
@@ -471,9 +473,9 @@ class Extras(commands.Cog):
     @tag.command(name='list')
     async def list_tags(self, ctx: KurisuContext):
         """Lists the title of all existent tags."""
-        if self.tags:
+        if self.extras.tags:
             colour = gen_color(ctx.author.id)
-            view = PaginatedEmbedView(paginator=TagsPaginator(tags=list(self.tags.values()),
+            view = PaginatedEmbedView(paginator=TagsPaginator(tags=list(self.extras.tags.keys()),
                                                               tags_per_page=10, colour=colour), author=ctx.author)
             view.message = await ctx.send(embed=view.paginator.current(), view=view)
         else:
@@ -483,7 +485,7 @@ class Extras(commands.Cog):
     @tag.command(name='edit')
     async def edit_tag(self, ctx: KurisuContext, tag_name: str, *, content: str):
         """Edits a tag. Helpers+ only."""
-        if not (await crud.get_tag(tag_name)):
+        if not self.extras.tags.get(tag_name):
             return await ctx.send("This tag doesn't exists!")
         if len(content) > 2000:
             return await ctx.send("A tag contents can't be bigger than 2000 characters.")
@@ -492,9 +494,8 @@ class Extras(commands.Cog):
         #         await crud.change_tag_ownership(tag_name, ctx.author.id)
         #     else:
         #         return await ctx.send("You can't edit a tag that isn't yours.")
-        edited_tag = await crud.edit_tag(title=tag_name, content=content)
+        edited_tag = await self.extras.update_tag(title=tag_name, content=content)
         if edited_tag is not None:
-            self.tags[edited_tag.title] = edited_tag
             await ctx.send("Tag edited successfully.")
         else:
             await ctx.send("Failed to edit tag.")
@@ -503,12 +504,11 @@ class Extras(commands.Cog):
     @tag.command(name='delete')
     async def delete_tag(self, ctx: KurisuContext, *, tag_name: str):
         """Deletes a tag. Helpers+ only."""
-        if not (await crud.get_tag(tag_name)):
+        if not self.extras.tags.get(tag_name):
             return await ctx.send("This tag doesn't exists!")
         # if tag.author != ctx.author.id and not (await check_staff_id('Helper', ctx.author.id)):
         #     return await ctx.send("You can't delete a tag that isn't yours.")
-        await crud.delete_tag(title=tag_name)
-        del self.tags[tag_name]
+        await self.extras.delete_tag(tag_name)
         await ctx.send("Tag deleted successfully.")
 
     @is_staff('OP')
@@ -527,13 +527,13 @@ class Extras(commands.Cog):
                          staff_only: bool = False):
         """Creates a simple vote, only the who made the vote can stop it. OP+ only."""
         options_parsed = options.split('|')
-        view = SimpleVoteView(interaction.user.id, options_parsed, interaction.id, start=discord.utils.utcnow(), staff_only=staff_only)
+        view = SimpleVoteView(self.bot, interaction.user.id, options_parsed, interaction.id, start=discord.utils.utcnow(), staff_only=staff_only)
         embed = discord.Embed(title=name, description=description)
         await interaction.response.send_message(embed=embed, view=view)
         msg = await interaction.original_message()
-        await crud.add_vote_view(view_id=interaction.id, identifier='extras',
-                                 author_id=interaction.user.id, options=options,
-                                 start=datetime.datetime.utcnow(), message_id=msg.id, staff_only=staff_only)
+        await self.extras.add_voteview(view_id=interaction.id, identifier='extras',
+                                       author_id=interaction.user.id, options=options,
+                                       start=datetime.datetime.utcnow(), message_id=msg.id, staff_only=staff_only)
 
     @is_staff('OP')
     @commands.guild_only()
