@@ -965,8 +965,6 @@ class Mod(commands.Cog):
     @commands.command()
     async def unprobate(self, ctx: GuildContext, member: Union[discord.Member, discord.User]):
         """Unprobate a user. Staff and Helpers only."""
-        if not await crud.remove_permanent_role(member.id, self.bot.roles["Probation"].id):
-            return await ctx.send("This user is not probated!")
         if isinstance(member, discord.Member):
             await member.remove_roles(self.bot.roles['Probation'])
         await ctx.send(f"{member.mention} is out of probation.")
