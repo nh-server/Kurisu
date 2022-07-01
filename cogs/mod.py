@@ -44,6 +44,7 @@ class Mod(commands.Cog):
         self.configuration = bot.configuration
         self.extras = bot.extras
         self.logs = bot.logs
+        self.filters = bot.filters
 
     async def cog_unload(self):
         self.bot.tree.remove_command(self.userinfo_ctx.name, type=self.userinfo_ctx.type)
@@ -805,18 +806,17 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def approve(self, ctx: GuildContext, alias: str, invite: discord.Invite, times: int = 1):
+    async def approve(self, ctx: GuildContext, alias: str, invite: discord.Invite, times: commands.Range[int, 1] = 1):
         """Approves a server invite for a number of times. Staff and Helpers only."""
 
         code = invite.code
 
-        if await self.bot.invitefilter.fetch_invite_by_alias(alias) or await self.bot.invitefilter.fetch_invite_by_code(code):
-            return await ctx.send("This code or alias is already in use!")
+        if self.filters.get_invite_named(alias):
+            return await ctx.send("This alias is already in use.")
+        if self.filters.approved_invites.get(code):
+            return await ctx.send("This code is already in use.")
 
-        if times < 1:
-            return await ctx.send("The invite must be approved for a number of times higher than 0")
-
-        await self.bot.invitefilter.add(code=code, alias=alias, uses=times)
+        await self.filters.add_approved_invite(invite, uses=times, alias=alias)
         await ctx.send(f"Approved an invite to {invite.guild}({code}) for posting {times} times")
         await self.bot.channels['mod-logs'].send(f"⭕ **Approved**: {ctx.author.mention} approved server {invite.guild}({code}) to be posted {times} times")
 

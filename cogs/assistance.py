@@ -77,6 +77,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
         self.bot: Kurisu = bot
         self.small_help_category: Optional[discord.CategoryChannel] = None
         self.bot.loop.create_task(self.setup_assistance())
+        self.filters = bot.filters
 
     async def setup_assistance(self):
         await self.bot.wait_until_all_ready()
@@ -215,23 +216,23 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
         """Post an invite to an approved server"""
         if not name:
             ctx.command.reset_cooldown(ctx)
-            if self.bot.invitefilter.invites:
-                return await ctx.send(f"Valid server names are: {', '.join(x.alias for x in self.bot.invitefilter.invites)}")
+            if self.filters.approved_invites:
+                return await ctx.send(f"Valid server names are: {', '.join(ai.alias for ai in self.filters.approved_invites.values())}")
             else:
                 return await ctx.send("There is no approved servers!")
 
-        invite = await self.bot.invitefilter.fetch_invite_by_alias(alias=name)
+        invite = self.filters.get_invite_named(name)
 
         if invite:
             await ctx.send(f"https://discord.gg/{invite.code}")
-            if invite.is_temporary:
+            if invite.uses != -1:
                 if invite.uses > 1:
-                    await self.bot.invitefilter.set_uses(code=invite.code, uses=invite.uses - 1)
+                    await self.filters.update_invite_use(invite.code)
                 else:
-                    await self.bot.invitefilter.delete(code=invite.code)
+                    await self.filters.delete_approved_invite(invite.code)
         else:
             ctx.command.reset_cooldown(ctx)
-            await ctx.send(f"Invalid invite name. Valid server names are: {', '.join(x.alias for x in self.bot.invitefilter.invites)}")
+            await ctx.send(f"Invalid invite name. Valid server names are: {', '.join(ai.alias for ai in self.filters.approved_invites.values())}")
 
     @commands.command()
     async def unidb(self, ctx: KurisuContext, *, query=""):

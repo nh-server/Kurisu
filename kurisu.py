@@ -136,6 +136,7 @@ class Kurisu(commands.Bot):
         self.roles_not_found = []
 
         self.pool = pool
+        self.db_closed = False
 
         self.logs = UserLogManager(self)
 
@@ -300,9 +301,6 @@ class Kurisu(commands.Bot):
                 else:
                     self.roles[n] = role
                     await self.configuration.add_role(name=n, role=role)
-
-        # Nitro Booster existence depends if there is any nitro booster
-        self.roles['Nitro Booster'] = self.guild.premium_subscriber_role
 
     async def on_command_error(self, ctx: KurisuContext, exc: commands.CommandError):
         author = ctx.author
@@ -473,17 +471,12 @@ async def startup():
         commit = os.environ.get('COMMIT_SHA')
         branch = os.environ.get('COMMIT_BRANCH')
 
-    try:
-        pool = await asyncpg.create_pool(DATABASE_URL, min_size=20, max_size=20)
-    except Exception:
-        logger.exception("Failed to connect to postgreSQL server", exc_info=True)
-        return
-    logger.info("Starting Kurisu on commit %s on branch %s", commit, branch)
-    bot = Kurisu(command_prefix=['.', '!'], description="Kurisu, the bot for Nintendo Homebrew!", commit=commit,
-                 branch=branch, pool=pool)
-    bot.help_command = KuriHelp()
-    bot.db_closed = False
-    await bot.start(TOKEN)
+    async with asyncpg.create_pool(DATABASE_URL, min_size=20, max_size=20) as pool:
+        logger.info("Starting Kurisu on commit %s on branch %s", commit, branch)
+        bot = Kurisu(command_prefix=['.', '!'], description="Kurisu, the bot for Nintendo Homebrew!", commit=commit,
+                     branch=branch, pool=pool)
+        bot.help_command = KuriHelp()
+        await bot.start(TOKEN)
 
 
 if __name__ == '__main__':

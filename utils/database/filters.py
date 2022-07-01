@@ -5,6 +5,7 @@ from .common import BaseDatabaseManager
 
 if TYPE_CHECKING:
     from typing import AsyncGenerator
+    import asyncpg
 
 from enum import Enum
 
@@ -27,6 +28,12 @@ class LevenshteinWord(NamedTuple):
 class FilteredWord(NamedTuple):
     word: str
     kind: FilterKind
+
+
+class ApprovedInvite(NamedTuple):
+    code: str
+    uses: int
+    alias: str
 
 
 tables = {'filteredwords': OrderedDict((('word', 'TEXT'), ('kind', 'TEXT'))),
@@ -68,3 +75,20 @@ class FiltersDatabaseManager(BaseDatabaseManager, tables=tables):
     async def get_whitelisted_words(self) -> 'AsyncGenerator[str, None]':
         async for wl in self._select('whitelistedwords'):
             yield wl[0]
+
+    async def add_approved_invite(self, code: str, uses: int, alias: str):
+        return await self._insert('approvedinvites', code=code, uses=uses, alias=alias)
+
+    async def delete_approved_invite(self, code: str):
+        return await self._delete('approvedinvites', code=code)
+
+    async def get_approved_invites(self):
+        async for ai in self._select('approvedinvites'):
+            yield ApprovedInvite(code=ai[0], uses=ai[1], alias=ai[2])
+
+    async def update_invite_use(self, code: str):
+        query = "UPDATE approvedinvites SET uses=uses-1 WHERE code=$1"
+        conn: asyncpg.Connection
+        async with self.pool.acquire() as conn:
+            async with conn.transaction():
+                return await conn.execute(query, code)

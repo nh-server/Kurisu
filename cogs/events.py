@@ -83,7 +83,7 @@ class Events(commands.Cog):
 
         filter_result = self.filters.match_filtered_words(msg_no_separators) | self.filters.match_levenshtein_words(message.content)
         contains_video = any(re.findall(r'((?:https?://)?(?:www.)?)(?:(youtube\.com/watch\?v=)|(youtu\.be/))([aA-zZ_\-\d]{11})', message.content))
-        approved_invites, non_approved_invites = self.bot.invitefilter.search_invite(message.content)
+        approved_invites, non_approved_invites = self.filters.search_invite(message.content)
         contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub', 'strawpoii', 'hackinformer.com', 'console.guide', 'jacksorrell.co.uk', 'jacksorrell.tv', 'nintendobrew.com', 'reinx.guide', 'NxpeNwz', 'scenefolks.com', 'rentry.co'))
         contains_invite_link = approved_invites or non_approved_invites
 
@@ -112,11 +112,11 @@ class Events(commands.Cog):
                 except discord.errors.Forbidden:
                     pass
             for invite in approved_invites:
-                if invite.is_temporary:
+                if invite.uses != -1:
                     if invite.uses > 1:
-                        await self.bot.invitefilter.set_uses(code=invite.code, uses=invite.uses - 1)
+                        await self.filters.update_invite_use(invite.code)
                     else:
-                        await self.bot.invitefilter.delete(code=invite.code)
+                        await self.filters.delete_approved_invite(invite.code)
 
         if contains_misinformation_url_mention:
             try:
@@ -290,22 +290,23 @@ class Events(commands.Cog):
         except KeyError:
             pass  # if the array doesn't exist, don't raise an error
 
-    async def user_ping_check(self, message):
-        key = "p" + str(message.author_id.id)
+    async def user_ping_check(self, message: discord.Message):
+        assert isinstance(message.author, discord.Member)
+        key = "p" + str(message.author.id)
         if key not in self.user_antispam:
             self.user_antispam[key] = deque()
         self.user_antispam[key].append((message, len(message.mentions)))
         _, user_mentions = zip(*self.user_antispam[key])
         if sum(user_mentions) > 6:
-            await self.bot.restrictions.add_restriction(message.author_id, Restriction.Probation, reason="User ping check")
-            await message.author_id.add_roles(self.bot.roles['Probation'])
+            await self.bot.restrictions.add_restriction(message.author, Restriction.Probation, reason="User ping check")
+            await message.author.add_roles(self.bot.roles['Probation'])
             msg_user = ("You were automatically placed under probation "
                         "for mentioning too many users in a short period of time!\n\n"
                         "If you believe this was done in error, send a direct "
                         "message (DM) to <@!333857992170536961> to contact staff.")
-            await send_dm_message(message.author_id, msg_user)
-            log_msg = f"🚫 **Auto-probated**: {message.author_id.mention} probated for mass user mentions | {message.author_id}\n" \
-                      f"🗓 __Creation__: {message.author_id.created_at}\n🏷 __User ID__: {message.author_id.id}"
+            await send_dm_message(message.author, msg_user)
+            log_msg = f"🚫 **Auto-probated**: {message.author.mention} probated for mass user mentions | {message.author}\n" \
+                      f"🗓 __Creation__: {message.author.created_at}\n🏷 __User ID__: {message.author.id}"
             embed = discord.Embed(title="Deleted messages", color=discord.Color.gold())
             # clone list so nothing is removed while going through it
             msgs_to_delete = self.user_antispam[key].copy()
@@ -368,7 +369,7 @@ class Events(commands.Cog):
             return
         if not self.bot.IS_DOCKER:
             if message.author.name == "GitHub" and message.author.discriminator == "0000":
-                if message.embeds and message.embeds[0].title.startswith('[Kurisu:port]'):
+                if message.embeds and message.embeds[0].title and message.embeds[0].title.startswith('[Kurisu:port]'):
                     await self.bot.channels['helpers'].send("Automatically pulling changes!")
                     call(['git', 'pull'])
                     await self.bot.channels['helpers'].send("Restarting bot...")
@@ -378,7 +379,6 @@ class Events(commands.Cog):
         if message.author == message.guild.me or check_staff(self.bot, 'Helper', message.author.id) \
                 or message.channel.id in self.bot.configuration.nofilter_list:
             return
-        return
         await self.scan_message(message)
         self.bot.loop.create_task(self.user_ping_check(message))
         self.bot.loop.create_task(self.user_spam_check(message))

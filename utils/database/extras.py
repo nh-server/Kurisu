@@ -39,6 +39,32 @@ class DatabaseChannel(NamedTuple):
     mod_channel: bool
 
 
+class FriendCode(NamedTuple):
+    user_id: int
+    fc_3ds: int
+    fc_switch: int
+
+
+class Tag(NamedTuple):
+    id: int
+    title: str
+    content: str
+    author_id: int
+
+
+class Reminder(NamedTuple):
+    id: int
+    date: datetime
+    author_id: int
+    content: str
+
+
+class TimedRole(NamedTuple):
+    role_id: int
+    user_id: int
+    expiring_date: datetime
+
+
 tables = {'timedroles': OrderedDict((('id', 'BIGINT'), ('role_id', 'BIGINT'), ('user_id', 'BIGINT'), ('expiring_date', 'BIGINT'))),
           'friendcodes': OrderedDict((('id', 'BIGINT'), ('fc_3ds', 'BIGINT'), ('fc_switch', 'BIGINT'))),
           'reminders': OrderedDict((('id', 'BIGINT'), ('date', 'TIME'),
@@ -59,9 +85,9 @@ class ExtrasDatabaseManager(BaseDatabaseManager, tables=tables):
     async def delete_timed_role(self, user_id: int, role_id: int):
         return await self._delete('timedroles', user_id=user_id, role_id=role_id)
 
-    async def get_timed_roles(self) -> 'AsyncGenerator[tuple[int, int, int, datetime], None]':
+    async def get_timed_roles(self) -> 'AsyncGenerator[TimedRole, None]':
         async for p in self._select('timedroles'):
-            yield p
+            yield TimedRole(role_id=p[0], user_id=p[1], expiring_date=p[2])
 
     async def add_3ds_friend_code(self, user_id: int, fc: int):
         await self.bot.configuration.add_member(user_id)
@@ -74,11 +100,27 @@ class ExtrasDatabaseManager(BaseDatabaseManager, tables=tables):
     async def delete_friend_code(self, user_id: int):
         return await self._delete('friendcodes', id=user_id)
 
-    async def update_3ds_friend_code(self, user_id: int, fc: 'Optional[int]'):
-        await self._update('friendcodes', {'fc_3ds': fc}, user_id=user_id)
+    async def delete_switch_friend_code(self, user_id: int):
+        fcs = await self.get_friend_code(user_id)
+        if fcs:
+            res = await self._update('friendcodes', {'fc_switch': None}, user_id=user_id)
+            if res and fcs.fc_3ds is None:
+                await self.delete_friend_code(user_id)
+            return res
 
-    async def update_switch_friend_code(self, user_id: int, fc: 'Optional[int]'):
-        await self._update('friendcodes', {'fc_3ds': fc}, user_id=user_id)
+    async def delete_3ds_friend_code(self, user_id: int):
+        fcs = await self.get_friend_code(user_id)
+        if fcs:
+            res = await self._update('friendcodes', {'fc_3ds': None}, user_id=user_id)
+            if res and fcs.fc_switch is None:
+                await self.delete_friend_code(user_id)
+            return res
+
+    async def get_friend_code(self, user_id: int) -> 'Optional[FriendCode]':
+        res = await self._select_one('friendcodes', user_id=user_id)
+        if not res:
+            return
+        return FriendCode(user_id=res[0], fc_3ds=res[1], fc_switch=res[2])
 
     async def add_tag(self, tag_id: int, title: str, content: str, author_id: int):
         await self.bot.configuration.add_member(author_id)
@@ -92,7 +134,7 @@ class ExtrasDatabaseManager(BaseDatabaseManager, tables=tables):
 
     async def get_tags(self):
         async for t in self._select('tags'):
-            yield t
+            yield Tag(id=t[0], title=t[1], content=t[2], author_id=t[3])
 
     async def add_reminder(self, reminder_id: int, date: datetime, author_id: int, content: str) -> int:
         await self.bot.configuration.add_member(author_id)
@@ -101,9 +143,9 @@ class ExtrasDatabaseManager(BaseDatabaseManager, tables=tables):
     async def delete_reminder(self, reminder_id: int) -> int:
         return await self._delete('reminders', id=reminder_id)
 
-    async def get_reminders(self) -> 'AsyncGenerator[tuple[int, datetime, int, str], None]':
+    async def get_reminders(self) -> 'AsyncGenerator[Reminder, None]':
         async for r in self._select('reminders'):
-            yield r
+            yield Reminder(id=r[0], date=r[1], author_id=r[2], content=r[3])
 
     async def add_voteview(self, view_id: int, message_id, identifier: str, author_id: int,
                            options: str, start: 'Optional[datetime]', staff_only: bool):

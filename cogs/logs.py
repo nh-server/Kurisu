@@ -89,7 +89,8 @@ Thanks for stopping by and have a good time!
                 name = member.guild.get_member(warn.issuer_id) or f"ID {warn.issuer_id}"
                 embed.add_field(name=f"{idx + 1}: {warn.date:%Y-%m-%d %H:%M:%S}", value=f"Issuer: {name}\nReason: {warn.reason}")
             await self.bot.channels['server-logs'].send(msg, embed=embed)
-        await send_dm_message(member, self.welcome_msg.format(member.name, member.guild.name, self.bot.channels['welcome-and-rules'].mention))
+        if not self.bot.configuration.auto_probation:
+            await send_dm_message(member, self.welcome_msg.format(member.name, member.guild.name, self.bot.channels['welcome-and-rules'].mention))
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
@@ -163,7 +164,7 @@ Thanks for stopping by and have a good time!
             elif diff := roles_after - roles_before:
                 msg = "\n👑 __Role addition__: "
                 roles = []
-                if self.bot.roles["Nitro Booster"] in diff:
+                if member_before.guild.premium_subscriber_role in diff:
                     try:
                         await member_after.send(self.nitro_msg)
                     except discord.Forbidden:

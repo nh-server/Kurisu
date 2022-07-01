@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 class BasePaginator:
     """Serves as base class for paginators for a BasePaginatedView, not to be used as-is"""
-    def __init__(self, n_pages):
+    def __init__(self, n_pages: int):
         self.n_pages = n_pages
         self.idx = 0
         self.pages: dict[int, discord.Embed] = {}

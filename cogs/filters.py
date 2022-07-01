@@ -9,8 +9,6 @@ from typing import TYPE_CHECKING
 from Levenshtein import distance
 from utils.checks import is_staff
 from utils.database import FilterKind
-#  from utils.manager import check_collisions
-
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -47,22 +45,29 @@ class Filter(commands.Cog):
             return await ctx.send("Filtered words cant contain dashes or spaces!")
         if discord.utils.get(self.filters.filtered_words, word=word):
             return await ctx.send("This word is already in the filter!")
-        entry = await self.filters.add_filtered_word(word, filter_kind)
-        await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added `{entry.word}` to the word filter!")
+        await self.filters.add_filtered_word(word, filter_kind)
+        await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added `{word}` to the word filter!")
         await ctx.send("Successfully added word to word filter")
 
     @wordfilter.command(name='list')
     async def list_words(self, ctx: KurisuContext):
         """List the word filter filter lists and their content."""
         embed = discord.Embed()
+
+        words = {}
         for kind in FilterKind:
-            if self.bot.wordfilter.filter[kind]:
-                parts = wrap('\n'.join(self.bot.wordfilter.filter[kind]), 1024, break_long_words=False, replace_whitespace=False)
-                if (pages := len(parts)) > 1:
-                    for n, part in enumerate(parts, start=1):
-                        embed.add_field(name=f"{kind} {n}/{pages}", value=part)
-                else:
-                    embed.add_field(name=kind, value=parts[0])
+            words[kind] = []
+            for fw in self.filters.filtered_words:
+                if fw.kind is kind:
+                    words[kind].append(fw.word)
+
+        for kind, fws in words.items():
+            parts = wrap('\n'.join(fws), 1024, break_long_words=False, replace_whitespace=False)
+            if (pages := len(parts)) > 1:
+                for n, part in enumerate(parts, start=1):
+                    embed.add_field(name=f"{kind} {n}/{pages}", value=part)
+            elif parts:
+                embed.add_field(name=kind.value, value=parts[0])
         if embed:
             await ctx.author.send(embed=embed)
         else:
@@ -123,7 +128,7 @@ class Filter(commands.Cog):
                 f"{f_word.word} with threshold {f_word.threshold}{' - whitelisted' if f_word.word in self.filters.whitelist else ''} \n"
                 for f_word in filter(lambda word: word.kind is kind, self.filters.lsh_words)
             )
-            embed.add_field(name=kind, value=value)
+            embed.add_field(name=kind.value, value=value)
         if embed:
             await ctx.author.send(embed=embed)
         else:
@@ -215,14 +220,18 @@ class Filter(commands.Cog):
     @invitefilter.command(name='add')
     async def add_invite(self, ctx: KurisuContext, invite: discord.Invite, alias: str):
         """Adds a invite to the filter whitelist"""
-        if await self.bot.invitefilter.fetch_invite_by_alias(alias) or await self.bot.invitefilter.fetch_invite_by_code(invite.code):
-            return await ctx.send("This invite code or alias is already in use!")
+
+        if self.filters.get_invite_named(alias):
+            return await ctx.send("This alias is already in use!")
+
+        if self.filters.approved_invites.get(invite.code):
+            return await ctx.send("This invite code is already in use!")
 
         if invite.guild is None or isinstance(invite.guild, discord.Object):
             return await ctx.send("No information from the guild could be fetched.")
 
-        entry = await self.bot.invitefilter.add(code=invite.code, alias=alias, uses=-1)
-        if entry is None:
+        res = await self.filters.add_approved_invite(invite, uses=-1, alias=alias)
+        if not res:
             return await ctx.send("Failed to add invite to the invite whitelist!")
         await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added {invite.code}(`{invite.guild.name}`) to the invite whitelist!")
         await ctx.send("Successfully added invite to whitelist")
@@ -231,34 +240,36 @@ class Filter(commands.Cog):
     @invitefilter.command(name='delete')
     async def delete_invite(self, ctx: KurisuContext, code: str):
         """Removes a invite from the filter whitelist"""
-        entry = await self.bot.invitefilter.fetch_invite_by_code(code=code)
+        entry = self.filters.approved_invites.get(code)
         if not entry:
             return await ctx.send("Invite code not found!")
-        await self.bot.invitefilter.delete(code=code)
+        res = await self.filters.delete_approved_invite(code)
+        if not res:
+            return await ctx.send("Failed to delete invite.")
         await ctx.send(f"Deleted server `{entry.alias}` from filter succesfully!")
         await self.bot.channels['mod-logs'].send(f"⭕ **Deleted**: {ctx.author.mention} deleted server `{entry.alias}` from the invite filter!")
 
     @invitefilter.command(name='list')
     async def list_invites(self, ctx: KurisuContext):
         """List invites in the filter whitelist"""
-        embed = discord.Embed()
-        if self.bot.invitefilter.invites:
-            embed.add_field(name='Invites', value='\n'.join(f"name: {invite.alias} code:{invite.code} uses:{invite.uses}" for invite in self.bot.invitefilter.invites))
+        if self.filters.approved_invites:
+            embed = discord.Embed()
+            embed.add_field(name='Invites', value='\n'.join(f"name: {invite.alias} code:{invite.code} uses:{invite.uses}" for invite in self.filters.approved_invites.values()))
             await ctx.send(embed=embed)
         else:
             await ctx.send("The invite filter is empty!")
 
-    @commands.command(name='checkcollision', aliases=['filtercollision'])
-    async def check_filter_collision(self, ctx: KurisuContext):
-        """Detects collisions between the levenshtein filter and the word filter,
-        shows what words matched a entry in the levenshtein filter"""
-        if collisions := await check_collisions():
-            embed = discord.Embed(title="Filter Collisions")
-            for key in collisions.keys():
-                embed.add_field(name=key, value='\n'.join(collisions[key]))
-            await ctx.send(embed=embed)
-        else:
-            await ctx.send("No collisions were detected!")
+    # @commands.command(name='checkcollision', aliases=['filtercollision'])
+    # async def check_filter_collision(self, ctx: KurisuContext):
+    #     """Detects collisions between the levenshtein filter and the word filter,
+    #     shows what words matched a entry in the levenshtein filter"""
+    #     if collisions := await check_collisions():
+    #         embed = discord.Embed(title="Filter Collisions")
+    #         for key in collisions.keys():
+    #             embed.add_field(name=key, value='\n'.join(collisions[key]))
+    #         await ctx.send(embed=embed)
+    #     else:
+    #         await ctx.send("No collisions were detected!")
 
 
 async def setup(bot):
