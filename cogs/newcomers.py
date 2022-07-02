@@ -111,7 +111,7 @@ class Newcomers(commands.Cog):
 
         if reason:
             await newcomers.send(f'{ctx.author} (ID: {ctx.author.id}) is ready for unprobation.\n\n'
-                                 'Message: `{reason}` @here', allowed_mentions=discord.AllowedMentions(everyone=True))
+                                 f'Message: `{reason}` @here', allowed_mentions=discord.AllowedMentions(everyone=True))
             try:
                 await ctx.author.send('✅ Online staff have been notified of your request.')
             except discord.errors.Forbidden:
