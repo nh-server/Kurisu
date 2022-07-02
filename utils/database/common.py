@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from typing import AsyncGenerator, KeysView, Optional
     from kurisu import Kurisu
     from collections import OrderedDict
-    Tables = dict[str, OrderedDict[str, str]]
+    Tables = dict[str, list[str]]
 
 # noinspection PyUnreachableCode
 if __debug__:
@@ -67,7 +67,7 @@ class BaseDatabaseManager:
 
     def _format_select_vars(self, keys: 'KeysView[str]', *, start: int = 1) -> str:
         assert not self.bot.db_closed
-        assert all(k in chain.from_iterable(x.keys() for x in self.tables.values()) for k in keys)
+        assert all(k in chain.from_iterable(x for x in self.tables.values()) for k in keys)
 
         if len(keys) == 0:
             return ''
@@ -76,21 +76,21 @@ class BaseDatabaseManager:
     def _format_insert_vars(self, keys: 'KeysView[str]', *, start: int = 1) -> str:
         assert not self.bot.db_closed
         assert keys
-        assert all(k in chain.from_iterable(x.keys() for x in self.tables.values()) for k in keys)
+        assert all(k in chain.from_iterable(x for x in self.tables.values()) for k in keys)
 
         return ', '.join(f'${n}' for n, c in enumerate(keys, start=start))
 
     def _format_update_vars(self, keys: 'KeysView[str]', start: int = 1):
         assert not self.bot.db_closed
         assert keys
-        assert all(k in chain.from_iterable(x.keys() for x in self.tables.values()) for k in keys)
+        assert all(k in chain.from_iterable(x for x in self.tables.values()) for k in keys)
 
         return 'SET ' + ', '.join(f'{c} = ${n}' for n, c in enumerate(keys, start=start))
 
     def _format_cols(self, keys: 'KeysView[str]') -> str:
         assert not self.bot.db_closed
         assert keys
-        assert all(k in chain.from_iterable(x.keys() for x in self.tables.values()) for k in keys)
+        assert all(k in chain.from_iterable(x for x in self.tables.values()) for k in keys)
 
         return ', '.join(f'{c}' for c in keys)
 
@@ -98,7 +98,7 @@ class BaseDatabaseManager:
         assert not self.bot.db_closed
         assert self.tables
         assert table in self.tables
-        assert all(k in self.tables[table].keys() for k in values.keys())
+        assert all(k in self.tables[table] for k in values.keys())
 
         conn: asyncpg.Connection
 
@@ -114,7 +114,7 @@ class BaseDatabaseManager:
         assert not self.bot.db_closed
         assert self.tables
         assert table in self.tables
-        assert all(k in self.tables[table].keys() for k in values.keys())
+        assert all(k in self.tables[table] for k in values.keys())
 
         conn: asyncpg.Connection
 
@@ -129,7 +129,7 @@ class BaseDatabaseManager:
         assert not self.bot.db_closed
         assert self.tables
         assert table in self.tables
-        assert all(k in self.tables[table].keys() for k in values.keys())
+        assert all(k in self.tables[table] for k in values.keys())
 
         conn: asyncpg.Connection
         async with self.pool.acquire() as conn:
@@ -145,7 +145,7 @@ class BaseDatabaseManager:
         assert self.tables
         assert table in self.tables
         assert values
-        assert all(k in self.tables[table].keys() for k in values.keys())
+        assert all(k in self.tables[table] for k in values.keys())
 
         conn: asyncpg.Connection
         async with self.pool.acquire() as conn:
@@ -166,8 +166,8 @@ class BaseDatabaseManager:
         assert self.tables
         assert table in self.tables
         assert values
-        assert all(k in self.tables[table].keys() for k in values.keys())
-        assert all(k in self.tables[table].keys() for k in conditions.keys())
+        assert all(k in self.tables[table] for k in values.keys())
+        assert all(k in self.tables[table] for k in conditions.keys())
         async with self.pool.acquire() as conn:
             async with conn.transaction():
                 query = (f'UPDATE {table} {self._format_update_vars(values.keys())} '
@@ -186,7 +186,7 @@ class BaseDatabaseManager:
         assert self.tables
         assert table in self.tables
         assert values
-        assert all(k in self.tables[table].keys() for k in values.keys())
+        assert all(k in self.tables[table] for k in values.keys())
 
         async with self.pool.acquire() as conn:
             async with conn.transaction():

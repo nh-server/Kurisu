@@ -65,14 +65,12 @@ class TimedRole(NamedTuple):
     expiring_date: datetime
 
 
-tables = {'timedroles': OrderedDict((('id', 'BIGINT'), ('role_id', 'BIGINT'), ('user_id', 'BIGINT'), ('expiring_date', 'BIGINT'))),
-          'friendcodes': OrderedDict((('user_id', 'BIGINT'), ('fc_3ds', 'BIGINT'), ('fc_switch', 'BIGINT'))),
-          'reminders': OrderedDict((('id', 'BIGINT'), ('reminder_date', 'TIME'),
-                                    ('author_id', 'BIGINT'), ('content', 'INTEGER'))),
-          'tags': OrderedDict((('id', 'BIGINT'), ('title', 'TEXT'), ('content', 'TEXT'), ('author_id', 'BIGINT'))),
-          'voteviews': OrderedDict((('id', 'BIGINT'), ('message_id', 'BIGINT'), ('identifier', 'BIGINT'),
-                                    ('message_id', 'BIGINT'), ('message_id', 'BIGINT'), ('message_id', 'BIGINT'))),
-          'votes': OrderedDict((('view_id', 'BIGINT'), ('voter_id', 'BIGINT'), ('option', 'TEXT')))}
+tables = {'timedroles': ['id', 'role_id', 'user_id', 'expiring_date'],
+          'friendcodes': ['user_id', 'fc_3ds', 'fc_switch'],
+          'reminders': ['id', 'reminder_date', 'author_id', 'content'],
+          'tags': ['id', 'title', 'content', 'author_id'],
+          'voteviews': ['id', 'message_id', 'identifier', 'author_id', 'options', 'start', 'staff_only'],
+          'votes': ['view_id', 'voter_id', 'option']}
 
 
 class ExtrasDatabaseManager(BaseDatabaseManager, tables=tables):

@@ -1,5 +1,5 @@
 drop table if exists approvedinvites, channels, filteredwords, flags, levenshteinwords, members, friendcodes,
-    reminders, roles, permanentroles, rules, softbans, staff, tags, restrictions, timedroles, warns,
+    reminders, roles, rules, softbans, staff, tags, restrictions, timedroles, warns,
     whitelistedwords, citizens, voteviews, votes, changedroles;
 
 create table approvedinvites
@@ -70,14 +70,6 @@ create table roles
 (
 	id BIGINT PRIMARY KEY,
 	name TEXT NOT NULL
-);
-
-
-create table permanentroles
-(
-	user_id BIGINT NOT NULL REFERENCES members(id),
-	role_id BIGINT NOT NULL REFERENCES roles(id),
-    PRIMARY KEY (user_id, role_id)
 );
 
 
@@ -182,7 +174,7 @@ create table votes
 
 create table changedroles
 (
-	channel_id BIGINT NOT NULL REFERENCES channels(id),
+	channel_id BIGINT NOT NULL REFERENCES channels(id) ON DELETE CASCADE,
 	role_id BIGINT NOT NULL,
 	original_value BOOLEAN,
     PRIMARY KEY (channel_id, role_id)

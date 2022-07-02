@@ -36,10 +36,10 @@ class ApprovedInvite(NamedTuple):
     alias: str
 
 
-tables = {'filteredwords': OrderedDict((('word', 'TEXT'), ('kind', 'TEXT'))),
-          'levenshteinwords': OrderedDict((('word', 'TEXT'), ('threshold', 'INTEGER'), ('kind', 'TEXT'))),
-          'whitelistedwords': OrderedDict((('word', 'TEXT'),)),
-          'approvedinvites': OrderedDict((('code', 'TEXT'), ('uses', 'INTEGER'), ('alias', 'TEXT'))),
+tables = {'filteredwords': ['word', 'kind'],
+          'levenshteinwords': ['word', 'threshold', 'kind'],
+          'whitelistedwords': ['word'],
+          'approvedinvites': ['code', 'uses', 'alias']
           }
 
 

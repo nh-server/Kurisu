@@ -11,8 +11,8 @@ if TYPE_CHECKING:
     from collections.abc import AsyncGenerator
 
 
-tables = {'restrictions': OrderedDict((('id', 'int'), ('user_id', 'int'), ('type', 'text'), ('end_date', ''), ('alerted', 'bool'))),
-          'softbans': OrderedDict((('id', 'int'), ('user_id', 'int'), ('issuer_id', 'int'), ('reason', 'str')))}
+tables = {'restrictions': ['id', 'user_id', 'type', 'end_date', 'alerted'],
+          'softbans': ['id', 'user_id', 'issuer_id', 'reason']}
 
 
 class RestrictionsDatabaseManager(BaseDatabaseManager, tables=tables):

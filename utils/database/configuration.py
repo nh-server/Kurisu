@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from typing import TYPE_CHECKING, NamedTuple
 
 from .common import BaseDatabaseManager
@@ -26,16 +25,13 @@ class DatabaseChannel(NamedTuple):
     mod_channel: bool
 
 
-tables = {'flags': OrderedDict((('name', 'TEXT'), ('value', 'BOOLEAN'))),
-          'staff': OrderedDict((('user_id', 'BIGINT'), ('position', 'TEXT'), ('console', 'TEXT'))),
-          'members': OrderedDict((('id', 'BIGINT'), ('watched', 'bool'))),
-          'membernotes': OrderedDict((('staff_id', 'BIGINT'), ('user_id', 'BIGINT'), ('note', 'bool'))),
-          'memberlinks': OrderedDict((('id', 'BIGINT'), ('watched', 'bool'))),
-          'channels': OrderedDict((('id', 'BIGINT'), ('name', 'TEXT'),
-                                   ('filtered', 'BOOLEAN'), ('lock_level', 'INTEGER'), ('mod_channel', 'BOOLEAN'))),
-          'changedroles': OrderedDict((('role_id', 'BIGINT'), ('channel_id', 'BIGINT'), ('original_value', 'BOOLEAN'))),
-          'roles': OrderedDict((('id', 'BIGINT'), ('name', 'TEXT'))),
-          'rules': OrderedDict((('id', 'BIGINT'), ('description', 'TEXT')))}
+tables = {'flags': ['name', 'value'],
+          'staff': ['user_id', 'position', 'console'],
+          'members': ['id', 'BIGINT', 'watched'],
+          'channels': ['id', 'name', 'filtered','lock_level', 'mod_channel',],
+          'changedroles': ['role_id', 'channel_id', 'original_value'],
+          'roles': ['id', 'name'],
+          'rules': ['id', 'description']}
 
 
 class ConfigurationDatabaseManager(BaseDatabaseManager, tables=tables):

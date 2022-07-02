@@ -19,7 +19,7 @@ class WarnEntry(NamedTuple):
     reason: str
 
 
-tables = {'warns': OrderedDict((('id', 'BIGINT'), ('user_id', 'BIGINT'), ('issuer_id', 'BIGINT'), ('reason', 'TEXT')))}
+tables = {'warns': ['id', 'user_id', 'issuer_id', 'reason']}
 
 
 class WarnsDatabaseManager(BaseDatabaseManager, tables=tables):
