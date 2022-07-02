@@ -37,8 +37,8 @@ class ModWarn(commands.Cog):
         issuer = ctx.author
         channel = ctx.channel
 
-        # if await check_bot_or_staff(ctx, member, "warn"):
-        #     return
+        if await check_bot_or_staff(ctx, member, "warn"):
+            return
 
         prev_count = await self.bot.warns.get_warnings_count(member)
 
@@ -60,6 +60,7 @@ class ModWarn(commands.Cog):
         """Warn a user without automated action. Staff and Helpers only."""
         issuer = ctx.author
         channel = ctx.channel
+
         if await check_bot_or_staff(ctx, member, "warn"):
             return
 
@@ -87,29 +88,31 @@ class ModWarn(commands.Cog):
         db_channel = await self.configuration.get_channel(ctx.channel.id)
         show_issuer = db_channel.mod_channel if db_channel else False
         warns = [w async for w in self.warns.get_warnings(member)]
+
+        if not warns:
+            return await ctx.send("No warns found.")
+
         embed = discord.Embed()
-        if warns:
-            for idx, warn in enumerate(warns):
-                issuer = await ctx.get_user(warn.issuer_id)
-                value = ""
-                if show_issuer:
-                    value += f"Issuer: {issuer.name if issuer else warn.issuer_id}\n"
-                value += f"Reason: {warn.reason} "
-                embed.add_field(
-                    name=f"{idx + 1}: {warn.date:'%Y-%m-%d %H:%M:%S')}",
-                    value=value)
-        if embed:
-            await ctx.send(embed=embed)
-        else:
-            await ctx.send("NO")
+
+        for idx, warn in enumerate(warns):
+            issuer = await ctx.get_user(warn.issuer_id)
+            value = ""
+            if show_issuer:
+                value += f"Issuer: {issuer.name if issuer else warn.issuer_id}\n"
+            value += f"Reason: {warn.reason} "
+            embed.add_field(
+                name=f"{idx + 1}: {warn.date:%Y-%m-%d %H:%M:%S}",
+                value=value)
+        await ctx.send(embed=embed)
 
     @is_staff("SuperOP")
     @commands.command()
     async def copywarns(self, ctx: GuildContext, src: Union[discord.Member, discord.User], target: Union[discord.Member, discord.User]):
         """Copy warns from one user ID to another. Overwrites all warns of the target user ID. SOP+ only."""
 
-        # if await check_bot_or_staff(ctx, target, "warn"):
-        #     return
+        if await check_bot_or_staff(ctx, target, "warn"):
+            return
+
         src_warns = await self.warns.get_warnings_count(src)
         tgt_warns = await self.warns.get_warnings_count(target)
 

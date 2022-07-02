@@ -570,7 +570,7 @@ class Memes(commands.Cog):
         await ctx.message.delete()
         await member.add_roles(self.bot.roles['🍰'])
 
-        timestamp = datetime.datetime.now()
+        timestamp = datetime.datetime.now(self.bot.tz)
         delta = datetime.timedelta(seconds=86400)
         expiring_time = timestamp + delta
 

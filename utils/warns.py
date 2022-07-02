@@ -53,7 +53,7 @@ class WarnsManager(BaseManager, db_manager=WarnsDatabaseManager):
                 to_send = f'You were warned on {guild.name}.'
                 if reason is not None:
                     to_send += ' The given reason is: ' + reason
-                to_send += f'\n\nPlease read the rules in #welcome-and-rules. This is your {ordinal(count)} warning.'
+                to_send += f'\n\nPlease read the rules in {self.bot.channels["welcome-and-rules"]}. This is your {ordinal(count)} warning.'
                 try:
                     to_send += '\n\n' + warn_extras[count - 1]
                 except (TypeError, IndexError):

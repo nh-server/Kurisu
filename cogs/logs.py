@@ -93,7 +93,7 @@ Thanks for stopping by and have a good time!
             await send_dm_message(member, self.welcome_msg.format(member.name, member.guild.name, self.bot.channels['welcome-and-rules'].mention))
 
     @commands.Cog.listener()
-    async def on_member_remove(self, member):
+    async def on_member_remove(self, member: discord.Member):
         await self.bot.wait_until_all_ready()
         if self.bot.pruning is True:
             return
@@ -110,12 +110,12 @@ Thanks for stopping by and have a good time!
             await self.bot.channels['mod-logs'].send(msg)
 
     @commands.Cog.listener()
-    async def on_member_ban(self, guild, member):
+    async def on_member_ban(self, guild: discord.Guild, member: discord.Member):
         await self.bot.wait_until_all_ready()
         ban = await guild.fetch_ban(member)
-        auto_ban = 'wb:' + str(member.id) in self.bot.actions
-        if "ub:" + str(member.id) in self.bot.actions:
-            self.bot.actions.remove("ub:" + str(member.id))
+        auto_ban = f'wb:{member.id}' in self.bot.actions
+        if f"ub:{member.id}" in self.bot.actions:
+            self.bot.actions.remove(f'ub:{member.id}')
             return
         msg = f"{'⛔ **Auto-ban**' if auto_ban else '⛔ **Ban**'}: {member.mention} | {self.bot.escape_text(member)}\n🏷 __User ID__: {member.id}"
         if ban.reason:
@@ -129,16 +129,19 @@ Thanks for stopping by and have a good time!
         await self.bot.channels['mod-logs'].send(msg)
 
     @commands.Cog.listener()
-    async def on_member_unban(self, guild, user):
+    async def on_member_unban(self, guild: discord.Guild, user: discord.User):
         await self.bot.wait_until_all_ready()
+        if f'bu:{user.id}' in self.bot.actions:
+            self.bot.actions.remove(f'bu:{user.id}')
+            return
         msg = f"⚠️ **Unban**: {user.mention} | {self.bot.escape_text(user)}"
-        if discord.utils.get(self.restrictions.timed_restricions, type=Restriction.Ban.value):
+        if discord.utils.get(self.restrictions.timed_restricions, user_id=user.id, type=Restriction.Ban.value):
             msg += "\nTimeban removed."
             await self.restrictions.remove_restriction(user, Restriction.Ban)
         await self.bot.channels['mod-logs'].send(msg)
 
     @commands.Cog.listener()
-    async def on_member_update(self, member_before, member_after):
+    async def on_member_update(self, member_before: discord.Member, member_after: discord.Member):
         await self.bot.wait_until_all_ready()
         do_log = False  # only nickname and roles should be logged
         dest = self.bot.channels['server-logs']
@@ -203,7 +206,7 @@ Thanks for stopping by and have a good time!
             await dest.send(msg)
 
     @commands.Cog.listener()
-    async def on_user_update(self, member_before, member_after):
+    async def on_user_update(self, member_before: discord.Member, member_after: discord.Member):
         await self.bot.wait_until_all_ready()
         do_log = False  # only usernames and discriminators should be logged
         dest = self.bot.channels['server-logs']

@@ -1,5 +1,6 @@
 import asyncio
 
+from discord import Member, User
 from enum import IntEnum
 from typing import TYPE_CHECKING, NamedTuple
 
@@ -10,7 +11,6 @@ from .database import ConfigurationDatabaseManager
 
 if TYPE_CHECKING:
     from typing import Union, Optional, AsyncGenerator
-    from discord import Member, User
     from kurisu import Kurisu
     from . import OptionalMember
     from .database import ChangedRole
@@ -21,6 +21,7 @@ class StaffRank(IntEnum):
     SuperOP = 1
     OP = 2
     HalfOP = 3
+    Staff = 3
     Helper = 4
 
 
@@ -106,38 +107,48 @@ class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager)
     async def add_staff(self, user: 'Union[Member, User, OptionalMember]', level: str):
         if level not in self.bot.staff_roles:
             raise ValueError('not a staff level')
-        if self._staff.get(user.id) or self._helpers.get(user.id):
-            await self.db.set_staff_level(user.id, level)
+        if self._staff.get(user.id) is not None or self._helpers.get(user.id) is not None:
+            res = await self.db.set_staff_level(user.id, level)
         else:
-            await self.db.add_staff_member(user.id, level)
-        self._staff[user.id] = StaffRank[level]
+            res = await self.db.add_staff_member(user.id, level)
+        if res:
+            self._staff[user.id] = StaffRank[level]
+        return res
 
     async def delete_staff(self, user: 'Union[Member, User, OptionalMember]'):
-        del self._staff[user.id]
+
         if user.id in self._helpers:
-            await self.db.remove_staff_position(user.id)
+            res = await self.db.remove_staff_position(user.id)
         else:
-            await self.db.delete_staff(user.id)
+            res = await self.db.delete_staff(user.id)
+        if res:
+            del self._staff[user.id]
+        return res
 
     async def add_helper(self, user: 'Union[Member, User, OptionalMember]', console: str):
         if console not in self.bot.helper_roles:
             raise ValueError('not a staff level')
-        if self._staff.get(user.id) or self._helpers.get(user.id):
-            await self.db.set_helper_console(user.id, console)
+        if self._staff.get(user.id) is not None or self._helpers.get(user.id) is not None:
+            res = await self.db.set_helper_console(user.id, console)
         else:
-            await self.db.add_helper(user.id, console)
-        if isinstance(user, Member):
-            await user.add_roles(self.bot.roles['Helpers'])
-        self._helpers[user.id] = console
+            res = await self.db.add_helper(user.id, console)
+        if res:
+            if isinstance(user, Member):
+                await user.add_roles(self.bot.roles['Helpers'])
+            self._helpers[user.id] = console
+        return res
 
     async def delete_helper(self, user: 'Union[Member, User, OptionalMember]'):
-        del self._helpers[user.id]
+
         if user.id in self._staff:
-            await self.db.remove_staff_position(user.id)
+            res = await self.db.remove_staff_position(user.id)
         else:
-            await self.db.delete_staff(user.id)
-        if isinstance(user, Member):
-            await user.remove_roles(self.bot.roles['Helpers'])
+            res = await self.db.delete_staff(user.id)
+        if res:
+            if isinstance(user, Member):
+                await user.remove_roles(self.bot.roles['Helpers'])
+            del self._helpers[user.id]
+        return res
 
     async def update_staff_roles(self, member: 'Member'):
         staff_role = self.bot.roles['Staff']
@@ -184,8 +195,8 @@ class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager)
         else:
             self.nofilter_list.append(channel.id)
 
-    async def add_changed_roles(self, roles: list[discord.Role], channel: 'Union[discord.TextChannel, discord.Thread, discord.VoiceChannel]'):
-        await self.db.add_changed_roles([role.id for role in roles], channel.id)
+    async def add_changed_roles(self, roles: list[tuple[int, bool]], channel: 'Union[discord.TextChannel, discord.Thread, discord.VoiceChannel]'):
+        await self.db.add_changed_roles(roles, channel.id)
 
     async def delete_changed_role(self, role: discord.Role, channel: 'Union[discord.TextChannel, discord.Thread, discord.VoiceChannel]'):
         await self.db.delete_changed_role(role.id, channel.id)
@@ -195,7 +206,7 @@ class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager)
             yield cr
 
     async def clear_changed_roles(self, channel: 'Union[discord.TextChannel, discord.VoiceChannel]'):
-        await self.db.clear_changed_role(channel.id)
+        await self.db.clear_changed_roles(channel.id)
 
     async def add_flag(self, name: str, value: bool):
         if await self.get_flag(name):

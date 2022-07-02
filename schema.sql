@@ -1,7 +1,11 @@
+drop table if exists approvedinvites, channels, filteredwords, flags, levenshteinwords, members, friendcodes,
+    reminders, roles, permanentroles, rules, softbans, staff, tags, restrictions, timedroles, warns,
+    whitelistedwords, citizens, voteviews, votes, changedroles;
+
 create table approvedinvites
 (
 	code TEXT PRIMARY KEY,
-	uses INTEGER NOT NULL DEFAULT 0,
+	uses INTEGER NOT NULL,
 	alias TEXT NOT NULL
 );
 
@@ -45,14 +49,6 @@ create table members
 	watched BOOLEAN NOT NULL DEFAULT FALSE
 );
 
-create table linkedmembers
-(
-    user_id BIGINT NOT NULL REFERENCES members(id),
-    user_id2 BIGINT NOT NULL REFERENCES members(id),
-    PRIMARY KEY (user_id, user_id2)
-);
-
-
 create table friendcodes
 (
 	user_id BIGINT PRIMARY KEY REFERENCES members(id),
@@ -64,7 +60,7 @@ create table friendcodes
 create table reminders
 (
 	id BIGINT PRIMARY KEY,
-	reminder_date TIME WITH TIME ZONE NOT NULL ,
+	reminder_date timestamptz NOT NULL ,
 	author_id BIGINT NOT NULL REFERENCES members(id),
 	content TEXT NOT NULL
 );
@@ -125,7 +121,7 @@ create table restrictions
 	id BIGINT PRIMARY KEY,
 	user_id BIGINT NOT NULL REFERENCES members(id),
 	type TEXT NOT NULL,
-	end_date TIME WITH TIME ZONE,
+	end_date timestamptz,
 	alerted BOOLEAN NOT NULL DEFAULT FALSE,
 	UNIQUE (user_id, type)
 );
@@ -136,7 +132,7 @@ create table timedroles
 	id BIGINT PRIMARY KEY,
 	role_id BIGINT NOT NULL,
 	user_id BIGINT NOT NULL REFERENCES members(id),
-	expiring_date TIME WITH TIME ZONE NOT NULL,
+	expiring_date timestamptz,
 	UNIQUE (role_id, user_id)
 );
 
@@ -170,7 +166,7 @@ create table voteviews
 	identifier TEXT NOT NULL,
 	author_id BIGINT NOT NULL,
 	options TEXT NOT NULL,
-	start TIME WITH TIME ZONE NOT NULL,
+	start timestamptz NOT NULL,
 	staff_only BOOLEAN NOT NULL
 );
 

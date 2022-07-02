@@ -70,11 +70,11 @@ class UserLogManager(BaseManager):
         if member:
             msg[0] += ' | ' + str(member)
         if until:
-            now = datetime.now()
+            now = datetime.now(self.bot.tz)
             msg[0] += f'for {until - now}, until {format_dt(until)}'
         if reason:
             msg.append(f'\N{PENCIL} __Reason__: {reason}')
         else:
-            msg.append('\N{PENCIL} ___No reason provided__')
+            msg.append('\N{PENCIL} __Reason__: No reason provided')
         msg_final = '\n'.join(msg)
         await self.bot.channels['mod-logs'].send(msg_final)

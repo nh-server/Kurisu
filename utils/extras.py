@@ -47,18 +47,22 @@ class ExtrasManager(BaseManager, db_manager=ExtrasDatabaseManager):
     def reminders(self) -> 'dict[int, list[Reminder]]':
         return self._reminders
 
+    @property
+    def timed_roles(self) -> 'list[TimedRole]':
+        return self._timed_roles
+
     async def add_timed_role(self, user: 'Union[Member, User, OptionalMember]', role: 'Role', expiring_date: datetime):
-        res = await self.db.add_timed_role(user.id, role.id, expiring_date)
+        res = await self.db.add_timed_role(role.id, user.id, expiring_date)
         if res:
             self._timed_roles.append(TimedRole(role_id=role.id, user_id=user.id, expiring_date=expiring_date))
         return res
 
-    async def delete_timed_role(self, user: 'Union[Member, User, OptionalMember]', role: 'Role'):
+    async def delete_timed_role(self, user_id: int, role_id: int):
 
-        res = await self.db.delete_timed_role(user.id, role.id)
+        res = await self.db.delete_timed_role(user_id, role_id)
         if res:
             #  TODO There must be some better way to do this
-            s = discord.utils.get(self._timed_roles, user_id=user.id, role_id=role.id)
+            s = discord.utils.get(self._timed_roles, user_id=user_id, role_id=role_id)
             if s:
                 self._timed_roles.remove(s)
         return res

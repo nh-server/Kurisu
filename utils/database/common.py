@@ -1,10 +1,11 @@
 from typing import TYPE_CHECKING
 
 import asyncpg
+
 import logging
 
 if TYPE_CHECKING:
-    from typing import AsyncGenerator, Iterable, KeysView, Optional
+    from typing import AsyncGenerator, KeysView, Optional
     from kurisu import Kurisu
     from collections import OrderedDict
     Tables = dict[str, OrderedDict[str, str]]
@@ -19,9 +20,9 @@ class DatabaseManagerError(Exception):
 
 
 class ColumnValueFormatter:
-    def __init__(self, columns: 'Iterable', values: 'Iterable'):
-        self.columns = tuple(columns)
-        self.values = tuple(values)
+    def __init__(self, values: dict):
+        self.columns = tuple(values.keys())
+        self.values = tuple(values.values())
 
     def __repr__(self):
         return f'ColumnValueFormatter({self.columns}, {self.values})'
@@ -41,13 +42,15 @@ class BaseDatabaseManager:
     def __init__(self, bot: 'Kurisu'):
         self.bot = bot
         self.log = logger
-        self.log = logger
         self.pool = bot.pool
 
     # until PyCharm recognizes __init_subclass__ properly, these inspections must be disabled
     # noinspection PyMethodOverriding,PyArgumentList
     def __init_subclass__(cls, *, tables: 'Tables', **kwargs):
         cls.tables = tables
+
+    def _generate_id(self):
+        return
 
     def _parse_status(self, res: str) -> int:
         split = res.split(' ')
@@ -102,8 +105,8 @@ class BaseDatabaseManager:
         async with self.pool.acquire() as conn:
             async with conn.transaction():
                 query = f'SELECT * FROM {table} {self._format_select_vars(values.keys())}'
-                self.log.debug('Executed SELECT query with parameters %s',
-                               ColumnValueFormatter(self.tables[table], values))
+                self.log.debug(f'Executed SELECT query in table {table} with parameters %s',
+                               ColumnValueFormatter(values))
                 async for record in conn.cursor(query, *values.values()):
                     yield record
 
@@ -118,8 +121,8 @@ class BaseDatabaseManager:
         async with self.pool.acquire() as conn:
             async with conn.transaction():
                 query = f'SELECT * FROM {table} {self._format_select_vars(values.keys())}'
-                self.log.debug('Executed SELECT query with parameters %s',
-                               ColumnValueFormatter(self.tables[table], values))
+                self.log.debug(f'Executed SELECT query in table {table} with parameters %s',
+                               ColumnValueFormatter(values))
                 return await conn.fetchrow(query, *values.values())
 
     async def _row_count(self, table: str, **values) -> int:
@@ -133,8 +136,8 @@ class BaseDatabaseManager:
             async with conn.transaction():
                 query = f'SELECT COUNT(*) FROM {table} {self._format_select_vars(values.keys())}'
                 record = await conn.fetchrow(query, *values.values())
-                self.log.debug('Executed SELECT COUNT() query with parameters %s',
-                               ColumnValueFormatter(self.tables[table], values))
+                self.log.debug(f'Executed SELECT COUNT() query in table {table} with parameters %s',
+                               ColumnValueFormatter(values))
                 return record[0]
 
     async def _insert(self, table: str, **values) -> int:
@@ -154,8 +157,8 @@ class BaseDatabaseManager:
                 except asyncpg.IntegrityConstraintViolationError:
                     self.log.error(f'Exception when inserting values into table {table}', exc_info=True)
                     return 0
-                self.log.debug('Executed SELECT query with parameters %s',
-                               ColumnValueFormatter(self.tables[table], values))
+                self.log.debug(f'Executed SELECT query in table {table} with parameters %s',
+                               ColumnValueFormatter(values))
         return self._parse_status(res)
 
     async def _update(self, table: str, values: dict, **conditions) -> int:
@@ -174,6 +177,8 @@ class BaseDatabaseManager:
                 except asyncpg.IntegrityConstraintViolationError:
                     self.log.error(f'Exception when updating values in table {table}', exc_info=True)
                     return False
+                self.log.debug(f'Executed UPDATE query in table {table} with parameters %s and conditions %s',
+                               ColumnValueFormatter(values), ColumnValueFormatter(conditions))
         return self._parse_status(res)
 
     async def _delete(self, table: str, **values) -> int:
@@ -191,6 +196,6 @@ class BaseDatabaseManager:
                 except asyncpg.IntegrityConstraintViolationError:
                     self.log.error(f'Exception when deleting rows in table {table}', exc_info=True)
                     return 0
-                self.log.debug('Executed DELETE query with parameters %s',
-                               ColumnValueFormatter(self.tables[table], values))
-        return res
+                self.log.debug(f'Executed DELETE query in table {table} with parameters %s',
+                               ColumnValueFormatter(values))
+        return self._parse_status(res)

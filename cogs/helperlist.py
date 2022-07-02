@@ -33,7 +33,9 @@ class HelperList(commands.Cog):
         if console not in self.bot.helper_roles:
             await ctx.send(f"💢 That's not a valid position. You can use __{'__, __'.join(self.bot.helper_roles.keys())}__")
             return
-        await self.configuration.add_helper(member, console)
+        res = await self.configuration.add_helper(member, console)
+        if not res:
+            return await ctx.send("Failed to add helper")
         await ctx.send(f"{member.mention} is now a helper. Welcome to the party room!")
 
     @is_staff(role='Owner')
@@ -43,7 +45,9 @@ class HelperList(commands.Cog):
         if member.id not in self.configuration.helpers:
             return await ctx.send("This user is not a helper!")
         await ctx.send(member.name)
-        await self.configuration.delete_helper(member)
+        res = await self.configuration.delete_helper(member)
+        if not res:
+            return await ctx.send("Failed to remove helper")
         await ctx.send(f"{member.mention} is no longer a helper. Stop by some time!")
 
     @commands.command()

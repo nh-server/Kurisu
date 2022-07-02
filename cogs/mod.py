@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-import datetime
 import discord
 import re
 
+from datetime import datetime, timedelta
 from discord import app_commands
 from discord.app_commands import Choice
 from discord.ext import commands
@@ -418,8 +418,8 @@ class Mod(commands.Cog):
 
         issuer = ctx.author
 
-        timestamp = datetime.datetime.now()
-        delta = datetime.timedelta(seconds=length)
+        timestamp = datetime.now(self.bot.tz)
+        delta = timedelta(seconds=length)
         unmute_time = timestamp + delta
 
         await self.bot.restrictions.add_restriction(member, Restriction.Muted, reason, end_date=unmute_time)
@@ -448,7 +448,7 @@ class Mod(commands.Cog):
             return await ctx.send("Timeouts can't be longer than 28 days!")
 
         issuer = ctx.author
-        timeout_expiration = discord.utils.utcnow() + datetime.timedelta(seconds=length)
+        timeout_expiration = discord.utils.utcnow() + timedelta(seconds=length)
         timeout_expiration_str = format_dt(timeout_expiration)
         await member.timeout(timeout_expiration, reason=reason)
 
@@ -558,8 +558,8 @@ class Mod(commands.Cog):
 
         issuer = ctx.author
 
-        delta = datetime.timedelta(seconds=length)
-        timestamp = datetime.datetime.now()
+        delta = timedelta(seconds=length)
+        timestamp = datetime.now(self.bot.tz)
 
         takehelp_expiration = timestamp + delta
 
@@ -595,8 +595,8 @@ class Mod(commands.Cog):
         if await check_bot_or_staff(ctx, member, "taketech"):
             return
 
-        delta = datetime.timedelta(seconds=length)
-        timestamp = datetime.datetime.now()
+        delta = timedelta(seconds=length)
+        timestamp = datetime.now(self.bot.tz)
 
         notech_expiration = timestamp + delta
 
@@ -622,8 +622,8 @@ class Mod(commands.Cog):
         """Restricts a user from speaking in Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "helpmute"):
             return
-        delta = datetime.timedelta(seconds=length)
-        timestamp = datetime.datetime.now()
+        delta = timedelta(seconds=length)
+        timestamp = datetime.now(self.bot.tz)
 
         helpmute_expiration = timestamp + delta
 
@@ -843,16 +843,17 @@ class Mod(commands.Cog):
         """Gives temporary streaming permissions to a member. Lasts 24 hours by default"""
         await member.add_roles(self.bot.roles['streamer(temp)'])
 
-        timestamp = datetime.datetime.now()
+        timestamp = datetime.now(self.bot.tz)
         seconds = parse_time(length) if length else 86400
         if seconds == -1:
             return await ctx.send("💢 I don't understand your time format.")
 
-        delta = datetime.timedelta(seconds=seconds)
+        delta = timedelta(seconds=seconds)
         expiring_time = timestamp + delta
         expiring_time_string = format_dt(expiring_time)
-
-        await self.extras.add_timed_role(member, self.bot.roles['streamer(temp)'], expiring_time)
+        res = await self.extras.add_timed_role(member, self.bot.roles['streamer(temp)'], expiring_time)
+        if not res:
+            return await ctx.send("Failed to add temporary stream permissions.")
         msg_user = f"You have been given streaming permissions until {expiring_time_string}!"
         await send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} has been given streaming permissions until {expiring_time_string}.")
@@ -866,7 +867,9 @@ class Mod(commands.Cog):
         """Revokes temporary streaming permissions from a member."""
 
         await member.remove_roles(self.bot.roles['streamer(temp)'])
-        await self.extras.delete_timed_role(member, self.bot.roles['streamer(temp)'])
+        res = await self.extras.delete_timed_role(member.id, self.bot.roles['streamer(temp)'].id)
+        if not res:
+            return await ctx.send("Failed to remove temporary role.")
         msg_user = "Your temporary streaming permissions have been revoked!"
         await send_dm_message(member, msg_user, ctx)
         await self.logs.post_action_log(ctx.author, member, 'no-tempstream')
@@ -888,7 +891,7 @@ class Mod(commands.Cog):
     async def take(self,
                    interaction: discord.Interaction,
                    member: discord.Member,
-                   restriction: Choice[str],
+                   restriction: str,
                    length: app_commands.Transform[int, TimeTransformer],
                    reason: Optional[str] = None):
         """Applies a temporary restriction to a member. OP+ Only"""
@@ -898,14 +901,14 @@ class Mod(commands.Cog):
                               'No-Memes': 'take-memes',
                               'No-art': 'take-art'}
 
-        delta = datetime.timedelta(seconds=length)
-        timestamp = datetime.datetime.now()
+        delta = timedelta(seconds=length)
+        timestamp = datetime.now(self.bot.tz)
 
         end_time = timestamp + delta
 
-        await self.restrictions.add_restriction(member, Restriction[restriction.value], reason, end_date=end_time)
-        await interaction.response.send_message(f"{member.mention} now has the {restriction.value} role temporarily.")
-        await self.logs.post_action_log(interaction.user, member, restriction_action[restriction.value], reason, end_time)
+        await self.restrictions.add_restriction(member, Restriction(restriction), reason, end_date=end_time)
+        await interaction.response.send_message(f"{member.mention} now has the {restriction} role temporarily.")
+        await self.logs.post_action_log(interaction.user, member, restriction_action[restriction], reason, end_time)
 
 
 async def setup(bot):

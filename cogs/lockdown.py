@@ -66,7 +66,6 @@ class Lockdown(commands.Cog):
             if not overwrites_changed:
                 await ctx.send(f"No changes done to {c.mention}")
                 continue
-
             await self.configuration.add_changed_roles(to_add, c)
             await self.configuration.set_channel_lock_level(c, lock_level=level)
             locked_down.append(c)

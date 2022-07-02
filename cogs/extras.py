@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import aiohttp
-import datetime
 import discord
 import inspect
 import os
@@ -10,6 +9,7 @@ import re
 import string
 import sys
 
+from datetime import timedelta, datetime
 from discord import app_commands, TextChannel, __version__ as discordpy_version
 from discord.ext import commands
 from discord.utils import format_dt
@@ -161,7 +161,7 @@ class Extras(commands.Cog):
     @commands.command()
     async def uptime(self, ctx: KurisuContext):
         """Print total uptime of the bot."""
-        await ctx.send(f"Uptime: {datetime.datetime.now() - self.bot.startup}")
+        await ctx.send(f"Uptime: {datetime.now(self.bot.tz) - self.bot.startup}")
 
     @commands.guild_only()
     @is_staff("SuperOP")
@@ -394,8 +394,8 @@ class Extras(commands.Cog):
             return await ctx.send("You can't set a reminder for less than 30 seconds or for more than a year.")
         if len(reminder) > 800:
             return await ctx.send("The reminder is too big! (Longer than 800 characters)")
-        timestamp = datetime.datetime.now()
-        delta = datetime.timedelta(seconds=remind_in)
+        timestamp = datetime.now(self.bot.tz)
+        delta = timedelta(seconds=remind_in)
         reminder_time = timestamp + delta
         await self.extras.add_reminder(reminder_time, ctx.author, reminder)
         await ctx.send(f"I will send you a reminder on {format_dt(reminder_time, style='F')}.", ephemeral=True)
@@ -535,7 +535,7 @@ class Extras(commands.Cog):
         msg = await interaction.original_message()
         await self.extras.add_voteview(view_id=interaction.id, identifier='extras',
                                        author_id=interaction.user.id, options=options,
-                                       start=datetime.datetime.utcnow(), message_id=msg.id, staff_only=staff_only)
+                                       start=datetime.now(self.bot.tz), message_id=msg.id, staff_only=staff_only)
 
     @is_staff('OP')
     @commands.guild_only()

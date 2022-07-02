@@ -6,11 +6,11 @@ import discord
 from Levenshtein import distance
 
 from .managerbase import BaseManager
-from .database import FiltersDatabaseManager, ApprovedInvite
+from .database import FiltersDatabaseManager, ApprovedInvite, FilteredWord, LevenshteinWord
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
-    from .database import LevenshteinWord, FilteredWord, FilterKind
+    from .database import FilterKind
 
 rgx_special_chars = '()[]{}?*+-|^$\\.&~# \t\n\r\v\f'
 

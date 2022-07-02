@@ -1,6 +1,6 @@
-
 from collections import OrderedDict
 from datetime import datetime
+from discord.utils import time_snowflake
 from typing import TYPE_CHECKING, NamedTuple
 
 from .common import BaseDatabaseManager
@@ -66,10 +66,10 @@ class TimedRole(NamedTuple):
 
 
 tables = {'timedroles': OrderedDict((('id', 'BIGINT'), ('role_id', 'BIGINT'), ('user_id', 'BIGINT'), ('expiring_date', 'BIGINT'))),
-          'friendcodes': OrderedDict((('id', 'BIGINT'), ('fc_3ds', 'BIGINT'), ('fc_switch', 'BIGINT'))),
-          'reminders': OrderedDict((('id', 'BIGINT'), ('date', 'TIME'),
-                                   ('author', 'BIGINTN'), ('reminder', 'INTEGER'))),
-          'tags': OrderedDict((('id', 'BIGINT'), ('title', 'TEXT'), ('content', 'TEXT'), ('author', 'BIGINT'))),
+          'friendcodes': OrderedDict((('user_id', 'BIGINT'), ('fc_3ds', 'BIGINT'), ('fc_switch', 'BIGINT'))),
+          'reminders': OrderedDict((('id', 'BIGINT'), ('reminder_date', 'TIME'),
+                                    ('author_id', 'BIGINT'), ('content', 'INTEGER'))),
+          'tags': OrderedDict((('id', 'BIGINT'), ('title', 'TEXT'), ('content', 'TEXT'), ('author_id', 'BIGINT'))),
           'voteviews': OrderedDict((('id', 'BIGINT'), ('message_id', 'BIGINT'), ('identifier', 'BIGINT'),
                                     ('message_id', 'BIGINT'), ('message_id', 'BIGINT'), ('message_id', 'BIGINT'))),
           'votes': OrderedDict((('view_id', 'BIGINT'), ('voter_id', 'BIGINT'), ('option', 'TEXT')))}
@@ -80,25 +80,26 @@ class ExtrasDatabaseManager(BaseDatabaseManager, tables=tables):
 
     async def add_timed_role(self, role_id: int, user_id: int, expiring_date: datetime):
         await self.bot.configuration.add_member(user_id)
-        return await self._insert('timedroles', role_id=role_id, user_id=user_id, expiring_date=expiring_date)
+        now = time_snowflake(datetime.now())
+        return await self._insert('timedroles', id=now, role_id=role_id, user_id=user_id, expiring_date=expiring_date)
 
     async def delete_timed_role(self, user_id: int, role_id: int):
         return await self._delete('timedroles', user_id=user_id, role_id=role_id)
 
     async def get_timed_roles(self) -> 'AsyncGenerator[TimedRole, None]':
         async for p in self._select('timedroles'):
-            yield TimedRole(role_id=p[0], user_id=p[1], expiring_date=p[2])
+            yield TimedRole(role_id=p[1], user_id=p[2], expiring_date=p[3])
 
     async def add_3ds_friend_code(self, user_id: int, fc: int):
         await self.bot.configuration.add_member(user_id)
-        return await self._insert('friendcodes', id=user_id, fc_3ds=fc)
+        return await self._insert('friendcodes', user_id=user_id, fc_3ds=fc)
 
     async def add_switch_friend_code(self, user_id: int, fc: int):
         await self.bot.configuration.add_member(user_id)
-        return await self._insert('friendcodes', id=user_id, fc_switch=fc)
+        return await self._insert('friendcodes', user_id=user_id, fc_switch=fc)
 
     async def delete_friend_code(self, user_id: int):
-        return await self._delete('friendcodes', id=user_id)
+        return await self._delete('friendcodes', user_id=user_id)
 
     async def delete_switch_friend_code(self, user_id: int):
         fcs = await self.get_friend_code(user_id)
@@ -138,7 +139,7 @@ class ExtrasDatabaseManager(BaseDatabaseManager, tables=tables):
 
     async def add_reminder(self, reminder_id: int, date: datetime, author_id: int, content: str) -> int:
         await self.bot.configuration.add_member(author_id)
-        return await self._insert('reminders', id=reminder_id, date=date, author_id=author_id, reminder=content)
+        return await self._insert('reminders', id=reminder_id, reminder_date=date, author_id=author_id, content=content)
 
     async def delete_reminder(self, reminder_id: int) -> int:
         return await self._delete('reminders', id=reminder_id)
@@ -149,11 +150,12 @@ class ExtrasDatabaseManager(BaseDatabaseManager, tables=tables):
 
     async def add_voteview(self, view_id: int, message_id, identifier: str, author_id: int,
                            options: str, start: 'Optional[datetime]', staff_only: bool):
-        await self._insert('voteviews', id=view_id, message_id=message_id, identifier=identifier, author_id=author_id,
-                           options=options, start=start, staff_only=staff_only)
+        return await self._insert('voteviews', id=view_id, message_id=message_id, identifier=identifier,
+                                  author_id=author_id,
+                                  options=options, start=start, staff_only=staff_only)
 
     async def delete_voteview(self, view_id: int):
-        await self._delete('voteviews', id=view_id)
+        return await self._delete('voteviews', id=view_id)
 
     async def add_vote(self, view_id: int, voter_id: int, option: str):
         await self.bot.configuration.add_member(voter_id)
@@ -162,7 +164,7 @@ class ExtrasDatabaseManager(BaseDatabaseManager, tables=tables):
         conn: asyncpg.Connection
         async with self.pool.acquire() as conn:
             async with conn.transaction():
-                await conn.execute(query, view_id, voter_id, option)
+                return await conn.execute(query, view_id, voter_id, option)
 
     async def update_vote(self, view_id: int, voter_id: int, option: str):
         await self._update('voteviews', {'option': option}, view_id=view_id, voter_id=voter_id)
@@ -173,7 +175,7 @@ class ExtrasDatabaseManager(BaseDatabaseManager, tables=tables):
 
     async def add_citizen(self, citizen_id: int):
         await self.bot.configuration.add_member(citizen_id)
-        await self._insert('citizens', id=citizen_id)
+        return await self._insert('citizens', id=citizen_id)
 
     async def get_citizen(self, citizen_id: int) -> 'Optional[Citizen]':
         res = await self._select_one('citizens', id=citizen_id)
@@ -181,7 +183,7 @@ class ExtrasDatabaseManager(BaseDatabaseManager, tables=tables):
             return Citizen(id=res[0], social_credit=res[1])
 
     async def delete_citizen(self, citizen_id: int):
-        await self._delete('citizens', id=citizen_id)
+        return await self._delete('citizens', id=citizen_id)
 
     async def set_social_credit(self, citizen_id: int, amount: int):
-        await self._update('citizens', {'social_credit': amount}, id=citizen_id)
+        return await self._update('citizens', {'social_credit': amount}, id=citizen_id)

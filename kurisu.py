@@ -15,6 +15,8 @@ import traceback
 
 from configparser import ConfigParser
 from datetime import datetime
+
+import pytz
 from discord import app_commands
 from discord.ext import commands
 from subprocess import check_output, CalledProcessError
@@ -89,7 +91,7 @@ else:
 
 def setup_logging():
     log = logging.getLogger()
-    log.setLevel(logging.INFO)
+    log.setLevel(logging.DEBUG)
     fmt = logging.Formatter('[{asctime}] [{levelname:^7s}] {name}.{funcName}: {message}', datefmt="%Y-%m-%d %H:%M:%S",
                             style='{')
     sh = logging.StreamHandler()
@@ -122,7 +124,8 @@ class Kurisu(commands.Bot):
             tree_cls=Kuritree
         )
 
-        self.startup = datetime.now()
+        self.tz = pytz.timezone('US/Pacific')
+        self.startup = datetime.now(self.tz)
         self.IS_DOCKER = IS_DOCKER
         self.commit = commit
         self.branch = branch
@@ -169,14 +172,6 @@ class Kurisu(commands.Bot):
 
         self.emoji = discord.utils.get(self.guild.emojis, name='kurisu') or discord.PartialEmoji.from_str("⁉")
 
-        # Load Filters
-        # await self.wordfilter.load()
-        # logger.info("Loaded wordfilter")
-        # await self.levenshteinfilter.load()
-        # logger.info("Loaded levenshtein filter")
-        # await self.invitefilter.load()
-        # logger.info("Loaded invite filter")
-
         # Load channels and roles
         await self.load_channels()
         await self.load_roles()
@@ -203,7 +198,6 @@ class Kurisu(commands.Bot):
                                                      'SuperOP': self.roles['SuperOP'],
                                                      'OP': self.roles['OP'],
                                                      'HalfOP': self.roles['HalfOP'],
-                                                     'Staff': self.roles['Staff'],
                                                      }
 
         self.err_channel = self.channels['bot-err']

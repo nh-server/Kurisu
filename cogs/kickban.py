@@ -123,7 +123,7 @@ class KickBan(commands.Cog):
             msg += " The given reason is: " + reason
 
         if duration is not None:
-            timestamp = datetime.datetime.now()
+            timestamp = datetime.datetime.now(self.bot.tz)
             delta = datetime.timedelta(seconds=duration)
             unban_time = timestamp + delta
             unban_time_string = format_dt(unban_time)
@@ -206,6 +206,7 @@ class KickBan(commands.Cog):
             return await ctx.send(f"{user} is not banned!")
 
         await self.restrictions.remove_restriction(user, Restriction.Ban)
+        self.bot.actions.append(f'bu:{user.id}')
         await ctx.guild.unban(user, reason=reason)
         await ctx.send(f"{user} is now unbanned.")
         msg = f"⚠ **Unban**: {ctx.author.mention} unbanned {user.mention} | {self.bot.escape_text(user)}\n🏷 __User ID__: {user.id}\n✏️ __Reason__: {reason}"
@@ -245,7 +246,7 @@ class KickBan(commands.Cog):
         if await check_bot_or_staff(ctx, member, "timeban"):
             return
 
-        timestamp = datetime.datetime.now()
+        timestamp = datetime.datetime.now(self.bot.tz)
         delta = datetime.timedelta(seconds=length)
         unban_time = timestamp + delta
         unban_time_string = format_dt(unban_time)
@@ -288,6 +289,9 @@ class KickBan(commands.Cog):
         if await check_bot_or_staff(ctx, member, "softban"):
             return
 
+        if member.id in self.restrictions.softbans:
+            return await ctx.send("This user is already softbanned!")
+
         await self.restrictions.add_softban(member, ctx.author, reason)
 
         await ctx.send(f"{member} is now b&. 👍")
@@ -300,7 +304,7 @@ class KickBan(commands.Cog):
     async def unsoftban_member(self, ctx: GuildContext, user: Union[discord.Member, discord.User]):
         """Un-soft-ban a user based on ID. OP+ only."""
         if user.id not in self.restrictions.softbans:
-            await ctx.send("This user is not softbanned!")
+            return await ctx.send("This user is not softbanned!")
         await self.restrictions.delete_softban(user)
         await ctx.send(f"{user} has been unbanned!")
         msg = f"⚠️ **Un-soft-ban**: {ctx.author.mention} un-soft-banned {self.bot.escape_text(user)}"

@@ -34,7 +34,9 @@ class ModStaff(commands.Cog):
         if position not in self.bot.staff_roles:
             await ctx.send(f"💢 That's not a valid position. You can use __{'__, __'.join(self.bot.staff_roles.keys())}__")
             return
-        await self.bot.configuration.add_staff(member, position)
+        res = await self.bot.configuration.add_staff(member, position)
+        if not res:
+            return await ctx.send("Failed to add staff member.")
         await self.bot.configuration.update_staff_roles(member)
         await ctx.send(f"{member.mention} is now on staff as {position}. Welcome to the secret party room!")
 
@@ -43,7 +45,9 @@ class ModStaff(commands.Cog):
     async def delstaff(self, ctx: GuildContext, member: discord.Member):
         """Remove user from staff. Owners only."""
         await ctx.send(member.name)
-        await self.bot.configuration.delete_staff(member)
+        res = await self.bot.configuration.delete_staff(member)
+        if not res:
+            return await ctx.send("Failed to remove staff member.")
         await self.bot.configuration.update_staff_roles(member)
         await ctx.send(f"{member.mention} is no longer staff. Stop by some time!")
 

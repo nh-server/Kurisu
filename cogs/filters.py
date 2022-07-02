@@ -53,8 +53,8 @@ class Filter(commands.Cog):
     async def list_words(self, ctx: KurisuContext):
         """List the word filter filter lists and their content."""
         embed = discord.Embed()
-
         words = {}
+
         for kind in FilterKind:
             words[kind] = []
             for fw in self.filters.filtered_words:
@@ -123,16 +123,25 @@ class Filter(commands.Cog):
     async def list_levenshtein(self, ctx: KurisuContext):
         """List the levenshtein filter filter lists and their content."""
         embed = discord.Embed()
+        words = {}
+
         for kind in FilterKind:
-            value = "".join(
-                f"{f_word.word} with threshold {f_word.threshold}{' - whitelisted' if f_word.word in self.filters.whitelist else ''} \n"
-                for f_word in filter(lambda word: word.kind is kind, self.filters.lsh_words)
-            )
-            embed.add_field(name=kind.value, value=value)
+            words[kind] = []
+            for lw in self.filters.lsh_words:
+                if lw.kind is kind:
+                    words[kind].append(f"{lw.word} treshhold {lw.threshold}")
+
+        for kind, lws in words.items():
+            parts = wrap('\n'.join(lws), 1024, break_long_words=False, replace_whitespace=False)
+            if (pages := len(parts)) > 1:
+                for n, part in enumerate(parts, start=1):
+                    embed.add_field(name=f"{kind} {n}/{pages}", value=part)
+            elif parts:
+                embed.add_field(name=kind.value, value=parts[0])
         if embed:
             await ctx.author.send(embed=embed)
         else:
-            await ctx.send("The Levenshtein filter is empty!")
+            await ctx.send("The levenshtein filter is empty!")
 
     @levenshteinfilter.command(name='test')
     async def test_levenshtein(self, ctx: KurisuContext, message):
@@ -150,7 +159,7 @@ class Filter(commands.Cog):
             for lsh_word in self.filters.lsh_words:
                 word_distance = distance(word, lsh_word.word)
                 if word_distance < lsh_word.threshold:
-                    matches[word].append(lsh_word)
+                    matches[word].append(lsh_word.word)
         if matches:
             embed = discord.Embed(title="Matches")
             for match in matches.keys():

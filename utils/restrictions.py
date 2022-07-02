@@ -59,7 +59,6 @@ class TimedRestriction:
 
 
 class Softban(NamedTuple):
-    softban_id: int
     user_id: int
     issuer_id: int
     reason: str
@@ -76,7 +75,7 @@ class RestrictionsManager(BaseManager, db_manager=RestrictionsDatabaseManager):
 
     async def setup(self):
         self._timed_restrictions: list[TimedRestriction] = [r async for r in self.get_timed_restrictions()]
-        self._softbans: dict[int, Softban] = {r[1]: Softban(*r) async for r in self.get_softbans()}
+        self._softbans: dict[int, Softban] = {r[1]: Softban(user_id=r[1], issuer_id=r[2], reason=r[3]) async for r in self.db.get_softbans()}
 
     @property
     def timed_restricions(self) -> list[TimedRestriction]:
@@ -90,7 +89,7 @@ class RestrictionsManager(BaseManager, db_manager=RestrictionsDatabaseManager):
                               reason: 'Optional[str]', *, end_date: 'Optional[datetime]' = None) -> int:
         """Add a restriction to the user id."""
         assert restriction in Restriction
-        assert (restriction is Restriction.Ban and end_date)
+        assert (restriction is Restriction.Ban and end_date) or restriction is not Restriction.Ban
         now = time_snowflake(datetime.now())
         if end_date:
             res = await self.db.add_timed_restriction(now, user.id, restriction.value, end_date)
@@ -98,22 +97,22 @@ class RestrictionsManager(BaseManager, db_manager=RestrictionsDatabaseManager):
             res = await self.db.add_restriction(now, user.id, restriction.value)
 
         if res:
-            if restriction is not Restriction.Ban:
+            if end_date:
+                self._timed_restrictions.append(
+                    TimedRestriction(restriction_id=now, user_id=user.id, type=restriction.value, end_date=end_date,
+                                     alerted=False))
+            if restriction is not Restriction.Ban and isinstance(user, discord.Member):
+                await user.add_roles(self.bot.roles[restriction.value])
+                if restriction is Restriction.Muted:
+                    await user.remove_roles(self.bot.roles['#elsewhere'], self.bot.roles['#art-discussion'])
+                msg_user = messages[restriction]
+                if reason:
+                    msg_user += " The given reason is: " + reason
+                msg_user += ("\n\nIf you feel this was unjustified, "
+                             f"you may appeal in {self.bot.channels['appeals'].mention}")
                 if end_date:
-                    self._timed_restrictions.append(
-                        TimedRestriction(restriction_id=now, user_id=user.id, type=restriction.value, end_date=end_date, alerted=False))
-                if isinstance(user, discord.Member):
-                    await user.add_roles(self.bot.roles[restriction.value])
-                    if restriction is Restriction.Muted:
-                        await user.remove_roles(self.bot.roles['#elsewhere'], self.bot.roles['#art-discussion'])
-                    msg_user = messages[restriction]
-                    if reason:
-                        msg_user += " The given reason is: " + reason
-                    msg_user += ("\n\nIf you feel this was unjustified, "
-                                 f"you may appeal in {self.bot.channels['appeals'].mention}")
-                    if end_date:
-                        msg_user += f"\n\nThis restriction lasts until {format_dt(end_date)}."
-                    await send_dm_message(user, msg_user)
+                    msg_user += f"\n\nThis restriction lasts until {format_dt(end_date)}."
+                await send_dm_message(user, msg_user)
         return res
 
     async def get_restrictions_by_type(self, restriction: Restriction):
@@ -127,17 +126,21 @@ class RestrictionsManager(BaseManager, db_manager=RestrictionsDatabaseManager):
             yield r
 
     async def add_softban(self, user: 'Union[Member, User, OptionalMember]', issuer: 'Union[Member, User, OptionalMember]', reason: str):
-        if isinstance(user, Member):
-            msg = f"This account is no longer permitted to participate in {self.bot.guild.name}. The reason is: {reason}"
-            await send_dm_message(user, msg)
-            try:
-                await user.kick(reason=reason)
-            except discord.Forbidden:
-                pass
-        await self.db.add_softban(user.id, issuer.id, reason)
+        res = await self.db.add_softban(user.id, issuer.id, reason)
+        if res:
+            self._softbans[user.id] = Softban(user_id=user.id, issuer_id=issuer.id, reason=reason)
+            if isinstance(user, Member):
+                msg = f"This account is no longer permitted to participate in {self.bot.guild.name}. The reason is: {reason}"
+                await send_dm_message(user, msg)
+                try:
+                    await user.kick(reason=reason)
+                except discord.Forbidden:
+                    pass
 
     async def delete_softban(self, user: 'Union[Member, User, OptionalMember]'):
-        await self.db.remove_softban(user.id)
+        res = await self.db.remove_softban(user.id)
+        if res:
+            del self._softbans[user.id]
 
     async def remove_restriction(self, user: 'Union[Member, User, OptionalMember]', restriction: Restriction) -> int:
         """Removes a restriction to."""
@@ -145,13 +148,21 @@ class RestrictionsManager(BaseManager, db_manager=RestrictionsDatabaseManager):
 
         res = await self.db.remove_restriction(user.id, restriction.value)
 
-        if res and isinstance(user, discord.Member) and restriction is not Restriction.Ban:
-            await user.remove_roles(self.bot.roles[restriction.value])
+        if res:
+            if restriction is not Restriction.Ban and isinstance(user, discord.Member):
+                await user.remove_roles(self.bot.roles[restriction.value])
+            timed_res = discord.utils.get(self._timed_restrictions, user_id=user.id, type=restriction.value)
+            if timed_res:
+                self._timed_restrictions.remove(timed_res)
         return res
 
     async def set_timed_restriction_alert(self, restriction_id):
         """Removes a restriction to."""
-        await self.db.set_timed_restriction_alert(restriction_id)
+        res = await self.db.set_timed_restriction_alert(restriction_id)
+        if res:
+            timed_res = discord.utils.get(self._timed_restrictions, restriction_id=restriction_id)
+            if timed_res:
+                timed_res.alerted = True
 
     async def get_timed_restrictions(self):
         async for r in self.db.get_timed_restrictions():
@@ -160,7 +171,3 @@ class RestrictionsManager(BaseManager, db_manager=RestrictionsDatabaseManager):
                                    type=r[2],
                                    end_date=r[3],
                                    alerted=r[4])
-
-    async def get_softbans(self):
-        async for s in self.db.get_softbans():
-            yield s

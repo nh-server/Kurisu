@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 import discord
-import pytz
 import logging
 
 from datetime import datetime, timedelta
@@ -39,12 +38,10 @@ class Loop(commands.Cog):
 
     last_hour = datetime.now().hour
 
-    tz = pytz.timezone('US/Pacific')
-
     netinfo_embed = discord.Embed(description="The Network Maintenance Information page has not been successfully checked yet.")
 
     def netinfo_parse_time(self, time_str: str) -> datetime:
-        return self.tz.localize(datetime.strptime(' '.join(time_str.split()), '%A, %B %d, %Y %I :%M %p')).astimezone()
+        return self.bot.tz.localize(datetime.strptime(' '.join(time_str.split()), '%A, %B %d, %Y %I :%M %p')).astimezone()
 
     async def update_netinfo(self):
         async with self.bot.session.get('https://www.nintendo.co.jp/netinfo/en_US/status.json?callback=getJSON', timeout=45) as r:
@@ -55,7 +52,7 @@ class Loop(commands.Cog):
                 logger.warning("Status %s while trying to update netinfo.", r.status)
                 return
 
-        now = datetime.now(self.tz)
+        now = datetime.now(self.bot.tz)
 
         embed = discord.Embed(title="Network Maintenance Information / Online Status",
                               url="https://www.nintendo.co.jp/netinfo/en_US/index.html",
@@ -71,8 +68,8 @@ class Loop(commands.Cog):
                 else:
                     entry_desc = 'No console specified.'
 
-                begin = datetime(year=2000, month=1, day=1, tzinfo=self.tz)
-                end = datetime(year=2099, month=1, day=1, tzinfo=self.tz)
+                begin = datetime(year=2000, month=1, day=1, tzinfo=self.bot.tz)
+                end = datetime(year=2099, month=1, day=1, tzinfo=self.bot.tz)
                 if "begin" in entry:
                     begin = self.netinfo_parse_time(entry["begin"])
                     entry_desc += '\nBegins: ' + format_dt(begin)
@@ -114,31 +111,41 @@ class Loop(commands.Cog):
         await self.update_netinfo()  # Run once so it will always be available after restart
         while self.is_active:
             try:
-                current_timestamp = datetime.now()
-
-                for restriction in self.bot.restrictions.timed_restricions:
-                    restriction_type = Restriction[restriction.type]
+                current_timestamp = datetime.now(self.bot.tz)
+                for restriction in self.restrictions.timed_restricions:
+                    restriction_type = Restriction(restriction.type)
                     if current_timestamp > restriction.end_date:
                         member = self.bot.guild.get_member(restriction.user_id) or OptionalMember(
                             id=restriction.user_id)
+                        await self.bot.restrictions.remove_restriction(member, restriction_type)
                         if restriction_type is Restriction.Ban:
                             u = discord.Object(id=restriction.user_id)
                             try:
+                                self.bot.actions.append(f"bu:{u.id}")
                                 await self.bot.guild.unban(u)
                             except discord.errors.NotFound:
                                 pass
                             msg = f"⚠️ **Ban expired**: {member.id}"
                             await self.bot.channels['mod-logs'].send(msg)
-                        await self.bot.restrictions.remove_restriction(member, restriction_type)
                     elif not restriction.alerted:
                         warning_time_period = timedelta(minutes=30) if restriction.type is Restriction.Ban else timedelta(minutes=10)
                         warning_time = restriction.end_date - warning_time_period
                         if current_timestamp > warning_time:
                             await self.bot.restrictions.set_timed_restriction_alert(restriction.restriction_id)
                             await self.bot.channels['mods'].send(
-                                f"**Note**: <@{restriction.user_id}> | restriction.user_id  {restriction_type.name}"
+                                f"**Note**: <@{restriction.user_id}> | {restriction.user_id} {restriction_type.name}"
                                 f" restriction will be removed "
                                 f"in {((restriction.end_date - current_timestamp).seconds // 60) + 1} minutes.")
+
+                for timed_role in self.extras.timed_roles:
+                    if current_timestamp > timed_role.expiring_date:
+                        await self.extras.delete_timed_role(timed_role.user_id, timed_role.role_id)
+                        member = self.bot.guild.get_member(timed_role.user_id)
+                        role = self.bot.guild.get_role(timed_role.role_id)
+                        if member and role:
+                            await member.remove_roles(role)
+                        msg = f"⭕ **Timed Role Expired**: <@{timed_role.user_id}>"
+                        await self.bot.channels['mod-logs'].send(msg)
 
                 for reminder_entries in self.extras.reminders.values():
                     for reminder in reminder_entries:

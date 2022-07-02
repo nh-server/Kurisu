@@ -46,7 +46,7 @@ class FriendCode(commands.Cog):
         return f"{fc_str[0:4]} - {fc_str[4:8]} - {fc_str[8:12]}"
 
     def switch_fc_to_string(self, fc: int):
-        fc_str = str(fc)
+        fc_str = str(fc).rjust(12, '0')
         return f"SW - {fc_str[0:4]} - {fc_str[4:8]} - {fc_str[8:12]}"
 
     @commands.command()
