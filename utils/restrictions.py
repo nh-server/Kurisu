@@ -23,7 +23,7 @@ class Restriction(Enum):
     Muted = 'Muted'
     TakeHelp = 'No-Help'
     Ban = 'ban'
-    Probation = 'probation'
+    Probation = 'Probation'
     MetaMute = 'meta-mute'
     HelpMute = 'help-mute'
     NoElsewhere = 'No-elsewhere'
