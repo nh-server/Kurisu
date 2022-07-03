@@ -33,7 +33,7 @@ class ConsoleColor(discord.Color):
         return cls(0x707070)
 
 
-async def send_dm_message(member: Union[discord.Member, discord.User], message: str, ctx: Optional[commands.Context] = None, **kwargs) -> bool:
+async def send_dm_message(member: discord.Member, message: str, ctx: Optional[commands.Context] = None, **kwargs) -> bool:
     """A helper method for sending a message to a member's DMs.
 
     Returns a boolean indicating success of the DM
@@ -129,3 +129,10 @@ def paginate_message(msg: str, prefix: str = '```', suffix: str = '```', max_siz
 def text_to_discord_file(text: str, *, name: str = 'output.txt'):
     encoded = text.encode("utf-8")
     return discord.File(filename=name, fp=io.BytesIO(encoded))
+
+
+# https://stackoverflow.com/questions/9647202/ordinal-numbers-replacement
+# but modified to be an f-string
+def ordinal(n: int) -> str:
+    # noinspection SpellCheckingInspection
+    return f'{n}{"tsnrhtdd"[(n // 10 % 10 != 1) * (n % 10 < 4) * n % 10::4]}'

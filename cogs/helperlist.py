@@ -4,7 +4,6 @@ import discord
 
 from discord.ext import commands
 from utils.checks import is_staff
-from utils import crud
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -19,6 +18,7 @@ class HelperList(commands.Cog):
 
     def __init__(self, bot: Kurisu):
         self.bot: Kurisu = bot
+        self.configuration = self.bot.configuration
         self.emoji = discord.PartialEmoji.from_str('📜')
 
     async def cog_check(self, ctx: KurisuContext):
@@ -28,35 +28,36 @@ class HelperList(commands.Cog):
 
     @is_staff(role='Owner')
     @commands.command()
-    async def addhelper(self, ctx: GuildContext, member: discord.Member, console):
+    async def addhelper(self, ctx: GuildContext, member: discord.Member, console: str):
         """Add user as a helper. Owners only."""
         if console not in self.bot.helper_roles:
             await ctx.send(f"💢 That's not a valid position. You can use __{'__, __'.join(self.bot.helper_roles.keys())}__")
             return
-        await crud.add_helper(member.id, 'Helper', console)
-        await member.add_roles(self.bot.roles['Helpers'])
+        res = await self.configuration.add_helper(member, console)
+        if not res:
+            return await ctx.send("Failed to add helper")
         await ctx.send(f"{member.mention} is now a helper. Welcome to the party room!")
 
     @is_staff(role='Owner')
     @commands.command()
     async def delhelper(self, ctx: GuildContext, member: discord.Member):
         """Remove user from helpers. Owners only."""
-        if not await crud.get_helper(member.id):
+        if member.id not in self.configuration.helpers:
             return await ctx.send("This user is not a helper!")
         await ctx.send(member.name)
-        await crud.remove_helper(member.id)
-        await member.remove_roles(self.bot.roles['Helpers'])
+        res = await self.configuration.delete_helper(member)
+        if not res:
+            return await ctx.send("Failed to remove helper")
         await ctx.send(f"{member.mention} is no longer a helper. Stop by some time!")
 
     @commands.command()
     async def helpon(self, ctx: GuildContext):
         """Gain highlighted helping role. Only needed by Helpers."""
         author = ctx.author
-        helper = await crud.get_helper(author.id)
-        if not helper or not helper.console:
+        if author.id not in self.configuration.helpers:
             await ctx.send("You are not listed as a helper, and can't use this.")
             return
-        await author.add_roles(self.bot.helper_roles[helper.console])
+        await author.add_roles(self.bot.helper_roles[self.configuration.helpers[author.id]])
         await ctx.send(f"{author.mention} is now actively helping.")
         msg = f"🚑 **Elevated: +Help**: {author.mention} | {author}"
         await self.bot.channels['mod-logs'].send(msg)
@@ -65,11 +66,10 @@ class HelperList(commands.Cog):
     async def helpoff(self, ctx: GuildContext):
         """Remove highlighted helping role. Only needed by Helpers."""
         author = ctx.author
-        helper = await crud.get_helper(author.id)
-        if not helper or not helper.console:
+        if author.id not in self.configuration.helpers:
             await ctx.send("You are not listed as a helper, and can't use this.")
             return
-        await author.remove_roles(self.bot.helper_roles[helper.console])
+        await author.remove_roles(self.bot.helper_roles[self.configuration.helpers[author.id]])
         await ctx.send(f"{author.mention} is no longer actively helping!")
         msg = f"👎🏻 **De-Elevated: -Help**: {author.mention} | {author}"
         await self.bot.channels['mod-logs'].send(msg)
@@ -77,14 +77,13 @@ class HelperList(commands.Cog):
     @commands.command()
     async def listhelpers(self, ctx: GuildContext):
         """List helpers per console."""
-        helper_list = await crud.get_helpers()
         consoles: dict[str, list] = {}
         embed = discord.Embed()
         for console in self.bot.helper_roles.keys():
             consoles[console] = []
-            for helper in helper_list:
-                if console == helper.console:
-                    consoles[console].append(helper.id)
+            for user_id, helper_console in self.configuration.helpers.items():
+                if console == helper_console:
+                    consoles[console].append(user_id)
             if consoles[console]:
                 embed.add_field(
                     name=console,

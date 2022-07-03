@@ -6,7 +6,6 @@ import re
 
 from discord.ext import commands
 from typing import TYPE_CHECKING, Optional, Literal
-from utils import crud
 from utils.checks import is_staff, check_if_user_can_ready
 from utils.utils import text_to_discord_file, parse_time
 
@@ -34,33 +33,23 @@ class Newcomers(commands.Cog):
     def __init__(self, bot: Kurisu):
         self.bot: Kurisu = bot
         self.emoji = discord.PartialEmoji.from_str('🆕')
-        self.autoprobate = False
         self.join_list: list[discord.Member] = []
+        self.configuration = self.bot.configuration
 
     async def cog_check(self, ctx: KurisuContext):
         if ctx.guild is None:
             raise commands.NoPrivateMessage()
         return True
 
-    async def cog_load(self):
-        flag_name = 'auto_probation'
-
-        if flag := await crud.get_flag(flag_name):
-            self.autoprobate = flag.value
-        else:
-            self.autoprobate = False
-            await crud.add_flag(flag_name)
-
     @commands.Cog.listener()
     async def on_member_join(self, member: discord.Member):
         if member not in self.join_list:
             self.join_list.append(member)
-        if self.autoprobate:
+        if self.bot.configuration.auto_probation:
             await member.add_roles(self.bot.roles['Probation'], reason="Auto-probation")
         else:
             if len(self.join_list) > 10:
-                self.autoprobate = True
-                await crud.set_flag('auto_probation', True)
+                await self.bot.configuration.set_auto_probation(True)
                 await self.bot.channels['mods'].send("@everyone Raid alert multiple joins under 10 seconds! "
                                                      "Autoprobation has been enabled.",
                                                      allowed_mentions=discord.AllowedMentions(everyone=True))
@@ -71,7 +60,7 @@ class Newcomers(commands.Cog):
                     except (discord.Forbidden, discord.HTTPException):
                         pass
         await asyncio.sleep(10)
-        if not self.autoprobate:
+        if not self.configuration.auto_probation:
             try:
                 self.join_list.remove(member)
             except ValueError:
@@ -79,12 +68,11 @@ class Newcomers(commands.Cog):
 
     async def autoprobate_handler(self, ctx: GuildContext, enabled: Optional[bool] = None):
         if enabled is not None:
-            self.autoprobate = enabled
-            await crud.set_flag('auto_probation', enabled)
+            await self.bot.configuration.set_auto_probation(enabled)
 
         inactive_text = f'**inactive**. ⚠️\nTo activate it, use `.autoprobate {" | ".join(self.on_aliases)}`.'
         active_text = f'**active**. ✅\nTo deactivate it, use `.autoprobate {" | ".join(self.off_aliases)}`.'
-        await ctx.send(f'🔨 Auto-probation is {active_text if self.autoprobate else inactive_text}')
+        await ctx.send(f'🔨 Auto-probation is {active_text if self.bot.configuration.auto_probation else inactive_text}')
 
     @is_staff('Helper')
     @commands.group(name="autoprobate", aliases=['autoprobation'], invoke_without_command=True, case_insensitive=True)
@@ -147,7 +135,7 @@ class Newcomers(commands.Cog):
         --dry_run [True|False] Runs the command without doing any changes. False by default.
         --younger_than [#d#h#m#s] Affect accounts that were created less than the amount of time specified."""
 
-        if not self.autoprobate:
+        if not self.bot.configuration.auto_probation:
             return await ctx.send("This can only be used with autoprobation on.")
 
         if len(self.join_list) == 0:

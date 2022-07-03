@@ -123,6 +123,8 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
     ):
         """Search the server logs for messages that matches the parameters given then returns them in a file"""
 
+        assert interaction.guild is not None
+
         await interaction.response.defer(ephemeral=bool(view_state))
 
         if (after or before) and during:
@@ -166,6 +168,8 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
             view_state: str = "",
     ):
         """Search the server logs for channels that matches the name given then returns them in a file"""
+
+        assert interaction.guild is not None
 
         await interaction.response.defer(ephemeral=bool(view_state))
 

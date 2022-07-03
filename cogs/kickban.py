@@ -7,11 +7,11 @@ from discord import app_commands
 from discord.ext import commands
 from discord.utils import format_dt
 from typing import Union, Literal, TYPE_CHECKING, Optional
-from utils import crud
 from utils.converters import TimeTransformer, DateOrTimeToSecondsConverter
 from utils.checks import is_staff, is_staff_app, check_bot_or_staff
 from utils.utils import send_dm_message, command_signature
-
+from utils import Restriction
+from utils.database import FilterKind
 if TYPE_CHECKING:
     from kurisu import Kurisu
     from utils.context import KurisuContext, GuildContext
@@ -25,6 +25,8 @@ class KickBan(commands.Cog):
     def __init__(self, bot: Kurisu):
         self.bot: Kurisu = bot
         self.emoji = discord.PartialEmoji.from_str('🚷')
+        self.restrictions = bot.restrictions
+        self.filters = bot.filters
 
     async def cog_check(self, ctx: KurisuContext):
         if ctx.guild is None:
@@ -81,13 +83,9 @@ class KickBan(commands.Cog):
                 msg += " The given reason is: " + reason
             msg += "\n\nThis ban does not expire."
             await send_dm_message(member, msg, ctx)
-        try:
-            await crud.remove_timed_restriction(member.id, 'timeban')
-            self.bot.actions.append("ub:" + str(member.id))
+            await self.restrictions.remove_restriction(member, Restriction.Ban)
             await ctx.guild.ban(member, reason=reason, delete_message_days=days)  # type: ignore
-        except discord.errors.Forbidden:
-            await ctx.send("💢 I don't have permission to do this.")
-            return
+
         await ctx.send(f"{member} is now b&. 👍")
         msg = f"⛔ **Ban**: {ctx.author.mention} banned {member.mention} | {self.bot.escape_text(member)}\n🏷 __User ID__: {member.id}"
         if reason != "":
@@ -112,8 +110,10 @@ class KickBan(commands.Cog):
                                member: discord.Member,
                                reason: str = "",
                                delete_messages: app_commands.Range[int, 0, 7] = 0,
-                               duration: app_commands.Transform[int, TimeTransformer] = None):
+                               duration: app_commands.Transform[Optional[int], TimeTransformer] = None):
         """Bans a user from the server. OP+ only."""
+
+        assert interaction.guild is not None
 
         if await check_bot_or_staff(interaction, member, "ban"):
             return
@@ -123,7 +123,7 @@ class KickBan(commands.Cog):
             msg += " The given reason is: " + reason
 
         if duration is not None:
-            timestamp = datetime.datetime.now()
+            timestamp = datetime.datetime.now(self.bot.tz)
             delta = datetime.timedelta(seconds=duration)
             unban_time = timestamp + delta
             unban_time_string = format_dt(unban_time)
@@ -135,7 +135,7 @@ class KickBan(commands.Cog):
                 return
 
             self.bot.actions.append("ub:" + str(member.id))
-            await crud.add_timed_restriction(member.id, unban_time, 'timeban')
+            await self.restrictions.add_restriction(member, Restriction.Ban, reason, end_date=unban_time)
             msg += f"\n\nThis ban expires in {unban_time_string}."
             msg_send = await send_dm_message(member, msg)
             await interaction.response.send_message(f"{member} is now b& until {unban_time_string}. 👍" + ("\nFailed to send DM message" if not msg_send else ""))
@@ -149,7 +149,7 @@ class KickBan(commands.Cog):
                 return
 
             self.bot.actions.append("ub:" + str(member.id))
-            await crud.remove_timed_restriction(member.id, 'timeban')
+            await self.restrictions.remove_restriction(member, Restriction.Ban)
             msg += "\n\nThis ban does not expire."
             msg_send = await send_dm_message(member, msg)
             await interaction.response.send_message(f"{member} is now b&. 👍" + ("\nFailed to send DM message" if not msg_send else ""))
@@ -175,7 +175,7 @@ class KickBan(commands.Cog):
             msg += "\n\nThis ban does not expire.\n\nhttps://nintendohomebrew.com/assets/img/banned.gif"
             await send_dm_message(member, msg, ctx)
         try:
-            await crud.remove_timed_restriction(member.id, 'timeban')
+            await self.restrictions.remove_restriction(member, Restriction.Ban)
             self.bot.actions.append("ub:" + str(member.id))
             await ctx.guild.ban(member, reason=reason, delete_message_days=days)   # type: ignore
         except discord.errors.Forbidden:
@@ -205,8 +205,8 @@ class KickBan(commands.Cog):
         except discord.errors.NotFound:
             return await ctx.send(f"{user} is not banned!")
 
-        await crud.remove_timed_restriction(user.id, 'timeban')
-        self.bot.actions.append("tbr:" + str(user.id))
+        await self.restrictions.remove_restriction(user, Restriction.Ban)
+        self.bot.actions.append(f'bu:{user.id}')
         await ctx.guild.unban(user, reason=reason)
         await ctx.send(f"{user} is now unbanned.")
         msg = f"⚠ **Unban**: {ctx.author.mention} unbanned {user.mention} | {self.bot.escape_text(user)}\n🏷 __User ID__: {user.id}\n✏️ __Reason__: {reason}"
@@ -223,7 +223,7 @@ class KickBan(commands.Cog):
 
         try:
             self.bot.actions.append("ub:" + str(member.id))
-            await crud.remove_timed_restriction(member.id, 'timeban')
+            await self.restrictions.remove_restriction(member, Restriction.Ban)
             await member.ban(reason=reason, delete_message_days=days)  # type: ignore
 
         except discord.errors.Forbidden:
@@ -246,10 +246,12 @@ class KickBan(commands.Cog):
         if await check_bot_or_staff(ctx, member, "timeban"):
             return
 
-        timestamp = datetime.datetime.now()
+        timestamp = datetime.datetime.now(self.bot.tz)
         delta = datetime.timedelta(seconds=length)
         unban_time = timestamp + delta
         unban_time_string = format_dt(unban_time)
+
+        await self.restrictions.add_restriction(member, Restriction.Ban, reason, end_date=unban_time)
 
         if isinstance(member, discord.Member):
             msg = f"You were banned from {ctx.guild.name}."
@@ -263,7 +265,7 @@ class KickBan(commands.Cog):
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
             return
-        await crud.add_timed_restriction(member.id, unban_time, 'timeban')
+
         await ctx.send(f"{member} is now b& until {unban_time_string}. 👍")
         msg = f"⛔ **Time ban**: {ctx.author.mention} banned {member.mention} until {unban_time_string} | {member}\n🏷 __User ID__: {member.id}"
         if reason != "":
@@ -278,7 +280,7 @@ class KickBan(commands.Cog):
     @is_staff("OP")
     @commands.bot_has_permissions(kick_members=True)
     @commands.command(name="softban", aliases=["gentleyeet"])
-    async def softban_member(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason):
+    async def softban_member(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason: str):
         """Soft-ban a user. OP+ only.
 
         This "bans" the user without actually doing a ban on Discord.
@@ -287,16 +289,11 @@ class KickBan(commands.Cog):
         if await check_bot_or_staff(ctx, member, "softban"):
             return
 
-        await crud.add_softban(member.id, ctx.author.id, reason)
+        if member.id in self.restrictions.softbans:
+            return await ctx.send("This user is already softbanned!")
 
-        if isinstance(member, discord.Member):
-            msg = f"This account is no longer permitted to participate in {ctx.guild.name}. The reason is: {reason}"
-            await send_dm_message(member, msg, ctx)
-            try:
-                await member.kick(reason=reason)
-            except discord.errors.Forbidden:
-                await ctx.send("💢 I don't have permission to do this.")
-                return
+        await self.restrictions.add_softban(member, ctx.author, reason)
+
         await ctx.send(f"{member} is now b&. 👍")
         msg = f"⛔ **Soft-ban**: {ctx.author.mention} soft-banned {member.mention} | {self.bot.escape_text(member)}\n🏷 __User ID__: {member.id}\n✏️ __Reason__: {reason}"
         await self.bot.channels['mod-logs'].send(msg)
@@ -306,7 +303,9 @@ class KickBan(commands.Cog):
     @commands.command(name="unsoftban")
     async def unsoftban_member(self, ctx: GuildContext, user: Union[discord.Member, discord.User]):
         """Un-soft-ban a user based on ID. OP+ only."""
-        await crud.remove_softban(user.id)
+        if user.id not in self.restrictions.softbans:
+            return await ctx.send("This user is not softbanned!")
+        await self.restrictions.delete_softban(user)
         await ctx.send(f"{user} has been unbanned!")
         msg = f"⚠️ **Un-soft-ban**: {ctx.author.mention} un-soft-banned {self.bot.escape_text(user)}"
         await self.bot.channels['mod-logs'].send(msg)
@@ -321,12 +320,12 @@ class KickBan(commands.Cog):
         if await check_bot_or_staff(ctx, member, "scamban"):
             return
 
-        if site in self.bot.wordfilter.filter['scamming site']:
+        if discord.utils.get(self.filters.filtered_words, word=site):
             await ctx.send("Site is already in the filter!")
         elif ' ' in site or '-' in site:
             await ctx.send("Filtered words can't contain dashes or spaces, please add the site properly with wordfilter command.")
         else:
-            await self.bot.wordfilter.add(word=site, kind="scamming site")
+            await self.filters.add_filtered_word(site, FilterKind.ScammingSite)
             await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added `{site}` to the word filter!")
         ban_msg = ("You have been banned from Nintendo Homebrew for linking scamming sites in the server."
                    "If you think this is a mistake contact ❅FrozenFire❆#0700 on discord or send a email to staff@nintendohomebrew.com")

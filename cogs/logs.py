@@ -5,8 +5,8 @@ import discord
 from discord.ext import commands
 from discord.utils import format_dt
 from typing import TYPE_CHECKING
-from utils import crud
 from utils.utils import send_dm_message
+from utils import Restriction
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -20,6 +20,8 @@ class Logs(commands.Cog):
     def __init__(self, bot: Kurisu):
         self.bot: Kurisu = bot
         self.bot.loop.create_task(self.init_rules())
+        self.restrictions = self.bot.restrictions
+        self.warns = self.bot.warns
 
     welcome_msg = """
 Hello {0}, welcome to the {1} server on Discord!
@@ -51,42 +53,47 @@ Thanks for stopping by and have a good time!
             f"Thanks for boosting and have a good time! {self.logo_boost}")
 
     @commands.Cog.listener()
-    async def on_member_join(self, member):
+    async def on_member_join(self, member: discord.Member):
         await self.bot.wait_until_all_ready()
         msg = f"✅ **Join**: {member.mention} | {self.bot.escape_text(member)}\n🗓 __Creation__: {member.created_at}\n🏷 __User ID__: {member.id}"
-        softban = await crud.get_softban(member.id)
-        if softban:
+        if member.id in self.restrictions.softbans:
+            softban = self.restrictions.softbans[member.id]
             message_sent = await send_dm_message(member, f"This account has not been permitted to participate in {self.bot.guild.name}."
                                                          f" The reason is: {softban.reason}")
             self.bot.actions.append("sbk:" + str(member.id))
             await member.kick()
-            msg = f"🚨 **Attempted join**: {member.mention} is soft-banned by <@{softban.issuer}> | {self.bot.escape_text(member)}"
+            msg = f"🚨 **Attempted join**: {member.mention} is soft-banned by <@{softban.issuer_id}> | {self.bot.escape_text(member)}"
             if not message_sent:
                 msg += "\nThis message did not send to the user."
             embed = discord.Embed(color=discord.Color.red())
             embed.description = softban.reason
             await self.bot.channels['server-logs'].send(msg, embed=embed)
             return
-        perm_roles = await crud.get_permanent_roles(member.id)
-        if perm_roles:
-            roles = [member.guild.get_role(perm_role.id) for perm_role in perm_roles]
+        roles = []
+        async for r in self.restrictions.get_restrictions_by_user(member.id):
+            restriction = Restriction[r[2]]
+            role = self.bot.roles.get(restriction.value)
+            if role:
+                roles.append(role)
+        if roles:
             await member.add_roles(*roles)
 
-        warns = await crud.get_warns(member.id)
-        if len(warns) == 0:
+        warns = [w async for w in self.warns.get_warnings(member)]
+
+        if not warns:
             await self.bot.channels['server-logs'].send(msg)
         else:
             embed = discord.Embed(color=discord.Color.dark_red())
             embed.set_author(name=f"Warns for {member}", icon_url=member.display_avatar.url)
             for idx, warn in enumerate(warns):
-                when = discord.utils.snowflake_time(warn.id).strftime('%Y-%m-%d %H:%M:%S')
-                name = self.bot.escape_text((await self.bot.fetch_user(warn.issuer)).display_name)
-                embed.add_field(name=f"{idx + 1}: {when}", value=f"Issuer: {name}\nReason: {warn.reason}")
+                name = member.guild.get_member(warn.issuer_id) or f"ID {warn.issuer_id}"
+                embed.add_field(name=f"{idx + 1}: {warn.date:%Y-%m-%d %H:%M:%S}", value=f"Issuer: {name}\nReason: {warn.reason}")
             await self.bot.channels['server-logs'].send(msg, embed=embed)
-        await send_dm_message(member, self.welcome_msg.format(member.name, member.guild.name, self.bot.channels['welcome-and-rules'].mention))
+        if not self.bot.configuration.auto_probation:
+            await send_dm_message(member, self.welcome_msg.format(member.name, member.guild.name, self.bot.channels['welcome-and-rules'].mention))
 
     @commands.Cog.listener()
-    async def on_member_remove(self, member):
+    async def on_member_remove(self, member: discord.Member):
         await self.bot.wait_until_all_ready()
         if self.bot.pruning is True:
             return
@@ -103,12 +110,12 @@ Thanks for stopping by and have a good time!
             await self.bot.channels['mod-logs'].send(msg)
 
     @commands.Cog.listener()
-    async def on_member_ban(self, guild, member):
+    async def on_member_ban(self, guild: discord.Guild, member: discord.Member):
         await self.bot.wait_until_all_ready()
         ban = await guild.fetch_ban(member)
-        auto_ban = 'wb:' + str(member.id) in self.bot.actions
-        if "ub:" + str(member.id) in self.bot.actions:
-            self.bot.actions.remove("ub:" + str(member.id))
+        auto_ban = f'wb:{member.id}' in self.bot.actions
+        if f"ub:{member.id}" in self.bot.actions:
+            self.bot.actions.remove(f'ub:{member.id}')
             return
         msg = f"{'⛔ **Auto-ban**' if auto_ban else '⛔ **Ban**'}: {member.mention} | {self.bot.escape_text(member)}\n🏷 __User ID__: {member.id}"
         if ban.reason:
@@ -122,19 +129,19 @@ Thanks for stopping by and have a good time!
         await self.bot.channels['mod-logs'].send(msg)
 
     @commands.Cog.listener()
-    async def on_member_unban(self, guild, user):
+    async def on_member_unban(self, guild: discord.Guild, user: discord.User):
         await self.bot.wait_until_all_ready()
-        if "tbr:" + str(user.id) in self.bot.actions:
-            self.bot.actions.remove("tbr:" + str(user.id))
+        if f'bu:{user.id}' in self.bot.actions:
+            self.bot.actions.remove(f'bu:{user.id}')
             return
         msg = f"⚠️ **Unban**: {user.mention} | {self.bot.escape_text(user)}"
-        if await crud.get_time_restriction_by_user_type(user.id, 'timeban'):
+        if discord.utils.get(self.restrictions.timed_restricions, user_id=user.id, type=Restriction.Ban.value):
             msg += "\nTimeban removed."
-            await crud.remove_timed_restriction(user.id, 'timeban')
+            await self.restrictions.remove_restriction(user, Restriction.Ban)
         await self.bot.channels['mod-logs'].send(msg)
 
     @commands.Cog.listener()
-    async def on_member_update(self, member_before, member_after):
+    async def on_member_update(self, member_before: discord.Member, member_after: discord.Member):
         await self.bot.wait_until_all_ready()
         do_log = False  # only nickname and roles should be logged
         dest = self.bot.channels['server-logs']
@@ -160,7 +167,7 @@ Thanks for stopping by and have a good time!
             elif diff := roles_after - roles_before:
                 msg = "\n👑 __Role addition__: "
                 roles = []
-                if self.bot.roles["Nitro Booster"] in diff:
+                if member_before.guild.premium_subscriber_role in diff:
                     try:
                         await member_after.send(self.nitro_msg)
                     except discord.Forbidden:
@@ -199,7 +206,7 @@ Thanks for stopping by and have a good time!
             await dest.send(msg)
 
     @commands.Cog.listener()
-    async def on_user_update(self, member_before, member_after):
+    async def on_user_update(self, member_before: discord.Member, member_after: discord.Member):
         await self.bot.wait_until_all_ready()
         do_log = False  # only usernames and discriminators should be logged
         dest = self.bot.channels['server-logs']

@@ -7,8 +7,6 @@ from discord.ext import commands
 from inspect import cleandoc
 from os.path import dirname, join
 from typing import Optional, Literal, TYPE_CHECKING
-from utils import crud
-from utils.models import Channel
 from utils.views import BasePaginator, PaginatedEmbedView
 from utils.checks import check_if_user_can_sr, is_staff
 from utils.mdcmd import add_md_files_as_commands
@@ -79,13 +77,14 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
         self.bot: Kurisu = bot
         self.small_help_category: Optional[discord.CategoryChannel] = None
         self.bot.loop.create_task(self.setup_assistance())
+        self.filters = bot.filters
 
     async def setup_assistance(self):
         await self.bot.wait_until_all_ready()
         self.emoji = discord.utils.get(self.bot.guild.emojis, name='3dslogo') or discord.PartialEmoji.from_str("⁉")
-        channel_id = await Channel.query.where(Channel.name == 'small-help').gino.scalar()
-        if channel_id:
-            channel = self.bot.guild.get_channel(channel_id)
+        db_channel = await self.bot.configuration.get_channel_by_name('small-help')
+        if db_channel:
+            channel = self.bot.guild.get_channel(db_channel[0])
             if channel and channel.type == discord.ChannelType.category:
                 self.small_help_category = channel
 
@@ -142,10 +141,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
     @commands.command(cooldown=None)
     async def setsmallhelp(self, ctx: GuildContext, category: discord.CategoryChannel):
         """Sets the small help category for creating channels. OP+ only."""
-        if dbchannel := await Channel.query.where(Channel.name == 'small-help').gino.one_or_none():
-            await dbchannel.update(id=category.id).apply()
-        else:
-            await crud.add_dbchannel(category.id, name='small-help')
+        await self.bot.configuration.add_channel('small-help', category)
         self.small_help_category = category
         await ctx.send("Small help category set.")
 
@@ -220,23 +216,23 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
         """Post an invite to an approved server"""
         if not name:
             ctx.command.reset_cooldown(ctx)
-            if self.bot.invitefilter.invites:
-                return await ctx.send(f"Valid server names are: {', '.join(x.alias for x in self.bot.invitefilter.invites)}")
+            if self.filters.approved_invites:
+                return await ctx.send(f"Valid server names are: {', '.join(ai.alias for ai in self.filters.approved_invites.values())}")
             else:
                 return await ctx.send("There is no approved servers!")
 
-        invite = await self.bot.invitefilter.fetch_invite_by_alias(alias=name)
+        invite = self.filters.get_invite_named(name)
 
         if invite:
             await ctx.send(f"https://discord.gg/{invite.code}")
-            if invite.is_temporary:
+            if invite.uses != -1:
                 if invite.uses > 1:
-                    await self.bot.invitefilter.set_uses(code=invite.code, uses=invite.uses - 1)
+                    await self.filters.update_invite_use(invite.code)
                 else:
-                    await self.bot.invitefilter.delete(code=invite.code)
+                    await self.filters.delete_approved_invite(invite.code)
         else:
             ctx.command.reset_cooldown(ctx)
-            await ctx.send(f"Invalid invite name. Valid server names are: {', '.join(x.alias for x in self.bot.invitefilter.invites)}")
+            await ctx.send(f"Invalid invite name. Valid server names are: {', '.join(ai.alias for ai in self.filters.approved_invites.values())}")
 
     @commands.command()
     async def unidb(self, ctx: KurisuContext, *, query=""):
