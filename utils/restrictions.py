@@ -148,9 +148,9 @@ class RestrictionsManager(BaseManager, db_manager=RestrictionsDatabaseManager):
 
         res = await self.db.remove_restriction(user.id, restriction.value)
 
+        if restriction is not Restriction.Ban and isinstance(user, discord.Member):
+            await user.remove_roles(self.bot.roles[restriction.value])
         if res:
-            if restriction is not Restriction.Ban and isinstance(user, discord.Member):
-                await user.remove_roles(self.bot.roles[restriction.value])
             timed_res = discord.utils.get(self._timed_restrictions, user_id=user.id, type=restriction.value)
             if timed_res:
                 self._timed_restrictions.remove(timed_res)
