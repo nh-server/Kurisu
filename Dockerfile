@@ -17,8 +17,6 @@ USER kurisu
 
 #COPY data data
 RUN mkdir data
-COPY alembic.ini alembic.ini
-COPY migrations migrations
 COPY kurisu.py kurisu.py
 COPY utils utils
 COPY cogs cogs
