@@ -405,6 +405,7 @@ class Mod(commands.Cog):
         if await check_bot_or_staff(ctx, member, "mute"):
             return
         await self.bot.restrictions.add_restriction(member, Restriction.Muted, reason)
+        await ctx.send(f"{member.mention} can no longer speak.")
         await self.logs.post_action_log(ctx.author, member, 'mute', reason)
 
     @is_staff("HalfOP")
@@ -678,7 +679,7 @@ class Mod(commands.Cog):
             return
         await self.restrictions.add_restriction(member, Restriction.Probation, reason)
         await ctx.send(f"{member.mention} is now in probation.")
-        await self.logs.post_action_log(ctx.author, member, 'probation', reason)
+        await self.logs.post_action_log(ctx.author, member, 'probate', reason)
 
     @is_staff("Helper")
     @commands.guild_only()
