@@ -13,6 +13,10 @@ if TYPE_CHECKING:
 action_messages = {
     'warn': ('\N{WARNING SIGN}', 'Warn', 'warned'),
     'ban': ('\N{NO ENTRY}', 'Ban', 'banned'),
+    'timeban': ('\N{NO ENTRY}', 'Time ban', 'banned'),
+    'silentban': ('\N{NO ENTRY}', 'Silent ban', 'banned'),
+    'softban': ('\N{NO ENTRY}', 'Soft-ban', 'soft-banned'),
+    'unban': ('\N{WARNING SIGN}', 'Unban', 'unbanned'),
     'kick': ('\N{WOMANS BOOTS}', 'Kick', 'kicked'),
     'timeout': ('\N{SPEAKER WITH CANCELLATION STROKE}', 'Timeout', 'timed out'),
     'no-timeout': ('\N{SPEAKER}', 'Timeout Removed', 'removed a timeout from'),
@@ -71,10 +75,13 @@ class UserLogManager(BaseManager):
             msg[0] += ' | ' + str(member)
         if until:
             now = datetime.now(self.bot.tz)
-            msg[0] += f'for {until - now}, until {format_dt(until)}'
+            msg[0] += f' for {until - now}, until {format_dt(until)}'
+        msg.append(f'🏷 __User ID__: {target.id}')
         if reason:
             msg.append(f'\N{PENCIL} __Reason__: {reason}')
         else:
             msg.append('\N{PENCIL} __Reason__: No reason provided')
         msg_final = '\n'.join(msg)
         await self.bot.channels['mod-logs'].send(msg_final)
+        if 'ban' in kind:
+            await self.bot.channels['server-logs'].send(msg_final)
