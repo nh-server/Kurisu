@@ -538,6 +538,7 @@ class Mod(commands.Cog):
         if await check_bot_or_staff(ctx, member, "takehelp"):
             return
         await self.bot.restrictions.add_restriction(member, Restriction.TakeHelp, reason)
+        await ctx.send(f"{member.mention} can no longer access the help channels.")
         await self.logs.post_action_log(ctx.author, member, 'take-help', reason)
 
     @is_staff("Helper")
