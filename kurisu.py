@@ -91,7 +91,7 @@ else:
 
 def setup_logging():
     log = logging.getLogger()
-    log.setLevel(logging.DEBUG)
+    log.setLevel(logging.INFO)
     fmt = logging.Formatter('[{asctime}] [{levelname:^7s}] {name}.{funcName}: {message}', datefmt="%Y-%m-%d %H:%M:%S",
                             style='{')
     sh = logging.StreamHandler()
