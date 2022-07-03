@@ -102,7 +102,7 @@ class RestrictionsManager(BaseManager, db_manager=RestrictionsDatabaseManager):
                     TimedRestriction(restriction_id=now, user_id=user.id, type=restriction.value, end_date=end_date,
                                      alerted=False))
             if restriction is not Restriction.Ban and isinstance(user, discord.Member):
-                await user.add_roles(self.bot.roles[restriction.name])
+                await user.add_roles(self.bot.roles[restriction.value])
                 if restriction is Restriction.Muted:
                     await user.remove_roles(self.bot.roles['#elsewhere'], self.bot.roles['#art-discussion'])
                 msg_user = messages[restriction]
@@ -150,7 +150,7 @@ class RestrictionsManager(BaseManager, db_manager=RestrictionsDatabaseManager):
 
         if res:
             if restriction is not Restriction.Ban and isinstance(user, discord.Member):
-                await user.remove_roles(self.bot.roles[restriction.name])
+                await user.remove_roles(self.bot.roles[restriction.value])
             timed_res = discord.utils.get(self._timed_restrictions, user_id=user.id, type=restriction.value)
             if timed_res:
                 self._timed_restrictions.remove(timed_res)
