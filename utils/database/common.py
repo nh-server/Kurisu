@@ -7,7 +7,6 @@ import logging
 if TYPE_CHECKING:
     from typing import AsyncGenerator, KeysView, Optional
     from kurisu import Kurisu
-    from collections import OrderedDict
     Tables = dict[str, list[str]]
 
 # noinspection PyUnreachableCode

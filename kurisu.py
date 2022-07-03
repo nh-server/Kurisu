@@ -287,14 +287,13 @@ class Kurisu(commands.Bot):
                 if role:
                     self.roles[n] = role
                     continue
+            role = discord.utils.get(self.guild.roles, name=n)
+            if role:
+                self.roles[n] = role
+                await self.configuration.add_role(name=n, role=role)
             else:
-                role = discord.utils.get(self.guild.roles, name=n)
-                if not role:
-                    self.roles_not_found.append(n)
-                    logger.warning("Failed to find role %s", n)
-                else:
-                    self.roles[n] = role
-                    await self.configuration.add_role(name=n, role=role)
+                self.roles_not_found.append(n)
+                logger.warning("Failed to find role %s", n)
 
     async def on_command_error(self, ctx: KurisuContext, exc: commands.CommandError):
         author = ctx.author

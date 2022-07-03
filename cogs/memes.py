@@ -696,12 +696,12 @@ class Memes(commands.Cog):
     async def flushed(self, ctx: KurisuContext):
         """got flushed?"""
         flushedlist = [f"{str(self.flushedsquish)}", f"{str(self.plusher_flusher)}", f"{str(self.isforme)}",
-                    f"{str(self.flushedtriangle)}", f"{str(self.flushedstuffed)}", f"{str(self.flushedball)}",
-                    f"{str(self.flushedeyes)}", f"{str(self.flushedsquare)}", f"{str(self.flushedskull)}",
-                    f"{str(self.flushedmoon)}", f"{str(self.flushedhot)}", f"{str(self.flushedhand)}",
-                    f"{str(self.flushedhalf)}", f"{str(self.flushedgoomba)}", f"{str(self.flushedflat)}",
-                    f"{str(self.flushedcowboy)}", f"{str(self.flushedwater)}", f"{str(self.flushedw)}",
-                    f"{str(self.flushedhalf2)}"]
+                       f"{str(self.flushedtriangle)}", f"{str(self.flushedstuffed)}", f"{str(self.flushedball)}",
+                       f"{str(self.flushedeyes)}", f"{str(self.flushedsquare)}", f"{str(self.flushedskull)}",
+                       f"{str(self.flushedmoon)}", f"{str(self.flushedhot)}", f"{str(self.flushedhand)}",
+                       f"{str(self.flushedhalf)}", f"{str(self.flushedgoomba)}", f"{str(self.flushedflat)}",
+                       f"{str(self.flushedcowboy)}", f"{str(self.flushedwater)}", f"{str(self.flushedw)}",
+                       f"{str(self.flushedhalf2)}"]
         await ctx.send(random.choice(flushedlist))
 
 

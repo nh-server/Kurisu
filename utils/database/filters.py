@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from typing import TYPE_CHECKING, NamedTuple
 
 from .common import BaseDatabaseManager

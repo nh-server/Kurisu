@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from datetime import datetime
 from discord.utils import time_snowflake
 from typing import TYPE_CHECKING, NamedTuple
