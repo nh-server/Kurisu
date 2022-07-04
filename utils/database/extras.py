@@ -69,7 +69,8 @@ tables = {'timedroles': ['id', 'role_id', 'user_id', 'expiring_date'],
           'reminders': ['id', 'reminder_date', 'author_id', 'content'],
           'tags': ['id', 'title', 'content', 'author_id'],
           'voteviews': ['id', 'message_id', 'identifier', 'author_id', 'options', 'start', 'staff_only'],
-          'votes': ['view_id', 'voter_id', 'option']}
+          'votes': ['view_id', 'voter_id', 'option'],
+          'citizens': ['id', 'social_credit']}
 
 
 class ExtrasDatabaseManager(BaseDatabaseManager, tables=tables):
