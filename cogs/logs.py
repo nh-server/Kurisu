@@ -71,7 +71,7 @@ Thanks for stopping by and have a good time!
             return
         roles = []
         async for r in self.restrictions.get_restrictions_by_user(member.id):
-            restriction = Restriction[r[2]]
+            restriction = Restriction(r[2])
             role = self.bot.roles.get(restriction.value)
             if role:
                 roles.append(role)
