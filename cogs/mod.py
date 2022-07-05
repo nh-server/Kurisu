@@ -435,7 +435,7 @@ class Mod(commands.Cog):
         """Unmutes a user so they can speak. Staff only."""
         await self.bot.restrictions.remove_restriction(member, Restriction.Muted)
         await ctx.send(f"{member.mention} can now speak again.")
-        await self.logs.post_action_log(ctx.author, member, 'mute')
+        await self.logs.post_action_log(ctx.author, member, 'unmute')
 
     @is_staff("HalfOP")
     @commands.guild_only()
