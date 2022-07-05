@@ -92,7 +92,8 @@ class ModWarn(commands.Cog):
         if not warns:
             return await ctx.send("No warns found.")
 
-        embed = discord.Embed()
+        embed = discord.Embed(color=discord.Color.dark_red())
+        embed.set_author(name=f"Warns for {member}", icon_url=member.display_avatar.url)
 
         for idx, warn in enumerate(warns):
             issuer = await ctx.get_user(warn.issuer_id)
