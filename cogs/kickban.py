@@ -79,7 +79,13 @@ class KickBan(commands.Cog):
                 msg += " The given reason is: " + reason
             msg += "\n\nThis ban does not expire."
             await send_dm_message(member, msg, ctx)
+
+        try:
+            self.bot.actions.append("ub:" + str(member.id))
             await ctx.guild.ban(member, reason=reason, delete_message_days=days)  # type: ignore
+        except discord.errors.Forbidden:
+            await ctx.send("Failed to ban member.")
+            return
 
         # Remove any timeban
         await self.restrictions.remove_restriction(member, Restriction.Ban)
@@ -160,7 +166,7 @@ class KickBan(commands.Cog):
             await send_dm_message(member, msg, ctx)
         try:
             self.bot.actions.append("ub:" + str(member.id))
-            await ctx.guild.ban(member, reason=reason, delete_message_days=days)   # type: ignore
+            await ctx.guild.ban(member, reason=reason, delete_message_days=days)  # type: ignore
         except discord.errors.Forbidden:
             await ctx.send("Failed to ban member.")
             return
