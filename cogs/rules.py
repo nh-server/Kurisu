@@ -139,7 +139,8 @@ https://discord.gg/C29hYvh"""
     async def add_rule(self, ctx: KurisuContext, number: int, *, description: str):
         """Adds or edits a current rule"""
         if self.configuration.rules.get(number):
-            await ctx.send("This rule already exists!")
+            await self.configuration.edit_rule(number, description)
+            await ctx.send(f"Rule {number} edited successfully!")
         else:
             await self.configuration.add_rule(number, description)
             await ctx.send(f"Rule {number} added successfully!")
