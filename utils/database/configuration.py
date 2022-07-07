@@ -156,7 +156,7 @@ class ConfigurationDatabaseManager(BaseDatabaseManager, tables=tables):
 
     async def get_changed_roles(self, channel_id: int) -> 'AsyncGenerator[ChangedRole, None]':
         async for cr in self._select('changedroles', channel_id=channel_id):
-            yield ChangedRole(role_id=cr[0], channel_id=cr[1], original_value=cr[2])
+            yield ChangedRole(channel_id=cr[0], role_id=cr[1], original_value=cr[2])
 
     async def clear_changed_roles(self, channel_id: int):
         return await self._delete('changedroles', channel_id=channel_id)

@@ -19,6 +19,7 @@ class Lockdown(commands.Cog):
         self.bot: Kurisu = bot
         self.emoji = discord.PartialEmoji.from_str('🔒')
         self.configuration = self.bot.configuration
+        self.locking_down = False
 
     async def cog_check(self, ctx: KurisuContext):
         if ctx.guild is None:
@@ -30,6 +31,8 @@ class Lockdown(commands.Cog):
 
         locked_down = []
         to_add = []
+
+        reason = f"Level {level} lockdown"
 
         for c in channels:
 
@@ -43,29 +46,36 @@ class Lockdown(commands.Cog):
                 await ctx.send(f"🔒 {c.mention} is already locked down. Use `.unlock` to unlock.")
                 continue
 
-            overwrites_changed = False
-            reason = f"Level {level} lockdown"
-            for role in c.changed_roles:
+            channel_overwrites = c.overwrites
 
-                # Bots are spared
-                if role.is_bot_managed():
+            for target, overwrites in channel_overwrites.items():
+
+                # Don't touch member overwrites
+                if isinstance(target, discord.Member):
                     continue
 
-                if role.position < top_role.position:
-                    overwrites = c.overwrites_for(role)
-                    if overwrites.send_messages is not False:
-                        value = overwrites.send_messages
-                        overwrites.update(send_messages=False)
-                        try:
-                            await c.set_permissions(role, overwrite=overwrites, reason=reason)
-                        except discord.Forbidden:
-                            continue
-                        to_add.append((role.id, value))
-                        overwrites_changed = True
+                # Bots are spared
+                if target.is_bot_managed():
+                    continue
 
-            if not overwrites_changed:
+                # Only change the send_messages permission for roles that have it set to True and a lower in hierarchy
+                # or is the everyone role
+                if target is ctx.guild.default_role and overwrites.send_messages is not False \
+                        or target < top_role and overwrites.send_messages is True:
+                    value = overwrites.send_messages
+                    channel_overwrites[target].send_messages = False
+                    to_add.append((target.id, value))
+
+            if not to_add:
                 await ctx.send(f"No changes done to {c.mention}")
                 continue
+
+            try:
+                await c.edit(overwrites=channel_overwrites, reason=reason)
+            except discord.Forbidden:
+                await ctx.send(f"Failed to lock down {c}")
+                continue
+
             await self.configuration.add_changed_roles(to_add, c)
             await self.configuration.set_channel_lock_level(c, lock_level=level)
             locked_down.append(c)
@@ -80,6 +90,11 @@ class Lockdown(commands.Cog):
     async def lockdown(self, ctx: GuildContext, channels: commands.Greedy[Union[discord.TextChannel, discord.VoiceChannel]]):
         """Lock message sending in the channel. Staff only."""
 
+        if self.locking_down:
+            return await ctx.send("The bot is already locking down channels.")
+
+        self.locking_down = True
+
         author = ctx.author
 
         if not channels:
@@ -91,6 +106,7 @@ class Lockdown(commands.Cog):
         locked_down = await self.lockdown_channels(ctx, channels=channels, level=2, top_role=self.bot.roles['Staff'],
                                                    message="🔒 Channel locked down. Only staff members may speak."
                                                            " Do not bring the topic to other channels or risk disciplinary actions.")
+        self.locking_down = False
 
         if locked_down:
             msg = f"🔒 **Lockdown**: {ctx.author.mention} locked down channels | {author}\n📝 __Channels__: {', '.join(c.mention for c in locked_down)}"
@@ -100,6 +116,11 @@ class Lockdown(commands.Cog):
     @commands.command(aliases=['slock'])
     async def slockdown(self, ctx: GuildContext, channels: commands.Greedy[Union[discord.TextChannel, discord.VoiceChannel]]):
         """Lock message sending in the channel for everyone. Owners only."""
+
+        if self.locking_down:
+            return await ctx.send("The bot is already locking down channels.")
+
+        self.locking_down = True
 
         author = ctx.author
 
@@ -112,6 +133,7 @@ class Lockdown(commands.Cog):
         locked_down = await self.lockdown_channels(ctx, channels=channels, level=3, top_role=self.bot.roles['Owner'],
                                                    message="🔒 Channel locked down. Only the server Owners may speak."
                                                            " Do not bring the topic to other channels or risk disciplinary actions.")
+        self.locking_down = False
 
         if locked_down:
             msg = f"🔒 **Lockdown**: {ctx.author.mention} locked down channels | {author}\n📝 __Channels__: {', '.join(c.mention for c in locked_down)}"
@@ -121,6 +143,11 @@ class Lockdown(commands.Cog):
     @commands.command()
     async def softlock(self, ctx: GuildContext, channels: commands.Greedy[Union[discord.TextChannel, discord.VoiceChannel]]):
         """Lock message sending in the channel, without the "disciplinary action" note. Staff and Helpers only."""
+
+        if self.locking_down:
+            return await ctx.send("The bot is already locking down channels.")
+
+        self.locking_down = True
 
         author = ctx.author
 
@@ -138,6 +165,7 @@ class Lockdown(commands.Cog):
         role = self.bot.roles['Helpers'] if is_helper else self.bot.roles['Staff']
 
         locked_down = await self.lockdown_channels(ctx, channels=channels, level=1, top_role=role)
+        self.locking_down = False
 
         if locked_down:
             msg = f"🔒 **Lockdown**: {ctx.author.mention} locked down channels | {author}\n📝 __Channels__: {', '.join(c.mention for c in locked_down)}"
@@ -173,17 +201,18 @@ class Lockdown(commands.Cog):
                 await ctx.send(f"{c.mention} can only be unlocked by a Owner.")
                 continue
 
+            channel_overwrites = c.overwrites
+
             async for changed_role in self.configuration.get_changed_roles(c):
-                role_id = changed_role.role_id
-                role = ctx.guild.get_role(role_id)
+                role = ctx.guild.get_role(changed_role.role_id)
                 if not role:
                     continue
-                overwrites = c.overwrites_for(role)
-                overwrites.update(send_messages=changed_role.original_value)
-                try:
-                    await c.set_permissions(role, overwrite=overwrites, reason="Unlock")
-                except discord.Forbidden:
-                    continue
+                channel_overwrites[role].send_messages = changed_role.original_value
+            try:
+                await c.edit(overwrites=channel_overwrites, reason="Unlock")
+            except discord.Forbidden:
+                await ctx.send(f"Failed to unlock {c}")
+                continue
 
             await self.configuration.clear_changed_roles(c)
             await c.send("🔓 Channel unlocked.")
