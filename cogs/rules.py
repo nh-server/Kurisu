@@ -108,7 +108,7 @@ https://discord.gg/C29hYvh"""
         async for message in channel.history():
             await message.delete()
         await channel.send(self.rules_intro)
-        for number, rule in self.configuration.rules.items():
+        for number, rule in sorted(self.configuration.rules.items()):
             await channel.send(f"**{number}**. {rule}\n")
         await channel.send(self.staff_action)
         staff = [f"<@{staff}>" for staff in self.configuration.staff]
