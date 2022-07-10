@@ -173,9 +173,9 @@ class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager)
 
     async def add_channel(self, name: str, channel: 'Union[discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel]'):
         if await self.get_channel_by_name(name):
-            await self.db.update_channel(channel.id, name)
+            return await self.db.update_channel(channel.id, name)
         else:
-            await self.db.add_channel(channel.id, name)
+            return await self.db.add_channel(channel.id, name)
 
     async def get_channel_by_name(self, name: str):
         return await self.db.get_channel_by_name(name)
@@ -189,11 +189,21 @@ class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager)
         await self.db.set_channel_lock_level(channel.id, lock_level)
 
     async def set_nofilter_channel(self, channel: 'Union[discord.TextChannel, discord.Thread, discord.VoiceChannel]', filtered: bool):
-        await self.db.set_nofilter_channel(channel.id, filtered)
-        if filtered:
-            self.nofilter_list.remove(channel.id)
-        else:
-            self.nofilter_list.append(channel.id)
+        db_channel = await self.get_channel(channel.id)
+        res = None
+        if not db_channel:
+            res = await self.add_channel(channel.name, channel)
+        if db_channel or res:
+            res = await self.db.set_nofilter_channel(channel.id, filtered)
+            if res:
+                if filtered:
+                    try:
+                        self.nofilter_list.remove(channel.id)
+                    except ValueError:
+                        pass
+                else:
+                    self.nofilter_list.append(channel.id)
+        return res
 
     async def add_changed_roles(self, roles: list[tuple[int, bool]], channel: 'Union[discord.TextChannel, discord.Thread, discord.VoiceChannel]'):
         await self.db.add_changed_roles(roles, channel.id)
