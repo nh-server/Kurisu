@@ -171,7 +171,7 @@ class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager)
     async def get_role(self, name: str) -> 'Optional[tuple[int, str]]':
         return await self.db.get_role(name)
 
-    async def add_channel(self, name: str, channel: 'Union[discord.TextChannel, discord.VoiceChannel, discord.CategoryChannel]'):
+    async def add_channel(self, name: str, channel: 'Union[discord.TextChannel, discord.VoiceChannel, discord.Thread, discord.CategoryChannel]'):
         if await self.get_channel_by_name(name):
             return await self.db.update_channel(channel.id, name)
         else:
