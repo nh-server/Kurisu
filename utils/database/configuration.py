@@ -42,7 +42,7 @@ class ConfigurationDatabaseManager(BaseDatabaseManager, tables=tables):
         conn: asyncpg.Connection
         async with self.pool.acquire() as conn:
             async with conn.transaction():
-                await conn.execute(query, member_id)
+                return await conn.execute(query, member_id)
 
     async def get_members(self) -> 'AsyncGenerator[tuple[int, bool], None]':
         async for m in self._select('members'):
@@ -104,7 +104,7 @@ class ConfigurationDatabaseManager(BaseDatabaseManager, tables=tables):
                     yield snowflake, console
 
     async def add_channel(self, channel_id: int, name: str):
-        await self._insert('channels', id=channel_id, name=name)
+        return await self._insert('channels', id=channel_id, name=name)
 
     async def get_channel(self, channel_id: int):
         async for c in self._select('channels', id=channel_id):
