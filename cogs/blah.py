@@ -20,10 +20,6 @@ class Blah(commands.Cog):
         self.bot: Kurisu = bot
         self.emoji = discord.PartialEmoji.from_str('🗣️')
 
-    speak_blacklist = [
-        647348710602178560,  # #minecraft-console
-    ]
-
     @is_staff("OP")
     @commands.command()
     async def announce(self, ctx: KurisuContext, *, inp):
@@ -34,18 +30,12 @@ class Blah(commands.Cog):
     @commands.command()
     async def speak(self, ctx: KurisuContext, channel: discord.TextChannel, *, inp):
         """Sends a message to a channel."""
-        if channel.id in self.speak_blacklist:
-            await ctx.send(f'You cannot send a message to {channel.mention}.')
-            return
         await channel.send(inp, allowed_mentions=discord.AllowedMentions(everyone=True, roles=True))
 
     @is_staff("OP")
     @commands.command()
     async def sendtyping(self, ctx: KurisuContext, channel: discord.TextChannel = commands.CurrentChannel):
         """Triggers typing on a channel."""
-        if channel.id in self.speak_blacklist:
-            await ctx.send(f'You cannot send a message to {channel.mention}.')
-            return
         await channel.typing()
 
     @is_staff("Owner")

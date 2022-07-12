@@ -12,18 +12,6 @@ if TYPE_CHECKING:
     from kurisu import Kurisu
     from .database import FilterKind
 
-rgx_special_chars = '()[]{}?*+-|^$\\.&~# \t\n\r\v\f'
-
-
-def separate_and_escape_str(string: str) -> list[str]:
-    separated = []
-    for char in string:
-        if char in rgx_special_chars:
-            separated.append('\\' + char)
-        else:
-            separated.append(char)
-    return separated
-
 
 class FiltersManager(BaseManager, db_manager=FiltersDatabaseManager):
     """Manages the bot filters."""
