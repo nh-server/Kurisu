@@ -22,15 +22,15 @@ class Blah(commands.Cog):
 
     @is_staff("OP")
     @commands.command()
-    async def announce(self, ctx: KurisuContext, *, inp):
+    async def announce(self, ctx: KurisuContext, *, message: str):
         """Posts a message to the announcement channel."""
-        await self.bot.channels['announcements'].send(inp, allowed_mentions=discord.AllowedMentions(everyone=True, roles=True))
+        await self.bot.channels['announcements'].send(message, allowed_mentions=discord.AllowedMentions(everyone=True, roles=True))
 
     @is_staff("OP")
     @commands.command()
-    async def speak(self, ctx: KurisuContext, channel: discord.TextChannel, *, inp):
+    async def speak(self, ctx: KurisuContext, channel: discord.TextChannel, *, message: str):
         """Sends a message to a channel."""
-        await channel.send(inp, allowed_mentions=discord.AllowedMentions(everyone=True, roles=True))
+        await channel.send(message, allowed_mentions=discord.AllowedMentions(everyone=True, roles=True))
 
     @is_staff("OP")
     @commands.command()
@@ -40,9 +40,9 @@ class Blah(commands.Cog):
 
     @is_staff("Owner")
     @commands.command()
-    async def dm(self, ctx: KurisuContext, member: discord.Member, *, inp):
+    async def dm(self, ctx: KurisuContext, member: discord.Member, *, message: str):
         """Sends a message to the member."""
-        await send_dm_message(member, inp, ctx)
+        await send_dm_message(member, message, ctx)
 
 
 async def setup(bot):
