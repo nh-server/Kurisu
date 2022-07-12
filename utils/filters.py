@@ -124,27 +124,35 @@ class FiltersManager(BaseManager, db_manager=FiltersDatabaseManager):
         return discord.utils.get(self._approved_invites.values(), alias=alias)
 
     # Filter operations
-    def match_filtered_words(self, message: str) -> set:
-        matches = set()
+    def match_filtered_words(self, message: str) -> 'dict[FilterKind, str]':
+        matches = {}
         for word in self._filtered_words:
+            # We don't care if there is many trigger words in the message of the same kind
+            # only if there is at least one
+            if word.kind in matches:
+                continue
             pos = message.find(word.word)
             if pos != -1:
-                matches.add(word.kind)
+                matches[word.kind] = word.word
         return matches
 
-    def match_levenshtein_words(self, message: str):
-        matches = set()
+    def match_levenshtein_words(self, message: str) -> 'dict[FilterKind, str]':
+        matches = {}
         message = message[::-1]
-        to_check = re.findall(r"([\w0-9-]+\.[\w0-9-]+)", message)
+        to_check: list[str] = re.findall(r"([\w0-9-]+\.[\w0-9-]+)", message)
 
         for word in to_check:
             word = word[::-1]
+            # We don't care if there is many trigger words in the message of the same kind
+            # only if there is at least one
             if word in self._whitelist:
                 continue
             for lword in self._lsh_words:
+                if lword.kind in matches:
+                    continue
                 lf_distance = distance(word, lword.word)
                 if lf_distance < lword.threshold:
-                    matches.add(lword.kind)
+                    matches[lword.kind] = lword.word
         return matches
 
     def search_invite(self, message: str) -> tuple[list[ApprovedInvite], list[str]]:

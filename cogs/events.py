@@ -143,7 +143,7 @@ class Events(commands.Cog):
                                   f"therefore your message was automatically deleted.",
                                   embed=embed)
             await self.bot.channels['message-logs'].send(
-                f"**Bad tool**: {message.author.mention} mentioned a piracy tool in {message.channel.mention} (message deleted)",
+                f"**Bad tool**: {message.author.mention} mentioned a piracy tool (`{filter_result[FilterKind.PiracyTool]}`) in {message.channel.mention} (message deleted)",
                 embed=embed)
 
         if FilterKind.PiracyVideo in filter_result:
@@ -156,13 +156,15 @@ class Events(commands.Cog):
                                   f"You cannot link videos that mention piracy, therefore your message was automatically deleted.",
                                   embed=embed)
             await self.bot.channels['message-logs'].send(
-                f"**Bad video**: {message.author.mention} linked a banned video in {message.channel.mention} (message deleted)",
+                f"**Bad video**: {message.author.mention} linked a banned video (`{filter_result[FilterKind.PiracyVideo]}`) in {message.channel.mention} (message deleted)",
                 embed=embed)
+
         if FilterKind.PiracyToolAlert in filter_result:
             embed.description = message.content
             await self.bot.channels['message-logs'].send(
-                f"**Bad tool**: {message.author.mention} likely mentioned a piracy tool in {message.channel.mention}",
+                f"**Bad tool**: {message.author.mention} likely mentioned a piracy tool (`{filter_result[FilterKind.PiracyToolAlert]}`) in {message.channel.mention}",
                 embed=embed)
+
         if FilterKind.PiracySite in filter_result:
             embed.description = message.content
             try:
@@ -175,7 +177,7 @@ class Events(commands.Cog):
                                   f"therefore your message was automatically deleted.",
                                   embed=embed)
             await self.bot.channels['message-logs'].send(
-                f"**Bad site**: {message.author.mention} mentioned a piracy site directly in {message.channel.mention} (message deleted)",
+                f"**Bad site**: {message.author.mention} mentioned a piracy site directly (`{filter_result[FilterKind.PiracySite]}`) in {message.channel.mention} (message deleted)",
                 embed=embed)
 
         if FilterKind.UnbanningTool in filter_result:
@@ -189,7 +191,7 @@ class Events(commands.Cog):
                                   f"You cannot mention sites, programs or services used for unbanning, therefore your message was automatically deleted.",
                                   embed=embed)
             await self.bot.channels['message-logs'].send(
-                f"**Bad site**: {message.author.mention} mentioned an unbanning site/service/program directly in {message.channel.mention} (message deleted)",
+                f"**Bad site**: {message.author.mention} mentioned an unbanning site/service/program directly (`{filter_result[FilterKind.UnbanningTool]}`) in {message.channel.mention} (message deleted)",
                 embed=embed)
 
         if contains_video and message.channel in self.bot.assistance_channels:
@@ -222,13 +224,17 @@ class Events(commands.Cog):
                 else:
                     self.bot.loop.create_task(self.userbot_yeeter_pop(message))
             await self.bot.restrictions.add_restriction(message.author, Restriction.Probation, reason="Linking scamming site")
-            await message.author.add_roles(self.bot.roles['Probation'])
+            try:
+                await message.author.add_roles(self.bot.roles['Probation'])
+            except discord.NotFound:
+                # Sometimes they get banned before the bot can apply the role
+                pass
             await send_dm_message(message.author,
                                   f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
                                   f"You have been probated for posting a link to a scamming site.",
                                   embed=embed)
             await self.bot.channels['message-logs'].send(
-                f"**Bad site**: {message.author.mention} mentioned a scamming site in {message.channel.mention} (message deleted, user probated)",
+                f"**Bad site**: {message.author.mention} mentioned a scamming site (`{filter_result[FilterKind.ScammingSite]}`) in {message.channel.mention} (message deleted, user probated)",
                 embed=embed)
             await self.bot.channels['mods'].send(
                 f"🔇 **Auto-probated**: {message.author.mention} probated for linking scamming site | {message.author}\n"
