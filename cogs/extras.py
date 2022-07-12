@@ -112,11 +112,10 @@ class Extras(commands.Cog):
 
     async def init(self):
         await self.bot.wait_until_all_ready()
-        # for view in await crud.get_vote_views('extras'):
-        #     v = SimpleVoteView(view.author_id, options=view.options.split('|'), custom_id=view.id, start=view.start, staff_only=view.staff_only)
-        #     self.bot.add_view(v, message_id=view.message_id)
 
-        # self.tags = {tag.title: tag for tag in await crud.get_tags()}
+        async for view in self.extras.get_voteviews('extras'):
+            v = SimpleVoteView(self.bot, author_id=view[3], options=view[4].split('|'), custom_id=view[0], start=view[5], staff_only=view[6])
+            self.bot.add_view(v, message_id=view[1])
 
         for cmd in self.tag.walk_commands():
             self.banned_tag_names.append(cmd.name)

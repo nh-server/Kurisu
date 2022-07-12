@@ -129,6 +129,10 @@ class ExtrasManager(BaseManager, db_manager=ExtrasDatabaseManager):
         await self.db.add_voteview(view_id=view_id, message_id=message_id, identifier=identifier, author_id=author_id,
                                    options=options, start=start, staff_only=staff_only)
 
+    async def get_voteviews(self, identifier: str):
+        async for vv in self.db.get_voteviews(identifier):
+            yield vv
+
     async def delete_voteview(self, view_id: int):
         await self.db.delete_voteview(view_id)
 

@@ -152,26 +152,31 @@ class ExtrasDatabaseManager(BaseDatabaseManager, tables=tables):
                                   author_id=author_id,
                                   options=options, start=start, staff_only=staff_only)
 
-    async def delete_voteview(self, view_id: int):
+    async def get_voteviews(self, identifier) -> 'AsyncGenerator[tuple[int, int, str, int, str, datetime, bool], None]':
+        async for vv in self._select('voteviews', identifier=identifier):
+            yield vv
+
+    async def delete_voteview(self, view_id: int) -> int:
         return await self._delete('voteviews', id=view_id)
 
-    async def add_vote(self, view_id: int, voter_id: int, option: str):
+    async def add_vote(self, view_id: int, voter_id: int, option: str) -> int:
         await self.bot.configuration.add_member(voter_id)
 
         query = "INSERT INTO votes VALUES($1,$2,$3) ON CONFLICT (view_id, voter_id) DO UPDATE SET option=excluded.option"
         conn: asyncpg.Connection
         async with self.pool.acquire() as conn:
             async with conn.transaction():
-                return await conn.execute(query, view_id, voter_id, option)
+                res = await conn.execute(query, view_id, voter_id, option)
+        return self._parse_status(res)
 
     async def update_vote(self, view_id: int, voter_id: int, option: str):
         await self._update('voteviews', {'option': option}, view_id=view_id, voter_id=voter_id)
 
-    async def get_votes(self, view_id: int):
+    async def get_votes(self, view_id: int) -> 'AsyncGenerator[Vote, None]':
         async for v in self._select('votes', view_id=view_id):
             yield Vote(view_id=v[0], voter_id=v[1], option=v[2])
 
-    async def add_citizen(self, citizen_id: int):
+    async def add_citizen(self, citizen_id: int) -> int:
         await self.bot.configuration.add_member(citizen_id)
         return await self._insert('citizens', id=citizen_id)
 
@@ -180,8 +185,8 @@ class ExtrasDatabaseManager(BaseDatabaseManager, tables=tables):
         if res:
             return Citizen(id=res[0], social_credit=res[1])
 
-    async def delete_citizen(self, citizen_id: int):
+    async def delete_citizen(self, citizen_id: int) -> int:
         return await self._delete('citizens', id=citizen_id)
 
-    async def set_social_credit(self, citizen_id: int, amount: int):
+    async def set_social_credit(self, citizen_id: int, amount: int) -> int:
         return await self._update('citizens', {'social_credit': amount}, id=citizen_id)
