@@ -204,6 +204,12 @@ class Mod(commands.Cog):
             links += f"[banner]({guild.banner.url})"
         if links:
             embed.add_field(name="Links", value=links)
+        if invite:
+            expires = format_dt(invite.expires_at) if invite.expires_at else "Never"
+            embed.add_field(name="Expires at", value=expires)
+            if invite.inviter:
+                embed.add_field(name="Inviter", value=f"{invite.inviter} ({invite.inviter.id})", inline=False)
+
         await ctx.send(embed=embed)
 
     @is_staff("Owner")
