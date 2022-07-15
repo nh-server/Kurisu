@@ -427,9 +427,9 @@ class Extras(commands.Cog):
         if tag_name:
             if tag := self.extras.tags.get(tag_name):
                 await ctx.send(tag.content, reference=ctx.message.reference)
-            elif tags := self.bot.extras.search_tags(tag_name, limit=5):
+            elif tags_titles := self.bot.extras.search_tags(tag_name, limit=5):
                 embed = discord.Embed(
-                    description='\n'.join(f'{n}. {tag.title}' for n, tag in enumerate(tags, start=1)),
+                    description='\n'.join(f'{n}. {tag_title}' for n, tag_title in enumerate(tags_titles, start=1)),
                     color=gen_color(ctx.author.id))
                 await ctx.send("Tag not found, similar tags:", embed=embed)
             else:
