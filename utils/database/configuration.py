@@ -139,7 +139,7 @@ class ConfigurationDatabaseManager(BaseDatabaseManager, tables=tables):
     async def update_role(self, name: str, role_id: int):
         await self._update('roles', {'id': role_id}, name=name)
 
-    async def add_changed_roles(self, roles: list[tuple[int, bool]], channel_id: int):
+    async def add_changed_roles(self, roles: 'list[tuple[int, Optional[bool]]]', channel_id: int):
         query = "INSERT INTO changedroles VALUES ($1,$2, $3)"
         values = []
         for role_id, value in roles:

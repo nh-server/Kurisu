@@ -205,7 +205,7 @@ class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager)
                     self.nofilter_list.append(channel.id)
         return res
 
-    async def add_changed_roles(self, roles: list[tuple[int, bool]], channel: 'Union[discord.TextChannel, discord.Thread, discord.VoiceChannel]'):
+    async def add_changed_roles(self, roles: 'list[tuple[int, Optional[bool]]]', channel: 'Union[discord.TextChannel, discord.Thread, discord.VoiceChannel]'):
         await self.db.add_changed_roles(roles, channel.id)
 
     async def delete_changed_role(self, role: discord.Role, channel: 'Union[discord.TextChannel, discord.Thread, discord.VoiceChannel]'):
