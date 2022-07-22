@@ -18,6 +18,7 @@ from utils.database import FilterKind
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
+    from typing import Deque
 
 
 class Events(commands.Cog):
@@ -42,9 +43,10 @@ class Events(commands.Cog):
     )
 
     # I hate naming variables sometimes
-    user_antispam = {}
-    userbot_yeeter: dict[int, list] = {}
-    channel_antispam: dict[int, list] = {}
+    user_ping_antispam: dict[int, Deque[tuple[discord.Message, int]]] = {}
+    user_message_antispam: dict[int, list[discord.Message]] = {}
+    userbot_yeeter: dict[int, list[discord.abc.MessageableChannel]] = {}
+    channel_antispam: dict[int, list[discord.Message]] = {}
 
     async def userbot_yeeter_pop(self, message: discord.Message):
         await asyncio.sleep(20)
@@ -264,19 +266,23 @@ class Events(commands.Cog):
 
     async def user_spam_check(self, message: discord.Message):
         assert isinstance(message.author, discord.Member)
-        if message.author.id not in self.user_antispam:
-            self.user_antispam[message.author.id] = []
-        self.user_antispam[message.author.id].append(message)
+        if message.author.id not in self.user_message_antispam:
+            self.user_message_antispam[message.author.id] = []
+        self.user_message_antispam[message.author.id].append(message)
         # it can trigger it multiple times if I use >. it can't skip to a number so this should work
-        if len(self.user_antispam[message.author.id]) == 6:
-            await message.author.timeout(datetime.timedelta(days=2))
+        if len(self.user_message_antispam[message.author.id]) == 6:
+            try:
+                await message.author.timeout(datetime.timedelta(days=2))
+            except discord.Forbidden:
+                # If the bot can't timeout the member it's quite likely they shouldn't be timed out for this anyway
+                return
             msg_user = "You were automatically timed-out for sending too many messages in a short period of time!\n\n" \
                        "If you believe this was done in error, send a direct message (DM) to <@!333857992170536961> to contact staff."
             await send_dm_message(message.author, msg_user)
             log_msg = f"🔇 **Auto-timeout**: {message.author.mention} timed out for spamming | {message.author}\n🗓 __Creation__: {message.author.created_at}\n🏷 __User ID__: {message.author.id}"
             embed = discord.Embed(title="Deleted messages", color=discord.Color.gold())
             # clone list so nothing is removed while going through it
-            msgs_to_delete = self.user_antispam[message.author.id][:]
+            msgs_to_delete = self.user_message_antispam[message.author.id][:]
             for msg in msgs_to_delete:
                 embed.add_field(name="#" + msg.channel.name,
                                 value="\u200b" + msg.content)  # added zero-width char to prevent an error with an empty string (lazy workaround)
@@ -289,23 +295,23 @@ class Events(commands.Cog):
                 except discord.errors.NotFound:
                     pass  # don't fail if the message doesn't exist
         await asyncio.sleep(3)
-        self.user_antispam[message.author.id].remove(message)
+        self.user_message_antispam[message.author.id].remove(message)
         try:
-            if len(self.user_antispam[message.author.id]) == 0:
-                self.user_antispam.pop(message.author.id)
+            if len(self.user_message_antispam[message.author.id]) == 0:
+                self.user_message_antispam.pop(message.author.id)
         except KeyError:
             pass  # if the array doesn't exist, don't raise an error
 
     async def user_ping_check(self, message: discord.Message):
         assert isinstance(message.author, discord.Member)
-        key = "p" + str(message.author.id)
-        if key not in self.user_antispam:
-            self.user_antispam[key] = deque()
-        self.user_antispam[key].append((message, len(message.mentions)))
-        _, user_mentions = zip(*self.user_antispam[key])
+        key = message.author.id
+        if key not in self.user_ping_antispam:
+            self.user_ping_antispam[key] = deque()
+        self.user_ping_antispam[key].append((message, len(message.mentions)))
+        user_mentions: tuple[int]
+        _, user_mentions = zip(*self.user_ping_antispam[key])  # type: ignore # type checker can't infer correct type
         if sum(user_mentions) > 6:
             await self.bot.restrictions.add_restriction(message.author, Restriction.Probation, reason="User ping check")
-            await message.author.add_roles(self.bot.roles['Probation'])
             msg_user = ("You were automatically placed under probation "
                         "for mentioning too many users in a short period of time!\n\n"
                         "If you believe this was done in error, send a direct "
@@ -315,7 +321,7 @@ class Events(commands.Cog):
                       f"🗓 __Creation__: {message.author.created_at}\n🏷 __User ID__: {message.author.id}"
             embed = discord.Embed(title="Deleted messages", color=discord.Color.gold())
             # clone list so nothing is removed while going through it
-            msgs_to_delete = self.user_antispam[key].copy()
+            msgs_to_delete = self.user_ping_antispam[key].copy()
             for msg in msgs_to_delete:
                 # added zero-width char to prevent an error with an empty string (lazy workaround)
                 embed.add_field(name="#" + msg[0].channel.name, value="\u200b" + msg[0].content)
@@ -328,39 +334,41 @@ class Events(commands.Cog):
                     await msg[0].delete()
                 except discord.errors.NotFound:
                     pass  # don't fail if the message doesn't exist
-            self.user_antispam[key].clear()
+            self.user_ping_antispam[key].clear()
         else:
             await asyncio.sleep(10)
-            self.user_antispam[key].popleft()
+            self.user_ping_antispam[key].popleft()
         try:
-            if len(self.user_antispam[key]) == 0:
-                self.user_antispam.pop(key)
+            if len(self.user_ping_antispam[key]) == 0:
+                self.user_ping_antispam.pop(key)
         except KeyError:
             pass  # if the array doesn't exist, don't raise an error
 
-    async def channel_spam_check(self, message):
+    async def channel_spam_check(self, message: discord.Message):
+        assert isinstance(message.channel, discord.abc.GuildChannel)
         if message.channel.id not in self.channel_antispam:
             self.channel_antispam[message.channel.id] = []
         self.channel_antispam[message.channel.id].append(message)
         # it can trigger it multiple times if I use >. it can't skip to a number so this should work
         if len(self.channel_antispam[message.channel.id]) == 22:
-            await message.channel.set_permission(self.bot.guild.default_role, send_messages=False)
-            msg_channel = "This channel has been automatically locked for spam. Please wait while staff review the situation."
+            if isinstance(message.channel, (discord.VoiceChannel, discord.TextChannel)):
+                await message.channel.set_permissions(self.bot.guild.default_role, send_messages=False)
+                msg_channel = "This channel has been automatically locked for spam. Please wait while staff review the situation."
+                await message.channel.send(msg_channel)
             embed = discord.Embed(title="Deleted messages", color=discord.Color.gold())
-            # msgs_to_delete = self.user_antispam[message.author.id][:]  # clone list so nothing is removed while going through it
+            # msgs_to_delete = self.channel_antispam[message.author.id][:]  # clone list so nothing is removed while going through it
             # for msg in msgs_to_delete:
             #     embed.add_field(name="@"+self.bot.help_command.remove_mentions(msg.author), value="\u200b" + msg.content)  # added zero-width char to prevent an error with an empty string (lazy workaround)
-            await message.channel.send(msg_channel)
             log_msg = f"🔒 **Auto-locked**: {message.channel.mention} locked for spam"
             await self.bot.channels['mod-logs'].send(log_msg, embed=embed)
             await self.bot.channels['mods'].send(f"{log_msg} @here\nSee {self.bot.channels['mod-logs'].mention} for a list of deleted messages.",
                                                  allowed_mentions=discord.AllowedMentions(everyone=True))
-            # msgs_to_delete = self.channel_antispam[message.channel.id][:]  # clone list so nothing is removed while going through it
-            # for msg in msgs_to_delete:
-            #     try:
-            #         await self.bot.delete_message(msg)
-            #     except discord.errors.NotFound:
-            #         pass  # don't fail if the message doesn't exist
+            msgs_to_delete = self.channel_antispam[message.channel.id][:]  # clone list so nothing is removed while going through it
+            for msg in msgs_to_delete:
+                try:
+                    await msg.delete()
+                except discord.errors.NotFound:
+                    pass  # don't fail if the message doesn't exist
         await asyncio.sleep(5)
         self.channel_antispam[message.channel.id].remove(message)
         try:
