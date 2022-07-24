@@ -320,6 +320,8 @@ class Kurisu(commands.Bot):
             await ctx.send(str(exc))
 
         elif isinstance(exc, commands.CheckFailure):
+            if ctx.cog and ctx.cog.has_error_handler():
+                return
             await ctx.send(f'{author.mention} You cannot use `{command}`.')
 
         elif isinstance(exc, commands.MissingRequiredArgument):

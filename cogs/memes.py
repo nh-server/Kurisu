@@ -12,6 +12,7 @@ from utils.utils import KurisuCooldown
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
+    from typing import Optional
     from utils.context import KurisuContext
 
 
@@ -24,11 +25,26 @@ class Memes(commands.Cog):
         self.bot.loop.create_task(self.init_memes())
         self.extras = bot.extras
 
-        excluded = [self._listmemes, self.xiwarn, self.xipraise, self.gulag]
+        self.excluded = [self._listmemes, self.xiwarn, self.xipraise, self.gulag]
 
         for command in self.walk_commands():
-            if command not in excluded and not command.cooldown:
+            if command not in self.excluded and not command.cooldown:
                 command._buckets = commands.DynamicCooldownMapping(KurisuCooldown(1, 15.0), commands.BucketType.channel)
+
+    async def cog_check(self, ctx: KurisuContext) -> bool:
+        if ctx.guild is None or ctx.command in self.excluded:
+            return True
+        return not (ctx.channel in self.bot.assistance_channels or self.bot.roles['No-Memes'] in ctx.author.roles)
+
+    async def cog_command_error(self, ctx: KurisuContext, error: commands.CommandError):
+        if isinstance(error, commands.CheckFailure):
+            await ctx.message.delete()
+            try:
+                await ctx.author.send(
+                    "Meme commands are disabled in this channel, or your privileges have been revoked.")
+            except discord.errors.Forbidden:
+                await ctx.send(
+                    f"{ctx.author.mention} Meme commands are disabled in this channel, or your privileges have been revoked.")
 
     async def init_memes(self):
         await self.bot.wait_until_all_ready()
@@ -70,19 +86,12 @@ class Memes(commands.Cog):
         self.flushedw = discord.utils.get(self.bot.guild.emojis, name="FlushedW") or "⁉"
         self.flushedhalf2 = discord.utils.get(self.bot.guild.emojis, name="flushedhalf2") or "⁉"
 
-    async def _meme(self, ctx: KurisuContext, msg, directed: bool = False, imagelink=None, allowed_mentions=None):
-        author = ctx.author
+    async def _meme(self, ctx: KurisuContext, msg, directed: bool = False, image_link: Optional[str] = None, allowed_mentions: Optional[discord.AllowedMentions] = None):
 
-        if ctx.channel in self.bot.assistance_channels or (isinstance(author, discord.Member) and self.bot.roles['No-Memes'] in author.roles):
-            await ctx.message.delete()
-            try:
-                await ctx.author.send("Meme commands are disabled in this channel, or your privileges have been revoked.")
-            except discord.errors.Forbidden:
-                await ctx.send(f"{ctx.author.mention} Meme commands are disabled in this channel, or your privileges have been revoked.")
-        elif imagelink is not None:
+        if image_link is not None:
             title = f"{self.bot.escape_text(ctx.author.display_name) + ':' if not directed else ''} {msg}"
             embed = discord.Embed(title=title, color=discord.Color.default())
-            embed.set_image(url=imagelink)
+            embed.set_image(url=image_link)
             await ctx.send(embed=embed)
         else:
             await ctx.send(f"{self.bot.escape_text(ctx.author.display_name) + ':' if not directed else ''} {msg}", allowed_mentions=allowed_mentions)
@@ -108,67 +117,67 @@ class Memes(commands.Cog):
     @commands.command(hidden=True)
     async def screams(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/j0Dkv2Z.png")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/j0Dkv2Z.png")
 
     @commands.command(hidden=True)
     async def eeh(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/2SBC1Qo.jpg")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/2SBC1Qo.jpg")
 
     @commands.command(hidden=True)
     async def dubyadud(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/Sohsi8s.png")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/Sohsi8s.png")
 
     @commands.command(hidden=True)
     async def megumi(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/GMRp1dj.jpg")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/GMRp1dj.jpg")
 
     @commands.command(hidden=True)
     async def inori(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/WLncIsi.gif")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/WLncIsi.gif")
 
     @commands.command(hidden=True)
     async def inori2(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/V0uu99A.jpg")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/V0uu99A.jpg")
 
     @commands.command(hidden=True)
     async def inori3(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/so8thgu.gif")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/so8thgu.gif")
 
     @commands.command(hidden=True)
     async def inori4(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/267IXh1.gif")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/267IXh1.gif")
 
     @commands.command(hidden=True)
     async def inori5(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/lKcsiBP.png")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/lKcsiBP.png")
 
     @commands.command(hidden=True)
     async def inori6(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/SIJzpau.gif")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/SIJzpau.gif")
 
     @commands.command(hidden=True)
     async def shotsfired(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/zf2XrNk.gif")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/zf2XrNk.gif")
 
     @commands.command(hidden=True)
     async def rusure(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://imgur.com/sXnVRLw.gif")
+        await self._meme(ctx, "", image_link="https://imgur.com/sXnVRLw.gif")
 
     @commands.command(hidden=True)
     async def r34(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/sjQZKBF.gif")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/sjQZKBF.gif")
 
     @commands.command(hidden=True)
     async def lenny(self, ctx: KurisuContext):
@@ -183,42 +192,42 @@ class Memes(commands.Cog):
     @commands.command(hidden=True)
     async def permabrocked(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/ARsOh3p.jpg")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/ARsOh3p.jpg")
 
     @commands.command(hidden=True)
     async def knp(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/EsJ191C.png")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/EsJ191C.png")
 
     @commands.command(hidden=True)
     async def lucina(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/tnWSXf7.png")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/tnWSXf7.png")
 
     @commands.command(hidden=True)
     async def lucina2(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/ZPMveve.jpg")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/ZPMveve.jpg")
 
     @commands.command(hidden=True)
     async def xarec(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/A59RbRT.png")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/A59RbRT.png")
 
     @commands.command(hidden=True)
     async def clap(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/UYbIZYs.gif")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/UYbIZYs.gif")
 
     @commands.command(hidden=True)
     async def ayyy(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/bgvuHAd.png")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/bgvuHAd.png")
 
     @commands.command(hidden=True)
     async def hazel(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/vpu8bX3.png")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/vpu8bX3.png")
 
     @commands.command(hidden=True)
     async def thumbsup(self, ctx: KurisuContext):
@@ -228,7 +237,7 @@ class Memes(commands.Cog):
     @commands.command(hidden=True)
     async def pbanjo(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/sBJKzuK.png")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/sBJKzuK.png")
 
     # Cute commands :3
     @commands.command(hidden=True, aliases=["pat"])
@@ -249,22 +258,22 @@ class Memes(commands.Cog):
     @commands.command(hidden=True)
     async def sudoku(self, ctx: KurisuContext):
         """Cute"""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/VHlIZRC.png")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/VHlIZRC.png")
 
     @commands.command(hidden=True)
     async def baka(self, ctx: KurisuContext):
         """Cute"""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/OyjCHNe.png")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/OyjCHNe.png")
 
     @commands.command(hidden=True)
     async def mugi(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/lw80tT0.gif")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/lw80tT0.gif")
 
     @commands.command(hidden=True)
     async def lisp(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/RQeZErU.png")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/RQeZErU.png")
 
     @commands.command(hidden=True)
     async def dev(self, ctx: KurisuContext):
@@ -286,72 +295,72 @@ class Memes(commands.Cog):
     @commands.command(hidden=True)
     async def blackalabi(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/JzFem4y.png")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/JzFem4y.png")
 
     @commands.command(hidden=True)
     async def eip(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/SU0Qvc8.png")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/SU0Qvc8.png")
 
     @commands.command(hidden=True)
     async def whoops(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/2ec4764e884d956fb882f3479fa87ecf.gif")
+        await self._meme(ctx, "", image_link="https://album.eiphax.tech/uploads/big/2ec4764e884d956fb882f3479fa87ecf.gif")
 
     @commands.command(hidden=True)
     async def nom(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/p1r53ni.jpg")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/p1r53ni.jpg")
 
     @commands.command(hidden=True)
     async def soghax(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/oQJy2eN.png")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/oQJy2eN.png")
 
     @commands.command(hidden=True)
     async def weebs(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/sPjRKUB.png")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/sPjRKUB.png")
 
     @commands.command(hidden=True)
     async def whatisr(self, ctx: KurisuContext):
         """MEMES?"""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/Z8HhfzJ.jpg")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/Z8HhfzJ.jpg")
 
     @commands.command(hidden=True)
     async def helpers(self, ctx: KurisuContext):
         """MEMES?"""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/0v1EgMX.png")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/0v1EgMX.png")
 
     @commands.command(hidden=True)
     async def concern(self, ctx: KurisuContext):
         """MEMES?"""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/cWXBb5g.png")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/cWXBb5g.png")
 
     @commands.command(hidden=True)
     async def fuck(self, ctx: KurisuContext):
         """MEMES?"""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/4lNA5Ud.gif")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/4lNA5Ud.gif")
 
     @commands.command(hidden=True)
     async def goose(self, ctx: KurisuContext):
         """MEMES?"""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/pZUeBql.jpg")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/pZUeBql.jpg")
 
     @commands.command(hidden=True)
     async def planet(self, ctx: KurisuContext):
         """haha yes!"""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/YIBADGT.png")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/YIBADGT.png")
 
     @commands.command(hidden=True)
     async def pbanj(self, ctx: KurisuContext):
         """he has the power"""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/EQy9pl3.png")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/EQy9pl3.png")
 
     @commands.command(hidden=True)
     async def pbanj2(self, ctx: KurisuContext):
         """pbanos"""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/oZx7Qid.gif")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/oZx7Qid.gif")
 
     # Begin code from https://github.com/reswitched/robocop-ng
     @staticmethod
@@ -400,27 +409,27 @@ class Memes(commands.Cog):
     @commands.command(hidden=True)
     async def menuhax(self, ctx: KurisuContext):
         """menuhax 11.4 wen"""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/fUiZ2c3.png")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/fUiZ2c3.png")
 
     @commands.command(hidden=True)
     async def magic(self, ctx: KurisuContext):
         """shrug.avi"""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/k9111dq.jpg")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/k9111dq.jpg")
 
     @commands.command(hidden=True)
     async def mouse(self, ctx: KurisuContext):
         """Whaaaa"""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/0YHBP7l.png")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/0YHBP7l.png")
 
     @commands.command(hidden=True)
     async def bananoose(self, ctx: KurisuContext):
         """:)"""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/VUmkXDd.jpg")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/VUmkXDd.jpg")
 
     @commands.command(hidden=True)
     async def goosenana(self, ctx: KurisuContext):
         """:)"""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/dLZOK5c.jpg")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/dLZOK5c.jpg")
 
     @commands.command(hidden=True)
     async def eel(self, ctx: KurisuContext, u: discord.Member):
@@ -440,57 +449,57 @@ class Memes(commands.Cog):
     @commands.command(hidden=True, aliases=["wheresource", "sauce", "github"])
     async def source(self, ctx: KurisuContext):
         """You *did* read the GPL, *right?*"""
-        await self._meme(ctx, "", imagelink="https://i.imgur.com/ceLGvc4.gif")
+        await self._meme(ctx, "", image_link="https://i.imgur.com/ceLGvc4.gif")
 
     @commands.command(hidden=True)
     async def pirate2(self, ctx: KurisuContext):
         """stop right there, criminal scum"""
-        await self._meme(ctx, "", imagelink="https://cdn.discordapp.com/attachments/508390946753216528/695752500179107910/giphy.gif")
+        await self._meme(ctx, "", image_link="https://cdn.discordapp.com/attachments/508390946753216528/695752500179107910/giphy.gif")
 
     @commands.command(hidden=True)
     async def source2(self, ctx: KurisuContext):
         """citation needed"""
-        await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/b5c031e07ddbc3e48d0853f2d7064f66.jpg")
+        await self._meme(ctx, "", image_link="https://album.eiphax.tech/uploads/big/b5c031e07ddbc3e48d0853f2d7064f66.jpg")
 
     @commands.command(hidden=True)
     async def disgraceful(self, ctx: KurisuContext):
         """YOU DIDN'T SEE IT BECAUSE IT WASN'T THERE"""
-        await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/b93b2a99bc28df4a192fc7eb8ccc01a9.png")
+        await self._meme(ctx, "", image_link="https://album.eiphax.tech/uploads/big/b93b2a99bc28df4a192fc7eb8ccc01a9.png")
 
     @commands.command(hidden=True)
     async def greatness(self, ctx: KurisuContext):
         """We were this close."""
-        await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/f2b1e87af1fcdcd34f0dff65d7696deb.png")
+        await self._meme(ctx, "", image_link="https://album.eiphax.tech/uploads/big/f2b1e87af1fcdcd34f0dff65d7696deb.png")
 
     @commands.command(hidden=True)
     async def shovels(self, ctx: KurisuContext):
         """Do you need more?"""
-        await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/b798edd56662f1bde15ae4b6bc9c9fba.png")
+        await self._meme(ctx, "", image_link="https://album.eiphax.tech/uploads/big/b798edd56662f1bde15ae4b6bc9c9fba.png")
 
     @commands.command(hidden=True)
     async def value(self, ctx: KurisuContext):
         """smug.png"""
-        await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/f882b32a3f051f474572b018d053bd7b.png")
+        await self._meme(ctx, "", image_link="https://album.eiphax.tech/uploads/big/f882b32a3f051f474572b018d053bd7b.png")
 
     @commands.command(hidden=True)
     async def superiority(self, ctx: KurisuContext):
         """opinions"""
-        await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/e2cbbf7c808e21fb6c5ab603f6a89a3f.jpg")
+        await self._meme(ctx, "", image_link="https://album.eiphax.tech/uploads/big/e2cbbf7c808e21fb6c5ab603f6a89a3f.jpg")
 
     @commands.command(hidden=True)
     async def dolar(self, ctx: KurisuContext):
         """mcdondal"""
-        await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/3ecd851953906ecc2387cfd592ac97e7.png")
+        await self._meme(ctx, "", image_link="https://album.eiphax.tech/uploads/big/3ecd851953906ecc2387cfd592ac97e7.png")
 
     @commands.command(hidden=True)
     async def serotonin(self, ctx: KurisuContext):
         """i really want to know"""
-        await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/2549ac8b197ae68080041d3966a887e8.png")
+        await self._meme(ctx, "", image_link="https://album.eiphax.tech/uploads/big/2549ac8b197ae68080041d3966a887e8.png")
 
     @commands.command(hidden=True, aliases=['decisions'])
     async def decision(self, ctx: KurisuContext):
         """duly noted"""
-        await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/5186160fa1b8002fe8fa1867225e45a7.png")
+        await self._meme(ctx, "", image_link="https://album.eiphax.tech/uploads/big/5186160fa1b8002fe8fa1867225e45a7.png")
 
     @commands.command(hidden=True, aliases=['tmyk'])
     async def themoreyouknow(self, ctx: KurisuContext):
@@ -528,13 +537,13 @@ class Memes(commands.Cog):
     async def depart(self, ctx: KurisuContext):
         """From the amazing Mr. Burguers"""
         departure_gifs = ["https://i.imgur.com/Kbyp7i4.gif", "https://i.imgur.com/Wv8DoGC.gif"]
-        await self._meme(ctx, "", imagelink=random.choice(departure_gifs))
+        await self._meme(ctx, "", image_link=random.choice(departure_gifs))
 
     @commands.command(hidden=True)
     async def arrival(self, ctx: KurisuContext):
         """Glazy can add departure but not arrival smh"""
         arrival_gifs = ["https://imgur.com/kNlrsth.gif", "https://imgur.com/ZlwaTUp.gif"]
-        await self._meme(ctx, "", imagelink=random.choice(arrival_gifs))
+        await self._meme(ctx, "", image_link=random.choice(arrival_gifs))
 
     @commands.command(hidden=True)
     async def hug(self, ctx: KurisuContext, u: discord.Member):
