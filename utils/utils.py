@@ -5,9 +5,13 @@ import random
 import re
 import traceback
 
+from .checks import check_staff
 from discord import app_commands
 from discord.ext import commands
-from typing import Optional, Union
+from typing import Optional, Union, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from utils.context import KurisuContext
 
 
 class ConsoleColor(discord.Color):
@@ -136,3 +140,15 @@ def text_to_discord_file(text: str, *, name: str = 'output.txt'):
 def ordinal(n: int) -> str:
     # noinspection SpellCheckingInspection
     return f'{n}{"tsnrhtdd"[(n // 10 % 10 != 1) * (n % 10 < 4) * n % 10::4]}'
+
+
+class KurisuCooldown:
+    def __init__(self, rate: float, per: float):
+        self.rate = rate
+        self.per = per
+
+    def __call__(self, ctx: 'KurisuContext') -> Optional[commands.Cooldown]:
+        if check_staff(ctx.bot, 'Helper', ctx.author.id):
+            return None
+        else:
+            return commands.Cooldown(self.rate, self.per)

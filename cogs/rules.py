@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands
 from typing import TYPE_CHECKING
 from utils.checks import is_staff
-from utils.utils import paginate_message
+from utils.utils import paginate_message, KurisuCooldown
 from utils.views import BasePaginator, PaginatedEmbedView
 
 
@@ -163,7 +163,7 @@ https://discord.gg/C29hYvh"""
             await ctx.send("There are no rules!")
 
     @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def consoleban(self, ctx: KurisuContext):
         """States some stuff about no assistance with bans"""
         await ctx.send("Please refrain from asking for or giving assistance with"
@@ -172,13 +172,13 @@ https://discord.gg/C29hYvh"""
                        "Nintendo issued bans is a bannable offense.")
 
     @commands.command(aliases=['r11'])
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def pirate(self, ctx: KurisuContext):
         """Hey! You can't steal another trainer's Pokémon!"""
         await ctx.send("Please refrain from asking for or giving assistance with installing, using, or obtaining pirated software.")
 
     @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def nick(self, ctx: KurisuContext):
         """Displays the Nickname and Avatar Policy."""
         await ctx.send(f"🏷 ___Username/Nickname and Avatar policy___\n"
@@ -198,67 +198,67 @@ https://discord.gg/C29hYvh"""
         view.message = msg
 
     @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def r1(self, ctx: KurisuContext):
         """Displays rule 1."""
         await self.simple_embed(ctx, self.configuration.rules[1], title="Rule 1")
 
     @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def r2(self, ctx: KurisuContext):
         """Displays rule 2."""
         await self.simple_embed(ctx, self.configuration.rules[2], title="Rule 2")
 
     @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def r3(self, ctx: KurisuContext):
         """Displays rule 3."""
         await self.simple_embed(ctx, self.configuration.rules[3], title="Rule 3")
 
     @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def r4(self, ctx: KurisuContext):
         """Displays rule 4."""
         await self.simple_embed(ctx, self.configuration.rules[4], title="Rule 4")
 
     @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def r5(self, ctx: KurisuContext):
         """Displays rule 5."""
         await self.simple_embed(ctx, self.configuration.rules[5], title="Rule 5")
 
     @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def r6(self, ctx: KurisuContext):
         """Displays rule 6."""
         await self.simple_embed(ctx, self.configuration.rules[6], title="Rule 6")
 
     @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def r7(self, ctx: KurisuContext):
         """Displays rule 7."""
         await self.simple_embed(ctx, self.configuration.rules[7], title="Rule 7")
 
     @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def r8(self, ctx: KurisuContext):
         """Displays rule 8."""
         await self.simple_embed(ctx, self.configuration.rules[8], title="Rule 8")
 
     @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def r9(self, ctx: KurisuContext):
         """Displays rule 9."""
         await self.simple_embed(ctx, self.configuration.rules[9], title="Rule 9")
 
     @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def r10(self, ctx: KurisuContext):
         """Displays rule 10."""
         await self.simple_embed(ctx, self.configuration.rules[10], title="Rule 10")
 
     @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def realr11(self, ctx: KurisuContext):
         """Displays rule 11."""
         content = (f"{self.configuration.rules[11]}\n\n"
@@ -267,37 +267,37 @@ https://discord.gg/C29hYvh"""
         await self.simple_embed(ctx, content, title="Rule 11")
 
     @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def r12(self, ctx: KurisuContext):
         """Displays rule 12."""
         await self.simple_embed(ctx, self.configuration.rules[12], title="Rule 12")
 
     @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def r13(self, ctx: KurisuContext):
         """Displays rule 13."""
         await self.simple_embed(ctx, self.configuration.rules[13], title="Rule 13")
 
     @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def r14(self, ctx: KurisuContext):
         """Displays rule 14."""
         await self.simple_embed(ctx, self.configuration.rules[14], title="Rule 14")
 
     @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def r15(self, ctx: KurisuContext):
         """Displays rule 15."""
         await self.simple_embed(ctx, self.configuration.rules[15], title="Rule 15")
 
     @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def r16(self, ctx: KurisuContext):
         """Displays rule 16."""
         await self.simple_embed(ctx, self.configuration.rules[16], title="Rule 16")
 
     @commands.command()
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def r17(self, ctx: KurisuContext):
         """Displays rule 17."""
         await self.simple_embed(ctx, self.configuration.rules[17], title="Rule 17")

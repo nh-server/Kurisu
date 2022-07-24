@@ -7,9 +7,10 @@ from discord.ext import commands
 from inspect import cleandoc
 from os.path import dirname, join
 from typing import Optional, Literal, TYPE_CHECKING
-from utils.views import BasePaginator, PaginatedEmbedView
 from utils.checks import check_if_user_can_sr, is_staff
 from utils.mdcmd import add_md_files_as_commands
+from utils.views import BasePaginator, PaginatedEmbedView
+from utils.utils import KurisuCooldown
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -53,7 +54,7 @@ class UniDBResultsPaginator(BasePaginator):
         return embed
 
 
-class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapping.from_cooldown(1, 30.0, commands.BucketType.channel))):
+class Assistance(commands.Cog):
     """
     Commands that will mostly be used in the help channels.
     """
@@ -104,7 +105,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
 
     @check_if_user_can_sr()
     @commands.guild_only()
-    @commands.command(aliases=["sr"], cooldown=None)
+    @commands.command(aliases=["sr"])
     async def staffreq(self, ctx: GuildContext, *, msg_request: str = ""):
         """Request staff, with optional additional text. Trusted, Helpers, Staff, Retired Staff, Verified only."""
         author = ctx.author
@@ -123,7 +124,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
 
     @is_staff('Helper')
     @commands.guild_only()
-    @commands.command(cooldown=None)
+    @commands.command()
     async def createsmallhelp(self, ctx: GuildContext, console: Literal['3ds', 'switch', 'wiiu', 'legacy'], helpee: discord.Member, desc: str):
         """Creates a small help channel with the option to add a member. Helper+ only."""
         if not self.small_help_category:
@@ -138,13 +139,14 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
 
     @is_staff('OP')
     @commands.guild_only()
-    @commands.command(cooldown=None)
+    @commands.command()
     async def setsmallhelp(self, ctx: GuildContext, category: discord.CategoryChannel):
         """Sets the small help category for creating channels. OP+ only."""
         await self.bot.configuration.add_channel('small-help', category)
         self.small_help_category = category
         await ctx.send("Small help category set.")
 
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     @commands.command()
     async def nxcfw(self, ctx: KurisuContext, cfw=""):
         """Information on why we don't support or recommend various other Switch CFWs"""
@@ -185,6 +187,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
             return
         await self.simple_embed(ctx, info['info'], title=f"Why {info['title']} isn't recommended")
 
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     @commands.command()
     async def luma(self, ctx: KurisuContext, lumaversion=""):
         """Download links for Luma versions"""
@@ -210,8 +213,8 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
                            f'complete list of tutorials, send `.help tutorial` to me in a {self.bot.channels["bot-cmds"]}.',
                            delete_after=10)
 
+    @commands.dynamic_cooldown(KurisuCooldown(1, 5.0), commands.BucketType.channel)
     @commands.command()
-    @commands.cooldown(rate=1, per=5.0, type=commands.BucketType.channel)
     async def invite(self, ctx: KurisuContext, name: str = ""):
         """Post an invite to an approved server"""
         if not name:
@@ -234,6 +237,7 @@ class Assistance(commands.Cog, command_attrs=dict(cooldown=commands.CooldownMapp
             ctx.command.reset_cooldown(ctx)
             await ctx.send(f"Invalid invite name. Valid server names are: {', '.join(ai.alias for ai in self.filters.approved_invites.values())}")
 
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     @commands.command()
     async def unidb(self, ctx: KurisuContext, *, query=""):
         """Links to Universal-DB and/or one of the apps.\n

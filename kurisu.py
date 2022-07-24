@@ -22,7 +22,7 @@ from discord.ext import commands
 from subprocess import check_output, CalledProcessError
 from typing import Optional, Union
 from utils import WarnsManager, ConfigurationManager, RestrictionsManager, ExtrasManager, FiltersManager, UserLogManager
-from utils.checks import check_staff, InsufficientStaffRank
+from utils.checks import InsufficientStaffRank
 from utils.help import KuriHelp
 from utils.utils import create_error_embed
 from utils.context import KurisuContext
@@ -337,15 +337,12 @@ class Kurisu(commands.Bot):
             command.reset_cooldown(ctx)
 
         elif isinstance(exc, commands.errors.CommandOnCooldown):
-            if not check_staff(self, 'Helper', author.id):
-                try:
-                    await ctx.message.delete()
-                except (discord.errors.NotFound, discord.errors.Forbidden):
-                    pass
-                await ctx.send(f"{author.mention} This command was used {exc.cooldown.per - exc.retry_after:.2f}s ago and is on cooldown. "
-                               f"Try again in {exc.retry_after:.2f}s.", delete_after=10)
-            else:
-                await ctx.reinvoke()
+            try:
+                await ctx.message.delete()
+            except (discord.errors.NotFound, discord.errors.Forbidden):
+                pass
+            await ctx.send(f"{author.mention} This command was used {exc.cooldown.per - exc.retry_after:.2f}s ago and is on cooldown. "
+                           f"Try again in {exc.retry_after:.2f}s.", delete_after=10)
 
         elif isinstance(exc, discord.NotFound):
             await ctx.send("ID not found.")

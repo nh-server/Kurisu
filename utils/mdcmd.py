@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 import discord
 from discord.ext import commands
-from utils.utils import ConsoleColor
+from utils.utils import ConsoleColor, KurisuCooldown
 
 if TYPE_CHECKING:
     from typing import Optional, Type
@@ -209,7 +209,7 @@ def add_md_files_as_commands(cog_class: 'Type[Assistance]', md_dir: str = None, 
         cmd.__doc__ = help_desc
 
         # this feels _wrong_ but is probably the best way to do this
-        cooldown = commands.cooldown(cooldown[0], cooldown[1], commands.BucketType.channel)(cmd)
+        cooldown = commands.dynamic_cooldown(KurisuCooldown(cooldown[0], cooldown[1]), commands.BucketType.channel)(cmd)
         cmd_obj = namespace.command(name=name, aliases=aliases)(cooldown)
         return cmd_obj
 

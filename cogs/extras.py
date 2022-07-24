@@ -17,7 +17,7 @@ from math import ceil
 from typing import Union, Optional, TYPE_CHECKING
 from utils.checks import is_staff, check_if_user_can_sr, check_staff
 from utils.converters import DateOrTimeToSecondsConverter
-from utils.utils import gen_color, send_dm_message
+from utils.utils import gen_color, send_dm_message, KurisuCooldown
 from utils.views import BasePaginator, SimpleVoteView, PaginatedEmbedView
 
 if TYPE_CHECKING:
@@ -383,7 +383,7 @@ class Extras(commands.Cog):
             await ctx.send("The nickname doesn't comply with our nickname policy or it's too long!")
             ctx.command.reset_cooldown(ctx)
 
-    @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.member)
+    @commands.dynamic_cooldown(KurisuCooldown(1, 300.0), commands.BucketType.member)
     @app_commands.describe(remind_in="Time to remind you in can be in a #d#h#m#s format or a YYYY-MM-DD HH:MM:SS format.",
                            reminder="Contents of the reminders. Max 800 characters.")
     @commands.hybrid_command()

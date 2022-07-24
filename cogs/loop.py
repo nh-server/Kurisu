@@ -9,7 +9,7 @@ from discord import AllowedMentions
 from discord.ext import commands
 from discord.utils import format_dt
 from typing import TYPE_CHECKING
-from utils.utils import send_dm_message
+from utils.utils import send_dm_message, KurisuCooldown
 from utils import Restriction, OptionalMember
 
 if TYPE_CHECKING:
@@ -90,14 +90,14 @@ class Loop(commands.Cog):
             embed.description = "No ongoing or upcoming maintenances."
         self.netinfo_embed = embed
 
+    @commands.dynamic_cooldown(KurisuCooldown(1, 60.0), commands.BucketType.channel)
     @commands.command()
-    @commands.cooldown(rate=1, per=60.0, type=commands.BucketType.channel)
     async def netinfo(self, ctx: KurisuContext):
         """Show the nintendo network status."""
         await ctx.send(embed=self.netinfo_embed)
 
+    @commands.dynamic_cooldown(KurisuCooldown(1, 60.0), commands.BucketType.channel)
     @commands.command()
-    @commands.cooldown(rate=1, per=60.0, type=commands.BucketType.channel)
     async def netinfo_refresh(self, ctx: KurisuContext):
         """Refreshes the nintendo network status information."""
         await self.update_netinfo()

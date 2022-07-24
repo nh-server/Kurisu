@@ -8,6 +8,7 @@ import random
 from discord.ext import commands
 from typing import TYPE_CHECKING
 from utils.checks import is_staff
+from utils.utils import KurisuCooldown
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -22,6 +23,12 @@ class Memes(commands.Cog):
         self.bot: Kurisu = bot
         self.bot.loop.create_task(self.init_memes())
         self.extras = bot.extras
+
+        excluded = [self._listmemes, self.xiwarn, self.xipraise, self.gulag]
+
+        for command in self.walk_commands():
+            if command not in excluded and not command.cooldown:
+                command._buckets = commands.DynamicCooldownMapping(KurisuCooldown(1, 15.0), commands.BucketType.channel)
 
     async def init_memes(self):
         await self.bot.wait_until_all_ready()
@@ -89,310 +96,259 @@ class Memes(commands.Cog):
 
     # 3dshacks memes
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def s_99(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "**ALL HAIL BRITANNIA!**")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=5, per=30.0, type=commands.BucketType.channel)
     async def honk(self, ctx: KurisuContext):
         """honk"""
         await self._meme(ctx, "`R A K E  I N  T H E  L A K E`")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def screams(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/j0Dkv2Z.png")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def eeh(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/2SBC1Qo.jpg")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def dubyadud(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/Sohsi8s.png")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def megumi(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/GMRp1dj.jpg")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def inori(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/WLncIsi.gif")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def inori2(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/V0uu99A.jpg")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def inori3(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/so8thgu.gif")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def inori4(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/267IXh1.gif")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def inori5(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/lKcsiBP.png")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def inori6(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/SIJzpau.gif")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def shotsfired(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/zf2XrNk.gif")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def rusure(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://imgur.com/sXnVRLw.gif")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def r34(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/sjQZKBF.gif")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def lenny(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "( ͡° ͜ʖ ͡°)")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def rip(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "Press F to pay respects.")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def permabrocked(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/ARsOh3p.jpg")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def knp(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/EsJ191C.png")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def lucina(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/tnWSXf7.png")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def lucina2(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/ZPMveve.jpg")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def xarec(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/A59RbRT.png")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def clap(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/UYbIZYs.gif")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def ayyy(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/bgvuHAd.png")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def hazel(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/vpu8bX3.png")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def thumbsup(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "https://i.imgur.com/hki1IIs.gifv")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def pbanjo(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/sBJKzuK.png")
 
     # Cute commands :3
     @commands.command(hidden=True, aliases=["pat"])
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def headpat(self, ctx: KurisuContext, u: discord.Member):
         """headpat"""
         await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has been gently patted.", True, "https://i.imgur.com/7V6gIIW.jpg")
 
     @commands.command(hidden=True, aliases=["pat2"])
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def headpat2(self, ctx: KurisuContext, u: discord.Member):
         """headpat 2"""
         await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has been gently patted.", True, "https://i.imgur.com/djhHX0n.gif")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def headrub(self, ctx: KurisuContext, u: discord.Member):
         """headrub"""
         await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has received a head rub.", True, "https://i.imgur.com/j6xSoKv.jpg")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def sudoku(self, ctx: KurisuContext):
         """Cute"""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/VHlIZRC.png")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def baka(self, ctx: KurisuContext):
         """Cute"""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/OyjCHNe.png")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def mugi(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/lw80tT0.gif")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def lisp(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/RQeZErU.png")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def dev(self, ctx: KurisuContext):
         """Reminds user where they are."""
         await self._meme(ctx, f"You {'do not ' if ctx.channel != self.bot.channels['dev'] else ''}seem to be in {self.bot.channels['dev'].mention}.", True)
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def meta(self, ctx: KurisuContext):
         """Reminds user where they are. (2)"""
         await self._meme(ctx, f"You {'do not ' if ctx.channel != self.bot.channels['meta'] else ''}seem to be in {self.bot.channels['meta'].mention}."
                               f" Please take this subject {'there' if ctx.channel != self.bot.channels['meta'] else 'somewhere else'}.", True)
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def appeals(self, ctx: KurisuContext):
         """Reminds user where they are. (3)"""
         await self._meme(ctx, f"You {'do not ' if ctx.channel != self.bot.channels['appeals'] else ''}seem to be in {self.bot.channels['appeals'].mention}."
                               f" Please take this subject {'there' if ctx.channel != self.bot.channels['appeals'] else 'somewhere else'}.", True)
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def blackalabi(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/JzFem4y.png")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def eip(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/SU0Qvc8.png")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def whoops(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/2ec4764e884d956fb882f3479fa87ecf.gif")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def nom(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/p1r53ni.jpg")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def soghax(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/oQJy2eN.png")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def weebs(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/sPjRKUB.png")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def whatisr(self, ctx: KurisuContext):
         """MEMES?"""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/Z8HhfzJ.jpg")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def helpers(self, ctx: KurisuContext):
         """MEMES?"""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/0v1EgMX.png")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def concern(self, ctx: KurisuContext):
         """MEMES?"""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/cWXBb5g.png")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def fuck(self, ctx: KurisuContext):
         """MEMES?"""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/4lNA5Ud.gif")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def goose(self, ctx: KurisuContext):
         """MEMES?"""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/pZUeBql.jpg")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def planet(self, ctx: KurisuContext):
         """haha yes!"""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/YIBADGT.png")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def pbanj(self, ctx: KurisuContext):
         """he has the power"""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/EQy9pl3.png")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def pbanj2(self, ctx: KurisuContext):
         """pbanos"""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/oZx7Qid.gif")
@@ -409,7 +365,6 @@ class Memes(commands.Cog):
         return math.floor(c + 273.15)
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def warm(self, ctx: KurisuContext, u: discord.Member):
         """Warms a user :3"""
         celsius = random.randint(38, 100)
@@ -419,7 +374,6 @@ class Memes(commands.Cog):
 
     # adding it here cause its pretty much the same code
     @commands.command(hidden=True, aliases=["cool"])
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def chill(self, ctx: KurisuContext, u: discord.Member):
         """Cools a user :3"""
         celsius = random.randint(-273, 34)
@@ -429,145 +383,122 @@ class Memes(commands.Cog):
     # End code from https://github.com/reswitched/robocop-ng
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def bean(self, ctx: KurisuContext, u: discord.Member):
         """swing the beanhammer"""
         await self._meme(ctx, f"{u.mention} is now beaned. <a:bean:462076812076384257>", True)
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def nogas(self, ctx: KurisuContext):
         """shhhh no one gives a shit!"""
         await self._meme(ctx, "https://imgur.com/a/5IcfK6N")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def cosmic(self, ctx: KurisuContext):
         """Cosmic ban"""
         await self._meme(ctx, "https://i.imgur.com/V4TVpbC.gifv")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def menuhax(self, ctx: KurisuContext):
         """menuhax 11.4 wen"""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/fUiZ2c3.png")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def magic(self, ctx: KurisuContext):
         """shrug.avi"""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/k9111dq.jpg")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def mouse(self, ctx: KurisuContext):
         """Whaaaa"""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/0YHBP7l.png")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def bananoose(self, ctx: KurisuContext):
         """:)"""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/VUmkXDd.jpg")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def goosenana(self, ctx: KurisuContext):
         """:)"""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/dLZOK5c.jpg")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def eel(self, ctx: KurisuContext, u: discord.Member):
         """eel"""
         await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has been eel slapped.", True, "https://i.imgur.com/QXF2Pcn.gif")
 
     @commands.command(hidden=True, aliases=["bruh", "yolo", "swag", "based"])
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def dab(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "No. I might be controlled by you idiots, but I have *some* self respect, baka...")
 
     @commands.command(hidden=True, aliases=["hacc"])
-    @commands.cooldown(rate=5, per=60.0, type=commands.BucketType.channel)
     async def nobrain(self, ctx: KurisuContext, *, action="hacc"):
         """h a c c"""
         await self._meme(ctx, f'`I have no brain and I must {" ".join(action.replace("`",""))}`')
 
     @commands.command(hidden=True, aliases=["wheresource", "sauce", "github"])
-    @commands.cooldown(rate=5, per=30.0, type=commands.BucketType.channel)
     async def source(self, ctx: KurisuContext):
         """You *did* read the GPL, *right?*"""
         await self._meme(ctx, "", imagelink="https://i.imgur.com/ceLGvc4.gif")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def pirate2(self, ctx: KurisuContext):
         """stop right there, criminal scum"""
         await self._meme(ctx, "", imagelink="https://cdn.discordapp.com/attachments/508390946753216528/695752500179107910/giphy.gif")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def source2(self, ctx: KurisuContext):
         """citation needed"""
         await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/b5c031e07ddbc3e48d0853f2d7064f66.jpg")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def disgraceful(self, ctx: KurisuContext):
         """YOU DIDN'T SEE IT BECAUSE IT WASN'T THERE"""
         await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/b93b2a99bc28df4a192fc7eb8ccc01a9.png")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def greatness(self, ctx: KurisuContext):
         """We were this close."""
         await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/f2b1e87af1fcdcd34f0dff65d7696deb.png")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def shovels(self, ctx: KurisuContext):
         """Do you need more?"""
         await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/b798edd56662f1bde15ae4b6bc9c9fba.png")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def value(self, ctx: KurisuContext):
         """smug.png"""
         await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/f882b32a3f051f474572b018d053bd7b.png")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def superiority(self, ctx: KurisuContext):
         """opinions"""
         await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/e2cbbf7c808e21fb6c5ab603f6a89a3f.jpg")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def dolar(self, ctx: KurisuContext):
         """mcdondal"""
         await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/3ecd851953906ecc2387cfd592ac97e7.png")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def serotonin(self, ctx: KurisuContext):
         """i really want to know"""
         await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/2549ac8b197ae68080041d3966a887e8.png")
 
     @commands.command(hidden=True, aliases=['decisions'])
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def decision(self, ctx: KurisuContext):
         """duly noted"""
         await self._meme(ctx, "", imagelink="https://album.eiphax.tech/uploads/big/5186160fa1b8002fe8fa1867225e45a7.png")
 
     @commands.command(hidden=True, aliases=['tmyk'])
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def themoreyouknow(self, ctx: KurisuContext):
         """now with ear rape"""
         await ctx.send("https://album.eiphax.tech/uploads/big/01432cfa6eb64091301037971f8225c4.webm")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.channel)
+    @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.default)
     async def cadealert(self, ctx: KurisuContext):
         """stop! cade time."""
         await self._meme(ctx, "excuse me <@&575940388452433940>, it is time for cade", allowed_mentions=discord.AllowedMentions(roles=True))
@@ -594,27 +525,23 @@ class Memes(commands.Cog):
         await ctx.send(f"Happy birthday {member.mention}!")
 
     @commands.command(hidden=True, aliases=["departure"])
-    @commands.cooldown(rate=5, per=30.0, type=commands.BucketType.channel)
     async def depart(self, ctx: KurisuContext):
         """From the amazing Mr. Burguers"""
         departure_gifs = ["https://i.imgur.com/Kbyp7i4.gif", "https://i.imgur.com/Wv8DoGC.gif"]
         await self._meme(ctx, "", imagelink=random.choice(departure_gifs))
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def arrival(self, ctx: KurisuContext):
         """Glazy can add departure but not arrival smh"""
         arrival_gifs = ["https://imgur.com/kNlrsth.gif", "https://imgur.com/ZlwaTUp.gif"]
         await self._meme(ctx, "", imagelink=random.choice(arrival_gifs))
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def hug(self, ctx: KurisuContext, u: discord.Member):
         """hug"""
         await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has received a hug.", True, "https://i.imgur.com/wTHzIXx.jpg")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=30.0, type=commands.BucketType.channel)
     async def blahaj(self, ctx: KurisuContext, money: float):
         """Displays how much Blahajs you can buy with that money. ($ or €)"""
         # blahaj. takes usd or eur
@@ -667,7 +594,6 @@ class Memes(commands.Cog):
         await ctx.send(f"{citizen.mention} was sent away for reeducation purposes!")
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
     async def motd(self, ctx: KurisuContext):
         """got milk?"""
         motd_list = [f"{str(self.flushedball)}", f"{str(self.flushedsquish)}", f"{str(self.flushedeyes)}",
@@ -680,7 +606,6 @@ class Memes(commands.Cog):
         await ctx.send(random.choice(motd_list))
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
     async def wagu(self, ctx: KurisuContext):
         """got wagu?"""
         wagulist = [f"{str(self.wagu_emoji)}", f"{str(self.waguspooky)}", f"{str(self.waguxmas)}",
@@ -692,7 +617,6 @@ class Memes(commands.Cog):
         await ctx.send(random.choice(wagulist))
 
     @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=15.0, type=commands.BucketType.channel)
     async def flushed(self, ctx: KurisuContext):
         """got flushed?"""
         flushedlist = [f"{str(self.flushedsquish)}", f"{str(self.plusher_flusher)}", f"{str(self.isforme)}",
