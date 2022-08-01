@@ -7,4 +7,4 @@ thumbnail-url: https://i.imgur.com/CVSu1zc.png
 help-desc: How to dump games and data for CFW consoles
 ---
 
-How to dump/install Wii U game discs using disc2app and WUP Installer GX2
+How to dump/install Wii U game discs using wudd and WUP Installer GX2
