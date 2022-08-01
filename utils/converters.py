@@ -57,7 +57,7 @@ class TimeTransformer(app_commands.Transformer):
 class DateTransformer(app_commands.Transformer):
     @classmethod
     async def transform(cls, interaction: discord.Interaction, value: str) -> datetime:
-        if(datetime_obj := parse_date(value)) is not None:
+        if (datetime_obj := parse_date(value)) is not None:
             return datetime_obj
         raise app_commands.TransformerError("Invalid time format", discord.AppCommandOptionType.string, cls)
 
