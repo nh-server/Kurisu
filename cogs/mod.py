@@ -891,31 +891,37 @@ class Mod(commands.Cog):
                            length="Restriction length in ##d##m##ss format.",
                            reason="Reason for restriction")
     @app_commands.choices(restriction=[
-        Choice(name='Embed Permissions', value='No-Embed',),
-        Choice(name='Elsewhere access', value='No-elsewhere'),
-        Choice(name='Meme commands access', value='No-Memes'),
-        Choice(name='Art-channel access', value='No-art'),
+        Choice(name='Take Embed Permissions', value='No-Embed',),
+        Choice(name='Take Elsewhere access', value='No-elsewhere'),
+        Choice(name='Take Meme commands access', value='No-Memes'),
+        Choice(name='Take Art-channel access', value='No-art'),
+        Choice(name='Mute in appeals', value='appeal-mute'),
+        Choice(name='Mute in meta', value='meta-mute')
     ])
-    async def take(self,
-                   interaction: discord.Interaction,
-                   member: discord.Member,
-                   restriction: str,
-                   length: app_commands.Transform[int, TimeTransformer],
-                   reason: Optional[str] = None):
-        """Applies a temporary restriction to a member. OP+ Only"""
+    async def giverestriction(self,
+                              interaction: discord.Interaction,
+                              member: discord.Member,
+                              restriction: str,
+                              length: app_commands.Transform[Optional[int], TimeTransformer] = None,
+                              reason: Optional[str] = None):
+        """Applies a restriction to a member. OP+ Only"""
 
         restriction_action = {'No-Embed': 'no-embed',
                               'No-elsewhere': 'take-elsewhere',
                               'No-Memes': 'take-memes',
-                              'No-art': 'take-art'}
+                              'No-art': 'take-art',
+                              'appeal-mute': 'appeals-mute',
+                              'meta-mute': 'meta-mute'}
 
-        delta = timedelta(seconds=length)
-        timestamp = datetime.now(self.bot.tz)
-
-        end_time = timestamp + delta
+        if length:
+            delta = timedelta(seconds=length)
+            timestamp = datetime.now(self.bot.tz)
+            end_time = timestamp + delta
+        else:
+            end_time = None
 
         await self.restrictions.add_restriction(member, Restriction(restriction), reason, end_date=end_time)
-        await interaction.response.send_message(f"{member.mention} now has the {restriction} role temporarily.")
+        await interaction.response.send_message(f"{member.mention} now has the {restriction} restriction role{f' until {format_dt(end_time)}.' if end_time else '.'}")
         await self.logs.post_action_log(interaction.user, member, restriction_action[restriction], reason, end_time)
 
 
