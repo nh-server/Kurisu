@@ -531,7 +531,7 @@ class Extras(commands.Cog):
         view = SimpleVoteView(self.bot, interaction.user.id, options_parsed, interaction.id, start=discord.utils.utcnow(), staff_only=staff_only)
         embed = discord.Embed(title=name, description=description)
         await interaction.response.send_message(embed=embed, view=view)
-        msg = await interaction.original_message()
+        msg = await interaction.original_response()
         await self.extras.add_voteview(view_id=interaction.id, identifier='extras',
                                        author_id=interaction.user.id, options=options,
                                        start=datetime.now(self.bot.tz), message_id=msg.id, staff_only=staff_only)

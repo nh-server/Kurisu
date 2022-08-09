@@ -46,29 +46,26 @@ class DateOrTimeToSecondsConverter(Converter):
 
 
 class TimeTransformer(app_commands.Transformer):
-    @classmethod
-    async def transform(cls, interaction: discord.Interaction, value: str) -> int:
+    async def transform(self, interaction: discord.Interaction, value: str) -> int:
         seconds = parse_time(value)
         if seconds > 0:
             return seconds
-        raise app_commands.TransformerError("Invalid time format", discord.AppCommandOptionType.string, cls)
+        raise app_commands.TransformerError("Invalid time format", discord.AppCommandOptionType.string, self)
 
 
 class DateTransformer(app_commands.Transformer):
-    @classmethod
-    async def transform(cls, interaction: discord.Interaction, value: str) -> datetime:
+    async def transform(self, interaction: discord.Interaction, value: str) -> datetime:
         if (datetime_obj := parse_date(value)) is not None:
             return datetime_obj
-        raise app_commands.TransformerError("Invalid time format", discord.AppCommandOptionType.string, cls)
+        raise app_commands.TransformerError("Invalid time format", discord.AppCommandOptionType.string, self)
 
 
 # Javascript is a cursed language
 class HackIDTransformer(app_commands.Transformer):
-    @classmethod
-    async def transform(cls, interaction: discord.Interaction, value: str) -> int:
+    async def transform(self, interaction: discord.Interaction, value: str) -> int:
         ctx = await Context.from_interaction(interaction)
         try:
             discord_object = await ObjectConverter().convert(ctx, value)
             return discord_object.id
         except ObjectNotFound:
-            raise app_commands.TransformerError("Invalid ID", discord.AppCommandOptionType.string, cls)
+            raise app_commands.TransformerError("Invalid ID", discord.AppCommandOptionType.string, self)

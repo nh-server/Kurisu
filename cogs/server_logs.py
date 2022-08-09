@@ -128,7 +128,7 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
         await interaction.response.defer(ephemeral=bool(view_state))
 
         if (after or before) and during:
-            return await interaction.edit_original_message(content="You can't use after or before with during.")
+            return await interaction.edit_original_response(content="You can't use after or before with during.")
 
         stmt, bindings = self.build_query(
             message_content, member_id, channel_id, before, after, during, order_by, show_mod_channels, limit
@@ -141,15 +141,15 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
                 txt += f"[{channel_name}] [{created_at:%Y/%m/%d %H:%M:%S}] <{username} {content}>\n"
 
         if not txt:
-            return await interaction.edit_original_message(content="No messages found.")
+            return await interaction.edit_original_response(content="No messages found.")
 
         txt_bytes = txt.encode("utf-8")
 
         if len(txt_bytes) > interaction.guild.filesize_limit:
-            return await interaction.edit_original_message(content="Result is too big!")
+            return await interaction.edit_original_response(content="Result is too big!")
         data = io.BytesIO(txt_bytes)
         file = discord.File(filename="output.txt", fp=data)
-        await interaction.edit_original_message(attachments=[file])
+        await interaction.edit_original_response(attachments=[file])
 
     @is_staff_app("OP")
     @app_commands.describe(name="Name or part of the name of the channel to search",
@@ -187,17 +187,17 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
                 txt += f"{channel_id:18} | {name:50} | {last_updated:%Y/%m/%d %H:%M:%S}\n"
 
         if not txt:
-            return await interaction.edit_original_message(content="No messages found.")
+            return await interaction.edit_original_response(content="No messages found.")
 
         # The padding won't be exact if the channel has unicode characters but oh well
         header = f"{'ID':18} | {'channel name':50} | {'last updated'}\n"
         txt_bytes = (header + txt).encode("utf-8")
 
         if len(txt_bytes) > interaction.guild.filesize_limit:
-            return await interaction.edit_original_message(content="Result is too big!")
+            return await interaction.edit_original_response(content="Result is too big!")
         data = io.BytesIO(txt_bytes)
         file = discord.File(filename="output.txt", fp=data)
-        await interaction.edit_original_message(attachments=[file])
+        await interaction.edit_original_response(attachments=[file])
 
 
 async def setup(bot):
