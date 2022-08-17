@@ -32,7 +32,7 @@ action_messages = {
     'appeals-unmute': ('\N{SPEAKER}', 'Appeals unmute', 'appeals unmuted'),
 
     'help-mute': ('\N{SPEAKER WITH CANCELLATION STROKE}', 'Help mute', 'removed speak access in help channels from'),
-    'help-unmute': ('\N{SPEAKER}', 'Appeals unmute', 'help unmuted'),
+    'help-unmute': ('\N{SPEAKER}', 'Help unmute', 'help unmuted'),
 
     'give-art': ('\N{HEAVY LARGE CIRCLE}', 'Art access restore', 'restored art access for'),
     'take-art': ('\N{NO ENTRY SIGN}', 'Art access taken', 'took art access from'),
