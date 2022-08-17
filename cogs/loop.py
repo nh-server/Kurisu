@@ -144,7 +144,7 @@ class Loop(commands.Cog):
                         role = self.bot.guild.get_role(timed_role.role_id)
                         if member and role:
                             await member.remove_roles(role)
-                        msg = f"⭕ **Timed Role Expired**: <@{timed_role.user_id}>"
+                        msg = f"⭕ **Timed Role Expired**: <@{timed_role.user_id}> (`{role.name if role else timed_role.role_id}`)"
                         await self.bot.channels['mod-logs'].send(msg)
 
                 for reminder_entries in self.extras.reminders.values():
