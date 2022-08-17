@@ -83,7 +83,7 @@ Only Nintendo Switch XXXX-YYYY formatted error codes are supported.'
         }
         return memes.get(err.casefold())
 
-    @commands.command(aliases=['err', 'res'])
+    @commands.command(aliases=['err', 'res', 'error'])
     async def result(self, ctx: commands.Context, err: str):
         """
         Displays information on game console result codes, with a fancy embed.
