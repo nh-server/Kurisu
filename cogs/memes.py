@@ -32,7 +32,7 @@ class Memes(commands.Cog):
                 command._buckets = commands.DynamicCooldownMapping(KurisuCooldown(1, 15.0), commands.BucketType.channel)
 
     async def cog_check(self, ctx: KurisuContext) -> bool:
-        if ctx.guild is None or ctx.command in self.excluded:
+        if ctx.guild is None or ctx.command in self.excluded or isinstance(ctx.author, discord.User):
             return True
         return not (ctx.channel in self.bot.assistance_channels or self.bot.roles['No-Memes'] in ctx.author.roles)
 

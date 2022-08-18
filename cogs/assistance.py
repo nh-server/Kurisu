@@ -91,7 +91,7 @@ class Assistance(commands.Cog):
 
     async def unisearch(self, query: str) -> list[dict]:
         query = query.lower()
-        res = {}
+        res = []
         async with self.bot.session.get('https://udb-api.lightsage.dev/search/' + query, timeout=45) as r:
             if r.status == 200:
                 j = await r.json()

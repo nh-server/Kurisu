@@ -1,4 +1,4 @@
-git+https://github.com/Rapptz/discord.py.git@cc0c261925829a03c269b0b1058942a8cd750298
+discord.py==2.0.0
 Pillow==9.2.0
 xkcd==2.4.2
 pytz==2022.2.1

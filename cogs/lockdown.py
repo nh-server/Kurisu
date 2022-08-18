@@ -50,12 +50,8 @@ class Lockdown(commands.Cog):
 
             for target, overwrites in channel_overwrites.items():
 
-                # Don't touch member overwrites
-                if isinstance(target, discord.Member):
-                    continue
-
-                # Bots are spared
-                if target.is_bot_managed():
+                # Bot roles and member overwrites are spared
+                if isinstance(target, discord.Object) or isinstance(target, discord.Member) or target.is_bot_managed():
                     continue
 
                 # Only change the send_messages permission for roles that have it set to True and a lower in hierarchy

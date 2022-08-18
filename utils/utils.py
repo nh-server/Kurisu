@@ -8,10 +8,7 @@ import traceback
 from .checks import check_staff
 from discord import app_commands
 from discord.ext import commands
-from typing import Optional, Union, TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from utils.context import KurisuContext
+from typing import Optional, Union
 
 
 class ConsoleColor(discord.Color):
@@ -147,7 +144,7 @@ class KurisuCooldown:
         self.rate = rate
         self.per = per
 
-    def __call__(self, ctx: 'KurisuContext') -> Optional[commands.Cooldown]:
+    def __call__(self, ctx: commands.Context) -> Optional[commands.Cooldown]:
         if check_staff(ctx.bot, 'Helper', ctx.author.id):
             return None
         else:

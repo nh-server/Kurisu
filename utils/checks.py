@@ -39,7 +39,7 @@ def check_staff(bot: 'Kurisu', role: str, user_id: int) -> bool:
 
 
 async def check_bot_or_staff(ctx: Union[commands.Context, discord.Interaction], target: Union[discord.Member, discord.User], action: str):
-    bot = ctx.bot if isinstance(ctx, commands.Context) else ctx.client
+    bot: 'Kurisu' = ctx.bot if isinstance(ctx, commands.Context) else ctx.client  # type: ignore
     if target.bot:
         who = "a bot"
     elif check_staff(bot, "Helper", target.id):
