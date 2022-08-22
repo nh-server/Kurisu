@@ -729,19 +729,23 @@ class Mod(commands.Cog):
         await self.bot.change_presence(activity=discord.Game(name=gamename))
 
     @is_staff("OP")
-    @commands.command()
-    async def status(self, ctx: KurisuContext, status):
-        """Sets status. Staff only."""
-        if status == "online":
-            await self.bot.change_presence(status=discord.Status.online)
-        elif status == "offline":
-            await self.bot.change_presence(status=discord.Status.offline)
-        elif status == "idle":
-            await self.bot.change_presence(status=discord.Status.idle)
-        elif status == "dnd":
-            await self.bot.change_presence(status=discord.Status.dnd)
-        elif status == "invisible":
-            await self.bot.change_presence(status=discord.Status.invisible)
+    @commands.command(aliases=['presence'])
+    async def status(self, ctx: KurisuContext, status: str):
+        """Sets the bot presence. Staff only.
+        Valid statuses are `online`, `offline`, `idle`, `dnd` and `invisible`."""
+
+        status_dict: dict[str, discord.Status] = {
+            'online': discord.Status.online,
+            'offline': discord.Status.offline,
+            'idle': discord.Status.idle,
+            'dnd': discord.Status.dnd,
+            'invisible': discord.Status.invisible
+        }
+        if status in status_dict:
+            await self.bot.change_presence(status=status_dict[status])
+            await ctx.send(f"Changed status to {status} successfully.")
+        else:
+            await ctx.send_help(ctx.command)
 
     @is_staff("OP")
     @commands.command()
