@@ -745,7 +745,7 @@ class Mod(commands.Cog):
 
     @is_staff("OP")
     @commands.command()
-    async def username(self, ctx: KurisuContext, *, username):
+    async def username(self, ctx: KurisuContext, *, username: str):
         """Sets bot name. Staff only."""
         await self.bot.user.edit(username=username)
 
