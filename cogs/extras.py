@@ -558,6 +558,15 @@ class Extras(commands.Cog):
         guild_emoji = await ctx.guild.create_custom_emoji(name=name, image=emoji_bytes, roles=roles, reason="Probably nothing good.")
         await ctx.send(f"Added emoji {guild_emoji if guild_emoji.is_usable() else name} successfully!")
 
+    @commands.guild_only()
+    @commands.hybrid_command()
+    async def servericon(self, ctx: GuildContext):
+        if ctx.guild.icon is None:
+            return await ctx.send("This server has no icon set.", ephemeral=True)
+        embed = discord.Embed(title=f"{ctx.guild.name} Icon")
+        embed.set_image(url=ctx.guild.icon.url)
+        await ctx.send(embed=embed, ephemeral=True)
+
 
 async def setup(bot):
     await bot.add_cog(Extras(bot))
