@@ -561,6 +561,7 @@ class Extras(commands.Cog):
     @commands.guild_only()
     @commands.hybrid_command()
     async def servericon(self, ctx: GuildContext):
+        """Sends embed with the server's icon."""
         if ctx.guild.icon is None:
             return await ctx.send("This server has no icon set.", ephemeral=True)
         embed = discord.Embed(title=f"{ctx.guild.name} Icon")
