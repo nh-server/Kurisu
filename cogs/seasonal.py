@@ -14,13 +14,16 @@ if TYPE_CHECKING:
 
 class Season:
     def __init__(self, start: str, end: str, emote: str, emote_str: str):
-        self.start_str = start
-        self.end_str = end
+        self.start_month, self.start_day = self.get_month_day_from_dotstr(start)
+        self.end_month, self.end_day = self.get_month_day_from_dotstr(end)
         self.start = Season.get_int_from_dotstr(start)
         self.end = Season.get_int_from_dotstr(end)
         self.emote = emote
         self.emote_str = emote_str
         self.emote_regex = compile(emote)
+
+    def __lt__(self, other: Season):
+        return self.start < other.start
 
     def __contains__(self, time: Union[str, int]) -> bool:
         if isinstance(time, str):
@@ -32,13 +35,24 @@ class Season:
         else:
             return self.start <= time <= self.end
 
+    def start_str(self, *, mm_dd: bool = False):
+        return f"{self.start_day}.{self.start_month}" if not mm_dd else f"{self.start_month}.{self.start_day}"
+
+    def end_str(self, *, mm_dd: bool = False):
+        return f"{self.end_day}.{self.end_month}" if not mm_dd else f"{self.end_month}.{self.end_day}"
+
     def __eq__(self, other: str) -> bool:
         return other in (self.emote_str, self.emote)
 
     @staticmethod
-    def get_int_from_dotstr(dotstr: str) -> int:
-        month, day = dotstr.split(".")
-        return (int(month) * 31) + int(day)
+    def get_month_day_from_dotstr(dotstr: str) -> tuple[int, int]:
+        month_str, day_str = dotstr.split(".")
+        return int(month_str), int(day_str)
+
+    @classmethod
+    def get_int_from_dotstr(cls, dotstr: str) -> int:
+        month, day = cls.get_month_day_from_dotstr(dotstr)
+        return (month * 31) + day
 
 
 class Seasonal(commands.Cog):
@@ -127,7 +141,7 @@ class Seasonal(commands.Cog):
     async def seasonal(self, ctx: GuildContext):
         """Adds the emote of the current season to your name.
 
-        You can see which seasons exist and when they are by typing .seasonals
+        You can see which seasons exist and when they are by typing .seasonals or /seasonals
         """
         return await self._seasonal_impl(ctx, "add")
 
@@ -137,13 +151,18 @@ class Seasonal(commands.Cog):
         """Removes the emote of the current season (or any you want)
         from your name.
 
-        You can see which seasons exist and when they are by typing .seasonals
+        You can see which seasons exist and when they are by typing .seasonals or /seasonals
         """
         return await self._seasonal_impl(ctx, "remove", target)
 
-    @commands.command(aliases=["seasons"])
+    @commands.hybrid_command(aliases=["seasons"])
     async def seasonals(self, ctx: KurisuContext):
         """Lists all available seasons."""
+
+        if ctx.interaction and ctx.interaction.locale is not discord.Locale.american_english:
+            mm_dd = False
+        else:
+            mm_dd = True
 
         line_template = "{0:6} | {1:6} | {2:1} | {3}\n"
         await ctx.send(
@@ -152,11 +171,10 @@ class Seasonal(commands.Cog):
             + f"{'=' * 36}\n"
             + "".join(
                 line_template.format(
-                    season.start_str, season.end_str, season.emote, season.emote_str
-                ) for season in self.seasons
+                    season.start_str(mm_dd=mm_dd), season.end_str(mm_dd=mm_dd), season.emote, season.emote_str
+                ) for season in sorted(self.seasons)
             )
-            + "```"
-        )
+            + "```", ephemeral=True)
 
 
 async def setup(bot):
