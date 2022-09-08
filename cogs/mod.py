@@ -366,12 +366,12 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def metamute(self, ctx: GuildContext, member: discord.Member, *, reason=""):
+    async def metamute(self, ctx: GuildContext, member: discord.Member, *, reason: Optional[str]):
         """Mutes a user so they can't speak in meta. Staff only."""
         await self.restrictions.add_restriction(member, Restriction.MetaMute, reason)
         await self.logs.post_action_log(ctx.author, member, 'meta-mute')
         await ctx.send(f"{member.mention} can no longer speak in meta.")
-        await self.logs.post_action_log(ctx.author, member, 'meta-mute', reason)
+        await self.logs.post_action_log(ctx.author, member, 'meta-mute', reason=reason)
 
     @is_staff("HalfOP")
     @commands.guild_only()
@@ -386,11 +386,11 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command(aliases=["appealsmute"])
-    async def appealmute(self, ctx: GuildContext, member: discord.Member, *, reason=""):
+    async def appealmute(self, ctx: GuildContext, member: discord.Member, *, reason: Optional[str]):
         """Mutes a user so they can't speak in appeals. Staff only."""
         await self.bot.restrictions.add_restriction(member, Restriction.AppealsMute, reason)
         await ctx.send(f"{member.mention} can no longer speak in appeals.")
-        await self.logs.post_action_log(ctx.author, member, 'appeals-mute', reason)
+        await self.logs.post_action_log(ctx.author, member, 'appeals-mute', reason=reason)
 
     @is_staff("HalfOP")
     @commands.guild_only()
@@ -406,19 +406,19 @@ class Mod(commands.Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(manage_roles=True)
     @commands.command()
-    async def mute(self, ctx: GuildContext, member: discord.Member, *, reason=""):
+    async def mute(self, ctx: GuildContext, member: discord.Member, *, reason: Optional[str]):
         """Mutes a user so they can't speak. Staff only."""
         if await check_bot_or_staff(ctx, member, "mute"):
             return
         await self.bot.restrictions.add_restriction(member, Restriction.Muted, reason)
         await ctx.send(f"{member.mention} can no longer speak.")
-        await self.logs.post_action_log(ctx.author, member, 'mute', reason)
+        await self.logs.post_action_log(ctx.author, member, 'mute', reason=reason)
 
     @is_staff("HalfOP")
     @commands.bot_has_permissions(manage_roles=True)
     @commands.guild_only()
     @commands.command()
-    async def oldtimemute(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=DateOrTimeToSecondsConverter), *, reason=""):
+    async def oldtimemute(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=DateOrTimeToSecondsConverter), *, reason: Optional[str]):
         """Mutes a user for a limited period of time so they can't speak. Staff only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "mute"):
             return
@@ -432,7 +432,7 @@ class Mod(commands.Cog):
         await self.bot.restrictions.add_restriction(member, Restriction.Muted, reason, end_date=unmute_time)
 
         await ctx.send(f"{member.mention} can no longer speak.")
-        await self.logs.post_action_log(issuer, member, 'time-mute', reason, until=unmute_time)
+        await self.logs.post_action_log(issuer, member, 'time-mute', reason=reason, until=unmute_time)
 
     @is_staff("HalfOP")
     @commands.guild_only()
@@ -466,7 +466,7 @@ class Mod(commands.Cog):
         await send_dm_message(member, msg_user, ctx)
 
         await ctx.send(f"{member.mention} has been given a timeout.")
-        await self.logs.post_action_log(issuer, member, 'timeout', until=timeout_expiration)
+        await self.logs.post_action_log(issuer, member, 'timeout', reason=reason, until=timeout_expiration)
 
     @is_staff("HalfOP")
     @commands.guild_only()
@@ -491,11 +491,11 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def noart(self, ctx: GuildContext, member: discord.Member, *, reason=""):
+    async def noart(self, ctx: GuildContext, member: discord.Member, *, reason: Optional[str]):
         """Removes art-discussion access from a user. Staff only."""
         await self.bot.restrictions.add_restriction(member, Restriction.NoArt, reason)
         await ctx.send(f"{member.mention} can no longer access art-discussion.")
-        await self.logs.post_action_log(ctx.author, member, 'take-art', reason)
+        await self.logs.post_action_log(ctx.author, member, 'take-art', reason=reason)
 
     @is_staff("HalfOP")
     @commands.guild_only()
@@ -510,22 +510,22 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def noelsewhere(self, ctx: GuildContext, member: discord.Member, *, reason=""):
+    async def noelsewhere(self, ctx: GuildContext, member: discord.Member, *, reason: Optional[str]):
         """Removes elsewhere access from a user. Staff only."""
         await self.bot.restrictions.add_restriction(member, Restriction.NoElsewhere, reason)
         await ctx.send(f"{member.mention} can no longer access elsewhere.")
-        await self.logs.post_action_log(ctx.author, member, 'take-elsewhere')
+        await self.logs.post_action_log(ctx.author, member, 'take-elsewhere', reason=reason)
 
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def noembed(self, ctx: GuildContext, member: discord.Member, *, reason=""):
+    async def noembed(self, ctx: GuildContext, member: discord.Member, *, reason: Optional[str]):
         """Removes embed permissions from a user. Staff only."""
         if await check_bot_or_staff(ctx, member, "noembed"):
             return
         await self.bot.restrictions.add_restriction(member, Restriction.NoEmbed, reason)
         await ctx.send(f"{member.mention} can no longer embed links or attach files.")
-        await self.logs.post_action_log(ctx.author, member, 'no-embed', reason)
+        await self.logs.post_action_log(ctx.author, member, 'no-embed', reason=reason)
 
     @is_staff("HalfOP")
     @commands.guild_only()
@@ -539,13 +539,13 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["nohelp", "yesnthelp"])
-    async def takehelp(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason=""):
+    async def takehelp(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason: Optional[str]):
         """Remove access to the assistance channels. Staff and Helpers only."""
         if await check_bot_or_staff(ctx, member, "takehelp"):
             return
         await self.bot.restrictions.add_restriction(member, Restriction.TakeHelp, reason)
         await ctx.send(f"{member.mention} can no longer access the help channels.")
-        await self.logs.post_action_log(ctx.author, member, 'take-help', reason)
+        await self.logs.post_action_log(ctx.author, member, 'take-help', reason=reason)
 
     @is_staff("Helper")
     @commands.guild_only()
@@ -559,7 +559,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["timenohelp"])
-    async def timetakehelp(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=DateOrTimeToSecondsConverter), *, reason=""):
+    async def timetakehelp(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=DateOrTimeToSecondsConverter), *, reason: Optional[str]):
         """Restricts a user from Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "takehelp"):
             return
@@ -573,18 +573,18 @@ class Mod(commands.Cog):
 
         await self.restrictions.add_restriction(member, Restriction.TakeHelp, reason, end_date=takehelp_expiration)
         await ctx.send(f"{member.mention} can no longer speak in Assistance Channels.")
-        await self.logs.post_action_log(issuer, member, 'take-help', reason, takehelp_expiration)
+        await self.logs.post_action_log(issuer, member, 'take-help', reason=reason, until=takehelp_expiration)
 
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["notech", "technt"])
-    async def taketech(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason=""):
+    async def taketech(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason: Optional[str]):
         """Remove access to the tech channel. Staff and Helpers only."""
         if await check_bot_or_staff(ctx, member, "taketech"):
             return
         await self.restrictions.add_restriction(member, Restriction.NoTech, reason)
         await ctx.send(f"{member.mention} can no longer access the tech channel.")
-        await self.logs.post_action_log(ctx.author, member, 'take-tech', reason)
+        await self.logs.post_action_log(ctx.author, member, 'take-tech', reason=reason)
 
     @is_staff("Helper")
     @commands.guild_only()
@@ -598,7 +598,7 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["timenotech"])
-    async def timetaketech(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=DateOrTimeToSecondsConverter), *, reason=""):
+    async def timetaketech(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=DateOrTimeToSecondsConverter), *, reason: Optional[str]):
         """Restricts a user from the tech channel for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "taketech"):
             return
@@ -610,23 +610,23 @@ class Mod(commands.Cog):
 
         await self.restrictions.add_restriction(member, Restriction.NoTech, reason, end_date=notech_expiration)
         await ctx.send(f"{member.mention} can no longer speak in the tech channel.")
-        await self.logs.post_action_log(ctx.author, member, 'take-tech', reason, notech_expiration)
+        await self.logs.post_action_log(ctx.author, member, 'take-tech', reason=reason, until=notech_expiration)
 
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["mutehelp"])
-    async def helpmute(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason=""):
+    async def helpmute(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason: Optional[str]):
         """Remove speak perms to the assistance channels. Staff and Helpers only."""
         if await check_bot_or_staff(ctx, member, "helpmute"):
             return
         await self.restrictions.add_restriction(member, Restriction.HelpMute, reason)
         await ctx.send(f"{member.mention} can no longer speak in the help channels.")
-        await self.logs.post_action_log(ctx.author, member, 'help-mute', reason)
+        await self.logs.post_action_log(ctx.author, member, 'help-mute', reason=reason)
 
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["timemutehelp"])
-    async def timehelpmute(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=DateOrTimeToSecondsConverter), *, reason=""):
+    async def timehelpmute(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=DateOrTimeToSecondsConverter), *, reason: Optional[str]):
         """Restricts a user from speaking in Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "helpmute"):
             return
@@ -638,7 +638,7 @@ class Mod(commands.Cog):
         await self.restrictions.add_restriction(member, Restriction.HelpMute, reason, end_date=helpmute_expiration)
 
         await ctx.send(f"{member.mention} can no longer speak in the help channels.")
-        await self.logs.post_action_log(ctx.author, member, 'help-mute', reason, helpmute_expiration)
+        await self.logs.post_action_log(ctx.author, member, 'help-mute', reason=reason, until=helpmute_expiration)
 
     @is_staff("Helper")
     @commands.guild_only()
@@ -680,13 +680,13 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def probate(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason=""):
+    async def probate(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason: Optional[str]):
         """Probate a user. Staff and Helpers only."""
         if await check_bot_or_staff(ctx, member, "probate"):
             return
         await self.restrictions.add_restriction(member, Restriction.Probation, reason)
         await ctx.send(f"{member.mention} is now in probation.")
-        await self.logs.post_action_log(ctx.author, member, 'probate', reason)
+        await self.logs.post_action_log(ctx.author, member, 'probate', reason=reason)
 
     @is_staff("Helper")
     @commands.guild_only()
@@ -926,7 +926,7 @@ class Mod(commands.Cog):
 
         await self.restrictions.add_restriction(member, Restriction(restriction), reason, end_date=end_time)
         await interaction.response.send_message(f"{member.mention} now has the {restriction} restriction role{f' until {format_dt(end_time)}.' if end_time else '.'}")
-        await self.logs.post_action_log(interaction.user, member, restriction_action[restriction], reason, end_time)
+        await self.logs.post_action_log(interaction.user, member, restriction_action[restriction], reason=reason, until=end_time)
 
 
 async def setup(bot):

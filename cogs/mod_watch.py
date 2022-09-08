@@ -3,9 +3,8 @@ from __future__ import annotations
 import discord
 
 from discord.ext import commands
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 from utils.checks import is_staff
-from utils.utils import command_signature
 from textwrap import wrap
 
 if TYPE_CHECKING:
@@ -22,6 +21,7 @@ class Modwatch(commands.Cog):
         self.bot: Kurisu = bot
         self.emoji = discord.PartialEmoji.from_str('👀')
         self.configuration = bot.configuration
+        self.logs = bot.logs
 
     async def cog_check(self, ctx: KurisuContext):
         if ctx.guild is None:
@@ -30,22 +30,14 @@ class Modwatch(commands.Cog):
 
     @is_staff("Helper")
     @commands.command()
-    async def watch(self, ctx: GuildContext, member: discord.Member, *, reason=""):
+    async def watch(self, ctx: GuildContext, member: discord.Member, *, reason: Optional[str]):
         """Adds a member to the watchlist."""
         if member.id in self.configuration.watch_list:
             await ctx.send("User is already being watched!")
             return
         await self.configuration.set_watch(member.id, True)
-        await ctx.send(f"{member.mention} is being watched.")
-        msg = f"👀 **Watch**: {ctx.author.mention} put {member.mention} on watch | {member}"
-        if reason != "":
-            # much \n
-            msg += "\n✏️ __Reason__: " + reason
-        signature = command_signature(ctx.command)
-        await self.bot.channels['mod-logs'].send(msg + (
-            f"\nPlease add an explanation below. In the future, it is recommended to use `{signature}` as the reason is very useful for saving time." if reason == "" else ""))
-        await self.bot.channels['watch-logs'].send(msg + (
-            "\nNo reason provided." if reason == "" else ""))
+        await ctx.send(f"{member.mention} is now being watched.")
+        await self.logs.post_action_log(ctx.author, member, 'watch')
 
     @is_staff("Helper")
     @commands.command()
@@ -56,9 +48,7 @@ class Modwatch(commands.Cog):
             return
         await self.configuration.set_watch(member.id, False)
         await ctx.send(f"{member.mention} is no longer being watched.")
-        msg = f"❌ **Unwatch**: {ctx.author.mention} removed {member.mention} from watch | {self.bot.escape_text(member)}"
-        await self.bot.channels['mod-logs'].send(msg)
-        await self.bot.channels['watch-logs'].send(msg)
+        await self.logs.post_action_log(ctx.author, member, 'unwatch')
 
     @is_staff("Helper")
     @commands.command()

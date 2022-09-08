@@ -63,7 +63,7 @@ class KickBan(commands.Cog):
             await ctx.send("💢 I don't have permission to do this.")
             return
         await ctx.send(f"{member} is now gone. 👌")
-        await self.bot.logs.post_action_log(ctx.author, member, 'kick', reason)
+        await self.bot.logs.post_action_log(ctx.author, member, 'kick', reason=reason)
 
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
@@ -91,7 +91,7 @@ class KickBan(commands.Cog):
         await self.restrictions.remove_restriction(member, Restriction.Ban)
 
         await ctx.send(f"{member} is now b&. 👍")
-        await self.bot.logs.post_action_log(ctx.author, member, 'ban', reason)
+        await self.bot.logs.post_action_log(ctx.author, member, 'ban', reason=reason)
 
     @is_staff_app("OP")
     @app_commands.default_permissions(ban_members=True)
@@ -148,7 +148,7 @@ class KickBan(commands.Cog):
             msg += "\n\nThis ban does not expire."
             msg_send = await send_dm_message(member, msg)
             await interaction.response.send_message(f"{member} is now b&. 👍" + ("\nFailed to send DM message" if not msg_send else ""))
-        await self.bot.logs.post_action_log(interaction.user, member, 'ban', reason, until=unban_time)
+        await self.bot.logs.post_action_log(interaction.user, member, 'ban', reason=reason, until=unban_time)
 
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
@@ -172,7 +172,7 @@ class KickBan(commands.Cog):
             return
         await self.restrictions.remove_restriction(member, Restriction.Ban)
         await ctx.send(f"{member} is now SUPER BANNED. 👍 https://nintendohomebrew.com/assets/img/banned.gif")
-        await self.bot.logs.post_action_log(ctx.author, member, 'ban', reason)
+        await self.bot.logs.post_action_log(ctx.author, member, 'ban', reason=reason)
 
     @commands.bot_has_permissions(ban_members=True)
     @commands.command(name="unban", aliases=["unyeet"])
@@ -187,7 +187,7 @@ class KickBan(commands.Cog):
         self.bot.actions.append(f'bu:{user.id}')
         await ctx.guild.unban(user, reason=reason)
         await ctx.send(f"{user} is now unbanned.")
-        await self.bot.logs.post_action_log(ctx.author, user, 'unban', reason)
+        await self.bot.logs.post_action_log(ctx.author, user, 'unban', reason=reason)
 
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
@@ -206,7 +206,7 @@ class KickBan(commands.Cog):
 
         await self.restrictions.remove_restriction(member, Restriction.Ban)
         await ctx.send(f"{member} is now b&. 👍")
-        await self.bot.logs.post_action_log(ctx.author, member, 'silentban', reason)
+        await self.bot.logs.post_action_log(ctx.author, member, 'silentban', reason=reason)
 
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
@@ -237,7 +237,7 @@ class KickBan(commands.Cog):
             return
 
         await ctx.send(f"{member} is now b& until {unban_time_string}. 👍")
-        await self.bot.logs.post_action_log(ctx.author, member, 'timeban', reason, until=unban_time)
+        await self.bot.logs.post_action_log(ctx.author, member, 'timeban', reason=reason, until=unban_time)
 
     @is_staff("OP")
     @commands.bot_has_permissions(kick_members=True)
@@ -257,7 +257,7 @@ class KickBan(commands.Cog):
         await self.restrictions.add_softban(member, ctx.author, reason)
 
         await ctx.send(f"{member} is now b&. 👍")
-        await self.bot.logs.post_action_log(ctx.author, member, 'softban', reason)
+        await self.bot.logs.post_action_log(ctx.author, member, 'softban', reason=reason)
 
     @is_staff("OP")
     @commands.command(name="unsoftban")
@@ -293,7 +293,7 @@ class KickBan(commands.Cog):
         reason = "Linking scamming site"
         await member.ban(reason=reason, delete_message_days=1)
         await ctx.send(f"{member} is now b&. 👍")
-        await self.bot.logs.post_action_log(ctx.author, member, 'ban', reason)
+        await self.bot.logs.post_action_log(ctx.author, member, 'ban', reason=reason)
 
 
 async def setup(bot):

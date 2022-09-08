@@ -3,7 +3,7 @@ from __future__ import annotations
 import discord
 
 from discord.ext import commands
-from typing import Union, TYPE_CHECKING
+from typing import Union, TYPE_CHECKING, Optional
 
 from utils.checks import is_staff, check_bot_or_staff
 from utils import check_staff, ordinal
@@ -56,7 +56,7 @@ class ModWarn(commands.Cog):
 
     @is_staff('Helper')
     @commands.command()
-    async def softwarn(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason=""):
+    async def softwarn(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason: Optional[str]):
         """Warn a user without automated action. Staff and Helpers only."""
         issuer = ctx.author
         channel = ctx.channel
@@ -73,7 +73,7 @@ class ModWarn(commands.Cog):
         warn_id, count = await self.bot.warns.add_warning(member, issuer, reason, do_action=False)
         await ctx.send(f"{member.mention} softwarned. User has {count} warning(s)")
         msg = f"⚠️ **Warned**: {issuer.mention} softwarned {member.mention} in {channel.mention} ({self.bot.escape_text(channel)}) (warn #{count}) | {self.bot.escape_text(member)}"
-        if reason != "":
+        if reason is not None:
             msg += "\n✏️ __Reason__: " + reason
         await self.bot.channels['mod-logs'].send(msg)
 
