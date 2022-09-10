@@ -437,7 +437,7 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def unmute(self, ctx: GuildContext, member: discord.Member *, reason: Optional[str]):
+    async def unmute(self, ctx: GuildContext, member: discord.Member, *, reason: Optional[str]):
         """Unmutes a user so they can speak. Staff only."""
         await self.bot.restrictions.remove_restriction(member, Restriction.Muted)
         await ctx.send(f"{member.mention} can now speak again.")
