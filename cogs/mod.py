@@ -377,11 +377,11 @@ class Mod(commands.Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(manage_roles=True)
     @commands.command()
-    async def metaunmute(self, ctx: GuildContext, member: discord.Member):
+    async def metaunmute(self, ctx: GuildContext, member: discord.Member, *, reason: Optional[str]):
         """Unmutes a user so they can speak in meta. Staff only."""
         await self.bot.restrictions.remove_restriction(member, Restriction.MetaMute)
         await ctx.send(f"{member.mention} can now speak in meta again.")
-        await self.logs.post_action_log(ctx.author, member, 'meta-unmute')
+        await self.logs.post_action_log(ctx.author, member, 'meta-unmute', reason=reason)
 
     @is_staff("HalfOP")
     @commands.guild_only()
@@ -396,11 +396,11 @@ class Mod(commands.Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(manage_roles=True)
     @commands.command(aliases=["appealsunmute"])
-    async def appealunmute(self, ctx: GuildContext, member: discord.Member):
+    async def appealunmute(self, ctx: GuildContext, member: discord.Member *, reason: Optional[str]):
         """Unmutes a user so they can speak in appeals. Staff only."""
         await self.bot.restrictions.remove_restriction(member, Restriction.AppealsMute)
         await ctx.send(f"{member.mention} can now speak in appeals again.")
-        await self.logs.post_action_log(ctx.author, member, 'appeals-unmute')
+        await self.logs.post_action_log(ctx.author, member, 'appeals-unmute', reason=reason)
 
     @is_staff("HalfOP")
     @commands.guild_only()
@@ -437,11 +437,11 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def unmute(self, ctx: GuildContext, member: discord.Member):
+    async def unmute(self, ctx: GuildContext, member: discord.Member *, reason: Optional[str]):
         """Unmutes a user so they can speak. Staff only."""
         await self.bot.restrictions.remove_restriction(member, Restriction.Muted)
         await ctx.send(f"{member.mention} can now speak again.")
-        await self.logs.post_action_log(ctx.author, member, 'unmute')
+        await self.logs.post_action_log(ctx.author, member, 'unmute', reason=reason)
 
     @is_staff("HalfOP")
     @commands.guild_only()
@@ -471,13 +471,13 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def untimeout(self, ctx: GuildContext, member: discord.Member):
+    async def untimeout(self, ctx: GuildContext, member: discord.Member, *, reason: Optional[str]):
         """Removes a timeout from a user. Staff only."""
         if member.timed_out_until is None:
             return await ctx.send("This member doesn't have a timeout!")
         await member.timeout(None)
         await ctx.send(f"{member.mention} timeout was removed.")
-        await self.logs.post_action_log(ctx.author, member, 'no-timeout')
+        await self.logs.post_action_log(ctx.author, member, 'no-timeout', reason=reason)
 
     @is_staff("HalfOP")
     @commands.guild_only()
@@ -550,11 +550,11 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["yeshelp"])
-    async def givehelp(self, ctx: GuildContext, member: Union[discord.Member, discord.User]):
+    async def givehelp(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason: Optional[str]):
         """Restore access to the assistance channels. Staff and Helpers only."""
         await self.restrictions.remove_restriction(member, Restriction.TakeHelp)
         await ctx.send(f"{member.mention} can access the help channels again.")
-        await self.logs.post_action_log(ctx.author, member, 'give-help')
+        await self.logs.post_action_log(ctx.author, member, 'give-help', reason=reason)
 
     @is_staff("Helper")
     @commands.guild_only()
