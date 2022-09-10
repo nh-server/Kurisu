@@ -396,7 +396,7 @@ class Mod(commands.Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(manage_roles=True)
     @commands.command(aliases=["appealsunmute"])
-    async def appealunmute(self, ctx: GuildContext, member: discord.Member *, reason: Optional[str]):
+    async def appealunmute(self, ctx: GuildContext, member: discord.Member, *, reason: Optional[str]):
         """Unmutes a user so they can speak in appeals. Staff only."""
         await self.bot.restrictions.remove_restriction(member, Restriction.AppealsMute)
         await ctx.send(f"{member.mention} can now speak in appeals again.")
