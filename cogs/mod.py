@@ -482,11 +482,11 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def art(self, ctx: GuildContext, member: discord.Member):
+    async def art(self, ctx: GuildContext, member: discord.Member, *, reason: Optional[str]):
         """Restore art-discussion access for a user. Staff only."""
         await self.bot.restrictions.remove_restriction(member, Restriction.NoArt)
         await ctx.send(f"{member.mention} can access art-discussion again.")
-        await self.logs.post_action_log(ctx.author, member, 'give-art')
+        await self.logs.post_action_log(ctx.author, member, 'give-art', reason=reason)
 
     @is_staff("HalfOP")
     @commands.guild_only()
@@ -500,12 +500,12 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def elsewhere(self, ctx: GuildContext, member: discord.Member):
+    async def elsewhere(self, ctx: GuildContext, member: discord.Member, *, reason: Optional[str]):
         """Restore elsewhere access for a user. Staff only."""
 
         await self.bot.restrictions.remove_restriction(member, Restriction.NoElsewhere)
         await ctx.send(f"{member.mention} can access elsewhere again.")
-        await self.logs.post_action_log(ctx.author, member, 'give-elsewhere')
+        await self.logs.post_action_log(ctx.author, member, 'give-elsewhere', reason=reason)
 
     @is_staff("HalfOP")
     @commands.guild_only()
@@ -530,11 +530,11 @@ class Mod(commands.Cog):
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command()
-    async def embed(self, ctx: GuildContext, member: discord.Member):
+    async def embed(self, ctx: GuildContext, member: discord.Member, *, reason: Optional[str]):
         """Restore embed permissions for a user. Staff only."""
         await self.bot.restrictions.remove_restriction(member, Restriction.NoEmbed)
         await ctx.send(f"{member.mention} can now embed links and attach files again.")
-        await self.logs.post_action_log(ctx.author, member, 'embed')
+        await self.logs.post_action_log(ctx.author, member, 'embed', reason=reason)
 
     @is_staff("Helper")
     @commands.guild_only()
@@ -589,11 +589,11 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["yestech"])
-    async def givetech(self, ctx: GuildContext, member: Union[discord.Member, discord.User]):
+    async def givetech(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason: Optional[str]):
         """Restore access to the tech channel. Staff and Helpers only."""
         await self.restrictions.remove_restriction(member, Restriction.NoTech)
         await ctx.send(f"{member.mention} can access the tech channel again.")
-        await self.logs.post_action_log(ctx.author, member, 'take-tech')
+        await self.logs.post_action_log(ctx.author, member, 'take-tech', reason=reason)
 
     @is_staff("Helper")
     @commands.guild_only()
@@ -643,11 +643,11 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def helpunmute(self, ctx: GuildContext, member: Union[discord.Member, discord.User]):
+    async def helpunmute(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason: Optional[str]):
         """Restores speak access to help channels. Helpers+ only."""
         await self.restrictions.remove_restriction(member, Restriction.HelpMute)
         await ctx.send(f"{member.mention} can now speak in the help channels again.")
-        await self.logs.post_action_log(ctx.author, member, 'help-unmute')
+        await self.logs.post_action_log(ctx.author, member, 'help-unmute', reason=reason)
 
     @is_staff("Helper")
     @commands.guild_only()
@@ -691,11 +691,11 @@ class Mod(commands.Cog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def unprobate(self, ctx: GuildContext, member: Union[discord.Member, discord.User]):
+    async def unprobate(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason: Optional[str]):
         """Unprobate a user. Staff and Helpers only."""
         await self.restrictions.remove_restriction(member, Restriction.Probation)
         await ctx.send(f"{member.mention} is out of probation.")
-        await self.logs.post_action_log(ctx.author, member, 'unprobate')
+        await self.logs.post_action_log(ctx.author, member, 'unprobate', reason=reason)
 
     @is_staff("Owner")
     @commands.guild_only()
@@ -851,7 +851,7 @@ class Mod(commands.Cog):
     @commands.bot_has_permissions(manage_roles=True)
     @commands.guild_only()
     @commands.command()
-    async def tempstream(self, ctx: GuildContext, member: discord.Member, length: str = ""):
+    async def tempstream(self, ctx: GuildContext, member: discord.Member, length: str = "", *, reason: Optional[str]):
         """Gives temporary streaming permissions to a member. Lasts 24 hours by default"""
         await member.add_roles(self.bot.roles['streamer(temp)'])
 
@@ -869,13 +869,13 @@ class Mod(commands.Cog):
         msg_user = f"You have been given streaming permissions until {expiring_time_string}!"
         await send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} has been given streaming permissions until {expiring_time_string}.")
-        await self.logs.post_action_log(ctx.author, member, 'tempstream', until=expiring_time)
+        await self.logs.post_action_log(ctx.author, member, 'tempstream', reason=reason, until=expiring_time)
 
     @is_staff("OP")
     @commands.bot_has_permissions(manage_roles=True)
     @commands.guild_only()
     @commands.command()
-    async def notempstream(self, ctx: GuildContext, member: discord.Member):
+    async def notempstream(self, ctx: GuildContext, member: discord.Member, *, reason: Optional[str]):
         """Revokes temporary streaming permissions from a member."""
 
         await member.remove_roles(self.bot.roles['streamer(temp)'])
@@ -884,7 +884,7 @@ class Mod(commands.Cog):
             return await ctx.send("Failed to remove temporary role.")
         msg_user = "Your temporary streaming permissions have been revoked!"
         await send_dm_message(member, msg_user, ctx)
-        await self.logs.post_action_log(ctx.author, member, 'no-tempstream')
+        await self.logs.post_action_log(ctx.author, member, 'no-tempstream', reason=reason)
 
     @is_staff_app("OP")
     @app_commands.default_permissions(ban_members=True)
