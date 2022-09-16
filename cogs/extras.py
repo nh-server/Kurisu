@@ -177,10 +177,8 @@ class Extras(commands.Cog):
     @commands.guild_only()
     @is_staff("SuperOP")
     @commands.command(hidden=True, aliases=['ccp'])
-    async def copychannelperms(self, ctx: GuildContext, src_channel: Union[discord.TextChannel, discord.VoiceChannel], des_channels: commands.Greedy[Union[discord.TextChannel, discord.VoiceChannel]]):
+    async def copychannelperms(self, ctx: GuildContext, src_channel: Union[discord.TextChannel, discord.VoiceChannel, discord.ForumChannel], des_channels: commands.Greedy[Union[discord.TextChannel, discord.VoiceChannel, discord.ForumChannel]]):
         """Copy channel overwrites from a channel to channels"""
-        if any(type(c) != type(src_channel) for c in des_channels):
-            return await ctx.send("Voice channels and text channel permissions are incompatible!")
         overwrites = src_channel.overwrites
         for c in des_channels:
             await c.edit(overwrites=overwrites)  # type: ignore
