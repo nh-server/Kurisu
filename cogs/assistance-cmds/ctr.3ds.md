@@ -7,4 +7,4 @@ aliases: ctrtransfer,ctrnandtransfer
 help-desc: Links to ctrtransfer guide
 ---
 
-How to do the 11.16.0-48 ctrtransfer
+How to do the 11.15.0-47 ctrtransfer
