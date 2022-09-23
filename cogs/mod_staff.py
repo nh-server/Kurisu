@@ -92,12 +92,12 @@ class ModStaff(commands.Cog):
     async def updatestaff(self, ctx: GuildContext):
         """Updates the staff list based on staff member in the server."""
         removed: list[str] = []
-        for user_id in self.configuration.staff:
+        for user_id in list(self.configuration.staff.keys()):
             if ctx.guild.get_member(user_id) is None:
                 staff_member = OptionalMember(id=user_id)
                 await self.configuration.delete_staff(staff_member)
                 removed.append(str(user_id))
-        for user_id in self.configuration.helpers:
+        for user_id in list(self.configuration.helpers.keys()):
             if ctx.guild.get_member(user_id) is None:
                 helper = OptionalMember(id=user_id)
                 await self.bot.configuration.delete_helper(helper)
