@@ -161,6 +161,10 @@ class Loop(commands.Cog):
                                 await self.bot.channels['bot-cmds'].send(f"{msg}\n{member.mention}", allowed_mentions=AllowedMentions(users=[member]))
 
                 if current_timestamp.minute == 0 and current_timestamp.hour != self.last_hour:
+                    # Hopefully update the guild object with an updated one
+                    guild = self.bot.get_guild(self.bot.guild.id)
+                    if guild:
+                        self.bot.guild = guild
                     await self.bot.channels['helpers'].send(f"{self.bot.guild.name} has {self.bot.guild.member_count:,} members at this hour!")
                     self.last_hour = current_timestamp.hour
 
