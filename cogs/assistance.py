@@ -60,10 +60,10 @@ class Assistance(commands.Cog):
     """
 
     format_map = {
-        'nx_firmware': '14.1.2',
-        'ams_ver': '1.3.2',
-        'hekate_ver': '5.8.0',
-        'last_revision': 'August 21st, 2022',
+        'nx_firmware': '15.0.0',
+        'ams_ver': '1.4.0',
+        'hekate_ver': '5.9.0',
+        'last_revision': 'October 12th, 2022',
     }
 
     # compatibility until the use of these variables is removed
