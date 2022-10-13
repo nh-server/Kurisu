@@ -146,7 +146,7 @@ class FiltersManager(BaseManager, db_manager=FiltersDatabaseManager):
     def search_invite(self, message: str) -> tuple[list[ApprovedInvite], list[str]]:
         approved_invites = []
         non_approved_invites = []
-        res = re.findall(r'(?:discordapp\.com/invite|discord\.gg|discord\.com/invite)/([\w]+)', message)
+        res = re.findall(r'(?:discordapp\.com/invite|discord\.gg|discord\.com/invite)/(\w+)', message)
 
         for invite_code in set(res):
             if invite := self._approved_invites.get(invite_code):
