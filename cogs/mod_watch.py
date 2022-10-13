@@ -37,7 +37,7 @@ class Modwatch(commands.Cog):
             return
         await self.configuration.set_watch(member.id, True)
         await ctx.send(f"{member.mention} is now being watched.")
-        await self.logs.post_action_log(ctx.author, member, 'watch')
+        await self.logs.post_action_log(ctx.author, member, 'watch', reason=reason)
 
     @is_staff("Helper")
     @commands.command()
