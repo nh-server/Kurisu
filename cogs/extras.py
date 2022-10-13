@@ -538,7 +538,7 @@ class Extras(commands.Cog):
     @commands.guild_only()
     @commands.command()
     async def addemoji(self, ctx: GuildContext, name: str, emoji: Union[str, discord.PartialEmoji], *roles: discord.Role):
-        """Add a emoji to the server. OP+ only."""
+        """Add an emoji to the server. OP+ only."""
         if isinstance(emoji, discord.PartialEmoji):
             emoji_bytes = await emoji.read()
         else:
@@ -553,7 +553,10 @@ class Extras(commands.Cog):
                         return await ctx.send("Failed to fetch image.")
             except aiohttp.InvalidURL:
                 return await ctx.send("Invalid url.")
-        guild_emoji = await ctx.guild.create_custom_emoji(name=name, image=emoji_bytes, roles=roles, reason="Probably nothing good.")
+        try:
+            guild_emoji = await ctx.guild.create_custom_emoji(name=name, image=emoji_bytes, roles=roles, reason="Probably nothing good.")
+        except discord.HTTPException as e:
+            return await ctx.send(e.text)
         await ctx.send(f"Added emoji {guild_emoji if guild_emoji.is_usable() else name} successfully!")
 
     @commands.guild_only()
