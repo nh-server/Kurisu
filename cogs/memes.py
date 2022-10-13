@@ -37,7 +37,7 @@ class Memes(commands.Cog):
         return not (ctx.channel in self.bot.assistance_channels or self.bot.roles['No-Memes'] in ctx.author.roles)
 
     async def cog_command_error(self, ctx: KurisuContext, error: commands.CommandError):
-        if isinstance(error, commands.CheckFailure):
+        if isinstance(error, commands.CheckFailure) and ctx.channel.guild is not None:
             await ctx.message.delete()
             try:
                 await ctx.author.send(
@@ -519,6 +519,7 @@ class Memes(commands.Cog):
         await self._meme(ctx, "excuse me <@&805294876673572884>, it is time for birb", allowed_mentions=discord.AllowedMentions(roles=True))
 
     @is_staff("OP")
+    @commands.guild_only()
     @commands.command(hidden=True, aliases=['🍰'])
     async def birthday(self, ctx: KurisuContext, member: discord.Member):
         """Wishes a happy birthday. Do not abuse pls."""
