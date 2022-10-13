@@ -326,7 +326,7 @@ class Mod(commands.Cog):
 
         **Flags**
         --before [Message] Deletes messages created before the provided message.
-        --after [Message] Deletes messages created after the provided message. If this is used oldest messages are deleted first.
+        --after [Message] Deletes messages created after the provided message. If this is used, the oldest messages are deleted first.
         --ignore [Member] Ignores the member messages when deleting. Can be used multiple times. Can't be used with --only.
         --only [Member] Only deletes the messages by this member. Can be used multiple times. Can't be used with --ignore."""
 
