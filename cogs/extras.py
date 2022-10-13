@@ -181,7 +181,7 @@ class Extras(commands.Cog):
         """Copy channel overwrites from a channel to channels"""
         overwrites = src_channel.overwrites
         for c in des_channels:
-            await c.edit(overwrites=overwrites)  # type: ignore
+            await c.edit(overwrites=overwrites)
         await ctx.send("Changed permissions successfully!")
 
     @is_staff("HalfOP")
