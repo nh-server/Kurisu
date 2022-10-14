@@ -132,7 +132,7 @@ class Kurisu(commands.Bot):
 
         self.roles: dict[str, discord.Role] = {}
 
-        self.channels: dict[str, Union[discord.TextChannel, discord.VoiceChannel]] = {}
+        self.channels: dict[str, Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]] = {}
 
         self.failed_cogs = []
         self.channels_not_found = []
@@ -212,7 +212,7 @@ class Kurisu(commands.Bot):
                 embed.add_field(
                     name="Failed to load cogs:",
                     value='\n'.join(
-                        f"**{cog.name}** - {exc_type}\n" for cog, exc_type, _ in self.failed_cogs
+                        f"**{cog}** - {exc_type}\n" for cog, exc_type, _ in self.failed_cogs
                     ),
                     inline=False,
                 )
