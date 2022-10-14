@@ -212,10 +212,15 @@ class Kurisu(commands.Bot):
                 embed.add_field(
                     name="Failed to load cogs:",
                     value='\n'.join(
-                        f"**{cog}**\n**{exc_type}**: {exc}\n" for cog, exc_type, exc in self.failed_cogs
+                        f"**{cog.name}** - {exc_type}\n" for cog, exc_type, _ in self.failed_cogs
                     ),
                     inline=False,
                 )
+                for cog, exc_type, exc in self.failed_cogs:
+                    err_embed = discord.Embed(title=f"Failed to load cog {cog}", colour=0xe50730)
+                    trace = "".join(traceback.format_exception(exc_type, exc, None))
+                    err_embed.description = f"```py\n{trace}\n```"
+                    await self.err_channel.send(embed=err_embed)
             if self.roles_not_found:
                 embed.add_field(name="Roles not Found:", value=', '.join(self.roles_not_found), inline=False)
             if self.channels_not_found:
@@ -245,10 +250,9 @@ class Kurisu(commands.Bot):
         for extension in cogs:
             try:
                 await self.load_extension(extension)
-            except BaseException as e:
-                traceback.print_exc()
+            except commands.ExtensionFailed as e:
                 logger.error("%s failed to load.", extension)
-                self.failed_cogs.append((extension, type(e).__name__, e))
+                self.failed_cogs.append((extension, type(e.original).__name__, e.original))
 
     async def load_channels(self):
         channels = ['announcements', 'welcome-and-rules', '3ds-assistance-1', '3ds-assistance-2', 'wiiu-assistance',

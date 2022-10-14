@@ -23,10 +23,7 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
         self.emoji = discord.PartialEmoji.from_str('⚙')
 
     async def cog_load(self) -> None:
-        try:
-            self.conn = await asyncpg.connect(SERVER_LOGS_URL)
-        except Exception as e:
-            raise commands.ExtensionFailed(self.qualified_name, original=e)
+        self.conn = await asyncpg.connect(SERVER_LOGS_URL)
 
     channel_blacklist = ['minecraft-console', 'dev-trusted']
 
