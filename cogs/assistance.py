@@ -101,7 +101,9 @@ class Assistance(commands.Cog):
     async def simple_embed(self, ctx: commands.Context, text: str, *, title: str = "", color=discord.Color.default()):
         embed = discord.Embed(title=title, color=color)
         embed.description = cleandoc(text)
-        await ctx.send(embed=embed)
+        if ctx.message.reference:
+            await ctx.message.delete()
+        await ctx.send(embed=embed, reference=ctx.message.reference)
 
     @check_if_user_can_sr()
     @commands.guild_only()

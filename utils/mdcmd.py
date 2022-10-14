@@ -192,13 +192,23 @@ def add_md_files_as_commands(cog_class: 'Type[Assistance]', md_dir: str = None, 
                             # special case for legacy channel
                             cons.append('legacy')
                         if check_console(console, channel_name, tuple(cons)):
-                            await ctx.send(embed=embed)
+                            if ctx.message.reference:
+                                try:
+                                    await ctx.message.delete()
+                                except (discord.NotFound, discord.Forbidden):
+                                    pass
+                            await ctx.send(embed=embed, reference=ctx.message.reference)
             cmd = multi_cmd
         else:
             # single-console commands can simply print the one embed
             async def simple_cmd(self, ctx):
+                if ctx.message.reference:
+                    try:
+                        await ctx.message.delete()
+                    except (discord.NotFound, discord.Forbidden):
+                        pass
                 # this is kinda ugly, but basically it gets the first (and only) value of the dict
-                await ctx.send(embed=next(iter(embeds.values())))
+                await ctx.send(embed=next(iter(embeds.values())), reference=ctx.message.reference)
             cmd = simple_cmd
 
         # gotta trick the lib so it thinks the callback is inside a class
