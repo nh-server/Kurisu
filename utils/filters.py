@@ -63,6 +63,12 @@ class FiltersManager(BaseManager, db_manager=FiltersDatabaseManager):
                 self._filtered_words.remove(f_word)
         return res
 
+    async def import_filtered_words(self, words: list[str], kind: 'FilterKind', type: str):
+        res = await self.db.import_filtered_words(words, kind.value, type)
+        if res:
+            self._filtered_words = [fw async for fw in self.db.get_filtered_words()]
+        return res
+
     async def add_levenshtein_word(self, word: str, threshold: int, kind: 'FilterKind') -> int:
         res = await self.db.add_levenshtein_word(word, threshold, kind.value)
         if res:

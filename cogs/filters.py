@@ -5,10 +5,11 @@ import re
 
 from discord.ext import commands
 from textwrap import wrap
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 from Levenshtein import distance
 from utils.checks import is_staff
 from utils.database import FilterKind
+from utils.utils import text_to_discord_file
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -88,6 +89,62 @@ class Filter(commands.Cog):
             await self.bot.channels['mod-logs'].send(f"⭕ **Deleted**: {ctx.author.mention} deleted words `{'`,`'.join(deleted)}` from the filter!")
         else:
             await ctx.send("No word was deleted from the filter!")
+
+    @wordfilter.command(name='export')
+    async def wordfilter_export(self, ctx, export_format: Literal['automod', 'text'], *, filter: str):
+        try:
+            filter_kind = FilterKind(filter)
+        except ValueError:
+            return await ctx.send(f"Possible word kinds for word filter: {', '.join([k.value for k in FilterKind])}")
+        words = [word.word for word in self.filters.filtered_words if word.kind is filter_kind]
+        if export_format == 'automod':
+            text = '*' + '*, *'.join(words) + '*'
+        else:
+            text = '\n'.join(words)
+        file = text_to_discord_file(text, name=f"{filter}.txt")
+        await ctx.send(file=file)
+
+    @is_staff("OP")
+    @wordfilter.command(name='import')
+    async def wordfilter_import(self, ctx, input_file: discord.Attachment, type: Literal['join', 'replace'], *, filter: str):
+        try:
+            filter_kind = FilterKind(filter)
+        except ValueError:
+            return await ctx.send(f"Possible word kinds for word filter: {', '.join([k.value for k in FilterKind])}")
+        text = (await input_file.read()).decode('utf-8')
+        word_list = [word.lower() for word in text.split('\n')]
+
+        repeat = []
+        invalid = []
+
+        for word in word_list.copy():
+            if type == 'join' and discord.utils.get(self.filters.filtered_words, word=word):
+                word_list.remove(word)
+                repeat.append(word)
+            elif ' ' in word or '-' in word:
+                word_list.remove(word)
+                invalid.append(word)
+
+        if not word_list:
+            return await ctx.send("There is no valid words to import!")
+
+        res = await self.filters.import_filtered_words(word_list, filter_kind, type)
+
+        if not res:
+            return await ctx.send("Failed to import words.")
+
+        added = '\n'.join(word_list)
+        result_text = f"Added:\n{added}\n\n"
+        if repeat:
+            repeat_str = '\n'.join(repeat)
+            result_text += f"Repeats:\n{repeat_str}\n\n"
+        if invalid:
+            invalid_str = '\n'.join(invalid)
+            result_text += f"Invalid:\n{invalid_str}"
+
+        file = text_to_discord_file(result_text, name='import.txt')
+
+        await ctx.send(f"Successfully imported words.\nAdded: {len(word_list)}\nRepeats: {len(repeat)}\nInvalid: {len(invalid)}", file=file)
 
     # Command group for the levenshtein word filter
     @is_staff("Helper")

@@ -1,10 +1,11 @@
+import asyncpg
+
 from typing import TYPE_CHECKING, NamedTuple
 
 from .common import BaseDatabaseManager
 
 if TYPE_CHECKING:
     from typing import AsyncGenerator
-    import asyncpg
 
 from enum import Enum
 
@@ -54,6 +55,24 @@ class FiltersDatabaseManager(BaseDatabaseManager, tables=tables):
     async def get_filtered_words(self) -> 'AsyncGenerator[FilteredWord, None]':
         async for fw in self._select('filteredwords'):
             yield FilteredWord(word=fw[0], kind=FilterKind(fw[1]))
+
+    async def import_filtered_words(self, words: list[str], kind: str, type: str):
+
+        entries = list(zip(words, [kind] * len(words)))
+
+        query_add = "INSERT INTO filteredwords VALUES ($1,$2)"
+        query_del = "DELETE FROM filteredwords WHERE kind=$1"
+        conn: asyncpg.Connection
+        try:
+            async with self.pool.acquire() as conn:
+                async with conn.transaction():
+                    if type == 'replace':
+                        await conn.execute(query_del, kind)
+                    await conn.executemany(query_add, entries)
+        except asyncpg.UniqueViolationError:
+            self.log.error("Error when import words", exc_info=True)
+            return 0
+        return len(words)
 
     async def add_levenshtein_word(self, word: str, threshold: int, kind: str) -> int:
         return await self._insert('levenshteinwords', word=word, threshold=threshold, kind=kind)
