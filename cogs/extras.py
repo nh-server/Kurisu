@@ -12,7 +12,7 @@ import sys
 from datetime import timedelta, datetime
 from discord import app_commands, TextChannel, __version__ as discordpy_version
 from discord.ext import commands
-from discord.utils import format_dt
+from discord.utils import format_dt, snowflake_time
 from math import ceil
 from typing import Union, Optional, TYPE_CHECKING
 from utils.checks import is_staff, check_if_user_can_sr, check_staff
@@ -468,6 +468,24 @@ class Extras(commands.Cog):
             await ctx.send(embed=embed)
         else:
             await ctx.send("No tags found.")
+
+    @tag.command(name='info')
+    async def tag_info(self, ctx: KurisuContext, tag_name: str):
+        """Displays information about a tag."""
+        if tag := self.extras.tags.get(tag_name):
+            embed = discord.Embed(title=f"Tag {tag_name}", color=gen_color(tag.id))
+            embed.add_field(name="ID", value=str(tag.id), inline=False)
+            author = ctx.guild.get_member(tag.author_id)
+            embed.add_field(name="Author", value=author.mention if author else str(tag.author_id), inline=False)
+            embed.add_field(name="Creation Date", value=format_dt(snowflake_time(tag.id)), inline=False)
+            await ctx.send(embed=embed, reference=ctx.message.reference)
+        elif tags_titles := self.bot.extras.search_tags(tag_name, limit=5):
+            embed = discord.Embed(
+                description='\n'.join(f'{n}. {tag_title}' for n, tag_title in enumerate(tags_titles, start=1)),
+                color=gen_color(ctx.author.id))
+            await ctx.send("Tag not found, similar tags:", embed=embed)
+        else:
+            await ctx.send("There is no tag with this name or with a similar name.")
 
     @tag.command(name='list')
     async def list_tags(self, ctx: KurisuContext):
