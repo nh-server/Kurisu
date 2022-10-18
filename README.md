@@ -12,7 +12,7 @@ A server template is available for testing Kurisu, with all the channels and rol
 
 ## Setting up for local testing in Docker (recommended)
 
-To test changes to Kurisu locally using Docker, make sure Docker Desktop (Windows and macOS) or Docker Engine (Linux) is installed.
+To test changes to Kurisu locally using Docker, make sure Docker Desktop (Windows and macOS) or Docker Engine (Linux) is installed. If you are using Windows, it's heavily recommended to use Powershell so the commands shown here run as intended.
 
 * [Get Docker | Docker Documentation](https://docs.docker.com/get-docker/)
 
@@ -23,6 +23,15 @@ For Linux, docker-compose must be installed separately.
 Create a new application on Discord and add a bot. Put the token in `token.txt` in the same directory. (Newline at the end of the file doesn't matter.)
 
 * [Discord Developer Portal](https://discord.com/developers/applications)
+
+The file `server_logs_url.txt` is the url to a database of a different project, which is used along Kurisu in production. For local testing purposes, this file still needs to be created but can be blank, in which case the `server_logs` cog won't be loaded.
+
+Set up the database volume with the following commands, this can also be used in cases in which the schema was updated and the database volume still contains an old version, missing tables necessary to run the bot. This will pull postgres:13 to run as the database, create the tables (removing them if they already exist) then stop and remove the container. 
+```
+docker-compose up --build db -d
+cat ./schema.sql | docker compose exec -T db psql -U kurisu -d kurisu
+docker-compose down db
+```
 
 Start Kurisu with the following command. Assuming a clean setup, this will pull postgres:13 to run as the database, and python:3.9-alpine as the base image for Kurisu, then build a new Kurisu image. Then it will start up postgres first, then kurisu once the database is active.
 
@@ -65,9 +74,10 @@ Inside `data/`, create `config.ini` with the contents:
 [Main]
 token = <token for Discord bot>
 database_url = <url of the database>
+server_logs_url = <url to server logs database`
 ```
 
-`database_url` should follow a format like `postgresql://user:password@ipaddr/database` (example: `postgresql://kurisu:dev123@127.0.0.1/kurisu`).
+`database_url` and `server_logs_url` should follow a format like `postgresql://user:password@ipaddr/database` (example: `postgresql://kurisu:dev123@127.0.0.1/kurisu`). `server_logs_url` can be left blank.
 
 Run the bot:
 

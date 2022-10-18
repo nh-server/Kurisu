@@ -248,6 +248,9 @@ class Kurisu(commands.Bot):
 
     async def load_cogs(self):
         for extension in cogs:
+            if extension == 'cogs.server_logs' and SERVER_LOGS_URL == '':
+                logger.info("Skipping loading server_logs due to blank server_logs_url.")
+                continue
             try:
                 await self.load_extension(extension)
             except commands.ExtensionFailed as e:
