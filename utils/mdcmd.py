@@ -161,7 +161,7 @@ def add_md_files_as_commands(cog_class: 'Type[Assistance]', md_dir: str = None, 
     def make_cmd(name: str, help_desc: 'Optional[str]', embeds: 'dict[str, discord.Embed]', cooldown: 'tuple[int, int]', aliases: list[str]) -> commands.Command:
         if len(embeds) > 1:
             # multi-console commands require a check
-            async def multi_cmd(self, ctx, *, consoles=''):
+            async def multi_cmd(self, ctx: commands.Context, *, consoles: str = ''):
                 supported_consoles = list(embeds)
                 for s in supported_consoles:
                     if s in {'dsi', 'wii'}:
@@ -192,13 +192,13 @@ def add_md_files_as_commands(cog_class: 'Type[Assistance]', md_dir: str = None, 
                             # special case for legacy channel
                             cons.append('legacy')
                         if check_console(console, channel_name, tuple(cons)):
-                            await ctx.send(embed=embed, reference=ctx.message.reference)
+                            await ctx.send(embed=embed, reference=ctx.message.reference, mention_author=any(ctx.message.mentions))
             cmd = multi_cmd
         else:
             # single-console commands can simply print the one embed
-            async def simple_cmd(self, ctx):
+            async def simple_cmd(self, ctx: commands.Context):
                 # this is kinda ugly, but basically it gets the first (and only) value of the dict
-                await ctx.send(embed=next(iter(embeds.values())), reference=ctx.message.reference)
+                await ctx.send(embed=next(iter(embeds.values())), reference=ctx.message.reference, mention_author=any(ctx.message.mentions))
             cmd = simple_cmd
 
         # gotta trick the lib so it thinks the callback is inside a class

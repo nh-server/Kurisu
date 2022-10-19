@@ -99,9 +99,10 @@ class Assistance(commands.Cog):
         return res
 
     async def simple_embed(self, ctx: commands.Context, text: str, *, title: str = "", color=discord.Color.default()):
+        mention_author = any(ctx.message.mentions)
         embed = discord.Embed(title=title, color=color)
         embed.description = cleandoc(text)
-        await ctx.send(embed=embed, reference=ctx.message.reference)
+        await ctx.send(embed=embed, reference=ctx.message.reference, mention_author=mention_author)
 
     @check_if_user_can_sr()
     @commands.guild_only()
