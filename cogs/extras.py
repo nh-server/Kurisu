@@ -475,7 +475,7 @@ class Extras(commands.Cog):
         if tag := self.extras.tags.get(tag_name):
             embed = discord.Embed(title=f"Tag {tag_name}", color=gen_color(tag.id))
             embed.add_field(name="ID", value=str(tag.id), inline=False)
-            author = ctx.guild.get_member(tag.author_id)
+            author = self.bot.guild.get_member(tag.author_id)
             embed.add_field(name="Author", value=author.mention if author else str(tag.author_id), inline=False)
             embed.add_field(name="Creation Date", value=format_dt(snowflake_time(tag.id)), inline=False)
             await ctx.send(embed=embed, reference=ctx.message.reference)
