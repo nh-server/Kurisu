@@ -41,7 +41,7 @@ class Filter(commands.Cog):
         try:
             filter_kind = FilterKind(kind)
         except ValueError:
-            return await ctx.send(f"Possible word kinds for word filter: {', '.join([k.value for k in FilterKind])}")
+            return await ctx.send(f"Possible word kinds for word filter: {', '.join(k.value for k in FilterKind)}")
         if ' ' in word or '-' in word:
             return await ctx.send("Filtered words cant contain dashes or spaces!")
         if discord.utils.get(self.filters.filtered_words, word=word):
@@ -95,8 +95,8 @@ class Filter(commands.Cog):
         try:
             filter_kind = FilterKind(filter)
         except ValueError:
-            return await ctx.send(f"Possible word kinds for word filter: {', '.join([k.value for k in FilterKind])}")
-        words = [word.word for word in self.filters.filtered_words if word.kind is filter_kind]
+            return await ctx.send(f"Invalid filter name. Possible word kinds for word filter: {', '.join(k.value for k in FilterKind)}")
+
         if export_format == 'automod':
             text = '*' + '*, *'.join(words) + '*'
         else:
@@ -110,7 +110,8 @@ class Filter(commands.Cog):
         try:
             filter_kind = FilterKind(filter)
         except ValueError:
-            return await ctx.send(f"Possible word kinds for word filter: {', '.join([k.value for k in FilterKind])}")
+            return await ctx.send(f"Possible word kinds for word filter: {', '.join(k.value for k in FilterKind)}")
+
         text = (await input_file.read()).decode('utf-8')
         word_list = [word.lower() for word in text.split('\n')]
 

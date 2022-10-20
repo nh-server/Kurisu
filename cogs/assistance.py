@@ -182,7 +182,7 @@ class Assistance(commands.Cog):
         }
 
         if not (info := cfwinfo.get(cfw)):
-            await ctx.send(f"Please specify a cfw. Valid options are: {', '.join([x for x in cfwinfo])}.")
+            await ctx.send(f"Please specify a cfw. Valid options are: {', '.join(x for x in cfwinfo)}.")
 
             ctx.command.reset_cooldown(ctx)
             return
