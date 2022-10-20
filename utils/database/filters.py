@@ -11,12 +11,12 @@ from enum import Enum
 
 
 class FilterKind(Enum):
-    PiracyTool = 'piracy tool'
-    PiracyToolAlert = 'piracy tool alert'
-    UnbanningTool = 'unbanning tool'
-    PiracySite = 'piracy site'
-    ScammingSite = 'scamming site'
-    PiracyVideo = 'piracy video'
+    PiracyTool = 'piracy_tool'
+    PiracyToolAlert = 'piracy_tool_alert'
+    UnbanningTool = 'unbanning_tool'
+    PiracySite = 'piracy_site'
+    ScammingSite = 'scamming_site'
+    PiracyVideo = 'piracy_video'
 
 
 class LevenshteinWord(NamedTuple):

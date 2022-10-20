@@ -91,24 +91,33 @@ class Filter(commands.Cog):
             await ctx.send("No word was deleted from the filter!")
 
     @wordfilter.command(name='export')
-    async def wordfilter_export(self, ctx, export_format: Literal['automod', 'text'], *, filter: str):
+    async def wordfilter_export(self, ctx, export_format: Literal['automod', 'text'], *filters):
+        """Export the filtered words in the specified filters to a text file.
+        `automod` outputs the words in a format ready to be copied to automod without filter distinction.
+        `text` outputs the words of each filter separated by new lines with the filter name before them."""
+
         try:
-            filter_kind = FilterKind(filter)
+            filter_classes = [FilterKind(filter_name) for filter_name in filters]
         except ValueError:
             return await ctx.send(f"Invalid filter name. Possible word kinds for word filter: {', '.join(k.value for k in FilterKind)}")
 
         if export_format == 'automod':
-            text = '*' + '*, *'.join(words) + '*'
+            text = '*' + '*, *'.join(word.word for word in self.filters.filtered_words if word.kind in filter_classes) + '*'
         else:
-            text = '\n'.join(words)
-        file = text_to_discord_file(text, name=f"{filter}.txt")
+            text = ""
+            for filter_class in filter_classes:
+                text += f"{filter_class.value}\n" + '\n'.join(word.word for word in self.filters.filtered_words if word.kind is filter_class) + '\n\n\n'
+        file = text_to_discord_file(text, name=f"wordfilter_{export_format}_export.txt")
         await ctx.send(file=file)
 
     @is_staff("OP")
     @wordfilter.command(name='import')
-    async def wordfilter_import(self, ctx, input_file: discord.Attachment, type: Literal['join', 'replace'], *, filter: str):
+    async def wordfilter_import(self, ctx, input_file: discord.Attachment, type: Literal['join', 'replace'], *, filter_name: str):
+        """Imports words to the word filter. These can added to the existing ones (`join`) or replace them (`replace`).
+        The file format must be words codified in utf-8 separated by new lines."""
+
         try:
-            filter_kind = FilterKind(filter)
+            filter_kind = FilterKind(filter_name)
         except ValueError:
             return await ctx.send(f"Possible word kinds for word filter: {', '.join(k.value for k in FilterKind)}")
 
@@ -164,7 +173,7 @@ class Filter(commands.Cog):
         try:
             filter_kind = FilterKind(kind)
         except ValueError:
-            return await ctx.send(f"Possible word kinds for word filter: {', '.join([f.value for f in FilterKind])}")
+            return await ctx.send(f"Possible word kinds for word filter: {', '.join(f.value for f in FilterKind)}")
         if ' ' in word:
             return await ctx.send("Filtered words can't contain spaces!")
         if threshold == 0:
