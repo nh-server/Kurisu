@@ -102,17 +102,21 @@ class RestrictionsManager(BaseManager, db_manager=RestrictionsDatabaseManager):
                     TimedRestriction(restriction_id=now, user_id=user.id, type=restriction.value, end_date=end_date,
                                      alerted=False))
             if restriction is not Restriction.Ban and isinstance(user, discord.Member):
-                await user.add_roles(self.bot.roles[restriction.value])
-                if restriction is Restriction.Muted:
-                    await user.remove_roles(self.bot.roles['#elsewhere'], self.bot.roles['#art-discussion'])
-                msg_user = messages[restriction]
-                if reason:
-                    msg_user += " The given reason is: " + reason
-                msg_user += ("\n\nIf you feel this was unjustified, "
-                             f"you may appeal in {self.bot.channels['appeals'].mention}")
-                if end_date:
-                    msg_user += f"\n\nThis restriction lasts until {format_dt(end_date)}."
-                await send_dm_message(user, msg_user)
+                try:
+                    await user.add_roles(self.bot.roles[restriction.value])
+                    if restriction is Restriction.Muted:
+                        await user.remove_roles(self.bot.roles['#elsewhere'], self.bot.roles['#art-discussion'])
+                    msg_user = messages[restriction]
+                    if reason:
+                        msg_user += " The given reason is: " + reason
+                    msg_user += ("\n\nIf you feel this was unjustified, "
+                                 f"you may appeal in {self.bot.channels['appeals'].mention}")
+                    if end_date:
+                        msg_user += f"\n\nThis restriction lasts until {format_dt(end_date)}."
+                    await send_dm_message(user, msg_user)
+                except discord.NotFound:
+                    # User may have been banned
+                    pass
         return res
 
     async def get_restrictions_by_type(self, restriction: Restriction):
