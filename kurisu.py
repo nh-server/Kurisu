@@ -32,6 +32,7 @@ cogs = (
     'cogs.assistance',
     'cogs.automod',
     'cogs.blah',
+    'cogs.db3ds',
     'cogs.events',
     'cogs.extras',
     'cogs.filters',
