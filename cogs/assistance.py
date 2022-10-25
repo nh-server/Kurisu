@@ -259,12 +259,11 @@ class Assistance(commands.Cog):
         view.message = await ctx.send(embed=view.paginator.current(), view=view)
 
     @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
-    @commands.command(aliases=['generatemkey'])
-    async def mkey(self, ctx: KurisuContext, device: str, month: int, day: int, inquiry: str, deviceID: Optional[str]):
+    @commands.hybrid_command()
+    async def mkey(self, ctx: KurisuContext, device: str, month: int, day: int, inquiry: str, deviceid: Optional[str] = None):
         """
         Generate an mkey for given device.
-        Switch users will be directed to SALT's mkey website.
-        Usage: `mkey <3ds|dsi|wii|wiiu|switch> <month> <day> <inquiry (no space)> <deviceID (switch 8.0+ only)>`
+        Usage: `mkey <3ds|dsi|wii|wiiu|switch> <month> <day> <inquiry (no space)> <deviceid (switch 8.0+ only)>`
         """
         devices = {
             "3ds": "CTR",
@@ -275,17 +274,19 @@ class Assistance(commands.Cog):
             "nx": "HAC",
             "switch": "HAC"
         }
+        if deviceid and not ctx.interaction:
+            await ctx.message.delete()
         if device.lower() not in devices:
-            return await ctx.send(f'This device is not supported. Valid options are: {", ".join(i for i in devices)}')
+            return await ctx.send(f'{ctx.author.mention if not ctx.interaction else ""} This device is not supported. Valid options are: {", ".join(i for i in devices)}')
         apicall = f"https://mkey.eiphax.tech/{devices[device.lower()]}/{inquiry}/{month}/{day}"
-        if deviceID:
-            apicall += f"?aux={deviceID}"
+        if deviceid:
+            apicall += f"?aux={deviceid}"
         async with self.bot.session.get(apicall) as r:
             if r.status == 200:
                 ret = await r.json()
-                return await ctx.send(f'Your key is {ret["key"]}.')
+                return await ctx.send(f'{ctx.author.mention if not ctx.interaction else ""} Your key is {ret["key"]}.')
             else:
-                return await ctx.send(f"API returned error {r.status}. Please check your values and try again.")
+                return await ctx.send(f'{ctx.author.mention if not ctx.interaction else ""} API returned error {r.status}. Please check your values and try again.')
 
 
 add_md_files_as_commands(Assistance)
