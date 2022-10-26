@@ -42,7 +42,7 @@ class Memes(commands.Cog):
             try:
                 await ctx.author.send(
                     "Meme commands are disabled in this channel, or your privileges have been revoked.")
-            except discord.errors.Forbidden:
+            except discord.Forbidden:
                 await ctx.send(
                     f"{ctx.author.mention} Meme commands are disabled in this channel, or your privileges have been revoked.")
 
@@ -381,7 +381,7 @@ class Memes(commands.Cog):
         kelvin = self.c_to_k(celsius)
         await self._meme(ctx, f"{u.mention} warmed. User is now {celsius}°C ({fahrenheit}°F, {kelvin}K).", True)
 
-    # adding it here cause its pretty much the same code
+    # adding it here because It's pretty much the same code
     @commands.command(hidden=True, aliases=["cool"])
     async def chill(self, ctx: KurisuContext, u: discord.Member):
         """Cools a user :3"""
@@ -493,7 +493,7 @@ class Memes(commands.Cog):
 
     @commands.command(hidden=True)
     async def serotonin(self, ctx: KurisuContext):
-        """i really want to know"""
+        """I really want to know"""
         await self._meme(ctx, "", image_link="https://album.eiphax.tech/uploads/big/2549ac8b197ae68080041d3966a887e8.png")
 
     @commands.command(hidden=True, aliases=['decisions'])
@@ -520,12 +520,15 @@ class Memes(commands.Cog):
 
     @is_staff("OP")
     @commands.guild_only()
-    @commands.command(hidden=True, aliases=['🍰'])
+    @commands.command(hidden=True, aliases=['🍰', 'cake'])
     async def birthday(self, ctx: KurisuContext, member: discord.Member):
         """Wishes a happy birthday. Do not abuse pls."""
 
         await ctx.message.delete()
-        await member.add_roles(self.bot.roles['🍰'])
+        try:
+            await member.add_roles(self.bot.roles['🍰'])
+        except discord.Forbidden:
+            return
 
         timestamp = datetime.datetime.now(self.bot.tz)
         delta = datetime.timedelta(seconds=86400)
@@ -555,14 +558,17 @@ class Memes(commands.Cog):
     async def blahaj(self, ctx: KurisuContext, money: float):
         """Displays how much Blahajs you can buy with that money. ($ or €)"""
         # blahaj. takes usd or eur
-        blahajlink = "https://nintendohomebrew.com/assets/img/blahaj.png"
+        blahaj_link = "https://nintendohomebrew.com/assets/img/blahaj.png"
         if money < 18:
             text = "You can't even buy a Blahaj with that! Get more money, then buy a Blahaj."
         elif money // 18 == 1:
             text = "You could buy one Blahaj with that. Think about it."
         else:
-            text = f"You could buy {int(money//18)} Blahajes with that. Think about it."
-        await self._meme(ctx, text, True, blahajlink)
+            try:
+                text = f"You could buy {int(money//18)} Blahajes with that. Think about it."
+            except ValueError:
+                text = "No."
+        await self._meme(ctx, text, True, blahaj_link)
 
     @is_staff("Helper")
     @commands.command()
