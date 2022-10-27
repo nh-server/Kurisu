@@ -3,6 +3,8 @@ from __future__ import annotations
 import discord
 import logging
 
+from discord import app_commands
+from discord.app_commands import Choice
 from discord.ext import commands
 from inspect import cleandoc
 from os.path import dirname, join
@@ -260,33 +262,39 @@ class Assistance(commands.Cog):
 
     @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     @commands.hybrid_command()
-    async def mkey(self, ctx: KurisuContext, device: str, month: int, day: int, inquiry: str, deviceid: Optional[str] = None):
+    @app_commands.describe(device='Your console model.',
+                           month='The system\'s month.',
+                           day='The console\'s day.',
+                           inquiry='Your inquiry number.',
+                           device_id='Your device id. Only required on switch 8.0+.')
+    @app_commands.choices(
+        device=[
+            Choice(name="3ds", value="CTR"),
+            Choice(name="dsi", value="TWL"),
+            Choice(name="wii", value="RVL"),
+            Choice(name="wiiu", value="WUP"),
+            Choice(name="switch", value="HAC")
+        ],
+    )
+    async def mkey(self, ctx: KurisuContext, device: Choice[str], month: app_commands.Range[int, 1, 12], day: app_commands.Range[int, 1, 31], inquiry: str, device_id: Optional[str] = None):
         """
-        Generate an mkey for given device.
+        Generate an master key for resetting parental control for given device.
         Usage: `mkey <3ds|dsi|wii|wiiu|switch> <month> <day> <inquiry (no space)> <deviceid (switch 8.0+ only)>`
         """
-        devices = {
-            "3ds": "CTR",
-            "dsi": "TWL",
-            "wii": "RVL",
-            "wiiu": "WUP",
-            "ns": "HAC",
-            "nx": "HAC",
-            "switch": "HAC"
-        }
-        if deviceid and not ctx.interaction:
-            await ctx.message.delete()
-        if device.lower() not in devices:
-            return await ctx.send(f'{ctx.author.mention if not ctx.interaction else ""} This device is not supported. Valid options are: {", ".join(i for i in devices)}')
-        apicall = f"https://mkey.eiphax.tech/{devices[device.lower()]}/{inquiry}/{month}/{day}"
-        if deviceid:
-            apicall += f"?aux={deviceid}"
-        async with self.bot.session.get(apicall) as r:
+        if device_id and not ctx.interaction:
+            try:
+                await ctx.message.delete()
+            except discord.Forbidden:
+                pass
+        api_call = f"https://mkey.eiphax.tech/{device.value}/{inquiry}/{month}/{day}"
+        if device_id:
+            api_call += f"?aux={device_id}"
+        async with self.bot.session.get(api_call) as r:
             if r.status == 200:
                 ret = await r.json()
-                return await ctx.send(f'{ctx.author.mention if not ctx.interaction else ""} Your key is {ret["key"]}.')
+                return await ctx.send(f'{ctx.author.mention if not ctx.interaction else ""} Your key is {ret["key"]}.', ephemeral=True)
             else:
-                return await ctx.send(f'{ctx.author.mention if not ctx.interaction else ""} API returned error {r.status}. Please check your values and try again.')
+                return await ctx.send(f'{ctx.author.mention if not ctx.interaction else ""} API returned error {r.status}. Please check your values and try again.', ephemeral=True)
 
 
 add_md_files_as_commands(Assistance)
