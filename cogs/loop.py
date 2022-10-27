@@ -174,7 +174,7 @@ class Loop(commands.Cog):
                 if current_timestamp.minute % 30 == 0 and current_timestamp.second == 0:
                     self.bot.loop.create_task(self.update_netinfo())
             except Exception:
-                logger.error("Ignoring exception in start_update_loop", exc_info=True)
+                await self.bot.on_error("start_update_loop")
             finally:
                 await asyncio.sleep(1)
 

@@ -374,11 +374,9 @@ class Kurisu(commands.Bot):
         logger.error("", exc_info=True)
         if not self.err_channel:
             return
-
-        exc_type, exc, tb = sys.exc_info()
         embed = discord.Embed(title="Error Event", colour=0xe50730)
         embed.add_field(name="Event Method", value=event_method)
-        trace = "".join(traceback.format_exception(exc_type, exc, tb))
+        trace = traceback.format_exc()
         embed.description = f"```py\n{trace}\n```"
         await self.err_channel.send(embed=embed)
 
