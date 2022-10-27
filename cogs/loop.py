@@ -116,7 +116,7 @@ class Loop(commands.Cog):
         while self.is_active:
             try:
                 current_timestamp = datetime.now(self.bot.tz)
-                for restriction in self.restrictions.timed_restricions:
+                for restriction in self.restrictions.timed_restricions.copy():
                     restriction_type = Restriction(restriction.type)
                     if current_timestamp > restriction.end_date:
                         member = self.bot.guild.get_member(restriction.user_id) or OptionalMember(
@@ -141,7 +141,7 @@ class Loop(commands.Cog):
                                 f" restriction will be removed "
                                 f"in {((restriction.end_date - current_timestamp).seconds // 60) + 1} minutes.")
 
-                for timed_role in self.extras.timed_roles:
+                for timed_role in self.extras.timed_roles.copy():
                     if current_timestamp > timed_role.expiring_date:
                         await self.extras.delete_timed_role(timed_role.user_id, timed_role.role_id)
                         member = self.bot.guild.get_member(timed_role.user_id)
@@ -151,7 +151,7 @@ class Loop(commands.Cog):
                         msg = f"⭕ **Timed Role Expired**: <@{timed_role.user_id}> (`{role.name if role else timed_role.role_id}`)"
                         await self.bot.channels['mod-logs'].send(msg)
 
-                for reminder_entries in self.extras.reminders.values():
+                for reminder_entries in list(self.extras.reminders.values()):
                     for reminder in reminder_entries:
                         if current_timestamp <= reminder.date:
                             break
