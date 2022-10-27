@@ -275,7 +275,7 @@ class Events(commands.Cog):
             try:
                 await message.author.timeout(datetime.timedelta(days=2))
             except discord.Forbidden:
-                # If the bot can't timeout the member it's quite likely they shouldn't be timed out for this anyway
+                # If the bot can't time out the member it's quite likely they shouldn't be timed out for this anyway
                 return
             msg_user = "You were automatically timed-out for sending too many messages in a short period of time!\n\n" \
                        "If you believe this was done in error, send a direct message (DM) to <@!333857992170536961> to contact staff."

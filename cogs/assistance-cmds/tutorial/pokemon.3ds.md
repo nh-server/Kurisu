@@ -1,6 +1,6 @@
 ---
-title: Possible guides for **Pokemon**:
-help-desc: Displays different guides for Pokemon
+title: Possible guides for **Pokémon**:
+help-desc: Displays different guides for Pokémon
 cooldown-rate: 0
 cooldown-per: 0
 color: E74C3C

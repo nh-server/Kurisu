@@ -10,4 +10,4 @@ The public 90DNS IP addresses are:
 
 [Follow these steps](https://nh-server.github.io/switch-guide/extras/blocking_nintendo/) to set up 90dns and ensure it isn't being blocked
 
-You will have to manually set these for each WiFi connection you have set up.
+You will have to manually set these for each Wi-Fi connection you have set up.

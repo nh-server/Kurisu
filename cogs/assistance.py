@@ -217,7 +217,7 @@ class Assistance(commands.Cog):
     @commands.dynamic_cooldown(KurisuCooldown(1, 5.0), commands.BucketType.channel)
     @commands.command()
     async def invite(self, ctx: KurisuContext, name: str = ""):
-        """Post an invite to an approved server"""
+        """Post a discord invite to an approved server"""
         if not name:
             ctx.command.reset_cooldown(ctx)
             if self.filters.approved_invites:

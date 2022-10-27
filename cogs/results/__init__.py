@@ -57,7 +57,7 @@ Only Nintendo Switch XXXX-YYYY formatted error codes are supported.'
     def fixup_input(self, user_input: str) -> str:
         # Truncate input to 16 chars so as not to create a huge embed or do
         # eventual regex on a huge string. If we add support for consoles that
-        # that have longer error codes, adjust accordingly.
+        # have longer error codes, adjust accordingly.
         user_input = user_input[:16]
 
         # Fix up hex input if 0x was omitted. It's fine if it doesn't convert.

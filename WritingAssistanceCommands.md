@@ -1,5 +1,5 @@
 ## Markdown commands
-Kurisu can create commands based on Markdown command files. Currently this supports the Assistance module and the tutorial group.
+Kurisu can create commands based on Markdown command files. Currently, this supports the Assistance module and the tutorial group.
 
 These commands are placed in the `cogs/assistance-cmds` directory. Tutorial commands are placed in `cogs/assistance-cmds/tutorial`.
 

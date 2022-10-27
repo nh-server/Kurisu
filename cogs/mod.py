@@ -367,7 +367,7 @@ class Mod(commands.Cog):
     @commands.guild_only()
     @commands.command()
     async def metamute(self, ctx: GuildContext, member: discord.Member, *, reason: Optional[str]):
-        """Mutes a user so they can't speak in meta. Staff only."""
+        """Mutes a user, so they can't speak in meta. Staff only."""
         await self.restrictions.add_restriction(member, Restriction.MetaMute, reason)
         await self.logs.post_action_log(ctx.author, member, 'meta-mute')
         await ctx.send(f"{member.mention} can no longer speak in meta.")
@@ -387,7 +387,7 @@ class Mod(commands.Cog):
     @commands.guild_only()
     @commands.command(aliases=["appealsmute"])
     async def appealmute(self, ctx: GuildContext, member: discord.Member, *, reason: Optional[str]):
-        """Mutes a user so they can't speak in appeals. Staff only."""
+        """Mutes a user, so they can't speak in appeals. Staff only."""
         await self.bot.restrictions.add_restriction(member, Restriction.AppealsMute, reason)
         await ctx.send(f"{member.mention} can no longer speak in appeals.")
         await self.logs.post_action_log(ctx.author, member, 'appeals-mute', reason=reason)
@@ -419,7 +419,7 @@ class Mod(commands.Cog):
     @commands.guild_only()
     @commands.command()
     async def oldtimemute(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=DateOrTimeToSecondsConverter), *, reason: Optional[str]):
-        """Mutes a user for a limited period of time so they can't speak. Staff only.\n\nLength format: #d#h#m#s"""
+        """Mutes a user for a limited period of time, so they can't speak. Staff only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "mute"):
             return
 

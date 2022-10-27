@@ -296,7 +296,7 @@ def nim_handler(ret, description):
     005-5000 to 005-6999:
      - SOAP Error Code range, when <ErrorCode> is not 0 on the SOAP responses.
     005-7000 to 005-9999:
-     - Non specific expected results are formatted to an error code in nim by taking result module and shifting right by 5, and taking the result description and masked with 0x1F, then added both together along with 57000.
+     - Non-specific expected results are formatted to an error code in nim by taking result module and shifting right by 5, and taking the result description and masked with 0x1F, then added both together along with 57000.
     """
     # If we have a specific description for it in our knowledgebase,
     # show it instead of doing the rest of the processing.

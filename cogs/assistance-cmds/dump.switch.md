@@ -8,4 +8,4 @@ help-desc: How to dump games and data for CFW consoles
 ---
 
 How to dump/build NSPs using NXDumpTool
-BAN Warning: only for use using offline emummc
+BAN Warning: only for use with offline emummc

@@ -15,6 +15,6 @@ color: 9B59B6
 # Instructions:
 1. Power on your 3DS and open Checkpoint
 2. Wait for your apps to load before selecting the save you want to transfer. If it doesn't appear, hold B to refresh and make sure you have a save file in the game
-3. Press L to backup the cart's save file, give the save any name you want
+3. Press L to back up the cart's save file, give the save any name you want
 4. On the digital copy, press the save's name and then press the R button to restore it
 5. You're done!

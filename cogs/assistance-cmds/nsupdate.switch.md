@@ -4,14 +4,14 @@ help-desc: What you should do before updating a Nintendo Switch
 aliases: updateprep,nxupdate
 ---
 
-**Make sure your version of Atmosphere is up to date and that it supports the latest firmware**
+**Make sure your version of Atmosphere is up-to-date and that it supports the latest firmware**
 
 **Atmosphere {ams_ver} (latest release)**
 Supports up to firmware {nx_firmware}.
 
 *To find Atmosphere's version information, while booted into CFW, go into System Settings -> System, and look at   the text under the System Update button. If it says that a system update is ready instead of displaying the CFW version, type .pendingupdate in <#261581918653513729> to learn  how to delete it.*
 
-**Make sure your version of Hekate is up to date and that it supports the latest firmware**
+**Make sure your version of Hekate is up-to-date and that it supports the latest firmware**
 
 **Hekate {hekate_ver} (latest release)**
 Supports up to firmware {nx_firmware}.

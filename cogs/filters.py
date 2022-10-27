@@ -52,7 +52,7 @@ class Filter(commands.Cog):
 
     @wordfilter.command(name='list')
     async def list_words(self, ctx: KurisuContext):
-        """List the word filter filter lists and their content."""
+        """List the word filter lists and their content."""
         embed = discord.Embed()
         words = {}
 
@@ -188,7 +188,7 @@ class Filter(commands.Cog):
 
     @levenshteinfilter.command(name='list')
     async def list_levenshtein(self, ctx: KurisuContext):
-        """List the levenshtein filter filter lists and their content."""
+        """List the levenshtein filter lists and their content."""
         embed = discord.Embed()
         words = {}
 
@@ -295,7 +295,7 @@ class Filter(commands.Cog):
     @is_staff("OP")
     @invitefilter.command(name='add')
     async def add_invite(self, ctx: KurisuContext, invite: discord.Invite, alias: str):
-        """Adds a invite to the filter whitelist"""
+        """Adds a discord invite to the filter whitelist"""
 
         if self.filters.get_invite_named(alias):
             return await ctx.send("This alias is already in use!")
@@ -315,7 +315,7 @@ class Filter(commands.Cog):
     @is_staff("OP")
     @invitefilter.command(name='delete')
     async def delete_invite(self, ctx: KurisuContext, code: str):
-        """Removes a invite from the filter whitelist"""
+        """Removes a discord invite from the filter whitelist"""
         entry = self.filters.approved_invites.get(code)
         if not entry:
             return await ctx.send("Invite code not found!")
@@ -338,7 +338,7 @@ class Filter(commands.Cog):
     # @commands.command(name='checkcollision', aliases=['filtercollision'])
     # async def check_filter_collision(self, ctx: KurisuContext):
     #     """Detects collisions between the levenshtein filter and the word filter,
-    #     shows what words matched a entry in the levenshtein filter"""
+    #     shows what words matched an entry in the levenshtein filter"""
     #     if collisions := await check_collisions():
     #         embed = discord.Embed(title="Filter Collisions")
     #         for key in collisions.keys():

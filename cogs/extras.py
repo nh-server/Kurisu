@@ -321,7 +321,7 @@ class Extras(commands.Cog):
     @commands.guild_only()
     @commands.command(aliases=['ref'])
     async def reference(self, ctx: GuildContext, message: discord.Message, ref_text: bool = True, ref_image: bool = True, ref_author: bool = False):
-        """Creates a embed with the contents of message. Trusted, Helpers, Staff, Retired Staff, Verified only."""
+        """Creates an embed with the contents of message. Trusted, Helpers, Staff, Retired Staff, Verified only."""
         await ctx.message.delete()
         msg_reference = ctx.message.reference or None
         mention_author = any(ctx.message.mentions)
@@ -542,7 +542,7 @@ class Extras(commands.Cog):
                          description: str,
                          options: str = "Yes|No",
                          staff_only: bool = False):
-        """Creates a simple vote, only the who made the vote can stop it. OP+ only."""
+        """Creates a simple vote, only who made the vote can stop it. OP+ only."""
         options_parsed = options.split('|')
         view = SimpleVoteView(self.bot, interaction.user.id, options_parsed, interaction.id, start=discord.utils.utcnow(), staff_only=staff_only)
         embed = discord.Embed(title=name, description=description)

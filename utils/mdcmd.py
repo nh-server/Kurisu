@@ -53,7 +53,7 @@ def parse_header(header_raw: str) -> 'dict[str, Optional[str]]':
 
 def parse_body(body_raw: str):
     body_raw = body_raw.strip()
-    # first one should be the descripton and will have no header
+    # first one should be the description and will have no header
     parts = []
     current_header = ''
     current_body = []
@@ -106,7 +106,7 @@ def create_embed(header: 'dict[str, Optional[str]]', body: 'list[tuple[str, str]
 def parse_md_command(md_text: str, format_map: dict, embed_color: discord.Color) -> tuple[dict, discord.Embed]:
     parts = md_text.split('\n\n', maxsplit=1)
     if len(parts) == 1:
-        # in case there is no body
+        # in case there is nobody
         parts.append('')
     header_raw, body_raw = parts
 
@@ -201,11 +201,11 @@ def add_md_files_as_commands(cog_class: 'Type[Assistance]', md_dir: str = None, 
                 await ctx.send(embed=next(iter(embeds.values())), reference=ctx.message.reference, mention_author=any(ctx.message.mentions))
             cmd = simple_cmd
 
-        # gotta trick the lib so it thinks the callback is inside a class
+        # I've to trick the lib, so it thinks the callback is inside a class
         cmd.__name__ = name
         cmd.__qualname__ = f"{cog_class.qualified_name}.{cmd.__name__}"
 
-        # i figured this was easier than dealing with the multiple attributes for command help
+        # I figured this was easier than dealing with the multiple attributes for command help
         cmd.__doc__ = help_desc
 
         # this feels _wrong_ but is probably the best way to do this
