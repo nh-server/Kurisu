@@ -4,7 +4,6 @@ import discord
 import logging
 
 from discord import app_commands
-from discord.app_commands import Choice
 from discord.ext import commands
 from inspect import cleandoc
 from os.path import dirname, join
@@ -267,26 +266,28 @@ class Assistance(commands.Cog):
                            day='The console\'s day.',
                            inquiry='Your inquiry number.',
                            device_id='Your device id. Only required on switch 8.0+.')
-    @app_commands.choices(
-        device=[
-            Choice(name="3ds", value="CTR"),
-            Choice(name="dsi", value="TWL"),
-            Choice(name="wii", value="RVL"),
-            Choice(name="wiiu", value="WUP"),
-            Choice(name="switch", value="HAC")
-        ],
-    )
-    async def mkey(self, ctx: KurisuContext, device: Choice[str], month: app_commands.Range[int, 1, 12], day: app_commands.Range[int, 1, 31], inquiry: str, device_id: Optional[str] = None):
+    async def mkey(self, ctx: KurisuContext, device: Literal['3ds', 'dsi', 'wii', 'wiiu', 'switch'], month: commands.Range[int, 1, 12], day: commands.Range[int, 1, 31], inquiry: str, device_id: Optional[str] = None):
         """
         Generate an master key for resetting parental control for given device.
         Usage: `mkey <3ds|dsi|wii|wiiu|switch> <month> <day> <inquiry (no space)> <deviceid (switch 8.0+ only)>`
         """
+
+        device_codes = {
+            "3ds": "CTR",
+            "dsi": "TWL",
+            "wii": "RVL",
+            "wiiu": "WUP",
+            "switch": "HAC"
+        }
+
+        device_code = device_codes[device]
+
         if device_id and not ctx.interaction:
             try:
                 await ctx.message.delete()
             except discord.Forbidden:
                 pass
-        api_call = f"https://mkey.eiphax.tech/{device.value}/{inquiry}/{month}/{day}"
+        api_call = f"https://mkey.eiphax.tech/{device_code}/{inquiry}/{month}/{day}"
         if device_id:
             api_call += f"?aux={device_id}"
         async with self.bot.session.get(api_call) as r:
