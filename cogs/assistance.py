@@ -3,6 +3,7 @@ from __future__ import annotations
 import discord
 import logging
 
+from discord import app_commands
 from discord.ext import commands
 from inspect import cleandoc
 from os.path import dirname, join
@@ -257,6 +258,44 @@ class Assistance(commands.Cog):
             return await ctx.send("No app found!")
         view = PaginatedEmbedView(paginator=UniDBResultsPaginator(res), author=ctx.author)
         view.message = await ctx.send(embed=view.paginator.current(), view=view)
+
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
+    @commands.hybrid_command()
+    @app_commands.describe(device='Your console model.',
+                           month='The system\'s month.',
+                           day='The console\'s day.',
+                           inquiry='Your inquiry number.',
+                           device_id='Your device id. Only required on switch 8.0+.')
+    async def mkey(self, ctx: KurisuContext, device: Literal['3ds', 'dsi', 'wii', 'wiiu', 'switch'], month: commands.Range[int, 1, 12], day: commands.Range[int, 1, 31], inquiry: str, device_id: Optional[str] = None):
+        """
+        Generate an master key for resetting parental control for given device.
+        Usage: `mkey <3ds|dsi|wii|wiiu|switch> <month> <day> <inquiry (no space)> <deviceid (switch 8.0+ only)>`
+        """
+
+        device_codes = {
+            "3ds": "CTR",
+            "dsi": "TWL",
+            "wii": "RVL",
+            "wiiu": "WUP",
+            "switch": "HAC"
+        }
+
+        device_code = device_codes[device]
+
+        if device_id and not ctx.interaction:
+            try:
+                await ctx.message.delete()
+            except discord.Forbidden:
+                pass
+        api_call = f"https://mkey.eiphax.tech/{device_code}/{inquiry}/{month}/{day}"
+        if device_id:
+            api_call += f"?aux={device_id}"
+        async with self.bot.session.get(api_call) as r:
+            if r.status == 200:
+                ret = await r.json()
+                return await ctx.send(f'{ctx.author.mention if not ctx.interaction else ""} Your key is {ret["key"]}.', ephemeral=True)
+            else:
+                return await ctx.send(f'{ctx.author.mention if not ctx.interaction else ""} API returned error {r.status}. Please check your values and try again.', ephemeral=True)
 
 
 add_md_files_as_commands(Assistance)
