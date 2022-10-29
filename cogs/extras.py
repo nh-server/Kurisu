@@ -340,7 +340,8 @@ class Extras(commands.Cog):
         if ref_text and message.content:
             embed.description = message.content
         file = None
-        if ref_image and len(message.attachments) > 0 and message.attachments[0].height and message.attachments[0].content_type and message.attachments[0].content_type.startswith("image/"):
+        # Attachments including content_type was added at a later date, so it can't be relied on for old attachments.
+        if ref_image and len(message.attachments) > 0 and message.attachments[0].height and message.attachments[0].filename.lower().endswith(('png', 'jpg', 'jpeg', 'gif')):
             file = await message.attachments[0].to_file()
             embed.set_image(url=f"attachment://{file.filename}")
         if embed.description is None and embed.image is None:
