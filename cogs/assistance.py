@@ -287,9 +287,9 @@ class Assistance(commands.Cog):
                 await ctx.message.delete()
             except discord.Forbidden:
                 pass
-        api_call = f"https://mkey.eiphax.tech/{device_code}/{inquiry}/{month}/{day}"
+        api_call = f"https://mkey.eiphax.tech/api?platform={device_code}&inquiry={inquiry}&month={month}&day={day}"
         if device_id:
-            api_call += f"?aux={device_id}"
+            api_call += f"&aux={device_id}"
         async with self.bot.session.get(api_call) as r:
             if r.status == 200:
                 ret = await r.json()
