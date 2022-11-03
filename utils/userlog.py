@@ -43,14 +43,14 @@ action_messages = {
     'give-elsewhere': ('\N{HEAVY LARGE CIRCLE}', 'Elsewhere access restored', 'restored elsewhere access for {}'),
     'take-elsewhere': ('\N{NO ENTRY SIGN}', 'Elsewhere access taken', 'took elsewhere access from {}'),
 
-    'no-embed': ('\N{HEAVY LARGE CIRCLE}', 'Permission Taken', 'removed embed permissions from {}'),
-    'embed': ('\N{NO ENTRY SIGN}', 'Permission Restored', 'restored embed permissions for {}'),
+    'no-embed': ('\N{NO ENTRY SIGN}', 'Permission Taken', 'removed embed permissions from {}'),
+    'embed': ('\N{HEAVY LARGE CIRCLE}', 'Permission Restored', 'restored embed permissions for {}'),
 
-    'probate': ('\N{HEAVY LARGE CIRCLE}', 'Probated', 'probated {}'),
-    'unprobate': ('\N{NO ENTRY SIGN}', 'Un-probated', 'un-probated {}'),
+    'probate': ('\N{NO ENTRY SIGN}', 'Probated', 'probated {}'),
+    'unprobate': ('\N{HEAVY LARGE CIRCLE}', 'Un-probated', 'un-probated {}'),
 
-    'banish': ('\N{HEAVY LARGE CIRCLE}', 'Banished', 'banished {}'),
-    'unbanish': ('\N{NO ENTRY SIGN}', 'Unbanished', 'unbanished {}'),
+    'banish': ('\N{NO ENTRY SIGN}', 'Banished', 'banished {}'),
+    'unbanish': ('\N{HEAVY LARGE CIRCLE}', 'Unbanished', 'unbanished {}'),
 
     'tempstream': ('\N{HEAVY LARGE CIRCLE}', 'Permission Granted', 'granted streaming permissions to {}'),
     'no-tempstream': ('\N{NO ENTRY SIGN}', 'Permission Revoked', 'revoked streaming permissions from {}'),
