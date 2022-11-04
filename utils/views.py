@@ -176,3 +176,33 @@ class SimpleVoteView(discord.ui.View):
     async def calculate_votes(self):
         async for vote in self.extras.get_votes(self.custom_id):
             self.count[vote.option] = self.count[vote.option] + 1
+
+
+class ConfirmationButtons(discord.ui.View):
+    def __init__(self, author_id: int):
+        super().__init__(timeout=30)
+        self.value = None
+        self.author_id = author_id
+
+    async def callback(self, interaction: discord.Interaction):
+        if interaction.user.id == self.author_id:
+            return True
+        await interaction.response.send_message("This view is not for you.", ephemeral=True)
+
+    @discord.ui.button(label="Yes", style=discord.ButtonStyle.green)
+    async def confirm_button(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ):
+        self.value = True
+        # Just so the interaction doesn't fail
+        await interaction.response.send_message("Confirmed", ephemeral=True)
+        self.stop()
+
+    @discord.ui.button(label="No", style=discord.ButtonStyle.red)
+    async def deny_button(
+        self, interaction: discord.Interaction, button: discord.ui.Button
+    ):
+        self.value = False
+        # Just so the interaction doesn't fail
+        await interaction.response.send_message("Denied", ephemeral=True)
+        self.stop()

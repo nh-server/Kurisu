@@ -184,7 +184,6 @@ class BaseDatabaseManager:
         assert not self.bot.db_closed
         assert self.tables
         assert table in self.tables
-        assert values
         assert all(k in self.tables[table] for k in values.keys())
 
         async with self.pool.acquire() as conn:

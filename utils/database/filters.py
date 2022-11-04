@@ -74,6 +74,9 @@ class FiltersDatabaseManager(BaseDatabaseManager, tables=tables):
             return 0
         return len(words)
 
+    async def clear_filtered_words(self):
+        return await self._delete('filteredwords')
+
     async def add_levenshtein_word(self, word: str, threshold: int, kind: str) -> int:
         return await self._insert('levenshteinwords', word=word, threshold=threshold, kind=kind)
 

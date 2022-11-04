@@ -10,6 +10,7 @@ from Levenshtein import distance
 from utils.checks import is_staff
 from utils.database import FilterKind
 from utils.utils import text_to_discord_file
+from utils.views import ConfirmationButtons
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -160,6 +161,19 @@ class Filter(commands.Cog):
         file = text_to_discord_file(result_text, name='import.txt')
 
         await ctx.send(f"Successfully imported words.\nAdded: {len(word_list)}\nRepeats: {len(repeat)}\nInvalid: {len(invalid)}", file=file)
+
+    @is_staff("Owner")
+    @wordfilter.command(name='clear')
+    async def wordfilter_clear(self, ctx: KurisuContext):
+        """Deletes all filtered words in the filter"""
+        view = ConfirmationButtons(ctx.author.id)
+        msg = await ctx.send("WARNING: This will delete all filtered words in the wordfilter, continue?", view=view)
+        await view.wait()
+        if view.value:
+            await self.filters.clear_filtered_words()
+            await msg.edit(content="Cleared all filtered words.", view=None)
+        else:
+            await msg.edit(content="Deletion aborted.", view=None)
 
     # Command group for the levenshtein word filter
     @is_staff("Helper")
