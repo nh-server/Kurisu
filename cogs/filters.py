@@ -91,22 +91,27 @@ class Filter(commands.Cog):
             await ctx.send("No word was deleted from the filter!")
 
     @wordfilter.command(name='export')
-    async def wordfilter_export(self, ctx, export_format: Literal['automod', 'text'], *filters):
+    async def wordfilter_export(self, ctx, export_format: Literal['automod', 'text'], *, filters: str):
         """Export the filtered words in the specified filters to a text file.
         `automod` outputs the words in a format ready to be copied to automod without filter distinction.
         `text` outputs the words of each filter separated by new lines with the filter name before them."""
 
-        try:
-            filter_classes = [FilterKind(filter_name) for filter_name in filters]
-        except ValueError:
-            return await ctx.send(f"Invalid filter name. Possible word kinds for word filter: {', '.join(k.value for k in FilterKind)}")
+        if filters == 'all':
+            filter_classes = [f for f in FilterKind]
+        else:
+            try:
+                filter_classes = [FilterKind(filter_name) for filter_name in filters.split()]
+            except ValueError:
+                return await ctx.send(f"Invalid filter name. Possible word kinds for word filter: {', '.join(k.value for k in FilterKind)}")
 
         if export_format == 'automod':
             text = '*' + '*, *'.join(word.word for word in self.filters.filtered_words if word.kind in filter_classes) + '*'
         else:
             text = ""
             for filter_class in filter_classes:
-                text += f"{filter_class.value}\n" + '\n'.join(word.word for word in self.filters.filtered_words if word.kind is filter_class) + '\n\n\n'
+                words = [word.word for word in self.filters.filtered_words if word.kind is filter_class]
+                if words:
+                    text += f"{filter_class.value}\n" + '\n'.join(words) + '\n\n\n'
         file = text_to_discord_file(text, name=f"wordfilter_{export_format}_export.txt")
         await ctx.send(file=file)
 
