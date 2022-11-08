@@ -668,7 +668,6 @@ class Memes(commands.Cog):
         banished_role = discord.utils.get(ctx.guild.roles, name='banished')
         if not banished_role:
             return await ctx.send("No banished role found")
-        await ctx.send(f"{member.mention} is unbanished.")
         await member.remove_roles(banished_role)
         msg_user = "You have been freed from the retard chamber."
         if reason != "":
