@@ -595,7 +595,7 @@ class Extras(commands.Cog):
         await ctx.message.delete()
         if not isinstance(ctx.channel, discord.Thread):
             return await ctx.send("You can only close threads.", delete_after=10)
-        if ctx.channel.owner is not ctx.author and not check_staff(ctx.bot, 'OP', ctx.author.id):
+        if ctx.channel.owner is not ctx.author and not check_staff(ctx.bot, 'Helper', ctx.author.id):
             return await ctx.send("Only the thread owner or staff can close a thread.", delete_after=10)
         await ctx.send("Thread has been marked as solved.")
         await ctx.channel.edit(archived=True, locked=True)
