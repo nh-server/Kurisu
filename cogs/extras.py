@@ -591,6 +591,7 @@ class Extras(commands.Cog):
     @commands.guild_only()
     @commands.command(name='close', aliases=['solved'])
     async def close_thread(self, ctx: GuildContext):
+        """Closes and locks a thread. Thread owner or staff only."""
         await ctx.message.delete()
         if not isinstance(ctx.channel, discord.Thread):
             return await ctx.send("You can only close threads.", delete_after=10)
