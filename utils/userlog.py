@@ -49,9 +49,6 @@ action_messages = {
     'probate': ('\N{NO ENTRY SIGN}', 'Probated', 'probated {}'),
     'unprobate': ('\N{HEAVY LARGE CIRCLE}', 'Un-probated', 'un-probated {}'),
 
-    'banish': ('\N{NO ENTRY SIGN}', 'Banished', 'banished {}'),
-    'unbanish': ('\N{HEAVY LARGE CIRCLE}', 'Unbanished', 'unbanished {}'),
-
     'tempstream': ('\N{HEAVY LARGE CIRCLE}', 'Permission Granted', 'granted streaming permissions to {}'),
     'no-tempstream': ('\N{NO ENTRY SIGN}', 'Permission Revoked', 'revoked streaming permissions from {}'),
 

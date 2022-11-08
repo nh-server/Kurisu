@@ -644,6 +644,39 @@ class Memes(commands.Cog):
                        f"{str(self.flushedhalf2)}"]
         await ctx.send(random.choice(flushedlist))
 
+    @is_staff("HalfOP")
+    @commands.command()
+    async def banish(self, ctx: GuildContext, member: discord.Member, *, reason=""):
+        """Banish a user to the retard chamber."""
+        banished_role = discord.utils.get(ctx.guild.roles, name='banished')
+        if not banished_role:
+            return await ctx.send("No banished role found")
+        await member.add_roles(banished_role)
+        await user.remove_roles(self.bot.roles['#elsewhere'], self.bot.roles['#art-discussion'])
+        msg_user = "You have been sent to the retard chamber."
+        if reason != "":
+            msg_user += " The given reason is: " + reason
+        await send_dm_message(member, msg_user, ctx)
+        await ctx.send(f"{member.mention} has been Banished!")
+        msg = f"🔇 **Banished**: {ctx.author.mention} banished {member.mention} | {self.bot.escape_text(member)}"
+        await self.bot.channels['mod-logs'].send(msg)
+
+    @is_staff("HalfOP")
+    @commands.command()
+    async def unbanish(self, ctx: GuildContext, member: discord.Member, *, reason: str = ""):
+        """Unbanish a user."""
+        banished_role = discord.utils.get(ctx.guild.roles, name='banished')
+        if not banished_role:
+            return await ctx.send("No banished role found")
+        await ctx.send(f"{member.mention} is unbanished.")
+        await user.remove_roles(banished_role)
+        msg_user = "You have been freed from the retard chamber."
+        if reason != "":
+            msg_user += " The given reason is: " + reason
+        await send_dm_message(member, msg_user, ctx)
+        await ctx.send(f"{member.mention} has been unbanished!")
+        msg = f":speaker: **Unbanished**: {ctx.author.mention} unbanished {member.mention} | {self.bot.escape_text(member)}"
+        await self.bot.channels['mod-logs'].send(msg)
 
 async def setup(bot):
     await bot.add_cog(Memes(bot))

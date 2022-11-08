@@ -697,28 +697,6 @@ class Mod(commands.Cog):
         await ctx.send(f"{member.mention} is out of probation.")
         await self.logs.post_action_log(ctx.author, member, 'unprobate', reason=reason)
 
-    @is_staff("HalfOP")
-    @commands.guild_only()
-    @commands.bot_has_permissions(manage_roles=True)
-    @commands.command()
-    async def banish(self, ctx: GuildContext, member: discord.Member, *, reason: Optional[str]):
-        """Banishes a user to the retard chamber."""
-        if await check_bot_or_staff(ctx, member, "banish"):
-            return
-        await self.bot.restrictions.add_restriction(member, Restriction.Banished, reason)
-        await ctx.send(f"{member.mention} has been Banished!")
-        await self.logs.post_action_log(ctx.author, member, 'banish', reason=reason)
-
-    @is_staff("HalfOP")
-    @commands.guild_only()
-    @commands.bot_has_permissions(manage_roles=True)
-    @commands.command()
-    async def unbanish(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason: Optional[str]):
-        """Unbanish a user."""
-        await self.restrictions.remove_restriction(member, Restriction.Banished)
-        await ctx.send(f"{member.mention} is unbanished.")
-        await self.logs.post_action_log(ctx.author, member, 'unbanish', reason=reason)
-
     @is_staff("Owner")
     @commands.guild_only()
     @commands.command()
