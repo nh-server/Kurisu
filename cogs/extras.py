@@ -588,6 +588,17 @@ class Extras(commands.Cog):
         embed.set_image(url=ctx.guild.icon.url)
         await ctx.send(embed=embed, ephemeral=True)
 
+    @commands.guild_only()
+    @commands.command(name='close', aliases=['solved'])
+    async def close_thread(self, ctx: GuildContext):
+        await ctx.message.delete()
+        if not isinstance(ctx.channel, discord.Thread):
+            return await ctx.send("You can only close threads.", delete_after=10)
+        if ctx.channel.owner is not ctx.author and not check_staff(ctx.bot, 'OP', ctx.author.id):
+            return await ctx.send("Only the thread owner or staff can close a thread.", delete_after=10)
+        await ctx.send("Thread has been marked as solved.")
+        await ctx.channel.edit(archived=True, locked=True)
+
 
 async def setup(bot):
     await bot.add_cog(Extras(bot))
