@@ -121,7 +121,7 @@ eshop_mint = Module('eshop (mint/api?)', {
     2920: ResultInfo('This error is typically displayed when a Nintendo eShop download failed, or when the title has an invalid ticket. Delete the title and/or its ticket in FBI and install it again from a legitimate source like the Nintendo eShop, or from your game cartridges if using cart dumps.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/41692'),
     2924: ResultInfo('Happens when opening eshop with a invalid language setting'),
     3049: ResultInfo('The eShop is down for maintenance.', 'https://support.nintendo.com/networkstatus/'),
-    6106: ResultInfo('Occurs when attempting to re-download software from the eshop with an invalid or fake ticket')
+    6106: ResultInfo('Occurs when attempting to re-download software from the eshop with an invalid or fake ticket. Can also happen when developer UNITINFO is enabled in Luma3DS.')
 })
 
 # 009: errors related to (presumably) the eShop application itself
@@ -139,7 +139,7 @@ eshop_app = Module('eshop (app?)', {
     4077: ResultInfo('Cannot start or continue eShop download. This happens due to insufficient free space being available on the SD Card.'),
     4079: ResultInfo('Unable to access SD card.'),
     4998: ResultInfo('Local content is newer. Unknown what causes this.'),
-    6106: ResultInfo('AM error in NIM. Bad ticket is likely.'),
+    6106: ResultInfo('AM error in NIM. Bad ticket is likely. Can also happen when developer UNITINFO is enabled in Luma3DS.'),
     8401: ResultInfo('The update data is corrupted. Delete it and reinstall.'),
     9001: ResultInfo('Caused by trying to download content with low battery percentage.')
 })
