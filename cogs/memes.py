@@ -8,12 +8,12 @@ import random
 from discord.ext import commands
 from typing import TYPE_CHECKING
 from utils.checks import is_staff
-from utils.utils import KurisuCooldown
+from utils.utils import KurisuCooldown, send_dm_message
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
     from typing import Optional
-    from utils.context import KurisuContext
+    from utils.context import KurisuContext, GuildContext
 
 
 class Memes(commands.Cog):
@@ -652,7 +652,7 @@ class Memes(commands.Cog):
         if not banished_role:
             return await ctx.send("No banished role found")
         await member.add_roles(banished_role)
-        await user.remove_roles(self.bot.roles['#elsewhere'], self.bot.roles['#art-discussion'])
+        await member.remove_roles(self.bot.roles['#elsewhere'], self.bot.roles['#art-discussion'])
         msg_user = "You have been sent to the retard chamber."
         if reason != "":
             msg_user += " The given reason is: " + reason
@@ -669,7 +669,7 @@ class Memes(commands.Cog):
         if not banished_role:
             return await ctx.send("No banished role found")
         await ctx.send(f"{member.mention} is unbanished.")
-        await user.remove_roles(banished_role)
+        await member.remove_roles(banished_role)
         msg_user = "You have been freed from the retard chamber."
         if reason != "":
             msg_user += " The given reason is: " + reason
@@ -677,6 +677,7 @@ class Memes(commands.Cog):
         await ctx.send(f"{member.mention} has been unbanished!")
         msg = f":speaker: **Unbanished**: {ctx.author.mention} unbanished {member.mention} | {self.bot.escape_text(member)}"
         await self.bot.channels['mod-logs'].send(msg)
+
 
 async def setup(bot):
     await bot.add_cog(Memes(bot))
