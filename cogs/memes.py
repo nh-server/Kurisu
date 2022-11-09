@@ -644,5 +644,6 @@ class Memes(commands.Cog):
                        f"{str(self.flushedhalf2)}"]
         await ctx.send(random.choice(flushedlist))
 
+
 async def setup(bot):
     await bot.add_cog(Memes(bot))
