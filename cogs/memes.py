@@ -8,12 +8,12 @@ import random
 from discord.ext import commands
 from typing import TYPE_CHECKING
 from utils.checks import is_staff
-from utils.utils import KurisuCooldown, send_dm_message
+from utils.utils import KurisuCooldown
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
     from typing import Optional
-    from utils.context import KurisuContext, GuildContext
+    from utils.context import KurisuContext
 
 
 class Memes(commands.Cog):
