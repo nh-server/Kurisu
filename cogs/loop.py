@@ -75,7 +75,7 @@ class Loop(commands.Cog):
                 else:
                     begin = datetime(year=2000, month=1, day=1, tzinfo=self.bot.tz)
 
-                if "end" in entry:
+                if "end" in entry and entry["end"] is not None:
                     end = self.netinfo_parse_time(entry["end"])
                     entry_desc += '\nEnds: ' + format_dt(end)
                 else:
