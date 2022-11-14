@@ -28,7 +28,7 @@ The file `server_logs_url.txt` is the url to a database of a different project, 
 
 Set up the database volume with the following commands, this can also be used in cases in which the schema was updated and the database volume still contains an old version, missing tables necessary to run the bot. This will pull postgres:13 to run as the database, create the tables (removing them if they already exist) then stop and remove the container. 
 ```
-docker-compose up --build db -d
+docker-compose up --build -d db
 cat ./schema.sql | docker compose exec -T db psql -U kurisu -d kurisu
 docker-compose down db
 ```
