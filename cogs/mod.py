@@ -369,7 +369,6 @@ class Mod(commands.Cog):
     async def metamute(self, ctx: GuildContext, member: discord.Member, *, reason: Optional[str]):
         """Mutes a user, so they can't speak in meta. Staff only."""
         await self.restrictions.add_restriction(member, Restriction.MetaMute, reason)
-        await self.logs.post_action_log(ctx.author, member, 'meta-mute')
         await ctx.send(f"{member.mention} can no longer speak in meta.")
         await self.logs.post_action_log(ctx.author, member, 'meta-mute', reason=reason)
 
