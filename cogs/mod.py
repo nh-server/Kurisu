@@ -14,6 +14,7 @@ from utils import Restriction
 from utils.converters import DateOrTimeToSecondsConverter, TimeTransformer
 from utils.checks import is_staff, check_staff, check_bot_or_staff, is_staff_app
 from utils.utils import paginate_message, send_dm_message, parse_time, text_to_discord_file, gen_color, create_error_embed
+from utils.views import AutoModRulesView
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -926,6 +927,14 @@ class Mod(commands.Cog):
         await self.restrictions.add_restriction(member, Restriction(restriction), reason, end_date=end_time)
         await interaction.response.send_message(f"{member.mention} now has the {restriction} restriction role{f' until {format_dt(end_time)}.' if end_time else '.'}")
         await self.logs.post_action_log(interaction.user, member, restriction_action[restriction], reason=reason, until=end_time)
+
+    @is_staff("SuperOP")
+    @commands.command()
+    async def automod(self, ctx: GuildContext):
+        """Sends a discord view to view and set some AutoMod rules settings."""
+        rules = await ctx.guild.fetch_automod_rules()
+        view = AutoModRulesView(rules, ctx.author)
+        await ctx.send(embed=view.default_embed, view=view)
 
 
 async def setup(bot):
