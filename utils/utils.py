@@ -76,7 +76,7 @@ def gen_color(seed) -> discord.Color:
     return discord.Color((c_r << 16) + (c_g << 8) + c_b)
 
 
-def parse_time(time_string) -> int:
+def parse_time(time_string: str) -> int:
     """Parses a time string in dhms format to seconds"""
     # thanks, Luc#5653
     units = {
