@@ -78,17 +78,30 @@ class Assistance(commands.Cog):
     def __init__(self, bot: Kurisu):
         self.bot: Kurisu = bot
         self.small_help_category: Optional[discord.CategoryChannel] = None
+        self.luma_versions: set[str] = set()
         self.bot.loop.create_task(self.setup_assistance())
         self.filters = bot.filters
 
     async def setup_assistance(self):
         await self.bot.wait_until_all_ready()
         self.emoji = discord.utils.get(self.bot.guild.emojis, name='3dslogo') or discord.PartialEmoji.from_str("⁉")
+        await self.refresh_luma_versions()
         db_channel = await self.bot.configuration.get_channel_by_name('small-help')
         if db_channel:
             channel = self.bot.guild.get_channel(db_channel[0])
             if channel and channel.type == discord.ChannelType.category:
                 self.small_help_category = channel
+
+    async def refresh_luma_versions(self):
+        async with self.bot.session.get('https://api.github.com/repos/LumaTeam/Luma3DS/git/refs/tags') as r:
+            if r.status == 200:
+                self.luma_versions.clear()
+                ret = await r.json()
+                for entry in ret:
+                    version = entry['ref'].split('/')[2]
+                    self.luma_versions.add(version[1:])
+            else:
+                logger.error("Failed to fetch luma versions.")
 
     async def unisearch(self, query: str) -> list[dict]:
         query = query.lower()
@@ -191,12 +204,13 @@ class Assistance(commands.Cog):
 
     @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     @commands.command()
-    async def luma(self, ctx: KurisuContext, lumaversion=""):
-        """Download links for Luma versions"""
-        if len(lumaversion) >= 3 and lumaversion[0].isdigit() and lumaversion[1] == "." and lumaversion[2].isdigit():
-            await self.simple_embed(ctx, f"Luma v{lumaversion}\nhttps://github.com/LumaTeam/Luma3DS/releases/tag/v{lumaversion}", color=discord.Color.blue())
-        elif lumaversion == "latest":
+    async def luma(self, ctx: KurisuContext, luma_version: Optional[str]):
+        """Links to a specific version of Luma or shows the most common ones if no version
+        is specified or the specified version is not found."""
+        if luma_version == "latest":
             await self.simple_embed(ctx, "Latest Luma Version:\nhttps://github.com/LumaTeam/Luma3DS/releases/latest", color=discord.Color.blue())
+        elif luma_version in self.luma_versions:
+            await self.simple_embed(ctx, f"Luma v{luma_version}\nhttps://github.com/LumaTeam/Luma3DS/releases/tag/v{luma_version}", color=discord.Color.blue())
         else:
             await self.simple_embed(ctx,
                                     "Download links for the most common Luma3DS releases:\n"
