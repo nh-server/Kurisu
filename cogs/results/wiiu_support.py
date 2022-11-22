@@ -265,6 +265,7 @@ act = Module('act (accounts)', {
     1101: ResultInfo('Network clock is invalid.'),
     2000: ResultInfo('Authentication error.'),
     # TODO: 2001-2644 (there aren't really that many errors)
+    2402: ResultInfo('Invalid NNID. Usually happens if the console is trying to connect to Nintendo servers with a Pretendo Network ID, or Pretendo Network with an NNID.'),
     2643: ResultInfo('Authentication is required.'),
     2651: ResultInfo('Confirmation code is expired.'),
     2661: ResultInfo('Mail address is not validated.'),
@@ -442,6 +443,10 @@ syserr = Module('system error', {
     2713: ResultInfo('The USB Storage device has been disconnected.')
 })
 
+vpad_gamepad = Module('vpad (gamepad)', {
+    9901: ResultInfo('Error when updating a GamePad with a different region from the console.')
+})
+
 unknown = Module('unknown/misc.', {
     9999: ResultInfo('Usually indicates an invalid signature, ticket, or corrupted data. Typically happens when running an unsigned program without CFW/signature patches.')
 })
@@ -465,7 +470,7 @@ modules = {
     151: Module('kpad (wiimote)'),
     155: Module('save'),
     160: syserr,
-    165: Module('vpad (gamepad)'),
+    165: vpad_gamepad,
     166: Module('aoc (dlc)'),
     187: Module('nfp (amiibo)'),
     199: unknown

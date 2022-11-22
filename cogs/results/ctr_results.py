@@ -134,7 +134,7 @@ am = Module('am', {
     39: ResultInfo('Invalid title version.'),
     43: ResultInfo('Database doesn\'t exist, or it failed to open.'),
     44: ResultInfo('Trying to uninstall system-app.'),
-    106: ResultInfo('Invalid signature/CIA.'),
+    106: ResultInfo('Invalid signature/CIA. Usually happens when developer UNITINFO is enabled in Luma3DS.'),
     393: ResultInfo('Invalid database.'),
 })
 
