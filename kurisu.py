@@ -362,10 +362,12 @@ class Kurisu(commands.Bot):
             await ctx.send(f"💢 I can't help you if you don't let me!\n`{exc.text}`.")
 
         elif isinstance(exc, commands.CommandInvokeError):
+            logger.error("", exc_info=True)
             await ctx.send(f'{author.mention} `{command}` raised an exception during usage')
             embed = create_error_embed(ctx, exc)
             await channel.send(embed=embed)
         else:
+            logger.error("", exc_info=True)
             await ctx.send(f'{author.mention} Unexpected exception occurred while using the command `{command}`')
             embed = create_error_embed(ctx, exc)
             await channel.send(embed=embed)
