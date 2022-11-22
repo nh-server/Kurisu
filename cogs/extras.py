@@ -283,8 +283,8 @@ class Extras(commands.Cog):
         await ctx.send("Done!")
 
     @commands.guild_only()
-    @app_commands.describe(channel_name="Channel to toggle")
     @commands.hybrid_command(hidden=True)
+    @app_commands.describe(channel_name="Channel to toggle")
     async def togglechannel(self, ctx: GuildContext, channel_name: str):
         """Enable or disable access to specific channels."""
 
@@ -383,9 +383,9 @@ class Extras(commands.Cog):
             ctx.command.reset_cooldown(ctx)
 
     @commands.dynamic_cooldown(KurisuCooldown(1, 300.0), commands.BucketType.member)
+    @commands.hybrid_command()
     @app_commands.describe(remind_in="Time to remind you in can be in a #d#h#m#s format or a YYYY-MM-DD HH:MM:SS format.",
                            reminder="Contents of the reminders. Max 800 characters.")
-    @commands.hybrid_command()
     async def remindme(self, ctx: KurisuContext, remind_in: int = commands.parameter(converter=DateOrTimeToSecondsConverter), *, reminder: str):
         """Sends a reminder after a set time, just for you. Max reminder size is 800 characters.\n\nTime format: #d#h#m#s."""
         if remind_in < 30 or remind_in > 3.154e+7:
