@@ -556,7 +556,7 @@ class Extras(commands.Cog):
     @is_staff('OP')
     @commands.guild_only()
     @commands.command()
-    async def addemoji(self, ctx: GuildContext, name: str, emoji: Union[str, discord.PartialEmoji], *roles: discord.Role):
+    async def addemoji(self, ctx: GuildContext, name: str, emoji: Union[discord.PartialEmoji, str], *roles: discord.Role):
         """Add an emoji to the server. OP+ only."""
         if isinstance(emoji, discord.PartialEmoji):
             emoji_bytes = await emoji.read()
