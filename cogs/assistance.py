@@ -127,12 +127,12 @@ class Assistance(commands.Cog):
     @is_staff('Helper')
     @commands.guild_only()
     @commands.command()
-    async def createsmallhelp(self, ctx: GuildContext, console: Literal['3ds', 'switch', 'wiiu', 'legacy'], helpee: discord.Member, desc: str):
-        """Creates a small help channel with the option to add a member. Helper+ only."""
+    async def createsmallhelp(self, ctx: GuildContext, console: Literal['3ds', 'switch', 'wiiu', 'legacy'], helpee: discord.Member, *, desc: str):
+        """Creates a small help channel for a user. Helper+ only."""
         if not self.small_help_category:
             return await ctx.send("The small help category is not set.")
         channel = await self.small_help_category.create_text_channel(name=f"{console}-{helpee.name}-{desc}")
-        await helpee.add_roles(self.bot.roles['Small Help'])
+        await channel.set_permissions(helpee, read_messages=True)
         await channel.send(f"{helpee.mention}, come here for help.")
         await self.bot.channels['mod-logs'].send(f"⭕️ **Small help access granted**: {ctx.author.mention} granted access to small help channel to {helpee.mention}")
         msg = f"🆕 **Small help channel created**: {ctx.author.mention} created small help channel {channel.mention} | {channel.name} ({channel.id})"
