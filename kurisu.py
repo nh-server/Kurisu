@@ -345,6 +345,9 @@ class Kurisu(commands.Bot):
             await ctx.send_help(ctx.command)
             command.reset_cooldown(ctx)
 
+        elif isinstance(exc, commands.MaxConcurrencyReached):
+            await ctx.send('This command is already being executed.')
+
         elif isinstance(exc, commands.errors.CommandOnCooldown):
             try:
                 await ctx.message.delete()

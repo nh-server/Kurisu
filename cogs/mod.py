@@ -789,6 +789,7 @@ class Mod(commands.Cog):
             )
 
     @is_staff("SuperOP")
+    @commands.max_concurrency(1, commands.BucketType.default)
     @commands.command()
     async def sync(self, ctx: KurisuContext):
         """Syncs app commands manually. SuperOP only"""
