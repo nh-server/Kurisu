@@ -11,12 +11,13 @@ import sys
 
 from datetime import timedelta, datetime
 from discord import app_commands, TextChannel, __version__ as discordpy_version
+from discord. app_commands import Transform
 from discord.ext import commands
-from discord.utils import format_dt, snowflake_time
+from discord.utils import format_dt, snowflake_time, MISSING
 from math import ceil
 from typing import Union, Optional, TYPE_CHECKING
 from utils.checks import is_staff, check_if_user_can_sr, check_staff
-from utils.converters import DateOrTimeToSecondsConverter
+from utils.converters import DateOrTimeToSecondsConverter, HackMessageTransformer
 from utils.utils import gen_color, send_dm_message, KurisuCooldown
 from utils.views import BasePaginator, SimpleVoteView, PaginatedEmbedView
 
@@ -317,24 +318,21 @@ class Extras(commands.Cog):
         else:
             await ctx.send(f"{channel_name} is not a valid toggleable channel.", ephemeral=True, delete_after=10)
 
-    @check_if_user_can_sr()
-    @commands.guild_only()
-    @commands.command(aliases=['ref'])
-    async def reference(self, ctx: GuildContext, message: discord.Message, ref_text: bool = True, ref_image: bool = True, ref_author: bool = False):
-        """Creates an embed with the contents of message. Trusted, Helpers, Staff, Retired Staff, Verified only."""
-        await ctx.message.delete()
-        msg_reference = ctx.message.reference or None
-        mention_author = any(ctx.message.mentions)
-        ref_author = ref_author if check_staff(ctx.bot, 'Helper', ctx.author.id) else True
-        if isinstance(message.channel, discord.abc.PrivateChannel):
-            return await ctx.send("Message can't be from a DM.")
+    def check_message(self, message: discord.Message, author) -> Optional[str]:
+
+        if message.type != discord.MessageType.default:
+            return "Only regular messages can be referenced."
 
         if not isinstance(message.channel, discord.abc.GuildChannel):
-            return await ctx.send("Failed to fetch channel information.")
+            return "Failed to fetch channel information."
 
         # xnoeproofing™
-        if not message.channel.permissions_for(ctx.author).read_messages:
-            return await ctx.send("bad xnoe, bad", delete_after=10)
+        if not message.channel.permissions_for(author).read_messages:
+            return "bad xnoe, bad"
+
+    async def create_ref(self, message: discord.Message, author: discord.Member, ref_text: bool, ref_image: bool, ref_author: bool) -> tuple[Optional[discord.Embed], Optional[discord.File]]:
+
+        assert isinstance(message.channel, discord.abc.GuildChannel)
 
         embed = discord.Embed(colour=gen_color(message.author.id), timestamp=message.created_at)
         if ref_text and message.content:
@@ -344,13 +342,31 @@ class Extras(commands.Cog):
         if ref_image and len(message.attachments) > 0 and message.attachments[0].height and message.attachments[0].filename.lower().endswith(('png', 'jpg', 'jpeg', 'gif')):
             file = await message.attachments[0].to_file()
             embed.set_image(url=f"attachment://{file.filename}")
-        if embed.description is None and embed.image is None:
-            return await ctx.send("No information to reference!", delete_after=10)
+        if embed.description is None and embed.image.proxy_url is None:
+            return None, None
         embed.set_author(name=message.author, icon_url=message.author.display_avatar.url, url=message.jump_url)
-        embed.set_footer(text=f"in {message.channel.name}{f'. Ref by {ctx.author}' if ref_author else ''}")
-        await ctx.send(file=file, embed=embed, reference=msg_reference, mention_author=mention_author)
+        embed.set_footer(text=f"in {message.channel.name}{f'. Ref by {author}' if ref_author else ''}")
+        return embed, file
 
-    @reference.error
+    @check_if_user_can_sr()
+    @commands.guild_only()
+    @commands.command(name='reference', aliases=['ref'])
+    async def reference_message(self, ctx: GuildContext, message: discord.Message, ref_text: bool = True, ref_image: bool = True, ref_author: bool = False):
+        """Creates an embed with the contents of message."""
+
+        await ctx.message.delete()
+        if error := self.check_message(message, ctx.author):
+            return await ctx.send(error, delete_after=10)
+        mention_author = any(ctx.message.mentions)
+        ref_author = ref_author if check_staff(ctx.bot, 'Helper', ctx.author.id) else True
+        embed, file = await self.create_ref(message, ctx.author, ref_text, ref_image, ref_author)
+
+        if embed is None:
+            return await ctx.send("No information to reference!", delete_after=10)
+
+        await ctx.send(file=file, embed=embed, reference=ctx.message.reference, mention_author=mention_author)
+
+    @reference_message.error
     async def reference_handler(self, ctx: GuildContext, error):
         if isinstance(error, (commands.ChannelNotFound, commands.MessageNotFound, commands.GuildNotFound)):
             await ctx.send(f"{ctx.author.mention} Message not found!", delete_after=10)
@@ -358,6 +374,27 @@ class Extras(commands.Cog):
             await ctx.send(f"You can't use {ctx.command.name}.", delete_after=10)
         else:
             await ctx.send(error, delete_after=10)
+
+    @check_if_user_can_sr()
+    @app_commands.describe(message="Message to reference.",
+                           ref_text="Copy message content from the message.",
+                           ref_image="Copy image attachment from the message.",
+                           )
+    @app_commands.guild_only
+    @app_commands.command(name='reference')
+    async def reference_message_app(self, interaction: discord.Interaction, message: Transform[discord.Message, HackMessageTransformer], ref_text: bool = True, ref_image: bool = True):
+        """Creates an embed with the contents of message."""
+
+        assert isinstance(interaction.user, discord.Member)
+
+        if error := self.check_message(message, interaction.user):
+            return await interaction.response.send_message(error, ephemeral=True)
+        embed, file = await self.create_ref(message, interaction.user, ref_text, ref_image, False)
+
+        if embed is None:
+            return await interaction.response.send_message("No information to reference!", ephemeral=True)
+
+        await interaction.response.send_message(file=file or MISSING, embed=embed)
 
     @commands.dm_only()
     @commands.cooldown(rate=1, per=21600.0, type=commands.BucketType.member)
