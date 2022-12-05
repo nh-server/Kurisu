@@ -2,7 +2,7 @@ import discord
 
 from datetime import datetime
 from discord import app_commands, Member
-from discord.ext.commands import BadArgument, MemberConverter, ObjectConverter, Context, Converter, ObjectNotFound
+from discord.ext.commands import BadArgument, MemberConverter, ObjectConverter, MessageConverter, Context, Converter, ObjectNotFound, ChannelNotFound
 from utils.utils import parse_date, parse_time
 from typing import NamedTuple, TYPE_CHECKING
 
@@ -69,3 +69,14 @@ class HackIDTransformer(app_commands.Transformer):
             return discord_object.id
         except ObjectNotFound:
             raise app_commands.TransformerError("Invalid ID", discord.AppCommandOptionType.string, self)
+
+
+# Javascript is a cursed language
+class HackMessageTransformer(app_commands.Transformer):
+    async def transform(self, interaction: discord.Interaction, value: str) -> discord.Message:
+        ctx = await Context.from_interaction(interaction)
+        try:
+            msg_object = await MessageConverter().convert(ctx, value)
+            return msg_object
+        except (ChannelNotFound, discord.NotFound, discord.Forbidden) as e:
+            raise app_commands.TransformerError(str(e), discord.AppCommandOptionType.string, self)
