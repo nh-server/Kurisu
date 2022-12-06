@@ -85,6 +85,7 @@ class Memes(commands.Cog):
         self.flushedwater = discord.utils.get(self.bot.guild.emojis, name="flushedwater") or "⁉"
         self.flushedw = discord.utils.get(self.bot.guild.emojis, name="FlushedW") or "⁉"
         self.flushedhalf2 = discord.utils.get(self.bot.guild.emojis, name="flushedhalf2") or "⁉"
+        self.flushedroulette = discord.utils.get(self.bot.guild.emojis, name="flushedroulette") or "⁉"
 
     async def _meme(self, ctx: KurisuContext, msg, directed: bool = False, image_link: Optional[str] = None, allowed_mentions: Optional[discord.AllowedMentions] = None):
 
@@ -274,23 +275,6 @@ class Memes(commands.Cog):
     async def lisp(self, ctx: KurisuContext):
         """Memes."""
         await self._meme(ctx, "", image_link="https://i.imgur.com/RQeZErU.png")
-
-    @commands.command(hidden=True)
-    async def dev(self, ctx: KurisuContext):
-        """Reminds user where they are."""
-        await self._meme(ctx, f"You {'do not ' if ctx.channel != self.bot.channels['dev'] else ''}seem to be in {self.bot.channels['dev'].mention}.", True)
-
-    @commands.command(hidden=True)
-    async def meta(self, ctx: KurisuContext):
-        """Reminds user where they are. (2)"""
-        await self._meme(ctx, f"You {'do not ' if ctx.channel != self.bot.channels['meta'] else ''}seem to be in {self.bot.channels['meta'].mention}."
-                              f" Please take this subject {'there' if ctx.channel != self.bot.channels['meta'] else 'somewhere else'}.", True)
-
-    @commands.command(hidden=True)
-    async def appeals(self, ctx: KurisuContext):
-        """Reminds user where they are. (3)"""
-        await self._meme(ctx, f"You {'do not ' if ctx.channel != self.bot.channels['appeals'] else ''}seem to be in {self.bot.channels['appeals'].mention}."
-                              f" Please take this subject {'there' if ctx.channel != self.bot.channels['appeals'] else 'somewhere else'}.", True)
 
     @commands.command(hidden=True)
     async def blackalabi(self, ctx: KurisuContext):
@@ -641,7 +625,7 @@ class Memes(commands.Cog):
                        f"{str(self.flushedmoon)}", f"{str(self.flushedhot)}", f"{str(self.flushedhand)}",
                        f"{str(self.flushedhalf)}", f"{str(self.flushedgoomba)}", f"{str(self.flushedflat)}",
                        f"{str(self.flushedcowboy)}", f"{str(self.flushedwater)}", f"{str(self.flushedw)}",
-                       f"{str(self.flushedhalf2)}"]
+                       f"{str(self.flushedhalf2)}", f"{str(self.flushedroulette)}"]
         await ctx.send(random.choice(flushedlist))
 
 

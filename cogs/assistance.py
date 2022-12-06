@@ -297,6 +297,41 @@ class Assistance(commands.Cog):
             else:
                 return await ctx.send(f'{ctx.author.mention if not ctx.interaction else ""} API returned error {r.status}. Please check your values and try again.', ephemeral=True)
 
+    @is_staff('Helper')
+    @commands.guild_only()
+    @commands.command(hidden=True)
+    async def dev(self, ctx: KurisuContext):
+        """Reminds user where they are. Helper+ only"""
+        await ctx.message.delete()
+        await ctx.send(ctx, f"You {'do not ' if ctx.channel != self.bot.channels['dev'] else ''}seem to be in {self.bot.channels['dev'].mention}.", True)
+
+    @is_staff('Helper')
+    @commands.guild_only()
+    @commands.command(hidden=True)
+    async def meta(self, ctx: KurisuContext):
+        """Reminds user where they are. (2) Helper+ only"""
+        await ctx.message.delete()
+        await ctx.send(ctx, f"You {'do not ' if ctx.channel != self.bot.channels['meta'] else ''}seem to be in {self.bot.channels['meta'].mention}."
+                            f" Please take this subject {'there' if ctx.channel != self.bot.channels['meta'] else 'somewhere else'}.", True)
+
+    @is_staff('Helper')
+    @commands.guild_only()
+    @commands.command(hidden=True)
+    async def appeals(self, ctx: KurisuContext):
+        """Reminds user where they are. (3) Helper+ only"""
+        await ctx.message.delete()
+        await ctx.send(ctx, f"You {'do not ' if ctx.channel != self.bot.channels['appeals'] else ''}seem to be in {self.bot.channels['appeals'].mention}."
+                            f" Please take this subject {'there' if ctx.channel != self.bot.channels['appeals'] else 'somewhere else'}.", True)
+
+    @is_staff('Helper')
+    @commands.guild_only()
+    @commands.command(hidden=True)
+    async def ot(self, ctx: KurisuContext):
+        """Reminds user where they are. (4) Helper+ only"""
+        await ctx.message.delete()
+        await ctx.send(ctx, f"You {'do not ' if ctx.channel != self.bot.channels['off-topic'] else ''}seem to be in {self.bot.channels['off-topic'].mention}."
+                            f" Please take this subject {'there' if ctx.channel != self.bot.channels['off-topic'] else 'somewhere else'}.", True)
+
 
 add_md_files_as_commands(Assistance)
 add_md_files_as_commands(Assistance, join(Assistance.data_dir, 'tutorial'), namespace=Assistance.tutorial)  # type: ignore
