@@ -303,7 +303,7 @@ class Assistance(commands.Cog):
     async def dev(self, ctx: KurisuContext):
         """Reminds user where they are. Helper+ only"""
         await ctx.message.delete()
-        await ctx.send(ctx, f"You {'do not ' if ctx.channel != self.bot.channels['dev'] else ''}seem to be in {self.bot.channels['dev'].mention}.", True)
+        await ctx.send(f"You {'do not ' if ctx.channel != self.bot.channels['dev'] else ''}seem to be in {self.bot.channels['dev'].mention}.")
 
     @is_staff('Helper')
     @commands.guild_only()
@@ -311,8 +311,7 @@ class Assistance(commands.Cog):
     async def meta(self, ctx: KurisuContext):
         """Reminds user where they are. (2) Helper+ only"""
         await ctx.message.delete()
-        await ctx.send(ctx, f"You {'do not ' if ctx.channel != self.bot.channels['meta'] else ''}seem to be in {self.bot.channels['meta'].mention}."
-                            f" Please take this subject {'there' if ctx.channel != self.bot.channels['meta'] else 'somewhere else'}.", True)
+        await ctx.send(f"You {'do not ' if ctx.channel != self.bot.channels['meta'] else ''}seem to be in {self.bot.channels['meta'].mention}. Please take this subject {'there' if ctx.channel != self.bot.channels['meta'] else 'somewhere else'}.")
 
     @is_staff('Helper')
     @commands.guild_only()
@@ -320,8 +319,7 @@ class Assistance(commands.Cog):
     async def appeals(self, ctx: KurisuContext):
         """Reminds user where they are. (3) Helper+ only"""
         await ctx.message.delete()
-        await ctx.send(ctx, f"You {'do not ' if ctx.channel != self.bot.channels['appeals'] else ''}seem to be in {self.bot.channels['appeals'].mention}."
-                            f" Please take this subject {'there' if ctx.channel != self.bot.channels['appeals'] else 'somewhere else'}.", True)
+        await ctx.send(f"You {'do not ' if ctx.channel != self.bot.channels['appeals'] else ''}seem to be in {self.bot.channels['appeals'].mention}. Please take this subject {'there' if ctx.channel != self.bot.channels['appeals'] else 'somewhere else'}.")
 
     @is_staff('Helper')
     @commands.guild_only()
@@ -329,8 +327,7 @@ class Assistance(commands.Cog):
     async def ot(self, ctx: KurisuContext):
         """Reminds user where they are. (4) Helper+ only"""
         await ctx.message.delete()
-        await ctx.send(ctx, f"You {'do not ' if ctx.channel != self.bot.channels['off-topic'] else ''}seem to be in {self.bot.channels['off-topic'].mention}."
-                            f" Please take this subject {'there' if ctx.channel != self.bot.channels['off-topic'] else 'somewhere else'}.", True)
+        await ctx.send(f"You {'do not ' if ctx.channel != self.bot.channels['off-topic'] else ''}seem to be in {self.bot.channels['off-topic'].mention}. Please take this subject {'there' if ctx.channel != self.bot.channels['off-topic'] else 'somewhere else'}.")
 
 
 add_md_files_as_commands(Assistance)
