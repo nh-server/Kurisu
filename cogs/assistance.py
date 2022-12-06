@@ -342,37 +342,38 @@ class Assistance(commands.GroupCog):
             else:
                 return await ctx.send(f'{ctx.author.mention if not ctx.interaction else ""} API returned error {r.status}. Please check your values and try again.', ephemeral=True)
 
+    async def send_channel_warn(self, ctx, channel):
+        await ctx.message.delete()
+        within_channel = ctx.channel == channel
+        await ctx.send(f"You {'do not ' if not within_channel else ''}seem to be in {channel.mention}. Please take this subject {'there' if not within_channel else 'somewhere else'}.")
+
     @is_staff('Helper')
     @commands.guild_only()
     @commands.command(hidden=True)
     async def dev(self, ctx: KurisuContext):
         """Reminds user where they are. Helper+ only"""
-        await ctx.message.delete()
-        await ctx.send(f"You {'do not ' if ctx.channel != self.bot.channels['dev'] else ''}seem to be in {self.bot.channels['dev'].mention}.")
+        await self.send_channel_warn(ctx, self.bot.channels['dev'])
 
     @is_staff('Helper')
     @commands.guild_only()
     @commands.command(hidden=True)
     async def meta(self, ctx: KurisuContext):
         """Reminds user where they are. (2) Helper+ only"""
-        await ctx.message.delete()
-        await ctx.send(f"You {'do not ' if ctx.channel != self.bot.channels['meta'] else ''}seem to be in {self.bot.channels['meta'].mention}. Please take this subject {'there' if ctx.channel != self.bot.channels['meta'] else 'somewhere else'}.")
+        await self.send_channel_warn(ctx, self.bot.channels['meta'])
 
     @is_staff('Helper')
     @commands.guild_only()
     @commands.command(hidden=True)
     async def appeals(self, ctx: KurisuContext):
         """Reminds user where they are. (3) Helper+ only"""
-        await ctx.message.delete()
-        await ctx.send(f"You {'do not ' if ctx.channel != self.bot.channels['appeals'] else ''}seem to be in {self.bot.channels['appeals'].mention}. Please take this subject {'there' if ctx.channel != self.bot.channels['appeals'] else 'somewhere else'}.")
+        await self.send_channel_warn(ctx, self.bot.channels['appeals'])
 
     @is_staff('Helper')
     @commands.guild_only()
     @commands.command(hidden=True)
     async def ot(self, ctx: KurisuContext):
         """Reminds user where they are. (4) Helper+ only"""
-        await ctx.message.delete()
-        await ctx.send(f"You {'do not ' if ctx.channel != self.bot.channels['off-topic'] else ''}seem to be in {self.bot.channels['off-topic'].mention}. Please take this subject {'there' if ctx.channel != self.bot.channels['off-topic'] else 'somewhere else'}.")
+        await self.send_channel_warn(ctx, self.bot.channels['off-topic'])
 
 
 add_md_files_as_commands(Assistance)
