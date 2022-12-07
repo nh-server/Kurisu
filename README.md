@@ -60,7 +60,7 @@ postgres database files are stored in a Docker volume called `kurisutestdb`. Use
 
 Set up PostgreSQL 13 or later (older versions aren't tested but might work).
 
-Python 3.9 or later is required.
+Python 3.10 or later is required.
 
 Install the dependencies in `requirements.txt`, ideally in a virtual environment.
 

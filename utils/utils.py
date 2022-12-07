@@ -110,7 +110,7 @@ def create_error_embed(ctx: Union[commands.Context, discord.Interaction], exc: U
     author = ctx.user if app_command else ctx.author
     command: str = ctx.command.name if ctx.command else "unknown command"
     embed = discord.Embed(title=f"Unexpected exception in command {command}", color=0xe50730)
-    trace = "".join(traceback.format_exception(etype=None, value=exc, tb=exc.__traceback__))
+    trace = "".join(traceback.format_exception(exc))
     if len(trace) > 4080:
         trace = trace[-4080:]
     embed.description = f'```py\n{trace}```'

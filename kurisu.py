@@ -218,7 +218,7 @@ class Kurisu(commands.Bot):
                 )
                 for cog, exc_type, exc in self.failed_cogs:
                     err_embed = discord.Embed(title=f"Failed to load cog {cog}", colour=0xe50730)
-                    trace = "".join(traceback.format_exception(exc_type, exc, None))
+                    trace = "".join(traceback.format_exception(exc))
                     err_embed.description = f"```py\n{trace}\n```"
                     await self.err_channel.send(embed=err_embed)
             if self.roles_not_found:
@@ -448,12 +448,12 @@ class Kuritree(app_commands.CommandTree):
 async def startup():
     setup_logging()
 
-    if discord.version_info.major < 2:
-        logger.error("discord.py is not at least 2.0.0x. (current version: %s)", discord.__version__)
+    if discord.version_info.major < 2 and discord.version_info.minor < 1:
+        logger.error("discord.py is not at least 2.1.0x. (current version: %s)", discord.__version__)
         return 2
 
-    if sys.hexversion < 0x30900F0:  # 3.9
-        logger.error("Kurisu requires 3.9 or later.")
+    if sys.hexversion < 0x30A00F0:  # 3.10
+        logger.error("Kurisu requires 3.10 or later.")
         return 2
 
     if not IS_DOCKER:
@@ -482,5 +482,4 @@ async def startup():
 
 
 if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(startup())
+    asyncio.run(startup())
