@@ -10,9 +10,7 @@ WORKDIR $HOME
 COPY ./requirements.txt .
 RUN set -eux \
 	&& apk add --no-cache libpq libjpeg-turbo \
-	&& apk add --no-cache --virtual .build-deps gcc git musl-dev zlib-dev libjpeg-turbo-dev postgresql-dev \
-	&& pip install --no-compile --no-cache-dir -r requirements.txt \
-	&& apk del --no-network .build-deps
+	&& pip install --no-compile --no-cache-dir -r requirements.txt
 USER kurisu
 
 #COPY data data
