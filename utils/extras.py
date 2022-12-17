@@ -1,9 +1,8 @@
 import asyncio
-from datetime import datetime
 
+from datetime import datetime
 from typing import TYPE_CHECKING
 from collections import defaultdict
-import discord
 from discord.utils import time_snowflake
 
 from .managerbase import BaseManager
@@ -32,7 +31,7 @@ class ExtrasManager(BaseManager, db_manager=ExtrasDatabaseManager):
 
         self._tags: 'dict[str, Tag]' = {t.title: t async for t in self.db.get_tags()}
 
-        self._timed_roles: 'list[TimedRole]' = [tr async for tr in self.db.get_timed_roles()]
+        self._timed_roles: 'dict[tuple[int, int], TimedRole]' = {(tr.user_id, tr.role_id): tr async for tr in self.db.get_timed_roles()}
 
         self._reminders = defaultdict(list)
 
@@ -48,23 +47,23 @@ class ExtrasManager(BaseManager, db_manager=ExtrasDatabaseManager):
         return self._reminders
 
     @property
-    def timed_roles(self) -> 'list[TimedRole]':
+    def timed_roles(self) -> 'dict[tuple[int, int], TimedRole]':
         return self._timed_roles
 
     async def add_timed_role(self, user: 'Union[Member, User, OptionalMember]', role: 'Role', expiring_date: datetime):
         res = await self.db.add_timed_role(role.id, user.id, expiring_date)
         if res:
-            self._timed_roles.append(TimedRole(role_id=role.id, user_id=user.id, expiring_date=expiring_date))
+            self._timed_roles[user.id, role.id] = TimedRole(role_id=role.id, user_id=user.id, expiring_date=expiring_date)
         return res
 
     async def delete_timed_role(self, user_id: int, role_id: int):
 
         res = await self.db.delete_timed_role(user_id, role_id)
         if res:
-            #  TODO There must be some better way to do this
-            s = discord.utils.get(self._timed_roles, user_id=user_id, role_id=role_id)
-            if s:
-                self._timed_roles.remove(s)
+            try:
+                del self._timed_roles[(user_id, role_id)]
+            except KeyError:
+                pass
         return res
 
     async def add_3ds_friend_code(self, user: 'Union[Member, User, OptionalMember]', fc: int):

@@ -141,7 +141,7 @@ class Loop(commands.Cog):
                                 f" restriction will be removed "
                                 f"in {((restriction.end_date - current_timestamp).seconds // 60) + 1} minutes.")
 
-                for timed_role in self.extras.timed_roles.copy():
+                for timed_role in list(self.extras.timed_roles.values()):
                     if current_timestamp > timed_role.expiring_date:
                         await self.extras.delete_timed_role(timed_role.user_id, timed_role.role_id)
                         member = self.bot.guild.get_member(timed_role.user_id)

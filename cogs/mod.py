@@ -854,7 +854,9 @@ class Mod(commands.Cog):
     @commands.command()
     async def tempstream(self, ctx: GuildContext, member: discord.Member, length: str = "", *, reason: Optional[str]):
         """Gives temporary streaming permissions to a member. Lasts 24 hours by default"""
-        await member.add_roles(self.bot.roles['streamer(temp)'])
+
+        role = self.bot.roles['streamer(temp)']
+        await member.add_roles(role)
 
         timestamp = datetime.now(self.bot.tz)
         seconds = parse_time(length) if length else 86400
@@ -864,7 +866,11 @@ class Mod(commands.Cog):
         delta = timedelta(seconds=seconds)
         expiring_time = timestamp + delta
         expiring_time_string = format_dt(expiring_time)
-        res = await self.extras.add_timed_role(member, self.bot.roles['streamer(temp)'], expiring_time)
+
+        if self.extras.timed_roles.get((member.id, role.id)):
+            await self.extras.delete_timed_role(member.id, role.id)
+
+        res = await self.extras.add_timed_role(member, role, expiring_time)
         if not res:
             return await ctx.send("Failed to add temporary stream permissions.")
         msg_user = f"You have been given streaming permissions until {expiring_time_string}!"
@@ -879,10 +885,13 @@ class Mod(commands.Cog):
     async def notempstream(self, ctx: GuildContext, member: discord.Member, *, reason: Optional[str]):
         """Revokes temporary streaming permissions from a member."""
 
-        await member.remove_roles(self.bot.roles['streamer(temp)'])
-        res = await self.extras.delete_timed_role(member.id, self.bot.roles['streamer(temp)'].id)
-        if not res:
-            return await ctx.send("Failed to remove temporary role.")
+        role = self.bot.roles['streamer(temp)']
+        await member.remove_roles(role)
+
+        if self.extras.timed_roles.get((member.id, role.id)):
+            res = await self.extras.delete_timed_role(member.id, role.id)
+            if not res:
+                return await ctx.send("Failed to remove temporary role.")
         msg_user = "Your temporary streaming permissions have been revoked!"
         await send_dm_message(member, msg_user, ctx)
         await self.logs.post_action_log(ctx.author, member, 'no-tempstream', reason=reason)
