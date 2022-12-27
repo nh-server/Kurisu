@@ -1,6 +1,6 @@
 ---
 title: Don't know where your Switch's serial is?
-image-url: https://i.imgur.com/03NfeFN.png
+image-url: https://nintendohomebrew.com/assets/img/nhmemes/switchserial.png
 aliases: switchserial
 help-desc: Picture to show what the hell a serial is
 ---

@@ -3,7 +3,7 @@ title: GBA Bios Extraction Tutorial
 url: https://glazedbelmont.github.io/gbabiosdump/
 help-desc: Links to GBA Bios Extraction Tutorial
 author.name: Glazed_Belmont
-thumbnail-url: https://i.imgur.com/TgdOPkG.png
+thumbnail-url: https://nintendohomebrew.com/assets/img/nhmemes/jade.png
 aliases: gbabios
 cooldown-rate: 0
 cooldown-per: 0

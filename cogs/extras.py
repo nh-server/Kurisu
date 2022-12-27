@@ -147,7 +147,7 @@ class Extras(commands.Cog):
         """About Kurisu"""
         embed = discord.Embed(title="Kurisu", color=discord.Color.green())
         embed.set_author(name="Maintained by Nintendo Homebrew helpers and staff")
-        embed.set_thumbnail(url="https://i.imgur.com/hjVY4Et.jpg")
+        embed.set_thumbnail(url="https://nintendohomebrew.com/assets/img/nhmemes/kurisu.jpg")
         embed.url = "https://github.com/nh-server/Kurisu"
         embed.description = "Kurisu, the Nintendo Homebrew Discord bot!"
         await ctx.send(embed=embed)

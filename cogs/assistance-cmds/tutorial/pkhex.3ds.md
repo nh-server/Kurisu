@@ -1,7 +1,7 @@
 ---
 title: PKHeX tutorial
 url: https://3ds.eiphax.tech/pkhex.html
-thumbnail-url: https://i.imgur.com/rr7Xf3E.jpg
+thumbnail-url: https://nintendohomebrew.com/assets/img/nhmemes/pkhex.jpg
 help-desc: Links to PKHeX tutorial
 aliases: pkhax,pkgen
 cooldown-rate: 0

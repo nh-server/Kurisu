@@ -118,67 +118,67 @@ class Memes(commands.Cog):
     @commands.command(hidden=True)
     async def screams(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/j0Dkv2Z.png")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/screamsinternally.png")
 
     @commands.command(hidden=True)
     async def eeh(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/2SBC1Qo.jpg")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/eeh.jpg")
 
     @commands.command(hidden=True)
     async def dubyadud(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/Sohsi8s.png")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/dubyadud.png")
 
     @commands.command(hidden=True)
     async def megumi(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/GMRp1dj.jpg")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/megumi.jpg")
 
     @commands.command(hidden=True)
     async def inori(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/WLncIsi.gif")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/inori.gif")
 
     @commands.command(hidden=True)
     async def inori2(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/V0uu99A.jpg")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/inori2.jpg")
 
     @commands.command(hidden=True)
     async def inori3(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/so8thgu.gif")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/inori3.gif")
 
     @commands.command(hidden=True)
     async def inori4(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/267IXh1.gif")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/inori4.gif")
 
     @commands.command(hidden=True)
     async def inori5(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/lKcsiBP.png")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/inori5.png")
 
     @commands.command(hidden=True)
     async def inori6(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/SIJzpau.gif")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/inori6.gif")
 
     @commands.command(hidden=True)
     async def shotsfired(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/zf2XrNk.gif")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/shotsfired.gif")
 
     @commands.command(hidden=True)
     async def rusure(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://imgur.com/sXnVRLw.gif")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/rusure.gif")
 
     @commands.command(hidden=True)
     async def r34(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/sjQZKBF.gif")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/r34.gif")
 
     @commands.command(hidden=True)
     async def lenny(self, ctx: KurisuContext):
@@ -193,98 +193,98 @@ class Memes(commands.Cog):
     @commands.command(hidden=True)
     async def permabrocked(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/ARsOh3p.jpg")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/permabrocked.jpg")
 
     @commands.command(hidden=True)
     async def knp(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/EsJ191C.png")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/knp.png")
 
     @commands.command(hidden=True)
     async def lucina(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/tnWSXf7.png")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/lucina.png")
 
     @commands.command(hidden=True)
     async def lucina2(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/ZPMveve.jpg")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/lucina2.jpg")
 
     @commands.command(hidden=True)
     async def xarec(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/A59RbRT.png")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/xarec.png")
 
     @commands.command(hidden=True)
     async def clap(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/UYbIZYs.gif")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/clap.gif")
 
     @commands.command(hidden=True)
     async def ayyy(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/bgvuHAd.png")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/ayyy.png")
 
     @commands.command(hidden=True)
     async def hazel(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/vpu8bX3.png")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/hazel.png")
 
     @commands.command(hidden=True)
     async def thumbsup(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "https://i.imgur.com/hki1IIs.gifv")
+        await self._meme(ctx, "https://nintendohomebrew.com/assets/img/nhmemes/thumbsup.gifv")
 
     @commands.command(hidden=True)
     async def pbanjo(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/sBJKzuK.png")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/pbanjo.png")
 
     # Cute commands :3
     @commands.command(hidden=True, aliases=["pat"])
     async def headpat(self, ctx: KurisuContext, u: discord.Member):
         """headpat"""
-        await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has been gently patted.", True, "https://i.imgur.com/7V6gIIW.jpg")
+        await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has been gently patted.", True, "https://nintendohomebrew.com/assets/img/nhmemes/pat.jpg")
 
     @commands.command(hidden=True, aliases=["pat2"])
     async def headpat2(self, ctx: KurisuContext, u: discord.Member):
         """headpat 2"""
-        await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has been gently patted.", True, "https://i.imgur.com/djhHX0n.gif")
+        await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has been gently patted.", True, "https://nintendohomebrew.com/assets/img/nhmemes/pat2.gif")
 
     @commands.command(hidden=True)
     async def headrub(self, ctx: KurisuContext, u: discord.Member):
         """headrub"""
-        await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has received a head rub.", True, "https://i.imgur.com/j6xSoKv.jpg")
+        await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has received a head rub.", True, "https://nintendohomebrew.com/assets/img/nhmemes/headrub.jpg")
 
     @commands.command(hidden=True)
     async def sudoku(self, ctx: KurisuContext):
         """Cute"""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/VHlIZRC.png")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/sudoku.png")
 
     @commands.command(hidden=True)
     async def baka(self, ctx: KurisuContext):
         """Cute"""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/OyjCHNe.png")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/baka.png")
 
     @commands.command(hidden=True)
     async def mugi(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/lw80tT0.gif")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/mugi.png")
 
     @commands.command(hidden=True)
     async def lisp(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/RQeZErU.png")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/lisp.png")
 
     @commands.command(hidden=True)
     async def blackalabi(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/JzFem4y.png")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/blackalabi.png")
 
     @commands.command(hidden=True)
     async def eip(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/SU0Qvc8.png")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/eip.png")
 
     @commands.command(hidden=True)
     async def whoops(self, ctx: KurisuContext):
@@ -294,57 +294,52 @@ class Memes(commands.Cog):
     @commands.command(hidden=True)
     async def nom(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/p1r53ni.jpg")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/nom.png")
 
     @commands.command(hidden=True)
     async def soghax(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/oQJy2eN.png")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/soghax.png")
 
     @commands.command(hidden=True)
     async def weebs(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/sPjRKUB.png")
-
-    @commands.command(hidden=True)
-    async def whatisr(self, ctx: KurisuContext):
-        """MEMES?"""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/Z8HhfzJ.jpg")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/weebs.png")
 
     @commands.command(hidden=True)
     async def helpers(self, ctx: KurisuContext):
         """MEMES?"""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/0v1EgMX.png")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/helpers.png")
 
     @commands.command(hidden=True)
     async def concern(self, ctx: KurisuContext):
         """MEMES?"""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/cWXBb5g.png")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/concern.png")
 
     @commands.command(hidden=True)
     async def fuck(self, ctx: KurisuContext):
         """MEMES?"""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/4lNA5Ud.gif")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/fuck.gif")
 
     @commands.command(hidden=True)
     async def goose(self, ctx: KurisuContext):
         """MEMES?"""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/pZUeBql.jpg")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/goose.jpg")
 
     @commands.command(hidden=True)
     async def planet(self, ctx: KurisuContext):
         """haha yes!"""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/YIBADGT.png")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/planet.png")
 
     @commands.command(hidden=True)
     async def pbanj(self, ctx: KurisuContext):
         """he has the power"""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/EQy9pl3.png")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/pbanj.png")
 
     @commands.command(hidden=True)
     async def pbanj2(self, ctx: KurisuContext):
         """pbanos"""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/oZx7Qid.gif")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/pbanj2.gif")
 
     # Begin code from https://github.com/reswitched/robocop-ng
     @staticmethod
@@ -383,42 +378,42 @@ class Memes(commands.Cog):
     @commands.command(hidden=True)
     async def nogas(self, ctx: KurisuContext):
         """shhhh no one gives a shit!"""
-        await self._meme(ctx, "https://imgur.com/a/5IcfK6N")
+        await self._meme(ctx, "https://nintendohomebrew.com/assets/img/nhmemes/nogas.mp4")
 
     @commands.command(hidden=True)
     async def cosmic(self, ctx: KurisuContext):
         """Cosmic ban"""
-        await self._meme(ctx, "https://i.imgur.com/V4TVpbC.gifv")
+        await self._meme(ctx, "https://nintendohomebrew.com/assets/img/nhmemes/cosmicban.mp4")
 
     @commands.command(hidden=True)
     async def menuhax(self, ctx: KurisuContext):
         """menuhax 11.4 wen"""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/fUiZ2c3.png")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/menuhax.png")
 
     @commands.command(hidden=True)
     async def magic(self, ctx: KurisuContext):
         """shrug.avi"""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/k9111dq.jpg")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/magic.jpg")
 
     @commands.command(hidden=True)
     async def mouse(self, ctx: KurisuContext):
         """Whaaaa"""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/0YHBP7l.png")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/mouse.png")
 
     @commands.command(hidden=True)
     async def bananoose(self, ctx: KurisuContext):
         """:)"""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/VUmkXDd.jpg")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/bananoose.jpg")
 
     @commands.command(hidden=True)
     async def goosenana(self, ctx: KurisuContext):
         """:)"""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/dLZOK5c.jpg")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/goosenana.jpg")
 
     @commands.command(hidden=True)
     async def eel(self, ctx: KurisuContext, u: discord.Member):
         """eel"""
-        await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has been eel slapped.", True, "https://i.imgur.com/QXF2Pcn.gif")
+        await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has been eel slapped.", True, "https://nintendohomebrew.com/assets/img/nhmemes/eel.gif")
 
     @commands.command(hidden=True, aliases=["bruh", "yolo", "swag", "based"])
     async def dab(self, ctx: KurisuContext):
@@ -433,7 +428,7 @@ class Memes(commands.Cog):
     @commands.command(hidden=True, aliases=["wheresource", "sauce", "github"])
     async def source(self, ctx: KurisuContext):
         """You *did* read the GPL, *right?*"""
-        await self._meme(ctx, "", image_link="https://i.imgur.com/ceLGvc4.gif")
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/source.gif")
 
     @commands.command(hidden=True)
     async def pirate2(self, ctx: KurisuContext):
@@ -524,19 +519,19 @@ class Memes(commands.Cog):
     @commands.command(hidden=True, aliases=["departure"])
     async def depart(self, ctx: KurisuContext):
         """From the amazing Mr. Burguers"""
-        departure_gifs = ["https://i.imgur.com/Kbyp7i4.gif", "https://i.imgur.com/Wv8DoGC.gif"]
+        departure_gifs = ["https://nintendohomebrew.com/assets/img/nhmemes/departure1.gif", "https://nintendohomebrew.com/assets/img/nhmemes/departure2.gif"]
         await self._meme(ctx, "", image_link=random.choice(departure_gifs))
 
     @commands.command(hidden=True)
     async def arrival(self, ctx: KurisuContext):
         """Glazy can add departure but not arrival smh"""
-        arrival_gifs = ["https://imgur.com/kNlrsth.gif", "https://imgur.com/ZlwaTUp.gif"]
+        arrival_gifs = ["https://nintendohomebrew.com/assets/img/nhmemes/arrival1.gif", "https://nintendohomebrew.com/assets/img/nhmemes/arrival2.png"]
         await self._meme(ctx, "", image_link=random.choice(arrival_gifs))
 
     @commands.command(hidden=True)
     async def hug(self, ctx: KurisuContext, u: discord.Member):
         """hug"""
-        await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has received a hug.", True, "https://i.imgur.com/wTHzIXx.jpg")
+        await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has received a hug.", True, "https://nintendohomebrew.com/assets/img/nhmemes/hug.jpg")
 
     @commands.command(hidden=True)
     async def blahaj(self, ctx: KurisuContext, money: float):

@@ -3,7 +3,7 @@ title: Virtual Console Injects for 3DS
 url: https://mega.nz/#!qnAE1YjC!q3FRHgIAVEo4nRI2IfANHJr-r7Sil3YpPYE4w8ZbUPY
 author.name: Asdolo
 author.url: https://gbatemp.net/members/asdolo.389539/
-thumbnail-url: https://i.imgur.com/rHa76XM.png
+thumbnail-url: https://nintendohomebrew.com/assets/img/nhmemes/asdolo.png
 help-desc: Link to Virtual Console Injects for 3DS/Wiiu.
 ---
 
