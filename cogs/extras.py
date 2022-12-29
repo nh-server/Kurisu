@@ -285,9 +285,12 @@ class Extras(commands.Cog):
 
     @commands.guild_only()
     @commands.hybrid_command(hidden=True)
-    @app_commands.describe(channel_name="Channel to toggle")
     async def togglechannel(self, ctx: GuildContext, channel_name: str):
-        """Enable or disable access to specific channels."""
+        """Enable or disable access to specific channels.
+
+        Args:
+            channel_name: Name of the channel to toggle.
+        """
 
         if not ctx.interaction:
             await ctx.message.delete()
@@ -376,14 +379,16 @@ class Extras(commands.Cog):
             await ctx.send(error, delete_after=10)
 
     @check_if_user_can_sr()
-    @app_commands.describe(message="Message to reference.",
-                           ref_text="Copy message content from the message.",
-                           ref_image="Copy image attachment from the message.",
-                           )
     @app_commands.guild_only
     @app_commands.command(name='reference')
     async def reference_message_app(self, interaction: discord.Interaction, message: Transform[discord.Message, HackMessageTransformer], ref_text: bool = True, ref_image: bool = True):
-        """Creates an embed with the contents of message."""
+        """Creates an embed with the contents of message.
+
+        Args:
+            message: Message to reference.
+            ref_text: Copy message content from the message.
+            ref_image: Copy image attachment from the message.
+        """
 
         assert isinstance(interaction.user, discord.Member)
 
@@ -421,10 +426,13 @@ class Extras(commands.Cog):
 
     @commands.dynamic_cooldown(KurisuCooldown(1, 300.0), commands.BucketType.member)
     @commands.hybrid_command()
-    @app_commands.describe(remind_in="Time to remind you in can be in a #d#h#m#s format or a YYYY-MM-DD HH:MM:SS format.",
-                           reminder="Contents of the reminders. Max 800 characters.")
     async def remindme(self, ctx: KurisuContext, remind_in: int = commands.parameter(converter=DateOrTimeToSecondsConverter), *, reminder: str):
-        """Sends a reminder after a set time, just for you. Max reminder size is 800 characters.\n\nTime format: #d#h#m#s."""
+        """Sends a reminder after a set time, just for you. Max reminder size is 800 characters.
+
+        Args:
+            remind_in: Time to remind you in can be in a #d#h#m#s format or a YYYY-MM-DD HH:MM:SS format.
+            reminder: Contents of the reminders. Max 800 characters.
+        """
         if remind_in < 30 or remind_in > 3.154e+7:
             return await ctx.send("You can't set a reminder for less than 30 seconds or for more than a year.")
         if len(reminder) > 800:
@@ -568,10 +576,6 @@ class Extras(commands.Cog):
 
     @is_staff('OP')
     @app_commands.default_permissions(ban_members=True)
-    @app_commands.describe(name="Name of the vote",
-                           description="Description of the vote",
-                           options="Options for the vote separated by \'|\'",
-                           staff_only="If only staff is allowed to vote.")
     @app_commands.guild_only
     @app_commands.command()
     async def simplevote(self,
@@ -580,7 +584,14 @@ class Extras(commands.Cog):
                          description: str,
                          options: str = "Yes|No",
                          staff_only: bool = False):
-        """Creates a simple vote, only who made the vote can stop it. OP+ only."""
+        """Creates a simple vote, only who made the vote can stop it. OP+ only.
+
+        Args:
+            name: Name of the vote.
+            description: Description of the vote.
+            options: Options for the vote separated by | .
+            staff_only: If only staff is allowed to vote.
+        """
         options_parsed = options.split('|')
         view = SimpleVoteView(self.bot, interaction.user.id, options_parsed, interaction.id, start=discord.utils.utcnow(), staff_only=staff_only)
         embed = discord.Embed(title=name, description=description)

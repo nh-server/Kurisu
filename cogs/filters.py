@@ -94,7 +94,7 @@ class Filter(commands.Cog):
     @wordfilter.command(name='export')
     async def wordfilter_export(self, ctx, export_format: Literal['automod', 'text'], *, filters: str):
         """Export the filtered words in the specified filters to a text file.
-        `automod` outputs the words in a format ready to be copied to automod without filter distinction.
+        `automod` outputs the words in a format ready to be copied to AutoMod without filter distinction.
         `text` outputs the words of each filter separated by new lines with the filter name before them."""
 
         if filters == 'all':

@@ -97,17 +97,19 @@ class KickBan(commands.Cog):
     @app_commands.default_permissions(ban_members=True)
     @app_commands.guild_only()
     @app_commands.command(name='ban')
-    @app_commands.describe(member="Member to ban.",
-                           reason="Reason for the ban.",
-                           delete_messages="Specify up to 7 days of messages to delete.",
-                           duration="This will convert the ban to a time ban. Length format: #d#h#m#s.")
     async def ban_member_slash(self,
                                interaction: discord.Interaction,
                                member: discord.Member,
                                reason: Optional[str] = None,
                                delete_messages: app_commands.Range[int, 0, 7] = 0,
                                duration: app_commands.Transform[Optional[int], TimeTransformer] = None):
-        """Bans a user from the server. OP+ only."""
+        """Bans a user from the server. OP+ only.
+
+        Args:
+            member: Member to ban.
+            reason: Reason for the ban.
+            delete_messages: Number of days to delete messages. Max 7 days.
+            duration: This will convert the ban to a time ban. Length format: #d#h#m#s."""
 
         assert interaction.guild is not None
 

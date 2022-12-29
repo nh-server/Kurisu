@@ -83,16 +83,6 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
         return sql_query, bindings
 
     @is_staff_app("OP")
-    @app_commands.describe(message_content="What to search in the message contents.",
-                           member_id="ID or mention of User to search.",
-                           channel_id="ID or mention of channel to search in.",
-                           before="Date in yyyy-mm-dd format.",
-                           after="Date in yyyy-mm-dd format.",
-                           during="Date in yyyy-mm-dd format. Can't be used with before or after.",
-                           order_by="Show old or new messages first. Defaults to newest messages first.",
-                           show_mod_channels="If message in mod channels should be shown. Defaults to False",
-                           limit="Limit of message to fetch. Max 1000. Defaults to 500.",
-                           view_state="If the results file should be public or in a ephemeral message. Defaults to public")
     @app_commands.choices(
         order_by=[
             Choice(name='Older first', value='ASC',),
@@ -118,7 +108,22 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
             show_mod_channels: bool = False,
             limit: app_commands.Range[int, 1, 1000] = 500  # limit might change in the future but 1000 is good for now
     ):
-        """Search the server logs for messages that matches the parameters given then returns them in a file"""
+        """Search the server logs for messages that matches the parameters given then returns them in a file
+
+        Args:
+            message_content: What to search in the message contents.
+            member_id: ID or mention of User to search.
+            channel_id: ID or mention of channel to search in.
+            before: Date in yyyy-mm-dd format.
+            after: Date in yyyy-mm-dd format.
+            during: Date in yyyy-mm-dd format. Can't be used with before or after.,
+            order_by: Show old or new messages first. Defaults to the newest messages first.,
+            show_mod_channels: If message in mod channels should be shown. Defaults to False.
+            limit: Limit of message to fetch. Max 1000. Defaults to 500.
+            view_state: If the results file should be public or in a ephemeral message. Defaults to public.
+            show_mod_channels: Show mod channels in results.
+            limit: Maximum number of messages to show.
+        """
 
         assert interaction.guild is not None
 
@@ -149,8 +154,6 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
         await interaction.edit_original_response(attachments=[file])
 
     @is_staff_app("OP")
-    @app_commands.describe(name="Name or part of the name of the channel to search",
-                           view_state="If the results file should be public or in a ephemeral message. Defaults to public")
     @app_commands.choices(
         view_state=[
             Choice(name='Public', value=""),
@@ -164,7 +167,12 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
             name: str = "",
             view_state: str = "",
     ):
-        """Search the server logs for channels that matches the name given then returns them in a file"""
+        """Search the server logs for channels that matches the name given then returns them in a file
+
+        Args:
+            name: Name or part of the name of the channel to search.
+            view_state: If the results file should be public or in a ephemeral message. Defaults to public.
+        """
 
         assert interaction.guild is not None
 

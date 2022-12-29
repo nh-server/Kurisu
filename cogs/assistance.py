@@ -3,7 +3,6 @@ from __future__ import annotations
 import discord
 import logging
 
-from discord import app_commands
 from discord.ext import commands
 from inspect import cleandoc
 from os.path import dirname, join
@@ -261,15 +260,17 @@ class Assistance(commands.Cog):
 
     @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     @commands.hybrid_command()
-    @app_commands.describe(device='Your console model.',
-                           month='The system\'s month.',
-                           day='The console\'s day.',
-                           inquiry='Your inquiry number.',
-                           device_id='Your device id. Only required on switch 8.0+.')
     async def mkey(self, ctx: KurisuContext, device: Literal['3ds', 'dsi', 'wii', 'wiiu', 'switch'], month: commands.Range[int, 1, 12], day: commands.Range[int, 1, 31], inquiry: str, device_id: Optional[str] = None):
         """
-        Generate an master key for resetting parental control for given device.
+        Generate a master key for resetting parental control for given device.
         Usage: `mkey <3ds|dsi|wii|wiiu|switch> <month> <day> <inquiry (no space)> <deviceid (switch 8.0+ only)>`
+
+        Args:
+            device: Your console model.
+            month: The system's month.
+            day: The console's day.
+            inquiry: Your inquiry number.
+            device_id: Your device id. Only required on switch 8.0+.
         """
 
         device_codes = {

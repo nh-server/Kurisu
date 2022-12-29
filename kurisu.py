@@ -29,6 +29,7 @@ from utils.context import KurisuContext
 
 cogs = (
     'cogs.assistance',
+    'cogs.automod',
     'cogs.blah',
     'cogs.events',
     'cogs.extras',

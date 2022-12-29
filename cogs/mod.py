@@ -14,7 +14,6 @@ from utils import Restriction
 from utils.converters import DateOrTimeToSecondsConverter, TimeTransformer
 from utils.checks import is_staff, check_staff, check_bot_or_staff, is_staff_app
 from utils.utils import paginate_message, send_dm_message, parse_time, text_to_discord_file, gen_color, create_error_embed
-from utils.views import AutoModRulesView
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -755,10 +754,13 @@ class Mod(commands.Cog):
 
     @is_staff_app("Owner")
     @app_commands.default_permissions(administrator=True)
-    @app_commands.describe(file='Image to set as the new avatar.')
     @app_commands.command()
     async def avatar(self, interaction: discord.Interaction, file: discord.Attachment):
-        """Sets bot avatar. Owner only"""
+        """Sets bot avatar. Owner only
+
+        Args:
+            file: Image to set as the new avatar.
+        """
 
         if not file.content_type or file.content_type not in (
             "image/jpeg",
@@ -900,10 +902,6 @@ class Mod(commands.Cog):
     @app_commands.default_permissions(ban_members=True)
     @app_commands.guild_only
     @app_commands.command()
-    @app_commands.describe(member="Member to apply restriction.",
-                           restriction="Restriction Type.",
-                           length="Restriction length in ##d##m##ss format.",
-                           reason="Reason for restriction")
     @app_commands.choices(restriction=[
         Choice(name='Take Embed Permissions', value='No-Embed',),
         Choice(name='Take Elsewhere access', value='No-elsewhere'),
@@ -918,7 +916,14 @@ class Mod(commands.Cog):
                               restriction: str,
                               length: app_commands.Transform[Optional[int], TimeTransformer] = None,
                               reason: Optional[str] = None):
-        """Applies a restriction to a member. OP+ Only"""
+        """Applies a restriction to a member. OP+ Only
+
+        Args:
+            member: Member to apply restriction.
+            restriction: Restriction Type.
+            length: Restriction length in ##d##m##ss format.
+            reason: Reason for restriction
+        """
 
         restriction_action = {'No-Embed': 'no-embed',
                               'No-elsewhere': 'take-elsewhere',
@@ -937,14 +942,6 @@ class Mod(commands.Cog):
         await self.restrictions.add_restriction(member, Restriction(restriction), reason, end_date=end_time)
         await interaction.response.send_message(f"{member.mention} now has the {restriction} restriction role{f' until {format_dt(end_time)}.' if end_time else '.'}")
         await self.logs.post_action_log(interaction.user, member, restriction_action[restriction], reason=reason, until=end_time)
-
-    @is_staff("SuperOP")
-    @commands.command()
-    async def automod(self, ctx: GuildContext):
-        """Sends a discord view to view and set some AutoMod rules settings."""
-        rules = await ctx.guild.fetch_automod_rules()
-        view = AutoModRulesView(rules, ctx.author)
-        await ctx.send(embed=view.default_embed, view=view)
 
 
 async def setup(bot):
