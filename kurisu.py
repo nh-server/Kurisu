@@ -81,7 +81,7 @@ if IS_DOCKER:
     db_user = get_env('DB_USER')
     db_password = get_env('DB_PASSWORD')
     SERVER_LOGS_URL = get_env('SERVER_LOGS_URL')
-    DATABASE_URL = f"postgresql://{db_user}:{db_password}@db/{db_user}"
+    DATABASE_URL = f"postgresql://{db_user}:{db_password}@kurisu_db/{db_user}"
 else:
     kurisu_config = ConfigParser()
     kurisu_config.read("data/config.ini")

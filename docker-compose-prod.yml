@@ -7,6 +7,10 @@ services:
     environment:
       POSTGRES_USER_FILE: /run/secrets/db_user
       POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    networks:
+      kurisu-net:
+        aliases:
+          - kurisu_db
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U kurisu"]
       interval: 10s
@@ -24,6 +28,9 @@ services:
       DB_USER_FILE: /run/secrets/db_user
       DB_PASSWORD_FILE: /run/secrets/db_password
       SERVER_LOGS_URL_FILE: /run/secrets/server_logs_url
+    networks:
+      - kurisu-net
+      - panopticon-net
     secrets:
       - kurisu_token
       - db_user
@@ -33,6 +40,14 @@ services:
       db:
         condition: service_healthy
     restart: always
+
+networks:
+  kurisu-net:
+    name: kurisu
+    driver: bridge
+  panopticon-net:
+    name: panopticon
+    external: true
 
 volumes:
   kurisudb:

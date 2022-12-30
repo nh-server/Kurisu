@@ -7,6 +7,10 @@ services:
     environment:
       POSTGRES_USER: kurisu
       POSTGRES_PASSWORD: dev123
+    networks:
+      default:
+        aliases:
+          - kurisu_db
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U kurisu"]
       interval: 10s
@@ -23,12 +27,18 @@ services:
       SERVER_LOGS_URL_FILE: /run/secrets/server_logs_url
       DB_USER: kurisu
       DB_PASSWORD: dev123
+    networks:
+      - bridge
     secrets:
       - kurisu_token
       - server_logs_url
     depends_on:
       db:
         condition: service_healthy
+
+networks:
+  default:
+    driver: bridge
 
 volumes:
   kurisutestdb:
