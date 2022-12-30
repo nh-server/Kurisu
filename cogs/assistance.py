@@ -54,7 +54,7 @@ class UniDBResultsPaginator(BasePaginator):
         return embed
 
 
-class Assistance(commands.Cog):
+class Assistance(commands.GroupCog):
     """
     Commands that will mostly be used in the help channels.
     """

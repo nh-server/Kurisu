@@ -99,7 +99,7 @@ async def tag_autocomplete(interaction: discord.Interaction, current: str) -> li
         return [app_commands.Choice(name=tag_title, value=tag_title) for tag_title in list(cog.extras.tags.keys())[:25]]
 
 
-class Extras(commands.Cog):
+class Extras(commands.GroupCog):
     """
     Extra things.
     """

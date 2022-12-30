@@ -27,7 +27,7 @@ class PurgeFlags(commands.FlagConverter, prefix='--', delimiter=' '):
     exclusive_list: list[discord.Member] = commands.flag(name='only', default=lambda ctx: [])
 
 
-class Mod(commands.Cog):
+class Mod(commands.GroupCog):
     """
     Staff commands.
     """
@@ -796,6 +796,7 @@ class Mod(commands.Cog):
     async def sync(self, ctx: KurisuContext):
         """Syncs app commands manually. SuperOP only"""
         await ctx.bot.tree.sync()
+        ctx.bot.tree.app_commands = await ctx.bot.tree.fetch_commands()
         await ctx.send("App commands synced!")
 
     @is_staff("SuperOP")

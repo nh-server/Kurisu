@@ -6,13 +6,13 @@ from discord import AutoModRuleTriggerType, AutoModRuleActionType, Interaction, 
 from discord.ui import Select, Button, TextInput, Modal, View
 from discord.utils import format_dt
 
-from typing import Optional, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 from utils.checks import check_staff
 from utils.utils import parse_time, gen_color, text_to_discord_file
 
 if TYPE_CHECKING:
-    from kurisu import Kurisu
+    from kurisu import Kurisu, Optional, Union
 
 
 class BasePaginator:
@@ -47,10 +47,10 @@ class BasePaginator:
 class BasePaginatedView(View):
     """Base class for a paginated view using a BasePaginator subclass"""
 
-    def __init__(self, paginator: BasePaginator, author: Optional[Union[discord.Member, discord.User]] = None, timeout: int = 30):
+    def __init__(self, paginator: BasePaginator, author: 'Optional[Union[discord.Member, discord.User]]' = None, timeout: int = 30):
         super().__init__(timeout=timeout)
         self.paginator = paginator
-        self.message: Optional[discord.Message] = None
+        self.message: 'Optional[Union[discord.Message, discord.InteractionMessage]]' = None
         self.author = author
 
         if self.paginator.n_pages == 1:
@@ -124,7 +124,7 @@ class BasePaginatedView(View):
 
 
 class PaginatedEmbedView(BasePaginatedView):
-    def __init__(self, paginator: BasePaginator, timeout: int = 20, author: Optional[Union[discord.Member, discord.User]] = None):
+    def __init__(self, paginator: BasePaginator, timeout: int = 20, author: 'Optional[Union[discord.Member, discord.User]]' = None):
         super().__init__(paginator=paginator, timeout=timeout, author=author)
         if self.paginator.n_pages == 1:
             self.clear_items()

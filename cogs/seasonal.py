@@ -55,7 +55,7 @@ class Season:
         return (month * 31) + day
 
 
-class Seasonal(commands.Cog):
+class Seasonal(commands.GroupCog):
     """
     Seasonal commands.
     """

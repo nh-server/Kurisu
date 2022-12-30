@@ -13,7 +13,7 @@ if TYPE_CHECKING:
     from utils.context import KurisuContext, GuildContext
 
 
-class ModWarn(commands.Cog):
+class ModWarn(commands.GroupCog):
     """
     Warn commands.
     """

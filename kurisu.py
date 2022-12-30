@@ -17,13 +17,14 @@ from configparser import ConfigParser
 from datetime import datetime
 
 import pytz
-from discord import app_commands
+from discord import app_commands, AppCommandType, AppCommandOptionType
+from discord.app_commands import AppCommand, AppCommandGroup
 from discord.ext import commands
 from subprocess import check_output, CalledProcessError
 from typing import Optional, Union
 from utils import WarnsManager, ConfigurationManager, RestrictionsManager, ExtrasManager, FiltersManager, UserLogManager
 from utils.checks import InsufficientStaffRank
-from utils.help import KuriHelp
+from utils.help import KuriHelp, HelpView, CategorySelect, MainHelpPaginator
 from utils.utils import create_error_embed
 from utils.context import KurisuContext
 
@@ -99,7 +100,6 @@ def setup_logging():
     sh.setFormatter(fmt)
     log.addHandler(sh)
     logging.getLogger('discord').propagate = False
-    logging.getLogger('gino').propagate = False
 
 
 logger = logging.getLogger(__name__)
@@ -229,6 +229,8 @@ class Kurisu(commands.Bot):
 
         logger.info(startup_message)
         await self.channels['helpers'].send(embed=embed)
+
+        self.tree.app_commands = await self.tree.fetch_commands()
 
         self._is_all_ready.set()
 
@@ -366,12 +368,12 @@ class Kurisu(commands.Bot):
             await ctx.send(f"💢 I can't help you if you don't let me!\n`{exc.text}`.")
 
         elif isinstance(exc, commands.CommandInvokeError):
-            logger.error("", exc_info=True)
+            logger.error("", exc_info=exc)
             await ctx.send(f'{author.mention} `{command}` raised an exception during usage')
             embed = create_error_embed(ctx, exc)
             await channel.send(embed=embed)
         else:
-            logger.error("", exc_info=True)
+            logger.error("", exc_info=exc)
             await ctx.send(f'{author.mention} Unexpected exception occurred while using the command `{command}`')
             embed = create_error_embed(ctx, exc)
             await channel.send(embed=embed)
@@ -393,6 +395,7 @@ class Kuritree(app_commands.CommandTree):
         super().__init__(client)
         self.err_channel: Optional[Union[discord.TextChannel, discord.VoiceChannel]] = None
         self.logger = logging.getLogger(__name__)
+        self.app_commands: list[AppCommand] = []
 
     async def on_error(
         self,
@@ -443,7 +446,7 @@ class Kuritree(app_commands.CommandTree):
                 embed = create_error_embed(interaction, error)
                 await channel.send(embed=embed)
             else:
-                self.logger.error("Error during application command usage.", exc_info=True)
+                self.logger.error("Error during application command usage.", exc_info=error)
 
 
 async def startup():
@@ -479,6 +482,26 @@ async def startup():
         bot = Kurisu(command_prefix=['.', '!'], description="Kurisu, the bot for Nintendo Homebrew!", commit=commit,
                      branch=branch, pool=pool)
         bot.help_command = KuriHelp()
+
+        @bot.tree.command(name='help')
+        async def help_app_command(interaction: discord.Interaction):
+            """Help for kurisu slash commands."""
+
+            mapping: dict[AppCommand, list[AppCommandGroup]] = {}
+            for c in bot.tree.app_commands:
+                if c.type is not AppCommandType.chat_input:
+                    continue
+                mapping[c] = []
+                for sc in c.options:
+                    if sc.type is AppCommandOptionType.subcommand:
+                        mapping[c].append(sc)
+            ctx = await bot.get_context(interaction)
+            paginator = MainHelpPaginator(mapping, ctx)
+            view = HelpView(paginator, ctx)
+            view.add_item(CategorySelect(mapping, ctx))
+            await interaction.response.send_message(embed=view.paginator.current(), view=view, ephemeral=True)
+            view.message = await interaction.original_response()
+
         await bot.start(TOKEN)
 
 

@@ -44,6 +44,9 @@ class AutoMod(commands.GroupCog):
     Commands to manage AutoMod
     """
 
+    def __init__(self):
+        self.emoji = discord.PartialEmoji.from_str('🤖')
+
     @is_staff("SuperOP")
     @commands.command()
     async def automod(self, ctx: GuildContext):
@@ -130,4 +133,4 @@ class AutoMod(commands.GroupCog):
 
 
 async def setup(bot):
-    await bot.add_cog(AutoMod(bot))
+    await bot.add_cog(AutoMod())
