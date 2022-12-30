@@ -40,6 +40,9 @@ class AutoModRuleTransformer(app_commands.Transformer):
 
 @app_commands.default_permissions(ban_members=True)
 class AutoMod(commands.GroupCog):
+    """
+    Commands to manage AutoMod
+    """
 
     @is_staff("SuperOP")
     @commands.command()
