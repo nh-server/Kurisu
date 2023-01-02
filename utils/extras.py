@@ -1,4 +1,5 @@
 import asyncio
+import discord
 
 from datetime import datetime
 from typing import TYPE_CHECKING
@@ -88,10 +89,11 @@ class ExtrasManager(BaseManager, db_manager=ExtrasDatabaseManager):
             self._reminders[author.id].append(Reminder(id=now, date=date, author_id=author.id, content=content))
         return res
 
-    async def delete_reminder(self, reminder_id, author_id: int):
+    async def delete_reminder(self, reminder_id: int, author_id: int):
         res = await self.db.delete_reminder(reminder_id)
         if res:
-            del self._reminders[author_id]
+            reminder = discord.utils.find(lambda rmd: rmd.id == reminder_id, self._reminders[author_id])
+            self._reminders[author_id].remove(reminder)
         return res
 
     async def add_tag(self, title: str, content: str, author: int):
