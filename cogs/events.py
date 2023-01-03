@@ -47,10 +47,20 @@ class Events(commands.Cog):
     user_message_antispam: dict[int, list[discord.Message]] = {}
     userbot_yeeter: dict[int, list[discord.abc.MessageableChannel]] = {}
     channel_antispam: dict[int, list[discord.Message]] = {}
+    invite_antispam: dict[int, list[discord.Message]] = {}
 
     async def userbot_yeeter_pop(self, message: discord.Message):
         await asyncio.sleep(20)
         self.userbot_yeeter[message.author.id].remove(message.channel)
+        try:
+            if len(self.userbot_yeeter[message.author.id]) == 0:
+                self.userbot_yeeter.pop(message.author.id)
+        except KeyError:
+            pass
+
+    async def invite_spam_pop(self, message: discord.Message):
+        await asyncio.sleep(20)
+        self.invite_antispam[message.author.id].remove(message)
         try:
             if len(self.userbot_yeeter[message.author.id]) == 0:
                 self.userbot_yeeter.pop(message.author.id)
@@ -107,18 +117,32 @@ class Events(commands.Cog):
                     await message.delete()
                 except discord.NotFound:
                     pass
-                try:
-                    await message.author.send(
-                        f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
-                        f"Server invites must be approved by staff. To contact staff send a message to <@333857992170536961>.")
-                except discord.errors.Forbidden:
-                    pass
-            for invite in approved_invites:
-                if invite.uses != -1:
-                    if invite.uses > 1:
-                        await self.filters.update_invite_use(invite.code)
-                    else:
-                        await self.filters.delete_approved_invite(invite.code)
+                if message.author.id not in self.invite_antispam:
+                    self.invite_antispam[message.author.id] = []
+                self.invite_antispam[message.author.id].append(message)
+                if len(self.invite_antispam[message.author.id]) > 3:
+                    await send_dm_message(message.author, "You have been kicked from Nintendo Homebrew for spamming invites to non approved servers.")
+                    try:
+                        self.bot.actions.append(f"wk:{str(message.author.id)}")
+                        await message.author.kick(reason="Spamming server invites.")
+                    except (discord.Forbidden, discord.NotFound):
+                        self.bot.actions.remove(f"wk:{str(message.author.id)}")
+                else:
+                    self.bot.loop.create_task(self.invite_spam_pop(message))
+                    try:
+                        await message.author.send(
+                            f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
+                            f"Server invites must be approved by staff. To contact staff send a message to <@333857992170536961>.")
+                    except discord.errors.Forbidden:
+                        pass
+            # if the message was deleted don't reduce approved invites uses
+            else:
+                for invite in approved_invites:
+                    if invite.uses != -1:
+                        if invite.uses > 1:
+                            await self.filters.update_invite_use(invite.code)
+                        else:
+                            await self.filters.delete_approved_invite(invite.code)
 
         if contains_misinformation_url_mention:
             try:
