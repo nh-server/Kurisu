@@ -344,10 +344,10 @@ class Mod(commands.GroupCog):
         checks = [lambda m: not m.pinned]
 
         if flags.exclusive_list:
-            checks.append(lambda m: not m.pinned or m.author_id in flags.exclusive_list)
+            checks.append(lambda m: m.author in flags.exclusive_list)
 
         if flags.ignore_list:
-            checks.append(lambda m: not m.author_id not in flags.ignore_list)
+            checks.append(lambda m: m.author not in flags.ignore_list)
 
         def check(message):
             return all(c(message) for c in checks)
