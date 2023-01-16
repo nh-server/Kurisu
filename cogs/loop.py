@@ -116,7 +116,7 @@ class Loop(commands.Cog):
         while self.is_active:
             try:
                 current_timestamp = datetime.now(self.bot.tz)
-                for restriction in self.restrictions.timed_restricions.copy():
+                for restriction in list(self.restrictions.timed_restrictions.values()):
                     restriction_type = Restriction(restriction.type)
                     if current_timestamp > restriction.end_date:
                         member = self.bot.guild.get_member(restriction.user_id) or OptionalMember(
@@ -135,7 +135,7 @@ class Loop(commands.Cog):
                         warning_time_period = timedelta(minutes=30) if restriction.type is Restriction.Ban else timedelta(minutes=10)
                         warning_time = restriction.end_date - warning_time_period
                         if current_timestamp > warning_time:
-                            await self.bot.restrictions.set_timed_restriction_alert(restriction.restriction_id)
+                            await self.bot.restrictions.set_timed_restriction_alert(restriction.user_id, restriction.type)
                             await self.bot.channels['mods'].send(
                                 f"**Note**: <@{restriction.user_id}> | {restriction.user_id} {restriction_type.name}"
                                 f" restriction will be removed "

@@ -74,11 +74,14 @@ class RestrictionsManager(BaseManager, db_manager=RestrictionsDatabaseManager):
         asyncio.create_task(self.setup())
 
     async def setup(self):
-        self._timed_restrictions: list[TimedRestriction] = [r async for r in self.get_timed_restrictions()]
-        self._softbans: dict[int, Softban] = {r[1]: Softban(user_id=r[1], issuer_id=r[2], reason=r[3]) async for r in self.db.get_softbans()}
+        self._timed_restrictions: dict[tuple[int, str], TimedRestriction] = {(r.user_id, r.type): r
+                                                                             async for r in
+                                                                             self.get_timed_restrictions()}
+        self._softbans: dict[int, Softban] = {r[1]: Softban(user_id=r[1], issuer_id=r[2], reason=r[3]) async for r in
+                                              self.db.get_softbans()}
 
     @property
-    def timed_restricions(self) -> list[TimedRestriction]:
+    def timed_restrictions(self) -> dict[tuple[int, str], TimedRestriction]:
         return self._timed_restrictions
 
     @property
@@ -95,12 +98,14 @@ class RestrictionsManager(BaseManager, db_manager=RestrictionsDatabaseManager):
             res = await self.db.add_timed_restriction(now, user.id, restriction.value, end_date)
         else:
             res = await self.db.add_restriction(now, user.id, restriction.value)
-
         if res:
             if end_date:
-                self._timed_restrictions.append(
-                    TimedRestriction(restriction_id=now, user_id=user.id, type=restriction.value, end_date=end_date,
-                                     alerted=False))
+                self._timed_restrictions[user.id, restriction.value] = TimedRestriction(restriction_id=res,
+                                                                                        user_id=user.id,
+                                                                                        type=restriction.value,
+                                                                                        end_date=end_date,
+                                                                                        alerted=False)
+
             if restriction is not Restriction.Ban and isinstance(user, discord.Member):
                 try:
                     await user.add_roles(self.bot.roles[restriction.value])
@@ -124,12 +129,14 @@ class RestrictionsManager(BaseManager, db_manager=RestrictionsDatabaseManager):
         async for r in self.db.get_restrictions_by_type(restriction.value):
             yield r
 
-    async def get_restrictions_by_user(self, user_id: int) -> 'AsyncGenerator[tuple[int, int, str, datetime, bool], None]':
+    async def get_restrictions_by_user(self,
+                                       user_id: int) -> 'AsyncGenerator[tuple[int, int, str, datetime, bool], None]':
         assert isinstance(user_id, int)
         async for r in self.db.get_restrictions_by_user(user_id):
             yield r
 
-    async def add_softban(self, user: 'Union[Member, User, OptionalMember]', issuer: 'Union[Member, User, OptionalMember]', reason: str):
+    async def add_softban(self, user: 'Union[Member, User, OptionalMember]',
+                          issuer: 'Union[Member, User, OptionalMember]', reason: str):
         res = await self.db.add_softban(user.id, issuer.id, reason)
         if res:
             self._softbans[user.id] = Softban(user_id=user.id, issuer_id=issuer.id, reason=reason)
@@ -155,18 +162,19 @@ class RestrictionsManager(BaseManager, db_manager=RestrictionsDatabaseManager):
         if restriction is not Restriction.Ban and isinstance(user, discord.Member):
             await user.remove_roles(self.bot.roles[restriction.value])
         if res:
-            timed_res = discord.utils.get(self._timed_restrictions, user_id=user.id, type=restriction.value)
-            if timed_res:
-                self._timed_restrictions.remove(timed_res)
+            try:
+                del self._timed_restrictions[user.id, restriction.value]
+            except KeyError:
+                self.log.warn(f"Failed to remove timed restriction with key ({user.id}, {restriction})")
+
         return res
 
-    async def set_timed_restriction_alert(self, restriction_id):
+    async def set_timed_restriction_alert(self, user_id: int, restriction: str):
         """Removes a restriction to."""
-        res = await self.db.set_timed_restriction_alert(restriction_id)
+        timed_res = self._timed_restrictions[user_id, restriction]
+        res = await self.db.set_timed_restriction_alert(timed_res.restriction_id)
         if res:
-            timed_res = discord.utils.get(self._timed_restrictions, restriction_id=restriction_id)
-            if timed_res:
-                timed_res.alerted = True
+            timed_res.alerted = True
 
     async def get_timed_restrictions(self):
         async for r in self.db.get_timed_restrictions():

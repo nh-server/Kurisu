@@ -36,13 +36,13 @@ class RestrictionsDatabaseManager(BaseDatabaseManager, tables=tables):
         assert isinstance(user_id, int)
         await self.bot.configuration.add_member(user_id)
         query = "INSERT INTO restrictions (id, user_id, type, end_date) VALUES ($1,$2,$3, $4) ON CONFLICT (user_id, type) " \
-                "DO UPDATE SET end_date = excluded.end_date"
+                "DO UPDATE SET end_date = excluded.end_date RETURNING id;"
         conn: asyncpg.Connection
         async with self.pool.acquire() as conn:
             async with conn.transaction():
-                res = await conn.execute(query, restriction_id, user_id, restriction, end_date)
+                tr_id = await conn.fetchrow(query, restriction_id, user_id, restriction, end_date)
                 self.log.debug('Added timed restriction to user id %d: %s', user_id, restriction)
-        return self._parse_status(res)
+        return tr_id[0]
 
     async def remove_restriction(self, user_id: int, restriction: str) -> int:
         """Remove a restriction from the user id."""

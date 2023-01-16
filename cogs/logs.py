@@ -135,7 +135,7 @@ Thanks for stopping by and have a good time!
             self.bot.actions.remove(f'bu:{user.id}')
             return
         msg = f"⚠️ **Unban**: {user.mention} | {self.bot.escape_text(user)}"
-        if discord.utils.get(self.restrictions.timed_restricions, user_id=user.id, type=Restriction.Ban.value):
+        if self.restrictions.timed_restrictions.get((user.id, Restriction.Ban.value)):
             msg += "\nTimeban removed."
             await self.restrictions.remove_restriction(user, Restriction.Ban)
         await self.bot.channels['mod-logs'].send(msg)
