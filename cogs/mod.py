@@ -27,6 +27,7 @@ class PurgeFlags(commands.FlagConverter, prefix='--', delimiter=' '):
     exclusive_list: list[discord.Member] = commands.flag(name='only', default=lambda ctx: [])
 
 
+@app_commands.default_permissions(manage_nicknames=True)
 class Mod(commands.GroupCog):
     """
     Staff commands.

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import discord
 
+from discord import app_commands
 from discord.ext import commands
 from typing import Union, TYPE_CHECKING, Optional
 
@@ -13,6 +14,7 @@ if TYPE_CHECKING:
     from utils.context import KurisuContext, GuildContext
 
 
+@app_commands.default_permissions(manage_nicknames=True)
 class ModWarn(commands.GroupCog):
     """
     Warn commands.

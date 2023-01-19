@@ -13,6 +13,7 @@ from utils.converters import HackIDTransformer, DateTransformer
 
 
 @app_commands.guild_only
+@app_commands.default_permissions(ban_members=True)
 class ServerLogs(commands.GroupCog, name="serverlogs"):
     """Command group for accesing the server logs"""
 

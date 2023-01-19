@@ -18,6 +18,7 @@ if TYPE_CHECKING:
     from utils.context import KurisuContext, GuildContext
 
 
+@app_commands.default_permissions(ban_members=True)
 class KickBan(commands.GroupCog):
     """
     Kicking and banning users.
