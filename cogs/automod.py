@@ -5,7 +5,7 @@ import discord
 from discord import app_commands, AutoModRuleTriggerType, AutoModRule
 from discord.ext import commands
 
-from utils.checks import is_staff
+from utils.checks import is_staff, is_staff_app
 from utils.views import AutoModRulesView
 
 from typing import TYPE_CHECKING
@@ -55,6 +55,7 @@ class AutoMod(commands.GroupCog):
         view = AutoModRulesView(rules, ctx.author)
         await ctx.send(embed=view.default_embed, view=view)
 
+    @is_staff_app("SuperOP")
     @app_commands.autocomplete(rule=rules_autocomplete)
     @app_commands.guild_only
     @app_commands.command()
@@ -94,6 +95,7 @@ class AutoMod(commands.GroupCog):
         await interaction.response.send_message(f"Added keyword {keyword} to {rule.name} Automod rule succesfully.",
                                                 ephemeral=True)
 
+    @is_staff_app("SuperOP")
     @app_commands.autocomplete(rule=rules_autocomplete)
     @app_commands.guild_only
     @app_commands.command()

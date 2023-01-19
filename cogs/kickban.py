@@ -94,7 +94,6 @@ class KickBan(commands.GroupCog):
         await self.bot.logs.post_action_log(ctx.author, member, 'ban', reason=reason)
 
     @is_staff_app("OP")
-    @app_commands.default_permissions(ban_members=True)
     @app_commands.guild_only()
     @app_commands.command(name='ban')
     async def ban_member_slash(self,

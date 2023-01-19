@@ -753,7 +753,6 @@ class Mod(commands.GroupCog):
         await self.bot.user.edit(username=username)
 
     @is_staff_app("Owner")
-    @app_commands.default_permissions(administrator=True)
     @app_commands.command()
     async def avatar(self, interaction: discord.Interaction, file: discord.Attachment):
         """Sets bot avatar. Owner only
@@ -900,7 +899,6 @@ class Mod(commands.GroupCog):
         await self.logs.post_action_log(ctx.author, member, 'no-tempstream', reason=reason)
 
     @is_staff_app("OP")
-    @app_commands.default_permissions(ban_members=True)
     @app_commands.guild_only
     @app_commands.command()
     @app_commands.choices(restriction=[

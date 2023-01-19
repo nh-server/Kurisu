@@ -16,7 +16,7 @@ from discord.ext import commands
 from discord.utils import format_dt, snowflake_time, MISSING
 from math import ceil
 from typing import Union, Optional, TYPE_CHECKING
-from utils.checks import is_staff, check_if_user_can_sr, check_staff
+from utils.checks import is_staff, check_if_user_can_sr, check_staff, is_staff_app
 from utils.converters import DateOrTimeToSecondsConverter, HackMessageTransformer
 from utils.utils import gen_color, send_dm_message, KurisuCooldown
 from utils.views import BasePaginator, SimpleVoteView, PaginatedEmbedView
@@ -574,8 +574,7 @@ class Extras(commands.GroupCog):
         await self.extras.delete_tag(tag_name)
         await ctx.send("Tag deleted successfully.")
 
-    @is_staff('OP')
-    @app_commands.default_permissions(ban_members=True)
+    @is_staff_app('OP')
     @app_commands.guild_only
     @app_commands.command()
     async def simplevote(self,
