@@ -290,7 +290,7 @@ class Events(commands.Cog):
 
     async def user_spam_check(self, message: discord.Message):
         assert isinstance(message.author, discord.Member)
-        assert isinstance(message.channel, discord.abc.GuildChannel)
+        assert isinstance(message.channel, (discord.abc.GuildChannel, discord.Thread))
         if message.author.id not in self.user_message_antispam:
             self.user_message_antispam[message.author.id] = []
         self.user_message_antispam[message.author.id].append(message)
@@ -309,7 +309,7 @@ class Events(commands.Cog):
             # clone list so nothing is removed while going through it
             msgs_to_delete = self.user_message_antispam[message.author.id][:]
             for msg in msgs_to_delete:
-                assert isinstance(msg.channel, discord.abc.GuildChannel)
+                assert isinstance(msg.channel, (discord.abc.GuildChannel, discord.Thread))
                 embed.add_field(name="#" + msg.channel.name,
                                 value="\u200b" + msg.content)  # added zero-width char to prevent an error with an empty string (lazy workaround)
             await self.bot.channels['mod-logs'].send(log_msg, embed=embed)
@@ -349,7 +349,7 @@ class Events(commands.Cog):
             # clone list so nothing is removed while going through it
             msgs_to_delete = self.user_ping_antispam[key].copy()
             for msg in msgs_to_delete:
-                assert isinstance(msg[0].channel, discord.abc.GuildChannel)
+                assert isinstance(msg[0].channel, (discord.abc.GuildChannel, discord.Thread))
                 # added zero-width char to prevent an error with an empty string (lazy workaround)
                 embed.add_field(name="#" + msg[0].channel.name, value="\u200b" + msg[0].content)
             await self.bot.channels['mod-logs'].send(log_msg, embed=embed)
@@ -372,7 +372,7 @@ class Events(commands.Cog):
             pass  # if the array doesn't exist, don't raise an error
 
     async def channel_spam_check(self, message: discord.Message):
-        assert isinstance(message.channel, discord.abc.GuildChannel)
+        assert isinstance(message.channel, (discord.abc.GuildChannel, discord.Thread))
         if message.channel.id not in self.channel_antispam:
             self.channel_antispam[message.channel.id] = []
         self.channel_antispam[message.channel.id].append(message)
