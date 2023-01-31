@@ -1,7 +1,7 @@
 ---
 title: Hekate
 url: https://github.com/CTCaer/hekate/releases/latest
-thumbnail-url: https://imgur.com/kFEZyuC.png
+thumbnail-url: https://nintendohomebrew.com/assets/img/nhmemes/ctc.png
 author.name: CTCaer
 author.url: https://github.com/CTCaer
 help-desc: Download link for the latest Hekate version

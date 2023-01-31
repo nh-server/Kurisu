@@ -1,7 +1,7 @@
 ---
 title: Randomizing with LayeredFS
 url: https://zetadesigns.github.io/randomizing-layeredfs.html
-thumbnail-url: https://i.imgur.com/rr7Xf3E.jpg
+thumbnail-url: https://nintendohomebrew.com/assets/img/nhmemes/pkhex.jpg
 help-desc: Links to layeredfs randomizing tutorial
 aliases: randomise
 cooldown-rate: 0

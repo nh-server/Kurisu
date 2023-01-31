@@ -1,7 +1,7 @@
 ---
 title: Disable write protection on an SD Card
 help-desc: Disable write protection on an SD Card
-image-url: https://i.imgur.com/RvKjWcz.png
+image-url: https://nintendohomebrew.com/assets/img/nhmemes/sdlock.png
 ---
 
 This switch on the SD Card should be facing upwards, as in this photo. Otherwise,  your device will refuse to write to it.

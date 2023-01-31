@@ -1,7 +1,7 @@
 ---
 title: AP Guide
 url: https://glazedbelmont.github.io/appatching/
-thumbnail-url: https://i.imgur.com/TgdOPkG.png
+thumbnail-url: https://nintendohomebrew.com/assets/img/nhmemes/jade.png
 aliases: appatch,dsscene
 help-desc: Anti-piracy patching guide
 cooldown-rate: 0

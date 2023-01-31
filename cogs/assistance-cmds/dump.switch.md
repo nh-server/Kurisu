@@ -3,7 +3,7 @@ title: Switch dump/build Guide
 url: https://suchmememanyskill.github.io/guides/switchdumpguide/
 author.name: SuchMeme
 author.url: https://suchmememanyskill.github.io/guides/switchdumpguide/
-thumbnail-url: https://i.imgur.com/FkKB0er.png
+thumbnail-url: https://nintendohomebrew.com/assets/img/nhmemes/suchmeme.png
 help-desc: How to dump games and data for CFW consoles
 ---
 
