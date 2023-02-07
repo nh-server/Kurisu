@@ -130,7 +130,9 @@ class Assistance(commands.GroupCog):
         """Creates a small help channel for a user. Helper+ only."""
         if not self.small_help_category:
             return await ctx.send("The small help category is not set.")
-        channel = await self.small_help_category.create_text_channel(name=f"{console}-{helpee.name}-{desc}")
+        # Channel names can't be longer than 100 characters
+        channel_name = f"{console}-{helpee.name}-{desc}"[:100]
+        channel = await self.small_help_category.create_text_channel(name=channel_name)
         await channel.set_permissions(helpee, read_messages=True)
         await channel.send(f"{helpee.mention}, come here for help.")
         await self.bot.channels['mod-logs'].send(f"⭕️ **Small help access granted**: {ctx.author.mention} granted access to small help channel to {helpee.mention}")
