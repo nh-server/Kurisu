@@ -1,5 +1,5 @@
 ---
-help-desc: Message on HDDs on the Wii U
+help-desc: Message for HDDs on the Wii U
 ---
 
-If you're having trouble getting your HDD to work with your WiiU, it might be due to the HDD not getting enough power. One way to fix this is by using a y-cable to connect the HDD to two USB ports.
+Click [here](https://wiiu.eiphax.tech/hddinfo) for information on using Hard Drives with the Wii U.
