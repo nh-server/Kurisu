@@ -186,6 +186,11 @@ account2 = Module('account', {
     5515: ResultInfo('Network timeout.'),
 })
 
+# 026: even more account stuff lol (why Nintendo)
+account3 = Module('account', {
+    3278: ResultInfo('Adding funds to NNID via the 3DS console is deprecated.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/22369/~/how-to-combine-nintendo-account-and-nintendo-network-id-funds')
+})
+
 # 090: application defined?
 unknown1 = Module('unknown', {
     212: ResultInfo('Game is permanently banned from Pokémon Global Link for using altered or illegal save data.', is_ban=True)
