@@ -323,9 +323,6 @@ class Extras(commands.GroupCog):
 
     def check_message(self, message: discord.Message, author) -> Optional[str]:
 
-        if message.type != discord.MessageType.default:
-            return "Only regular messages can be referenced."
-
         if not isinstance(message.channel, discord.abc.GuildChannel):
             return "Failed to fetch channel information."
 
