@@ -74,17 +74,26 @@ class WarnsManager(BaseManager, db_manager=WarnsDatabaseManager):
 
         return warn_id, count
 
-    async def delete_warning(self, warn_id: int):
+    async def delete_warning(self, warn_id: int, deleter: Member, reason: 'Optional[str]'):
         """Remove a warning from a user."""
-        return await self.db.delete_warning(warn_id=warn_id)
+        return await self.db.delete_warning(warn_id=warn_id, deleter=deleter.id, reason=reason)
 
-    async def delete_all_warnings(self, user: 'Union[Member, User, OptionalMember]'):
+    async def delete_deleted_warning(self, warn_id: int):
+        """Remove a deleted warning from a user permanently."""
+        return await self.db.delete_deleted_warning(warn_id=warn_id)
+
+    async def delete_all_warnings(self, user: 'Union[Member, User, OptionalMember]', deleter: Member, reason: 'Optional[str]'):
         """Remove all warnings from a user."""
-        return await self.db.delete_all_warnings(user.id)
+        return await self.db.delete_all_warnings(user.id, deleter.id, reason)
 
     async def get_warnings(self, user: 'Union[Member, User, OptionalMember]'):
         """Get warnings for a user."""
         async for w in self.db.get_warnings(user_id=user.id):
+            yield w
+
+    async def get_deleted_warnings(self, user: 'Union[Member, User, OptionalMember]'):
+        """Get deleted warnings for a user."""
+        async for w in self.db.get_deleted_warnings(user_id=user.id):
             yield w
 
     async def get_warnings_count(self, user: 'Union[Member, User, OptionalMember]') -> int:

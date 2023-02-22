@@ -8,6 +8,8 @@ from typing import Union, TYPE_CHECKING, Optional
 
 from utils.checks import is_staff, check_bot_or_staff
 from utils import check_staff, ordinal
+from utils.utils import create_userinfo_embed
+from utils.views import ModSenseView
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -139,7 +141,7 @@ class ModWarn(commands.GroupCog):
 
     @is_staff("HalfOP")
     @commands.command()
-    async def delwarn(self, ctx: GuildContext, member: Union[discord.Member, discord.User], idx: commands.Range[int, 1, 5]):
+    async def delwarn(self, ctx: GuildContext, member: Union[discord.Member, discord.User], idx: commands.Range[int, 1, 5], *, reason: str):
         """Remove a specific warn from a user. Staff only."""
         warns = [w async for w in self.warns.get_warnings(member)]
         if not warns:
@@ -153,22 +155,39 @@ class ModWarn(commands.GroupCog):
         issuer = await ctx.get_user(warn.issuer_id)
         embed = discord.Embed(color=discord.Color.dark_red(), title=f"Warn {idx} on {discord.utils.snowflake_time(warn.warn_id).strftime('%Y-%m-%d %H:%M:%S')}",
                               description=f"Issuer: {issuer.name if issuer else warn.issuer_id}\nReason: {warn.reason}")
-        await self.warns.delete_warning(warn.warn_id)
+        await self.warns.delete_warning(warn.warn_id, ctx.author, reason)
         await ctx.send(f"{member.mention} {ordinal(idx)} warn has been removed.")
         msg = f"🗑 **Deleted warn**: {ctx.author.mention} removed warn {idx} from {member.mention} | {self.bot.escape_text(member)}"
         await self.bot.channels['mod-logs'].send(msg, embed=embed)
 
     @is_staff("HalfOP")
     @commands.command()
-    async def clearwarns(self, ctx: GuildContext, member: Union[discord.Member, discord.User]):
+    async def clearwarns(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason: str):
         """Clear all warns for a user. Staff only."""
-        res = await self.warns.delete_all_warnings(member)
+        res = await self.warns.delete_all_warnings(member, ctx.author, reason)
         if not res:
             await ctx.send(f"{member.mention} has no warns!")
             return
         await ctx.send(f"{member.mention} no longer has any warns!")
         msg = f"🗑 **Cleared warns**: {ctx.author.mention} cleared {res} warns from {member.mention} | {self.bot.escape_text(member)}"
         await self.bot.channels['mod-logs'].send(msg)
+
+    @is_staff("OP")
+    @commands.guild_only()
+    @commands.max_concurrency(1, commands.BucketType.guild)
+    @commands.command()
+    async def modsense(self, ctx: GuildContext, user: Union[discord.Member, discord.User]):
+        """Shows information of user along with warn stuff. Staff and Helpers only."""
+
+        embed = await create_userinfo_embed(user, ctx.guild)
+
+        warns = [w async for w in self.warns.get_warnings(user)]
+        deleted_warns = [w async for w in self.warns.get_deleted_warnings(user)]
+
+        view = ModSenseView(ctx.bot, warns, deleted_warns, ctx.author, user, embed)
+
+        view.message = await ctx.send(view=view, embed=embed)
+        await view.wait()
 
 
 async def setup(bot):

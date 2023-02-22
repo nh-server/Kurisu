@@ -134,7 +134,10 @@ create table warns
 	id BIGINT PRIMARY KEY,
 	user_id BIGINT NOT NULL REFERENCES members(id),
 	issuer_id BIGINT NOT NULL REFERENCES members(id),
-	reason TEXT
+	reason TEXT,
+	deletion_time timestamptz,
+	deletion_reason TEXT,
+    deleter BIGINT REFERENCES members(id)
 );
 
 

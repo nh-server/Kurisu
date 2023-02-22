@@ -8,6 +8,7 @@ import traceback
 from .checks import check_staff
 from discord import app_commands
 from discord.ext import commands
+from discord.utils import format_dt
 from typing import Optional, Union
 
 
@@ -149,3 +150,42 @@ class KurisuCooldown:
             return None
         else:
             return commands.Cooldown(self.rate, self.per)
+
+
+async def create_userinfo_embed(user: Union[discord.Member, discord.User], guild: discord.Guild) -> discord.Embed:
+
+    embed = discord.Embed(color=gen_color(user.id))
+    embed.description = (
+        f"**User:** {user.mention}\n"
+        f"**User's ID:** {user.id}\n"
+        f"**Created on:** {format_dt(user.created_at)} ({format_dt(user.created_at, style='R')})\n"
+        f"**Default Profile Picture:** {user.default_avatar}\n"
+    )
+
+    if isinstance(user, discord.Member):
+        member_type = "member"
+        embed.description += (
+            f"**Join date:** {format_dt(user.joined_at) if user.joined_at else None} ({format_dt(user.joined_at, style='R') if user.joined_at else None})\n"
+            f"**Current Status:** {user.status}\n"
+            f"**User Activity:** {user.activity}\n"
+            f"**Current Display Name:** {user.display_name}\n"
+            f"**Nitro Boost Info:** {f'Boosting since {format_dt(user.premium_since)}' if user.premium_since else 'Not a booster'}\n"
+            f"**Current Top Role:** {user.top_role}\n"
+            f"**Color:** {user.color}\n"
+            f"**Profile Picture:** [link]({user.avatar})"
+        )
+        if user.guild_avatar:
+            embed.description += f"\n**Guild Profile Picture:** [link]({user.guild_avatar})"
+    else:
+        member_type = "user"
+        try:
+            ban = await guild.fetch_ban(user)
+            embed.description += f"\n**Banned**, reason: {ban.reason}"
+        except discord.NotFound:
+            pass
+
+    member_type = member_type if not user.bot else "bot"
+    embed.title = f"**Userinfo for {member_type} {user}**"
+    embed.set_thumbnail(url=user.display_avatar.url)
+
+    return embed

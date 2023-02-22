@@ -13,7 +13,8 @@ from typing import Union, Optional, TYPE_CHECKING
 from utils import Restriction
 from utils.converters import DateOrTimeToSecondsConverter, TimeTransformer
 from utils.checks import is_staff, check_staff, check_bot_or_staff, is_staff_app
-from utils.utils import paginate_message, send_dm_message, parse_time, text_to_discord_file, gen_color, create_error_embed
+from utils.utils import paginate_message, send_dm_message, parse_time, text_to_discord_file, gen_color, \
+    create_error_embed, create_userinfo_embed
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -97,39 +98,8 @@ class Mod(commands.GroupCog):
             await ctx.message.delete()
             return await ctx.send(f"{ctx.author.mention} This command can only be used in {self.bot.channels['bot-cmds'].mention} and only on yourself.", delete_after=10)
 
-        embed = discord.Embed(color=gen_color(user.id))
-        embed.description = (
-            f"**User:** {user.mention}\n"
-            f"**User's ID:** {user.id}\n"
-            f"**Created on:** {format_dt(user.created_at)} ({format_dt(user.created_at, style='R')})\n"
-            f"**Default Profile Picture:** {user.default_avatar}\n"
-        )
+        embed = await create_userinfo_embed(user, ctx.guild)
 
-        if isinstance(user, discord.Member):
-            member_type = "member"
-            embed.description += (
-                f"**Join date:** {format_dt(user.joined_at) if user.joined_at else None} ({format_dt(user.joined_at, style='R') if user.joined_at else None})\n"
-                f"**Current Status:** {user.status}\n"
-                f"**User Activity:** {user.activity}\n"
-                f"**Current Display Name:** {user.display_name}\n"
-                f"**Nitro Boost Info:** {f'Boosting since {format_dt(user.premium_since)}' if user.premium_since else 'Not a booster'}\n"
-                f"**Current Top Role:** {user.top_role}\n"
-                f"**Color:** {user.color}\n"
-                f"**Profile Picture:** [link]({user.avatar})"
-            )
-            if user.guild_avatar:
-                embed.description += f"\n**Guild Profile Picture:** [link]({user.guild_avatar})"
-        else:
-            member_type = "user"
-            try:
-                ban = await ctx.guild.fetch_ban(user)
-                embed.description += f"\n**Banned**, reason: {ban.reason}"
-            except discord.NotFound:
-                pass
-
-        member_type = member_type if not user.bot else "bot"
-        embed.title = f"**Userinfo for {member_type} {user}**"
-        embed.set_thumbnail(url=user.display_avatar.url)
         await ctx.send(embed=embed)
 
     @is_staff_app('Helper')

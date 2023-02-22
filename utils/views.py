@@ -47,7 +47,8 @@ class BasePaginator:
 class BasePaginatedView(View):
     """Base class for a paginated view using a BasePaginator subclass"""
 
-    def __init__(self, paginator: BasePaginator, author: 'Optional[Union[discord.Member, discord.User]]' = None, timeout: int = 30):
+    def __init__(self, paginator: BasePaginator, author: 'Optional[Union[discord.Member, discord.User]]' = None,
+                 timeout: int = 30):
         super().__init__(timeout=timeout)
         self.paginator = paginator
         self.message: 'Optional[Union[discord.Message, discord.InteractionMessage]]' = None
@@ -124,7 +125,8 @@ class BasePaginatedView(View):
 
 
 class PaginatedEmbedView(BasePaginatedView):
-    def __init__(self, paginator: BasePaginator, timeout: int = 20, author: 'Optional[Union[discord.Member, discord.User]]' = None):
+    def __init__(self, paginator: BasePaginator, timeout: int = 20,
+                 author: 'Optional[Union[discord.Member, discord.User]]' = None):
         super().__init__(paginator=paginator, timeout=timeout, author=author)
         if self.paginator.n_pages == 1:
             self.clear_items()
@@ -166,7 +168,8 @@ class VoteButtonEnd(Button['SimpleVoteView']):
 
 
 class SimpleVoteView(View):
-    def __init__(self, bot: 'Kurisu', author_id: int, options: list[str], custom_id: int, start: datetime.datetime, staff_only: bool = False):
+    def __init__(self, bot: 'Kurisu', author_id: int, options: list[str], custom_id: int, start: datetime.datetime,
+                 staff_only: bool = False):
         super().__init__(timeout=None)
         self.extras = bot.extras
         self.author_id = author_id
@@ -177,7 +180,7 @@ class SimpleVoteView(View):
         for n, option in enumerate(options):
             self.count[option] = 0
             self.add_item(VoteButton(label=option, custom_id=f"{custom_id}_{n}"))
-        self.add_item(VoteButtonEnd(custom_id=f"{custom_id}_{len(self.children)+1}"))
+        self.add_item(VoteButtonEnd(custom_id=f"{custom_id}_{len(self.children) + 1}"))
 
     async def calculate_votes(self):
         async for vote in self.extras.get_votes(self.custom_id):
@@ -197,7 +200,7 @@ class ConfirmationButtons(View):
 
     @discord.ui.button(label="Yes", style=ButtonStyle.green)
     async def confirm_button(
-        self, interaction: Interaction, button: Button
+            self, interaction: Interaction, button: Button
     ):
         self.value = True
         # Just so the interaction doesn't fail
@@ -206,7 +209,7 @@ class ConfirmationButtons(View):
 
     @discord.ui.button(label="No", style=ButtonStyle.red)
     async def deny_button(
-        self, interaction: Interaction, button: Button
+            self, interaction: Interaction, button: Button
     ):
         self.value = False
         # Just so the interaction doesn't fail
@@ -229,7 +232,8 @@ class TimeoutInput(Modal):
         elif secs > 2419200:
             await interaction.response.send_message('Timeouts can\'t be longer than 28 days.', ephemeral=True)
         elif secs > 0:
-            action: Optional[AutoModRuleAction] = discord.utils.get(self.automod_rule.actions, type=AutoModRuleActionType.timeout)
+            action: Optional[AutoModRuleAction] = discord.utils.get(self.automod_rule.actions,
+                                                                    type=AutoModRuleActionType.timeout)
             delta = datetime.timedelta(seconds=secs)
             if action:
                 action.duration = delta
@@ -240,7 +244,8 @@ class TimeoutInput(Modal):
                 await self.automod_rule.edit(actions=self.automod_rule.actions)
             await interaction.response.send_message('Timeout updated succesfully. Refresh the view.', ephemeral=True)
         elif secs == 0:
-            action: Optional[AutoModRuleAction] = discord.utils.get(self.automod_rule.actions, type=AutoModRuleActionType.timeout)
+            action: Optional[AutoModRuleAction] = discord.utils.get(self.automod_rule.actions,
+                                                                    type=AutoModRuleActionType.timeout)
             if action:
                 self.automod_rule.actions.remove(action)
                 await self.automod_rule.edit(actions=self.automod_rule.actions)
@@ -254,7 +259,8 @@ class AutoModRulesView(View):
         self.add_item(AutoModRuleSelect(automod_rules))
         self.author = author
         self.embed_colour = gen_color(author.id)
-        self.default_embed = Embed(title="AutoMod Rules", description="Select an AutoMod Rule", colour=self.embed_colour)
+        self.default_embed = Embed(title="AutoMod Rules", description="Select an AutoMod Rule",
+                                   colour=self.embed_colour)
 
     async def interaction_check(self, interaction: Interaction) -> bool:
         if interaction.user != self.author:
@@ -303,7 +309,8 @@ class AutoModRulesView(View):
             embed.add_field(name="Mention limit", value=self.selected.trigger.mention_limit)
         elif trigger_type is AutoModRuleTriggerType.keyword_preset:
             presets = ['profanity', 'sexual_content', 'slurs']
-            embed.add_field(name="Presets", value=' '.join(preset for preset in presets if getattr(self.selected.trigger.presets, preset)))
+            embed.add_field(name="Presets", value=' '.join(
+                preset for preset in presets if getattr(self.selected.trigger.presets, preset)))
         return embed
 
     def create_actions_embed(self):
@@ -339,3 +346,151 @@ class AutoModRuleSelect(Select['AutoModRulesView']):
         else:
             embed = self.view.default_embed
         await interaction.response.edit_message(view=self.view, embed=embed)
+
+
+class ModSenseView(View):
+    def __init__(self, bot: 'Kurisu', warns: list, deleted_warns: list, author: discord.Member,
+                 user: 'Union[discord.Member, discord.User]', embed: discord.Embed):
+        super().__init__(timeout=20)
+        self.user = user
+        self.embed = embed
+        self.message = None
+        self.author = author
+        self.bot = bot
+        self.embed_colour = gen_color(author.id)
+        self.warns = warns
+        self.deleted_warns = deleted_warns
+        self.warns_button.disabled = not self.warns
+        self.deleted_warns_button.disabled = not self.deleted_warns
+
+    async def interaction_check(self, interaction: Interaction) -> bool:
+        if interaction.user != self.author:
+            await interaction.response.send_message("This view is not for you.", ephemeral=True)
+            return False
+        return True
+
+    @discord.ui.button(label="userinfo", style=ButtonStyle.secondary, disabled=True)
+    async def userinfo_button(self, interaction: Interaction, button: Button):
+        button.disabled = True
+        self.remove_warn_button.disabled = True
+        self.remove_deleted_warn_button.disabled = True
+        self.deleted_warns_button.disabled = not self.deleted_warns
+        self.warns_button.disabled = not self.warns
+        await interaction.response.edit_message(embed=self.embed, view=self)
+
+    @discord.ui.button(label="Warns", style=ButtonStyle.secondary, disabled=True)
+    async def warns_button(self, interaction: Interaction, button: Button):
+        embed = self.create_warns_embed()
+        button.disabled = True
+        self.remove_warn_button.disabled = False
+        self.remove_deleted_warn_button.disabled = True
+        self.userinfo_button.disabled = False
+        self.deleted_warns_button.disabled = not self.deleted_warns
+        await interaction.response.edit_message(embed=embed, view=self)
+
+    @discord.ui.button(label="Deleted Warns", style=ButtonStyle.secondary, disabled=True)
+    async def deleted_warns_button(self, interaction: Interaction, button: Button):
+        embed = self.create_deleted_warns_embed()
+        button.disabled = True
+        self.remove_warn_button.disabled = True
+        self.remove_deleted_warn_button.disabled = False
+        self.userinfo_button.disabled = False
+        self.warns_button.disabled = not self.warns
+        await interaction.response.edit_message(embed=embed, view=self)
+
+    @discord.ui.button(label="Remove warn", style=ButtonStyle.primary, disabled=True, row=1)
+    async def remove_warn_button(self, interaction: Interaction, button: Button):
+        modal = WarnNumberModal(len(self.warns))
+        await interaction.response.send_modal(modal)
+        await modal.wait()
+
+        if not modal.warn_number:
+            return
+
+        reason = modal.reason_input.value if modal.reason_input.value else None
+
+        warn = self.deleted_warns[modal.warn_number - 1]
+        issuer = self.bot.get_user(warn.issuer_id)
+        embed = discord.Embed(color=discord.Color.dark_red(),
+                              title=f"Warn {modal.warn_number} on {discord.utils.snowflake_time(warn.warn_id).strftime('%Y-%m-%d %H:%M:%S')}",
+                              description=f"Issuer: {issuer.name if issuer else warn.issuer_id}\nReason: {warn.reason}")
+        msg = f"🗑 **Deleted warn**: {self.author.mention} removed warn {modal.warn_number} from {self.user.mention} | {self.bot.escape_text(self.user)}"
+        await self.bot.channels['mod-logs'].send(msg, embed=embed)
+
+        await self.bot.warns.delete_warning(self.warns[modal.warn_number - 1].warn_id, self.author, reason)
+        await self.reload_warns()
+        await interaction.edit_original_response(embed=self.create_warns_embed())
+
+    @discord.ui.button(label="Remove deleted warn", style=ButtonStyle.primary, disabled=True, row=1)
+    async def remove_deleted_warn_button(self, interaction: Interaction, button: Button):
+        modal = WarnNumberModal(len(self.deleted_warns), remove_reason=True)
+        await interaction.response.send_modal(modal)
+        await modal.wait()
+
+        if not modal.warn_number:
+            return
+
+        await self.bot.warns.delete_deleted_warning(self.deleted_warns[modal.warn_number - 1].warn_id)
+
+        await self.reload_warns()
+        await interaction.edit_original_response(embed=self.create_deleted_warns_embed())
+
+    @discord.ui.button(label="Stop", style=ButtonStyle.red, disabled=False, row=0)
+    async def stop_button(self, interaction: Interaction, button: Button):
+        await interaction.response.edit_message(view=None)
+        self.stop()
+
+    async def reload_warns(self):
+        self.warns = [w async for w in self.bot.warns.get_warnings(self.user)]
+        self.deleted_warns = [dw async for dw in self.bot.warns.get_deleted_warnings(self.user)]
+
+    def create_warns_embed(self):
+
+        embed = discord.Embed(color=discord.Color.dark_red())
+        embed.set_author(name=f"Warns for {self.user}", icon_url=self.user.display_avatar.url)
+        for idx, warn in enumerate(self.warns):
+            issuer = self.bot.get_user(warn.issuer_id)
+            value = f"Issuer: {issuer.name if issuer else warn.issuer_id}\nReason: {warn.reason}"
+            embed.add_field(name=f"{idx + 1}: {warn.date:%Y-%m-%d %H:%M:%S}", value=value)
+        return embed
+
+    def create_deleted_warns_embed(self):
+
+        embed = discord.Embed(color=discord.Color.dark_red())
+        embed.set_author(name=f"Deleted warns for {self.user}", icon_url=self.user.display_avatar.url)
+
+        for idx, warn in enumerate(self.deleted_warns):
+            issuer = self.bot.get_user(warn.issuer_id)
+            deleter = self.bot.get_user(warn.deleter)
+            value = f"Issuer: {issuer.name if issuer else warn.issuer_id}\n" \
+                    f"Reason: {warn.reason}\n" \
+                    f"Deleted on {format_dt(warn.deletion_time)} " \
+                    f"for the reason `{warn.deletion_reason}`\n " \
+                    f"by {deleter.name if deleter else warn.issuer_id}"
+            embed.add_field(name=f"{idx + 1}: {warn.date:%Y-%m-%d %H:%M:%S}", value=value)
+        return embed
+
+    async def on_timeout(self) -> None:
+        if self.message:
+            await self.message.edit(view=None)
+        self.stop()
+
+
+class WarnNumberModal(Modal, title='Insert the number of the warn to delete'):
+    warn_number_input = TextInput(label="Warn number", min_length=1, max_length=1)
+    reason_input = TextInput(label="Reason", placeholder="No reason", style=TextStyle.long, required=False)
+
+    def __init__(self, n_warns: int, remove_reason=False):
+        super().__init__()
+        self.n_warns = n_warns
+        if remove_reason:
+            self.remove_item(self.reason_input)
+        self.warn_number = 0
+
+    async def on_submit(self, interaction: discord.Interaction):
+        warn_number_str = self.warn_number_input.value
+        if not warn_number_str.isnumeric() or int(warn_number_str) > self.n_warns or int(warn_number_str) < 1:
+            await interaction.response.send_message('The warn number is invalid!', ephemeral=True)
+        else:
+            self.warn_number = int(warn_number_str)
+            await interaction.response.send_message('Warn deleted!', ephemeral=True)
