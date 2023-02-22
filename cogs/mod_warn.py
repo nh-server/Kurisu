@@ -175,7 +175,7 @@ class ModWarn(commands.GroupCog):
     @is_staff("OP")
     @commands.guild_only()
     @commands.max_concurrency(1, commands.BucketType.guild)
-    @commands.command()
+    @commands.hybrid_command()
     async def modsense(self, ctx: GuildContext, user: Union[discord.Member, discord.User]):
         """Shows information of user along with warn stuff. Staff and Helpers only."""
 
@@ -186,7 +186,7 @@ class ModWarn(commands.GroupCog):
 
         view = ModSenseView(ctx.bot, warns, deleted_warns, ctx.author, user, embed)
 
-        view.message = await ctx.send(view=view, embed=embed)
+        view.message = await ctx.send(view=view, embed=embed, ephemeral=True)
         await view.wait()
 
 
