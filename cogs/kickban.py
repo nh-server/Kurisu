@@ -6,7 +6,7 @@ import datetime
 from discord import app_commands
 from discord.ext import commands
 from discord.utils import format_dt
-from typing import Union, Literal, TYPE_CHECKING, Optional
+from typing import Literal, TYPE_CHECKING, Optional
 from utils.converters import TimeTransformer, DateOrTimeToSecondsConverter
 from utils.checks import is_staff, is_staff_app, check_bot_or_staff
 from utils.utils import send_dm_message
@@ -69,7 +69,7 @@ class KickBan(commands.GroupCog):
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
     @commands.command(name="ban", aliases=["yeet"])
-    async def ban_member(self, ctx: GuildContext, member: Union[discord.Member, discord.User], days: Optional[Literal[0, 1, 2, 3, 4, 5, 6, 7]] = 0, *, reason: Optional[str] = None):
+    async def ban_member(self, ctx: GuildContext, member: discord.Member | discord.User, days: Optional[Literal[0, 1, 2, 3, 4, 5, 6, 7]] = 0, *, reason: Optional[str] = None):
         """Bans a user from the server. OP+ only. Optional: [days] Specify up to 7 days of messages to delete."""
         if await check_bot_or_staff(ctx, member, "ban"):
             return
@@ -155,7 +155,7 @@ class KickBan(commands.GroupCog):
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
     @commands.command(name="superban", aliases=["superyeet"])
-    async def superban(self, ctx: GuildContext, member: Union[discord.Member, discord.User], days: Optional[Literal[0, 1, 2, 3, 4, 5, 6, 7]] = 0, *, reason: Optional[str] = None):
+    async def superban(self, ctx: GuildContext, member: discord.Member | discord.User, days: Optional[Literal[0, 1, 2, 3, 4, 5, 6, 7]] = 0, *, reason: Optional[str] = None):
         """Bans a user from the server. OP+ only. Optional: [days] Specify up to 7 days of messages to delete."""
         if await check_bot_or_staff(ctx, member, "ban"):
             return
@@ -178,7 +178,7 @@ class KickBan(commands.GroupCog):
 
     @commands.bot_has_permissions(ban_members=True)
     @commands.command(name="unban", aliases=["unyeet"])
-    async def unban_member(self, ctx: GuildContext, user: Union[discord.Member, discord.User], *, reason: Optional[str] = None):
+    async def unban_member(self, ctx: GuildContext, user: discord.Member | discord.User, *, reason: Optional[str] = None):
         """Unbans a user from the server. OP+ only."""
         try:
             await ctx.guild.fetch_ban(user)
@@ -213,7 +213,7 @@ class KickBan(commands.GroupCog):
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
     @commands.command(name="timeban", aliases=["timeyeet"])
-    async def timeban_member(self, ctx: GuildContext, member: Union[discord.Member, discord.User], length: int = commands.parameter(converter=DateOrTimeToSecondsConverter), *, reason: Optional[str] = None):
+    async def timeban_member(self, ctx: GuildContext, member: discord.Member | discord.User, length: int = commands.parameter(converter=DateOrTimeToSecondsConverter), *, reason: Optional[str] = None):
         """Bans a user for a limited period of time. OP+ only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "timeban"):
             return
@@ -244,7 +244,7 @@ class KickBan(commands.GroupCog):
     @is_staff("OP")
     @commands.bot_has_permissions(kick_members=True)
     @commands.command(name="softban", aliases=["gentleyeet"])
-    async def softban_member(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason: str):
+    async def softban_member(self, ctx: GuildContext, member: discord.Member | discord.User, *, reason: str):
         """Soft-ban a user. OP+ only.
 
         This "bans" the user without actually doing a ban on Discord.
@@ -263,7 +263,7 @@ class KickBan(commands.GroupCog):
 
     @is_staff("OP")
     @commands.command(name="unsoftban")
-    async def unsoftban_member(self, ctx: GuildContext, user: Union[discord.Member, discord.User]):
+    async def unsoftban_member(self, ctx: GuildContext, user: discord.Member | discord.User):
         """Un-soft-ban a user based on ID. OP+ only."""
         if user.id not in self.restrictions.softbans:
             return await ctx.send("This user is not softbanned!")

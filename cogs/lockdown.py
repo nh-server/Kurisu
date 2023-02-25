@@ -3,7 +3,7 @@ from __future__ import annotations
 import discord
 
 from discord.ext import commands
-from typing import TYPE_CHECKING, Optional, Union
+from typing import TYPE_CHECKING, Optional
 from utils.checks import is_staff, check_staff
 
 if TYPE_CHECKING:
@@ -26,7 +26,7 @@ class Lockdown(commands.Cog):
             raise commands.NoPrivateMessage()
         return True
 
-    async def lockdown_channels(self, ctx: GuildContext, *, channels: list[Union[discord.TextChannel, discord.VoiceChannel]], top_role: discord.Role,
+    async def lockdown_channels(self, ctx: GuildContext, *, channels: list[discord.TextChannel | discord.VoiceChannel], top_role: discord.Role,
                                 level: int, message: Optional[str] = None) -> list[discord.TextChannel]:
 
         locked_down = []
@@ -83,7 +83,7 @@ class Lockdown(commands.Cog):
 
     @is_staff("HalfOP")
     @commands.command(aliases=['lock'])
-    async def lockdown(self, ctx: GuildContext, channels: commands.Greedy[Union[discord.TextChannel, discord.VoiceChannel]]):
+    async def lockdown(self, ctx: GuildContext, channels: commands.Greedy[discord.TextChannel | discord.VoiceChannel]):
         """Lock message sending in the channel. Staff only."""
 
         if self.locking_down:
@@ -110,7 +110,7 @@ class Lockdown(commands.Cog):
 
     @is_staff("Owner")
     @commands.command(aliases=['slock'])
-    async def slockdown(self, ctx: GuildContext, channels: commands.Greedy[Union[discord.TextChannel, discord.VoiceChannel]]):
+    async def slockdown(self, ctx: GuildContext, channels: commands.Greedy[discord.TextChannel | discord.VoiceChannel]):
         """Lock message sending in the channel for everyone. Owners only."""
 
         if self.locking_down:
@@ -137,7 +137,7 @@ class Lockdown(commands.Cog):
 
     @is_staff('Helper')
     @commands.command()
-    async def softlock(self, ctx: GuildContext, channels: commands.Greedy[Union[discord.TextChannel, discord.VoiceChannel]]):
+    async def softlock(self, ctx: GuildContext, channels: commands.Greedy[discord.TextChannel | discord.VoiceChannel]):
         """Lock message sending in the channel, without the "disciplinary action" note. Staff and Helpers only."""
 
         if self.locking_down:
@@ -169,7 +169,7 @@ class Lockdown(commands.Cog):
 
     @is_staff('Helper')
     @commands.command()
-    async def unlock(self, ctx: GuildContext, channels: commands.Greedy[Union[discord.TextChannel, discord.VoiceChannel]]):
+    async def unlock(self, ctx: GuildContext, channels: commands.Greedy[discord.TextChannel | discord.VoiceChannel]):
         """Unlock message sending in the channel. Staff only and Helpers only."""
         author = ctx.author
 

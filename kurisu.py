@@ -21,7 +21,7 @@ from discord import app_commands, AppCommandType, AppCommandOptionType
 from discord.app_commands import AppCommand, AppCommandGroup
 from discord.ext import commands
 from subprocess import check_output, CalledProcessError
-from typing import Optional, Union
+from typing import Optional
 from utils import WarnsManager, ConfigurationManager, RestrictionsManager, ExtrasManager, FiltersManager, UserLogManager
 from utils.checks import InsufficientStaffRank
 from utils.help import KuriHelp, HelpView, CategorySelect, MainHelpPaginator
@@ -133,7 +133,7 @@ class Kurisu(commands.Bot):
 
         self.roles: dict[str, discord.Role] = {}
 
-        self.channels: dict[str, Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]] = {}
+        self.channels: dict[str, discord.TextChannel | discord.VoiceChannel | discord.Thread] = {}
 
         self.failed_cogs = []
         self.channels_not_found = []
@@ -150,7 +150,7 @@ class Kurisu(commands.Bot):
         self.extras = ExtrasManager(self)
         self.filters = FiltersManager(self)
 
-        self.err_channel: Optional[Union[discord.TextChannel, discord.VoiceChannel]] = None
+        self.err_channel: Optional[discord.TextChannel | discord.VoiceChannel] = None
         self.actions = []
         self.pruning = False
         self.emoji = discord.PartialEmoji.from_str("⁉")
@@ -162,7 +162,7 @@ class Kurisu(commands.Bot):
         self.session = aiohttp.ClientSession()
         await self.load_cogs()
 
-    async def get_context(self, origin: Union[discord.Interaction, discord.Message], /, *, cls=KurisuContext) -> KurisuContext:
+    async def get_context(self, origin: discord.Interaction | discord.Message, /, *, cls=KurisuContext) -> KurisuContext:
         return await super().get_context(origin, cls=cls)
 
     async def on_ready(self):
@@ -183,7 +183,7 @@ class Kurisu(commands.Bot):
                                                       "Legacy": self.roles['On-Duty Legacy']
                                                       }
 
-        self.assistance_channels: tuple[Union[discord.TextChannel, discord.VoiceChannel], ...] = (
+        self.assistance_channels: tuple[discord.TextChannel | discord.VoiceChannel, ...] = (
             self.channels['3ds-assistance-1'],
             self.channels['3ds-assistance-2'],
             self.channels['wiiu-assistance'],
@@ -393,7 +393,7 @@ class Kuritree(app_commands.CommandTree):
 
     def __init__(self, client):
         super().__init__(client)
-        self.err_channel: Optional[Union[discord.TextChannel, discord.VoiceChannel]] = None
+        self.err_channel: Optional[discord.TextChannel | discord.VoiceChannel] = None
         self.logger = logging.getLogger(__name__)
         self.app_commands: list[AppCommand] = []
 

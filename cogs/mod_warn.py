@@ -4,7 +4,7 @@ import discord
 
 from discord import app_commands
 from discord.ext import commands
-from typing import Union, TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional
 
 from utils.checks import is_staff, check_bot_or_staff
 from utils import check_staff, ordinal
@@ -36,7 +36,7 @@ class ModWarn(commands.GroupCog):
     @is_staff('Helper')
     @commands.guild_only()
     @commands.command()
-    async def warn(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason: str):
+    async def warn(self, ctx: GuildContext, member: discord.Member | discord.User, *, reason: str):
         """Warn a user. Staff and Helpers only."""
         issuer = ctx.author
         channel = ctx.channel
@@ -60,7 +60,7 @@ class ModWarn(commands.GroupCog):
 
     @is_staff('Helper')
     @commands.command()
-    async def softwarn(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason: Optional[str]):
+    async def softwarn(self, ctx: GuildContext, member: discord.Member | discord.User, *, reason: Optional[str]):
         """Warn a user without automated action. Staff and Helpers only."""
         issuer = ctx.author
         channel = ctx.channel
@@ -82,7 +82,7 @@ class ModWarn(commands.GroupCog):
         await self.bot.channels['mod-logs'].send(msg)
 
     @commands.hybrid_command()
-    async def listwarns(self, ctx: KurisuContext, member: Union[discord.Member, discord.User] = commands.Author):
+    async def listwarns(self, ctx: KurisuContext, member: discord.Member | discord.User = commands.Author):
         """List warns for a user. Helpers+ only for checking others."""
         issuer = ctx.author
         if not check_staff(ctx.bot, "Helper", ctx.author.id) and member != issuer:
@@ -112,7 +112,7 @@ class ModWarn(commands.GroupCog):
 
     @is_staff("SuperOP")
     @commands.command()
-    async def copywarns(self, ctx: GuildContext, src: Union[discord.Member, discord.User], target: Union[discord.Member, discord.User]):
+    async def copywarns(self, ctx: GuildContext, src: discord.Member | discord.User, target: discord.Member | discord.User):
         """Copy warns from one user ID to another. Overwrites all warns of the target user ID. SOP+ only."""
 
         if await check_bot_or_staff(ctx, target, "warn"):
@@ -141,7 +141,7 @@ class ModWarn(commands.GroupCog):
 
     @is_staff("HalfOP")
     @commands.command()
-    async def delwarn(self, ctx: GuildContext, member: Union[discord.Member, discord.User], idx: commands.Range[int, 1, 5], *, reason: str):
+    async def delwarn(self, ctx: GuildContext, member: discord.Member | discord.User, idx: commands.Range[int, 1, 5], *, reason: str):
         """Remove a specific warn from a user. Staff only."""
         warns = [w async for w in self.warns.get_warnings(member)]
         if not warns:
@@ -162,7 +162,7 @@ class ModWarn(commands.GroupCog):
 
     @is_staff("HalfOP")
     @commands.command()
-    async def clearwarns(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason: str):
+    async def clearwarns(self, ctx: GuildContext, member: discord.Member | discord.User, *, reason: str):
         """Clear all warns for a user. Staff only."""
         res = await self.warns.delete_all_warnings(member, ctx.author, reason)
         if not res:
@@ -176,7 +176,7 @@ class ModWarn(commands.GroupCog):
     @commands.guild_only()
     @commands.max_concurrency(1, commands.BucketType.guild)
     @commands.hybrid_command()
-    async def modsense(self, ctx: GuildContext, user: Union[discord.Member, discord.User]):
+    async def modsense(self, ctx: GuildContext, user: discord.Member | discord.User):
         """Shows information of user along with warn stuff. Staff and Helpers only."""
 
         embed = await create_userinfo_embed(user, ctx.guild)

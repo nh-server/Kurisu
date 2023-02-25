@@ -7,7 +7,7 @@ from discord import app_commands
 from discord.app_commands import Choice
 from discord.ext import commands
 from kurisu import SERVER_LOGS_URL
-from typing import Optional, Union
+from typing import Optional
 from utils.checks import is_staff_app
 from utils.converters import HackIDTransformer, DateTransformer
 
@@ -39,7 +39,7 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
         order: str,
         show_mod: bool,
         limit: int,
-    ) -> tuple[str, list[Union[str, int, datetime]]]:
+    ) -> tuple[str, list[str | int | datetime]]:
         sql_query = (
             "SELECT gm.created_at, gc.name, concat(u.name, '#',u.discriminator), gm.content FROM guild_messages gm "
             "INNER JOIN guild_channels gc ON gc.channel_id = gm.channel_id "

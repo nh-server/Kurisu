@@ -14,7 +14,7 @@ from .utils import send_dm_message
 
 if TYPE_CHECKING:
     from . import OptionalMember
-    from typing import Union, Optional
+    from typing import Optional
     from kurisu import Kurisu
     from collections.abc import AsyncGenerator
 
@@ -88,7 +88,7 @@ class RestrictionsManager(BaseManager, db_manager=RestrictionsDatabaseManager):
     def softbans(self):
         return self._softbans
 
-    async def add_restriction(self, user: 'Union[Member, User, OptionalMember]', restriction: Restriction,
+    async def add_restriction(self, user: 'Member | User | OptionalMember', restriction: Restriction,
                               reason: 'Optional[str]', *, end_date: 'Optional[datetime]' = None) -> int:
         """Add a restriction to the user id."""
         assert restriction in Restriction
@@ -136,8 +136,8 @@ class RestrictionsManager(BaseManager, db_manager=RestrictionsDatabaseManager):
         async for r in self.db.get_restrictions_by_user(user_id):
             yield r
 
-    async def add_softban(self, user: 'Union[Member, User, OptionalMember]',
-                          issuer: 'Union[Member, User, OptionalMember]', reason: str):
+    async def add_softban(self, user: 'Member | User | OptionalMember',
+                          issuer: 'Member | User | OptionalMember', reason: str):
         res = await self.db.add_softban(user.id, issuer.id, reason)
         if res:
             self._softbans[user.id] = Softban(user_id=user.id, issuer_id=issuer.id, reason=reason)
@@ -149,12 +149,12 @@ class RestrictionsManager(BaseManager, db_manager=RestrictionsDatabaseManager):
                 except discord.Forbidden:
                     pass
 
-    async def delete_softban(self, user: 'Union[Member, User, OptionalMember]'):
+    async def delete_softban(self, user: 'Member | User | OptionalMember'):
         res = await self.db.remove_softban(user.id)
         if res:
             del self._softbans[user.id]
 
-    async def remove_restriction(self, user: 'Union[Member, User, OptionalMember]', restriction: Restriction) -> int:
+    async def remove_restriction(self, user: 'Member | User | OptionalMember', restriction: Restriction) -> int:
         """Removes a restriction to."""
         assert restriction in Restriction
 

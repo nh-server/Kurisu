@@ -3,7 +3,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from utils.configuration import StaffRank
-from typing import Union, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -38,7 +38,7 @@ def check_staff(bot: 'Kurisu', role: str, user_id: int) -> bool:
     return position <= StaffRank[role]
 
 
-async def check_bot_or_staff(ctx: Union[commands.Context, discord.Interaction], target: Union[discord.Member, discord.User], action: str):
+async def check_bot_or_staff(ctx: commands.Context | discord.Interaction, target: discord.Member | discord.User, action: str):
     bot: 'Kurisu' = ctx.bot if isinstance(ctx, commands.Context) else ctx.client  # type: ignore
     if target.bot:
         who = "a bot"

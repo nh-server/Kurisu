@@ -15,7 +15,7 @@ from discord. app_commands import Transform
 from discord.ext import commands
 from discord.utils import format_dt, snowflake_time, MISSING
 from math import ceil
-from typing import Union, Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 from utils.checks import is_staff, check_if_user_can_sr, check_staff, is_staff_app
 from utils.converters import DateOrTimeToSecondsConverter, HackMessageTransformer
 from utils.utils import gen_color, send_dm_message, KurisuCooldown
@@ -166,7 +166,7 @@ class Extras(commands.GroupCog):
     @commands.guild_only()
     @is_staff("SuperOP")
     @commands.command(hidden=True, aliases=['copyrole', 'crp'])
-    async def copyroleperms(self, ctx: GuildContext, role: discord.Role, src_channel: Union[discord.TextChannel, discord.VoiceChannel], des_channels: commands.Greedy[Union[discord.TextChannel, discord.VoiceChannel]]):
+    async def copyroleperms(self, ctx: GuildContext, role: discord.Role, src_channel: discord.TextChannel | discord.VoiceChannel, des_channels: commands.Greedy[discord.TextChannel | discord.VoiceChannel]):
         """Copy role overwrites from a channel to channels"""
         if any(type(c) != type(src_channel) for c in des_channels):
             return await ctx.send("Voice channels and text channel permissions are incompatible!")
@@ -178,7 +178,7 @@ class Extras(commands.GroupCog):
     @commands.guild_only()
     @is_staff("SuperOP")
     @commands.command(hidden=True, aliases=['ccp'])
-    async def copychannelperms(self, ctx: GuildContext, src_channel: Union[discord.TextChannel, discord.VoiceChannel, discord.ForumChannel], des_channels: commands.Greedy[Union[discord.TextChannel, discord.VoiceChannel, discord.ForumChannel]]):
+    async def copychannelperms(self, ctx: GuildContext, src_channel: discord.TextChannel | discord.VoiceChannel | discord.ForumChannel, des_channels: commands.Greedy[discord.TextChannel | discord.VoiceChannel | discord.ForumChannel]):
         """Copy channel overwrites from a channel to channels"""
         overwrites = src_channel.overwrites
         for c in des_channels:
@@ -600,7 +600,7 @@ class Extras(commands.GroupCog):
     @is_staff('OP')
     @commands.guild_only()
     @commands.command()
-    async def addemoji(self, ctx: GuildContext, name: str, emoji: Union[discord.PartialEmoji, str], *roles: discord.Role):
+    async def addemoji(self, ctx: GuildContext, name: str, emoji: discord.PartialEmoji | str, *roles: discord.Role):
         """Add an emoji to the server. OP+ only."""
         if isinstance(emoji, discord.PartialEmoji):
             emoji_bytes = await emoji.read()

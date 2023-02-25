@@ -9,7 +9,7 @@ from discord.app_commands import Choice
 from discord.ext import commands
 from discord.utils import format_dt
 from subprocess import call
-from typing import Union, Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 from utils import Restriction
 from utils.converters import DateOrTimeToSecondsConverter, TimeTransformer
 from utils.checks import is_staff, check_staff, check_bot_or_staff, is_staff_app
@@ -74,7 +74,7 @@ class Mod(commands.GroupCog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=['ui'])
-    async def userinfo(self, ctx: GuildContext, u: Union[discord.Member, discord.User]):
+    async def userinfo(self, ctx: GuildContext, u: discord.Member | discord.User):
         """Shows information from a user. Staff and Helpers only."""
         basemsg = f"name = {u.name}\nid = {u.id}\ndiscriminator = {u.discriminator}\navatar = <{u.avatar}>\nbot = {u.bot}\ndefault_avatar= <{u.default_avatar}>\ncreated_at = {u.created_at}\n"
         if isinstance(u, discord.Member):
@@ -91,7 +91,7 @@ class Mod(commands.GroupCog):
 
     @commands.guild_only()
     @commands.command(aliases=['ui2'])
-    async def userinfo2(self, ctx: GuildContext, user: Union[discord.Member, discord.User] = commands.Author):
+    async def userinfo2(self, ctx: GuildContext, user: discord.Member | discord.User = commands.Author):
         """Shows information from a user. Staff and Helpers only."""
 
         if not check_staff(ctx.bot, 'Helper', ctx.author.id) and (ctx.author != user or ctx.channel != self.bot.channels['bot-cmds']):
@@ -259,7 +259,7 @@ class Mod(commands.GroupCog):
     @commands.bot_has_permissions(manage_channels=True)
     @commands.guild_only()
     @commands.command()
-    async def slowmode(self, ctx: GuildContext, channel: Optional[Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]], *, length: int = commands.parameter(converter=DateOrTimeToSecondsConverter)):
+    async def slowmode(self, ctx: GuildContext, channel: Optional[discord.TextChannel | discord.VoiceChannel | discord.Thread], *, length: int = commands.parameter(converter=DateOrTimeToSecondsConverter)):
         """Apply a given slowmode time to a channel.
 
         The time format is identical to that used for timed kicks/bans/takehelps.
@@ -292,7 +292,7 @@ class Mod(commands.GroupCog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=['clear'], extras={'examples': ['.purge #hacking-general 10 --exclude Kurisu#1234', '.purge 10', '.purge 10 --before 983086930910654594']})
-    async def purge(self, ctx: GuildContext, channel: Optional[Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]], limit: commands.Range[int, 1], *, flags: PurgeFlags):
+    async def purge(self, ctx: GuildContext, channel: Optional[discord.TextChannel | discord.VoiceChannel | discord.Thread], limit: commands.Range[int, 1], *, flags: PurgeFlags):
         """Clears at most a given number of messages in current channel or a channel if given. Helpers in assistance channels and Staff only.
 
         **Flags**
@@ -509,7 +509,7 @@ class Mod(commands.GroupCog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["nohelp", "yesnthelp"])
-    async def takehelp(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason: Optional[str]):
+    async def takehelp(self, ctx: GuildContext, member: discord.Member | discord.User, *, reason: Optional[str]):
         """Remove access to the assistance channels. Staff and Helpers only."""
         if await check_bot_or_staff(ctx, member, "takehelp"):
             return
@@ -520,7 +520,7 @@ class Mod(commands.GroupCog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["yeshelp"])
-    async def givehelp(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason: Optional[str]):
+    async def givehelp(self, ctx: GuildContext, member: discord.Member | discord.User, *, reason: Optional[str]):
         """Restore access to the assistance channels. Staff and Helpers only."""
         await self.restrictions.remove_restriction(member, Restriction.TakeHelp)
         await ctx.send(f"{member.mention} can access the help channels again.")
@@ -548,7 +548,7 @@ class Mod(commands.GroupCog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["notech", "technt"])
-    async def taketech(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason: Optional[str]):
+    async def taketech(self, ctx: GuildContext, member: discord.Member | discord.User, *, reason: Optional[str]):
         """Remove access to the tech channel. Staff and Helpers only."""
         if await check_bot_or_staff(ctx, member, "taketech"):
             return
@@ -559,7 +559,7 @@ class Mod(commands.GroupCog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["yestech"])
-    async def givetech(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason: Optional[str]):
+    async def givetech(self, ctx: GuildContext, member: discord.Member | discord.User, *, reason: Optional[str]):
         """Restore access to the tech channel. Staff and Helpers only."""
         await self.restrictions.remove_restriction(member, Restriction.NoTech)
         await ctx.send(f"{member.mention} can access the tech channel again.")
@@ -585,7 +585,7 @@ class Mod(commands.GroupCog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command(aliases=["mutehelp"])
-    async def helpmute(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason: Optional[str]):
+    async def helpmute(self, ctx: GuildContext, member: discord.Member | discord.User, *, reason: Optional[str]):
         """Remove speak perms to the assistance channels. Staff and Helpers only."""
         if await check_bot_or_staff(ctx, member, "helpmute"):
             return
@@ -613,7 +613,7 @@ class Mod(commands.GroupCog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def helpunmute(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason: Optional[str]):
+    async def helpunmute(self, ctx: GuildContext, member: discord.Member | discord.User, *, reason: Optional[str]):
         """Restores speak access to help channels. Helpers+ only."""
         await self.restrictions.remove_restriction(member, Restriction.HelpMute)
         await ctx.send(f"{member.mention} can now speak in the help channels again.")
@@ -650,7 +650,7 @@ class Mod(commands.GroupCog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def probate(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason: Optional[str]):
+    async def probate(self, ctx: GuildContext, member: discord.Member | discord.User, *, reason: Optional[str]):
         """Probate a user. Staff and Helpers only."""
         if await check_bot_or_staff(ctx, member, "probate"):
             return
@@ -661,7 +661,7 @@ class Mod(commands.GroupCog):
     @is_staff("Helper")
     @commands.guild_only()
     @commands.command()
-    async def unprobate(self, ctx: GuildContext, member: Union[discord.Member, discord.User], *, reason: Optional[str]):
+    async def unprobate(self, ctx: GuildContext, member: discord.Member | discord.User, *, reason: Optional[str]):
         """Unprobate a user. Staff and Helpers only."""
         await self.restrictions.remove_restriction(member, Restriction.Probation)
         await ctx.send(f"{member.mention} is out of probation.")
@@ -670,7 +670,7 @@ class Mod(commands.GroupCog):
     @is_staff("Owner")
     @commands.guild_only()
     @commands.command()
-    async def updatechannel(self, ctx: GuildContext, name: str, channel: Union[discord.TextChannel, discord.VoiceChannel, discord.Thread]):
+    async def updatechannel(self, ctx: GuildContext, name: str, channel: discord.TextChannel | discord.VoiceChannel | discord.Thread):
         """Changes the id of a channel"""
         if name not in self.bot.channels:
             await ctx.send("Invalid channel name!")

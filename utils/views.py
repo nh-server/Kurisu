@@ -9,10 +9,10 @@ from discord.utils import format_dt
 from typing import TYPE_CHECKING
 
 from utils.checks import check_staff
-from utils.utils import parse_time, gen_color, text_to_discord_file
+from utils.utils import parse_time, gen_color, text_to_discord_file, create_error_embed
 
 if TYPE_CHECKING:
-    from kurisu import Kurisu, Optional, Union
+    from kurisu import Kurisu, Optional
 
 
 class BasePaginator:
@@ -44,18 +44,13 @@ class BasePaginator:
         raise NotImplementedError
 
 
-class BasePaginatedView(View):
-    """Base class for a paginated view using a BasePaginator subclass"""
+class BaseView(View):
+    """Base class for all other views"""
 
-    def __init__(self, paginator: BasePaginator, author: 'Optional[Union[discord.Member, discord.User]]' = None,
-                 timeout: int = 30):
-        super().__init__(timeout=timeout)
-        self.paginator = paginator
-        self.message: 'Optional[Union[discord.Message, discord.InteractionMessage]]' = None
+    def __init__(self, author: 'Optional[discord.Member | discord.User]' = None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.message: 'Optional[discord.Message | discord.InteractionMessage]' = None
         self.author = author
-
-        if self.paginator.n_pages == 1:
-            self.disable_buttons()
 
     async def on_timeout(self) -> None:
         if self.message:
@@ -67,6 +62,22 @@ class BasePaginatedView(View):
             await interaction.response.send_message("This view is not for you.", ephemeral=True)
             return False
         return True
+
+    async def on_error(self, interaction: Interaction, error: Exception, item):
+        embed = create_error_embed(interaction, error)
+        await interaction.client.channels['bot-err'].send(embed=embed)  # type: ignore
+
+
+class BasePaginatedView(BaseView):
+    """Base class for a paginated view using a BasePaginator subclass"""
+
+    def __init__(self, paginator: BasePaginator, author: 'Optional[discord.Member | discord.User]' = None,
+                 timeout: int = 30):
+        super().__init__(timeout=timeout, author=author)
+        self.paginator = paginator
+
+        if self.paginator.n_pages == 1:
+            self.disable_buttons()
 
     def reset_buttons(self):
         self.first_page.disabled = True
@@ -126,7 +137,7 @@ class BasePaginatedView(View):
 
 class PaginatedEmbedView(BasePaginatedView):
     def __init__(self, paginator: BasePaginator, timeout: int = 20,
-                 author: 'Optional[Union[discord.Member, discord.User]]' = None):
+                 author: 'Optional[discord.Member | discord.User]' = None):
         super().__init__(paginator=paginator, timeout=timeout, author=author)
         if self.paginator.n_pages == 1:
             self.clear_items()
@@ -187,16 +198,10 @@ class SimpleVoteView(View):
             self.count[vote.option] = self.count[vote.option] + 1
 
 
-class ConfirmationButtons(View):
-    def __init__(self, author_id: int):
-        super().__init__(timeout=30)
+class ConfirmationButtons(BaseView):
+    def __init__(self, author: discord.Member | discord.User):
+        super().__init__(timeout=30, author=author)
         self.value = None
-        self.author_id = author_id
-
-    async def callback(self, interaction: Interaction):
-        if interaction.user.id == self.author_id:
-            return True
-        await interaction.response.send_message("This view is not for you.", ephemeral=True)
 
     @discord.ui.button(label="Yes", style=ButtonStyle.green)
     async def confirm_button(
@@ -252,21 +257,14 @@ class TimeoutInput(Modal):
             await interaction.response.send_message('Timeout removed succesfully. Refresh the view.', ephemeral=True)
 
 
-class AutoModRulesView(View):
+class AutoModRulesView(BaseView):
     def __init__(self, automod_rules: list[AutoModRule], author: discord.Member):
-        super().__init__()
+        super().__init__(author=author)
         self.selected: Optional[AutoModRule] = None
         self.add_item(AutoModRuleSelect(automod_rules))
-        self.author = author
         self.embed_colour = gen_color(author.id)
         self.default_embed = Embed(title="AutoMod Rules", description="Select an AutoMod Rule",
                                    colour=self.embed_colour)
-
-    async def interaction_check(self, interaction: Interaction) -> bool:
-        if interaction.user != self.author:
-            await interaction.response.send_message("This view is not for you.", ephemeral=True)
-            return False
-        return True
 
     @discord.ui.button(label="General", style=ButtonStyle.secondary, disabled=True)
     async def general_information(self, interaction: Interaction, button: Button):
@@ -348,26 +346,21 @@ class AutoModRuleSelect(Select['AutoModRulesView']):
         await interaction.response.edit_message(view=self.view, embed=embed)
 
 
-class ModSenseView(View):
+class ModSenseView(BaseView):
+
+    author: discord.Member
+
     def __init__(self, bot: 'Kurisu', warns: list, deleted_warns: list, author: discord.Member,
-                 user: 'Union[discord.Member, discord.User]', embed: discord.Embed):
-        super().__init__(timeout=20)
+                 user: discord.Member | discord.User, embed: discord.Embed):
+        super().__init__(timeout=20, author=author)
         self.user = user
         self.embed = embed
-        self.message = None
-        self.author = author
         self.bot = bot
         self.embed_colour = gen_color(author.id)
         self.warns = warns
         self.deleted_warns = deleted_warns
         self.warns_button.disabled = not self.warns
         self.deleted_warns_button.disabled = not self.deleted_warns
-
-    async def interaction_check(self, interaction: Interaction) -> bool:
-        if interaction.user != self.author:
-            await interaction.response.send_message("This view is not for you.", ephemeral=True)
-            return False
-        return True
 
     @discord.ui.button(label="userinfo", style=ButtonStyle.secondary, disabled=True)
     async def userinfo_button(self, interaction: Interaction, button: Button):
@@ -469,11 +462,6 @@ class ModSenseView(View):
                     f"by {deleter.name if deleter else warn.issuer_id}"
             embed.add_field(name=f"{idx + 1}: {warn.date:%Y-%m-%d %H:%M:%S}", value=value)
         return embed
-
-    async def on_timeout(self) -> None:
-        if self.message:
-            await self.message.edit(view=None)
-        self.stop()
 
 
 class WarnNumberModal(Modal, title='Insert the number of the warn to delete'):

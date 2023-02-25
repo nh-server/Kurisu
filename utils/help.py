@@ -218,6 +218,7 @@ class HelpView(BasePaginatedView):
 
     def __init__(self, paginator: BasePaginator, ctx: KurisuContext):
         super().__init__(paginator, ctx.author)
+        self.author: discord.Member
         self.ctx = ctx
 
     async def change_paginator(self, paginator: MainHelpPaginator | CategoryHelpPaginator | CommandHelpPaginator,

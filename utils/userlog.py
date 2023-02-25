@@ -7,7 +7,7 @@ from discord.utils import format_dt
 from .managerbase import BaseManager
 
 if TYPE_CHECKING:
-    from typing import Union, Optional
+    from typing import Optional
     from . import OptionalMember
 
 action_messages = {
@@ -66,8 +66,8 @@ action_messages = {
 class UserLogManager(BaseManager):
     """Manages posting logs."""
 
-    async def post_action_log(self, author: 'Union[Member, User, OptionalMember]',
-                              target: 'Union[Member, User, OptionalMember]', kind: str, *, reason: 'Optional[str]' = None,
+    async def post_action_log(self, author: 'Member | User | OptionalMember',
+                              target: 'Member | User | OptionalMember', kind: str, *, reason: 'Optional[str]' = None,
                               until: 'Optional[datetime]' = None):
         member = target if isinstance(target, (Member, User)) else target.member
         emoji, action, action_description = action_messages[kind]

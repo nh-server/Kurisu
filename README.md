@@ -33,7 +33,7 @@ cat ./schema.sql | docker compose exec -T db psql -U kurisu -d kurisu
 docker-compose down db
 ```
 
-Start Kurisu with the following command. Assuming a clean setup, this will pull postgres:13 to run as the database, and python:3.9-alpine as the base image for Kurisu, then build a new Kurisu image. Then it will start up postgres first, then kurisu once the database is active.
+Start Kurisu with the following command. Assuming a clean setup, this will pull postgres:13 to run as the database, and python:3.11-alpine as the base image for Kurisu, then build a new Kurisu image. Then it will start up postgres first, then kurisu once the database is active.
 
 ```
 docker-compose up --build

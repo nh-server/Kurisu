@@ -5,7 +5,7 @@ import discord
 from datetime import datetime
 from discord.ext import commands
 from re import compile, finditer, search
-from typing import List, Union, Optional, TYPE_CHECKING
+from typing import List, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -25,7 +25,7 @@ class Season:
     def __lt__(self, other: Season):
         return self.start < other.start
 
-    def __contains__(self, time: Union[str, int]) -> bool:
+    def __contains__(self, time: str | int) -> bool:
         if isinstance(time, str):
             time = Season.get_int_from_dotstr(time)
 

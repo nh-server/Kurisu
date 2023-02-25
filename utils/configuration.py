@@ -10,7 +10,7 @@ from .managerbase import BaseManager
 from .database import ConfigurationDatabaseManager
 
 if TYPE_CHECKING:
-    from typing import Union, Optional, AsyncGenerator
+    from typing import Optional, AsyncGenerator
     from kurisu import Kurisu
     from . import OptionalMember
     from .database import ChangedRole
@@ -104,7 +104,7 @@ class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager)
                 self._watch_list.remove(user_id)
 
     # staff
-    async def add_staff(self, user: 'Union[Member, User, OptionalMember]', level: str):
+    async def add_staff(self, user: 'Member | User | OptionalMember', level: str):
         if level not in self.bot.staff_roles:
             raise ValueError('not a staff level')
         if self._staff.get(user.id) is not None or self._helpers.get(user.id) is not None:
@@ -115,7 +115,7 @@ class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager)
             self._staff[user.id] = StaffRank[level]
         return res
 
-    async def delete_staff(self, user: 'Union[Member, User, OptionalMember]'):
+    async def delete_staff(self, user: 'Member | User | OptionalMember'):
 
         if user.id in self._helpers:
             res = await self.db.remove_staff_position(user.id)
@@ -125,7 +125,7 @@ class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager)
             del self._staff[user.id]
         return res
 
-    async def add_helper(self, user: 'Union[Member, User, OptionalMember]', console: str):
+    async def add_helper(self, user: 'Member | User | OptionalMember', console: str):
         if console not in self.bot.helper_roles:
             raise ValueError('not a staff level')
         if self._staff.get(user.id) is not None or self._helpers.get(user.id) is not None:
@@ -138,7 +138,7 @@ class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager)
             self._helpers[user.id] = console
         return res
 
-    async def delete_helper(self, user: 'Union[Member, User, OptionalMember]'):
+    async def delete_helper(self, user: 'Member | User | OptionalMember'):
 
         if user.id in self._staff:
             res = await self.db.remove_staff_position(user.id)
@@ -150,7 +150,7 @@ class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager)
             del self._helpers[user.id]
         return res
 
-    async def update_staff_roles(self, member: 'Member'):
+    async def update_staff_roles(self, member: Member):
         staff_role = self.bot.roles['Staff']
         all_roles = self.bot.staff_roles
         try:
@@ -171,7 +171,7 @@ class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager)
     async def get_role(self, name: str) -> 'Optional[tuple[int, str]]':
         return await self.db.get_role(name)
 
-    async def add_channel(self, name: str, channel: 'Union[discord.TextChannel, discord.VoiceChannel, discord.Thread, discord.CategoryChannel]'):
+    async def add_channel(self, name: str, channel: discord.TextChannel | discord.VoiceChannel | discord.Thread | discord.CategoryChannel):
         if await self.get_channel_by_name(name):
             return await self.db.update_channel(channel.id, name)
         else:
@@ -185,10 +185,10 @@ class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager)
         if c:
             return DBChannel(id=c[0], name=c[1], filtered=c[2], lock_level=c[3], mod_channel=c[4])
 
-    async def set_channel_lock_level(self, channel: 'Union[discord.TextChannel, discord.Thread, discord.VoiceChannel]', lock_level: int):
+    async def set_channel_lock_level(self, channel: discord.TextChannel | discord.Thread | discord.VoiceChannel, lock_level: int):
         await self.db.set_channel_lock_level(channel.id, lock_level)
 
-    async def set_nofilter_channel(self, channel: 'Union[discord.TextChannel, discord.Thread, discord.VoiceChannel]', filtered: bool):
+    async def set_nofilter_channel(self, channel: discord.TextChannel | discord.Thread | discord.VoiceChannel, filtered: bool):
         db_channel = await self.get_channel(channel.id)
         res = None
         if not db_channel:
@@ -205,17 +205,17 @@ class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager)
                     self.nofilter_list.append(channel.id)
         return res
 
-    async def add_changed_roles(self, roles: 'list[tuple[int, Optional[bool]]]', channel: 'Union[discord.TextChannel, discord.Thread, discord.VoiceChannel]'):
+    async def add_changed_roles(self, roles: 'list[tuple[int, Optional[bool]]]', channel: discord.TextChannel | discord.Thread | discord.VoiceChannel):
         await self.db.add_changed_roles(roles, channel.id)
 
-    async def delete_changed_role(self, role: discord.Role, channel: 'Union[discord.TextChannel, discord.Thread, discord.VoiceChannel]'):
+    async def delete_changed_role(self, role: discord.Role, channel: discord.TextChannel | discord.Thread | discord.VoiceChannel):
         await self.db.delete_changed_role(role.id, channel.id)
 
-    async def get_changed_roles(self, channel: 'Union[discord.TextChannel, discord.VoiceChannel]') -> 'AsyncGenerator[ChangedRole, None]':
+    async def get_changed_roles(self, channel: discord.TextChannel | discord.VoiceChannel) -> 'AsyncGenerator[ChangedRole, None]':
         async for cr in self.db.get_changed_roles(channel.id):
             yield cr
 
-    async def clear_changed_roles(self, channel: 'Union[discord.TextChannel, discord.VoiceChannel]'):
+    async def clear_changed_roles(self, channel: discord.TextChannel | discord.VoiceChannel):
         await self.db.clear_changed_roles(channel.id)
 
     async def add_flag(self, name: str, value: bool):

@@ -166,7 +166,7 @@ class Filter(commands.Cog):
     @wordfilter.command(name='clear')
     async def wordfilter_clear(self, ctx: KurisuContext):
         """Deletes all filtered words in the filter"""
-        view = ConfirmationButtons(ctx.author.id)
+        view = ConfirmationButtons(ctx.author)
         msg = await ctx.send("WARNING: This will delete all filtered words in the wordfilter, continue?", view=view)
         await view.wait()
         if view.value:

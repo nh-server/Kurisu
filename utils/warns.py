@@ -8,7 +8,7 @@ from .database import WarnsDatabaseManager
 
 if TYPE_CHECKING:
     from . import OptionalMember
-    from typing import Union, Tuple, Optional
+    from typing import Tuple, Optional
     from discord import User
 
 
@@ -43,7 +43,7 @@ class WarnsManager(BaseManager, db_manager=WarnsDatabaseManager):
 
     db: WarnsDatabaseManager
 
-    async def add_warning(self, user: 'Union[Member, User, OptionalMember]', issuer: 'Member', reason: 'Optional[str]' = None,
+    async def add_warning(self, user: 'Member | User | OptionalMember', issuer: 'Member', reason: 'Optional[str]' = None,
                           send_dm: bool = True, do_action: bool = True) -> 'Tuple[int, int]':
         """Add a warning to a user."""
         warn_id, count = await self.db.add_warning(user_id=user.id, issuer=issuer.id, reason=reason)
@@ -82,24 +82,24 @@ class WarnsManager(BaseManager, db_manager=WarnsDatabaseManager):
         """Remove a deleted warning from a user permanently."""
         return await self.db.delete_deleted_warning(warn_id=warn_id)
 
-    async def delete_all_warnings(self, user: 'Union[Member, User, OptionalMember]', deleter: Member, reason: 'Optional[str]'):
+    async def delete_all_warnings(self, user: 'Member | User | OptionalMember', deleter: Member, reason: 'Optional[str]'):
         """Remove all warnings from a user."""
         return await self.db.delete_all_warnings(user.id, deleter.id, reason)
 
-    async def get_warnings(self, user: 'Union[Member, User, OptionalMember]'):
+    async def get_warnings(self, user: 'Member | User | OptionalMember'):
         """Get warnings for a user."""
         async for w in self.db.get_warnings(user_id=user.id):
             yield w
 
-    async def get_deleted_warnings(self, user: 'Union[Member, User, OptionalMember]'):
+    async def get_deleted_warnings(self, user: 'Member | User | OptionalMember'):
         """Get deleted warnings for a user."""
         async for w in self.db.get_deleted_warnings(user_id=user.id):
             yield w
 
-    async def get_warnings_count(self, user: 'Union[Member, User, OptionalMember]') -> int:
+    async def get_warnings_count(self, user: 'Member | User | OptionalMember') -> int:
         """Get warnings count for a user."""
         return await self.db.get_warnings_count(user.id)
 
-    async def copy_warnings(self, origin: 'Union[Member, User, OptionalMember]', destination: 'Union[Member, User, OptionalMember]') -> int:
+    async def copy_warnings(self, origin: 'Member | User | OptionalMember', destination: 'Member | User | OptionalMember') -> int:
         """Copy warning from a user to another user"""
         return await self.db.copy_all_warnings(origin.id, destination.id)

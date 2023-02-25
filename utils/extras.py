@@ -11,7 +11,7 @@ from .database import ExtrasDatabaseManager, Tag, TimedRole, Reminder
 
 
 if TYPE_CHECKING:
-    from typing import Union, Optional
+    from typing import Optional
     from discord import Member, User, Role
     from kurisu import Kurisu
     from . import OptionalMember
@@ -51,7 +51,7 @@ class ExtrasManager(BaseManager, db_manager=ExtrasDatabaseManager):
     def timed_roles(self) -> 'dict[tuple[int, int], TimedRole]':
         return self._timed_roles
 
-    async def add_timed_role(self, user: 'Union[Member, User, OptionalMember]', role: 'Role', expiring_date: datetime):
+    async def add_timed_role(self, user: 'Member | User | OptionalMember', role: 'Role', expiring_date: datetime):
         res = await self.db.add_timed_role(role.id, user.id, expiring_date)
         if res:
             self._timed_roles[user.id, role.id] = TimedRole(role_id=role.id, user_id=user.id, expiring_date=expiring_date)
@@ -67,10 +67,10 @@ class ExtrasManager(BaseManager, db_manager=ExtrasDatabaseManager):
                 pass
         return res
 
-    async def add_3ds_friend_code(self, user: 'Union[Member, User, OptionalMember]', fc: int):
+    async def add_3ds_friend_code(self, user: 'Member | User | OptionalMember', fc: int):
         return await self.db.add_3ds_friend_code(user.id, fc)
 
-    async def add_switch_friend_code(self, user: 'Union[Member, User, OptionalMember]', fc: int):
+    async def add_switch_friend_code(self, user: 'Member | User | OptionalMember', fc: int):
         return await self.db.add_switch_friend_code(user.id, fc)
 
     async def get_friend_code(self, user_id: int):
@@ -82,7 +82,7 @@ class ExtrasManager(BaseManager, db_manager=ExtrasDatabaseManager):
     async def delete_3ds_friend_code(self, user_id: int):
         return await self.db.delete_3ds_friend_code(user_id)
 
-    async def add_reminder(self, date: datetime, author: 'Union[Member, User, OptionalMember]', content: str) -> int:
+    async def add_reminder(self, date: datetime, author: 'Member | User | OptionalMember', content: str) -> int:
         now = time_snowflake(datetime.now())
         res = await self.db.add_reminder(now, date, author.id, content)
         if res:

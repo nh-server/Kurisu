@@ -6,10 +6,9 @@ import re
 import traceback
 
 from .checks import check_staff
-from discord import app_commands
 from discord.ext import commands
 from discord.utils import format_dt
-from typing import Optional, Union
+from typing import Optional
 
 
 class ConsoleColor(discord.Color):
@@ -49,7 +48,7 @@ async def send_dm_message(member: discord.Member, message: str, ctx: Optional[co
         return False
 
 
-async def get_user(ctx: Union[commands.Context, discord.Interaction], user_id: int) -> Optional[Union[discord.Member, discord.User]]:
+async def get_user(ctx: commands.Context | discord.Interaction, user_id: int) -> Optional[discord.Member | discord.User]:
     if ctx.guild and (user := ctx.guild.get_member(user_id)):
         return user
     else:
@@ -106,7 +105,7 @@ def parse_date(date_string: str) -> Optional[datetime.datetime]:
     return datetime_obj
 
 
-def create_error_embed(ctx: Union[commands.Context, discord.Interaction], exc: Union[discord.DiscordException, app_commands.AppCommandError]) -> discord.Embed:
+def create_error_embed(ctx: commands.Context | discord.Interaction, exc: Exception) -> discord.Embed:
     app_command: bool = isinstance(ctx, discord.Interaction)
     author = ctx.user if app_command else ctx.author
     command: str = ctx.command.name if ctx.command else "unknown command"
@@ -152,7 +151,7 @@ class KurisuCooldown:
             return commands.Cooldown(self.rate, self.per)
 
 
-async def create_userinfo_embed(user: Union[discord.Member, discord.User], guild: discord.Guild) -> discord.Embed:
+async def create_userinfo_embed(user: discord.Member | discord.User, guild: discord.Guild) -> discord.Embed:
 
     embed = discord.Embed(color=gen_color(user.id))
     embed.description = (
