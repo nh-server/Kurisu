@@ -86,6 +86,8 @@ class Memes(commands.Cog):
         self.flushedw = discord.utils.get(self.bot.guild.emojis, name="FlushedW") or "⁉"
         self.flushedhalf2 = discord.utils.get(self.bot.guild.emojis, name="flushedhalf2") or "⁉"
         self.flushedroulette = discord.utils.get(self.bot.guild.emojis, name="flushedroulette") or "⁉"
+        self.flushedcushion = discord.utils.get(self.bot.guild.emojis, name="flushedcushion") or "⁉"
+        self.flushedcrush = discord.utils.get(self.bot.guild.emojis, name="flushedcrush") or "⁉"
 
     async def _meme(self, ctx: KurisuContext, msg, directed: bool = False, image_link: Optional[str] = None, allowed_mentions: Optional[discord.AllowedMentions] = None):
 
@@ -597,7 +599,8 @@ class Memes(commands.Cog):
                      "remember to moisturize today!", "drink some water u idiot", "take ur meds",
                      "do you like neapolitan ice cream?", "nentondon swonch", "xnoe at 11pm moment",
                      "has junko had a name change today?", "got milk?", "got pilk?",
-                     "it has been 0 days since eip broke me", "ETA WEN PLS"]
+                     "it has been 0 days since eip broke me", "ETA WEN PLS", "The beatings will continue until morale improves.",
+                     "Zǎoshang hǎo zhōngguó xiànzài wǒ yǒu BING CHILLING"]
         await ctx.send(random.choice(motd_list))
 
     @commands.command(hidden=True)
@@ -620,7 +623,8 @@ class Memes(commands.Cog):
                        f"{str(self.flushedmoon)}", f"{str(self.flushedhot)}", f"{str(self.flushedhand)}",
                        f"{str(self.flushedhalf)}", f"{str(self.flushedgoomba)}", f"{str(self.flushedflat)}",
                        f"{str(self.flushedcowboy)}", f"{str(self.flushedwater)}", f"{str(self.flushedw)}",
-                       f"{str(self.flushedhalf2)}", f"{str(self.flushedroulette)}"]
+                       f"{str(self.flushedhalf2)}", f"{str(self.flushedroulette)}", f"{str(self.flushedcushion)}",
+                       f"{str(self.flushedcrush)}"]
         await ctx.send(random.choice(flushedlist))
 
 
