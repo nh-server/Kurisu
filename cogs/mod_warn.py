@@ -36,10 +36,25 @@ class ModWarn(commands.GroupCog):
     @is_staff('Helper')
     @commands.guild_only()
     @commands.command()
-    async def warn(self, ctx: GuildContext, member: discord.Member | discord.User, *, reason: str):
+    async def warn(self, ctx: GuildContext, member: Optional[discord.Member | discord.User], *, reason: str):
         """Warn a user. Staff and Helpers only."""
         issuer = ctx.author
         channel = ctx.channel
+
+        reference = ctx.message.reference
+        message = None
+
+        if not member and not reference:
+            return await ctx.send("Specifiy a member to warn or reply to the offending message with this command.")
+        elif reference and not member:
+            if not reference.resolved:
+                return await ctx.send("Failed to resolve message.")
+            if isinstance(reference.resolved, discord.Message):
+                member = reference.resolved.author
+                message = reference.resolved.content if isinstance(reference.resolved, discord.Message) else None
+
+        if not member:
+            return await ctx.send("Failed to get member.")
 
         if await check_bot_or_staff(ctx, member, "warn"):
             return
@@ -56,6 +71,8 @@ class ModWarn(commands.GroupCog):
         msg = f"⚠️ **Warned**: {issuer.mention} warned {member.mention} in {channel.mention} ({self.bot.escape_text(channel)}) (warn #{count}) | {self.bot.escape_text(member)}"
         if reason:
             msg += "\n✏️ __Reason__: " + reason
+        if message:
+            msg += f"\n🖊️ __Message__: {message}"
         await self.bot.channels['mod-logs'].send(msg)
 
     @is_staff('Helper')
