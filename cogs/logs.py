@@ -69,6 +69,12 @@ Thanks for stopping by and have a good time!
             embed.description = softban.reason
             await self.bot.channels['server-logs'].send(msg, embed=embed)
             return
+        # If it's their first time joining just send the welcome message, no need to check for punishments
+        if not member.flags.did_rejoin:
+            if not self.bot.configuration.auto_probation:
+                await send_dm_message(member, self.welcome_msg.format(member.name, member.guild.name,
+                                                                      self.bot.channels['welcome-and-rules'].mention))
+            return
         roles = []
         async for r in self.restrictions.get_restrictions_by_user(member.id):
             restriction = Restriction(r[2])
@@ -89,8 +95,6 @@ Thanks for stopping by and have a good time!
                 name = member.guild.get_member(warn.issuer_id) or f"ID {warn.issuer_id}"
                 embed.add_field(name=f"{idx + 1}: {warn.date:%Y-%m-%d %H:%M:%S}", value=f"Issuer: {name}\nReason: {warn.reason}")
             await self.bot.channels['server-logs'].send(msg, embed=embed)
-        if not self.bot.configuration.auto_probation:
-            await send_dm_message(member, self.welcome_msg.format(member.name, member.guild.name, self.bot.channels['welcome-and-rules'].mention))
 
     @commands.Cog.listener()
     async def on_member_remove(self, member: discord.Member):
