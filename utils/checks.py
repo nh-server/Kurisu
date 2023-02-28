@@ -23,7 +23,7 @@ def is_staff(role: str):
 
 def is_staff_app(role: str):
     async def predicate(interaction: discord.Interaction) -> bool:
-        if (interaction.guild and interaction.user == interaction.guild.owner) or check_staff(interaction.client, role, interaction.user.id):  # type: ignore
+        if (interaction.guild and interaction.user == interaction.guild.owner) or check_staff(interaction.client, role, interaction.user.id):
             return True
         raise InsufficientStaffRank(f"You must be at least {role} to use this command.")
     return app_commands.check(predicate)
@@ -39,7 +39,7 @@ def check_staff(bot: 'Kurisu', role: str, user_id: int) -> bool:
 
 
 async def check_bot_or_staff(ctx: commands.Context | discord.Interaction, target: discord.Member | discord.User, action: str):
-    bot: 'Kurisu' = ctx.bot if isinstance(ctx, commands.Context) else ctx.client  # type: ignore
+    bot: 'Kurisu' = ctx.bot if isinstance(ctx, commands.Context) else ctx.client
     if target.bot:
         who = "a bot"
     elif check_staff(bot, "Helper", target.id):

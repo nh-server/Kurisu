@@ -83,7 +83,7 @@ class RemindersPaginator(BasePaginator):
 
 
 async def tag_autocomplete(interaction: discord.Interaction, current: str) -> list[app_commands.Choice[str]]:
-    cog: Extras = interaction.client.get_cog('Extras')  # type: ignore
+    cog: Extras = interaction.client.get_cog('Extras')
     if current:
         # very crude search but does the job
         choices = []

@@ -65,7 +65,7 @@ class BaseView(View):
 
     async def on_error(self, interaction: Interaction, error: Exception, item):
         embed = create_error_embed(interaction, error)
-        await interaction.client.channels['bot-err'].send(embed=embed)  # type: ignore
+        await interaction.client.channels['bot-err'].send(embed=embed)
 
 
 class BasePaginatedView(BaseView):
@@ -151,10 +151,10 @@ class VoteButton(Button['SimpleVoteView']):
 
     async def callback(self, interaction: Interaction):
         assert self.view is not None
-        if self.view.staff_only and not check_staff(interaction.client, 'Helper', interaction.user.id):  # type: ignore
+        if self.view.staff_only and not check_staff(interaction.client, 'Helper', interaction.user.id):
             await interaction.response.send_message("You aren't allowed to vote.", ephemeral=True)
             return
-        await interaction.client.extras.add_vote(self.view.custom_id, interaction.user, self.label)  # type: ignore
+        await interaction.client.extras.add_vote(self.view.custom_id, interaction.user, self.label)
         await interaction.response.send_message("Vote added.", ephemeral=True)
 
 
@@ -173,7 +173,7 @@ class VoteButtonEnd(Button['SimpleVoteView']):
             await interaction.followup.send(
                 f"Vote started {format_dt(self.view.start, style='R')} has finished.\n{results}")
             self.view.stop()
-            await interaction.client.extras.delete_vote_view(self.view.custom_id)  # type: ignore
+            await interaction.client.extras.delete_vote_view(self.view.custom_id)
         else:
             await interaction.response.send_message("Only the vote creator can end it", ephemeral=True)
 

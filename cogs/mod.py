@@ -277,7 +277,7 @@ class Mod(commands.GroupCog):
             return await ctx.send("💢 You can't slowmode a channel for longer than 6 hours!")
 
         try:
-            await channel.edit(slowmode_delay=length)  # type: ignore
+            await channel.edit(slowmode_delay=length)
         except discord.errors.Forbidden:
             return await ctx.send("💢 I don't have permission to do this.")
 
