@@ -12,4 +12,6 @@ In order to do this, you will need to load the Luma Configuration screen.
 1. Turn your console off.
 2. Hold the SELECT button.
 3. While still holding SELECT, turn the console on.
-4. Provide a photo of your console's screens, or if you can see the version, tell us here.
+4. Either:
+- Provide a photo of BOTH your console's screens, or
+- Inform us of the full Luma version number AND what the yellow text on the screen says.
