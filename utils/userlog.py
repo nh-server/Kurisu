@@ -85,5 +85,5 @@ class UserLogManager(BaseManager):
             msg.append('\N{PENCIL} __Reason__: No reason provided')
         msg_final = '\n'.join(msg)
         await self.bot.channels['mod-logs'].send(msg_final)
-        if 'ban' in kind:
+        if 'ban' in kind or 'kick' in kind:
             await self.bot.channels['server-logs'].send(msg_final)

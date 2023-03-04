@@ -6,7 +6,7 @@ from discord.ext import commands
 from discord.utils import format_dt
 from typing import TYPE_CHECKING
 from utils.utils import send_dm_message
-from utils import Restriction
+from utils import Restriction, OptionalMember
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -101,36 +101,48 @@ Thanks for stopping by and have a good time!
         await self.bot.wait_until_all_ready()
         if self.bot.pruning is True:
             return
-        if "uk:" + str(member.id) in self.bot.actions:
-            self.bot.actions.remove("uk:" + str(member.id))
-            return
-        if "sbk:" + str(member.id) in self.bot.actions:
-            self.bot.actions.remove("sbk:" + str(member.id))
-            return
-        msg = f"{'👢 **Auto-kick**' if 'wk:' + str(member.id) in self.bot.actions else '⬅️ **Leave**'}: {member.mention} | {self.bot.escape_text(member)}\n🏷 __User ID__: {member.id}"
+        # All leaves will be logged no matter what caused it. (ban, kick or just them leaving the server)
+        msg = f"⬅️ **Leave**: {member.mention} | {self.bot.escape_text(member)}\n🏷 __User ID__: {member.id}"
         await self.bot.channels['server-logs'].send(msg)
-        if "wk:" + str(member.id) in self.bot.actions:
-            self.bot.actions.remove("wk:" + str(member.id))
-            await self.bot.channels['mod-logs'].send(msg)
 
     @commands.Cog.listener()
-    async def on_member_ban(self, guild: discord.Guild, member: discord.Member):
+    async def on_audit_log_entry_create(self, entry: discord.AuditLogEntry):
         await self.bot.wait_until_all_ready()
-        ban = await guild.fetch_ban(member)
-        auto_ban = f'wb:{member.id}' in self.bot.actions
-        if f"ub:{member.id}" in self.bot.actions:
-            self.bot.actions.remove(f'ub:{member.id}')
-            return
-        msg = f"{'⛔ **Auto-ban**' if auto_ban else '⛔ **Ban**'}: {member.mention} | {self.bot.escape_text(member)}\n🏷 __User ID__: {member.id}"
-        if ban.reason:
-            msg += "\n✏️ __Reason__: " + ban.reason
-        if auto_ban:
-            self.bot.actions.remove("wb:" + str(member.id))
-            await self.bot.channels['mods'].send(msg)
-        await self.bot.channels['server-logs'].send(msg)
-        if not ban.reason:
-            msg += "\nThe responsible staff member should add an explanation below."
-        await self.bot.channels['mod-logs'].send(msg)
+
+        if entry.action is discord.AuditLogAction.ban or entry.action is discord.AuditLogAction.kick:
+
+            assert entry.user is not None
+            assert isinstance(entry.target, (discord.Member, discord.User, discord.Object))
+
+            if isinstance(entry.target, discord.Object):
+                target = OptionalMember(id=entry.target.id, member=None)
+            else:
+                target = entry.target
+
+            # If the bot did the action it was probably logged already unless it was an automated action
+            if entry.user_id == self.bot.user.id:
+                # Check for automated bans
+                if entry.action is discord.AuditLogAction.ban and f'wb:{entry.target.id}' in self.bot.actions:
+                    msg = f"⛔ **Auto-ban**: {target.mention} | {self.bot.escape_text(target)}\n🏷 __User ID__: {target.id}"
+                    if entry.reason:
+                        msg += f"\n✏️ __Reason__: {entry.reason}"
+                    self.bot.actions.remove("wb:" + str(target.id))
+                    await self.bot.channels['mods'].send(msg)
+                    await self.bot.channels['server-logs'].send(msg)
+                    await self.bot.channels['mod-logs'].send(msg)
+                    return
+                # Check for automated kicks
+                elif entry.action is discord.AuditLogAction.kick and f'wk:{target.id}' in self.bot.actions:
+                    msg = f"⛔ **Auto-kick**: {target.mention} | {self.bot.escape_text(target)}\n🏷 __User ID__: {target.id}"
+                    if entry.reason:
+                        msg += f"\n✏️ __Reason__: {entry.reason}"
+                    self.bot.actions.remove("wk:" + str(target.id))
+                    await self.bot.channels['server-logs'].send(msg)
+                    await self.bot.channels['mod-logs'].send(msg)
+                    return
+                else:
+                    return
+            await self.bot.logs.post_action_log(entry.user, target, entry.action.name, reason=entry.reason)
 
     @commands.Cog.listener()
     async def on_member_unban(self, guild: discord.Guild, user: discord.User):

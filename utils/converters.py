@@ -20,6 +20,10 @@ class OptionalMember(NamedTuple):
             return 'ID ' + str(self.id)
         return str(self.member)
 
+    @property
+    def mention(self):
+        return f'<@{self.id}>'
+
 
 class MemberOrID(Converter):
     async def convert(self, ctx: 'Context', argument: str) -> 'OptionalMember':

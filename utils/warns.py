@@ -68,8 +68,10 @@ class WarnsManager(BaseManager, db_manager=WarnsDatabaseManager):
             if do_action:
                 action = get_warn_action(count)
                 if action == 'kick':
+                    self.bot.actions.append(f"wk:{user.id}")
                     await user.kick(reason=f'Reached {count} warns')
                 elif action == 'ban':
+                    self.bot.actions.append(f"wb:{user.id}")
                     await user.ban(reason=f'Reached {count} warns', delete_message_days=0)
 
         return warn_id, count
