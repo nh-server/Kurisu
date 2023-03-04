@@ -58,7 +58,6 @@ class KickBan(commands.GroupCog):
         msg += "\n\nYou are able to rejoin the server, but please read the rules in #welcome-and-rules before participating again."
         await send_dm_message(member, msg, ctx)
         try:
-            self.bot.actions.append("uk:" + str(member.id))
             await member.kick(reason=reason)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
@@ -82,7 +81,6 @@ class KickBan(commands.GroupCog):
             await send_dm_message(member, msg, ctx)
 
         try:
-            self.bot.actions.append("ub:" + str(member.id))
             await ctx.guild.ban(member, reason=reason, delete_message_days=days)  # type: ignore
         except discord.errors.Forbidden:
             await ctx.send("Failed to ban member.")
@@ -127,7 +125,6 @@ class KickBan(commands.GroupCog):
             unban_time_string = format_dt(unban_time)
 
             try:
-                self.bot.actions.append("ub:" + str(member.id))
                 await interaction.guild.ban(member, reason=reason, delete_message_days=delete_messages)
             except discord.errors.Forbidden:
                 await interaction.response.send_message("Failed to ban member.")
@@ -140,7 +137,6 @@ class KickBan(commands.GroupCog):
         else:
             unban_time = None
             try:
-                self.bot.actions.append("ub:" + str(member.id))
                 await interaction.guild.ban(member, reason=reason, delete_message_days=delete_messages)
             except discord.errors.Forbidden:
                 await interaction.response.send_message("Failed to ban member.")
@@ -167,7 +163,6 @@ class KickBan(commands.GroupCog):
             msg += "\n\nThis ban does not expire.\n\nhttps://nintendohomebrew.com/assets/img/banned.gif"
             await send_dm_message(member, msg, ctx)
         try:
-            self.bot.actions.append("ub:" + str(member.id))
             await ctx.guild.ban(member, reason=reason, delete_message_days=days)  # type: ignore
         except discord.errors.Forbidden:
             await ctx.send("Failed to ban member.")
@@ -200,7 +195,6 @@ class KickBan(commands.GroupCog):
             return
 
         try:
-            self.bot.actions.append("ub:" + str(member.id))
             await member.ban(reason=reason, delete_message_days=days)  # type: ignore
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
@@ -232,7 +226,6 @@ class KickBan(commands.GroupCog):
             msg += f"\n\nThis ban lasts until {unban_time_string}."
             await send_dm_message(member, msg, ctx)
         try:
-            self.bot.actions.append("ub:" + str(member.id))
             await ctx.guild.ban(member, reason=reason, delete_message_days=0)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")

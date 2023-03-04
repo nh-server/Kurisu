@@ -123,10 +123,10 @@ class Events(commands.Cog):
                 if len(self.invite_antispam[message.author.id]) > 3:
                     await send_dm_message(message.author, "You have been kicked from Nintendo Homebrew for spamming invites to non approved servers.")
                     try:
-                        self.bot.actions.append(f"wk:{str(message.author.id)}")
+                        self.bot.actions.append(f"wk:{message.author.id}")
                         await message.author.kick(reason="Spamming server invites.")
                     except (discord.Forbidden, discord.NotFound):
-                        self.bot.actions.remove(f"wk:{str(message.author.id)}")
+                        self.bot.actions.remove(f"wk:{message.author.id}")
                 else:
                     self.bot.loop.create_task(self.invite_spam_pop(message))
                     try:

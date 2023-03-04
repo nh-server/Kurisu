@@ -60,8 +60,7 @@ Thanks for stopping by and have a good time!
             softban = self.restrictions.softbans[member.id]
             message_sent = await send_dm_message(member, f"This account has not been permitted to participate in {self.bot.guild.name}."
                                                          f" The reason is: {softban.reason}")
-            self.bot.actions.append("sbk:" + str(member.id))
-            await member.kick()
+            await member.kick(reason="User is softbanned.")
             msg = f"🚨 **Attempted join**: {member.mention} is soft-banned by <@{softban.issuer_id}> | {self.bot.escape_text(member)}"
             if not message_sent:
                 msg += "\nThis message did not send to the user."
