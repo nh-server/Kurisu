@@ -482,6 +482,11 @@ class Memes(commands.Cog):
         """duly noted"""
         await self._meme(ctx, "", image_link="https://album.eiphax.tech/uploads/big/5186160fa1b8002fe8fa1867225e45a7.png")
 
+    @commands.command(hidden=True)
+    async def shitposting(self, ctx: KurisuContext):
+        """i don't say this very often..."""
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/shitposting.jpg")
+
     @commands.command(hidden=True, aliases=['tmyk'])
     async def themoreyouknow(self, ctx: KurisuContext):
         """now with ear rape"""
@@ -541,7 +546,7 @@ class Memes(commands.Cog):
         # blahaj. takes usd or eur
         blahaj_link = "https://nintendohomebrew.com/assets/img/blahaj.png"
         if money < 18:
-            text = "You can't even buy a Blahaj with that! Get more money, then buy a Blahaj."
+            text = "You can't even buy a Blahaj! Get more money, then buy a Blahaj."
         elif money // 18 == 1:
             text = "You could buy one Blahaj with that. Think about it."
         else:
