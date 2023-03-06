@@ -73,6 +73,7 @@ Thanks for stopping by and have a good time!
             if not self.bot.configuration.auto_probation:
                 await send_dm_message(member, self.welcome_msg.format(member.name, member.guild.name,
                                                                       self.bot.channels['welcome-and-rules'].mention))
+            await self.bot.channels['server-logs'].send(msg)
             return
         roles = []
         async for r in self.restrictions.get_restrictions_by_user(member.id):
