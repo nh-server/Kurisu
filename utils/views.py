@@ -293,6 +293,11 @@ class AutoModRulesView(BaseView):
         file = text_to_discord_file(text, name='export.txt')
         await interaction.response.send_message(file=file, ephemeral=True)
 
+    @discord.ui.button(label="Stop", style=ButtonStyle.red, disabled=False, row=0)
+    async def stop_button(self, interaction: Interaction, button: Button):
+        await interaction.response.edit_message(view=None)
+        self.stop()
+
     def create_rule_embed(self) -> Embed:
         assert self.selected is not None
         embed = Embed(title=f"{self.selected.name} Rule", colour=self.embed_colour)

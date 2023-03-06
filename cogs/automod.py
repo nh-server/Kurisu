@@ -53,7 +53,7 @@ class AutoMod(commands.GroupCog):
         """Sends a discord view to view and set some AutoMod rules settings."""
         rules = await ctx.guild.fetch_automod_rules()
         view = AutoModRulesView(rules, ctx.author)
-        await ctx.send(embed=view.default_embed, view=view)
+        view.message = await ctx.send(embed=view.default_embed, view=view)
 
     @is_staff_app("SuperOP")
     @app_commands.autocomplete(rule=rules_autocomplete)
