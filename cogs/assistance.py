@@ -144,37 +144,40 @@ class Assistance(commands.GroupCog):
     @commands.guild_only()
     @commands.command()
     async def createsoap(self, ctx: GuildContext, helpee: discord.Member):
-        """Creates a small help channel for a user. Helper+ only."""
+        """Creates a 🧼 help channel for a user. Helper+ only."""
         if not self.small_help_category:
             return await ctx.send("The small help category is not set.")
         # Channel names can't be longer than 100 characters
-        channel_name = f"3ds-{helpee.name}-soap"[:100]
+        channel_name = f"3ds-{helpee.name}-soap-🧼"[:100]
         channel = await self.small_help_category.create_text_channel(name=channel_name)
         await channel.set_permissions(helpee, read_messages=True)
         await channel.send(f"{helpee.mention}, please read the following.\n"
                            "0. If your console is on, turn it off. If your console happens to already be in GodMode9, skip to step 3.\n"
-                           "1. Insert your SD card into your console\n"
-                           "2. Boot into GodMode9 by holding start while powering on\n"
-                           "3. Navigate to SysNAND Virtual\n"
-                           "4. Select essential.exefs\n"
-                           "5. Select copy to 0:/gm9/out\n"
-                           "6. Power off your console and insert your SD card into your computer\n"
-                           "7. Navigate to /gm9/out on your SD, essential.exefs should be there\n"
-                           "8. Send the essential.exefs in this specific channel\n"
-                           " - Please do not send it anywhere else.\n"
-                           " - File contains very sensitive console unique certificates.\n"
-                           " - These allow impersonation of console in servers, do not publicly share it.\n"
-                           "9. Find your serial number label under your console and provide the text written or a picture of it\n"
-                           " - On a New 2DS, this is located under the game card and sdcard slot cover\n"
+                           "1. Insert your SD card into your console.\n"
+                           "2. Boot into GodMode9 by holding start while powering on.\n"
+                           "3. Navigate to `SysNAND Virtual`\n"
+                           "4. Select `essential.exefs`\n"
+                           "5. Select `copy to 0:/gm9/out`\n"
+                           "6. Power off your console and insert your SD card into your computer.\n"
+                           "7. Navigate to `/gm9/out` on your SD, `essential.exefs` should be there.\n"
+                           "8. Send the `essential.exefs` in *this specific channel*.\n"
+                           " - **Please do not send it anywhere else.**\n"
+                           " - **File contains very sensitive console unique certificates.**\n"
+                           " - **These allow impersonation of console in servers, do not publicly share it.**\n"
+                           "9. Find your serial number label and provide the number or a picture of it.\n"
+                           " - On a New 2DS, this is located under the game card/SD card slot cover.\n"
                            " - If you can't locate your serial number or the label is missing/rubbed off:\n"
-                           "  - For New 3DS not XL/LL, it should be under the top plate\n"
-                           "  - Other models, under the bottom plate there should be a copy of your label or under the battery\n"
-                           "  - If you still can't find it, please request further assistance\n"
+                           "  - The label may be on the backplate, under the Nintendo logo.\n"
+                           "  - If it is not, try unscrewing the backplate and checking there.\n"
+                           "  - The screws in the backplate are 'captive screws'. They will not unscrew all the way.\n"
+                           "    Unscrew them until they click, then gently lift the backplate using the notches at the sides.\n"
+                           "  - The label also may be under the battery.\n"
+                           "  - If you still can't find it, please request further assistance.\n"
                            "10. Please wait for further instructions.")
-        await self.bot.channels['mod-logs'].send(f"⭕️ **Soap access granted**: {ctx.author.mention} granted access to soap channel to {helpee.mention}")
-        msg = f"🆕 **Soap channel created**: {ctx.author.mention} created soap channel {channel.mention} | {channel.name} ({channel.id})"
+        await self.bot.channels['mod-logs'].send(f"⭕️ **🧼 access granted**: {ctx.author.mention} granted access to 🧼 channel to {helpee.mention}")
+        msg = f"🆕 **🧼 channel created**: {ctx.author.mention} created 🧼 channel {channel.mention} | {channel.name} ({channel.id})"
         await self.bot.channels['mod-logs'].send(msg)
-        await ctx.send(f"Created soap {channel.mention}.")
+        await ctx.send(f"Created 🧼 {channel.mention}.")
 
     @is_staff('OP')
     @commands.guild_only()
