@@ -143,7 +143,7 @@ class Assistance(commands.GroupCog):
     @is_staff('Helper')
     @commands.guild_only()
     @commands.command()
-    async def createsoap(self, ctx: GuildContext, helpee: discord.Member, *):
+    async def createsoap(self, ctx: GuildContext, helpee: discord.Member):
         """Creates a small help channel for a user. Helper+ only."""
         if not self.small_help_category:
             return await ctx.send("The small help category is not set.")
