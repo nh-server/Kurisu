@@ -40,15 +40,18 @@ class SwitchSerialNumberCheck(Cog):
         self.bot: Kurisu = bot
         self.emoji = discord.PartialEmoji.from_str('*️⃣')
 
-    @commands.command(aliases=["ssnc"])
-    async def check_nx_serial(self, ctx: KurisuContext, serial):
-        """Check the given Switch serial to see if it is patched or not. For safety reasons, the invoking message is
-        removed."""
+    @commands.hybrid_command(name="ssnc")
+    async def check_nx_serial(self, ctx: KurisuContext, serial: str):
+        """Check the given Switch serial to see if it is patched or not.
 
-        try:
-            await ctx.message.delete()
-        except:
-            pass
+        Args:
+            serial: The console's serial."""
+
+        if ctx.interaction:
+            try:
+                await ctx.message.delete()
+            except:
+                pass
 
         serial = serial.split()[0].upper()
         mariko = False
@@ -63,7 +66,7 @@ class SwitchSerialNumberCheck(Cog):
                 mariko = True
             else:
                 return await ctx.send("This is not a valid serial number!\n"
-                                      "If you believe this to be an error, contact staff.")
+                                      "If you believe this to be an error, contact staff.", ephemeral=True)
 
         patched = False
         maybe = False
@@ -133,13 +136,13 @@ class SwitchSerialNumberCheck(Cog):
         if mariko:
             return await ctx.send("{}: Serial {} seems to be a \"mariko\" Switch or Switch Lite.\n"
                                   "These are currently not hackable via software, "
-                                  "only hardware modifications that involve soldering modchips.".format(ctx.author.mention, safe_serial))
+                                  "only hardware modifications that involve soldering modchips.".format(ctx.author.mention, safe_serial), ephemeral=True)
         elif maybe:
             return await ctx.send("{}: Serial {} _might_ be patched. The only way you can know this for sure is by "
                                   "pushing the payload manually. You can find instructions to do so here: "
                                   "https://switchgui.de/switch-guide/user_guide/emummc/sending_payload/".format(ctx.author.mention,
-                                                                                                                safe_serial))
+                                                                                                                safe_serial), ephemeral=True)
         elif patched:
-            return await ctx.send("{}: Serial {} is patched.".format(ctx.author.mention, safe_serial))
+            return await ctx.send("{}: Serial {} is patched.".format(ctx.author.mention, safe_serial), ephemeral=True)
         else:
-            return await ctx.send("{}: Serial {} is not patched.".format(ctx.author.mention, safe_serial))
+            return await ctx.send("{}: Serial {} is not patched.".format(ctx.author.mention, safe_serial), ephemeral=True)
