@@ -69,7 +69,7 @@ class Loop(commands.Cog):
                 else:
                     entry_desc = 'No console specified.'
 
-                if "begin" in entry:
+                if "begin" in entry and entry["begin"] is not None:
                     begin = self.netinfo_parse_time(entry["begin"])
                     entry_desc += '\nBegins: ' + format_dt(begin)
                 else:
