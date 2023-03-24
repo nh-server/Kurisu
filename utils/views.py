@@ -416,6 +416,8 @@ class ModSenseView(BaseView):
         await self.bot.channels['mod-logs'].send(msg, embed=embed)
 
         await self.bot.warns.delete_warning(self.warns[modal.warn_number - 1].warn_id, self.author, reason)
+        msg = f"🗑 **Deleted warn**: {self.author.mention} removed warn {modal.warn_number} from {self.user.mention} | {self.bot.escape_text(self.user)}"
+        await self.bot.channels['mod-logs'].send(msg, embed=embed)
         await self.reload_warns()
         await interaction.edit_original_response(embed=self.create_warns_embed())
 
