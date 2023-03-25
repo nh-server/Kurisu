@@ -481,7 +481,12 @@ class Extras(commands.GroupCog):
     @app_commands.autocomplete(tag_name=tag_autocomplete)
     @app_commands.command(name='tag')
     async def tag_app_command(self, interaction: discord.Interaction, tag_name: str):
-        """Looks up a tag by name"""
+        """Looks up a tag by name.
+
+        Args:
+            tag_name: Name of the tag.
+        """
+
         if tag := self.extras.tags.get(tag_name):
             await interaction.response.send_message(tag.content)
         else:
