@@ -509,7 +509,7 @@ class Extras(commands.GroupCog):
         """Creates an alias for a tag. Helpers+ only."""
         if not (tag := self.extras.tags.get(tag_name)):
             return await ctx.send("This tag doesn't exists!")
-        if not self.extras.tags.get(alias):
+        if self.extras.tags.get(alias):
             return await ctx.send("This alias is already in use!")
         if alias in self.banned_tag_names:
             return await ctx.send("You can't use this alias for a tag!")
