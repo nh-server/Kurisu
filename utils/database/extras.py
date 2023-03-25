@@ -140,7 +140,7 @@ class ExtrasDatabaseManager(BaseDatabaseManager, tables=tables):
     async def get_tags_with_aliases(self):
         conn: asyncpg.Connection
 
-        query = "select *, ARRAY(SELECT alias from tags left join tag_aliases ta on tags.id = ta.tag_id) as aliases from tags"
+        query = "select id, title, content, author_id, array_remove(array_agg(alias), NULL) from tags left join tag_aliases ta on tags.id = ta.tag_id group by tags.id"
 
         async with self.pool.acquire() as conn:
             async with conn.transaction():
