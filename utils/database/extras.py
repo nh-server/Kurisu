@@ -49,6 +49,7 @@ class Tag(NamedTuple):
     title: str
     content: str
     author_id: int
+    aliases: 'Optional[list[str]]'
 
 
 class Reminder(NamedTuple):
@@ -68,6 +69,7 @@ tables = {'timedroles': ['id', 'role_id', 'user_id', 'expiring_date'],
           'friendcodes': ['user_id', 'fc_3ds', 'fc_switch'],
           'reminders': ['id', 'reminder_date', 'author_id', 'content'],
           'tags': ['id', 'title', 'content', 'author_id'],
+          'tag_aliases': ['tag_id', 'alias'],
           'voteviews': ['id', 'message_id', 'identifier', 'author_id', 'options', 'start', 'staff_only'],
           'votes': ['view_id', 'voter_id', 'option'],
           'citizens': ['id', 'social_credit']}
@@ -133,7 +135,17 @@ class ExtrasDatabaseManager(BaseDatabaseManager, tables=tables):
 
     async def get_tags(self):
         async for t in self._select('tags'):
-            yield Tag(id=t[0], title=t[1], content=t[2], author_id=t[3])
+            yield Tag(id=t[0], title=t[1], content=t[2], author_id=t[3], aliases=None)
+
+    async def get_tags_with_aliases(self):
+        conn: asyncpg.Connection
+
+        query = "select *, ARRAY(SELECT alias from tags left join tag_aliases ta on tags.id = ta.tag_id) as aliases from tags"
+
+        async with self.pool.acquire() as conn:
+            async with conn.transaction():
+                async for t in conn.cursor(query):
+                    yield Tag(id=t[0], title=t[1], content=t[2], author_id=t[3], aliases=t[4])
 
     async def add_reminder(self, reminder_id: int, date: datetime, author_id: int, content: str) -> int:
         await self.bot.configuration.add_member(author_id)
@@ -190,3 +202,9 @@ class ExtrasDatabaseManager(BaseDatabaseManager, tables=tables):
 
     async def set_social_credit(self, citizen_id: int, amount: int) -> int:
         return await self._update('citizens', {'social_credit': amount}, id=citizen_id)
+
+    async def add_tag_alias(self, tag_id: int, alias: str):
+        return await self._insert('tag_aliases', tag_id=tag_id, alias=alias)
+
+    async def delete_tag_alias(self, tag_id: int, alias: str):
+        return await self._delete('tag_aliases', tag_id=tag_id, alias=alias)

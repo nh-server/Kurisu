@@ -503,6 +503,32 @@ class Extras(commands.GroupCog):
         else:
             await ctx.send("Failed to create tag")
 
+    @is_staff('Helper')
+    @tag.command(name='add_alias')
+    async def add_alias(self, ctx: KurisuContext, tag_name: str, *, alias: str):
+        """Creates an alias for a tag. Helpers+ only."""
+        if not (tag := self.extras.tags.get(tag_name)):
+            return await ctx.send("This tag doesn't exists!")
+        if not self.extras.tags.get(alias):
+            return await ctx.send("This alias is already in use!")
+        if alias in self.banned_tag_names:
+            return await ctx.send("You can't use this alias for a tag!")
+
+        await self.extras.add_tag_alias(tag, alias)
+        await ctx.send(f"Added alias `{alias}` to tag {tag.title}.")
+
+    @is_staff('Helper')
+    @tag.command(name='delete_alias')
+    async def delete_alias(self, ctx: KurisuContext, alias: str):
+        """Deletes an alias for a tag. Helpers+ only."""
+        if not (tag := self.extras.tags.get(alias)):
+            return await ctx.send("This alias doesn't exists!")
+        if tag.title == alias:
+            return await ctx.send("This name is not an alias.")
+
+        await self.extras.delete_tag_alias(tag, alias)
+        await ctx.send(f"Delete alias `{alias}` from tag {tag.title}.")
+
     @tag.command(name='search')
     async def search_tags(self, ctx: KurisuContext, query: str):
         """Search tags by title. Returns first 10 results."""
@@ -518,6 +544,8 @@ class Extras(commands.GroupCog):
         if tag := self.extras.tags.get(tag_name):
             embed = discord.Embed(title=f"Tag {tag_name}", color=gen_color(tag.id))
             embed.add_field(name="ID", value=str(tag.id), inline=False)
+            if tag.aliases:
+                embed.add_field(name="Aliases", value=", ".join(tag.aliases), inline=False)
             author = self.bot.guild.get_member(tag.author_id)
             embed.add_field(name="Author", value=author.mention if author else str(tag.author_id), inline=False)
             embed.add_field(name="Creation Date", value=format_dt(snowflake_time(tag.id)), inline=False)

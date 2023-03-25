@@ -107,6 +107,13 @@ create table tags
 	UNIQUE (title)
 );
 
+create table tag_aliases
+(
+    tag_id BIGINT REFERENCES tags(id) ON DELETE CASCADE,
+    alias TEXT UNIQUE,
+    primary key(tag_id, alias)
+);
+
 
 create table restrictions
 (

@@ -30,7 +30,12 @@ class ExtrasManager(BaseManager, db_manager=ExtrasDatabaseManager):
 
     async def setup(self):
 
-        self._tags: 'dict[str, Tag]' = {t.title: t async for t in self.db.get_tags()}
+        self._tags: 'dict[str, Tag]' = {}
+        async for t in self.db.get_tags_with_aliases():
+            self._tags[t.title] = t
+            if t.aliases:
+                for alias in t.aliases:
+                    self._tags[alias] = t
 
         self._timed_roles: 'dict[tuple[int, int], TimedRole]' = {(tr.user_id, tr.role_id): tr async for tr in self.db.get_timed_roles()}
 
@@ -50,6 +55,14 @@ class ExtrasManager(BaseManager, db_manager=ExtrasDatabaseManager):
     @property
     def timed_roles(self) -> 'dict[tuple[int, int], TimedRole]':
         return self._timed_roles
+
+    async def reload_tags(self):
+        self._tags.clear()
+        async for t in self.db.get_tags_with_aliases():
+            self._tags[t.title] = t
+            if t.aliases:
+                for alias in t.aliases:
+                    self._tags[alias] = t
 
     async def add_timed_role(self, user: 'Member | User | OptionalMember', role: 'Role', expiring_date: datetime):
         res = await self.db.add_timed_role(role.id, user.id, expiring_date)
@@ -100,20 +113,32 @@ class ExtrasManager(BaseManager, db_manager=ExtrasDatabaseManager):
         now = time_snowflake(datetime.now())
         res = await self.db.add_tag(now, title, content, author)
         if res:
-            self._tags[title] = Tag(id=now, title=title, content=content, author_id=author)
+            self._tags[title] = Tag(id=now, title=title, content=content, author_id=author, aliases=None)
+        return res
+
+    async def add_tag_alias(self, tag: Tag, alias: str):
+        res = await self.db.add_tag_alias(tag.id, alias)
+        if res:
+            await self.reload_tags()
+        return res
+
+    async def delete_tag_alias(self, tag: Tag, alias: str):
+        res = await self.db.delete_tag_alias(tag.id, alias)
+        if res:
+            await self.reload_tags()
         return res
 
     async def update_tag(self, title: str, content: str):
         res = await self.db.update_tag(title, content)
         if res:
             old_tag = self._tags[title]
-            self._tags[title] = Tag(id=old_tag.id, title=title, content=content, author_id=old_tag.author_id)
+            self._tags[title] = Tag(id=old_tag.id, title=title, content=content, author_id=old_tag.author_id, aliases=old_tag.aliases)
         return res
 
     async def delete_tag(self, title: str):
         res = await self.db.delete_tag(title)
         if res:
-            del self._tags[title]
+            await self.reload_tags()
         return res
 
     def search_tags(self, tag_name: str, *, limit=10) -> list[str]:
