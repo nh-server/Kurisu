@@ -15,6 +15,7 @@ from discord. app_commands import Transform
 from discord.ext import commands
 from discord.utils import format_dt, snowflake_time, MISSING
 from math import ceil
+from Levenshtein import jaro_winkler
 from typing import Optional, TYPE_CHECKING
 from utils.checks import is_staff, check_if_user_can_sr, check_staff, is_staff_app
 from utils.converters import DateOrTimeToSecondsConverter, HackMessageTransformer
@@ -89,7 +90,7 @@ async def tag_autocomplete(interaction: discord.Interaction, current: str) -> li
         choices = []
         n = 0
         for tag_name in cog.extras.tags:
-            if current in tag_name:
+            if jaro_winkler(tag_name, current, score_cutoff=0.6):
                 choices.append(app_commands.Choice(name=tag_name, value=tag_name))
                 n = n + 1
             if n == 25:
