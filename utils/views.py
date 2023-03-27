@@ -154,7 +154,7 @@ class VoteButton(Button['SimpleVoteView']):
         if self.view.staff_only and not check_staff(interaction.client, 'Helper', interaction.user.id):
             await interaction.response.send_message("You aren't allowed to vote.", ephemeral=True)
             return
-        await interaction.client.extras.add_vote(self.view.custom_id, interaction.user, self.label)
+        await interaction.client.extras.add_vote(self.view.custom_id, interaction.user.id, self.label)
         await interaction.response.send_message("Vote added.", ephemeral=True)
 
 
@@ -178,7 +178,7 @@ class VoteButtonEnd(Button['SimpleVoteView']):
             await interaction.response.send_message("Only the vote creator can end it", ephemeral=True)
 
 
-class SimpleVoteView(View):
+class SimpleVoteView(BaseView):
     def __init__(self, bot: 'Kurisu', author_id: int, options: list[str], custom_id: int, start: datetime.datetime,
                  staff_only: bool = False):
         super().__init__(timeout=None)
