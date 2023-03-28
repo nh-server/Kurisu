@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
-
 import discord
+import re
+
 from discord.ext import commands, tasks
 from Levenshtein import distance
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -45,7 +46,7 @@ class DB3DS(commands.Cog):
                     return
         self.titledb = titledb
 
-    async def tidsearchbyname(self, query: str) -> dict:
+    async def search_game_by_name(self, query: str) -> dict:
         """
         Search the list of games by game title using Levenshtein distance meter.
         Return the game entry if matches, return None otherwise.
@@ -64,7 +65,7 @@ class DB3DS(commands.Cog):
                 max_rat = ratio
         return res
 
-    async def tidsearchbygamecode(self, query: str) -> dict:
+    async def search_game_by_gamecode(self, query: str) -> dict:
         """
         Search the list of games by 4-letter gamecode.
         Return the game entry if matches, return None otherwise.
@@ -83,8 +84,36 @@ class DB3DS(commands.Cog):
                 break
         return res
 
-    @commands.command()
-    async def tidlookup(self, ctx: KurisuContext, *, query=""):
+    async def search_game_by_tid(self, query: str) -> dict:
+        """
+        Search the list of games by title id.
+        Return the game entry if matches, return None otherwise.
+        """
+        query = query.upper()
+
+        if not query.startswith("000"):
+            query = "000" + query
+
+        res = {}
+        for game in self.titledb:
+            titleid = game['TitleID']
+            if query == titleid:
+                res = game
+                # TitleID is unique so need to search more
+                break
+        return res
+
+    @staticmethod
+    def is_titleid(query: str):
+        # 00040000 for games, 0004000E for updates, 00048004 for dsiware
+        return re.fullmatch("0{3}?4[08]00[0E4][a-f0-9]{8}", query, re.IGNORECASE)
+
+    @staticmethod
+    def is_gamecode(query: str):
+        return re.fullmatch('[aA-zZ0-9]{4}', query, re.IGNORECASE)
+
+    @commands.command(aliases=['lookup'])
+    async def tidlookup(self, ctx: KurisuContext, *, query: str = ""):
         """Links to 3DSDB and/or one of the apps.\n
         To link to 3DSDB: `tidlookup`
         To search for an app: `tidlookup [query]`"""
@@ -94,12 +123,12 @@ class DB3DS(commands.Cog):
             embed.description = "A database of DS and 3DS homebrew"
             embed.url = "https://hax0kartik.github.io/3dsdb/"
             return await ctx.send(embed=embed)
-        res = {}
-        # because switch cases in python suck, let's just check if res is None every time!
-        if len(query) == 4:
-            res = await self.tidsearchbygamecode(query)
-        if not res:
-            res = await self.tidsearchbyname(query)
+        if self.is_gamecode(query):
+            res = await self.search_game_by_gamecode(query)
+        elif self.is_titleid(query):
+            res = await self.search_game_by_tid(query)
+        else:
+            res = await self.search_game_by_name(query)
         if not res:
             return await ctx.send("No app found!")
         embed = discord.Embed()
