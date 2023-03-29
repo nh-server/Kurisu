@@ -620,7 +620,7 @@ class Memes(commands.Cog):
         await ctx.send(random.choice(wagulist))
 
     @commands.command(hidden=True)
-    async def flushed(self, ctx: KurisuContext):
+    async def flushed(self, ctx: KurisuContext, repeat: int = 1):
         """got flushed?"""
         flushedlist = [f"{str(self.flushedsquish)}", f"{str(self.plusher_flusher)}", f"{str(self.isforme)}",
                        f"{str(self.flushedtriangle)}", f"{str(self.flushedstuffed)}", f"{str(self.flushedball)}",
@@ -630,7 +630,12 @@ class Memes(commands.Cog):
                        f"{str(self.flushedcowboy)}", f"{str(self.flushedwater)}", f"{str(self.flushedw)}",
                        f"{str(self.flushedhalf2)}", f"{str(self.flushedroulette)}", f"{str(self.flushedcushion)}",
                        f"{str(self.flushedcrush)}"]
-        await ctx.send(random.choice(flushedlist))
+        if repeat > 15:
+            return await ctx.send("can u dont")
+        msg = ""
+        for i in range(repeat):
+            msg = msg + random.choice(flushedlist) + " "
+        await ctx.send(msg)
 
 
 async def setup(bot):
