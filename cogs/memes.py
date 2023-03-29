@@ -88,6 +88,11 @@ class Memes(commands.Cog):
         self.flushedroulette = discord.utils.get(self.bot.guild.emojis, name="flushedroulette") or "⁉"
         self.flushedcushion = discord.utils.get(self.bot.guild.emojis, name="flushedcushion") or "⁉"
         self.flushedcrush = discord.utils.get(self.bot.guild.emojis, name="flushedcrush") or "⁉"
+        self.isforme2 = discord.utils.get(self.bot.guild.emojis, name="isforme2") or "⁉"
+        self.fire = discord.utils.get(self.bot.guild.emojis, name="fire") or "⁉"
+        self.100 = discord.utils.get(self.bot.guild.emojis, name="100") or "⁉"
+        self.pray = discord.utils.get(self.bot.guild.emojis, name="pray") or "⁉"
+        self.ok_hand = discord.utils.get(self.bot.guild.emojis, name="ok_hand") or "⁉"
 
     async def _meme(self, ctx: KurisuContext, msg, directed: bool = False, image_link: Optional[str] = None, allowed_mentions: Optional[discord.AllowedMentions] = None):
 
@@ -609,7 +614,7 @@ class Memes(commands.Cog):
         await ctx.send(random.choice(motd_list))
 
     @commands.command(hidden=True)
-    async def wagu(self, ctx: KurisuContext):
+    async def wagu(self, ctx: KurisuContext, repeat: int = 1):
         """got wagu?"""
         wagulist = [f"{str(self.wagu_emoji)}", f"{str(self.waguspooky)}", f"{str(self.waguxmas)}",
                     f"{str(self.waguspin)}", f"{str(self.waguspinaaa)}", f"{str(self.waguwat)}",
@@ -617,7 +622,12 @@ class Memes(commands.Cog):
                     f"{str(self.wagupeek)}", f"{str(self.poggu)}", f"{str(self.waguburger)}",
                     f"{str(self.wagucar)}", f"{str(self.shutwagu)}", f"{str(self.waguboat)}",
                     f"{str(self.wagutv)}", f"{str(self.ghostwagu)}"]
-        await ctx.send(random.choice(wagulist))
+        if repeat > 10:
+            return await ctx.send("can u dont")
+        msg = ""
+        for i in range(repeat):
+            msg = msg + random.choice(wagulist) + " "
+        await ctx.send(msg)
 
     @commands.command(hidden=True)
     async def flushed(self, ctx: KurisuContext, repeat: int = 1):
@@ -629,12 +639,33 @@ class Memes(commands.Cog):
                        f"{str(self.flushedhalf)}", f"{str(self.flushedgoomba)}", f"{str(self.flushedflat)}",
                        f"{str(self.flushedcowboy)}", f"{str(self.flushedwater)}", f"{str(self.flushedw)}",
                        f"{str(self.flushedhalf2)}", f"{str(self.flushedroulette)}", f"{str(self.flushedcushion)}",
-                       f"{str(self.flushedcrush)}"]
-        if repeat > 15:
+                       f"{str(self.flushedcrush)}", f"{str(self.isforme2)}"]
+        if repeat > 10:
             return await ctx.send("can u dont")
         msg = ""
         for i in range(repeat):
             msg = msg + random.choice(flushedlist) + " "
+        await ctx.send(msg)
+
+    @commands.command(hidden=True, aliases=["ong", "ongod", "nocap", "ngl", "tbh"])
+    async def fr(self, ctx: KurisuContext, repeat: int = 1):
+        """got flushed?"""
+        zoomerlist = [f"{str(self.100)}", f"{str(self.ok_hand)}", f"{str(self.fire)}",
+                     f"{str(self.pray)}", "get that bag", "fr",
+                     "ngl", "tbh", "based",
+                     "finna", "tryna", "trynna",
+                     "flex", "on god", "ong",
+                     "bro", "bruh", "real shit",
+                     "on the real", "deadass", "BFFR",
+                     "bestie", "no cap", "ratio",
+                     "wig", "bussin", "bussin bussin",
+                     "fr fr", "snatch", "snatched",
+                     "ijbol", "we stan", "alr"]
+        if repeat > 15:
+            return await ctx.send("can u dont")
+        msg = ""
+        for i in range(repeat):
+            msg = msg + random.choice(zoomerlist) + " "
         await ctx.send(msg)
 
 
