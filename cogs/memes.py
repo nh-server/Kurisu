@@ -645,7 +645,7 @@ class Memes(commands.Cog):
                     self.wagupeek, self.poggu, self.waguburger,
                     self.wagucar, self.shutwagu, self.waguboat,
                     self.wagutv, self.ghostwagu]
-        await ctx.send(' '.join(map(str, random.sample(wagulist, sample))))
+        await ctx.send(' '.join(map(str, random.choices(wagulist, k=sample))))
 
     @commands.command(hidden=True)
     async def flushed(self, ctx: KurisuContext, sample: commands.Range[int, 1, 10] = 1):
@@ -674,7 +674,8 @@ class Memes(commands.Cog):
                        "wig", "bussin", "bussin bussin",
                        "fr fr", "snatch", "snatched",
                        "ijbol", "we stan", "alr",
-                       "slay", "lowkey"]
+                       "slay", "lowkey", "💀",
+                       "mid"]
         await ctx.send(' '.join(random.choices(zoomer_list, k=sample)))
 
 
