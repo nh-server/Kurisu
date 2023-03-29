@@ -90,7 +90,7 @@ class Memes(commands.Cog):
         self.flushedcrush = discord.utils.get(self.bot.guild.emojis, name="flushedcrush") or "⁉"
         self.isforme2 = discord.utils.get(self.bot.guild.emojis, name="isforme2") or "⁉"
         self.fire = discord.utils.get(self.bot.guild.emojis, name="fire") or "⁉"
-        self.100 = discord.utils.get(self.bot.guild.emojis, name="100") or "⁉"
+        self.onehunna = discord.utils.get(self.bot.guild.emojis, name="100") or "⁉"
         self.pray = discord.utils.get(self.bot.guild.emojis, name="pray") or "⁉"
         self.ok_hand = discord.utils.get(self.bot.guild.emojis, name="ok_hand") or "⁉"
 
@@ -650,7 +650,7 @@ class Memes(commands.Cog):
     @commands.command(hidden=True, aliases=["ong", "ongod", "nocap", "ngl", "tbh"])
     async def fr(self, ctx: KurisuContext, repeat: int = 1):
         """got flushed?"""
-        zoomerlist = [f"{str(self.100)}", f"{str(self.ok_hand)}", f"{str(self.fire)}",
+        zoomerlist = [f"{str(self.onehunna)}", f"{str(self.ok_hand)}", f"{str(self.fire)}",
                      f"{str(self.pray)}", "get that bag", "fr",
                      "ngl", "tbh", "based",
                      "finna", "tryna", "trynna",
