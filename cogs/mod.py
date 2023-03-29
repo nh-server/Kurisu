@@ -259,16 +259,16 @@ class Mod(commands.GroupCog):
     @commands.bot_has_permissions(manage_channels=True)
     @commands.guild_only()
     @commands.command()
-    async def slowmode(self, ctx: GuildContext, channel: Optional[discord.TextChannel | discord.VoiceChannel | discord.Thread], *, length: int = commands.parameter(converter=DateOrTimeToSecondsConverter)):
+    async def slowmode(self, ctx: GuildContext,
+                       channel: discord.TextChannel | discord.VoiceChannel | discord.Thread = commands.CurrentChannel,
+                       *,
+                       length: int = commands.parameter(converter=DateOrTimeToSecondsConverter)):
         """Apply a given slowmode time to a channel.
 
         The time format is identical to that used for timed kicks/bans/takehelps.
         It is not possible to set a slowmode longer than 6 hours.
 
         Helpers in assistance channels and Staff only."""
-
-        if channel is None:
-            channel = ctx.channel
 
         if channel not in self.bot.assistance_channels and not check_staff(ctx.bot, "OP", ctx.author.id):
             return await ctx.send("You cannot use this command outside of assistance channels.")
