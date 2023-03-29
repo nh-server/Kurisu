@@ -20,6 +20,7 @@ class Memes(commands.Cog):
     """
     Meme commands
     """
+
     def __init__(self, bot: Kurisu):
         self.bot: Kurisu = bot
         self.bot.loop.create_task(self.init_memes())
@@ -90,7 +91,8 @@ class Memes(commands.Cog):
         self.flushedcrush = discord.utils.get(self.bot.guild.emojis, name="flushedcrush") or "⁉"
         self.isforme2 = discord.utils.get(self.bot.guild.emojis, name="isforme2") or "⁉"
 
-    async def _meme(self, ctx: KurisuContext, msg, directed: bool = False, image_link: Optional[str] = None, allowed_mentions: Optional[discord.AllowedMentions] = None):
+    async def _meme(self, ctx: KurisuContext, msg, directed: bool = False, image_link: Optional[str] = None,
+                    allowed_mentions: Optional[discord.AllowedMentions] = None):
 
         if image_link is not None:
             title = f"{self.bot.escape_text(ctx.author.display_name) + ':' if not directed else ''} {msg}"
@@ -98,7 +100,8 @@ class Memes(commands.Cog):
             embed.set_image(url=image_link)
             await ctx.send(embed=embed)
         else:
-            await ctx.send(f"{self.bot.escape_text(ctx.author.display_name) + ':' if not directed else ''} {msg}", allowed_mentions=allowed_mentions)
+            await ctx.send(f"{self.bot.escape_text(ctx.author.display_name) + ':' if not directed else ''} {msg}",
+                           allowed_mentions=allowed_mentions)
 
     # list memes
     @commands.command(name="listmemes")
@@ -247,17 +250,20 @@ class Memes(commands.Cog):
     @commands.command(hidden=True, aliases=["pat"])
     async def headpat(self, ctx: KurisuContext, u: discord.Member):
         """headpat"""
-        await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has been gently patted.", True, "https://nintendohomebrew.com/assets/img/nhmemes/pat.jpg")
+        await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has been gently patted.", True,
+                         "https://nintendohomebrew.com/assets/img/nhmemes/pat.jpg")
 
     @commands.command(hidden=True, aliases=["pat2"])
     async def headpat2(self, ctx: KurisuContext, u: discord.Member):
         """headpat 2"""
-        await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has been gently patted.", True, "https://nintendohomebrew.com/assets/img/nhmemes/pat2.gif")
+        await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has been gently patted.", True,
+                         "https://nintendohomebrew.com/assets/img/nhmemes/pat2.gif")
 
     @commands.command(hidden=True)
     async def headrub(self, ctx: KurisuContext, u: discord.Member):
         """headrub"""
-        await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has received a head rub.", True, "https://nintendohomebrew.com/assets/img/nhmemes/headrub.jpg")
+        await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has received a head rub.", True,
+                         "https://nintendohomebrew.com/assets/img/nhmemes/headrub.jpg")
 
     @commands.command(hidden=True)
     async def sudoku(self, ctx: KurisuContext):
@@ -292,7 +298,8 @@ class Memes(commands.Cog):
     @commands.command(hidden=True)
     async def whoops(self, ctx: KurisuContext):
         """Memes."""
-        await self._meme(ctx, "", image_link="https://album.eiphax.tech/uploads/big/2ec4764e884d956fb882f3479fa87ecf.gif")
+        await self._meme(ctx, "",
+                         image_link="https://album.eiphax.tech/uploads/big/2ec4764e884d956fb882f3479fa87ecf.gif")
 
     @commands.command(hidden=True)
     async def nom(self, ctx: KurisuContext):
@@ -371,6 +378,7 @@ class Memes(commands.Cog):
         fahrenheit = self.c_to_f(celsius)
         kelvin = self.c_to_k(celsius)
         await self._meme(ctx, f"{u.mention} cooled. User is now {celsius}°C ({fahrenheit}°F, {kelvin}K).", True)
+
     # End code from https://github.com/reswitched/robocop-ng
 
     @commands.command(hidden=True)
@@ -416,7 +424,8 @@ class Memes(commands.Cog):
     @commands.command(hidden=True)
     async def eel(self, ctx: KurisuContext, u: discord.Member):
         """eel"""
-        await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has been eel slapped.", True, "https://nintendohomebrew.com/assets/img/nhmemes/eel.gif")
+        await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has been eel slapped.", True,
+                         "https://nintendohomebrew.com/assets/img/nhmemes/eel.gif")
 
     @commands.command(hidden=True, aliases=["bruh", "yolo", "swag", "based"])
     async def dab(self, ctx: KurisuContext):
@@ -426,7 +435,7 @@ class Memes(commands.Cog):
     @commands.command(hidden=True, aliases=["hacc"])
     async def nobrain(self, ctx: KurisuContext, *, action="hacc"):
         """h a c c"""
-        await self._meme(ctx, f'`I have no brain and I must {" ".join(action.replace("`",""))}`')
+        await self._meme(ctx, f'`I have no brain and I must {" ".join(action.replace("`", ""))}`')
 
     @commands.command(hidden=True, aliases=["wheresource", "sauce", "github"])
     async def source(self, ctx: KurisuContext):
@@ -436,52 +445,62 @@ class Memes(commands.Cog):
     @commands.command(hidden=True)
     async def pirate2(self, ctx: KurisuContext):
         """stop right there, criminal scum"""
-        await self._meme(ctx, "", image_link="https://cdn.discordapp.com/attachments/508390946753216528/695752500179107910/giphy.gif")
+        await self._meme(ctx, "",
+                         image_link="https://cdn.discordapp.com/attachments/508390946753216528/695752500179107910/giphy.gif")
 
     @commands.command(hidden=True)
     async def source2(self, ctx: KurisuContext):
         """citation needed"""
-        await self._meme(ctx, "", image_link="https://album.eiphax.tech/uploads/big/b5c031e07ddbc3e48d0853f2d7064f66.jpg")
+        await self._meme(ctx, "",
+                         image_link="https://album.eiphax.tech/uploads/big/b5c031e07ddbc3e48d0853f2d7064f66.jpg")
 
     @commands.command(hidden=True)
     async def disgraceful(self, ctx: KurisuContext):
         """YOU DIDN'T SEE IT BECAUSE IT WASN'T THERE"""
-        await self._meme(ctx, "", image_link="https://album.eiphax.tech/uploads/big/b93b2a99bc28df4a192fc7eb8ccc01a9.png")
+        await self._meme(ctx, "",
+                         image_link="https://album.eiphax.tech/uploads/big/b93b2a99bc28df4a192fc7eb8ccc01a9.png")
 
     @commands.command(hidden=True)
     async def greatness(self, ctx: KurisuContext):
         """We were this close."""
-        await self._meme(ctx, "", image_link="https://album.eiphax.tech/uploads/big/f2b1e87af1fcdcd34f0dff65d7696deb.png")
+        await self._meme(ctx, "",
+                         image_link="https://album.eiphax.tech/uploads/big/f2b1e87af1fcdcd34f0dff65d7696deb.png")
 
     @commands.command(hidden=True)
     async def shovels(self, ctx: KurisuContext):
         """Do you need more?"""
-        await self._meme(ctx, "", image_link="https://album.eiphax.tech/uploads/big/b798edd56662f1bde15ae4b6bc9c9fba.png")
+        await self._meme(ctx, "",
+                         image_link="https://album.eiphax.tech/uploads/big/b798edd56662f1bde15ae4b6bc9c9fba.png")
 
     @commands.command(hidden=True)
     async def value(self, ctx: KurisuContext):
         """smug.png"""
-        await self._meme(ctx, "", image_link="https://album.eiphax.tech/uploads/big/f882b32a3f051f474572b018d053bd7b.png")
+        await self._meme(ctx, "",
+                         image_link="https://album.eiphax.tech/uploads/big/f882b32a3f051f474572b018d053bd7b.png")
 
     @commands.command(hidden=True)
     async def superiority(self, ctx: KurisuContext):
         """opinions"""
-        await self._meme(ctx, "", image_link="https://album.eiphax.tech/uploads/big/e2cbbf7c808e21fb6c5ab603f6a89a3f.jpg")
+        await self._meme(ctx, "",
+                         image_link="https://album.eiphax.tech/uploads/big/e2cbbf7c808e21fb6c5ab603f6a89a3f.jpg")
 
     @commands.command(hidden=True)
     async def dolar(self, ctx: KurisuContext):
         """mcdondal"""
-        await self._meme(ctx, "", image_link="https://album.eiphax.tech/uploads/big/3ecd851953906ecc2387cfd592ac97e7.png")
+        await self._meme(ctx, "",
+                         image_link="https://album.eiphax.tech/uploads/big/3ecd851953906ecc2387cfd592ac97e7.png")
 
     @commands.command(hidden=True)
     async def serotonin(self, ctx: KurisuContext):
         """I really want to know"""
-        await self._meme(ctx, "", image_link="https://album.eiphax.tech/uploads/big/2549ac8b197ae68080041d3966a887e8.png")
+        await self._meme(ctx, "",
+                         image_link="https://album.eiphax.tech/uploads/big/2549ac8b197ae68080041d3966a887e8.png")
 
     @commands.command(hidden=True, aliases=['decisions'])
     async def decision(self, ctx: KurisuContext):
         """duly noted"""
-        await self._meme(ctx, "", image_link="https://album.eiphax.tech/uploads/big/5186160fa1b8002fe8fa1867225e45a7.png")
+        await self._meme(ctx, "",
+                         image_link="https://album.eiphax.tech/uploads/big/5186160fa1b8002fe8fa1867225e45a7.png")
 
     @commands.command(hidden=True)
     async def shitposting(self, ctx: KurisuContext):
@@ -497,13 +516,15 @@ class Memes(commands.Cog):
     @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.default)
     async def cadealert(self, ctx: KurisuContext):
         """stop! cade time."""
-        await self._meme(ctx, "excuse me <@&575940388452433940>, it is time for cade", allowed_mentions=discord.AllowedMentions(roles=True))
+        await self._meme(ctx, "excuse me <@&575940388452433940>, it is time for cade",
+                         allowed_mentions=discord.AllowedMentions(roles=True))
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.channel)
     async def birbalert(self, ctx: KurisuContext):
         """stop! birb time."""
-        await self._meme(ctx, "excuse me <@&805294876673572884>, it is time for birb", allowed_mentions=discord.AllowedMentions(roles=True))
+        await self._meme(ctx, "excuse me <@&805294876673572884>, it is time for birb",
+                         allowed_mentions=discord.AllowedMentions(roles=True))
 
     @is_staff("OP")
     @commands.guild_only()
@@ -527,19 +548,22 @@ class Memes(commands.Cog):
     @commands.command(hidden=True, aliases=["departure"])
     async def depart(self, ctx: KurisuContext):
         """From the amazing Mr. Burguers"""
-        departure_gifs = ["https://nintendohomebrew.com/assets/img/nhmemes/departure1.gif", "https://nintendohomebrew.com/assets/img/nhmemes/departure2.gif"]
+        departure_gifs = ["https://nintendohomebrew.com/assets/img/nhmemes/departure1.gif",
+                          "https://nintendohomebrew.com/assets/img/nhmemes/departure2.gif"]
         await self._meme(ctx, "", image_link=random.choice(departure_gifs))
 
     @commands.command(hidden=True)
     async def arrival(self, ctx: KurisuContext):
         """Glazy can add departure but not arrival smh"""
-        arrival_gifs = ["https://nintendohomebrew.com/assets/img/nhmemes/arrival1.gif", "https://nintendohomebrew.com/assets/img/nhmemes/arrival2.png"]
+        arrival_gifs = ["https://nintendohomebrew.com/assets/img/nhmemes/arrival1.gif",
+                        "https://nintendohomebrew.com/assets/img/nhmemes/arrival2.png"]
         await self._meme(ctx, "", image_link=random.choice(arrival_gifs))
 
     @commands.command(hidden=True)
     async def hug(self, ctx: KurisuContext, u: discord.Member):
         """hug"""
-        await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has received a hug.", True, "https://nintendohomebrew.com/assets/img/nhmemes/hug.jpg")
+        await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has received a hug.", True,
+                         "https://nintendohomebrew.com/assets/img/nhmemes/hug.jpg")
 
     @commands.command(hidden=True)
     async def blahaj(self, ctx: KurisuContext, money: float):
@@ -552,7 +576,7 @@ class Memes(commands.Cog):
             text = "You could buy one Blahaj with that. Think about it."
         else:
             try:
-                text = f"You could buy {int(money//18)} Blahajes with that. Think about it."
+                text = f"You could buy {int(money // 18)} Blahajes with that. Think about it."
             except ValueError:
                 text = "No."
         await self._meme(ctx, text, True, blahaj_link)
@@ -562,14 +586,16 @@ class Memes(commands.Cog):
     async def xiwarn(self, ctx: KurisuContext, citizen: discord.Member):
         """Sometimes citizens need a reminder how to act"""
         await self.extras.add_social_credit(citizen.id, -100)
-        await ctx.send(f"{ctx.author.mention} has assessed {citizen.mention}'s actions and removed 100 social credit from them!")
+        await ctx.send(
+            f"{ctx.author.mention} has assessed {citizen.mention}'s actions and removed 100 social credit from them!")
 
     @is_staff("Helper")
     @commands.command()
     async def xipraise(self, ctx: KurisuContext, citizen: discord.Member):
         """Model citizens will be praised"""
         await self.extras.add_social_credit(citizen.id, 100)
-        await ctx.send(f"{ctx.author.mention} has assessed {citizen.mention}'s actions and added 100 social credit to them!")
+        await ctx.send(
+            f"{ctx.author.mention} has assessed {citizen.mention}'s actions and added 100 social credit to them!")
 
     @is_staff("Helper")
     @commands.command(aliases=["sc"])
@@ -599,71 +625,57 @@ class Memes(commands.Cog):
     @commands.command(hidden=True)
     async def motd(self, ctx: KurisuContext):
         """got milk?"""
-        motd_list = [f"{str(self.flushedball)}", f"{str(self.flushedsquish)}", f"{str(self.flushedeyes)}",
+        motd_list = [str(self.flushedball), str(self.flushedsquish), str(self.flushedeyes),
                      "ur mom lol", "hot dogs are sandwiches dont @ me", "have you had a coffee today?",
                      "bird app bad", "imagine having opinions in current year", "based", "pog", "ratio",
                      "remember to moisturize today!", "drink some water u idiot", "take ur meds",
                      "do you like neapolitan ice cream?", "nentondon swonch", "xnoe at 11pm moment",
                      "has junko had a name change today?", "got milk?", "got pilk?",
-                     "it has been 0 days since eip broke me", "ETA WEN PLS", "The beatings will continue until morale improves.",
+                     "it has been 0 days since eip broke me", "ETA WEN PLS",
+                     "The beatings will continue until morale improves.",
                      "Zǎoshang hǎo zhōngguó xiànzài wǒ yǒu BING CHILLING"]
         await ctx.send(random.choice(motd_list))
 
     @commands.command(hidden=True)
-    async def wagu(self, ctx: KurisuContext, repeat: int = 1):
+    async def wagu(self, ctx: KurisuContext, sample: commands.Range[int, 1, 10] = 1):
         """got wagu?"""
-        wagulist = [f"{str(self.wagu_emoji)}", f"{str(self.waguspooky)}", f"{str(self.waguxmas)}",
-                    f"{str(self.waguspin)}", f"{str(self.waguspinaaa)}", f"{str(self.waguwat)}",
-                    f"{str(self.waguwu)}", f"{str(self.waguw)}", f"{str(self.hyperwagu)}",
-                    f"{str(self.wagupeek)}", f"{str(self.poggu)}", f"{str(self.waguburger)}",
-                    f"{str(self.wagucar)}", f"{str(self.shutwagu)}", f"{str(self.waguboat)}",
-                    f"{str(self.wagutv)}", f"{str(self.ghostwagu)}"]
-        if repeat > 10:
-            return await ctx.send("can u dont")
-        msg = ""
-        for i in range(repeat):
-            msg = msg + random.choice(wagulist) + " "
-        await ctx.send(msg)
+        wagulist = [self.wagu_emoji, self.waguspooky, self.waguxmas,
+                    self.waguspin, self.waguspinaaa, self.waguwat,
+                    self.waguwu, self.waguw, self.hyperwagu,
+                    self.wagupeek, self.poggu, self.waguburger,
+                    self.wagucar, self.shutwagu, self.waguboat,
+                    self.wagutv, self.ghostwagu]
+        await ctx.send(' '.join(map(str, random.sample(wagulist, sample))))
 
     @commands.command(hidden=True)
-    async def flushed(self, ctx: KurisuContext, repeat: int = 1):
+    async def flushed(self, ctx: KurisuContext, sample: commands.Range[int, 1, 10] = 1):
         """got flushed?"""
-        flushedlist = [f"{str(self.flushedsquish)}", f"{str(self.plusher_flusher)}", f"{str(self.isforme)}",
-                       f"{str(self.flushedtriangle)}", f"{str(self.flushedstuffed)}", f"{str(self.flushedball)}",
-                       f"{str(self.flushedeyes)}", f"{str(self.flushedsquare)}", f"{str(self.flushedskull)}",
-                       f"{str(self.flushedmoon)}", f"{str(self.flushedhot)}", f"{str(self.flushedhand)}",
-                       f"{str(self.flushedhalf)}", f"{str(self.flushedgoomba)}", f"{str(self.flushedflat)}",
-                       f"{str(self.flushedcowboy)}", f"{str(self.flushedwater)}", f"{str(self.flushedw)}",
-                       f"{str(self.flushedhalf2)}", f"{str(self.flushedroulette)}", f"{str(self.flushedcushion)}",
-                       f"{str(self.flushedcrush)}", f"{str(self.isforme2)}"]
-        if repeat > 10:
-            return await ctx.send("can u dont")
-        msg = ""
-        for i in range(repeat):
-            msg = msg + random.choice(flushedlist) + " "
-        await ctx.send(msg)
+        flushed_list = [self.flushedsquish, self.plusher_flusher, self.isforme,
+                        self.flushedtriangle, self.flushedstuffed, self.flushedball,
+                        self.flushedeyes, self.flushedsquare, self.flushedskull,
+                        self.flushedmoon, self.flushedhot, self.flushedhand,
+                        self.flushedhalf, self.flushedgoomba, self.flushedflat,
+                        self.flushedcowboy, self.flushedwater, self.flushedw,
+                        self.flushedhalf2, self.flushedroulette, self.flushedcushion,
+                        self.flushedcrush, self.isforme2]
+        await ctx.send(' '.join(map(str, random.sample(flushed_list, sample))))
 
     @commands.command(hidden=True, aliases=["ong", "ongod", "nocap", "ngl", "tbh"])
-    async def fr(self, ctx: KurisuContext, repeat: int = 1):
+    async def fr(self, ctx: KurisuContext, sample: commands.Range[int, 1, 15] = 1):
         """fr ngl tbh"""
-        zoomerlist = ["💯", "👌", "🔥",
-                     "🙏", "get that bag", "fr",
-                     "ngl", "tbh", "based",
-                     "finna", "tryna", "trynna",
-                     "flex", "on god", "ong",
-                     "bro", "bruh", "real shit",
-                     "on the real", "deadass", "BFFR",
-                     "bestie", "no cap", "ratio",
-                     "wig", "bussin", "bussin bussin",
-                     "fr fr", "snatch", "snatched",
-                     "ijbol", "we stan", "alr",
-                     "slay", "lowkey"]
-        if repeat > 15:
-            return await ctx.send("can u dont")
-        msg = ""
-        for i in range(repeat):
-            msg = msg + random.choice(zoomerlist) + " "
-        await ctx.send(msg)
+        zoomer_list = ["💯", "👌", "🔥",
+                       "🙏", "get that bag", "fr",
+                       "ngl", "tbh", "based",
+                       "finna", "tryna", "trynna",
+                       "flex", "on god", "ong",
+                       "bro", "bruh", "real shit",
+                       "on the real", "deadass", "BFFR",
+                       "bestie", "no cap", "ratio",
+                       "wig", "bussin", "bussin bussin",
+                       "fr fr", "snatch", "snatched",
+                       "ijbol", "we stan", "alr",
+                       "slay", "lowkey"]
+        await ctx.send(' '.join(random.sample(zoomer_list, sample)))
 
 
 async def setup(bot):
