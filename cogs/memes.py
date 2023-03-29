@@ -658,7 +658,7 @@ class Memes(commands.Cog):
                         self.flushedcowboy, self.flushedwater, self.flushedw,
                         self.flushedhalf2, self.flushedroulette, self.flushedcushion,
                         self.flushedcrush, self.isforme2]
-        await ctx.send(' '.join(map(str, random.sample(flushed_list, sample))))
+        await ctx.send(' '.join(map(str, random.choices(flushed_list, k=sample))))
 
     @commands.command(hidden=True, aliases=["ong", "ongod", "nocap", "ngl", "tbh"])
     async def fr(self, ctx: KurisuContext, sample: commands.Range[int, 1, 15] = 1):
@@ -675,7 +675,7 @@ class Memes(commands.Cog):
                        "fr fr", "snatch", "snatched",
                        "ijbol", "we stan", "alr",
                        "slay", "lowkey"]
-        await ctx.send(' '.join(random.sample(zoomer_list, sample)))
+        await ctx.send(' '.join(random.choices(zoomer_list, k=sample)))
 
 
 async def setup(bot):
