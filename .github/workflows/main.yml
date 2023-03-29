@@ -3,6 +3,7 @@ name: 'Docker image build'
 on:
   push:
     branches: main
+  workflow_dispatch:
 
 # cancel existing builds if a push is made
 concurrency:
