@@ -27,7 +27,7 @@ class ImageConvert(commands.Cog):
     async def on_message(self, message):
         # BMP conversion
         for f in message.attachments:
-            if f.filename.lower().endswith(('.bmp', '.heif')) and f.size <= 600000:  # 600kb
+            if f.filename.lower().endswith(('.bmp', '.heif', '.heic')) and f.size <= 600000:  # 600kb
                 async with self.bot.session.get(f.url, timeout=45) as img_request:
                     img_content = await img_request.read()
                     with concurrent.futures.ProcessPoolExecutor() as pool:
