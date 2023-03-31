@@ -675,8 +675,14 @@ class Memes(commands.Cog):
                        "fr fr", "snatch", "snatched",
                        "ijbol", "we stan", "alr",
                        "slay", "lowkey", "💀",
-                       "mid"]
+                       "mid", "mf"]
         await ctx.send(' '.join(random.choices(zoomer_list, k=sample)))
+
+    @commands.command(hidden=True, aliases=["freeshop", "3hs"])
+    async def hshop(self, ctx: KurisuContext):
+        """hmmmm nah"""
+        await self._meme(ctx, "",
+                         image_link="https://nintendohomebrew.com/assets/img/nhmemes/howboutno.gif")
 
 
 async def setup(bot):
