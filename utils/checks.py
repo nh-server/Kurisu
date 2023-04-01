@@ -31,10 +31,11 @@ def is_staff_app(role: str):
 
 def check_staff(bot: 'Kurisu', role: str, user_id: int) -> bool:
     position = bot.configuration.staff.get(user_id)
-    if not position and bot.configuration.helpers.get(user_id):
-        position = StaffRank.Helper
     if position is None:
-        return False
+        if bot.configuration.helpers.get(user_id):
+            position = StaffRank.Helper
+        else:
+            return False
     return position <= StaffRank[role]
 
 
