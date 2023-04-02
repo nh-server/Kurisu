@@ -186,6 +186,17 @@ class Extras(commands.GroupCog):
             await c.edit(overwrites=overwrites)
         await ctx.send("Changed permissions successfully!")
 
+    @commands.guild_only()
+    @is_staff("Owner")
+    @commands.command(hidden=True)
+    async def clearperms(self, ctx: GuildContext, everyone_view: bool = False):
+        """Clears the current channel permission overrides."""
+        if isinstance(ctx.channel, discord.Thread):
+            return await ctx.send("THis command can't be used on threads")
+        default_role = ctx.guild.default_role
+        await ctx.channel.edit(overwrites={default_role: discord.PermissionOverwrite(view_channel=everyone_view)})
+        await ctx.send("Overrides cleared.")
+
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command(hidden=True)
