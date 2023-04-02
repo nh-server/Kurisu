@@ -141,7 +141,7 @@ class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager)
     async def delete_helper(self, user: 'Member | User | OptionalMember'):
 
         if user.id in self._staff:
-            res = await self.db.remove_staff_position(user.id)
+            res = await self.db.remove_helper_console(user.id)
         else:
             res = await self.db.delete_staff(user.id)
         if res:
