@@ -1,6 +1,6 @@
 import asyncio
 
-from discord import Member, User
+from discord import Member, User, Role, Object, PermissionOverwrite
 from enum import IntEnum
 from typing import TYPE_CHECKING, NamedTuple
 
@@ -241,3 +241,25 @@ class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager)
     async def delete_rule(self, rule_id: int):
         await self.db.delete_rule(rule_id)
         del self._rules[rule_id]
+
+    async def store_channel_overwrites(self, name: str, overwrites: dict[Role | Member | Object, PermissionOverwrite]):
+        permission_dict = {}
+        for discord_object, overwrite in overwrites.items():
+            if isinstance(discord_object, (Member, User)):
+                continue
+            permission_dict[discord_object.id] = {}
+            for permission, value in overwrite:
+                permission_dict[discord_object.id][permission] = value
+        return await self.db.store_channel_overwrites(name, permission_dict)
+
+    async def get_channel_overwrites(self, name: str) -> 'Optional[dict[discord.Object, PermissionOverwrite]]':
+        overwrites = await self.db.get_channel_overwrites(name)
+        if overwrites is None:
+            return overwrites
+        f_overwrites = {}
+        for id, overwrites in overwrites.items():
+            f_overwrites[discord.Object(id=id, type=discord.Role)] = discord.PermissionOverwrite(**overwrites)
+        return f_overwrites
+
+    async def delete_channel_overwrites(self, name: str) -> int:
+        return await self.db.delete_channel_overwrites(name)

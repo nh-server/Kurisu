@@ -6,6 +6,8 @@ if TYPE_CHECKING:
     from typing import AsyncGenerator, Tuple, Optional
     import asyncpg
 
+import json
+
 
 # I can't really think of a use for this... maybe I'll remove it if nothing happens.
 
@@ -31,7 +33,8 @@ tables = {'flags': ['name', 'value'],
           'channels': ['id', 'name', 'filtered', 'lock_level', 'mod_channel'],
           'changedroles': ['role_id', 'channel_id', 'original_value'],
           'roles': ['id', 'name'],
-          'rules': ['id', 'description']}
+          'rules': ['id', 'description'],
+          'channeloverwrites': ['id', 'name', 'overwrites']}
 
 
 class ConfigurationDatabaseManager(BaseDatabaseManager, tables=tables):
@@ -173,3 +176,15 @@ class ConfigurationDatabaseManager(BaseDatabaseManager, tables=tables):
     async def get_rules(self) -> 'AsyncGenerator[tuple[int, str], None]':
         async for r in self._select('rules'):
             yield r
+
+    async def store_channel_overwrites(self, name: str, overwrites: dict[int, dict[str, bool | None]]):
+        json_str = json.dumps(overwrites)
+        return await self._insert('channeloverwrites', name=name, overwrites=json_str)
+
+    async def get_channel_overwrites(self, name: str) -> 'Optional[dict[int, dict[str, bool | None]]]':
+        async for _, _, overwrites in self._select('channeloverwrites', name=name):
+            return json.loads(overwrites)
+        return None
+
+    async def delete_channel_overwrites(self, name: str) -> int:
+        return await self._delete('rules', name=name)

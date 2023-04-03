@@ -190,4 +190,9 @@ create table changedroles
     PRIMARY KEY (channel_id, role_id)
 );
 
-
+create table channeloverwrites
+(
+	id SERIAL PRIMARY KEY,
+	name TEXT UNIQUE,
+	overwrites JSON
+);

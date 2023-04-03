@@ -16,7 +16,7 @@ from discord.ext import commands
 from discord.utils import format_dt, snowflake_time, MISSING
 from math import ceil
 from Levenshtein import jaro_winkler
-from typing import Optional, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING, Literal
 from utils.checks import is_staff, check_if_user_can_sr, check_staff, is_staff_app
 from utils.converters import DateOrTimeToSecondsConverter, HackMessageTransformer
 from utils.utils import gen_color, send_dm_message, KurisuCooldown
@@ -196,6 +196,44 @@ class Extras(commands.GroupCog):
         default_role = ctx.guild.default_role
         await ctx.channel.edit(overwrites={default_role: discord.PermissionOverwrite(view_channel=everyone_view)})
         await ctx.send("Overrides cleared.")
+
+    @commands.guild_only()
+    @is_staff("Owner")
+    @commands.command(hidden=True)
+    async def storeperms(self, ctx: GuildContext, channel: discord.TextChannel, name: str):
+        """Stores the channel role overwrites, so they can be deployed later in other channels."""
+        if isinstance(ctx.channel, discord.Thread):
+            return await ctx.send("This command can't be used on threads")
+        res = await self.bot.configuration.store_channel_overwrites(name, channel.overwrites)
+        if not res:
+            return await ctx.send("Failed to store overwrites.")
+        await ctx.send("Overwrites stored.")
+
+    @commands.guild_only()
+    @is_staff("Owner")
+    @commands.command(hidden=True)
+    async def deployperms(self, ctx: GuildContext, name: str, channel: discord.TextChannel, mode: Literal['replace', 'union']):
+        """Stores the channel overwrites, so they can be deployed later in other channels."""
+        if isinstance(ctx.channel, discord.Thread):
+            return await ctx.send("This command can't be used on threads")
+        if not (overwrites := await self.bot.configuration.get_channel_overwrites(name)):
+            return await ctx.send("There are no overwrites with that name.")
+
+        f_overwrites = overwrites if mode == 'replace' else channel.overwrites | overwrites
+        await channel.edit(overwrites=f_overwrites)
+        await ctx.send("Overwrites changed.")
+
+    @commands.guild_only()
+    @is_staff("Owner")
+    @commands.command(hidden=True)
+    async def delperms(self, ctx: GuildContext, name: str):
+        """Stores the channel overwrites, so they can be deployed later in other channels."""
+        if not (await self.bot.configuration.get_channel_overwrites(name)):
+            return await ctx.send("There are no overwrites with that name.")
+        res = await self.bot.configuration.delete_channel_overwrites(name)
+        if not res:
+            return await ctx.send("Failed to delete overwrites")
+        await ctx.send("Overwrites deleted.")
 
     @is_staff("HalfOP")
     @commands.guild_only()
