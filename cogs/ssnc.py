@@ -47,10 +47,10 @@ class SwitchSerialNumberCheck(Cog):
         Args:
             serial: The console's serial."""
 
-        if ctx.interaction:
+        if not ctx.interaction:
             try:
                 await ctx.message.delete()
-            except:
+            except (discord.Forbidden, discord.NotFound):
                 pass
 
         serial = serial.split()[0].upper()
