@@ -70,7 +70,7 @@ internet = Module('internet', {
     1099: ResultInfo('Access point with given SSID not found.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/4249/kw/003-1099'),
     1101: ResultInfo('Incorrect password for access point or configuration is not compatible with the 3DS.'),
     2001: ResultInfo('DNS error. If you\'re using a custom DNS server, make sure the settings are correct.'),
-    2103: ResultInfo('Generic connection error(?)')
+    (2101, 2103): ResultInfo('Generic connection error(?)')
 })
 
 # Yet another nim hack. Why does this category have so many redundant errors?
@@ -112,7 +112,7 @@ matchmaking = Module('matchmaking', {
 eshop_mint = Module('eshop (mint/api?)', {
     200: ResultInfo('Could not access the SD card.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/4234'),
     1221: ResultInfo('The download code you entered can only be redeemed within the relevant software title. It cannot be redeemed in Nintendo eShop.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/14600'),
-    2001: ResultInfo('Error when attempting to access eshop on a region changed console. Fixed by changing back to the console original region.'),
+    2001: ResultInfo('Error when attempting to access eshop on a region changed console. Fixed by changing back to the console original region and delete the eshop profile from the eshop settings.'),
     2100: ResultInfo('The connection to the Nintendo eShop timed out. This error code is often times caused by slow download times due to interference or a slow Internet connection.', 'See [the support page](https://en-americas-support.nintendo.com/app/answers/detail/a_id/4432) or [Nintendo\'s network status](https://support.nintendo.com/networkstatus).'),
     2670: ResultInfo('An error occurred while attempting to connect.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/4383'),
     2720: ResultInfo('eShop SSL error.'),
@@ -129,6 +129,8 @@ eshop_app = Module('eshop (app?)', {
     # 1001: ResultInfo('The eShop is down for maintenance.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/45399'),
     1000: ResultInfo('System update required (friends module?).'),
     1001: eshop_mint.data[3049],
+    1003: ResultInfo('Often caused by the country setting setting of the system and the eshop country setting of eShop not matching.'),
+    2001: eshop_mint.data[2001],
     2705: ResultInfo('This error code is often the result of the Internet connection timing out or losing connection with the Nintendo eShop.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/14478'),
     2913: ResultInfo('An eShop or in-game DLC download failed (or the server is down).', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/7243'),
     2916: eshop_mint.data[2916],
@@ -167,7 +169,9 @@ browser1 = Module('browser (?)', {
 
 # 032: a second category related to the web browser
 browser2 = Module('browser (?)', {
-    1820: ResultInfo('Displayed when the browser asks if you want to go to to a potentially dangerous website. Press \'yes\' to continue if you feel it is safe.')
+    1035: ResultInfo('Unable to open this webpage. The 3ds browser can\'t display this page.'),
+    1820: ResultInfo('Displayed when the browser asks if you want to go to to a potentially dangerous website. Press \'yes\' to continue if you feel it is safe.'),
+
 })
 
 # 022: more account stuff?
