@@ -266,6 +266,7 @@ act = Module('act (accounts)', {
     2000: ResultInfo('Authentication error.'),
     # TODO: 2001-2644 (there aren't really that many errors)
     2402: ResultInfo('Invalid NNID. Usually happens if the console is trying to connect to Nintendo servers with a Pretendo Network ID, or Pretendo Network with an NNID.'),
+    2511: ResultInfo('This error occurs when the Wii U system software is not up to date and must be updated in order to sign in to the Nintendo Network.'),
     2643: ResultInfo('Authentication is required.'),
     2651: ResultInfo('Confirmation code is expired.'),
     2661: ResultInfo('Mail address is not validated.'),
