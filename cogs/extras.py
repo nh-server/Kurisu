@@ -201,10 +201,13 @@ class Extras(commands.GroupCog):
     @is_staff("Owner")
     @commands.command(hidden=True)
     async def storeperms(self, ctx: GuildContext, channel: discord.TextChannel, name: str):
-        """Stores the channel role overwrites, so they can be deployed later in other channels."""
+        """Stores the channel role overwrites, so they can be deployed later in other channels,
+           member and everyone role overwrites aren't stored."""
         if isinstance(ctx.channel, discord.Thread):
             return await ctx.send("This command can't be used on threads")
-        res = await self.bot.configuration.store_channel_overwrites(name, channel.overwrites)
+        overwrites = channel.overwrites.copy()
+        del overwrites[ctx.guild.default_role]
+        res = await self.bot.configuration.store_channel_overwrites(name, overwrites)
         if not res:
             return await ctx.send("Failed to store overwrites.")
         await ctx.send("Overwrites stored.")
