@@ -212,15 +212,20 @@ class Extras(commands.GroupCog):
     @commands.guild_only()
     @is_staff("Owner")
     @commands.command(hidden=True)
-    async def deployperms(self, ctx: GuildContext, name: str, channel: discord.TextChannel, mode: Literal['replace', 'union']):
-        """Stores the channel overwrites, so they can be deployed later in other channels."""
-        if isinstance(ctx.channel, discord.Thread):
-            return await ctx.send("This command can't be used on threads")
+    async def deployperms(self, ctx: GuildContext, name: str, channels: commands.Greedy[discord.TextChannel], mode: Literal['replace', 'join']):
+        """Deploys stored channel overwrites to multiple channels.
+
+           replace mode replaces the target channels existing overrides.
+           join mode joins both overrides with priority to the stored overrides in case of collision"""
         if not (overwrites := await self.bot.configuration.get_channel_overwrites(name)):
             return await ctx.send("There are no overwrites with that name.")
-
-        f_overwrites = overwrites if mode == 'replace' else channel.overwrites | overwrites
-        await channel.edit(overwrites=f_overwrites)
+        if mode == 'replace':
+            f_overwrites = overwrites
+            for c in channels:
+                await c.edit(overwrites=f_overwrites)
+        else:
+            for c in channels:
+                await c.edit(overwrites=c.overwrites | overwrites)
         await ctx.send("Overwrites changed.")
 
     @commands.guild_only()
