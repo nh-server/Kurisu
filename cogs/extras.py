@@ -235,6 +235,17 @@ class Extras(commands.GroupCog):
             return await ctx.send("Failed to delete overwrites")
         await ctx.send("Overwrites deleted.")
 
+    @commands.guild_only()
+    @is_staff("OP")
+    @commands.command(hidden=True)
+    async def listperms(self, ctx: GuildContext):
+        """List the stored the channel overwrites."""
+        overwrites_names = [ow[1] async for ow in self.bot.configuration.get_all_channel_overwrites()]
+        if not overwrites_names:
+            return await ctx.send("There are no stored overwrites.")
+        embed = discord.Embed(title="Stored Overwrites", description='\n'.join(overwrites_names), colour=discord.Colour.random())
+        await ctx.send(embed=embed)
+
     @is_staff("HalfOP")
     @commands.guild_only()
     @commands.command(hidden=True)

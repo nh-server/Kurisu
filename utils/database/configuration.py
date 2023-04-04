@@ -186,5 +186,9 @@ class ConfigurationDatabaseManager(BaseDatabaseManager, tables=tables):
             return json.loads(overwrites)
         return None
 
+    async def get_all_channel_overwrites(self) -> 'AsyncGenerator[tuple[int, str, str], None]':
+        async for ow in self._select('channeloverwrites'):
+            yield ow
+
     async def delete_channel_overwrites(self, name: str) -> int:
         return await self._delete('rules', name=name)

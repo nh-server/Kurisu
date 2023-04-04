@@ -261,5 +261,9 @@ class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager)
             f_overwrites[discord.Object(id=id, type=discord.Role)] = discord.PermissionOverwrite(**overwrites)
         return f_overwrites
 
+    async def get_all_channel_overwrites(self) -> 'AsyncGenerator[tuple[int, str, str], None]':
+        async for ow in self.db.get_all_channel_overwrites():
+            yield ow
+
     async def delete_channel_overwrites(self, name: str) -> int:
         return await self.db.delete_channel_overwrites(name)
