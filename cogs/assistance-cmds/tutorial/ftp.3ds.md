@@ -1,8 +1,8 @@
 ---
 title: 3DS FTP Guide
-url: https://3ds.eiphax.tech/ftp.html
-author.name: Krieg
-thumbnail-url: https://nintendohomebrew.com/assets/img/krieg.png
+url: https://wiki.hacks.guide/wiki/3DS:FTP
+author.name: Nintendo Homebrew
+thumbnail-url: https://nintendohomebrew.com/assets/img/nhmemes/bigh.png
 help-desc: FTPD/WinSCP ftp guide
 aliases: ftpd
 cooldown-per: 0
