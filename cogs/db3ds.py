@@ -120,7 +120,7 @@ class DB3DS(commands.Cog):
         if query == "":
             embed = discord.Embed(title="3DSDB")
             embed.set_author(name="hax0kartik")
-            embed.description = "A database of DS and 3DS homebrew"
+            embed.description = "A database of 3DS games that were on the eShop"
             embed.url = "https://hax0kartik.github.io/3dsdb/"
             return await ctx.send(embed=embed)
         if self.is_gamecode(query):
