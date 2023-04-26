@@ -351,6 +351,11 @@ class Memes(commands.Cog):
         """pbanos"""
         await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/pbanj2.gif")
 
+    @commands.command(hidden=True)
+    async def notreading(self, ctx: KurisuContext):
+        """why read?"""
+        await self._meme(ctx, "", image_link="https://nintendohomebrew.com/assets/img/nhmemes/notreading.gif")
+
     # Begin code from https://github.com/reswitched/robocop-ng
     @staticmethod
     def c_to_f(c):
