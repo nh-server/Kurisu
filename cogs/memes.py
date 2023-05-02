@@ -682,7 +682,11 @@ class Memes(commands.Cog):
                        "slay", "lowkey", "💀",
                        "mid", "mf", "goated",
                        "fam", "straight up", "🔛 🔝",
-                       "🗣️", "‼️", "⁉️"]
+                       "🗣️", "‼️", "⁉️",
+                       "and i oop", "sksksk", "bestie",
+                       "yasssssss", "squad goals", "gucci fam",
+                       "fam", "bet", "cap",
+                       "no cap", "tea", "spill the tea"]
         await ctx.send(' '.join(random.choices(zoomer_list, k=sample)))
 
     @commands.command(hidden=True, aliases=["freeshop", "3hs"])
