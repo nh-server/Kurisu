@@ -701,7 +701,7 @@ class Extras(commands.GroupCog):
 
     @is_staff('OP')
     @commands.guild_only()
-    @commands.command()
+    @commands.command(aliases=['stealemoji'])
     async def addemoji(self, ctx: GuildContext, name: str, emoji: discord.PartialEmoji | str, *roles: discord.Role):
         """Add an emoji to the server. OP+ only."""
         if isinstance(emoji, discord.PartialEmoji):
