@@ -8,4 +8,4 @@ help-desc: Link to Virtual Console Injects for 3DS/Wiiu.
 ---
 
 The recommended way to play old classics on your Wii U.
-Usage guide [here](https://flumpster.github.io/instructions/index).
+Usage guide [here](https://uwuvci-prime.github.io/UWUVCI-Resources/).
