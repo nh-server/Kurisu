@@ -278,7 +278,8 @@ class Kurisu(commands.Bot):
                     'switch-assistance-1', 'switch-assistance-2', 'helpers', 'watch-logs', 'message-logs',
                     'upload-logs', 'hacking-general', 'meta', 'appeals', 'legacy-systems', 'dev', 'off-topic',
                     'voice-and-music', 'bot-cmds', 'bot-talk', 'mods', 'mod-mail', 'mod-logs', 'server-logs', 'bot-err',
-                    'elsewhere', 'newcomers', 'nintendo-discussion', 'tech-talk', 'hardware', 'streaming-gamer', 'wii-vwii-assistance']
+                    'elsewhere', 'newcomers', 'nintendo-discussion', 'tech-talk', 'hardware', 'streaming-gamer', 'wii-vwii-assistance',
+                    'kurisu-development']
 
         for n in channels:
             db_channel = await self.configuration.get_channel_by_name(n)

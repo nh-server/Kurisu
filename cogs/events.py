@@ -437,6 +437,13 @@ class Events(commands.Cog):
         # self.bot.loop.create_task(self.user_ping_check(message)) replaced by automod
         self.bot.loop.create_task(self.user_spam_check(message))
         self.bot.loop.create_task(self.channel_spam_check(message))
+        # check if message is a command and/or if message was sent in kurisu-dev
+        ctx = await self.bot.get_context(message)
+        if ctx.valid and message.channel == self.bot.channels['kurisu-development']:
+            # if so, shut them up
+            await message.delete()
+            await message.channel.send(f"{message.author.mention} Please use {self.bot.channels['bot-cmds'].mention} for commands.", delete_after=10)
+            return
 
     @commands.Cog.listener()
     async def on_message_edit(self, message_before: discord.Message, message_after: discord.Message):
