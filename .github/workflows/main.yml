@@ -37,7 +37,7 @@ jobs:
           python -m pip install flake8
       - name: Check with flake8
         run: |
-          flake8 . --ignore=E501,E722,E126,E128,W503,E121 --exclude=migrations
+          flake8 . --ignore=E501,E722,W503 --exclude=migrations
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
