@@ -6,6 +6,7 @@ from discord import app_commands, AutoModRuleTriggerType, AutoModRule
 from discord.ext import commands
 
 from utils.checks import is_staff, is_staff_app
+from utils.utils import text_to_discord_file
 from utils.views import AutoModRulesView
 
 from typing import TYPE_CHECKING
@@ -54,6 +55,33 @@ class AutoMod(commands.GroupCog):
         rules = await ctx.guild.fetch_automod_rules()
         view = AutoModRulesView(rules, ctx.author)
         view.message = await ctx.send(embed=view.default_embed, view=view)
+
+    @is_staff_app("OP")
+    @app_commands.guild_only
+    @app_commands.command()
+    async def search_keyword(self, interaction: discord.Interaction, word: str):
+        """Search for a word in the automod rules"""
+        assert interaction.guild is not None
+        matches = {}
+        count = 0
+        rules = await interaction.guild.fetch_automod_rules()
+        for rule in rules:
+            if rule.trigger.type != AutoModRuleTriggerType.keyword:
+                continue
+            matches[rule.name] = []
+            for keyword in rule.trigger.keyword_filter:
+                if word in keyword:
+                    count += 1
+                    matches[rule.name].append(f"{keyword} contains {word}")
+        text = ""
+        if not count:
+            return await interaction.response.send_message("No match found.")
+        for rule_name in matches:
+            if not matches[rule_name]:
+                continue
+            text = f'Rule {rule_name}:\n  ' + '  \n'.join(matches[rule_name])
+        file = text_to_discord_file(text, name='matches.txt')
+        await interaction.response.send_message(f"{count} matches found.", file=file)
 
     @is_staff_app("SuperOP")
     @app_commands.autocomplete(rule=rules_autocomplete)
