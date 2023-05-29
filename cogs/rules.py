@@ -208,11 +208,11 @@ https://discord.gg/C29hYvh"""
         """Displays rule 3."""
         await self.simple_embed(ctx, self.configuration.rules[3], title="Rule 3")
 
-    @commands.command()
+    @commands.command(aliases=['r4'])
     @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
-    async def r4(self, ctx: KurisuContext):
-        """Displays rule 4."""
-        await self.simple_embed(ctx, self.configuration.rules[4], title="Rule 4")
+    async def dontasktoask(self, ctx: KurisuContext):
+        """whatavibe"""
+        await ctx.send("To keep channels flowing smoothly, please don't \'ask to ask\'. Just ask your question directly, and include any supporting information that might be relevant.")
 
     @commands.command()
     @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
