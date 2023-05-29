@@ -216,6 +216,15 @@ https://discord.gg/C29hYvh"""
 
     @commands.command()
     @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
+    async def realr4(self, ctx: KurisuContext):
+        """Displays rule 4."""
+        content = (f"{self.configuration.rules[4]}\n\n"
+                   f"If you simply need to tell someone to actually state their question, "
+                   f"consider `.dontasktoask` instead. `.r4` was changed to match `.dontasktoask` due to its large embed.")
+        await self.simple_embed(ctx, content, title="Rule 4")
+
+    @commands.command()
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def r5(self, ctx: KurisuContext):
         """Displays rule 5."""
         await self.simple_embed(ctx, self.configuration.rules[5], title="Rule 5")
