@@ -695,6 +695,12 @@ class Memes(commands.Cog):
         await self._meme(ctx, "",
                          image_link="https://nintendohomebrew.com/assets/img/nhmemes/howboutno.gif")
 
+    @commands.command(hidden=True, aliases=["stfu"])
+    async def atkrieg(self, ctx: KurisuContext):
+        """i'm not... strong enough"""
+        await self._meme(ctx, "",
+                         image_link="https://album.eiphax.tech/uploads/big/e86dd27f708078c919959f64b25fc0c0.png")
+
 
 async def setup(bot):
     await bot.add_cog(Memes(bot))
