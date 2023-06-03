@@ -47,6 +47,9 @@ class Lockdown(commands.Cog):
                 continue
 
             channel_overwrites = c.overwrites
+            if ctx.guild.default_role not in channel_overwrites:
+                channel_overwrites[ctx.guild.default_role] = discord.PermissionOverwrite(send_messages=False)
+                to_add.append((ctx.guild.default_role.id, None))
 
             for target, overwrites in channel_overwrites.items():
 
