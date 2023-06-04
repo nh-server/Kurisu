@@ -735,6 +735,16 @@ class Extras(commands.GroupCog):
         await ctx.send(embed=embed, ephemeral=True)
 
     @commands.guild_only()
+    @commands.hybrid_command()
+    async def serverbanner(self, ctx: GuildContext):
+        """Sends embed with the server's banner."""
+        if ctx.guild.banner is None:
+            return await ctx.send("This server has no banner set.", ephemeral=True)
+        embed = discord.Embed(title=f"{ctx.guild.name} Banner")
+        embed.set_image(url=ctx.guild.banner.url)
+        await ctx.send(embed=embed, ephemeral=True)
+
+    @commands.guild_only()
     @commands.command(name='close', aliases=['solved'])
     async def close_thread(self, ctx: GuildContext):
         """Closes and locks a thread. Thread owner or staff only."""
