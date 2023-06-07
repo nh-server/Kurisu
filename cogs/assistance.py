@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import discord
 import logging
 
@@ -133,6 +134,7 @@ class Assistance(commands.GroupCog):
         # Channel names can't be longer than 100 characters
         channel_name = f"{console}-{helpee.name}-{desc}"[:100]
         channel = await self.small_help_category.create_text_channel(name=channel_name)
+        await asyncio.sleep(1)  # Fix for discord race condition(?)
         await channel.set_permissions(helpee, read_messages=True)
         await channel.send(f"{helpee.mention}, come here for help.")
         await self.bot.channels['mod-logs'].send(f"⭕️ **Small help access granted**: {ctx.author.mention} granted access to small help channel to {helpee.mention}")
@@ -150,6 +152,7 @@ class Assistance(commands.GroupCog):
         # Channel names can't be longer than 100 characters
         channel_name = f"3ds-{helpee.name}-soap-🧼"[:100]
         channel = await self.small_help_category.create_text_channel(name=channel_name)
+        await asyncio.sleep(1)  # Fix for discord race condition(?)
         await channel.set_permissions(helpee, read_messages=True)
         await channel.send(f"{helpee.mention}, please read the following.\n"
                            "0. If your console is on, turn it off. If your console happens to already be in GodMode9, skip to step 3.\n"
