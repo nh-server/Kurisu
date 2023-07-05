@@ -53,6 +53,7 @@ action_messages = {
     'no-tempstream': ('\N{NO ENTRY SIGN}', 'Permission Revoked', 'revoked streaming permissions from {}'),
 
     'take-memes': ('\N{NO ENTRY SIGN}', 'Permission Revoked', 'revoked meme permissions from {}'),
+    'nou': ('\N{NO ENTRY SIGN}', 'Sent to the void', 'sent {} to the void'),
 
     # non-specific role changes
     'watch': ('\N{EYES}', 'Watch', 'put {} on watch.'),
