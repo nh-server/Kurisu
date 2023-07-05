@@ -875,12 +875,21 @@ class Mod(commands.GroupCog):
     @commands.guild_only()
     @commands.command()
     async def nou(self, ctx: GuildContext, member: discord.Member | discord.User, *, reason: Optional[str]):
-        """Banish to the shadow realm."""
+        """Banish to the void."""
         if await check_bot_or_staff(ctx, member, "no-u"):
             return
         await self.bot.restrictions.add_restriction(member, Restriction.NoU, reason)
         await ctx.send(f"{member.mention} has been banished to the void.")
         await self.logs.post_action_log(ctx.author, member, 'nou', reason=reason)
+
+    @is_staff("OP")
+    @commands.guild_only()
+    @commands.command()
+    async def unnou(self, ctx: GuildContext, member: discord.Member | discord.User, *, reason: Optional[str]):
+        """Retrieves a user from the void."""
+        await self.restrictions.remove_restriction(member, Restriction.NoU)
+        await ctx.send(f"{member.mention} has been retrieved from the void.")
+        await self.logs.post_action_log(ctx.author, member, 'unnou', reason=reason)
 
     @is_staff_app("OP")
     @app_commands.guild_only

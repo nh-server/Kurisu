@@ -54,6 +54,7 @@ action_messages = {
 
     'take-memes': ('\N{NO ENTRY SIGN}', 'Permission Revoked', 'revoked meme permissions from {}'),
     'nou': ('\N{NO ENTRY SIGN}', 'Sent to the void', 'sent {} to the void'),
+    'unnou': ('\N{HEAVY LARGE CIRCLE}', 'Retrieved from the void', 'retrieved {} from the void'),
 
     # non-specific role changes
     'watch': ('\N{EYES}', 'Watch', 'put {} on watch.'),
