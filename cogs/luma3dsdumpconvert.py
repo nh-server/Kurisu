@@ -91,10 +91,11 @@ class Luma3DSDumpConvert(commands.Cog):
                 out_message += "\n"
             out_message += "{0:<8}{1:<12}{2:<8}{3:<12}\n".format(registerNames[i], "{0:08x}".format(registers[i]), registerNames[i+1], "{0:08x}".format(registers[i+1]))
         if nbRegisters % 2 == 1:
-            out_message += "{0:<8}{1:<12}\n".format(registerNames[nbRegisters - 1], "{0:08x}".format(registers[nbRegisters - 1]))
-
-        if processor == 11 and exceptionType == 3:
-            out_message += "{0:<8}{1:<12}Access type: {2}\n".format("FAR", "{0:08x}".format(registers[19]), "Write" if registers[17] & (1 << 11) != 0 else "Read")
+            if processor == 11 and exceptionType == 3:
+                access_type = "Write" if registers[17] & (1 << 11) != 0 else "Read"
+                out_message += "{0:<8}{1:<12}Access type: {2}\n".format(registerNames[nbRegisters - 1], "{0:08x}".format(registers[nbRegisters - 1]), access_type)
+            else:
+                out_message += "{0:<8}{1:<12}\n".format(registerNames[nbRegisters - 1], "{0:08x}".format(registers[nbRegisters - 1]))
 
         return out_message
 
