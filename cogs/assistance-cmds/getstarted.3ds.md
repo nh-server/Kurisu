@@ -7,4 +7,4 @@ help-desc: Links the 3DS get-started page
 aliases: 3dslanding
 ---
 
-How to hack your 3DS console on any firmware from 1.0.0 to 11.16.0
+How to hack your 3DS console on any firmware from 1.0.0 to 11.17.0
