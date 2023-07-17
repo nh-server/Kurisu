@@ -144,7 +144,7 @@ class Assistance(commands.GroupCog):
 
     @is_staff('Helper')
     @commands.guild_only()
-    @commands.command()
+    @commands.command(aliases=["soup"])
     async def createsoap(self, ctx: GuildContext, helpee: discord.Member):
         """Creates a 🧼 help channel for a user. Helper+ only."""
         if not self.small_help_category:
