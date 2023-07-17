@@ -519,17 +519,13 @@ class Memes(commands.Cog):
 
     @commands.command(hidden=True)
     @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.default)
-    async def cadealert(self, ctx: KurisuContext):
-        """stop! cade time."""
-        await self._meme(ctx, "excuse me <@&575940388452433940>, it is time for cade",
-                         allowed_mentions=discord.AllowedMentions(roles=True))
-
-    @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.channel)
-    async def birbalert(self, ctx: KurisuContext):
-        """stop! birb time."""
-        await self._meme(ctx, "excuse me <@&805294876673572884>, it is time for birb",
-                         allowed_mentions=discord.AllowedMentions(roles=True))
+    async def animalalert(self, ctx: KurisuContext):
+        """stop! animal time."""
+        if ctx.channel.id != 1130632654857973861:
+            await ctx.send("💢 You can't do this here.")
+        else:
+            await self._meme(ctx, "excuse me <@&575940388452433940>, it is time for animal",
+                             allowed_mentions=discord.AllowedMentions(roles=True))
 
     @is_staff("OP")
     @commands.guild_only()
