@@ -30,6 +30,7 @@ class Restriction(Enum):
     NoEmbed = 'No-Embed'
     AppealsMute = 'appeal-mute'
     NoArt = 'No-art'
+    NoAnimals = 'No-animals'
     NoTech = 'No-Tech'
     NoMemes = 'No-Memes'
     NoU = 'No-U'

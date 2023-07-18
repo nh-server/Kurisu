@@ -287,7 +287,7 @@ class Kurisu(commands.Bot):
     async def load_roles(self):
         roles = ['Helpers', 'Staff', 'HalfOP', 'OP', 'SuperOP', 'Owner', 'On-Duty 3DS', 'On-Duty Wii U',
                  'On-Duty Switch', 'On-Duty Legacy', 'Probation', 'Retired Staff', 'Verified', 'Trusted', 'Muted',
-                 'No-Help', 'No-elsewhere', 'No-Memes', 'No-art', '#art-discussion', 'No-Embed', '#elsewhere',
+                 'No-Help', 'No-elsewhere', 'No-Memes', 'No-art', 'No-animals', '#art-discussion', 'No-Embed', '#elsewhere',
                  'Small Help', 'meta-mute', 'appeal-mute', 'crc', 'No-Tech', 'help-mute', 'streamer(temp)', '🍰',
                  'No-U']
 

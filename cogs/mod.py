@@ -899,6 +899,7 @@ class Mod(commands.GroupCog):
         Choice(name='Take Elsewhere access', value='No-elsewhere'),
         Choice(name='Take Meme commands access', value='No-Memes'),
         Choice(name='Take Art-channel access', value='No-art'),
+        Choice(name='Take animal channel access', value='No-animals'),
         Choice(name='Mute in appeals', value='appeal-mute'),
         Choice(name='Mute in meta', value='meta-mute')
     ])
@@ -921,6 +922,7 @@ class Mod(commands.GroupCog):
                               'No-elsewhere': 'take-elsewhere',
                               'No-Memes': 'take-memes',
                               'No-art': 'take-art',
+                              'No-animals': 'take-animals',
                               'appeal-mute': 'appeals-mute',
                               'meta-mute': 'meta-mute'}
 
