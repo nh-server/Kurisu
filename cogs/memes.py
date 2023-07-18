@@ -517,7 +517,7 @@ class Memes(commands.Cog):
         """now with ear rape"""
         await ctx.send("https://album.eiphax.tech/uploads/big/01432cfa6eb64091301037971f8225c4.webm")
 
-    @commands.command(hidden=True)
+    @commands.command(hidden=True, aliases=['cadealert', 'birbalert'])
     @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.default)
     async def animalalert(self, ctx: KurisuContext):
         """stop! animal time."""
