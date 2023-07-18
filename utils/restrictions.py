@@ -45,6 +45,7 @@ messages = {Restriction.Muted: "You were muted!",
             Restriction.NoEmbed: "You lost embed and upload permissions!",
             Restriction.AppealsMute: "You were appeal muted!",
             Restriction.NoArt: "Your art channel access was revoked!",
+            Restriction.NoAnimals: "Your animal channel access was revoked!",
             Restriction.NoTech: "You lost access to the tech channel",
             Restriction.NoMemes: "You lost access to meme commands",
             Restriction.NoU: "You've been sent to the void"}
