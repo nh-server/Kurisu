@@ -36,6 +36,7 @@ action_messages = {
 
     'give-art': ('\N{HEAVY LARGE CIRCLE}', 'Art access restore', 'restored art access for {}'),
     'take-art': ('\N{NO ENTRY SIGN}', 'Art access taken', 'took art access from {}'),
+    'take-animals': ('\N{NO ENTRY SIGN}', 'Animal access taken', 'took animals access from {}'),
 
     'give-tech': ('\N{HEAVY LARGE CIRCLE}', 'Tech access restore', 'restored tech access for {}'),
     'take-tech': ('\N{NO ENTRY SIGN}', 'Tech access taken', 'took tech access from {}'),
