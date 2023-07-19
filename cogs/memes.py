@@ -517,16 +517,6 @@ class Memes(commands.Cog):
         """now with ear rape"""
         await ctx.send("https://album.eiphax.tech/uploads/big/01432cfa6eb64091301037971f8225c4.webm")
 
-    @commands.command(hidden=True)
-    @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.default)
-    async def animalalert(self, ctx: KurisuContext):
-        """stop! animal time."""
-        if ctx.channel.id != 1130632654857973861:
-            await ctx.send("💢 You can't do this here.")
-        else:
-            await self._meme(ctx, "excuse me <@&575940388452433940>, it is time for animal",
-                             allowed_mentions=discord.AllowedMentions(roles=True))
-
     @is_staff("OP")
     @commands.guild_only()
     @commands.command(hidden=True, aliases=['🍰', 'cake'])
