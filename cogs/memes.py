@@ -90,6 +90,9 @@ class Memes(commands.Cog):
         self.flushedcushion = discord.utils.get(self.bot.guild.emojis, name="flushedcushion") or "⁉"
         self.flushedcrush = discord.utils.get(self.bot.guild.emojis, name="flushedcrush") or "⁉"
         self.isforme2 = discord.utils.get(self.bot.guild.emojis, name="isforme2") or "⁉"
+        self.isforme3 = discord.utils.get(self.bot.guild.emojis, name="isforme3") or "⁉"
+        self.flushed5 = discord.utils.get(self.bot.guild.emojis, name="flushed5") or "⁉"
+        self.flushedbold = discord.utils.get(self.bot.guild.emojis, name="flushedbold") or "⁉"
 
     async def _meme(self, ctx: KurisuContext, msg, directed: bool = False, image_link: Optional[str] = None,
                     allowed_mentions: Optional[discord.AllowedMentions] = None):
@@ -649,7 +652,8 @@ class Memes(commands.Cog):
                         self.flushedhalf, self.flushedgoomba, self.flushedflat,
                         self.flushedcowboy, self.flushedwater, self.flushedw,
                         self.flushedhalf2, self.flushedroulette, self.flushedcushion,
-                        self.flushedcrush, self.isforme2]
+                        self.flushedcrush, self.isforme2, self.isforme3,
+                        self.flushed5]
         await ctx.send(' '.join(map(str, random.choices(flushed_list, k=sample))))
 
     @commands.command(hidden=True, aliases=["ong", "ongod", "nocap", "ngl", "tbh"])
@@ -673,7 +677,8 @@ class Memes(commands.Cog):
                        "and i oop", "sksksk", "bestie",
                        "yasssssss", "squad goals", "gucci fam",
                        "fam", "bet", "cap",
-                       "no cap", "tea", "spill the tea"]
+                       "no cap", "tea", "spill the tea",
+                       "iykyk", "jit", "highkey lowkey"]
         await ctx.send(' '.join(random.choices(zoomer_list, k=sample)))
 
     @commands.command(hidden=True, aliases=["freeshop", "3hs"])
@@ -687,6 +692,24 @@ class Memes(commands.Cog):
         """i'm not... strong enough"""
         await self._meme(ctx, "",
                          image_link="https://album.eiphax.tech/uploads/big/e86dd27f708078c919959f64b25fc0c0.png")
+
+    @commands.command(hidden=True)
+    async def eustace(self, ctx: KurisuContext):
+        """eustace: regular edition"""
+        await self._meme(ctx, "",
+                         image_link="https://album.eiphax.tech/uploads/big/8bf790ad730890c1968006289543f3aa.png")
+
+    @commands.command(hidden=True)
+    async def eustace2(self, ctx: KurisuContext):
+        """eustace: laser edition"""
+        await self._meme(ctx, "",
+                         image_link="https://album.eiphax.tech/uploads/big/3d36de23c42913610a074a5a36d687e6.jpeg")
+
+    @commands.command(hidden=True)
+    async def eustace3(self, ctx: KurisuContext):
+        """eustace: bizarro edition"""
+        await self._meme(ctx, "",
+                         image_link="https://album.eiphax.tech/uploads/big/cf85135091814a6136aaf5acd395d860.jpeg")
 
 
 async def setup(bot):
