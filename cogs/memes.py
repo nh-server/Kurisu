@@ -711,6 +711,12 @@ class Memes(commands.Cog):
         await self._meme(ctx, "",
                          image_link="https://album.eiphax.tech/uploads/big/cf85135091814a6136aaf5acd395d860.jpeg")
 
+    @commands.command(hidden=True)
+    async def booba(self, ctx: KurisuContext):
+        """:booba:"""
+        await self._meme(ctx, "",
+                         image_link="https://album.eiphax.tech/uploads/big/76781a4f317af75f2cd24fc0a78cbe2c.jpeg")
+
 
 async def setup(bot):
     await bot.add_cog(Memes(bot))
