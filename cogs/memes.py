@@ -520,6 +520,16 @@ class Memes(commands.Cog):
         """now with ear rape"""
         await ctx.send("https://album.eiphax.tech/uploads/big/01432cfa6eb64091301037971f8225c4.webm")
 
+    @commands.command(hidden=True)
+    async def cope(self, ctx: KurisuContext):
+        """and seethe"""
+        await ctx.send("https://album.eiphax.tech/uploads/big/c43dd20db7ff59dec7bc15dd26d2b65f.mp4")
+
+    @commands.command(hidden=True)
+    async def didntask(self, ctx: KurisuContext):
+        """damn that's crazy but"""
+        await ctx.send("https://album.eiphax.tech/uploads/big/4f8e77e08460e2234cdaebc6308f1fd1.mp4")
+
     @is_staff("OP")
     @commands.guild_only()
     @commands.command(hidden=True, aliases=['🍰', 'cake'])
