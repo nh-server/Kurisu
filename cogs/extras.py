@@ -169,7 +169,8 @@ class Extras(commands.GroupCog):
     @commands.command(hidden=True, aliases=['copyrole', 'crp'])
     async def copyroleperms(self, ctx: GuildContext, role: discord.Role, src_channel: discord.TextChannel | discord.VoiceChannel, des_channels: commands.Greedy[discord.TextChannel | discord.VoiceChannel]):
         """Copy role overwrites from a channel to channels"""
-        if any(type(c) != type(src_channel) for c in des_channels):
+        channel_type = type(src_channel)
+        if any(not isinstance(c, channel_type) for c in des_channels):
             return await ctx.send("Voice channels and text channel permissions are incompatible!")
         role_overwrites = src_channel.overwrites_for(role)
         for c in des_channels:
