@@ -30,15 +30,15 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
 
     def build_query(
         self,
-        message_content: Optional[str],
-        member: Optional[int],
-        channel: Optional[int],
-        before: Optional[datetime],
-        after: Optional[datetime],
-        during: Optional[datetime],
-        order: str,
-        show_mod: bool,
-        limit: int,
+        message_content: Optional[str] = None,
+        member: Optional[int] = None,
+        channel: Optional[int] = None,
+        before: Optional[datetime] = None,
+        after: Optional[datetime] = None,
+        during: Optional[datetime] = None,
+        order: str = 'ASC',
+        show_mod: bool = False,
+        limit: int = 100,
     ) -> tuple[str, list[str | int | datetime]]:
         sql_query = (
             "SELECT gm.created_at, gc.name, concat(u.name, '#',u.discriminator), gm.content FROM guild_messages gm "
@@ -204,6 +204,34 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
         data = io.BytesIO(txt_bytes)
         file = discord.File(filename="output.txt", fp=data)
         await interaction.edit_original_response(attachments=[file])
+
+    @app_commands.command()
+    async def modspy(self, interaction: discord.Interaction):
+        """Sends the last 20 messages in the current channel"""
+
+        assert interaction.guild is not None
+        assert interaction.channel is not None
+
+        await interaction.response.defer(ephemeral=True)
+
+        stmt, bindings = self.build_query(
+            channel=interaction.channel.id, limit=20
+        )
+
+        content = ""
+
+        async with self.conn.transaction():
+            async for created_at, _, username, content in self.conn.cursor(stmt, *bindings):
+                line = f"[{created_at:%Y/%m/%d %H:%M:%S}] <{username} {content}>\n"
+                if len(line) > 204:
+                    line = f"{line[:201]}..."
+                content += line
+
+        if not content:
+            return await interaction.edit_original_response(content="No messages found.")
+
+        embed = discord.Embed(title=f"{interaction.channel}'s last 20 messages", description=content)
+        await interaction.edit_original_response(embed=embed)
 
 
 async def setup(bot):
