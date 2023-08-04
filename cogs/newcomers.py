@@ -95,6 +95,7 @@ class Newcomers(commands.Cog):
     @autoprobate_cmd.command(aliases=off_aliases, hidden=True)
     async def autoprobate_off(self, ctx: GuildContext):
         await ctx.guild.edit(verification_level=discord.VerificationLevel.medium)
+        self.join_list.clear()
         await self.autoprobate_handler(ctx, False)
 
     @check_if_user_can_ready()
