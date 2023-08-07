@@ -757,6 +757,18 @@ class Extras(commands.GroupCog):
         await ctx.send("Thread has been marked as solved.")
         await ctx.channel.edit(archived=True, locked=True)
 
+    @commands.command()
+    async def blockconvert(self, ctx, blocks: int):
+        """Converts Nintendo Blocks to normal storage units. 1 block == 128 KiB"""
+        kibibytes = blocks << 7  # 1 block == 128 KiB
+        ret = f"{kibibytes} KiB"
+        if kibibytes > 1048576:  # over 1 GiB
+            ret = f"{kibibytes >> 20} GiB"
+        elif kibibytes > 1024:  # over 1 MiB
+            ret = f"{kibibytes >> 10} MiB"
+
+        await ctx.send(f"{blocks} blocks is equivalent to {ret}.")
+
 
 async def setup(bot):
     await bot.add_cog(Extras(bot))
