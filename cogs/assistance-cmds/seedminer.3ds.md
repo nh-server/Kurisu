@@ -7,4 +7,4 @@ author.url: https://3ds.hacks.guide/seedminer
 help-desc: Links the seedminer guide
 ---
 
-A guide on how to do the seedminer process to get your 3ds' movable.sed file
+A guide on how to do the Seedminer process to get your 3DS' `movable.sed` file
