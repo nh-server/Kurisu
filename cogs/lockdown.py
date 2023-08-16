@@ -64,6 +64,11 @@ class Lockdown(commands.Cog):
                     value = overwrites.send_messages
                     channel_overwrites[target].send_messages = False
                     to_add.append((target.id, value))
+                # The top role defined can be left without send_messages permissions in some cases
+                elif target == top_role and overwrites.send_messages is not False:
+                    value = overwrites.send_messages
+                    channel_overwrites[target].send_messages = True
+                    to_add.append((target.id, value))
 
             if not to_add:
                 await ctx.send(f"No changes done to {c.mention}")
@@ -156,7 +161,7 @@ class Lockdown(commands.Cog):
             else:
                 channels.append(ctx.channel)
 
-        is_helper = not check_staff(self.bot, 'HalfOP', author.id)
+        is_helper = True
 
         if is_helper and any(c not in self.bot.assistance_channels for c in channels):
             return await ctx.send("You can only lock assistance channels.")
