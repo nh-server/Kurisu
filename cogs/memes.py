@@ -733,5 +733,6 @@ class Memes(commands.Cog):
         await self._meme(ctx, "",
                          image_link="https://nintendohomebrew.com/assets/img/nhmemes/nobodycares.png")
 
+
 async def setup(bot):
     await bot.add_cog(Memes(bot))
