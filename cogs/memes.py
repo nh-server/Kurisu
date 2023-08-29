@@ -579,11 +579,10 @@ class Memes(commands.Cog):
             text = "You can't even buy a Blahaj! Get more money, then buy a Blahaj."
         elif money // blahaj_price == 1:
             text = "You could buy one Blahaj with that. Think about it."
+        elif money > blahaj_price * 100:
+            text = "You could buy the entire stock. Think about it."
         else:
-            try:
-                text = f"You could buy {int(money // blahaj_price)} Blahajes with that. Think about it."
-            except ValueError:
-                text = "No."
+            text = f"You could buy {int(money // blahaj_price)} Blahajes with that. Think about it."
         await self._meme(ctx, text, True, blahaj_link)
 
     @is_staff("Helper")
