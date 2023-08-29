@@ -36,7 +36,7 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
         before: Optional[datetime] = None,
         after: Optional[datetime] = None,
         during: Optional[datetime] = None,
-        order: str = 'ASC',
+        order: str = 'DESC',
         show_mod: bool = False,
         limit: int = 100,
     ) -> tuple[str, list[str | int | datetime]]:
@@ -218,13 +218,14 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
             channel=interaction.channel.id, limit=20
         )
 
+        stmt = f"SELECT * FROM ({stmt}) st ORDER BY 1 ASC"
         content = ""
 
         async with self.conn.transaction():
-            async for created_at, _, username, content in self.conn.cursor(stmt, *bindings):
-                line = f"[{created_at:%Y/%m/%d %H:%M:%S}] <{username} {content}>\n"
+            async for created_at, _, username, message_content in self.conn.cursor(stmt, *bindings):
+                line = f"[{created_at:%Y/%m/%d %H:%M:%S}] <{username} {message_content}>\n"
                 if len(line) > 204:
-                    line = f"{line[:201]}..."
+                    line = f"{line[:201]}...\n"
                 content += line
 
         if not content:
