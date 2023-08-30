@@ -6,6 +6,7 @@ from datetime import datetime
 from discord import app_commands
 from discord.app_commands import Choice
 from discord.ext import commands
+from discord.utils import format_dt
 from kurisu import SERVER_LOGS_URL
 from typing import Optional
 from utils.checks import is_staff_app
@@ -223,7 +224,7 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
 
         async with self.conn.transaction():
             async for created_at, _, username, message_content in self.conn.cursor(stmt, *bindings):
-                line = f"[{created_at:%Y/%m/%d %H:%M:%S}] <{username} {message_content}>\n"
+                line = f"[{format_dt(created_at)}] <{username} {message_content}>\n"
                 if len(line) > 204:
                     line = f"{line[:201]}...\n"
                 content += line
