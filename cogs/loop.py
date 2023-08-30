@@ -154,7 +154,7 @@ class Loop(commands.Cog):
                 for reminder_entries in list(self.extras.reminders.values()):
                     for reminder in reminder_entries:
                         if current_timestamp <= reminder.date:
-                            break
+                            continue
                         await self.extras.delete_reminder(reminder.id, reminder.author_id)
                         member = self.bot.guild.get_member(reminder.author_id)
                         if member:
