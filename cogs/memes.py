@@ -641,6 +641,13 @@ class Memes(commands.Cog):
         await ctx.send(random.choice(motd_list))
 
     @commands.command(hidden=True)
+    async def doom(self, ctx: KurisuContext):
+        """got demons?"""
+        doom_list = ["RIP AND TEAR", "I *could* run Doom, but I choose not to.", "The Ion Catapult is designed to use only approved UAC ammunition.",
+                     "...we will send unto them... only you.", "May your thirst for retribution never quench, may the blood on your sword never dry, and may we never need you again."]
+        await ctx.send(random.choice(doom_list))
+
+    @commands.command(hidden=True)
     async def wagu(self, ctx: KurisuContext, sample: commands.Range[int, 1, 10] = 1):
         """got wagu?"""
         wagulist = [self.wagu_emoji, self.waguspooky, self.waguxmas,
