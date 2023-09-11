@@ -648,6 +648,13 @@ class Memes(commands.Cog):
         await ctx.send(random.choice(doom_list))
 
     @commands.command(hidden=True)
+    async def hru(self, ctx: KurisuContext):
+        """Finally asking how Kurisu is."""
+        feeling_list = ["AWFUL", "stfu", "alright",
+                     "I am a bot what the fuck do you think""]
+        await ctx.send(random.choice(feeling_list))
+
+    @commands.command(hidden=True)
     async def wagu(self, ctx: KurisuContext, sample: commands.Range[int, 1, 10] = 1):
         """got wagu?"""
         wagulist = [self.wagu_emoji, self.waguspooky, self.waguxmas,
