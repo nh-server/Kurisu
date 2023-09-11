@@ -650,8 +650,7 @@ class Memes(commands.Cog):
     @commands.command(hidden=True)
     async def hru(self, ctx: KurisuContext):
         """Finally asking how Kurisu is."""
-        feeling_list = ["AWFUL", "stfu", "alright",
-                     "I am a bot what the fuck do you think"]
+        feeling_list = ["AWFUL", "stfu", "alright", "I am a bot what the fuck do you think?"]
         await ctx.send(random.choice(feeling_list))
 
     @commands.command(hidden=True)
