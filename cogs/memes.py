@@ -378,6 +378,14 @@ class Memes(commands.Cog):
         kelvin = self.c_to_k(celsius)
         await self._meme(ctx, f"{u.mention} warmed. User is now {celsius}°C ({fahrenheit}°F, {kelvin}K).", True)
 
+    @commands.command(hidden=True)
+    async def burn(self, ctx: KurisuContext, u: discord.Member):
+        """Burns a user :fire:"""
+        celsius = random.randint(101, 1000)
+        fahrenheit = self.c_to_f(celsius)
+        kelvin = self.c_to_k(celsius)
+        await self._meme(ctx, f"{u.mention} burned. User is now a crispy {celsius}°C ({fahrenheit}°F, {kelvin}K).", True)
+
     # adding it here because It's pretty much the same code
     @commands.command(hidden=True, aliases=["cool"])
     async def chill(self, ctx: KurisuContext, u: discord.Member):
@@ -386,6 +394,14 @@ class Memes(commands.Cog):
         fahrenheit = self.c_to_f(celsius)
         kelvin = self.c_to_k(celsius)
         await self._meme(ctx, f"{u.mention} cooled. User is now {celsius}°C ({fahrenheit}°F, {kelvin}K).", True)
+
+    @commands.command(hidden=True)
+    async def freeze(self, ctx: KurisuContext, u: discord.Member):
+        """Freezes a user :3"""
+        celsius = random.randint(-300, -274)
+        fahrenheit = self.c_to_f(celsius)
+        kelvin = self.c_to_k(celsius)
+        await self._meme(ctx, f"{u.mention} frozen. User is now {celsius}°C ({fahrenheit}°F, {kelvin}K). Wait how is that possible?", True)
 
     # End code from https://github.com/reswitched/robocop-ng
 
