@@ -267,6 +267,9 @@ class KuriHelp(HelpCommand):
             for i in range(0, len(commands), SELECT_MAX_VALUES - 1):
                 view.add_item(CommandSelect(cog, commands[i:i + SELECT_MAX_VALUES - 1], self.context,
                                             suffix=f"[{commands[i].name[0].upper()}-{commands[i:i + SELECT_MAX_VALUES - 2][-1].name[0].upper()}]"))
+                # temp fix for a cog having way too many commands
+                if len(view.children) == 9:
+                    break
         else:
             view.add_item(CommandSelect(cog, commands, self.context))
 
