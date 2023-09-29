@@ -729,7 +729,7 @@ class Memes(commands.Cog):
         await self._meme(ctx, "",
                          image_link="https://album.eiphax.tech/uploads/big/cf85135091814a6136aaf5acd395d860.jpeg")
 
-     @commands.command(hidden=True)
+    @commands.command(hidden=True)
     async def booba(self, ctx: KurisuContext):
         """:booba:"""
         await self._meme(ctx, "",
