@@ -93,6 +93,7 @@ class Memes(commands.Cog):
         self.isforme3 = discord.utils.get(self.bot.guild.emojis, name="isforme3") or "⁉"
         self.flushed5 = discord.utils.get(self.bot.guild.emojis, name="flushed5") or "⁉"
         self.flushedbold = discord.utils.get(self.bot.guild.emojis, name="flushedbold") or "⁉"
+        self.joyclap = discord.utils.get(self.bot.guild.emojis, name="joyclap") or "⁉"
 
     async def _meme(self, ctx: KurisuContext, msg, directed: bool = False, image_link: Optional[str] = None,
                     allowed_mentions: Optional[discord.AllowedMentions] = None):
@@ -637,14 +638,15 @@ class Memes(commands.Cog):
                      "has junko had a name change today?", "got milk?", "got pilk?",
                      "it has been 0 days since eip broke me", "ETA WEN PLS",
                      "The beatings will continue until morale improves.",
-                     "Zǎoshang hǎo zhōngguó xiànzài wǒ yǒu BING CHILLING"]
+                     "Zǎoshang hǎo zhōngguó xiànzài wǒ yǒu BING CHILLING", "HELP QUIJA?", "glazy if you were cum"]
         await ctx.send(random.choice(motd_list))
 
     @commands.command(hidden=True)
     async def doom(self, ctx: KurisuContext):
         """got demons?"""
         doom_list = ["RIP AND TEAR", "I *could* run Doom, but I choose not to.", "The Ion Catapult is designed to use only approved UAC ammunition.",
-                     "...we will send unto them... only you.", "May your thirst for retribution never quench, may the blood on your sword never dry, and may we never need you again."]
+                     "...we will send unto them... only you.", "May your thirst for retribution never quench, may the blood on your sword never dry, and may we never need you again.",
+                     "That is a weapon, NOT a teleporter.", "You can't just shoot a hole into the surface of **Mars**...", "They are rage, brutal, without mercy. But you. You will be worse. Rip and tear, until it is done."]
         await ctx.send(random.choice(doom_list))
 
     @commands.command(hidden=True)
@@ -727,7 +729,7 @@ class Memes(commands.Cog):
         await self._meme(ctx, "",
                          image_link="https://album.eiphax.tech/uploads/big/cf85135091814a6136aaf5acd395d860.jpeg")
 
-    @commands.command(hidden=True)
+ @commands.command(hidden=True)
     async def booba(self, ctx: KurisuContext):
         """:booba:"""
         await self._meme(ctx, "",
