@@ -937,6 +937,26 @@ class Mod(commands.GroupCog):
         await interaction.response.send_message(f"{member.mention} now has the {restriction} restriction role{f' until {format_dt(end_time)}.' if end_time else '.'}")
         await self.logs.post_action_log(interaction.user, member, restriction_action[restriction], reason=reason, until=end_time)
 
+    @commands.guild_only()
+    @commands.command()
+    async def takewii(self, ctx: GuildContext, member: discord.Member):
+        """Remove access to the Wii channel."""
+        if not check_staff(ctx.bot, 'Helper', member.id) or ctx.bot.roles['Wii-Assistance'] not in ctx.author.roles:
+            return await ctx.send("You can't use this command!")
+        if await check_bot_or_staff(ctx, member, "no-wii"):
+            return
+        await member.add_roles(ctx.bot.roles['No-Wii'])
+        await ctx.send("Wii access taken.")
+
+    @commands.guild_only()
+    @commands.command()
+    async def givewii(self, ctx: GuildContext, member: discord.Member):
+        """Restore access to the Wii channel."""
+        if not check_staff(ctx.bot, 'Helper', member.id) or ctx.bot.roles['Wii-Assistance'] not in ctx.author.roles:
+            return await ctx.send("You can't use this command!")
+        await member.remove_roles(ctx.bot.roles['No-Wii'])
+        await ctx.send("Wii access restored.")
+
 
 async def setup(bot):
     await bot.add_cog(Mod(bot))
