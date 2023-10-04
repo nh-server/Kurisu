@@ -1,10 +1,10 @@
 ---
 title: Guide
-url: https://wii.guide/
+url: https://wii.hacks.guide/
 thumbnail-url: https://nintendohomebrew.com/assets/img/nhmemes/wii.png
-author.name: RiiConnect24
-author.url: https://wii.guide/
+author.name: NH & Friends
+author.url: https://wii.hacks.guide/
 help-desc: Links to the recommended guides.
 ---
 
-A complete original Wii softmod guide
+The complete guide to modding your Wii
