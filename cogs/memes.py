@@ -696,7 +696,10 @@ class Memes(commands.Cog):
                        "yasssssss", "squad goals", "gucci fam",
                        "fam", "bet", "cap",
                        "no cap", "tea", "spill the tea",
-                       "iykyk", "jit", "highkey lowkey"]
+                       "iykyk", "jit", "highkey lowkey",
+                       "rizz", "W", "L",
+                       "rizzler", "glow up tbh", "sigma chad",
+                       "gyat", "it's giving", "IT'S GIVING FR"]
         await ctx.send(' '.join(random.choices(zoomer_list, k=sample)))
 
     @commands.command(hidden=True, aliases=["freeshop", "3hs"])
