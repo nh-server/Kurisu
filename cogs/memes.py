@@ -436,6 +436,12 @@ class Memes(commands.Cog):
         await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has been eel slapped.", True,
                          "https://nintendohomebrew.com/assets/img/nhmemes/eel.gif")
 
+    @commands.command(hidden=True)
+    async def blast(self, ctx: KurisuContext, u: discord.Member):
+        """it's joever"""
+        await self._meme(ctx, f"It's over, {u.mention}... バイデンブラスト[BIDEN BLAST]", True,
+                         "https://nintendohomebrew.com/assets/img/nhmemes/biden.png")
+
     @commands.command(hidden=True, aliases=["bruh", "yolo", "swag", "based"])
     async def dab(self, ctx: KurisuContext):
         """Memes."""
