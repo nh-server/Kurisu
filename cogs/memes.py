@@ -439,8 +439,7 @@ class Memes(commands.Cog):
     @commands.command(hidden=True)
     async def blast(self, ctx: KurisuContext, u: discord.Member):
         """it's joever"""
-        await self._meme(ctx, f"It's over, {u.mention}... バイデンブラスト[BIDEN BLAST]", True,
-                         "https://nintendohomebrew.com/assets/img/nhmemes/biden.png")
+        await self._meme(ctx, f"It's over, {u.mention}... バイデンブラスト[BIDEN BLAST] https://nintendohomebrew.com/assets/img/nhmemes/biden.png", True)
 
     @commands.command(hidden=True, aliases=["bruh", "yolo", "swag", "based"])
     async def dab(self, ctx: KurisuContext):
