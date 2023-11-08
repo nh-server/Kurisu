@@ -1,7 +1,7 @@
 ---
 title: 3DS FTP Guide
 url: https://wiki.hacks.guide/wiki/3DS:FTP
-author.name: Nintendo Homebrew
+author.name: Wiki Contributors
 thumbnail-url: https://nintendohomebrew.com/assets/img/nhmemes/bigh.png
 help-desc: FTPD/WinSCP ftp guide
 aliases: ftpd
