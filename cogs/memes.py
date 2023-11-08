@@ -703,8 +703,7 @@ class Memes(commands.Cog):
                        "no cap", "tea", "spill the tea",
                        "iykyk", "jit", "highkey lowkey",
                        "rizz", "W", "L",
-                       "rizzler", "glow up tbh", "sigma chad",
-                       "gyat", "it's giving", "IT'S GIVING FR", 
+                       "rizzler", "glow up tbh", "sigma chad", "gyat", "it's giving", "IT'S GIVING FR",
                        "gyatt", "fanum tax", "skibidi toilet", "skibidi", 
                        "sheesh", "sigma grindset", "only in ohio"]
         await ctx.send(' '.join(random.choices(zoomer_list, k=sample)))
