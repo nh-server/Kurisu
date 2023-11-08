@@ -680,7 +680,7 @@ class Memes(commands.Cog):
         await ctx.send(' '.join(map(str, random.choices(flushed_list, k=sample))))
 
     @commands.command(hidden=True, aliases=["ong", "ongod", "nocap", "ngl", "tbh"])
-    async def fr(self, ctx: KurisuContext, sample: commands.Range[int, 1, 20] = 1):
+    async def fr(self, ctx: KurisuContext, sample: commands.Range[int, 1, 15] = 1):
         """fr ngl tbh"""
         zoomer_list = ["💯", "👌", "🔥",
                        "🙏", "get that bag", "fr",
