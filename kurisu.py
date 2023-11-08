@@ -266,7 +266,7 @@ class Kurisu(commands.Bot):
                     'switch-assistance-1', 'switch-assistance-2', 'helpers', 'watch-logs', 'message-logs',
                     'upload-logs', 'hacking-general', 'meta', 'appeals', 'legacy-systems', 'dev', 'off-topic',
                     'voice-and-music', 'bot-cmds', 'bot-talk', 'mods', 'mod-mail', 'mod-logs', 'server-logs', 'bot-err',
-                    'elsewhere', 'newcomers', 'nintendo-discussion', 'tech-talk', 'hardware', 'streaming-gamer']
+                    'elsewhere', 'newcomers', 'nintendo-discussion', 'tech-talk', 'hardware', 'streaming-gamer', 'wii-assistance']
 
         for n in channels:
             db_channel = await self.configuration.get_channel_by_name(n)
@@ -289,7 +289,7 @@ class Kurisu(commands.Bot):
                  'On-Duty Switch', 'On-Duty Legacy', 'Probation', 'Retired Staff', 'Verified', 'Trusted', 'Muted',
                  'No-Help', 'No-elsewhere', 'No-Memes', 'No-art', 'No-animals', '#art-discussion', 'No-Embed', '#elsewhere',
                  'Small Help', 'meta-mute', 'appeal-mute', 'crc', 'No-Tech', 'help-mute', 'streamer(temp)', '🍰',
-                 'No-U']
+                 'No-U', 'No-Wii', 'Wii-Assistance']
 
         for n in roles:
             db_role = await self.configuration.get_role(n)

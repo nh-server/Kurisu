@@ -436,6 +436,11 @@ class Memes(commands.Cog):
         await self._meme(ctx, f"{self.bot.escape_text(u.display_name)} has been eel slapped.", True,
                          "https://nintendohomebrew.com/assets/img/nhmemes/eel.gif")
 
+    @commands.command(hidden=True)
+    async def blast(self, ctx: KurisuContext, u: discord.Member):
+        """it's joever"""
+        await self._meme(ctx, f"It's over, {u.mention}... バイデンブラスト[BIDEN BLAST] https://nintendohomebrew.com/assets/img/nhmemes/biden.png", True)
+
     @commands.command(hidden=True, aliases=["bruh", "yolo", "swag", "based"])
     async def dab(self, ctx: KurisuContext):
         """Memes."""
@@ -696,7 +701,10 @@ class Memes(commands.Cog):
                        "yasssssss", "squad goals", "gucci fam",
                        "fam", "bet", "cap",
                        "no cap", "tea", "spill the tea",
-                       "iykyk", "jit", "highkey lowkey"]
+                       "iykyk", "jit", "highkey lowkey",
+                       "rizz", "W", "L",
+                       "rizzler", "glow up tbh", "sigma chad",
+                       "gyat", "it's giving", "IT'S GIVING FR"]
         await ctx.send(' '.join(random.choices(zoomer_list, k=sample)))
 
     @commands.command(hidden=True, aliases=["freeshop", "3hs"])
