@@ -680,7 +680,7 @@ class Memes(commands.Cog):
         await ctx.send(' '.join(map(str, random.choices(flushed_list, k=sample))))
 
     @commands.command(hidden=True, aliases=["ong", "ongod", "nocap", "ngl", "tbh"])
-    async def fr(self, ctx: KurisuContext, sample: commands.Range[int, 1, 15] = 1):
+    async def fr(self, ctx: KurisuContext, sample: commands.Range[int, 1, 20] = 1):
         """fr ngl tbh"""
         zoomer_list = ["💯", "👌", "🔥",
                        "🙏", "get that bag", "fr",
@@ -704,7 +704,9 @@ class Memes(commands.Cog):
                        "iykyk", "jit", "highkey lowkey",
                        "rizz", "W", "L",
                        "rizzler", "glow up tbh", "sigma chad",
-                       "gyat", "it's giving", "IT'S GIVING FR"]
+                       "gyat", "it's giving", "IT'S GIVING FR", 
+                       "gyatt", "fanum tax", "skibidi toilet", "skibidi", 
+                       "sheesh", "sigma grindset", "only in ohio"]
         await ctx.send(' '.join(random.choices(zoomer_list, k=sample)))
 
     @commands.command(hidden=True, aliases=["freeshop", "3hs"])

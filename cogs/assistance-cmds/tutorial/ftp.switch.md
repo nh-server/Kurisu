@@ -1,8 +1,8 @@
 ---
 title: Switch FTP Guide
-url: https://nx.eiphax.tech/ftp.html
-author.name: Krieg
-thumbnail-url: https://nintendohomebrew.com/assets/img/krieg.png
+url: https://wiki.hacks.guide/wiki/Switch:FTP
+author.name: Wiki Contributors
+thumbnail-url: https://nintendohomebrew.com/assets/img/nhmemes/bigh.png
 help-desc: FTPD/WinSCP ftp guide
 aliases: ftpd
 cooldown-per: 0
