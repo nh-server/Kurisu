@@ -752,6 +752,22 @@ class Memes(commands.Cog):
         await self._meme(ctx, "",
                          image_link="https://nintendohomebrew.com/assets/img/nhmemes/nobodycares.png")
 
+    @commands.command(hidden=True)
+    async def b(self, ctx: KurisuContext):
+        """haha, b emoji funny"""
+        b_list = ["https://nintendohomebrew.com/assets/img/nhmemes/b1.png",
+                  "https://nintendohomebrew.com/assets/img/nhmemes/b2.png",
+                  "https://nintendohomebrew.com/assets/img/nhmemes/b3.png",
+                  "https://nintendohomebrew.com/assets/img/nhmemes/b4.png",
+                  "https://nintendohomebrew.com/assets/img/nhmemes/b5.png",
+                  "https://nintendohomebrew.com/assets/img/nhmemes/b6.png",
+                  "https://nintendohomebrew.com/assets/img/nhmemes/b7.png",
+                  "https://nintendohomebrew.com/assets/img/nhmemes/b8.png",
+                  "https://nintendohomebrew.com/assets/img/nhmemes/b9.png",
+                  "https://nintendohomebrew.com/assets/img/nhmemes/b10.png",
+                  "https://nintendohomebrew.com/assets/img/nhmemes/b11.png"]
+        await self._meme(ctx, "", image_link=random.choice(b_list))
+
 
 async def setup(bot):
     await bot.add_cog(Memes(bot))
