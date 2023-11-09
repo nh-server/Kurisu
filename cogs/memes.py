@@ -752,7 +752,7 @@ class Memes(commands.Cog):
         await self._meme(ctx, "",
                          image_link="https://nintendohomebrew.com/assets/img/nhmemes/nobodycares.png")
 
-    @commands.command(hidden=True)
+    @commands.command(hidden=True, aliases=["🅱"])
     async def b(self, ctx: KurisuContext):
         """haha, b emoji funny"""
         b_list = ["https://nintendohomebrew.com/assets/img/nhmemes/b1.png",
