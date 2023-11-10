@@ -765,7 +765,11 @@ class Memes(commands.Cog):
                   "https://nintendohomebrew.com/assets/img/nhmemes/b8.png",
                   "https://nintendohomebrew.com/assets/img/nhmemes/b9.png",
                   "https://nintendohomebrew.com/assets/img/nhmemes/b10.png",
-                  "https://nintendohomebrew.com/assets/img/nhmemes/b11.png"]
+                  "https://nintendohomebrew.com/assets/img/nhmemes/b11.png",
+                  "https://nintendohomebrew.com/assets/img/nhmemes/b12.png",
+                  "https://nintendohomebrew.com/assets/img/nhmemes/b13.png",
+                  "https://nintendohomebrew.com/assets/img/nhmemes/b14.png",
+                  "https://nintendohomebrew.com/assets/img/nhmemes/b15.png"]
         await self._meme(ctx, "", image_link=random.choice(b_list))
 
 
