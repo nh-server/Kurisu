@@ -111,7 +111,7 @@ class Events(commands.Cog):
                 f"✉️ **Invite posted**: {message.author.mention} posted an invite link in {message.channel.mention}"
                 f" {'(message deleted)' if non_approved_invites else ''}"
                 f"\n------------------\n"
-                f"{self.bot.escape_text(message.content)}")
+                f"{self.bot.escape_text(message.content)}", suppress_embeds=any(non_approved_invites))
             if non_approved_invites:
                 try:
                     await message.delete()
