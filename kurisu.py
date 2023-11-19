@@ -45,6 +45,7 @@ cogs = (
     'cogs.memes',
     'cogs.helperlist',
     'cogs.imgconvert',
+    'cogs.luma3dsdumpconvert',
     'cogs.mod_staff',
     'cogs.mod_warn',
     'cogs.mod_watch',
