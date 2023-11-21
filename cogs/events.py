@@ -107,11 +107,14 @@ class Events(commands.Cog):
                 await self.bot.channels['upload-logs'].send(f"📎 **Attachment**: {message.author.mention} "
                                                             f"uploaded to {message.channel.mention}", embed=embed2)
         if contains_invite_link:
+            text = message.content
+            for code in non_approved_invites:
+                text.replace(code, f"`{code}`")
             await self.bot.channels['message-logs'].send(
                 f"✉️ **Invite posted**: {message.author.mention} posted an invite link in {message.channel.mention}"
                 f" {'(message deleted)' if non_approved_invites else ''}"
                 f"\n------------------\n"
-                f"{self.bot.escape_text(message.content)}", suppress_embeds=any(non_approved_invites))
+                f"{self.bot.escape_text(text)}", suppress_embeds=any(non_approved_invites))
             if non_approved_invites:
                 try:
                     await message.delete()
