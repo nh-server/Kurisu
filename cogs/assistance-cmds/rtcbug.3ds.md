@@ -1,6 +1,7 @@
 ---
-title: Luma Black Screen Bug
-help-desc: Luma Black Screen Bug
+title: RTC black screen bug
+help-desc: RTC black screen bug
+aliases: lumabug
 ---
 
 If you have Luma3DS and your console is stuck on a black screen after you power it on, follow these steps:
