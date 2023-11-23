@@ -10,12 +10,17 @@ from utils.utils import ConsoleColor, KurisuCooldown
 if TYPE_CHECKING:
     from typing import Optional, Type
     from cogs. assistance import Assistance
+    from cogs.assistancewiiu import AssistanceWiiU
+    from cogs.assistance3ds import Assistance3DS
+    from cogs.assistanceswitch import AssistanceSwitch
+    AssistanceCogs = Assistance | AssistanceWiiU | Assistance3DS | AssistanceSwitch
 
 systems_no_aliases = ('3ds', 'wiiu', 'vwii', 'switch', 'wii', 'dsi')
 aliases = {
     'nx': 'switch',
     'ns': 'switch'
 }
+system_ignore_filter = ('all', 'vwii')
 name_to_aliases = defaultdict(set)
 for k, v in aliases.items():
     name_to_aliases[v].add(k)
@@ -103,14 +108,15 @@ def create_embed(header: 'dict[str, Optional[str]]', body: 'list[tuple[str, str]
     return embed
 
 
-def parse_md_command(md_text: str, format_map: dict, embed_color: discord.Color) -> tuple[dict, discord.Embed]:
+def parse_md_command(md_text: str, format_map: dict | None, embed_color: discord.Color) -> tuple[dict, discord.Embed]:
     parts = md_text.split('\n\n', maxsplit=1)
     if len(parts) == 1:
         # in case there is nobody
         parts.append('')
     header_raw, body_raw = parts
 
-    body_raw = body_raw.format_map(format_map)
+    if format_map:
+        body_raw = body_raw.format_map(format_map)
 
     header = parse_header(header_raw)
     body = parse_body(body_raw)
@@ -156,7 +162,7 @@ def get_console_name(console):
     return aliases.get(console, console)
 
 
-def add_md_files_as_commands(cog_class: 'Type[Assistance]', md_dir: str = None, *, namespace=commands, format_map=None):
+def add_md_files_as_commands(cog_class: 'Type[AssistanceCogs]', md_dir: str = None, *, namespace=commands, format_map=None, console_cmd: str = None):
 
     def make_cmd(name: str, help_desc: 'Optional[str]', embeds: 'dict[str, discord.Embed]', cooldown: 'tuple[int, int]', aliases: list[str]) -> commands.Command:
         if len(embeds) > 1:
@@ -237,7 +243,16 @@ def add_md_files_as_commands(cog_class: 'Type[Assistance]', md_dir: str = None, 
             helpdescs[command] = header['help-desc']
         cooldowns[command] = (int(header['cooldown-rate']), int(header['cooldown-per']))
 
+    # the tutorial subdirectory doesn't need console filtering
+    filter_cmds = "tutorial" not in md_dir
+
     for command, embed_dict in new_commands.items():
+        if filter_cmds:
+            if console_cmd:
+                if embed_dict.get(console_cmd) is None or len(embed_dict) > 1:
+                    continue
+            elif len(embed_dict) == 1 and not any(x in embed_dict for x in system_ignore_filter):
+                continue
         new_aliases = list(set(aliases[command]))
         command_obj = make_cmd(command, helpdescs[command], embed_dict, cooldowns[command], new_aliases)
         setattr(cog_class, command, command_obj)
