@@ -30,6 +30,9 @@ from utils.context import KurisuContext
 
 cogs = (
     'cogs.assistance',
+    'cogs.assistancewiiu',
+    'cogs.assistance3ds',
+    'cogs.assistanceswitch',
     'cogs.automod',
     'cogs.blah',
     'cogs.db3ds',
@@ -45,6 +48,7 @@ cogs = (
     'cogs.memes',
     'cogs.helperlist',
     'cogs.imgconvert',
+    'cogs.luma3dsdumpconvert',
     'cogs.mod_staff',
     'cogs.mod_warn',
     'cogs.mod_watch',

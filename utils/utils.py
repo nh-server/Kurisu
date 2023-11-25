@@ -8,6 +8,7 @@ import traceback
 from .checks import check_staff
 from discord.ext import commands
 from discord.utils import format_dt
+from inspect import cleandoc
 from typing import Optional
 
 
@@ -188,3 +189,10 @@ async def create_userinfo_embed(user: discord.Member | discord.User, guild: disc
     embed.set_thumbnail(url=user.display_avatar.url)
 
     return embed
+
+
+async def simple_embed(ctx: commands.Context, text: str, *, title: str = "", color=discord.Color.default()):
+    mention_author = any(ctx.message.mentions)
+    embed = discord.Embed(title=title, color=color)
+    embed.description = cleandoc(text)
+    await ctx.send(embed=embed, reference=ctx.message.reference, mention_author=mention_author)
