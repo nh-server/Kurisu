@@ -11,8 +11,4 @@ While the Switch supports exFAT through an additional update from Nintendo, here
 - This filesystem is prone to corruption.
 - Nintendo doesn't use files larger than 4GB, even with large games and exFAT.
 
-Here are some links to common FAT32 formatting tools:
-- [GUIFormat](http://ridgecrop.co.uk/index.htm?guiformat.htm) (Windows)
-- [gparted](https://gparted.org/download.php) + [dosfstools](https://github.com/dosfstools/dosfstools) (Linux)
-- [Disk Utility](https://support.apple.com/guide/disk-utility/format-a-disk-for-windows-computers-dskutl1010) (MacOS)
-MacOS: Always select "MS-DOS (FAT)", even if the card is larger than 32GB.
+To reformat your SD Card to FAT32, follow this [guide](https://wiki.hacks.guide/wiki/Formatting_an_SD_card).
