@@ -5,8 +5,8 @@ aliases: redocfw, redowncfw
 
 If homebrew is behaving strangely, redownloading your files should help.
 
-###Tiramisu:
+**Tiramisu:**
 https://tiramisu.foryour.cafe/
 
-###Aroma:
+**Aroma:**
 https://aroma.foryour.cafe/
