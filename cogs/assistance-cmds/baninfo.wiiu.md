@@ -1,6 +1,6 @@
 ---
 title: Wii U bans
-help-desc: Links to ban information pages
+help-desc: Explains bans on the Wii U
 ---
 
 # Nintendo cares little to almost none about the Wii U anymore. 
