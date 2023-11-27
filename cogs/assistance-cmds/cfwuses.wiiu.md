@@ -12,6 +12,6 @@ help-desc: Uses for CFW on Wii U, Switch, and 3DS
 - Connect various controllers from other consoles.
 - Install and apply themes to the Wii U Menu.
 - And many more.
-- 
+
 # See [here](https://wiki.hacks.guide/wiki/Wii_U:Things_to_do) for a better list.
 
