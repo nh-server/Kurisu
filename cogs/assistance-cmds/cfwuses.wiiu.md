@@ -13,5 +13,5 @@ help-desc: Uses for CFW on Wii U, Switch, and 3DS
 - Install and apply themes to the Wii U Menu.
 - And many more.
 
-# See [here](https://wiki.hacks.guide/wiki/Wii_U:Things_to_do) for a better list.
+**See [here](https://wiki.hacks.guide/wiki/Wii_U:Things_to_do) for a better list.**
 
