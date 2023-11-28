@@ -420,7 +420,7 @@ class Events(commands.Cog):
                     await self.bot.close()
                 return
         await self.bot.wait_until_all_ready()
-        if message.author == message.guild.me\
+        if message.author == message.guild.me or check_staff(self.bot, 'Helper', message.author.id) \
                 or message.channel.id in self.bot.configuration.nofilter_list:
             return
         await self.scan_message(message)
