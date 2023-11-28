@@ -567,7 +567,7 @@ class Memes(commands.Cog):
         """Glazy can add departure but not arrival smh"""
         arrival_gifs = ["https://nintendohomebrew.com/assets/img/nhmemes/arrival1.gif",
                         "https://nintendohomebrew.com/assets/img/nhmemes/arrival2.png",
-                         https://nintendohomebrew.com/assets/img/nhmemes/arrival3.gif"]
+                        "https://nintendohomebrew.com/assets/img/nhmemes/arrival3.gif"]
         await self._meme(ctx, "", image_link=random.choice(arrival_gifs))
 
     @commands.command(hidden=True)
