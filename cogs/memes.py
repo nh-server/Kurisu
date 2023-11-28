@@ -578,7 +578,7 @@ class Memes(commands.Cog):
 
     @commands.command(hidden=True)
     async def blahaj(self, ctx: KurisuContext, money: float):
-        """Displays how much Blahajs you can buy with that money. ($ or €)"""
+        """Displays how many Blahajes you could buy with a given amount of money. ($ or €)"""
         # blahaj. takes usd or eur
         blahaj_link = "https://nintendohomebrew.com/assets/img/blahaj.png"
         blahaj_price = 30  # should we handle eur and usd price difference properly?
