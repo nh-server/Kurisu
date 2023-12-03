@@ -566,7 +566,8 @@ class Memes(commands.Cog):
     async def arrival(self, ctx: KurisuContext):
         """Glazy can add departure but not arrival smh"""
         arrival_gifs = ["https://nintendohomebrew.com/assets/img/nhmemes/arrival1.gif",
-                        "https://nintendohomebrew.com/assets/img/nhmemes/arrival2.png"]
+                        "https://nintendohomebrew.com/assets/img/nhmemes/arrival2.png",
+                        "https://nintendohomebrew.com/assets/img/nhmemes/arrival3.gif"]
         await self._meme(ctx, "", image_link=random.choice(arrival_gifs))
 
     @commands.command(hidden=True)
@@ -577,7 +578,7 @@ class Memes(commands.Cog):
 
     @commands.command(hidden=True)
     async def blahaj(self, ctx: KurisuContext, money: float):
-        """Displays how much Blahajs you can buy with that money. ($ or €)"""
+        """Displays how many Blahajes you could buy with a given amount of money. ($ or €)"""
         # blahaj. takes usd or eur
         blahaj_link = "https://nintendohomebrew.com/assets/img/blahaj.png"
         blahaj_price = 30  # should we handle eur and usd price difference properly?
