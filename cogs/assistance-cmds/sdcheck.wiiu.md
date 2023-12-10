@@ -1,4 +1,5 @@
 ---
+title: Wii U SD Check
 help-desc: Explains how to check if the SD card is being read on the Wii U
 aliases: sdread
 ---
