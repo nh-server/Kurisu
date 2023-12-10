@@ -396,6 +396,11 @@ class Memes(commands.Cog):
         await self._meme(ctx, f"{u.mention} is now beaned. <a:bean:462076812076384257>", True)
 
     @commands.command(hidden=True)
+    async def rinse(self, ctx: KurisuContext, u: discord.Member):
+        """unsoap"""
+        await self._meme(ctx, f"{u.mention} has had their soap removed. 🧼 🚿", True)
+
+    @commands.command(hidden=True)
     async def nogas(self, ctx: KurisuContext):
         """shhhh no one gives a shit!"""
         await self._meme(ctx, "https://nintendohomebrew.com/assets/img/nhmemes/nogas.mp4")
