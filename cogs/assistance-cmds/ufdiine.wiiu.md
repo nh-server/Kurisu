@@ -7,4 +7,5 @@ author.url: https://wiiu.hacks.guide/
 help-desc: Links to blocking updates on the Wii U
 aliases: blockufd,ufd
 ---
+
 Update Folder Deleter
