@@ -683,38 +683,7 @@ class Memes(commands.Cog):
                         self.flushedhalf2, self.flushedroulette, self.flushedcushion,
                         self.flushedcrush, self.isforme2, self.isforme3,
                         self.flushed5]
-        await ctx.send(' '.join(map(str, random.choices(flushed_list, k=sample))))
-
-    @commands.command(hidden=True, aliases=["ong", "ongod", "nocap", "ngl", "tbh"])
-    async def fr(self, ctx: KurisuContext, sample: commands.Range[int, 1, 15] = 1):
-        """fr ngl tbh"""
-        zoomer_list = ["💯", "👌", "🔥",
-                       "🙏", "get that bag", "fr",
-                       "ngl", "tbh", "based",
-                       "finna", "tryna", "trynna",
-                       "flex", "on god", "ong",
-                       "bro", "bruh", "real shit",
-                       "on the real", "deadass", "BFFR",
-                       "bestie", "no cap", "ratio",
-                       "wig", "bussin", "bussin bussin",
-                       "fr fr", "snatch", "snatched",
-                       "ijbol", "we stan", "alr",
-                       "slay", "lowkey", "💀",
-                       "mid", "mf", "goated",
-                       "fam", "straight up", "🔛 🔝",
-                       "🗣️", "‼️", "⁉️",
-                       "and i oop", "sksksk", "bestie",
-                       "yasssssss", "squad goals", "gucci fam",
-                       "fam", "bet", "cap",
-                       "no cap", "tea", "spill the tea",
-                       "iykyk", "jit", "highkey lowkey",
-                       "rizz", "W", "L",
-                       "rizzler", "glow up tbh", "sigma chad",
-                       "gyat", "it's giving", "IT'S GIVING FR",
-                       "gyatt", "fanum tax", "skibidi toilet",
-                       "skibidi", "sheesh", "sigma grindset",
-                       "only in ohio"]
-        await ctx.send(' '.join(random.choices(zoomer_list, k=sample)))
+        await ctx.send(' '.join(map(str, random.choices(flushed_list, k=sample))))   
 
     @commands.command(hidden=True, aliases=["freeshop", "3hs"])
     async def hshop(self, ctx: KurisuContext):
