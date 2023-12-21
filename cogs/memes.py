@@ -683,7 +683,7 @@ class Memes(commands.Cog):
                         self.flushedhalf2, self.flushedroulette, self.flushedcushion,
                         self.flushedcrush, self.isforme2, self.isforme3,
                         self.flushed5]
-        await ctx.send(' '.join(map(str, random.choices(flushed_list, k=sample))))   
+        await ctx.send(' '.join(map(str, random.choices(flushed_list, k=sample))))
 
     @commands.command(hidden=True, aliases=["freeshop", "3hs"])
     async def hshop(self, ctx: KurisuContext):
