@@ -95,7 +95,7 @@ class FriendCode(commands.Cog):
         if target_fc.fc_switch:
             fcs_t += fc_switch.format(self.switch_fc_to_string(target_fc.fc_switch))
 
-        await ctx.send(f"{member.mention} friend codes are\n{fcs_t}")
+        await ctx.send(f"{member.mention}'s friend codes are\n{fcs_t}")
         await send_dm_message(member, f"{ctx.author} has asked for your friend codes! Their codes are\n{fcs_a}")
 
     @commands.command()
