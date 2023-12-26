@@ -52,21 +52,21 @@ class FriendCode(commands.Cog):
     @commands.command()
     async def fcregister(self, ctx: KurisuContext, fc_str: str):
         """Add your friend code."""
-        console = "switch" if fc_str.startswith("SW") else "3ds"
-        fc = self.verify_3ds_fc(fc_str) if console == "3ds" else self.verify_switch_fc(fc_str)
+        console = "Switch" if fc_str.startswith("SW") else "3DS"
+        fc = self.verify_3ds_fc(fc_str) if console == "3DS" else self.verify_switch_fc(fc_str)
         if fc is None:
             await ctx.send("This friend code is invalid. Switch friend codes must be "
-                           "in a SW-XXXX-XXXX-XXXX format and 3ds friends codes in a XXXX-XXXX-XXXX format.")
+                           "in a SW-XXXX-XXXX-XXXX format and 3DS friends codes in a XXXX-XXXX-XXXX format.")
             return
         fcs = await self.extras.get_friend_code(ctx.author.id)
-        if fcs and (fcs.fc_3ds and console == "3ds" or fcs.fc_switch and console == "switch"):
+        if fcs and (fcs.fc_3ds and console == "3DS" or fcs.fc_switch and console == "Switch"):
             await ctx.send(f"Please delete your current {console} friend code with `.fcdelete {console}` before adding another.")
             return
-        if console == "3ds":
+        if console == "3DS":
             await self.bot.extras.add_3ds_friend_code(ctx.author, fc)
         else:
             await self.extras.add_switch_friend_code(ctx.author, fc)
-        await ctx.send(f"{ctx.author.mention} {console} friend code inserted: {self.n3ds_fc_to_string(fc) if console == '3ds' else self.switch_fc_to_string(fc)}")
+        await ctx.send(f"{ctx.author.mention} {console} friend code inserted: {self.n3ds_fc_to_string(fc) if console == '3DS' else self.switch_fc_to_string(fc)}")
 
     @commands.guild_only()
     @commands.command()
@@ -82,8 +82,8 @@ class FriendCode(commands.Cog):
 
         fcs_a = ""
         fcs_t = ""
-        fc_3ds = "3ds: {0} \n"
-        fc_switch = "switch: {0}"
+        fc_3ds = "3DS: {0} \n"
+        fc_switch = "Switch: {0}"
 
         if author_fc.fc_3ds:
             fcs_a += fc_3ds.format(self.n3ds_fc_to_string(author_fc.fc_3ds))
@@ -99,11 +99,11 @@ class FriendCode(commands.Cog):
         await send_dm_message(member, f"{ctx.author} has asked for your friend codes! Their codes are\n{fcs_a}")
 
     @commands.command()
-    async def fcdelete(self, ctx: KurisuContext, console: Literal['3ds', 'switch']):
+    async def fcdelete(self, ctx: KurisuContext, console: Literal['3DS', 'Switch']):
         """Delete your friend code."""
-        if console == '3ds':
+        if console == '3DS':
             await self.extras.delete_3ds_friend_code(ctx.author.id)
-        elif console == 'switch':
+        elif console == 'Switch':
             await self.extras.delete_switch_friend_code(ctx.author.id)
         else:
             return await ctx.send("Invalid console.")
@@ -111,7 +111,7 @@ class FriendCode(commands.Cog):
 
     @commands.command()
     async def fctest_3ds(self, ctx: KurisuContext, fc):
-        """Test a 3ds friend code."""
+        """Test a 3DS friend code."""
         fc = self.verify_3ds_fc(fc)
         if fc:
             await ctx.send(self.n3ds_fc_to_string(fc))
@@ -120,7 +120,7 @@ class FriendCode(commands.Cog):
 
     @commands.command()
     async def fctest_switch(self, ctx: KurisuContext, fc):
-        """Test a switch friend code."""
+        """Test a Switch friend code."""
         fc = self.verify_switch_fc(fc)
         if fc:
             await ctx.send(self.switch_fc_to_string(fc))
