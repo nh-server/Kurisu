@@ -1,7 +1,7 @@
 ---
 title: Port 0 on the vWii
 help-desc: Picture of port 0 for the vWii.
-image-url: https://cdn.discordapp.com/attachments/206934458954153984/1095031205881204746/wiiu_usb_ports.jpg
+image-url: https://wiiu.eiphax.tech/img/wiiu_usb_ports.jpg
 ---
 
 Make sure your Drive is plugged into Port 0 like in this image 
