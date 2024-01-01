@@ -61,7 +61,7 @@ class Seasonal(commands.GroupCog):
     """
 
     seasons: List[Season] = [
-        Season("12.1", "12.31", "🎄", "xmasthing"),
+        Season("12.1", "12.30", "🎄", "xmasthing"),
         Season("6.1", "6.31", "🌈", "rainbow"),
         Season("10.1", "10.31", "🎃", "pumpkin"),
         Season("11.1", "11.30", "🦃", "turkey"),
