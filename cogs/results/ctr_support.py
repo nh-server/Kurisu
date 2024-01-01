@@ -101,6 +101,7 @@ nim = Module('nim', {
 # 006: online matchmaking and gameplay errors
 matchmaking = Module('matchmaking', {
     112: ResultInfo('Typically displayed when an issue with connecting to Pokémon Bank occurs.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/4203/'),
+    303: ResultInfo('Displayed when the console tried to log in with an invalid user name, i.e. the user name does not exist in the database.'),
     332: ResultInfo('Caused by closed ports when attempting matchmaking(?)'),
     (501, 502): ResultInfo('This may indicate in issue with the network being used blocking traffic necessary for online play.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/4204'),
     612: ResultInfo('This error code generally indicates that your network is not optimal for peer to peer connections, likely due to your network\'s NAT type.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/25881'),
