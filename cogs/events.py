@@ -110,6 +110,8 @@ class Events(commands.Cog):
             text = self.bot.escape_text(message.content)
             for code in non_approved_invites:
                 text = text.replace(code, f"`{code}`")
+            if len(text) > 1600:
+                text = f"Non approved invites: {', '.join(non_approved_invites)} (Message not shown due to length)"
             await self.bot.channels['message-logs'].send(
                 f"✉️ **Invite posted**: {message.author.mention} posted an invite link in {message.channel.mention}"
                 f" {'(message deleted)' if non_approved_invites else ''}"
