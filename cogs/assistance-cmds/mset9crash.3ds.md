@@ -7,7 +7,7 @@ Extra Data stuck at infinitely loading while trying to install Boot9strap with M
 
 If you are at Section II Step 5: 
 
-You injected early. Force power off your 3DS, put the SD in your PC/tablet/phone, run the script and choose option 3 to remove MSET9. Repeat Section II carefully.
+You injected early. Force power off your 3DS, put the SD in your PC/tablet/phone, run the script, choose your model and version then choose option 3 to remove MSET9. Repeat Section II carefully.
 
 If you are at Section II Step 12:
 
