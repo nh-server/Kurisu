@@ -1,5 +1,5 @@
 ---
-title: mset9
+title: MSET9
 help-desc: Link to MSET9 Guide
 ---
 
