@@ -9,11 +9,12 @@ from utils.utils import ConsoleColor, KurisuCooldown
 
 if TYPE_CHECKING:
     from typing import Optional, Type
-    from cogs. assistance import Assistance
+    from cogs.assistance import Assistance
+    from cogs.assistancewii import AssistanceWii
     from cogs.assistancewiiu import AssistanceWiiU
     from cogs.assistance3ds import Assistance3DS
     from cogs.assistanceswitch import AssistanceSwitch
-    AssistanceCogs = Assistance | AssistanceWiiU | Assistance3DS | AssistanceSwitch
+    AssistanceCogs = Assistance | AssistanceWii | AssistanceWiiU | Assistance3DS | AssistanceSwitch
 
 systems_no_aliases = ('3ds', 'wiiu', 'vwii', 'switch', 'wii', 'dsi')
 aliases = {
@@ -170,7 +171,7 @@ def add_md_files_as_commands(cog_class: 'Type[AssistanceCogs]', md_dir: str = No
             async def multi_cmd(self, ctx: commands.Context, *, consoles: str = ''):
                 supported_consoles = list(embeds)
                 for s in supported_consoles:
-                    if s in {'dsi', 'wii'}:
+                    if s in {'dsi'}:
                         # special case for legacy channel
                         supported_consoles.append('legacy')
                 # replace aliases with the expected console
@@ -194,7 +195,7 @@ def add_md_files_as_commands(cog_class: 'Type[AssistanceCogs]', md_dir: str = No
                 for console in requested_consoles:
                     for embed_console, embed in embeds.items():
                         cons = [embed_console]
-                        if embed_console in {'dsi', 'wii'}:
+                        if embed_console in {'dsi'}:
                             # special case for legacy channel
                             cons.append('legacy')
                         if check_console(console, channel_name, tuple(cons)):

@@ -30,6 +30,7 @@ from utils.context import KurisuContext
 
 cogs = (
     'cogs.assistance',
+    'cogs.assistancewii',
     'cogs.assistancewiiu',
     'cogs.assistance3ds',
     'cogs.assistanceswitch',
