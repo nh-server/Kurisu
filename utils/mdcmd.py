@@ -154,7 +154,7 @@ def check_console(message, channel, consoles):
         consoles = (consoles,)
     if message in consoles:
         return True
-    elif ("wii" not in consoles or channel.startswith("legacy")) and channel.startswith(consoles) and message not in systems:
+    elif channel.startswith(consoles) and message not in systems:
         return True
     return False
 
