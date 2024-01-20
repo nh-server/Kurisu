@@ -154,7 +154,7 @@ def check_console(message, channel, consoles):
         consoles = (consoles,)
     if message in consoles:
         return True
-    elif channel.startswith(tuple(map(lambda c: f"{c}-", consoles))) and message not in systems:
+    elif channel.startswith(tuple(f"{c}-" for c in consoles)) and message not in systems:
         return True
     return False
 
