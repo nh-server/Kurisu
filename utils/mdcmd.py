@@ -220,7 +220,7 @@ def add_md_files_as_commands(cog_class: 'Type[AssistanceCogs]', md_dir: str = No
         return cmd_obj
 
     new_commands: 'dict[str, dict[str, discord.Embed]]' = defaultdict(dict)
-    aliases: 'dict[str, list[str]]' = defaultdict(list)
+    aliases_map: 'dict[str, str]' = {}
     cooldowns: 'dict[str, tuple[int, int]]' = {}
     helpdescs: 'dict[str, Optional[str]]' = defaultdict(lambda: None)
 
@@ -236,8 +236,13 @@ def add_md_files_as_commands(cog_class: 'Type[AssistanceCogs]', md_dir: str = No
     for md in iglob(join(md_dir, '*.md')):
         command, console, header, embed = md_file_to_embed(md, format_map)
         new_commands[command][console] = embed
+        aliases_map[command] = command
         if header['aliases']:
-            aliases[command].extend(header['aliases'].split(','))
+            for alias in header['aliases'].split(','):
+                alias = alias.strip()
+                new_commands[alias][console] = embed
+                # this will break if the same alias point to different command in different consoles, but hope that's fine
+                aliases_map[alias] = command
         if header['help-desc']:
             # in case some don't have a help-desc, don't delete a previous one
             helpdescs[command] = header['help-desc']
@@ -253,8 +258,7 @@ def add_md_files_as_commands(cog_class: 'Type[AssistanceCogs]', md_dir: str = No
                     continue
             elif len(embed_dict) == 1 and not any(x in embed_dict for x in system_ignore_filter):
                 continue
-        new_aliases = list(set(aliases[command]))
-        command_obj = make_cmd(command, helpdescs[command], embed_dict, cooldowns[command], new_aliases)
+        command_obj = make_cmd(command, helpdescs[aliases_map[command]], embed_dict, cooldowns[aliases_map[command]], list())
         setattr(cog_class, command, command_obj)
         # there has to be a better way to do this...
         cog_class.__cog_commands__.append(command_obj)
