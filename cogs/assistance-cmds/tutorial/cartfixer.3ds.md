@@ -1,12 +1,12 @@
 ---
-title: 3DS Cartridge Fix Guide
-url: https://3ds.eiphax.tech/cartunfuck
-author.name: eip
-thumbnail-url: https://nintendohomebrew.com/assets/img/eip2.png
-help-desc: GodMode9 cartridge fixer guide
+title: 3DS Game Fix Guide
+url: https://wiki.hacks.guide/wiki/3DS:Fixing_corrupted_games
+author.name: Wiki Contributors
+thumbnail-url: https://nintendohomebrew.com/assets/img/nhmemes/bigh.png
+help-desc: 3DS game fixing guide
 cooldown-rate: 0
 cooldown-per: 0
 color: 9B59B6
 ---
 
-A guide to attempting to fix a corrupting cartridge
+A page for attempting to fix a corrupting cartridge or game
