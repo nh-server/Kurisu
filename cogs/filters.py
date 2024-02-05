@@ -10,7 +10,7 @@ from Levenshtein import distance
 from utils.checks import is_staff
 from utils.database import FilterKind
 from utils.utils import text_to_discord_file
-from utils.views import ConfirmationButtons
+from utils.views import ConfirmationButtons, PaginatedEmbedView, EmbedListPaginator
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -348,9 +348,27 @@ class Filter(commands.Cog):
     async def list_invites(self, ctx: KurisuContext):
         """List invites in the filter whitelist"""
         if self.filters.approved_invites:
-            embed = discord.Embed()
-            embed.add_field(name='Invites', value='\n'.join(f"name: {invite.alias} code:{invite.code} uses:{invite.uses}" for invite in self.filters.approved_invites.values()))
-            await ctx.send(embed=embed)
+            embeds: list[discord.Embed] = []
+            idx = 0
+            text = ""
+            next_line = ""
+            n_invites = len(self.filters.approved_invites.values())
+            embeds.append(discord.Embed(title=f"List of invites [{idx+1}]"))
+            for n, invite in enumerate(self.filters.approved_invites.values(), start=1):
+                next_line = f"name: {invite.alias} code:{invite.code} uses:{invite.uses}\n"
+                if len(text) + len(next_line) > 1024:
+                    embeds[idx].add_field(name='Invites', value=text)
+                    text = next_line
+                    if n < n_invites:
+                        idx += 1
+                        embeds.append(discord.Embed(title=f"List of invites [{idx+1}]"))
+                else:
+                    text += next_line
+                    next_line = ""
+            if not next_line:
+                embeds[idx].add_field(name='Invites', value=text)
+            view = PaginatedEmbedView(EmbedListPaginator(embeds))
+            await ctx.send(embed=view.paginator.current(), view=view)
         else:
             await ctx.send("The invite filter is empty!")
 

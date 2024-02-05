@@ -143,6 +143,15 @@ class PaginatedEmbedView(BasePaginatedView):
             self.clear_items()
 
 
+class EmbedListPaginator(BasePaginator):
+    def __init__(self, embeds: list[Embed]):
+        super().__init__(n_pages=len(embeds))
+        self.pages = {n: embed for n, embed in enumerate(embeds)}
+
+    def current(self):
+        return self.pages[self.idx]
+
+
 class VoteButton(Button['SimpleVoteView']):
     label: str
 
