@@ -3,7 +3,7 @@ title: MSET9 crash recovery
 help-desc: Information on recovering from the infinitely loading Extra Data ARM9 crash (Spinning Square)
 ---
 
-Extra Data stuck at infinitely loading while trying to install Boot9strap with MSET9, 
+Extra Data stuck at infinitely loading while trying to install Boot9strap with MSET9?
 
 If you are at Section II Step 5: 
 
