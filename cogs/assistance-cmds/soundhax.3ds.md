@@ -1,11 +1,6 @@
 ---
 title: Soundhax
-url: http://soundhax.com
-author.name: Ned Williamson
-author.url: http://soundhax.com/
-thumbnail-url: https://nintendohomebrew.com/assets/img/nhmemes/soundhax.png
-help-desc: Links to Soundhax Website
-color: 3498DB
+help-desc: Link to Soundhax Guide
 ---
 
-Free 3DS Primary Entrypoint <= 11.3
+3DS Hacks Guide's [Soundhax](https://3ds.hacks.guide/installing-boot9strap-(soundhax))

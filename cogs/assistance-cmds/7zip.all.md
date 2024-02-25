@@ -2,7 +2,7 @@
 title: Download 7-Zip
 help-desc: Download a .7z file extractor
 color: 0000FF
-aliases: p7zip
+aliases: p7zip,7z
 ---
 
 To be able to extract .7z files, you will need an extractor that supports this format.
