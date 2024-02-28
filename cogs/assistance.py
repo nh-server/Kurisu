@@ -64,6 +64,7 @@ class Assistance(commands.GroupCog):
     def __init__(self, bot: Kurisu):
         self.bot: Kurisu = bot
         self.small_help_category: Optional[discord.CategoryChannel] = None
+        self.soaps_category: Optional[discord.CategoryChannel] = None
         self.bot.loop.create_task(self.setup_assistance())
         self.filters = bot.filters
 
@@ -75,6 +76,11 @@ class Assistance(commands.GroupCog):
             channel = self.bot.guild.get_channel(db_channel[0])
             if channel and channel.type == discord.ChannelType.category:
                 self.small_help_category = channel
+        db_channel2 = await self.bot.configuration.get_channel_by_name('soaps')
+        if db_channel2:
+            channel2 = self.bot.guild.get_channel(db_channel2[0])
+            if channel2 and channel2.type == discord.ChannelType.category:
+                self.soaps_category = channel2
 
     async def unisearch(self, query: str) -> list[dict]:
         query = query.lower()
@@ -127,12 +133,12 @@ class Assistance(commands.GroupCog):
     @commands.command(aliases=["soup", "soap"])
     async def createsoap(self, ctx: GuildContext, helpee: discord.Member):
         """Creates a 🧼 help channel for a user. Helper+ only."""
-        if not self.small_help_category:
-            return await ctx.send("The small help category is not set.")
+        if not self.soaps_category:
+            return await ctx.send("The soaps category is not set.")
         # Channel names can't be longer than 100 characters
         channel_name = f"3ds-{helpee.name}-soap-🧼"[:100]
-        channel = await self.small_help_category.create_text_channel(name=channel_name)
-        await asyncio.sleep(1)  # Fix for discord race condition(?)
+        channel = await self.soaps_category.create_text_channel(name=channel_name)
+        await asyncio.sleep(3)  # Fix for discord race condition(?)
         await channel.set_permissions(helpee, read_messages=True)
         await channel.send(f"{helpee.mention}, please read the following.\n"
                            "0. If your console is on, turn it off. If your console happens to already be in GodMode9, skip to step 3.\n"
