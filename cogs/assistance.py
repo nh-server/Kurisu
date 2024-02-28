@@ -177,6 +177,15 @@ class Assistance(commands.GroupCog):
         self.small_help_category = category
         await ctx.send("Small help category set.")
 
+    @is_staff('OP')
+    @commands.guild_only()
+    @commands.command()
+    async def setsoaps(self, ctx: GuildContext, category: discord.CategoryChannel):
+        """Sets the soaps category for creating channels. OP+ only."""
+        await self.bot.configuration.add_channel('soaps', category)
+        self.soaps_category = category
+        await ctx.send("Soaps category set.")
+
     @commands.group(cooldown=None, invoke_without_command=True, case_insensitive=True)
     async def tutorial(self, ctx: KurisuContext):
         """Links to one of multiple guides"""
