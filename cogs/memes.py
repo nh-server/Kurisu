@@ -727,6 +727,12 @@ class Memes(commands.Cog):
         await self._meme(ctx, "",
                          image_link="https://nintendohomebrew.com/assets/img/nhmemes/nobodycares.png")
 
+    @commands.command(hidden=True)
+    async def poggere(self, ctx: KurisuContext):
+        """poggers!"""
+        await self._meme(ctx, "",
+                         image_link="https://upload.wikimedia.org/wikipedia/commons/d/dd/Le_poggere.jpg?20201109224437")
+
     @commands.command(hidden=True, aliases=["🅱"])
     async def b(self, ctx: KurisuContext):
         """haha, b emoji funny"""
