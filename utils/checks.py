@@ -65,6 +65,17 @@ def check_if_user_can_sr():
     return commands.check(predicate)
 
 
+def soap_check():
+    async def predicate(ctx):
+        author = ctx.author
+        if not check_staff(ctx.bot, 'Helper', author.id) and check_staff(ctx.bot, 'Staff', author.id) and (
+                ctx.bot.roles['crc'] not in author.roles) and (ctx.bot.roles['Small Help'] not in author.roles):
+            return False
+        return True
+
+    return commands.check(predicate)
+
+
 def check_if_user_can_ready():
     async def predicate(ctx):
         channel = ctx.channel

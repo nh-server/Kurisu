@@ -7,7 +7,7 @@ import logging
 from discord.ext import commands
 from os.path import dirname, join
 from typing import Optional, Literal, TYPE_CHECKING
-from utils.checks import check_if_user_can_sr, is_staff
+from utils.checks import check_if_user_can_sr, is_staff, soap_check
 from utils.mdcmd import add_md_files_as_commands
 from utils.views import BasePaginator, PaginatedEmbedView
 from utils.utils import KurisuCooldown
@@ -128,11 +128,11 @@ class Assistance(commands.GroupCog):
         await self.bot.channels['mod-logs'].send(msg)
         await ctx.send(f"Created small help {channel.mention}.")
 
-    @is_staff('Helper')
+    @soap_check()
     @commands.guild_only()
     @commands.command(aliases=["soup", "soap"])
     async def createsoap(self, ctx: GuildContext, helpee: discord.Member):
-        """Creates a 🧼 help channel for a user. Helper+ only."""
+        """Creates a 🧼 help channel for a user. crc, small help, helper+ only."""
         if not self.soaps_category:
             return await ctx.send("The soaps category is not set.")
         # Channel names can't be longer than 100 characters
