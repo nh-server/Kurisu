@@ -68,8 +68,21 @@ def check_if_user_can_sr():
 def soap_check():
     async def predicate(ctx):
         author = ctx.author
-        if not check_staff(ctx.bot, 'Helper', author.id) and check_staff(ctx.bot, 'Staff', author.id) and (
+        if not check_staff(ctx.bot, 'Helper', author.id) and not check_staff(ctx.bot, 'Staff', author.id) and (
                 ctx.bot.roles['crc'] not in author.roles) and (ctx.bot.roles['Small Help'] not in author.roles):
+            raise InsufficientStaffRank("You can't use this command.")
+            return False
+        return True
+
+    return commands.check(predicate)
+
+
+def wii_check():
+    async def predicate(ctx):
+        author = ctx.author
+        if not check_staff(ctx.bot, 'Helper', author.id) and not check_staff(ctx.bot, 'Staff', author.id) and (
+                ctx.bot.roles['Wii-Assistance'] not in author.roles):
+            raise InsufficientStaffRank("You can't use this command.")
             return False
         return True
 
