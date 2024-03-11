@@ -7,7 +7,7 @@ import logging
 from discord.ext import commands
 from os.path import dirname, join
 from typing import Optional, Literal, TYPE_CHECKING
-from utils.checks import check_if_user_can_sr, is_staff
+from utils.checks import check_if_user_can_sr, is_staff, soap_check
 from utils.mdcmd import add_md_files_as_commands
 from utils.views import BasePaginator, PaginatedEmbedView
 from utils.utils import KurisuCooldown
@@ -64,6 +64,7 @@ class Assistance(commands.GroupCog):
     def __init__(self, bot: Kurisu):
         self.bot: Kurisu = bot
         self.small_help_category: Optional[discord.CategoryChannel] = None
+        self.soaps_category: Optional[discord.CategoryChannel] = None
         self.bot.loop.create_task(self.setup_assistance())
         self.filters = bot.filters
 
@@ -75,6 +76,11 @@ class Assistance(commands.GroupCog):
             channel = self.bot.guild.get_channel(db_channel[0])
             if channel and channel.type == discord.ChannelType.category:
                 self.small_help_category = channel
+        db_channel2 = await self.bot.configuration.get_channel_by_name('soaps')
+        if db_channel2:
+            channel2 = self.bot.guild.get_channel(db_channel2[0])
+            if channel2 and channel2.type == discord.ChannelType.category:
+                self.soaps_category = channel2
 
     async def unisearch(self, query: str) -> list[dict]:
         query = query.lower()
@@ -122,17 +128,17 @@ class Assistance(commands.GroupCog):
         await self.bot.channels['mod-logs'].send(msg)
         await ctx.send(f"Created small help {channel.mention}.")
 
-    @is_staff('Helper')
+    @soap_check()
     @commands.guild_only()
     @commands.command(aliases=["soup", "soap"])
     async def createsoap(self, ctx: GuildContext, helpee: discord.Member):
-        """Creates a 🧼 help channel for a user. Helper+ only."""
-        if not self.small_help_category:
-            return await ctx.send("The small help category is not set.")
+        """Creates a 🧼 help channel for a user. crc, small help, helper+ only."""
+        if not self.soaps_category:
+            return await ctx.send("The soaps category is not set.")
         # Channel names can't be longer than 100 characters
         channel_name = f"3ds-{helpee.name}-soap-🧼"[:100]
-        channel = await self.small_help_category.create_text_channel(name=channel_name)
-        await asyncio.sleep(1)  # Fix for discord race condition(?)
+        channel = await self.soaps_category.create_text_channel(name=channel_name)
+        await asyncio.sleep(3)  # Fix for discord race condition(?)
         await channel.set_permissions(helpee, read_messages=True)
         await channel.send(f"{helpee.mention}, please read the following.\n"
                            "0. If your console is on, turn it off. If your console happens to already be in GodMode9, skip to step 3.\n"
@@ -156,7 +162,8 @@ class Assistance(commands.GroupCog):
                            "    Unscrew them until they click, then gently lift the backplate using the notches at the sides.\n"
                            "  - The label also may be under the battery.\n"
                            "  - If you still can't find it, please request further assistance.\n"
-                           "10. Please wait for further instructions.")
+                           "10. Please confirm, if known, the system's CURRENT region (or where you bought it from), and your DESIRED region (or your current region).\n"
+                           "11. Please wait for further instructions.")
         await self.bot.channels['mod-logs'].send(f"⭕️ **🧼 access granted**: {ctx.author.mention} granted access to 🧼 channel to {helpee.mention}")
         msg = f"🆕 **🧼 channel created**: {ctx.author.mention} created 🧼 channel {channel.mention} | {channel.name} ({channel.id})"
         await self.bot.channels['mod-logs'].send(msg)
@@ -170,6 +177,15 @@ class Assistance(commands.GroupCog):
         await self.bot.configuration.add_channel('small-help', category)
         self.small_help_category = category
         await ctx.send("Small help category set.")
+
+    @is_staff('OP')
+    @commands.guild_only()
+    @commands.command()
+    async def setsoaps(self, ctx: GuildContext, category: discord.CategoryChannel):
+        """Sets the soaps category for creating channels. OP+ only."""
+        await self.bot.configuration.add_channel('soaps', category)
+        self.soaps_category = category
+        await ctx.send("Soaps category set.")
 
     @commands.group(cooldown=None, invoke_without_command=True, case_insensitive=True)
     async def tutorial(self, ctx: KurisuContext):
