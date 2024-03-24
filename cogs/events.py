@@ -246,7 +246,7 @@ class Events(commands.Cog):
                            "If you think this is a mistake contact ❅FrozenFire❆#0700 on discord or send a email to staff@nintendohomebrew.com")
                     await send_dm_message(message.author, msg)
                     self.bot.actions.append(f'wk:{message.author.id}')
-                    await message.author.kick(reason="Linking scamming links in multiple channels.", delete_message_days=0)
+                    await message.author.kick(reason="Linking scamming links in multiple channels.")
                     try:
                         await message.delete()
                     except discord.errors.NotFound:
