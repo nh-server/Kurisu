@@ -1,6 +1,7 @@
 ---
 title: SD Card Minimum Requirements
 help-desc: SD Card requirements for the Wii U
+aliases: sdreq
 ---
 
 The minimum SD card requirements for Wii U homebrew is 2GB. 
