@@ -1,5 +1,5 @@
 ---
-title: UPDIH's Recovery Menu
+title: UDPIH's Recovery Menu
 url: https://github.com/GaryOderNichts/udpih
 author.name: GaryOderNichts
 thumbnail-url: https://avatars.githubusercontent.com/u/12049776?v=4
