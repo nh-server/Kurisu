@@ -27,6 +27,7 @@ from utils.checks import InsufficientStaffRank
 from utils.help import KuriHelp, HelpView, CategorySelect, MainHelpPaginator
 from utils.utils import create_error_embed
 from utils.context import KurisuContext
+from utils.patch import patched_member_convert, patched_user_convert
 
 cogs = (
     'cogs.assistance',
@@ -65,6 +66,10 @@ cogs = (
 
 DEBUG = False
 IS_DOCKER = os.environ.get('IS_DOCKER', '')
+
+# monkey patch member and user converters
+commands.MemberConverter.convert = patched_member_convert
+commands.UserConverter.convert = patched_user_convert
 
 if IS_DOCKER:
     def get_env(name: str):
