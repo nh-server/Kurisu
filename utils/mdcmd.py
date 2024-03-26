@@ -30,10 +30,10 @@ for k, v in aliases.items():
 systems = systems_no_aliases + tuple(aliases) + ('legacy',)
 
 format_map = {
-    'nx_firmware': '16.0.1',
-    'ams_ver': '1.5.1',
-    'hekate_ver': '6.0.2',
-    'last_revision': 'March 28th, 2023',
+    'nx_firmware': '18.0.0',
+    'ams_ver': '1.6.2',
+    'hekate_ver': '6.1.0',
+    'last_revision': '26th March, 2024',
 }
 
 
