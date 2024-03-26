@@ -29,6 +29,13 @@ for k, v in aliases.items():
 # compatibility
 systems = systems_no_aliases + tuple(aliases) + ('legacy',)
 
+format_map = {
+    'nx_firmware': '16.0.1',
+    'ams_ver': '1.5.1',
+    'hekate_ver': '6.0.2',
+    'last_revision': 'March 28th, 2023',
+}
+
 
 def parse_header(header_raw: str) -> 'dict[str, Optional[str]]':
     header: dict[str, Optional[str]] = {
@@ -109,15 +116,14 @@ def create_embed(header: 'dict[str, Optional[str]]', body: 'list[tuple[str, str]
     return embed
 
 
-def parse_md_command(md_text: str, format_map: dict | None, embed_color: discord.Color) -> tuple[dict, discord.Embed]:
+def parse_md_command(md_text: str, embed_color: discord.Color) -> tuple[dict, discord.Embed]:
     parts = md_text.split('\n\n', maxsplit=1)
     if len(parts) == 1:
         # in case there is nobody
         parts.append('')
     header_raw, body_raw = parts
 
-    if format_map:
-        body_raw = body_raw.format_map(format_map)
+    body_raw = body_raw.format_map(format_map)
 
     header = parse_header(header_raw)
     body = parse_body(body_raw)
@@ -129,7 +135,7 @@ def parse_md_command(md_text: str, format_map: dict | None, embed_color: discord
     return header, create_embed(header, body, embed_color)
 
 
-def md_file_to_embed(md_path: str, format_map: dict) -> tuple[str, str, dict, discord.Embed]:
+def md_file_to_embed(md_path: str) -> tuple[str, str, dict, discord.Embed]:
     colors = {
         '3ds': ConsoleColor.n3ds(),
         'wiiu': ConsoleColor.wiiu(),
@@ -144,7 +150,7 @@ def md_file_to_embed(md_path: str, format_map: dict) -> tuple[str, str, dict, di
     with open(md_path, 'r', encoding='utf-8') as f:
         fn = basename(md_path)
         name, console, _ = fn.rsplit('.', maxsplit=2)
-        header, embed = parse_md_command(f.read(), format_map, colors[console])
+        header, embed = parse_md_command(f.read(), colors[console])
         return name, console, header, embed
 
 
@@ -163,7 +169,7 @@ def get_console_name(console):
     return aliases.get(console, console)
 
 
-def add_md_files_as_commands(cog_class: 'Type[AssistanceCogs]', md_dir: str = None, *, namespace=commands, format_map=None, console_cmd: str = None):
+def add_md_files_as_commands(cog_class: 'Type[AssistanceCogs]', md_dir: str = None, *, namespace=commands, console_cmd: str = None):
 
     def make_cmd(name: str, help_desc: 'Optional[str]', embeds: 'dict[str, discord.Embed]', cooldown: 'tuple[int, int]', aliases: list[str]) -> commands.Command:
         if len(embeds) > 1:
@@ -228,14 +234,8 @@ def add_md_files_as_commands(cog_class: 'Type[AssistanceCogs]', md_dir: str = No
     if md_dir is None:
         md_dir = cog_class.data_dir
 
-    if format_map is None:
-        try:
-            format_map = cog_class.format_map
-        except AttributeError:
-            format_map = None
-
     for md in iglob(join(md_dir, '*.md')):
-        command, console, header, embed = md_file_to_embed(md, format_map)
+        command, console, header, embed = md_file_to_embed(md)
         new_commands[command][console] = embed
         if header['aliases']:
             aliases[command].extend(header['aliases'].split(','))
