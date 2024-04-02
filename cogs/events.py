@@ -427,7 +427,7 @@ class Events(commands.Cog):
                 or message.channel.id in self.bot.configuration.nofilter_list:
             return
         await self.scan_message(message)
-        self.bot.loop.create_task(self.user_ping_check(message))
+        # self.bot.loop.create_task(self.user_ping_check(message)) replaced by automod
         self.bot.loop.create_task(self.user_spam_check(message))
         self.bot.loop.create_task(self.channel_spam_check(message))
 
