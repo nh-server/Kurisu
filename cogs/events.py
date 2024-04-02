@@ -274,24 +274,25 @@ class Events(commands.Cog):
                 f"See {self.bot.channels['message-logs'].mention} for the deleted message. @here",
                 allowed_mentions=discord.AllowedMentions(everyone=True))
 
-        # check for mention spam
-        if len(message.mentions) >= 6:
-            log_msg = f"🚫 **Auto-probate**: {message.author.mention} probated for mass user mentions | {message.author}\n" \
-                      f"🗓 __Creation__: {message.author.created_at}\n🏷 __User ID__: {message.author.id}"
-            embed = discord.Embed(title="Deleted message", color=discord.Color.gold())
-            embed.add_field(name="#" + message.channel.name, value="\u200b" + message.content)
-            await self.bot.channels['mod-logs'].send(log_msg, embed=embed)
-            await self.bot.channels['mods'].send(
-                f"{log_msg}\nSee {self.bot.channels['mod-logs'].mention} for the deleted message. @here",
-                allowed_mentions=discord.AllowedMentions(everyone=True))
-            try:
-                await message.delete()
-            except discord.errors.NotFound:
-                pass
-            await send_dm_message(
-                message.author, f"You were automatically placed under probation in {self.bot.guild.name} for mass user mentions.")
-            await self.bot.restrictions.add_restriction(message.author, Restriction.Probation, reason="Mention spam")
-            await message.author.add_roles(self.bot.roles['Probation'])
+        # Disabled due to automod taking over this task
+        # # check for mention spam
+        # if len(message.mentions) >= 6:
+        #     log_msg = f"🚫 **Auto-probate**: {message.author.mention} probated for mass user mentions | {message.author}\n" \
+        #               f"🗓 __Creation__: {message.author.created_at}\n🏷 __User ID__: {message.author.id}"
+        #     embed = discord.Embed(title="Deleted message", color=discord.Color.gold())
+        #     embed.add_field(name="#" + message.channel.name, value="\u200b" + message.content)
+        #     await self.bot.channels['mod-logs'].send(log_msg, embed=embed)
+        #     await self.bot.channels['mods'].send(
+        #         f"{log_msg}\nSee {self.bot.channels['mod-logs'].mention} for the deleted message. @here",
+        #         allowed_mentions=discord.AllowedMentions(everyone=True))
+        #     try:
+        #         await message.delete()
+        #     except discord.errors.NotFound:
+        #         pass
+        #     await send_dm_message(
+        #         message.author, f"You were automatically placed under probation in {self.bot.guild.name} for mass user mentions.")
+        #     await self.bot.restrictions.add_restriction(message.author, Restriction.Probation, reason="Mention spam")
+        #     await message.author.add_roles(self.bot.roles['Probation'])
 
     async def user_spam_check(self, message: discord.Message):
         assert isinstance(message.author, discord.Member)
