@@ -4,7 +4,7 @@ help-desc: Lists various links to Wii U VC compatibility sites
 aliases: compatlists
 ---
 
-You can see what games are compatibile with the Wii U/WiiVC from these sites.
+You can see what games are compatibile with the Wii Us Virtual Console from these sites.
 
 Wii:
 https://wiki.gbatemp.net/wiki/WiiU_VC_Wii_inject_compatibility_list
