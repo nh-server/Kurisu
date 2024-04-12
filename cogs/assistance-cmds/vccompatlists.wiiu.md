@@ -6,29 +6,29 @@ aliases: compatlists
 
 You can see what games are compatibile with the Wii Us Virtual Console from these sites.
 
-Wii:
-https://wiki.gbatemp.net/wiki/WiiU_VC_Wii_inject_compatibility_list
+Wii:  
+https://uwuvci-prime.github.io/UWUVCI-Resources/wii/wiicompat.html
 
 Gamecube:
 https://wiki.gbatemp.net/wiki/Nintendont_Compatibility_List
 
-N64:
-https://wiki.gbatemp.net/wiki/WiiU_VC_N64_inject_compatibility_list
+N64:  
+https://uwuvci-prime.github.io/UWUVCI-Resources/n64/n64compat.html
 
-DS:
-https://gbatemp.net/threads/new-wii-u-nds-injection-compatibility-list.605592/
+DS:  
+https://uwuvci-prime.github.io/UWUVCI-Resources/nds/ndscompat.html
 
-GBA:
-https://wiki.gbatemp.net/wiki/WiiU_VC_GBA_injection
+GBA:  
+https://uwuvci-prime.github.io/UWUVCI-Resources/gba/gbacompat.html
 
-NES:
-https://wiki.gbatemp.net/wiki/WiiU_VC_NES_injection
+NES:  
+https://uwuvci-prime.github.io/UWUVCI-Resources/nes/nescompat.html
 
-SNES:
-https://wiki.gbatemp.net/wiki/WiiU_VC_Snes_injection
+SNES:  
+https://uwuvci-prime.github.io/UWUVCI-Resources/snes/snescompat.html
 
-MSX:
+MSX:  
 https://wiki.gbatemp.net/wiki/WiiU_VC_MSX_Injection
 
-TurboGrafx16:
+TurboGrafx16:  
 https://wiki.gbatemp.net/wiki/WiiU_VC_TG16_injection
