@@ -286,7 +286,7 @@ class KickBan(commands.GroupCog):
             await self.filters.add_filtered_word(site, FilterKind.ScammingSite)
             await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added `{site}` to the word filter!")
         ban_msg = ("You have been banned from Nintendo Homebrew for linking scamming sites in the server."
-                   "If you think this is a mistake, contact frozenchen on discord or send an email to staff@nintendohomebrew.com")
+                   "If/when you have secured your account, contact frozenchen on discord or send an email to staff@nintendohomebrew.com")
         await send_dm_message(member, ban_msg)
         reason = "Linking scamming site"
         await member.ban(reason=reason, delete_message_days=1)
