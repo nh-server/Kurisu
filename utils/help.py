@@ -5,7 +5,7 @@ from discord import Interaction
 from discord.app_commands import AppCommandGroup, AppCommand
 from discord.ui import Select
 from discord.ext.commands import Cog, Group, Command, HelpCommand
-from itertools import islice
+from itertools import islice, batched
 from utils.context import KurisuContext
 from utils.views import BasePaginator, BasePaginatedView
 
@@ -131,17 +131,21 @@ class CommandHelpPaginator(BasePaginator):
 
 class CategorySelect(Select['HelpView']):
 
-    def __init__(self, mapping: dict[Cog, list[Command]] | dict[AppCommand, list[AppCommandGroup]], ctx: KurisuContext):
-        super().__init__(placeholder="Select a Category.")
+    def __init__(self, mapping: dict[Cog, list[Command]] | dict[AppCommand, list[AppCommandGroup]], ctx: KurisuContext,
+                 *, placeholder: str = "Select a Category", index_label: str = "Kurisu Categories",
+                 index_description: str = "The index of Kurisu Categories."):
+        super().__init__(placeholder=placeholder)
         self.mapping = mapping
         self.ctx = ctx
+        self.index_label = index_label
+        self.index_description = index_description
         self.populate()
 
     def populate(self):
         self.add_option(
-            label="Kurisu Categories",
+            label=self.index_label,
             value="main",
-            description="The index of Kurisu Categories.",
+            description=self.index_description,
             emoji=self.ctx.bot.emoji
         )
         for category, cmds in self.mapping.items():
@@ -250,7 +254,16 @@ class KuriHelp(HelpCommand):
                 f_mapping[cog] = f_cmds
 
         view = HelpView(MainHelpPaginator(f_mapping, self.context), self.context)
-        view.add_item(CategorySelect(f_mapping, self.context))
+
+        if len(f_mapping) > SELECT_MAX_VALUES - 1:
+            for n, batch_map in enumerate(batched(f_mapping.items(), SELECT_MAX_VALUES - 1)):
+                view.add_item(CategorySelect(dict(batch_map),
+                                             self.context,
+                                             placeholder=f"Select a category [{1+(SELECT_MAX_VALUES - 1)*n}-{1+(SELECT_MAX_VALUES - 1)*n+len(batch_map)}]",
+                                             index_label=f"Kurisu Categories Part {n+1}",
+                                             index_description=f"Index of Part {n+1}"))
+        else:
+            view.add_item(CategorySelect(f_mapping, self.context))
 
         channel = self.get_destination()
         msg = await channel.send(embed=view.paginator.current(), view=view, reference=self.context.message)
