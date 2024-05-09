@@ -162,8 +162,7 @@ class Assistance(commands.GroupCog):
                            "    Unscrew them until they click, then gently lift the backplate using the notches at the sides.\n"
                            "  - The label also may be under the battery.\n"
                            "  - If you still can't find it, please request further assistance.\n"
-                           "10. Please confirm, if known, the system's CURRENT region (or where you bought it from), and your DESIRED region (or your current region).\n"
-                           "11. Please wait for further instructions.")
+                           "10. Please wait for further instructions.")
         await self.bot.channels['mod-logs'].send(f"⭕️ **🧼 access granted**: {ctx.author.mention} granted access to 🧼 channel to {helpee.mention}")
         msg = f"🆕 **🧼 channel created**: {ctx.author.mention} created 🧼 channel {channel.mention} | {channel.name} ({channel.id})"
         await self.bot.channels['mod-logs'].send(msg)

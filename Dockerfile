@@ -1,4 +1,4 @@
-FROM python:3.11-alpine
+FROM python:3.12-alpine
 
 ENV IS_DOCKER=1
 ENV PYTHONUNBUFFERED=1

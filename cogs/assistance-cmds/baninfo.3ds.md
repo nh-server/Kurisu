@@ -3,8 +3,8 @@ title: 3DS Bans
 help-desc: Links to ban information pages
 ---
 
-**Nintendo has shown a marked lack of care about bans on the 3DS lately.**
-However, such things as piracy and cheating online/cheating in multiplayer games have been known causes for NNID/console bans in the past.
-eShop fraud (e.g. credit card chargebacks) will also get you banned.
+As of April 8th 2024, Nintendo Network has been shut down, meaning bans are no longer possible. Using a hacked console is safe.
 
-You can enable online status and Spotpass/Streetpass as these do not seem to be high risk at this time.
+You can enable online status and SpotPass/StreetPass as these pose no risk at all.
+
+Nintendo Network replacements do exist, however they have their own set of rules to follow.

@@ -6,4 +6,4 @@ thumbnail-url: https://avatars.githubusercontent.com/u/68634861?v=4
 help-desc: Links to region changing guide for the Wii U.
 ---
 
-Change your Wii U's region
+How to change your console's region

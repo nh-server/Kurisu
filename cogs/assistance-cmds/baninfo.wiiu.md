@@ -3,6 +3,8 @@ title: Wii U bans
 help-desc: Explains bans on the Wii U
 ---
 
-# Nintendo cares little to almost none about the Wii U anymore. 
-As long as you don't mod or cheat in online games, they don't have a reason to ban you.
-They cannot physically see if you have homebrew on your console either. Even if they did, they still wouldn't care.
+As of April 8th 2024, Nintendo Network has been shut down, meaning bans are no longer possible. Using a hacked console is safe.
+
+You can enable online status and SpotPass as these pose no risk at all.
+
+Nintendo Network replacements do exist, however they have their own set of rules to follow.
