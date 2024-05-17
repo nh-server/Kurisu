@@ -66,7 +66,7 @@ class FriendCode(commands.Cog):
             await self.bot.extras.add_3ds_friend_code(ctx.author, fc)
         else:
             await self.extras.add_switch_friend_code(ctx.author, fc)
-        await ctx.send(f"{ctx.author.mention} {console} friend code inserted: {self.n3ds_fc_to_string(fc) if console=='3ds' else self.switch_fc_to_string(fc)}")
+        await ctx.send(f"{ctx.author.mention} {console} friend code inserted: {self.n3ds_fc_to_string(fc) if console == '3ds' else self.switch_fc_to_string(fc)}")
 
     @commands.guild_only()
     @commands.command()
