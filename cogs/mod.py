@@ -12,7 +12,7 @@ from subprocess import call
 from typing import Optional, TYPE_CHECKING
 from utils import Restriction
 from utils.converters import DateOrTimeToSecondsConverter, TimeTransformer
-from utils.checks import is_staff, check_staff, check_bot_or_staff, is_staff_app, wii_check
+from utils.checks import is_staff, check_staff, check_bot_or_staff, is_staff_app
 from utils.utils import paginate_message, send_dm_message, parse_time, text_to_discord_file, gen_color, \
     create_error_embed, create_userinfo_embed
 
@@ -936,24 +936,6 @@ class Mod(commands.GroupCog):
         await self.restrictions.add_restriction(member, Restriction(restriction), reason, end_date=end_time)
         await interaction.response.send_message(f"{member.mention} now has the {restriction} restriction role{f' until {format_dt(end_time)}.' if end_time else '.'}")
         await self.logs.post_action_log(interaction.user, member, restriction_action[restriction], reason=reason, until=end_time)
-
-    @wii_check()
-    @commands.guild_only()
-    @commands.command()
-    async def takewii(self, ctx: GuildContext, member: discord.Member):
-        """Remove access to the Wii channel."""
-        if await check_bot_or_staff(ctx, member, "no-wii"):
-            return
-        await member.add_roles(ctx.bot.roles['No-Wii'])
-        await ctx.send("Wii access taken.")
-
-    @wii_check()
-    @commands.guild_only()
-    @commands.command()
-    async def givewii(self, ctx: GuildContext, member: discord.Member):
-        """Restore access to the Wii channel."""
-        await member.remove_roles(ctx.bot.roles['No-Wii'])
-        await ctx.send("Wii access restored.")
 
 
 async def setup(bot):

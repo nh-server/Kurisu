@@ -191,7 +191,8 @@ class Kurisu(commands.Bot):
         self.helper_roles: dict[str, discord.Role] = {"3DS": self.roles['On-Duty 3DS'],
                                                       "WiiU": self.roles['On-Duty Wii U'],
                                                       "Switch": self.roles['On-Duty Switch'],
-                                                      "Legacy": self.roles['On-Duty Legacy']
+                                                      "Legacy": self.roles['On-Duty Legacy'],
+                                                      "Wii": self.roles['On-Duty Wii']
                                                       }
 
         self.assistance_channels: tuple[discord.TextChannel | discord.VoiceChannel, ...] = (
@@ -276,7 +277,7 @@ class Kurisu(commands.Bot):
                     'switch-assistance-1', 'switch-assistance-2', 'helpers', 'watch-logs', 'message-logs',
                     'upload-logs', 'hacking-general', 'meta', 'appeals', 'legacy-systems', 'dev', 'off-topic',
                     'voice-and-music', 'bot-cmds', 'bot-talk', 'mods', 'mod-mail', 'mod-logs', 'server-logs', 'bot-err',
-                    'elsewhere', 'newcomers', 'nintendo-discussion', 'tech-talk', 'hardware', 'streaming-gamer', 'wii-assistance']
+                    'elsewhere', 'newcomers', 'nintendo-discussion', 'tech-talk', 'hardware', 'streaming-gamer', 'wii-vwii-assistance']
 
         for n in channels:
             db_channel = await self.configuration.get_channel_by_name(n)
@@ -296,10 +297,10 @@ class Kurisu(commands.Bot):
 
     async def load_roles(self):
         roles = ['Helpers', 'Staff', 'HalfOP', 'OP', 'SuperOP', 'Owner', 'On-Duty 3DS', 'On-Duty Wii U',
-                 'On-Duty Switch', 'On-Duty Legacy', 'Probation', 'Retired Staff', 'Verified', 'Trusted', 'Muted',
+                 'On-Duty Switch', 'On-Duty Legacy', 'On-Duty Wii', 'Probation', 'Retired Staff', 'Verified', 'Trusted', 'Muted',
                  'No-Help', 'No-elsewhere', 'No-Memes', 'No-art', 'No-animals', '#art-discussion', 'No-Embed', '#elsewhere',
                  'Small Help', 'meta-mute', 'appeal-mute', 'crc', 'No-Tech', 'help-mute', 'streamer(temp)', '🍰',
-                 'No-U', 'No-Wii', 'Wii-Assistance']
+                 'No-U', 'No-Wii']
 
         for n in roles:
             db_role = await self.configuration.get_role(n)

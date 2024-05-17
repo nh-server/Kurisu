@@ -77,18 +77,6 @@ def soap_check():
     return commands.check(predicate)
 
 
-def wii_check():
-    async def predicate(ctx):
-        author = ctx.author
-        if not check_staff(ctx.bot, 'Helper', author.id) and not check_staff(ctx.bot, 'Staff', author.id) and (
-                ctx.bot.roles['Wii-Assistance'] not in author.roles):
-            raise InsufficientStaffRank("You can't use this command.")
-            return False
-        return True
-
-    return commands.check(predicate)
-
-
 def check_if_user_can_ready():
     async def predicate(ctx):
         channel = ctx.channel
