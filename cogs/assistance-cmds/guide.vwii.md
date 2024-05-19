@@ -1,10 +1,10 @@
 ---
 title: Guide
-url: https://wiiu.hacks.guide/#/vwii/sd-preparation
-thumbnail-url: https://nintendohomebrew.com/assets/img/nhmemes/wiiu.png
-author.name: NH Discord Server
-author.url: https://wiiu.hacks.guide/#/vwii/sd-preparation
+url: https://wii.hacks.guide/
+thumbnail-url: https://nintendohomebrew.com/assets/img/nhmemes/bigh.png
+author.name: NH & Friends
+author.url: https://wii.hacks.guide/
 help-desc: Links to the recommended guides.
 ---
 
-A complete vWii modding guide
+The complete guide to modding your vWii
