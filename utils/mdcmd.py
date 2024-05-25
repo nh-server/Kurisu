@@ -16,7 +16,7 @@ if TYPE_CHECKING:
     from cogs.assistanceswitch import AssistanceSwitch
     AssistanceCogs = Assistance | AssistanceWii | AssistanceWiiU | Assistance3DS | AssistanceSwitch
 
-systems_no_aliases = ('3ds', 'wiiu', 'vwii', 'switch', 'wii', 'dsi')
+systems_no_aliases = ('3ds', 'wiiu', 'vwii', 'switch', 'wii', 'dsi', 'gba')
 aliases = {
     'nx': 'switch',
     'ns': 'switch'
@@ -144,6 +144,7 @@ def md_file_to_embed(md_path: str) -> tuple[str, str, dict, discord.Embed]:
         'switch': ConsoleColor.switch(),
         'legacy': ConsoleColor.legacy(),
         'dsi': ConsoleColor.legacy(),
+        'gba': None,
         'all': None  # default embed color
     }
 
