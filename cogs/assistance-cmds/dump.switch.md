@@ -1,11 +1,11 @@
 ---
 title: Switch dump/build Guide
-url: https://suchmememanyskill.github.io/guides/switchdumpguide/
-author.name: SuchMeme
-author.url: https://suchmememanyskill.github.io/guides/switchdumpguide/
+url: https://dardel.codeberg.page/nxdumpguide
+author.name: Dardel
+author.url: https://dardel.codeberg.page/nxdumpguide
 thumbnail-url: https://nintendohomebrew.com/assets/img/nhmemes/suchmeme.png
 help-desc: How to dump games and data for CFW consoles
 ---
 
-How to dump/build NSPs using NXDumpTool
-BAN Warning: only for use with offline emuMMC
+A guide on how to dump/build NSPs using NXDumpTool.
+BAN Warning: Only for use with an offline emuMMC if you plan on installing cartridges and game dumps.
