@@ -80,8 +80,9 @@ Please contact <@!333857992170536961> if you need to get in touch with the staff
 Please contact <@!333857992170536961> if you need to get in touch with the staff team. Mod-Mail is NOT FOR GETTING HELP WITH HACKING.**\n"""
 
         self.nickname_policy = """🏷️ __*Username/Nickname and Avatar policy*__
-Usernames are to be kept primarily alphanumeric, to keep them easy to tag and read. Excessively long usernames are not acceptable. Usernames and avatars that are annoying, offensive, inappropriate ("nsfw"), and/or disruptive to others are also not allowed.
-Usernames that go against these rules will be assigned a nickname. Users can request a specific nickname that follows these rules.
+Usernames must begin with at least one alphanumeric character and are to be primarily alphanumeric, to keep them easy to tag and read.
+Excessively long usernames are not acceptable. Usernames and avatars that are annoying, offensive, inappropriate ("nsfw"), and/or disruptive to others are also not allowed.
+Usernames that go against these rules will be assigned a nickname. Users are able to change their own nickname, but may be blocked from messaging by AutoMod if the selected nickname or profile name is not acceptable.
 If the username disrupts the general chat flow, pings included, the user will be asked to change it. Refusal will result in a kick from the server.
 Users with avatars against these rules will be asked to change them or be kicked from the server.
 Blank names and avatars are considered disruptive and are not allowed."""
