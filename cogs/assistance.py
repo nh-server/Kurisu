@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import discord
 import logging
+import time
 
 from discord.ext import commands
 from os.path import dirname, join
@@ -10,7 +11,7 @@ from typing import Optional, Literal, TYPE_CHECKING
 from utils.checks import check_if_user_can_sr, is_staff, soap_check
 from utils.mdcmd import add_md_files_as_commands
 from utils.views import BasePaginator, PaginatedEmbedView
-from utils.utils import KurisuCooldown
+from utils.utils import KurisuCooldown, gen_color
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -33,7 +34,8 @@ class UniDBResultsPaginator(BasePaginator):
             return embed
 
     def create_embed(self, app: dict):
-        embed = discord.Embed(color=int(app['color'][1:], 16))
+        color = int(app['color'][1:], 16) if app.get('color') else gen_color(time.time())
+        embed = discord.Embed(color=color)
         embed.title = app['title']
         embed.description = f"{app.get('description', 'No description provided.')}\n"
         if 'download_page' in app:
