@@ -97,7 +97,7 @@ A few commands may be useful for you to get information faster. Random command u
 • `.help Assistance` - List assistance-related commands. These can have useful information.
 • `.help` - List all the other available commands."""
 
-        self.extra = f"""While we appreciate everyone who boosts the server **IT DOES NOT MAKE YOU EXEMPT FROM THE RULES.** We've given booster reaction perms in {self.bot.channels['off-topic'].mention}, {self.bot.channels['elsewhere'].mention}, and {self.bot.channels['nintendo-discussion'].mention}, you can also stream in the Streaming gamer voice channel, and change your nick once every 6hrs using a bot command in your DM with {self.bot.guild.me.mention},  as a thank you for boosting the server.
+        self.extra = f"""While we appreciate everyone who boosts the server **IT DOES NOT MAKE YOU EXEMPT FROM THE RULES.** We've given boosters reaction perms in {self.bot.channels['off-topic'].mention}, {self.bot.channels['elsewhere'].mention}, and {self.bot.channels['nintendo-discussion'].mention}, and you can also stream in the Streaming gamer voice channel.
 📨 Invitation link This is a permanent invitation link to the server!
 https://discord.gg/C29hYvh"""
 
