@@ -77,7 +77,8 @@ class KickBan(commands.GroupCog):
                         f"{member} has been shown the door. 👍",
                         f"{member} fucked around and found out. 👍",
                         f"{member} has been yeeted. 👍",
-                        f"{member} received three copyright strikes. 👍"]
+                        f"{member} has been sent to Detroit. 👍",
+                        f"{member} has been sent to the UK. 👍"]
         if await check_bot_or_staff(ctx, member, "ban"):
             return
 
