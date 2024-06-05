@@ -1,6 +1,7 @@
 ---
 title: Checking for CFW
 help-desc: Shows how to determine old CFW on the Wii U
+aliases: checkcfw
 ---
 
 Need to update to a newer CFW? Check for which one you have before proceeding.
