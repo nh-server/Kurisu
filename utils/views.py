@@ -182,7 +182,7 @@ class VoteButtonEnd(Button['SimpleVoteView']):
             await interaction.followup.send(
                 f"Vote started {format_dt(self.view.start, style='R')} has finished.\n{results}")
             self.view.stop()
-            await interaction.client.extras.delete_vote_view(self.view.custom_id)
+            await interaction.client.extras.delete_voteview(self.view.custom_id)
         else:
             await interaction.response.send_message("Only the vote creator can end it", ephemeral=True)
 
