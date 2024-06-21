@@ -161,6 +161,14 @@ class AutoMod(commands.GroupCog):
         await interaction.response.send_message(f"Deleted keyword {keyword} from {rule.name} automod rule succesfully.",
                                                 ephemeral=True)
 
+    @commands.Cog.listener()
+    async def on_automod_action(self, action: discord.AutoModAction):
+        rule = await action.fetch_rule()
+        if not rule or not action.member:
+            return
+        if rule.name == "Scams":
+            await action.member.kick(reason="Suspicious behavior")
+
 
 async def setup(bot):
     await bot.add_cog(AutoMod())
