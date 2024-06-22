@@ -396,7 +396,7 @@ class Memes(commands.Cog):
         await self._meme(ctx, f"{u.mention} is now beaned. <a:bean:462076812076384257>", True)
 
     @commands.command(hidden=True)
-    async def rinse(self, ctx: KurisuContext, u: discord.Member):
+    async def shower(self, ctx: KurisuContext, u: discord.Member):
         """unsoap"""
         await self._meme(ctx, f"{u.mention} has had their soap removed. 🧼 🚿", True)
 
