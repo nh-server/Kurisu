@@ -180,10 +180,10 @@ class Assistance(commands.GroupCog):
         for channel in channels:
             if channel not in self.soaps_category.channels:
                 continue
-        await channel.delete()
         msg = f":x: **:soap: channel deleted**: {ctx.author.mention} deleted :soap: channel {channel.mention} | {channel.name} ({channel.id})"
         await self.bot.channels['mod-logs'].send(msg)
         await ctx.send(f"Deleted :soap: {channel.mention}.")
+        await channel.delete()
 
     @is_staff('OP')
     @commands.guild_only()
