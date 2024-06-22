@@ -173,7 +173,7 @@ class Assistance(commands.GroupCog):
     @is_staff('Helper')
     @commands.guild_only()
     @commands.command(aliases=["rinse"])
-    async def deletesoap(self, ctx: GuildContext, channels: commands.Greedy[discord.TextChannel):
+    async def deletesoap(self, ctx: GuildContext, channels: commands.Greedy[discord.TextChannel]):
         """Deletes a :soap: help channel. helper+ only."""
         if not self.soaps_category:
             return await ctx.send("The soaps category is not set.")
