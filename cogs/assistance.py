@@ -177,9 +177,9 @@ class Assistance(commands.GroupCog):
         """Deletes a :soap: help channel. helper+ only."""
         if not self.soaps_category:
             return await ctx.send("The soaps category is not set.")
-        for channel in channels:    
-          if channel not in self.soaps_category.channels:
-            continue
+        for channel in channels:
+            if channel not in self.soaps_category.channels:
+                continue
         await channel.delete()
         msg = f":x: **:soap: channel deleted**: {ctx.author.mention} deleted :soap: channel {channel.mention} | {channel.name} ({channel.id})"
         await self.bot.channels['mod-logs'].send(msg)
