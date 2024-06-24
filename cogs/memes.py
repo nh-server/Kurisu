@@ -770,8 +770,9 @@ class Memes(commands.Cog):
     async def shootings(self, ctx: KurisuContext):
         """so we don't have to find it every time"""
         shooting_list = ["https://nintendohomebrew.com/assets/img/nhmemes/shooting1.png",
-                        "https://nintendohomebrew.com/assets/img/nhmemes/shooting2.jpg"]
+                         "https://nintendohomebrew.com/assets/img/nhmemes/shooting2.jpg"]
         await self._meme(ctx, "", image_link=random.choice(shooting_list))
+
 
 async def setup(bot):
     await bot.add_cog(Memes(bot))
