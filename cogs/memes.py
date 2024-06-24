@@ -765,6 +765,11 @@ class Memes(commands.Cog):
                   "https://nintendohomebrew.com/assets/img/nhmemes/b15.png"]
         await self._meme(ctx, "", image_link=random.choice(b_list))
 
+  @commands.command(hidden=True, aliases=['america'])
+    @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.channel)
+    async def shootings(self, ctx: KurisuContext):
+        """a solid 0 days since the last one"""
+        await ctx.send("https://i.imgur.com/Qzz4WZx.png")
 
 async def setup(bot):
     await bot.add_cog(Memes(bot))
