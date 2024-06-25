@@ -35,6 +35,7 @@ cogs = (
     'cogs.assistancewiiu',
     'cogs.assistance3ds',
     'cogs.assistanceswitch',
+    'cogs.assistancehardware',
     'cogs.automod',
     'cogs.blah',
     'cogs.db3ds',
