@@ -70,7 +70,6 @@ class Events(commands.Cog):
     async def scan_message(self, message: discord.Message, is_edit=False):
         # Some assumptions that should be true always
         assert isinstance(message.channel, (discord.TextChannel, discord.VoiceChannel, discord.Thread))
-        assert isinstance(message.author, discord.Member)
         random.seed(message.id)
         embed = discord.Embed(color=gen_color(message.id))
         embed.description = message.content
@@ -122,24 +121,25 @@ class Events(commands.Cog):
                     await message.delete()
                 except discord.NotFound:
                     pass
-                if message.author.id not in self.invite_antispam:
-                    self.invite_antispam[message.author.id] = []
-                self.invite_antispam[message.author.id].append(message)
-                if len(self.invite_antispam[message.author.id]) > 3:
-                    await send_dm_message(message.author, "You have been kicked from Nintendo Homebrew for spamming invites to non approved servers.")
-                    try:
-                        self.bot.actions.append(f"wk:{message.author.id}")
-                        await message.author.kick(reason="Spamming server invites.")
-                    except (discord.Forbidden, discord.NotFound):
-                        self.bot.actions.remove(f"wk:{message.author.id}")
-                else:
-                    self.bot.loop.create_task(self.invite_spam_pop(message))
-                    try:
-                        await message.author.send(
-                            f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
-                            f"Server invites must be approved by staff. To contact staff send a message to <@333857992170536961>.")
-                    except discord.errors.Forbidden:
-                        pass
+                if isinstance(message.author, discord.Member):
+                    if message.author.id not in self.invite_antispam:
+                        self.invite_antispam[message.author.id] = []
+                    self.invite_antispam[message.author.id].append(message)
+                    if len(self.invite_antispam[message.author.id]) > 3:
+                        await send_dm_message(message.author, "You have been kicked from Nintendo Homebrew for spamming invites to non approved servers.")
+                        try:
+                            self.bot.actions.append(f"wk:{message.author.id}")
+                            await message.author.kick(reason="Spamming server invites.")
+                        except (discord.Forbidden, discord.NotFound):
+                            self.bot.actions.remove(f"wk:{message.author.id}")
+                    else:
+                        self.bot.loop.create_task(self.invite_spam_pop(message))
+                        try:
+                            await message.author.send(
+                                f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
+                                f"Server invites must be approved by staff. To contact staff send a message to <@333857992170536961>.")
+                        except discord.errors.Forbidden:
+                            pass
             # if the message was deleted don't reduce approved invites uses
             else:
                 for invite in approved_invites:
@@ -154,10 +154,11 @@ class Events(commands.Cog):
                 await message.delete()
             except discord.errors.NotFound:
                 pass
-            await send_dm_message(message.author,
-                                  f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
-                                  f"This site may be misinterpreted as legitimate and cause users harm, therefore your message was automatically deleted.",
-                                  embed=embed)
+            if isinstance(message.author, discord.Member):
+                await send_dm_message(message.author,
+                                      f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
+                                      f"This site may be misinterpreted as legitimate and cause users harm, therefore your message was automatically deleted.",
+                                      embed=embed)
             await self.bot.channels['message-logs'].send(
                 f"**Bad site**: {message.author.mention} mentioned a blocked site in {message.channel.mention} (message deleted)",
                 embed=embed)
@@ -168,11 +169,12 @@ class Events(commands.Cog):
                 await message.delete()
             except discord.errors.NotFound:
                 pass
-            await send_dm_message(message.author,
-                                  f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
-                                  f"You cannot mention tools used for piracy directly or indirectly, "
-                                  f"therefore your message was automatically deleted.",
-                                  embed=embed)
+            if isinstance(message.author, discord.Member):
+                await send_dm_message(message.author,
+                                      f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
+                                      f"You cannot mention tools used for piracy directly or indirectly, "
+                                      f"therefore your message was automatically deleted.",
+                                      embed=embed)
             await self.bot.channels['message-logs'].send(
                 f"**Bad tool**: {message.author.mention} mentioned a piracy tool (`{filter_result[FilterKind.PiracyTool]}`) in {message.channel.mention} (message deleted)",
                 embed=embed)
@@ -182,10 +184,11 @@ class Events(commands.Cog):
                 await message.delete()
             except discord.errors.NotFound:
                 pass
-            await send_dm_message(message.author,
-                                  f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
-                                  f"You cannot link videos that mention piracy, therefore your message was automatically deleted.",
-                                  embed=embed)
+            if isinstance(message.author, discord.Member):
+                await send_dm_message(message.author,
+                                      f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
+                                      f"You cannot link videos that mention piracy, therefore your message was automatically deleted.",
+                                      embed=embed)
             await self.bot.channels['message-logs'].send(
                 f"**Bad video**: {message.author.mention} linked a banned video (`{filter_result[FilterKind.PiracyVideo]}`) in {message.channel.mention} (message deleted)",
                 embed=embed)
@@ -202,11 +205,12 @@ class Events(commands.Cog):
                 await message.delete()
             except discord.errors.NotFound:
                 pass
-            await send_dm_message(message.author,
-                                  f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
-                                  f"You cannot mention sites used for piracy directly or indirectly, "
-                                  f"therefore your message was automatically deleted.",
-                                  embed=embed)
+            if isinstance(message.author, discord.Member):
+                await send_dm_message(message.author,
+                                      f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
+                                      f"You cannot mention sites used for piracy directly or indirectly, "
+                                      f"therefore your message was automatically deleted.",
+                                      embed=embed)
             await self.bot.channels['message-logs'].send(
                 f"**Bad site**: {message.author.mention} mentioned a piracy site directly (`{filter_result[FilterKind.PiracySite]}`) in {message.channel.mention} (message deleted)",
                 embed=embed)
@@ -217,10 +221,11 @@ class Events(commands.Cog):
                 await message.delete()
             except discord.errors.NotFound:
                 pass
-            await send_dm_message(message.author,
-                                  f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
-                                  f"You cannot mention sites, programs or services used for unbanning, therefore your message was automatically deleted.",
-                                  embed=embed)
+            if isinstance(message.author, discord.Member):
+                await send_dm_message(message.author,
+                                      f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
+                                      f"You cannot mention sites, programs or services used for unbanning, therefore your message was automatically deleted.",
+                                      embed=embed)
             await self.bot.channels['message-logs'].send(
                 f"**Bad site**: {message.author.mention} mentioned an unbanning site/service/program directly (`{filter_result[FilterKind.UnbanningTool]}`) in {message.channel.mention} (message deleted)",
                 embed=embed)
@@ -242,11 +247,12 @@ class Events(commands.Cog):
             if message.channel not in self.userbot_yeeter[message.author.id]:
                 self.userbot_yeeter[message.author.id].append(message.channel)
                 if len(self.userbot_yeeter[message.author.id]) == 2:
-                    msg = ("You have been banned from Nintendo Homebrew for linking scamming sites in multiple channels. "
-                           "If you think this is a mistake contact ❅FrozenFire❆#0700 on discord or send a email to staff@nintendohomebrew.com")
-                    await send_dm_message(message.author, msg)
-                    self.bot.actions.append(f'wk:{message.author.id}')
-                    await message.author.kick(reason="Linking scamming links in multiple channels.")
+                    if isinstance(message.author, discord.Member):
+                        msg = ("You have been banned from Nintendo Homebrew for linking scamming sites in multiple channels. "
+                               "If you think this is a mistake contact ❅FrozenFire❆#0700 on discord or send a email to staff@nintendohomebrew.com")
+                        await send_dm_message(message.author, msg)
+                        self.bot.actions.append(f'wk:{message.author.id}')
+                        await message.author.kick(reason="Linking scamming links in multiple channels.")
                     try:
                         await message.delete()
                     except discord.errors.NotFound:
@@ -255,15 +261,16 @@ class Events(commands.Cog):
                 else:
                     self.bot.loop.create_task(self.userbot_yeeter_pop(message))
             await self.bot.restrictions.add_restriction(message.author, Restriction.Probation, reason="Linking scamming site")
-            try:
-                await message.author.add_roles(self.bot.roles['Probation'])
-            except discord.NotFound:
-                # Sometimes they get banned before the bot can apply the role
-                pass
-            await send_dm_message(message.author,
-                                  f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
-                                  f"You have been probated for posting a link to a scamming site.",
-                                  embed=embed)
+            if isinstance(message.author, discord.Member):
+                try:
+                    await message.author.add_roles(self.bot.roles['Probation'])
+                except discord.NotFound:
+                    # Sometimes they get banned before the bot can apply the role
+                    pass
+                await send_dm_message(message.author,
+                                      f"Please read {self.bot.channels['welcome-and-rules'].mention}. "
+                                      f"You have been probated for posting a link to a scamming site.",
+                                      embed=embed)
             await self.bot.channels['message-logs'].send(
                 f"**Bad site**: {message.author.mention} mentioned a scamming site (`{filter_result[FilterKind.ScammingSite]}`) in {message.channel.mention} (message deleted, user probated)",
                 embed=embed)
@@ -341,7 +348,7 @@ class Events(commands.Cog):
             self.user_ping_antispam[key] = deque()
         self.user_ping_antispam[key].append((message, len(message.mentions)))
         user_mentions: tuple[int]
-        _, user_mentions = zip(*self.user_ping_antispam[key])  # type: ignore # type checker can't infer correct type
+        _, user_mentions = zip(*self.user_ping_antispam[key])
         if sum(user_mentions) > 6:
             await self.bot.restrictions.add_restriction(message.author, Restriction.Probation, reason="User ping check")
             msg_user = ("You were automatically placed under probation "
