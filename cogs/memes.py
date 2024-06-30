@@ -379,10 +379,10 @@ class Memes(commands.Cog):
         kelvin = self.c_to_k(celsius)
         await self._meme(ctx, f"{u.mention} warmed. User is now {celsius}°C ({fahrenheit}°F, {kelvin}K).", True)
 
-    @commands.command(hidden=True)
+    @commands.command(hidden=True, aliases=["roast"])
     async def burn(self, ctx: KurisuContext, u: discord.Member):
         """Burns a user :fire:"""
-        celsius = random.randint(51, 150)
+        celsius = random.randint(51, 500)
         fahrenheit = self.c_to_f(celsius)
         kelvin = self.c_to_k(celsius)
         await self._meme(ctx, f"{u.mention} burned. User is now a crispy {celsius}°C ({fahrenheit}°F, {kelvin}K).", True)
@@ -391,15 +391,15 @@ class Memes(commands.Cog):
     @commands.command(hidden=True, aliases=["cool"])
     async def chill(self, ctx: KurisuContext, u: discord.Member):
         """Cools a user :3"""
-        celsius = random.randint(-40, 34)
+        celsius = random.randint(-3, 21)
         fahrenheit = self.c_to_f(celsius)
         kelvin = self.c_to_k(celsius)
         await self._meme(ctx, f"{u.mention} cooled. User is now {celsius}°C ({fahrenheit}°F, {kelvin}K).", True)
 
-    @commands.command(hidden=True)
+    @commands.command(hidden=True, aliases=["cryofreeze"])
     async def freeze(self, ctx: KurisuContext, u: discord.Member):
         """Freezes a user :3"""
-        celsius = random.randint(-273, -41)
+        celsius = random.randint(-300, -4)
         fahrenheit = self.c_to_f(celsius)
         kelvin = self.c_to_k(celsius)
         await self._meme(ctx, f"{u.mention} frozen. User is now {celsius}°C ({fahrenheit}°F, {kelvin}K). Wait how is that possible?", True)
@@ -665,7 +665,8 @@ class Memes(commands.Cog):
                      "has junko had a name change today?", "got milk?", "got pilk?",
                      "it has been 0 days since eip broke me", "ETA WEN PLS",
                      "The beatings will continue until morale improves.",
-                     "Zǎoshang hǎo zhōngguó xiànzài wǒ yǒu BING CHILLING", "HELP QUIJA?", "glazy if you were cum"]
+                     "Zǎoshang hǎo zhōngguó xiànzài wǒ yǒu BING CHILLING", "HELP QUIJA?", "glazy if you were cum",
+                     str(self.joyclap), "Hell is empty, and the demons are here.", "Man alone measures time. Man alone chimes the hour.\r\nAnd, because of this, man alone suffers a paralyzing fear that no other creature endures.\r\nA fear of time running out."]
         await ctx.send(random.choice(motd_list))
 
     @commands.command(hidden=True)
@@ -679,7 +680,7 @@ class Memes(commands.Cog):
     @commands.command(hidden=True)
     async def hru(self, ctx: KurisuContext):
         """Finally asking how Kurisu is."""
-        feeling_list = ["AWFUL", "stfu", "alright", "I am a bot what the fuck do you think?"]
+        feeling_list = ["AWFUL", "stfu", "alright", "I am a bot what the fuck do you think?", "Look at the assistance channels for two minutes and tell me how **you** think I am."]
         await ctx.send(random.choice(feeling_list))
 
     @commands.command(hidden=True)
