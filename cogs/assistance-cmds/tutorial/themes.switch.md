@@ -3,7 +3,7 @@ title: Switch Themes
 help-desc: Links to tutorials for installing themes
 ---
 
-[Theme installation guide](https://nh-server.github.io/switch-guide/extras/theming/)
+[Theme installation guide](https://switch.hacks.guide/extras/theming/)
 
 Theme repositories:
 - [themezer](https://themezer.net/)

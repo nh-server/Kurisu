@@ -3,9 +3,9 @@ title: Looking to hack your Switch?
 help-desc: Advisory for various Nintendo systems on stock firmware
 ---
 
-Use [our guide](https://nh-server.github.io/switch-guide/user_guide/getting_started/) to determine if your Switch is a first-gen unit.
+Use [our guide](https://switch.hacks.guide/user_guide/getting_started/) to determine if your Switch is a first-gen unit.
 **First generation consoles (RCM exploitable)**
-All of these can run [Atmosphere](https://nh-server.github.io/switch-guide/). Make sure that Atmosphere is compatible with the latest firmware version before you update.
+All of these can run [Atmosphere](https://switch.hacks.guide/). Make sure that Atmosphere is compatible with the latest firmware version before you update.
 
 **Second generation consoles ("patched" units, Switch Lite, Mariko, etc.)**
 
