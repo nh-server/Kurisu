@@ -9,4 +9,4 @@ Incognito isn't an effective method for ban prevention.
 - It destructively erases unique data that cannot be regenerated in case its backup is lost. This means that you risk permanently self-banning your console inadvertently.
 - Traces of Incognito remain on the system even *after* it is disabled, which works against the point of Incognito safeguarding you in the first place.
 
-90DNS / dns.mitm are both more effective methods at ban prevention since they completely prevent the Switch from connecting to Nintendo. Instructions for their use can be found here: https://nh-server.github.io/switch-guide/extras/blocking_nintendo/
+90DNS / dns.mitm are both more effective methods at ban prevention since they completely prevent the Switch from connecting to Nintendo. Instructions for their use can be found here: https://switch.hacks.guide/extras/blocking_nintendo/
