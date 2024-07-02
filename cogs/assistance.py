@@ -148,7 +148,7 @@ class Assistance(commands.GroupCog):
                            "2. Boot into GodMode9 by holding start while powering on.\n"
                            "3. Navigate to `SysNAND Virtual`\n"
                            "4. Select `essential.exefs`\n"
-                           "5. Select `copy to 0:/gm9/out`, select `Overwrite file(s)` if it exists\n"
+                           "5. Select `copy to 0:/gm9/out` (and select `Overwrite file(s)` if prompted - if not prompted, ignore and move on)\n"
                            "6. Power off your console and insert your SD card into your computer.\n"
                            "7. Navigate to `/gm9/out` on your SD, `essential.exefs` should be there.\n"
                            "8. Send the `essential.exefs` in *this specific channel*.\n"
