@@ -27,8 +27,6 @@ services:
       SERVER_LOGS_URL_FILE: /run/secrets/server_logs_url
       DB_USER: kurisu
       DB_PASSWORD: dev123
-    networks:
-      - bridge
     secrets:
       - kurisu_token
       - server_logs_url
