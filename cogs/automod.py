@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from utils.context import GuildContext
+    from kurisu import Kurisu
 
 
 async def rules_autocomplete(interaction: discord.Interaction, current: str) -> list[app_commands.Choice[str]]:
@@ -45,8 +46,9 @@ class AutoMod(commands.GroupCog):
     Commands to manage AutoMod
     """
 
-    def __init__(self):
+    def __init__(self, bot: Kurisu):
         self.emoji = discord.PartialEmoji.from_str('🤖')
+        self.bot = bot
 
     @is_staff("SuperOP")
     @commands.command()
@@ -167,8 +169,9 @@ class AutoMod(commands.GroupCog):
         if not rule or not action.member:
             return
         if rule.name == "Scams":
+            self.bot.actions.append(f"wk:{action.member.id}")
             await action.member.kick(reason="Suspicious behavior")
 
 
 async def setup(bot):
-    await bot.add_cog(AutoMod())
+    await bot.add_cog(AutoMod(bot))
