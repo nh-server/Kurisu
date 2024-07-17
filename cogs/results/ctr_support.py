@@ -188,6 +188,7 @@ account2 = Module('account', {
     2634: ResultInfo('NNID is not correctly linked on this console.', '[To fix it, follow these steps. Afterwards, reboot and sign into your NNID again.](https://3ds.hacks.guide/godmode9-usage#removing-an-nnid-without-formatting-your-device)'),
     2812: ResultInfo('This console is permanently banned by Nintendo for playing Pokémon Sun & Moon online before the release date illegally.', is_ban=True),
     2815: ResultInfo('This console is banned from accessing Miiverse by Nintendo.'),
+    2882: ResultInfo('The online services for the game or application you are trying to use are no longer available.'),
     5363: ResultInfo('Happens when trying to load NNID settings with a invalid language setting.'),
     5515: ResultInfo('Network timeout.'),
 })
