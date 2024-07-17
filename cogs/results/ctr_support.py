@@ -166,7 +166,7 @@ data_transfer = Module('system transfer', {
 # 012: a category related to the web browser or ssl module considered 1511
 browser1 = Module('browser (?)', {
     1004: ResultInfo('SSL connection failed.'),
-    1511: ResultInfo('Certificate warning.')
+    (1510, 1511): ResultInfo('Certificate warning.')
 })
 
 # 032: a second category related to the web browser
