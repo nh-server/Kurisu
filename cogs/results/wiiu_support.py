@@ -443,7 +443,8 @@ syserr = Module('system error', {
     1400: ResultInfo('Disc drive error.', 'Actually, the disc drive is probably okay, but rather, a Common Mode Filter may be broken. Fixing this requires soldering, [see for more info.](https://gbatemp.net/threads/572879/)'),
     2706: ResultInfo('Error when reading from USB storage device'),
     2713: ResultInfo('The USB Storage device has been disconnected.'),
-    2793: ResultInfo('Usually indicates missing files on vWii. Run vWii Decaffeinator, then update your Wii U.')
+    2793: ResultInfo('Usually indicates missing files on vWii. Run vWii Decaffeinator, then update your Wii U.'),
+    4711: ResultInfo('This error usually indicates the USB storage device connected to the console is dying or dead.')
 })
 
 vpad_gamepad = Module('vpad (gamepad)', {
