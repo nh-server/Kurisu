@@ -60,7 +60,8 @@ account = Module('account', {
     119: ResultInfo('System update is required. This is typically shown when the friends module is outdated.'),
     120: ResultInfo('Game or title update is required. This is typically shown when the title you\'re trying to launch is outdated.'),
     121: ResultInfo('Local friend code SEED has invalid signature. This should only happen if it has been modified.', is_ban=True),
-    123: ResultInfo('This console is permanently banned by Nintendo.', is_ban=True)
+    123: ResultInfo('This console is permanently banned by Nintendo.', is_ban=True),
+    1021: ResultInfo('There is no Nintendo Network ID linked with this system.')
 })
 
 # 003: connection related errors
