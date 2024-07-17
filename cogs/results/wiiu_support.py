@@ -441,7 +441,8 @@ syserr = Module('system error', {
     104: ResultInfo('The SLC system memory is corrupted.'),
     105: ResultInfo('The USB storage is corrupted.'),
     2706: ResultInfo('Error when reading from USB storage device'),
-    2713: ResultInfo('The USB Storage device has been disconnected.')
+    2713: ResultInfo('The USB Storage device has been disconnected.'),
+    2793: ResultInfo('Usually indicates missing files on vWii. Run vWii Decaffeinator, then update your Wii U.')
 })
 
 vpad_gamepad = Module('vpad (gamepad)', {
