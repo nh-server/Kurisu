@@ -71,6 +71,7 @@ internet = Module('internet', {
     1099: ResultInfo('Access point with given SSID not found.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/4249/kw/003-1099'),
     1101: ResultInfo('Incorrect password for access point or configuration is not compatible with the 3DS.'),
     2001: ResultInfo('DNS error. If you\'re using a custom DNS server, make sure the settings are correct.'),
+    (1401, 1403): ResultInfo('Incorrect password for access point or configuration is not compatible with the 3DS.'),
     (2101, 2103): ResultInfo('Generic connection error(?)')
 })
 
