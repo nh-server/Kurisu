@@ -2,8 +2,11 @@
 title: Isopropyl Alcohol
 help-desc: Explains what IPA is
 thumbnail-url: https://i.imgur.com/Mfw1Se3.jpeg
-aliases: Isopropyl, Iso, Isopropol
+aliases: isopropyl,iso,isopropanol
 ---
 
-Isopropyl Alcohol or IPA is a good cleaning agent for use with electronics. It's safe to use on circuit boards. When using
-avoid any loose fluid / drops, by soaking a q-tip or microfiber cloth. It will damage LCD's and some plastic coatings.
+Isopropyl Alcohol (IPA) is the recommended cleaning agent to clean electronics with. It's safe to use on circuit boards when the percentage of IPA is above 90%, ideally ~99%. 
+
+\>90% IPA is NOT the same as ethanol (ethyl alcoho) or rubbing alcohol. Regular ethanol can contain water and minerals, and rubbing alcohol can be a concoction of multiple chemicals.
+
+IPA is safe to use with the majority of plastics. However, it is noteworthy that IPA can potentially damage/dissolve LCD's, specific plastic coatings, paint, and glue.
