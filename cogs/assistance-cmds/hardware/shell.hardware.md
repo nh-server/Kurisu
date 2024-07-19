@@ -1,7 +1,7 @@
 ---
 title: Shell replacements
 help-desc: Notes on shell replacements
-thumbnail-url: https://i.imgur.com/PsXnNdJ.png
+thumbnail-url: https://nintendohomebrew.com/assets/img/hardware/wurm-shells.png
 aliases: shells,reshell,reshells
 ---
 

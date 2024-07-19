@@ -1,7 +1,7 @@
 ---
 title: Buying consoles and parts
 help-desc: Notes on buying consoles and parts
-thumbnail-url: https://i.imgur.com/VZHREVL.png
+thumbnail-url: https://nintendohomebrew.com/assets/img/hardware/exclamation-mark.png
 aliases: replacements,consoles
 ---
 

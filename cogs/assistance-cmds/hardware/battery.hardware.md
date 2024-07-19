@@ -1,7 +1,7 @@
 ---
 title: Battery replacements
 help-desc: Notes on battery replacements
-thumbnail-url: https://i.imgur.com/xCuhn8U.png
+thumbnail-url: https://nintendohomebrew.com/assets/img/hardware/swollen-battery.png 
 aliases: batt,spicypillow
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: Soldering tools and how to solder
 help-desc: Notes on soldering
-thumbnail-url: https://i.imgur.com/39MstlR.jpeg
+thumbnail-url: https://nintendohomebrew.com/assets/img/hardware/pinecil.png
 aliases: solder,tools
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: iFixit Repair Guides
 help-desc: Links to iFixit guides
-thumbnail-url: https://i.imgur.com/he9CUvz.jpeg
+thumbnail-url: https://nintendohomebrew.com/assets/img/hardware/ifixit-logo.jpeg
 aliases: guide
 ---
 

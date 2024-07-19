@@ -1,7 +1,7 @@
 ---
 title: Modding and repairing consoles
 help-desc: Notes on needed proficiency to mod and repair
-thumbnail-url: https://i.imgur.com/5zdClkS.jpeg
+thumbnail-url: https://nintendohomebrew.com/assets/img/hardware/broken-switch.jpeg
 aliases: modders,repairers,trusted
 ---
 

@@ -1,7 +1,7 @@
 ---
 title: Isopropyl Alcohol
 help-desc: Explains what IPA is
-thumbnail-url: https://i.imgur.com/BQ462sQ.jpeg
+thumbnail-url: https://nintendohomebrew.com/assets/img/hardware/ipa.jpeg
 aliases: isopropyl,iso,isopropanol
 ---
 

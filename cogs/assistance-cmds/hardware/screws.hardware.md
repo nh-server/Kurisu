@@ -1,7 +1,7 @@
 ---
 title: Screw types and stripped screws
 help-desc: Notes on screw types and stripped screws
-thumbnail-url: https://i.imgur.com/R7oIY6O.png
+thumbnail-url: https://nintendohomebrew.com/assets/img/hardware/stripped-screw.png
 aliases: screw,stripped
 ---
 
