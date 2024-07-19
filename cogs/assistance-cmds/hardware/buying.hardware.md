@@ -11,4 +11,4 @@ Are you planning on buying a console or replacement parts? Here are some pointer
 * Do NOT buy batteries from either Amazon or AliExpress, and do NOT buy any type of storage (i.e., SD cards) from AliExpress.
 * There is a risk of buying a reshelled console without the seller properly disclosing this. Reshelled consoles might be difficult to identify in images. Compare images of the console you're interested in buying to images on [Consolevariations](https://consolevariations.com).
 
-Read more here: https://discord.com/channels/196618637950451712/233002779717795850/44709923985267097
+Read more here: https://discord.com/channels/196618637950451712/233002779717795850/447099239852670976
