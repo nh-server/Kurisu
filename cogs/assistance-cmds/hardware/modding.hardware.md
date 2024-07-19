@@ -2,7 +2,7 @@
 title: Modding and repairing consoles
 help-desc: Notes on needed proficiency to mod and repair
 thumbnail-url: https://i.imgur.com/5zdClkS.jpeg
-aliases: mod,trusted
+aliases: modders,repairers,trusted
 ---
 
 Do you want to mod or repair your system by yourself? It might be wise to first ask yourself if: 
@@ -11,4 +11,4 @@ Do you want to mod or repair your system by yourself? It might be wise to first 
 * You have enough experience soldering (if applicable),
 * You have enough experience using powertools (if applicable).
 
-Would you rather have a professional repair your console? Google for repair shops near you, or alternatively see a list of trusted repairers and modders here: https://pastebin.com/FAiczew4.
+Would you rather have a professional repair your console? Or are you looking to buy a pre-modded console? Google for repair shops near you, or alternatively see [a list of trusted repairers and modders here](https://pastebin.com/FAiczew4).
