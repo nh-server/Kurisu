@@ -5,7 +5,7 @@ thumbnail-url: https://nintendohomebrew.com/assets/img/hardware/ipa.jpeg
 aliases: isopropyl,iso,isopropanol
 ---
 
-Isopropyl Alcohol (IPA) is the recommended cleaning agent to clean electronics with. It's safe to use on circuit boards when the percentage of IPA is above 90%, ideally ~99%. 
+Isopropyl Alcohol (IPA) is the recommended cleaning agent for electronics. It is safe to use on circuit boards when the percentage of IPA is above 90%, ideally around 99%.
 
 \>90% IPA is NOT the same as ethanol (ethyl alcoho) or rubbing alcohol. Regular ethanol can contain water and minerals, and rubbing alcohol can be a concoction of multiple chemicals.
 

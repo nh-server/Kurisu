@@ -9,4 +9,4 @@ Are you using the proper bit? Most Nintendo consoles use JIS screws, NOT Philips
 
 Is it too late, and have you stripped one or multiple screws? Learn how to remove stripped screws here: https://discord.com/channels/196618637950451712/233002779717795850/1142584247761256490
 
-If your screws are stripped, and you're looking to replace them, be sure to buy a set of high quality screws. Most sets of replacement screws (i.e., eXtremeRate screws) are soft and will strip easily. 
+If your screws are stripped, and you're looking to replace them, be sure to buy a set of high-quality screws. Most sets of replacement screws (i.e., eXtremeRate screws) are soft and will strip easily. 
