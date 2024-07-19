@@ -1,6 +1,6 @@
 ---
 title: Hardware glossary
-help-desc: Hardware glossary from #faq-hardware
+help-desc: Hardware glossary from faq-hardware
 aliases: terms
 ---
 
