@@ -1,7 +1,7 @@
 ---
 title: Cart to digital save transfer 
 help-desc: Cart to digital version save transfer tutorial
-aliases: ctdtransfer, ctdsave
+aliases: ctdtransfer, ctdsave, savetransfer,
 color: 9B59B6
 ---
 
