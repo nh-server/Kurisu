@@ -1,7 +1,7 @@
 ---
 title: Differentiating 3DS models
 help-desc: Image that describes physical differences between 3DS models
-image-url: https://i.imgur.com/gHc8oF1.png
+image-url: https://3ds.hacks.guide/images/3dsmodels.png
 ---
 
 3DS, 3DS XL, 2DS -> "Old 3DS"
