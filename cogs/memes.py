@@ -599,18 +599,18 @@ class Memes(commands.Cog):
 
     @commands.command(hidden=True)
     async def blahaj(self, ctx: KurisuContext, money: float):
-        """Displays how many Blahajes you could buy with a given amount of money. ($ or €)"""
+        """Displays how many Blåhajs you could buy with a given amount of money. ($ or €)"""
         # blahaj. takes usd or eur
         blahaj_link = "https://nintendohomebrew.com/assets/img/blahaj.png"
         blahaj_price = 30  # should we handle eur and usd price difference properly?
         if money < blahaj_price:
-            text = "You can't even buy a Blahaj! Get more money, then buy a Blahaj."
+            text = "You can't even buy a Blåhaj! Get more money, then buy a Blåhaj."
         elif money // blahaj_price == 1:
-            text = "You could buy one Blahaj with that. Think about it."
+            text = "You could buy one Blåhaj with that. Think about it."
         elif money > blahaj_price * 100:
             text = "You could buy the entire stock. Think about it."
         else:
-            text = f"You could buy {int(money // blahaj_price)} Blahajes with that. Think about it."
+            text = f"You could buy {int(money // blahaj_price)} Blåhajs with that. Think about it."
         await self._meme(ctx, text, True, blahaj_link)
 
     @is_staff("Helper")

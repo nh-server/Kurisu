@@ -60,7 +60,8 @@ account = Module('account', {
     119: ResultInfo('System update is required. This is typically shown when the friends module is outdated.'),
     120: ResultInfo('Game or title update is required. This is typically shown when the title you\'re trying to launch is outdated.'),
     121: ResultInfo('Local friend code SEED has invalid signature. This should only happen if it has been modified.', is_ban=True),
-    123: ResultInfo('This console is permanently banned by Nintendo.', is_ban=True)
+    123: ResultInfo('This console is permanently banned by Nintendo.', is_ban=True),
+    1021: ResultInfo('There is no Nintendo Network ID linked with this system.')
 })
 
 # 003: connection related errors
@@ -70,6 +71,7 @@ internet = Module('internet', {
     1099: ResultInfo('Access point with given SSID not found.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/4249/kw/003-1099'),
     1101: ResultInfo('Incorrect password for access point or configuration is not compatible with the 3DS.'),
     2001: ResultInfo('DNS error. If you\'re using a custom DNS server, make sure the settings are correct.'),
+    (1401, 1403): ResultInfo('Incorrect password for access point or configuration is not compatible with the 3DS.'),
     (2101, 2103): ResultInfo('Generic connection error(?)')
 })
 
@@ -165,7 +167,7 @@ data_transfer = Module('system transfer', {
 # 012: a category related to the web browser or ssl module considered 1511
 browser1 = Module('browser (?)', {
     1004: ResultInfo('SSL connection failed.'),
-    1511: ResultInfo('Certificate warning.')
+    (1510, 1511): ResultInfo('Certificate warning.')
 })
 
 # 032: a second category related to the web browser
@@ -188,6 +190,7 @@ account2 = Module('account', {
     2634: ResultInfo('NNID is not correctly linked on this console.', '[To fix it, follow these steps. Afterwards, reboot and sign into your NNID again.](https://3ds.hacks.guide/godmode9-usage#removing-an-nnid-without-formatting-your-device)'),
     2812: ResultInfo('This console is permanently banned by Nintendo for playing Pokémon Sun & Moon online before the release date illegally.', is_ban=True),
     2815: ResultInfo('This console is banned from accessing Miiverse by Nintendo.'),
+    2882: ResultInfo('The online services for the game or application you are trying to use are no longer available.'),
     5363: ResultInfo('Happens when trying to load NNID settings with a invalid language setting.'),
     5515: ResultInfo('Network timeout.'),
 })
