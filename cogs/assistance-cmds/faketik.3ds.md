@@ -1,5 +1,5 @@
 ---
-Title: Restore apps wih missing tickets
+title: Restore apps wih missing tickets
 help-desc: How to download and run faketik
 aliases: faketiks
 ---
