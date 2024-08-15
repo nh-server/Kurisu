@@ -249,7 +249,7 @@ class Events(commands.Cog):
                 if len(self.userbot_yeeter[message.author.id]) == 2:
                     if isinstance(message.author, discord.Member):
                         msg = ("You have been banned from Nintendo Homebrew for linking scamming sites in multiple channels. "
-                               "If you think this is a mistake contact ❅FrozenFire❆#0700 on discord or send a email to staff@nintendohomebrew.com")
+                               "If you think this is a mistake contact <@159824269411352576> (frozenchen) on discord or send a email to staff@nintendohomebrew.com")
                         await send_dm_message(message.author, msg)
                         self.bot.actions.append(f'wk:{message.author.id}')
                         await message.author.kick(reason="Linking scamming links in multiple channels.")
