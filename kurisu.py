@@ -300,7 +300,7 @@ class Kurisu(commands.Bot):
         roles = ['Helpers', 'Staff', 'HalfOP', 'OP', 'SuperOP', 'Owner', 'On-Duty 3DS', 'On-Duty Wii U',
                  'On-Duty Switch', 'On-Duty Legacy', 'On-Duty Wii', 'Probation', 'Retired Staff', 'Verified', 'Trusted', 'Muted',
                  'No-Help', 'No-elsewhere', 'No-Memes', 'No-art', 'No-animals', '#art-discussion', 'No-Embed', '#elsewhere',
-                 'Small Help', 'meta-mute', 'appeal-mute', 'crc', 'No-Tech', 'help-mute', 'streamer(temp)', '🍰',
+                 'Small Help', 'meta-mute', 'appeal-mute', 'crc', 'No-Tech', 'help-mute', 'streamer(temp)', 'streamer', '🍰',
                  'No-U', 'No-Wii']
 
         for n in roles:

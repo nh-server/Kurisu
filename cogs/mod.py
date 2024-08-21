@@ -851,25 +851,45 @@ class Mod(commands.GroupCog):
         msg_user = f"You have been given streaming permissions until {expiring_time_string}!"
         await send_dm_message(member, msg_user, ctx)
         await ctx.send(f"{member.mention} has been given streaming permissions until {expiring_time_string}.")
-        await self.logs.post_action_log(ctx.author, member, 'tempstream', reason=reason, until=expiring_time)
+        await self.logs.post_action_log(ctx.author, member, 'stream', reason=reason, until=expiring_time)
 
     @is_staff("OP")
     @commands.bot_has_permissions(manage_roles=True)
     @commands.guild_only()
     @commands.command()
-    async def notempstream(self, ctx: GuildContext, member: discord.Member, *, reason: Optional[str]):
-        """Revokes temporary streaming permissions from a member."""
+    async def permstream(self, ctx: GuildContext, member: discord.Member, *, reason: Optional[str]):
+        """Gives permanent streaming permissions to a member."""
 
-        role = self.bot.roles['streamer(temp)']
-        await member.remove_roles(role)
+        role = self.bot.roles['streamer']
+        temp_role = self.bot.roles['streamer(temp)']
+        await member.add_roles(role)
+        await member.remove_roles(temp_role)
 
-        if self.extras.timed_roles.get((member.id, role.id)):
-            res = await self.extras.delete_timed_role(member.id, role.id)
+        if self.extras.timed_roles.get((member.id, temp_role.id)):
+            await self.extras.delete_timed_role(member.id, temp_role.id)
+
+        msg_user = "You have been given permanent streaming permissions!"
+        await send_dm_message(member, msg_user, ctx)
+        await ctx.send(f"{member.mention} has been given permanent streaming permissions.")
+        await self.logs.post_action_log(ctx.author, member, 'stream', reason=reason)
+
+    @is_staff("OP")
+    @commands.bot_has_permissions(manage_roles=True)
+    @commands.guild_only()
+    @commands.command()
+    async def nostream(self, ctx: GuildContext, member: discord.Member, *, reason: Optional[str]):
+        """Revokes permanent streaming permissions from a member."""
+
+        roles = (self.bot.roles['streamer'],  self.bot.roles['streamer(temp)'])
+        await member.remove_roles(*roles)
+
+        if self.extras.timed_roles.get((member.id, self.bot.roles['streamer(temp)'].id)):
+            res = await self.extras.delete_timed_role(member.id, self.bot.roles['streamer(temp)'].id)
             if not res:
                 return await ctx.send("Failed to remove temporary role.")
-        msg_user = "Your temporary streaming permissions have been revoked!"
+        msg_user = "Your streaming permissions have been revoked!"
         await send_dm_message(member, msg_user, ctx)
-        await self.logs.post_action_log(ctx.author, member, 'no-tempstream', reason=reason)
+        await self.logs.post_action_log(ctx.author, member, 'no-stream', reason=reason)
 
     @is_staff("OP")
     @commands.guild_only()

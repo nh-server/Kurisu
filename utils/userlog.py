@@ -50,8 +50,8 @@ action_messages = {
     'probate': ('\N{NO ENTRY SIGN}', 'Probated', 'probated {}'),
     'unprobate': ('\N{HEAVY LARGE CIRCLE}', 'Un-probated', 'un-probated {}'),
 
-    'tempstream': ('\N{HEAVY LARGE CIRCLE}', 'Permission Granted', 'granted streaming permissions to {}'),
-    'no-tempstream': ('\N{NO ENTRY SIGN}', 'Permission Revoked', 'revoked streaming permissions from {}'),
+    'stream': ('\N{HEAVY LARGE CIRCLE}', 'Permission Granted', 'granted streaming permissions to {}'),
+    'no-stream': ('\N{NO ENTRY SIGN}', 'Permission Revoked', 'revoked streaming permissions from {}'),
 
     'take-memes': ('\N{NO ENTRY SIGN}', 'Permission Revoked', 'revoked meme permissions from {}'),
     'nou': ('\N{NO ENTRY SIGN}', 'Sent to the void', 'sent {} to the void'),
