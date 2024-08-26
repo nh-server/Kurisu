@@ -139,6 +139,8 @@ class Assistance(commands.GroupCog):
             return await ctx.send("The soaps category is not set.")
         # Channel names can't be longer than 100 characters
         channel_name = f"3ds-{helpee.name}-soap-🧼"[:100]
+        if channel_name in self.soaps_category.text_channels:
+            return await ctx.send("Soap channel already exists for user.")
         channel = await self.soaps_category.create_text_channel(name=channel_name)
         await asyncio.sleep(3)  # Fix for discord race condition(?)
         await channel.set_permissions(helpee, read_messages=True)
