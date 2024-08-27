@@ -12,6 +12,6 @@ Indexiine: Launches the Homebrew Launcher automatically while opening the browse
 
 Haxchi: Launched from the Wii U Menu, will appear as "Haxchi".
 
-CBHC: Launches on boot with a black screen that says `Autobooting....` and has a `DON"T TOUCH ME` icon.
+CBHC: Launches on boot with a black screen that says `Autobooting....` and has a `DON'T TOUCH ME` icon.
 
 Tiramisu: Launches either on boot or while launching health and safety, will show a black screen + white line upon launch.
