@@ -5,3 +5,4 @@ pytz==2024.1
 asyncpg==0.29.0
 python-Levenshtein==0.25.1
 pillow-heif==0.17.0
+markdownify==0.13.1
