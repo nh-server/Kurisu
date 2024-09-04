@@ -296,7 +296,7 @@ class Assistance(commands.GroupCog):
         async with self.bot.session.get(api_call) as r:
             if r.status == 200:
                 ret = await r.json()
-                return await ctx.send(f'{ctx.author.mention if not ctx.interaction else ""} Your key is {ret["key"]}.', ephemeral=True)
+                return await ctx.send(f'{ctx.author.mention if not ctx.interaction else ""} Your key is {ret["key"]:05}.', ephemeral=True)
             else:
                 return await ctx.send(f'{ctx.author.mention if not ctx.interaction else ""} API returned error {r.status}. Please check your values and try again.', ephemeral=True)
 
