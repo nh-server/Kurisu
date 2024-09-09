@@ -35,7 +35,7 @@ class ModWarn(commands.GroupCog):
 
     @is_staff('Helper')
     @commands.guild_only()
-    @commands.command()
+    @commands.command(aliases=["smack"])
     async def warn(self, ctx: GuildContext, member: Optional[discord.Member | discord.User], *, reason: str):
         """Warn a user. Staff and Helpers only."""
         issuer = ctx.author
@@ -76,7 +76,7 @@ class ModWarn(commands.GroupCog):
         await self.bot.channels['mod-logs'].send(msg)
 
     @is_staff('Helper')
-    @commands.command()
+    @commands.command(aliases=["boop"])
     async def softwarn(self, ctx: GuildContext, member: discord.Member | discord.User, *, reason: Optional[str]):
         """Warn a user without automated action. Staff and Helpers only."""
         issuer = ctx.author
