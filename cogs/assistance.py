@@ -115,7 +115,7 @@ class Assistance(commands.GroupCog):
     @is_staff('Helper')
     @commands.guild_only()
     @commands.command()
-    async def createsmallhelp(self, ctx: GuildContext, console: Literal['3ds', 'switch', 'wiiu', 'legacy'], helpee: discord.Member, *, desc: str):
+    async def createsmallhelp(self, ctx: GuildContext, console: Literal['3ds', 'switch', 'wiiu', 'wii', 'legacy'], helpee: discord.Member, *, desc: str):
         """Creates a small help channel for a user. Helper+ only."""
         if not self.small_help_category:
             return await ctx.send("The small help category is not set.")
