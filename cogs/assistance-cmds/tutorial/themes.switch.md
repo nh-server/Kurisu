@@ -3,7 +3,7 @@ title: Switch Themes
 help-desc: Links to tutorials for installing themes
 ---
 
-[Theme installation guide](https://switch.hacks.guide/extras/theming/)
+[Theme installation guide](https://switch.hacks.guide/homebrew/nxtheme-installer/)
 
 Theme repositories:
 - [themezer](https://themezer.net/)
