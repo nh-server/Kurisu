@@ -1,8 +1,8 @@
 ---
 title: Wii U dump/install Guide
-url: https://wiiu.hacks.guide/#/dump-games
+url: https://wiiu.hacks.guide/dump-games
 author.name: NH Discord Server
-author.url: https://wiiu.hacks.guide/#/dump-games
+author.url: https://wiiu.hacks.guide/dump-games
 thumbnail-url: https://nintendohomebrew.com/assets/img/nhmemes/bigh.png
 help-desc: How to dump games and data for CFW consoles
 ---

@@ -1,6 +1,6 @@
 ---
 title: Uninstall CFW
-url: https://wiiu.hacks.guide/#/uninstall-payloadloader
+url: https://wiiu.hacks.guide/uninstall-payloadloader
 thumbnail-url: https://nintendohomebrew.com/assets/img/nhmemes/bigh.png
 author.name: NH Discord Server
 author.url: https://wiiu.hacks.guide/
