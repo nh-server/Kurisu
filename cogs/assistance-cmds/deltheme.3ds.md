@@ -9,3 +9,4 @@ aliases: themext,themeext
   USA: `000002cd`
   EUR: `000002ce`
   JPN: `000002cc`
+  KOR: `000002cf`
