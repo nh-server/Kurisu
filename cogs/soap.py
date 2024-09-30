@@ -7,12 +7,11 @@ from typing import TYPE_CHECKING
 import discord
 from discord.ext import commands
 
-from utils.utils import KurisuCooldown, simple_embed
-from utils.checks import check_if_user_can_sr, is_staff, soap_check
+from utils.checks import is_staff, soap_check
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
-    from utils.context import KurisuContext, GuildContext
+    from utils.context import GuildContext
 
 logger = logging.getLogger(__name__)
 
@@ -109,4 +108,4 @@ class Soap(commands.GroupCog):
 
 
 async def setup(bot):
-    await bot.add_cog(AssistanceHardware(bot))
+    await bot.add_cog(Soap(bot))
