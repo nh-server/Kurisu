@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING, Optional
 import discord
 from discord.ext import commands
 
-from utils.checks import is_staff, soap_check
+from utils.checks import is_staff, check_staff, InsufficientStaffRank
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -26,6 +26,14 @@ class Soap(commands.GroupCog):
         self.soaps_category: Optional[discord.CategoryChannel] = None
         self.bot.loop.create_task(self.setup_soap())
 
+    async def cog_check(self, ctx: GuildContext):
+        author = ctx.author
+        if not check_staff(self.bot, 'Helper', author.id) and not check_staff(self.bot, 'Staff', author.id) and (
+                self.bot.roles['crc'] not in author.roles) and (self.bot.roles['Small Help'] not in author.roles):
+            raise InsufficientStaffRank("You can't use this command.")
+            return False
+        return True
+
     async def setup_soap(self):
         await self.bot.wait_until_all_ready()
         db_channel = await self.bot.configuration.get_channel_by_name('soaps')
@@ -43,7 +51,6 @@ class Soap(commands.GroupCog):
         self.soaps_category = category
         await ctx.send("Soaps category set.")
 
-    @soap_check()
     @commands.guild_only()
     @commands.command(aliases=["soup", "soap"])
     async def createsoap(self, ctx: GuildContext, helpee: discord.Member):
@@ -101,7 +108,6 @@ class Soap(commands.GroupCog):
             await ctx.send(f"Deleted :soap: {channel.name}.")
             await channel.delete()
 
-    @soap_check()
     @commands.guild_only()
     @commands.command()
     async def soapnormal(self, ctx: GuildContext):
@@ -114,7 +120,6 @@ class Soap(commands.GroupCog):
                        "Please let us know if the eShop functions or not."
                        )
 
-    @soap_check()
     @commands.guild_only()
     @commands.command()
     async def soaplottery(self, ctx: GuildContext):
