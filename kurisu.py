@@ -62,7 +62,8 @@ cogs = (
     'cogs.xkcdparse',
     'cogs.seasonal',
     'cogs.newcomers',
-    'cogs.server_logs'
+    'cogs.server_logs',
+    'cogs.soap'
 )
 
 DEBUG = False
