@@ -12,7 +12,7 @@ from utils.checks import check_if_user_can_sr, is_staff, soap_check
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
-    from utils.context import KurisuContext
+    from utils.context import KurisuContext, GuildContext
 
 logger = logging.getLogger(__name__)
 
@@ -89,22 +89,22 @@ class Soap(commands.GroupCog):
         """Normal Soap completion message. crc, small help, helper+ only."""
     await ctx.send(
             f"The SOAP Transfer has completed!\n\n"
-             "Please boot normally (with the SD inserted into the console), and then go to `System Settings -> Other Settings -> Profile -> Region Settings` and ensure the desired country is selected\n\n"
-             "Then try opening the eShop\n\n"
-             "A system transfer was required to do this SOAP, if you are trying to transfer your old console to this one you will need to wait a week (if you have no interest in a system transfer you may ignore this)\n\n"
-             "Please let us know if the eshop functions or not"
+            "Please boot normally (with the SD inserted into the console), and then go to `System Settings -> Other Settings -> Profile -> Region Settings` and ensure the desired country is selected\n\n"
+            "Then try opening the eShop\n\n"
+            "A system transfer was required to do this SOAP, if you are trying to transfer your old console to this one you will need to wait a week (if you have no interest in a system transfer you may ignore this)\n\n"
+            "Please let us know if the eshop functions or not"
         )
 
     @soap_check()
     @commands.guild_only()
     async def soaplottery(self, ctx: GuildContext):
-       """Lottery Soap completion message. crc, small help, helper+ only."""
+        """Lottery Soap completion message. crc, small help, helper+ only."""
     await ctx.send(
             f"The SOAP Transfer has completed!\n\n"
-             "Please boot normally (with the SD inserted into the console), and then go to `System Settings -> Other Settings -> Profile -> Region Settings` and ensure the desired country is selected\n\n"
-             "Then try opening the eShop\n\n"
-             "You hit the SOAP lottery, no system transfer was needed for this SOAP, if you are trying to transfer your old console to this one you can do it right away (if you have no interest in a system transfer you may ignore this)\n\n"
-             "Please let us know if the eshop functions or not"
+            "Please boot normally (with the SD inserted into the console), and then go to `System Settings -> Other Settings -> Profile -> Region Settings` and ensure the desired country is selected\n\n"
+            "Then try opening the eShop\n\n"
+            "You hit the SOAP lottery, no system transfer was needed for this SOAP, if you are trying to transfer your old console to this one you can do it right away (if you have no interest in a system transfer you may ignore this)\n\n"
+            "Please let us know if the eshop functions or not"
         )
 
 
