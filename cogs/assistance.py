@@ -8,7 +8,7 @@ import time
 from discord.ext import commands
 from os.path import dirname, join
 from typing import Optional, Literal, TYPE_CHECKING
-from utils.checks import check_if_user_can_sr, is_staff, soap_check
+from utils.checks import check_if_user_can_sr, is_staff
 from utils.mdcmd import add_md_files_as_commands
 from utils.views import BasePaginator, PaginatedEmbedView
 from utils.utils import KurisuCooldown, gen_color

@@ -87,7 +87,7 @@ class Soap(commands.GroupCog):
     @commands.guild_only()
     async def soapnormal(self, ctx: GuildContext):
         """Normal Soap completion message. crc, small help, helper+ only."""
-        await ctx.send(
+    await ctx.send(
             f"The SOAP Transfer has completed!\n\n"
              "Please boot normally (with the SD inserted into the console), and then go to `System Settings -> Other Settings -> Profile -> Region Settings` and ensure the desired country is selected\n\n"
              "Then try opening the eShop\n\n"
@@ -99,7 +99,7 @@ class Soap(commands.GroupCog):
     @commands.guild_only()
     async def soaplottery(self, ctx: GuildContext):
        """Lottery Soap completion message. crc, small help, helper+ only."""
-        await ctx.send(
+    await ctx.send(
             f"The SOAP Transfer has completed!\n\n"
              "Please boot normally (with the SD inserted into the console), and then go to `System Settings -> Other Settings -> Profile -> Region Settings` and ensure the desired country is selected\n\n"
              "Then try opening the eShop\n\n"
