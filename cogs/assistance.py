@@ -66,7 +66,6 @@ class Assistance(commands.GroupCog):
     def __init__(self, bot: Kurisu):
         self.bot: Kurisu = bot
         self.small_help_category: Optional[discord.CategoryChannel] = None
-        self.soaps_category: Optional[discord.CategoryChannel] = None
         self.bot.loop.create_task(self.setup_assistance())
         self.filters = bot.filters
 
@@ -78,11 +77,6 @@ class Assistance(commands.GroupCog):
             channel = self.bot.guild.get_channel(db_channel[0])
             if channel and channel.type == discord.ChannelType.category:
                 self.small_help_category = channel
-        db_channel2 = await self.bot.configuration.get_channel_by_name('soaps')
-        if db_channel2:
-            channel2 = self.bot.guild.get_channel(db_channel2[0])
-            if channel2 and channel2.type == discord.ChannelType.category:
-                self.soaps_category = channel2
 
     async def unisearch(self, query: str) -> list[dict]:
         query = query.lower()
@@ -138,15 +132,6 @@ class Assistance(commands.GroupCog):
         await self.bot.configuration.add_channel('small-help', category)
         self.small_help_category = category
         await ctx.send("Small help category set.")
-
-    @is_staff('OP')
-    @commands.guild_only()
-    @commands.command()
-    async def setsoaps(self, ctx: GuildContext, category: discord.CategoryChannel):
-        """Sets the soaps category for creating channels. OP+ only."""
-        await self.bot.configuration.add_channel('soaps', category)
-        self.soaps_category = category
-        await ctx.send("Soaps category set.")
 
     @commands.group(cooldown=None, invoke_without_command=True, case_insensitive=True)
     async def tutorial(self, ctx: KurisuContext):

@@ -24,6 +24,24 @@ class Soap(commands.GroupCog):
     def __init__(self, bot: Kurisu):
         self.bot: Kurisu = bot
         self.soaps_category: Optional[discord.CategoryChannel] = None
+        self.bot.loop.create_task(self.setup_soap())
+
+    async def setup_soap(self):
+        await self.bot.wait_until_all_ready()
+        db_channel = await self.bot.configuration.get_channel_by_name('soaps')
+        if db_channel:
+            channel = self.bot.guild.get_channel(db_channel[0])
+            if channel and channel.type == discord.ChannelType.category:
+                self.soaps_category = channel
+
+    @is_staff('OP')
+    @commands.guild_only()
+    @commands.command()
+    async def setsoaps(self, ctx: GuildContext, category: discord.CategoryChannel):
+        """Sets the soaps category for creating channels. OP+ only."""
+        await self.bot.configuration.add_channel('soaps', category)
+        self.soaps_category = category
+        await ctx.send("Soaps category set.")
 
     @soap_check()
     @commands.guild_only()
