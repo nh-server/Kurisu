@@ -1,5 +1,5 @@
 ---
-title: Display your console's MAC address
+title: Display the 3DS MAC address
 help-desc: Directs user to the MAC Address screen on a 3DS
 ---
 

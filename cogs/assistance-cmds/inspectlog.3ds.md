@@ -1,6 +1,6 @@
 ---
-title: Inspect.log inspection
-help-desc: How to locate your inspect.log for assistance
+title: The 3DS inspect.log
+help-desc: How to locate your inspect.log on a 3DS
 ---
 
 1. Power off your console
