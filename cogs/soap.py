@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 import asyncio
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 import discord
 from discord.ext import commands
@@ -23,6 +23,7 @@ class Soap(commands.GroupCog):
 
     def __init__(self, bot: Kurisu):
         self.bot: Kurisu = bot
+        self.soaps_category: Optional[discord.CategoryChannel] = None
 
     @soap_check()
     @commands.guild_only()
