@@ -86,26 +86,26 @@ class Soap(commands.GroupCog):
     @commands.guild_only()
     async def soapnormal(self, ctx: GuildContext):
         """Normal Soap completion message. crc, small help, helper+ only."""
-    await ctx.send("The SOAP Transfer has completed!\n\n"
+        await ctx.send("The SOAP Transfer has completed!\n\n"
                    "Please boot normally (with the SD inserted into the console), and then go to `System Settings -> Other Settings -> Profile -> Region Settings` and ensure the desired country is selected.\n\n"
                    "Then try opening the eShop.\n\n"
                    "A system transfer was required to do this SOAP. If you are trying to transfer your old console to this one you will need to wait a week."
                    "(If you have no interest in a system transfer you may ignore this.)\n\n"
                    "Please let us know if the eShop functions or not."
-        )
+                   )
 
     @soap_check()
     @commands.guild_only()
     async def soaplottery(self, ctx: GuildContext):
         """Lottery Soap completion message. crc, small help, helper+ only."""
-    await ctx.send("The SOAP Transfer has completed!\n\n"
+        await ctx.send("The SOAP Transfer has completed!\n\n"
                    "Please boot normally (with the SD inserted into the console), and then go to `System Settings -> Other Settings -> Profile -> Region Settings` and ensure the desired country is selected.\n\n"
                    "Then try opening the eShop.\n\n"
                    "You hit the SOAP lottery! No system transfer was needed for this SOAP.\n\n"
                    "If you are trying to transfer your old console to this one you can do it right away.\n\n"
                    "(If you have no interest in a system transfer you may ignore this.)\n\n"
                    "Please let us know if the eShop functions or not."
-        )
+                   )
 
 
 async def setup(bot):
