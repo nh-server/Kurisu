@@ -1,4 +1,5 @@
 import discord
+import random
 import math
 
 from discord import Interaction
@@ -277,9 +278,15 @@ class KuriHelp(HelpCommand):
         # All my homies hate Assistance
         # If there is >25 commands create multiple Selects and add a suffix indicating what commands are inside [A-C]
         if len(commands) > SELECT_MAX_VALUES:
-            for i in range(0, len(commands), SELECT_MAX_VALUES - 1):
-                view.add_item(CommandSelect(cog, commands[i:i + SELECT_MAX_VALUES - 1], self.context,
-                                            suffix=f"[{commands[i].name[0].upper()}-{commands[i:i + SELECT_MAX_VALUES - 2][-1].name[0].upper()}]"))
+
+            if len(commands) > 100:  # Workaround some cogs having way too many commands, let's go gambling
+                random.shuffle(commands)
+                commands = commands[:96]
+                commands.sort(key=lambda x: x.name)
+
+            for batch in batched(commands, SELECT_MAX_VALUES - 1):
+                view.add_item(CommandSelect(cog, list(batch), self.context,
+                                            suffix=f"[{batch[0].name[0].upper()}-{batch[-1].name[0].upper()}]"))
         else:
             view.add_item(CommandSelect(cog, commands, self.context))
 
