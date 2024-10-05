@@ -11,6 +11,7 @@ from utils.context import KurisuContext
 from utils.views import BasePaginator, BasePaginatedView
 
 SELECT_MAX_VALUES = 25
+COG_MAX_COMMANDS = 96
 
 
 class CategoryHelpPaginator(BasePaginator):
@@ -279,9 +280,9 @@ class KuriHelp(HelpCommand):
         # If there is >25 commands create multiple Selects and add a suffix indicating what commands are inside [A-C]
         if len(commands) > SELECT_MAX_VALUES:
 
-            if len(commands) > 100:  # Workaround some cogs having way too many commands, let's go gambling
+            if len(commands) > COG_MAX_COMMANDS:  # Workaround some cogs having way too many commands, let's go gambling
                 random.shuffle(commands)
-                commands = commands[:96]
+                commands = commands[:COG_MAX_COMMANDS]
                 commands.sort(key=lambda x: x.name)
 
             for batch in batched(commands, SELECT_MAX_VALUES - 1):
