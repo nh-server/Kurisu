@@ -137,6 +137,9 @@ class KickBan(commands.GroupCog):
             unban_time = timestamp + delta
             unban_time_string = format_dt(unban_time)
 
+            msg += f"\n\nThis ban expires in {unban_time_string}."
+            msg_send = await send_dm_message(member, msg)
+
             try:
                 await interaction.guild.ban(member, reason=reason, delete_message_days=delete_messages)
             except discord.errors.Forbidden:
@@ -144,11 +147,11 @@ class KickBan(commands.GroupCog):
                 return
 
             await self.restrictions.add_restriction(member, Restriction.Ban, reason, end_date=unban_time)
-            msg += f"\n\nThis ban expires in {unban_time_string}."
-            msg_send = await send_dm_message(member, msg)
             await interaction.response.send_message(f"{member} is now b& until {unban_time_string}. 👍" + ("\nFailed to send DM message" if not msg_send else ""))
         else:
             unban_time = None
+            msg += "\n\nThis ban does not expire."
+            msg_send = await send_dm_message(member, msg)
             try:
                 await interaction.guild.ban(member, reason=reason, delete_message_days=delete_messages)
             except discord.errors.Forbidden:
@@ -156,8 +159,6 @@ class KickBan(commands.GroupCog):
                 return
 
             await self.restrictions.remove_restriction(member, Restriction.Ban)
-            msg += "\n\nThis ban does not expire."
-            msg_send = await send_dm_message(member, msg)
             await interaction.response.send_message(f"{member} is now b&. 👍" + ("\nFailed to send DM message" if not msg_send else ""))
         await self.bot.logs.post_action_log(interaction.user, member, 'ban', reason=reason, until=unban_time)
 
