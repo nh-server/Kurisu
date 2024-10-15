@@ -174,8 +174,8 @@ browser1 = Module('browser (?)', {
 browser2 = Module('browser (?)', {
     1035: ResultInfo('Unable to open this webpage. The 3ds browser can\'t display this page.'),
     1209: ResultInfo('Unable to load file. Seems to happen when attemping to download something on the 3DS Browser (invalid Format?)'),
+    1222: ResultInfo('Displayed during a maintenance period of the browser filter service on Japanese consoles. (Known to be the 15th and 19th JST, separately, of each month.)'),
     1820: ResultInfo('Displayed when the browser asks if you want to go to to a potentially dangerous website. Press \'yes\' to continue if you feel it is safe.')
-
 })
 
 # 022: more account stuff?
