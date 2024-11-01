@@ -10,5 +10,5 @@ If your power LED turns on and off after you installed b9s or your notification 
 2. Place/replace the file, downloading it from https://github.com/LumaTeam/Luma3DS/releases
 
 # Checking your SD for errors or corruption
-https://3ds.eiphax.tech/sd
+The link [here](https://wiki.hacks.guide/wiki/Checking_SD_card_integrity) provides instructions on checking your SD card for error or corruption.
 Please read the instructions carefully.
