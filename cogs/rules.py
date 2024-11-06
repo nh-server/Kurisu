@@ -4,6 +4,7 @@ import discord
 import json
 
 from discord.ext import commands
+from itertools import batched
 from typing import TYPE_CHECKING
 from utils.checks import is_staff
 from utils.database.configuration import Rule
@@ -124,8 +125,11 @@ https://discord.gg/C29hYvh"""
         async for message in channel.history():
             await message.delete()
         await channel.send(self.rules_intro)
-        for number, rule in sorted(self.configuration.rules.items()):
-            await channel.send(embed=discord.Embed(title=f"Rule {number} - {rule.title}", description=rule.description, color=gen_color(rule.number)))
+        for batch in batched(self.configuration.rules.values(), 10):
+            embeds = []
+            for rule in batch:
+                embeds.append(discord.Embed(title=f"Rule {rule.number} - {rule.title}", description=rule.description, color=gen_color(rule.number)))
+            await channel.send(embeds=embeds)
         await channel.send(self.staff_action)
         staff = [f"<@{staff}>" for staff in self.configuration.staff]
         await channel.send(self.mod_list + '\n'.join(staff))
