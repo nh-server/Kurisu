@@ -289,8 +289,9 @@ class Kurisu(commands.Bot):
                 if channel and isinstance(channel, (discord.TextChannel, discord.VoiceChannel)):
                     self.channels[n] = channel
                     continue
-            channel = discord.utils.get(self.guild.channels, name=n)
-            if channel and isinstance(channel, (discord.TextChannel, discord.VoiceChannel)):
+            channel = discord.utils.find(lambda c: c.name == n and isinstance(c, (discord.TextChannel, discord.VoiceChannel)), self.guild.channels)
+            if channel:
+                assert isinstance(channel, (discord.TextChannel, discord.VoiceChannel))
                 self.channels[n] = channel
                 await self.configuration.add_channel(name=n, channel=channel)
             else:
