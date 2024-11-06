@@ -6,6 +6,7 @@ from typing import TYPE_CHECKING, NamedTuple
 
 import discord
 
+from .database.configuration import Rule
 from .managerbase import BaseManager
 from .database import ConfigurationDatabaseManager
 
@@ -55,7 +56,7 @@ class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager)
 
         self._nofilter_list: list[int] = [c async for c in self.db.get_all_nofilter_channels()]
 
-        self._rules: dict[int, str] = {rule_id: description async for rule_id, description in self.db.get_rules()}
+        self._rules: dict[int, Rule] = {rule.number: rule async for rule in self.db.get_rules()}
 
         self._watch_list: list[int] = [user_id async for user_id, watched in self.db.get_members() if watched is True]
 
@@ -76,7 +77,7 @@ class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager)
         return self._nofilter_list
 
     @property
-    def rules(self) -> dict[int, str]:
+    def rules(self) -> dict[int, Rule]:
         return self._rules
 
     @property
@@ -230,17 +231,21 @@ class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager)
     async def delete_flag(self, name: str):
         return await self.db.delete_flag(name)
 
-    async def add_rule(self, rule_id, content: str):
-        await self.db.add_rule(rule_id, content)
-        self._rules[rule_id] = content
+    async def add_rule(self, rule_id: int, title: str, content: str):
+        await self.db.add_rule(rule_id, title, content)
+        self._rules[rule_id] = Rule(rule_id, title, content)
 
-    async def edit_rule(self, rule_id: int, content: str):
+    async def edit_rule(self, rule_id: int, title: str, content: str):
         await self.db.edit_rule(rule_id, content)
-        self._rules[rule_id] = content
+        self._rules[rule_id] = Rule(rule_id, title, content)
 
     async def delete_rule(self, rule_id: int):
         await self.db.delete_rule(rule_id)
         del self._rules[rule_id]
+
+    async def wipe_rules(self):
+        await self.db.wipe_rules()
+        self._rules = {}
 
     async def store_channel_overwrites(self, name: str, overwrites: dict[Role | Member | Object, PermissionOverwrite]):
         permission_dict = {}
