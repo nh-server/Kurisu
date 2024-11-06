@@ -125,7 +125,7 @@ https://discord.gg/C29hYvh"""
             await message.delete()
         await channel.send(self.rules_intro)
         for number, rule in sorted(self.configuration.rules.items()):
-            await channel.send(f"**{number}**. {rule}\n")
+            await channel.send(embed=discord.Embed(title=f"Rule {number} - {rule.title}", description=rule.description, color=gen_color(rule.number)))
         await channel.send(self.staff_action)
         staff = [f"<@{staff}>" for staff in self.configuration.staff]
         await channel.send(self.mod_list + '\n'.join(staff))
