@@ -189,7 +189,7 @@ https://discord.gg/C29hYvh"""
                        "Reminder: sharing files that allow other users to evade "
                        "Nintendo issued bans is a bannable offense.")
 
-    @commands.command(aliases=['r11'])
+    @commands.command()
     @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def pirate(self, ctx: KurisuContext):
         """Hey! You can't steal another trainer's Pokémon!"""
