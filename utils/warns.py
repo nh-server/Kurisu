@@ -1,3 +1,4 @@
+from enum import IntEnum
 from typing import TYPE_CHECKING
 
 from discord import Member
@@ -8,7 +9,7 @@ from .database import WarnsDatabaseManager
 
 if TYPE_CHECKING:
     from . import OptionalMember
-    from typing import Tuple, Optional
+    from typing import Tuple, Optional, Literal
     from discord import User
 
 
@@ -20,6 +21,17 @@ def get_warn_action(count: int) -> str:
         return 'kick'
     else:
         return 'ban'
+
+
+class WarnType(IntEnum):
+    Pinned = 0
+    Ephemeral = 1
+
+
+class WarnState(IntEnum):
+    Valid = 0
+    Deleted = 1
+    Expired = 2
 
 
 warn_extras = (
@@ -44,9 +56,9 @@ class WarnsManager(BaseManager, db_manager=WarnsDatabaseManager):
     db: WarnsDatabaseManager
 
     async def add_warning(self, user: 'Member | User | OptionalMember', issuer: 'Member', reason: 'Optional[str]' = None,
-                          send_dm: bool = True, do_action: bool = True) -> 'Tuple[int, int]':
+                          warn_type: WarnType = WarnType.Ephemeral, send_dm: bool = True, do_action: bool = True) -> 'Tuple[int, int]':
         """Add a warning to a user."""
-        warn_id, count = await self.db.add_warning(user_id=user.id, issuer=issuer.id, reason=reason)
+        warn_id, count = await self.db.add_warning(user_id=user.id, issuer=issuer.id, reason=reason, warn_type=warn_type)
         if isinstance(user, Member):
             if send_dm:
                 guild = self.bot.guild
@@ -76,9 +88,9 @@ class WarnsManager(BaseManager, db_manager=WarnsDatabaseManager):
 
         return warn_id, count
 
-    async def delete_warning(self, warn_id: int, deleter: Member, reason: 'Optional[str]'):
+    async def delete_warning(self, warn_id: int, deleter: 'Optional[int]', reason: 'Optional[str]', deletion_type: 'Literal[WarnState.Deleted, WarnState.Expired]' = WarnState.Deleted):
         """Remove a warning from a user."""
-        return await self.db.delete_warning(warn_id=warn_id, deleter=deleter.id, reason=reason)
+        return await self.db.delete_warning(warn_id=warn_id, deleter=deleter, reason=reason, deletion_type=deletion_type)
 
     async def delete_deleted_warning(self, warn_id: int):
         """Remove a deleted warning from a user permanently."""
@@ -91,6 +103,11 @@ class WarnsManager(BaseManager, db_manager=WarnsDatabaseManager):
     async def get_warnings(self, user: 'Member | User | OptionalMember'):
         """Get warnings for a user."""
         async for w in self.db.get_warnings(user_id=user.id):
+            yield w
+
+    async def get_all_ephemeral_warnings(self):
+        """Gets all ephemeral warnings."""
+        async for w in self.db.get_all_ephemeral_warnings():
             yield w
 
     async def get_deleted_warnings(self, user: 'Member | User | OptionalMember'):

@@ -143,6 +143,8 @@ create table warns
 	user_id BIGINT NOT NULL REFERENCES members(id),
 	issuer_id BIGINT NOT NULL REFERENCES members(id),
 	reason TEXT,
+    type INT NOT NULL,
+    state INT NOT NULL,
 	deletion_time timestamptz,
 	deletion_reason TEXT,
     deleter BIGINT REFERENCES members(id)

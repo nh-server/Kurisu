@@ -8,6 +8,7 @@ from discord.utils import format_dt
 
 from typing import TYPE_CHECKING
 
+from utils import WarnType
 from utils.checks import check_staff
 from utils.utils import parse_time, gen_color, text_to_discord_file, create_error_embed
 
@@ -424,7 +425,7 @@ class ModSenseView(BaseView):
         msg = f"🗑 **Deleted warn**: {self.author.mention} removed warn {modal.warn_number} from {self.user.mention} | {self.bot.escape_text(self.user)}"
         await self.bot.channels['mod-logs'].send(msg, embed=embed)
 
-        await self.bot.warns.delete_warning(self.warns[modal.warn_number - 1].warn_id, self.author, reason)
+        await self.bot.warns.delete_warning(self.warns[modal.warn_number - 1].warn_id, self.author.id, reason)
         msg = f"🗑 **Deleted warn**: {self.author.mention} removed warn {modal.warn_number} from {self.user.mention} | {self.bot.escape_text(self.user)}"
         await self.bot.channels['mod-logs'].send(msg, embed=embed)
         await self.reload_warns()
@@ -460,6 +461,8 @@ class ModSenseView(BaseView):
         for idx, warn in enumerate(self.warns):
             issuer = self.bot.get_user(warn.issuer_id)
             value = f"Issuer: {issuer.name if issuer else warn.issuer_id}\nReason: {warn.reason}"
+            if warn.type == WarnType.Ephemeral:
+                value += f"\nExpires: {format_dt(warn.date + datetime.timedelta(days=180))}"
             embed.add_field(name=f"{idx + 1}: {warn.date:%Y-%m-%d %H:%M:%S}", value=value)
         return embed
 
@@ -470,12 +473,15 @@ class ModSenseView(BaseView):
 
         for idx, warn in enumerate(self.deleted_warns):
             issuer = self.bot.get_user(warn.issuer_id)
-            deleter = self.bot.get_user(warn.deleter)
             value = f"Issuer: {issuer.name if issuer else warn.issuer_id}\n" \
-                    f"Reason: {warn.reason}\n" \
-                    f"Deleted on {format_dt(warn.deletion_time)} " \
-                    f"for the reason `{warn.deletion_reason}`\n " \
-                    f"by {deleter.name if deleter else warn.issuer_id}"
+                    f"Reason: {warn.reason}\n"
+            if warn.deleter is None:
+                value += f"Expired on {format_dt(warn.deletion_time)}"
+            else:
+                deleter = self.bot.get_user(warn.deleter)
+                value += f"Deleted on {format_dt(warn.deletion_time)} " \
+                         f"for the reason `{warn.deletion_reason}`\n " \
+                         f"by {deleter.name if deleter else warn.issuer_id}"
             embed.add_field(name=f"{idx + 1}: {warn.date:%Y-%m-%d %H:%M:%S}", value=value)
         return embed
 

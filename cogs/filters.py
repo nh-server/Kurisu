@@ -134,7 +134,7 @@ class Filter(commands.Cog):
         invalid = []
 
         for word in word_list.copy():
-            if type == 'join' and discord.utils.get(self.filters.filtered_words, word=word):  # type: ignore
+            if type == 'join' and discord.utils.get(self.filters.filtered_words, word=word):
                 word_list.remove(word)
                 repeat.append(word)
             elif ' ' in word or '-' in word:
