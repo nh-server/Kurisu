@@ -2,13 +2,16 @@ from __future__ import annotations
 
 import discord
 
+from datetime import timedelta
 from discord import app_commands
+from discord.utils import format_dt
 from discord.ext import commands
 from typing import TYPE_CHECKING, Optional
 
 from utils.checks import is_staff, check_bot_or_staff
 from utils import check_staff, ordinal
 from utils.utils import create_userinfo_embed
+from utils.warns import WarnType
 from utils.views import ModSenseView
 
 if TYPE_CHECKING:
@@ -98,6 +101,85 @@ class ModWarn(commands.GroupCog):
             msg += "\n✏️ __Reason__: " + reason
         await self.bot.channels['mod-logs'].send(msg)
 
+    @is_staff('OP')
+    @app_commands.guild_only
+    @app_commands.command(name='multiwarn')
+    async def multiwarn_app(self, interaction: discord.Interaction, member: discord.Member | discord.User, warn_number: int, *, reason: Optional[str], pinned: bool = False):
+        """Applies a number of warns to a user. Staff only.
+        Args:
+            member: Member to warn.
+            warn_number: Number of warns to apply.
+            reason: Reason for the warns.
+            pinned: Whether the warns should be pinned or not.
+        """
+
+        issuer = interaction.user
+        channel = interaction.channel
+
+        assert isinstance(channel, discord.TextChannel)
+        assert isinstance(issuer, discord.Member)
+
+        if await check_bot_or_staff(interaction, member, "warn"):
+            return
+
+        count = await self.bot.warns.get_warnings_count(member)
+
+        if count + warn_number >= 5:
+            await interaction.response.send_message("A user can't have more than 5 warns!", ephemeral=True)
+            return
+
+        warn_type = WarnType.Pinned if pinned else WarnType.Ephemeral
+
+        for _ in range(warn_number):
+            _, count = await self.bot.warns.add_warning(member, issuer, reason, do_action=False, send_dm=False, warn_type=warn_type)
+        await interaction.response.send_message(f"{member.mention} softwarned for {warn_number}. User now has {count} warning(s)")
+        msg = f"⚠️ **Warned**: {issuer.mention} softwarned {member.mention} {warn_number} times in {channel.mention} ({self.bot.escape_text(channel)}) (Final warn count: {count}) | {self.bot.escape_text(member)}"
+        if reason is not None:
+            msg += "\n✏️ __Reason__: " + reason
+        await self.bot.channels['mod-logs'].send(msg)
+
+    @is_staff('Helper')
+    @commands.guild_only()
+    @commands.command()
+    async def pinwarn(self, ctx: GuildContext, member: Optional[discord.Member | discord.User], *, reason: str):
+        """Warn a user with a pinned warn. Staff and Helpers only."""
+        issuer = ctx.author
+        channel = ctx.channel
+
+        reference = ctx.message.reference
+        message = None
+
+        if not member and not reference:
+            return await ctx.send("Specifiy a member to warn or reply to the offending message with this command.")
+        elif reference and not member:
+            if not reference.resolved:
+                return await ctx.send("Failed to resolve message.")
+            if isinstance(reference.resolved, discord.Message):
+                member = reference.resolved.author
+                message = reference.resolved.content if isinstance(reference.resolved, discord.Message) else None
+
+        if not member:
+            return await ctx.send("Failed to get member.")
+
+        if await check_bot_or_staff(ctx, member, "warn"):
+            return
+
+        prev_count = await self.bot.warns.get_warnings_count(member)
+
+        if prev_count >= 5:
+            await ctx.send("A user can't have more than 5 warns!")
+            return
+
+        warn_id, count = await self.bot.warns.add_warning(member, issuer, reason, warn_type=WarnType.Pinned)
+
+        await ctx.send(f"{member} warned. User has {count} warning(s)")
+        msg = f"⚠️ **Warned**: {issuer.mention} warned {member.mention} in {channel.mention} ({self.bot.escape_text(channel)}) (warn #{count}) | {self.bot.escape_text(member)}"
+        if reason:
+            msg += "\n✏️ __Reason__: " + reason
+        if message:
+            msg += f"\n🖊️ __Message__: {message}"
+        await self.bot.channels['mod-logs'].send(msg)
+
     @commands.hybrid_command()
     async def listwarns(self, ctx: KurisuContext, member: discord.Member | discord.User = commands.Author):
         """List warns for a user. Helpers+ only for checking others."""
@@ -121,7 +203,9 @@ class ModWarn(commands.GroupCog):
             value = ""
             if show_issuer:
                 value += f"Issuer: {issuer.name if issuer else warn.issuer_id}\n"
-            value += f"Reason: {warn.reason} "
+            value += f"Reason: {warn.reason}"
+            if warn.type == WarnType.Ephemeral:
+                value += f"\nExpires: {format_dt(warn.date + timedelta(days=180))}"
             embed.add_field(
                 name=f"{idx + 1}: {warn.date:%Y-%m-%d %H:%M:%S}",
                 value=value)
@@ -172,7 +256,7 @@ class ModWarn(commands.GroupCog):
         issuer = await ctx.get_user(warn.issuer_id)
         embed = discord.Embed(color=discord.Color.dark_red(), title=f"Warn {idx} on {discord.utils.snowflake_time(warn.warn_id).strftime('%Y-%m-%d %H:%M:%S')}",
                               description=f"Issuer: {issuer.name if issuer else warn.issuer_id}\nReason: {warn.reason}")
-        await self.warns.delete_warning(warn.warn_id, ctx.author, reason)
+        await self.warns.delete_warning(warn.warn_id, ctx.author.id, reason)
         await ctx.send(f"{member.mention} {ordinal(idx)} warn has been removed.")
         msg = f"🗑 **Deleted warn**: {ctx.author.mention} removed warn {idx} from {member.mention} | {self.bot.escape_text(member)}"
         await self.bot.channels['mod-logs'].send(msg, embed=embed)

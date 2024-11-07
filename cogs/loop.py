@@ -4,20 +4,20 @@ import asyncio
 import discord
 import logging
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from discord import AllowedMentions
-from discord.ext import commands
-from discord.utils import format_dt
+from discord.ext import commands, tasks
+from discord.utils import format_dt, snowflake_time
 from typing import TYPE_CHECKING
 from utils.utils import send_dm_message, KurisuCooldown
-from utils import Restriction, OptionalMember
+from utils import Restriction, OptionalMember, WarnState
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
     from utils.context import KurisuContext
 
 logger = logging.getLogger(__name__)
-
+warn_expiring_time = timedelta(days=180)
 
 class Loop(commands.Cog):
     """
@@ -30,6 +30,7 @@ class Loop(commands.Cog):
         self.restrictions = bot.restrictions
         self.extras = bot.extras
         bot.loop.create_task(self.start_update_loop())
+        self.warn_expiration_check.start()
 
     def __unload(self):
         self.is_active = False
@@ -177,6 +178,13 @@ class Loop(commands.Cog):
                 await self.bot.on_error("start_update_loop")
             finally:
                 await asyncio.sleep(1)
+
+    @tasks.loop(minutes=120)
+    async def warn_expiration_check(self):
+        await self.bot.wait_until_all_ready()
+        async for warn in self.bot.warns.get_all_ephemeral_warnings():
+            if datetime.now(timezone.utc) - warn.date >= warn_expiring_time:
+                await self.bot.warns.delete_warning(warn.warn_id, None, None, deletion_type=WarnState.Expired)
 
 
 async def setup(bot):
