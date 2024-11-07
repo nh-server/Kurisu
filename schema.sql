@@ -76,6 +76,7 @@ create table roles
 create table rules
 (
 	id INTEGER PRIMARY KEY,
+    title TEXT NOT NULL,
 	description TEXT NOT NULL
 );
 

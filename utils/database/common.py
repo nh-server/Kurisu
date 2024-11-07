@@ -5,7 +5,7 @@ import asyncpg
 import logging
 
 if TYPE_CHECKING:
-    from typing import AsyncGenerator, KeysView, Optional
+    from typing import AsyncGenerator, KeysView, Optional, Iterable
     from kurisu import Kurisu
     Tables = dict[str, list[str]]
 
@@ -86,7 +86,7 @@ class BaseDatabaseManager:
 
         return 'SET ' + ', '.join(f'{c} = ${n}' for n, c in enumerate(keys, start=start))
 
-    def _format_cols(self, keys: 'KeysView[str]') -> str:
+    def _format_cols(self, keys: 'Iterable[str]') -> str:
         assert not self.bot.db_closed
         assert keys
         assert all(k in chain.from_iterable(x for x in self.tables.values()) for k in keys)
@@ -103,7 +103,7 @@ class BaseDatabaseManager:
 
         async with self.pool.acquire() as conn:
             async with conn.transaction():
-                query = f'SELECT * FROM {table} {self._format_select_vars(values.keys())}'
+                query = f'SELECT {self._format_cols(self.tables[table])} FROM {table} {self._format_select_vars(values.keys())}'
                 self.log.debug(f'Executed SELECT query in table {table} with parameters %s',
                                ColumnValueFormatter(values))
                 async for record in conn.cursor(query, *values.values()):
@@ -119,7 +119,7 @@ class BaseDatabaseManager:
 
         async with self.pool.acquire() as conn:
             async with conn.transaction():
-                query = f'SELECT * FROM {table} {self._format_select_vars(values.keys())}'
+                query = f'SELECT {self._format_cols(self.tables[table])} FROM {table} {self._format_select_vars(values.keys())}'
                 self.log.debug(f'Executed SELECT query in table {table} with parameters %s',
                                ColumnValueFormatter(values))
                 return await conn.fetchrow(query, *values.values())

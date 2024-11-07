@@ -27,13 +27,19 @@ class DatabaseChannel(NamedTuple):
     mod_channel: bool
 
 
+class Rule(NamedTuple):
+    number: int
+    title: str
+    description: str
+
+
 tables = {'flags': ['name', 'value'],
           'staff': ['user_id', 'position', 'console'],
-          'members': ['id', 'BIGINT', 'watched'],
+          'members': ['id', 'watched'],
           'channels': ['id', 'name', 'filtered', 'lock_level', 'mod_channel'],
           'changedroles': ['role_id', 'channel_id', 'original_value'],
           'roles': ['id', 'name'],
-          'rules': ['id', 'description'],
+          'rules': ['id', 'title', 'description'],
           'channeloverwrites': ['id', 'name', 'overwrites']}
 
 
@@ -164,8 +170,8 @@ class ConfigurationDatabaseManager(BaseDatabaseManager, tables=tables):
     async def clear_changed_roles(self, channel_id: int):
         return await self._delete('changedroles', channel_id=channel_id)
 
-    async def add_rule(self, rule_id, content: str):
-        return await self._insert('rules', id=rule_id, description=content)
+    async def add_rule(self, rule_id, title: str, content: str):
+        return await self._insert('rules', id=rule_id, title=title, description=content)
 
     async def edit_rule(self, rule_id: int, content: str):
         return await self._update('rules', {'description': content}, id=rule_id)
@@ -173,9 +179,12 @@ class ConfigurationDatabaseManager(BaseDatabaseManager, tables=tables):
     async def delete_rule(self, rule_id: int):
         return await self._delete('rules', id=rule_id)
 
-    async def get_rules(self) -> 'AsyncGenerator[tuple[int, str], None]':
+    async def get_rules(self) -> 'AsyncGenerator[Rule, None]':
         async for r in self._select('rules'):
-            yield r
+            yield Rule(r[0], r[1], r[2])
+
+    async def wipe_rules(self):
+        return await self._delete('rules')
 
     async def store_channel_overwrites(self, name: str, overwrites: dict[int, dict[str, bool | None]]):
         json_str = json.dumps(overwrites)

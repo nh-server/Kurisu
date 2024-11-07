@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 import discord
+import json
 
+from discord import app_commands
 from discord.ext import commands
+from itertools import batched
 from typing import TYPE_CHECKING
-from utils.checks import is_staff
-from utils.utils import paginate_message, KurisuCooldown
+from utils.checks import is_staff, is_staff_app
+from utils.database.configuration import Rule
+from utils.utils import KurisuCooldown, text_to_discord_file, simple_embed, gen_color
 from utils.views import BasePaginator, PaginatedEmbedView
 
 
@@ -16,7 +20,7 @@ if TYPE_CHECKING:
 
 class RulePaginator(BasePaginator):
 
-    def __init__(self, rules: dict):
+    def __init__(self, rules: dict[int, Rule]):
         super().__init__(n_pages=len(rules))
         self.rules = rules
 
@@ -28,11 +32,29 @@ class RulePaginator(BasePaginator):
             self.pages[self.idx] = embed
             return embed
 
-    def create_embed(self, rule: str):
-        return discord.Embed(title=f"Rule {self.idx + 1} of {self.n_pages}", description=rule, colour=0x128bed)
+    def create_embed(self, rule: Rule):
+        return discord.Embed(title=f"Rule {self.idx + 1} - {rule.title}", description=rule.description, colour=0x128bed)
 
 
-class Rules(commands.Cog):
+def create_rule_cmd(rule: Rule):
+    async def rule_cmd(self, ctx: commands.Context):
+        await simple_embed(ctx, rule.description,
+                           title=f"Rule {rule.number} - {rule.title}", color=gen_color(rule.number))
+
+    cmd = rule_cmd
+    cmd.__name__ = f"r{rule.number}"
+    cmd.__qualname__ = f"{Rules.qualified_name}.{cmd.__name__}"
+
+    cmd.__doc__ = f"Displays rule {rule.number}."
+
+    # this feels _wrong_ but is probably the best way to do this
+    cooldown = commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)(
+        cmd)
+    cmd_obj = commands.command(name=cmd.__name__)(cooldown)
+    return cmd_obj
+
+
+class Rules(commands.GroupCog):
     """
     Read da rules.
     """
@@ -43,11 +65,6 @@ class Rules(commands.Cog):
 
     async def cog_load(self):
         self.bg_task = self.bot.loop.create_task(self.init_rules())
-
-    async def simple_embed(self, ctx: KurisuContext, text, title="", color=discord.Color.default()):
-        embed = discord.Embed(title=title, color=color)
-        embed.description = text
-        await ctx.send(embed=embed)
 
     async def init_rules(self):
         await self.bot.wait_until_all_ready()
@@ -109,8 +126,11 @@ https://discord.gg/C29hYvh"""
         async for message in channel.history():
             await message.delete()
         await channel.send(self.rules_intro)
-        for number, rule in sorted(self.configuration.rules.items()):
-            await channel.send(f"**{number}**. {rule}\n")
+        for batch in batched(self.configuration.rules.values(), 10):
+            embeds = []
+            for rule in batch:
+                embeds.append(discord.Embed(title=f"Rule {rule.number} - {rule.title}", description=rule.description, color=gen_color(rule.number)))
+            await channel.send(embeds=embeds)
         await channel.send(self.staff_action)
         staff = [f"<@{staff}>" for staff in self.configuration.staff]
         await channel.send(self.mod_list + '\n'.join(staff))
@@ -131,39 +151,35 @@ https://discord.gg/C29hYvh"""
         await channel.send(self.extra)
         await ctx.send("Updated rules successfully!")
 
-    @is_staff('SuperOP')
-    @commands.group()
-    async def rule(self, ctx: KurisuContext):
-        """Group to manage the server rules."""
-        if ctx.invoked_subcommand is None:
-            await ctx.send_help(ctx.command)
-
-    @rule.command(name='add')
-    async def add_rule(self, ctx: KurisuContext, number: int, *, description: str):
-        """Adds or edits a current rule"""
+    @is_staff_app("OP")
+    @app_commands.command()
+    async def add_rule(self, interaction: discord.Interaction, number: int, title: str, description: str):
+        """Adds or edits a current rule
+        Args
+            number: Number of the rule to add/edit.
+            title: Title of the rule.
+            description: Description of the rule.
+        """
         if self.configuration.rules.get(number):
-            await self.configuration.edit_rule(number, description)
-            await ctx.send(f"Rule {number} edited successfully!")
+            await self.configuration.edit_rule(number, title, description)
+            await interaction.response.send_message(f"Rule {number} edited successfully!")
         else:
-            await self.configuration.add_rule(number, description)
-            await ctx.send(f"Rule {number} added successfully!")
+            await self.configuration.add_rule(number, title, description)
+            await interaction.response.send_message(f"Rule {number} added successfully!")
 
-    @rule.command(name='delete')
-    async def delete_rule(self, ctx: KurisuContext, number: int):
+    @is_staff_app("OP")
+    @app_commands.command()
+    async def delete_rule(self, interaction: discord.Interaction, number: int):
+        """Deletes a rule
+
+        Args:
+            number: Number of the rule to delete.
+        """
         if self.configuration.rules.get(number):
             await self.configuration.delete_rule(number)
-            await ctx.send(f"Rule {number} deleted successfully!")
+            await interaction.response.send_message(f"Rule {number} deleted successfully!")
         else:
-            await ctx.send(f"There is no rule {number}!")
-
-    @rule.command(name='list')
-    async def list_rules(self, ctx: KurisuContext):
-        if self.configuration.rules:
-            rules = [f"**{number}**. {rule}\n" for number, rule in self.configuration.rules.items()]
-            for page in paginate_message("".join(rules), suffix='', prefix='').pages:
-                await ctx.send(page)
-        else:
-            await ctx.send("There are no rules!")
+            await interaction.response.send_message(f"There is no rule {number}!")
 
     @commands.command()
     @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
@@ -174,7 +190,7 @@ https://discord.gg/C29hYvh"""
                        "Reminder: sharing files that allow other users to evade "
                        "Nintendo issued bans is a bannable offense.")
 
-    @commands.command(aliases=['r11'])
+    @commands.command()
     @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def pirate(self, ctx: KurisuContext):
         """Hey! You can't steal another trainer's Pokémon!"""
@@ -193,120 +209,34 @@ https://discord.gg/C29hYvh"""
         msg = await ctx.send(embed=view.paginator.current(), view=view)
         view.message = msg
 
+    @is_staff("Owner")
+    @commands.guild_only()
     @commands.command()
-    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
-    async def r1(self, ctx: KurisuContext):
-        """Displays rule 1."""
-        await self.simple_embed(ctx, self.configuration.rules[1], title="Rule 1")
+    async def rules_dump(self, ctx: KurisuContext):
+        msg = {}
+        for number, rule in sorted(self.configuration.rules.items()):
+            msg[number] = {'title': rule.title, 'description': rule.description}
+        file = text_to_discord_file(json.dumps(msg, sort_keys=True), name="rules.json")
+        await ctx.send(file=file)
 
+    @is_staff("Owner")
+    @commands.guild_only()
     @commands.command()
-    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
-    async def r2(self, ctx: KurisuContext):
-        """Displays rule 2."""
-        await self.simple_embed(ctx, self.configuration.rules[2], title="Rule 2")
-
-    @commands.command()
-    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
-    async def r3(self, ctx: KurisuContext):
-        """Displays rule 3."""
-        await self.simple_embed(ctx, self.configuration.rules[3], title="Rule 3")
-
-    @commands.command(aliases=['r4'])
-    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
-    async def dontasktoask(self, ctx: KurisuContext):
-        """whatavibe"""
-        await ctx.send("To keep channels flowing smoothly, please don't \'ask to ask\'. Just ask your question directly, and include any supporting information that might be relevant.")
-
-    @commands.command()
-    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
-    async def realr4(self, ctx: KurisuContext):
-        """Displays rule 4."""
-        content = (f"{self.configuration.rules[4]}\n\n"
-                   f"If you simply need to tell someone to actually state their question, "
-                   f"consider `.dontasktoask` instead. `.r4` was changed to match `.dontasktoask` due to its large embed.")
-        await self.simple_embed(ctx, content, title="Rule 4")
-
-    @commands.command()
-    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
-    async def r5(self, ctx: KurisuContext):
-        """Displays rule 5."""
-        await self.simple_embed(ctx, self.configuration.rules[5], title="Rule 5")
-
-    @commands.command()
-    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
-    async def r6(self, ctx: KurisuContext):
-        """Displays rule 6."""
-        await self.simple_embed(ctx, self.configuration.rules[6], title="Rule 6")
-
-    @commands.command()
-    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
-    async def r7(self, ctx: KurisuContext):
-        """Displays rule 7."""
-        await self.simple_embed(ctx, self.configuration.rules[7], title="Rule 7")
-
-    @commands.command()
-    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
-    async def r8(self, ctx: KurisuContext):
-        """Displays rule 8."""
-        await self.simple_embed(ctx, self.configuration.rules[8], title="Rule 8")
-
-    @commands.command()
-    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
-    async def r9(self, ctx: KurisuContext):
-        """Displays rule 9."""
-        await self.simple_embed(ctx, self.configuration.rules[9], title="Rule 9")
-
-    @commands.command()
-    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
-    async def r10(self, ctx: KurisuContext):
-        """Displays rule 10."""
-        await self.simple_embed(ctx, self.configuration.rules[10], title="Rule 10")
-
-    @commands.command()
-    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
-    async def realr11(self, ctx: KurisuContext):
-        """Displays rule 11."""
-        content = (f"{self.configuration.rules[11]}\n\n"
-                   f"If you simply need to tell someone to not ask about piracy, "
-                   f"consider `.pirate` instead. `.r11` was changed to match `.pirate` due to its large embed.")
-        await self.simple_embed(ctx, content, title="Rule 11")
-
-    @commands.command()
-    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
-    async def r12(self, ctx: KurisuContext):
-        """Displays rule 12."""
-        await self.simple_embed(ctx, self.configuration.rules[12], title="Rule 12")
-
-    @commands.command()
-    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
-    async def r13(self, ctx: KurisuContext):
-        """Displays rule 13."""
-        await self.simple_embed(ctx, self.configuration.rules[13], title="Rule 13")
-
-    @commands.command()
-    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
-    async def r14(self, ctx: KurisuContext):
-        """Displays rule 14."""
-        await self.simple_embed(ctx, self.configuration.rules[14], title="Rule 14")
-
-    @commands.command()
-    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
-    async def r15(self, ctx: KurisuContext):
-        """Displays rule 15."""
-        await self.simple_embed(ctx, self.configuration.rules[15], title="Rule 15")
-
-    @commands.command()
-    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
-    async def r16(self, ctx: KurisuContext):
-        """Displays rule 16."""
-        await self.simple_embed(ctx, self.configuration.rules[16], title="Rule 16")
-
-    @commands.command()
-    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
-    async def r17(self, ctx: KurisuContext):
-        """Displays rule 17."""
-        await self.simple_embed(ctx, self.configuration.rules[17], title="Rule 17")
+    async def rules_load(self, ctx: KurisuContext, file: discord.Attachment):
+        try:
+            text = (await file.read()).decode('utf-8')
+            rules: dict[str, dict[str, str]] = json.loads(text)
+        except UnicodeDecodeError:
+            return await ctx.send("Invalid file.")
+        await self.configuration.wipe_rules()
+        for rule_number, content in rules.items():
+            await self.configuration.add_rule(int(rule_number), content['title'], content['description'])
+        await ctx.send("Rules loaded!")
 
 
 async def setup(bot):
+    for rule in bot.configuration.rules.values():
+        cmd = create_rule_cmd(rule)
+        setattr(Rules, f"r{rule.number}", cmd)
+        Rules.__cog_commands__.append(cmd)
     await bot.add_cog(Rules(bot))
