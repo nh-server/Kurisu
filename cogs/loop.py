@@ -7,7 +7,7 @@ import logging
 from datetime import datetime, timedelta, timezone
 from discord import AllowedMentions
 from discord.ext import commands, tasks
-from discord.utils import format_dt, snowflake_time
+from discord.utils import format_dt
 from typing import TYPE_CHECKING
 from utils.utils import send_dm_message, KurisuCooldown
 from utils import Restriction, OptionalMember, WarnState
@@ -18,6 +18,7 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 warn_expiring_time = timedelta(days=180)
+
 
 class Loop(commands.Cog):
     """
