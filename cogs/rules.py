@@ -78,6 +78,8 @@ class Rules(commands.GroupCog):
 We're the place to come to for hacking & homebrew on Nintendo's video game consoles, like the Nintendo 3DS, Wii U, and Nintendo Switch. Get assistance with setting up or using homebrew, find news on the latest developments, discuss about what you're making, and more.
 
 Be sure you read the following information before participating, especially rules. Not reading them is not an excuse for breaking them!
+These rules are shortened for simplicity. A more detailed version is available on [the Nintendo Homebrew website](https://nintendohomebrew.com/rules).
+The short and long versions are designed to be understood together, and neither overrides the other.
 
 **Attempting to start drama is reason enough for a ban on sight.**
 
@@ -116,7 +118,7 @@ A few commands may be useful for you to get information faster. Random command u
 • `.help` - List all the other available commands."""
 
         self.extra = f"""While we appreciate everyone who boosts the server **IT DOES NOT MAKE YOU EXEMPT FROM THE RULES.** We've given boosters reaction perms in {self.bot.channels['off-topic'].mention}, {self.bot.channels['elsewhere'].mention}, and {self.bot.channels['nintendo-discussion'].mention}, and you can also stream in the Streaming gamer voice channel.
-📨 Invitation link This is a permanent invitation link to the server!
+📨 Invitation link: This is a permanent invitation link to the server!
 https://discord.gg/C29hYvh"""
 
     @is_staff('SuperOP')
