@@ -129,7 +129,7 @@ https://discord.gg/C29hYvh"""
         async for message in channel.history():
             await message.delete()
         await channel.send(self.rules_intro)
-        for batch in batched(self.configuration.rules.values(), 10):
+        for batch in batched(sorted(self.configuration.rules.values(), key=lambda r: r.number), 10):
             embeds = []
             for rule in batch:
                 embeds.append(discord.Embed(title=f"Rule {rule.number} - {rule.title}", description=rule.description, color=gen_color(rule.number)))
