@@ -236,7 +236,7 @@ class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager)
         self._rules[rule_id] = Rule(rule_id, title, content)
 
     async def edit_rule(self, rule_id: int, title: str, content: str):
-        await self.db.edit_rule(rule_id, content)
+        await self.db.edit_rule(rule_id, title, content)
         self._rules[rule_id] = Rule(rule_id, title, content)
 
     async def delete_rule(self, rule_id: int):

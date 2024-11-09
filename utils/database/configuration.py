@@ -173,8 +173,8 @@ class ConfigurationDatabaseManager(BaseDatabaseManager, tables=tables):
     async def add_rule(self, rule_id, title: str, content: str):
         return await self._insert('rules', id=rule_id, title=title, description=content)
 
-    async def edit_rule(self, rule_id: int, content: str):
-        return await self._update('rules', {'description': content}, id=rule_id)
+    async def edit_rule(self, rule_id: int, title: str ,content: str):
+        return await self._update('rules', {'title': title, 'description': content}, id=rule_id)
 
     async def delete_rule(self, rule_id: int):
         return await self._delete('rules', id=rule_id)
