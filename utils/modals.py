@@ -26,7 +26,7 @@ class RuleAddition(ui.Modal, title='Rule Addition'):
             title = self.rule_title.value if self.rule_title.value else rule.title
             description = self.rule_description.value if self.rule_description.value else rule.description
             await bot.configuration.edit_rule(number, title, description)
-            await interaction.response.send_message(f"Rule {number} edited successfully!", embed=Embed(title=title, description=description, color=gen_color(number)))
+            await interaction.response.send_message(f"Rule {number} edited successfully!", embed=Embed(title=f"Rule {number} - {title}", description=description, color=gen_color(number)))
         else:
             title = self.rule_title.value
             description = self.rule_description.value
