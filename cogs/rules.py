@@ -9,6 +9,7 @@ from itertools import batched
 from typing import TYPE_CHECKING
 from utils.checks import is_staff, is_staff_app
 from utils.database.configuration import Rule
+from utils.modals import RuleAddition
 from utils.utils import KurisuCooldown, text_to_discord_file, simple_embed, gen_color
 from utils.views import BasePaginator, PaginatedEmbedView
 
@@ -153,19 +154,9 @@ https://discord.gg/C29hYvh"""
 
     @is_staff_app("OP")
     @app_commands.command()
-    async def add_rule(self, interaction: discord.Interaction, number: int, title: str, description: str):
-        """Adds or edits a current rule
-        Args
-            number: Number of the rule to add/edit.
-            title: Title of the rule.
-            description: Description of the rule.
-        """
-        if self.configuration.rules.get(number):
-            await self.configuration.edit_rule(number, title, description)
-            await interaction.response.send_message(f"Rule {number} edited successfully!")
-        else:
-            await self.configuration.add_rule(number, title, description)
-            await interaction.response.send_message(f"Rule {number} added successfully!")
+    async def add_rule(self, interaction: discord.Interaction):
+        """Adds or edits a current rule. Missing fields stay the same for editing rules."""
+        await interaction.response.send_modal(RuleAddition())
 
     @is_staff_app("OP")
     @app_commands.command()
