@@ -68,13 +68,11 @@ Thanks for stopping by and have a good time!
             embed.description = softban.reason
             await self.bot.channels['server-logs'].send(msg, embed=embed)
             return
-        # If it's their first time joining just send the welcome message, no need to check for punishments
         if not member.flags.did_rejoin:
             if not self.bot.configuration.auto_probation:
                 await send_dm_message(member, self.welcome_msg.format(member.name, member.guild.name,
                                                                       self.bot.channels['welcome-and-rules'].mention))
             await self.bot.channels['server-logs'].send(msg)
-            return
         roles = []
         async for r in self.restrictions.get_restrictions_by_user(member.id):
             restriction = Restriction(r[2])
