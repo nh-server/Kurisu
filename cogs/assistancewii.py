@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-class AssistanceWii(commands.GroupCog):
+class AssistanceWii(commands.Cog):
     """
     Wii help commands that will mostly be used in the help channels.
     """

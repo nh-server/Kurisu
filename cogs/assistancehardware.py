@@ -141,7 +141,7 @@ alias = {
 }
 
 
-class AssistanceHardware(commands.GroupCog):
+class AssistanceHardware(commands.Cog):
     """
     General hardware commands that will mostly be used in the hardware but also other help channels.
     """

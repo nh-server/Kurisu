@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-class Soap(commands.GroupCog):
+class Soap(commands.Cog):
     """
     command group related to soaps
     """

@@ -10,7 +10,7 @@ from utils.mdcmd import add_md_files_as_commands
 logger = logging.getLogger(__name__)
 
 
-class AssistanceWiiU(commands.GroupCog):
+class AssistanceWiiU(commands.Cog):
     """
     Wiiu help commands that will mostly be used in the help channels.
     """

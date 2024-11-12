@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-class AssistanceSwitch(commands.GroupCog):
+class AssistanceSwitch(commands.Cog):
     """
     Switch help commands that will mostly be used in the help channels.
     """

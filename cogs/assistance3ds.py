@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-class Assistance3DS(commands.GroupCog):
+class Assistance3DS(commands.Cog):
     """
     3DS help commands that will mostly be used in the help channels.
     """
