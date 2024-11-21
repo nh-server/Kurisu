@@ -56,7 +56,7 @@ friends = Module('friends', {
 account = Module('account', {
     102: ResultInfo('This console is permanently banned by Nintendo.', is_ban=True),
     107: ResultInfo('This console is temporarily (?) banned by Nintendo.', is_ban=True),
-    110: ResultInfo('Error when trying to use the discontinued youtube 3ds app.'),
+    110: ResultInfo('The service has been discontinued.'),
     119: ResultInfo('System update is required. This is typically shown when the friends module is outdated.'),
     120: ResultInfo('Game or title update is required. This is typically shown when the title you\'re trying to launch is outdated.'),
     121: ResultInfo('Local friend code SEED has invalid signature. This should only happen if it has been modified.', is_ban=True),
