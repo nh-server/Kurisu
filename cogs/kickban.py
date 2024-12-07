@@ -81,7 +81,8 @@ class KickBan(commands.GroupCog):
                         f"{member} has been sent to the UK. 👍",
                         f"{member} has encountered an error, and needs to close. 👍",
                         f"{member} is not responding, and has been terminated. 👍",
-                        f"{member} ran into a problem and needs to restart. Please refer to my dick and balls for more information. 👍"]
+                        f"{member} ran into a problem and needs to restart. Please refer to my dick and balls for more information. 👍",
+                        f"{member} has been 360 noscoped on Rust. 👍"]
         if await check_bot_or_staff(ctx, member, "ban"):
             return
 
@@ -183,6 +184,29 @@ class KickBan(commands.GroupCog):
             return
         await self.restrictions.remove_restriction(member, Restriction.Ban)
         await ctx.send(f"{member} is now SUPER BANNED. 👍 https://nintendohomebrew.com/assets/img/banned.gif")
+        await self.bot.logs.post_action_log(ctx.author, member, 'ban', reason=reason)
+
+    @is_staff("OP")
+    @commands.bot_has_permissions(ban_members=True)
+    @commands.command(name="trainban", aliases=["ryanban"])
+    async def trainban(self, ctx: GuildContext, member: discord.Member | discord.User, days: Optional[Literal[0, 1, 2, 3, 4, 5, 6, 7]] = 0, *, reason: Optional[str] = None):
+        """Bans a user from the server. OP+ only. Optional: [days] Specify up to 7 days of messages to delete."""
+        if await check_bot_or_staff(ctx, member, "ban"):
+            return
+
+        if isinstance(member, discord.Member):
+            msg = f"You were trains'd from {ctx.guild.name}."
+            if reason:
+                msg += " The given reason is: " + reason
+            msg += "\n\nThis ban does not expire.\n\nhttps://nintendohomebrew.com/assets/img/trains.gif"
+            await send_dm_message(member, msg, ctx)
+        try:
+            await ctx.guild.ban(member, reason=reason, delete_message_days=days)  # type: ignore
+        except discord.errors.Forbidden:
+            await ctx.send("Failed to ban member.")
+            return
+        await self.restrictions.remove_restriction(member, Restriction.Ban)
+        await ctx.send(f"{member} has been hit by a train. 👍 https://nintendohomebrew.com/assets/img/trains.gif")
         await self.bot.logs.post_action_log(ctx.author, member, 'ban', reason=reason)
 
     @commands.bot_has_permissions(ban_members=True)
