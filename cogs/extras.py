@@ -393,7 +393,7 @@ class Extras(commands.GroupCog):
 
     def check_message(self, message: discord.Message, author) -> Optional[str]:
 
-        if not isinstance(message.channel, discord.abc.GuildChannel):
+        if not isinstance(message.channel, (discord.abc.GuildChannel, discord.Thread)):
             return "Failed to fetch channel information."
 
         # xnoeproofing™
@@ -402,7 +402,7 @@ class Extras(commands.GroupCog):
 
     async def create_ref(self, message: discord.Message, author: discord.Member, ref_text: bool, ref_image: bool, ref_author: bool) -> tuple[Optional[discord.Embed], Optional[discord.File]]:
 
-        assert isinstance(message.channel, discord.abc.GuildChannel)
+        assert isinstance(message.channel, (discord.abc.GuildChannel, discord.Thread))
 
         embed = discord.Embed(colour=gen_color(message.author.id), timestamp=message.created_at)
         if ref_text and message.content:
@@ -415,7 +415,10 @@ class Extras(commands.GroupCog):
         if embed.description is None and embed.image.proxy_url is None:
             return None, None
         embed.set_author(name=message.author, icon_url=message.author.display_avatar.url, url=message.jump_url)
-        embed.set_footer(text=f"in {message.channel.name}{f'. Ref by {author}' if ref_author else ''}")
+        if isinstance(message.channel, discord.Thread):
+            embed.set_footer(text=f"in thread {message.channel.name} of channel {message.channel.parent}{f'. Ref by {author}' if ref_author else ''}")
+        else:
+            embed.set_footer(text=f"in {message.channel.name}{f'. Ref by {author}' if ref_author else ''}")
         return embed, file
 
     @check_if_user_can_sr()
