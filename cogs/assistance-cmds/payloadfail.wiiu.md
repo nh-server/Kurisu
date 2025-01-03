@@ -5,7 +5,8 @@ help-desc: Potential fixes for when payload.elf fails to load on the Wii U
 
 **Fixes for "Failed to load payload.elf"**
 
-- Make sure you have both a `payload.elf` and `payload.rpx` file on your SD card in the `wiiu` folder. Make sure your SD card layout is the same as [this](https://wiiu.eiphax.tech/sdlayout)
+- Make sure you have both a `payload.elf` and `payload.rpx` file in the `wiiu` folder on the SD card. Make sure your SD card layout is the same as shown [here](https://wiiu.eiphax.tech/sdlayout).
+
 - Redownload the payloads from https://aroma.foryour.cafe/. Extract the contents of the `.zip` file to the root of your SD card, and merge with the existing `wiiu` folder. When prompted to replace the existing ones, do so.
 
 - Make sure your SD card is properly formatted to FAT32. A guide on how to do so can be found [here](https://wiki.hacks.guide/wiki/Formatting_an_SD_card).
