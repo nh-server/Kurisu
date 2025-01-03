@@ -9,4 +9,4 @@ Aroma Plugin Menu: Press <:3ds_button_l:295004499511214080> + <:3ds_dpad_down:29
 Skip modifications: Hold <:3ds_button_r:295004508294086656> on bootup
 Environment Loader: Hold <:3ds_button_x:295004476056535041> on bootup
 Payload Loader: Hold <:3ds_button_b:295004466963283968> on bootup
-Aroma Boot Selector: Hold START on bootup
+Aroma Boot Selector: Hold the START button on boot up.
