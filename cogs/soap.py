@@ -137,6 +137,18 @@ class Soap(commands.Cog):
                        "Please let us know if the eShop functions or not."
                        )
 
+    @commands.guild_only()
+    @commands.command()
+    async def soapsubmitter(self, ctx: GuildContext):
+        """Sends soap submitter message. crc, small help, helper+ only."""
+        await ctx.send("**__Essential.exefs submitter__**\n"
+                       "Scan this QR code in FBI by going to `Remote Install -> Scan QR Code`\n"
+                       "https://nintendohomebrew.com/assets/img/essentialcia-qr.png\n"
+                       "Once it's installed, close FBI and open the newly installed app'\n"
+                       "After opening the app, press :3ds_button_y: to type in your Discord name, then press OK.\n"
+                       "Tap the :soap: icon on the bottom screen to submit your info.\n"
+                       )
+
 
 async def setup(bot):
     await bot.add_cog(Soap(bot))
