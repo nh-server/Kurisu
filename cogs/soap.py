@@ -144,9 +144,9 @@ class Soap(commands.Cog):
         await ctx.send("**__Essential.exefs submitter__**\n"
                        "Scan this QR code in FBI by going to `Remote Install -> Scan QR Code`\n"
                        "https://nintendohomebrew.com/assets/img/essentialcia-qr.png\n"
-                       "Once it's installed, close FBI and open the newly installed app'\n"
+                       "Once it's installed, close FBI and open the newly installed app\n"
                        "After opening the app, press :3ds_button_y: to type in your Discord name, then press OK.\n"
-                       "Tap the :soap: icon on the bottom screen to submit your info.\n"
+                       "Tap the :soap: icon on the bottom screen to submit your info."
                        )
 
 
