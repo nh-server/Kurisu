@@ -145,7 +145,7 @@ class Soap(commands.Cog):
                        "Scan this QR code in FBI by going to `Remote Install -> Scan QR Code`\n"
                        "https://nintendohomebrew.com/assets/img/essentialcia-qr.png\n"
                        "Once it's installed, close FBI and open the newly installed app\n"
-                       "After opening the app, press :3ds_button_y: to type in your Discord name, then press OK.\n"
+                       "After opening the app, press <:3ds_button_y:295004484810047489> to type in your Discord name, then press OK.\n"
                        "Tap the :soap: icon on the bottom screen to submit your info."
                        )
 
