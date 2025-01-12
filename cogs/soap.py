@@ -89,7 +89,7 @@ class Soap(commands.Cog):
                            "  - The label also may be under the battery.\n"
                            "  - If you still can't find it, please request further assistance.\n"
                            "10. Please wait for further instructions.\n"
-                           "### Don't have access to a computer?\n"
+                           "## Don't have access to a computer?\n"
                            "There is a way to submit your `essential.exefs` using only your hacked 3DS and a WiFi connection, but it's _not preferred_ compared to the above instructions.\n"
                            "If you need more information about this remote submission method, please let us know in this channel.")
         await self.bot.channels['mod-logs'].send(f"⭕️ **🧼 access granted**: {ctx.author.mention} granted access to 🧼 channel to {helpee.mention}")
