@@ -142,11 +142,15 @@ class Soap(commands.Cog):
     async def soapsubmitter(self, ctx: GuildContext):
         """Sends soap submitter message. crc, small help, helper+ only."""
         await ctx.send("**__Essential.exefs submitter__**\n"
-                       "Scan this QR code in FBI by going to `Remote Install -> Scan QR Code`\n"
-                       "https://nintendohomebrew.com/assets/img/essentialcia-qr.png\n"
-                       "Once it's installed, close FBI and open the newly installed app\n"
+                       "You can use an essential submitter app to submit your information wirelessly.\n"
+                       "To install launch **FBI**, and select `Remote Install -> Scan QR Code` and scan the QR code.\n"
+                       "Alternatively, if your camera isn't working, you can instead type the url by selecting\n"
+                       "`Remote Install -> Manually Enter URLs` and typing in <https://uwu.tax/essentialcia>.\n"
+                       "https://nintendohomebrew.com/assets/img/essentialcia-qr.png\n\n"
+                       "Once it's installed, close FBI and open the newly installed app on the HOME Menu.\n"
                        "After opening the app, press <:3ds_button_y:295004484810047489> to type in your Discord name, then press OK.\n"
-                       "Tap the :soap: icon on the bottom screen to submit your info."
+                       "Tap the :soap: icon on the bottom screen to submit your info.\n"
+                       "Please let us know once you have submitted."
                        )
 
 
