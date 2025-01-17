@@ -23,7 +23,7 @@ from discord.ext import commands
 from subprocess import check_output, CalledProcessError
 from typing import Optional
 from utils import WarnsManager, ConfigurationManager, RestrictionsManager, ExtrasManager, FiltersManager, UserLogManager
-from utils.checks import InsufficientStaffRank
+from utils.checks import InsufficientStaffRank, AppInsufficientStaffRank
 from utils.help import KuriHelp, HelpView, CategorySelect, MainHelpPaginator
 from utils.utils import create_error_embed
 from utils.context import KurisuContext
@@ -439,7 +439,7 @@ class Kuritree(app_commands.CommandTree):
         elif isinstance(error, app_commands.MissingPermissions):
             await ctx.send(f"{author.mention} You don't have permission to use `{command}`.", ephemeral=True)
 
-        elif isinstance(error, InsufficientStaffRank):
+        elif isinstance(error, AppInsufficientStaffRank):
             await ctx.send(str(error), ephemeral=True)
 
         elif isinstance(error, app_commands.CheckFailure):

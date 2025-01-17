@@ -1,6 +1,7 @@
 import discord
 
 from discord import app_commands
+from discord.app_commands import AppCommandError
 from discord.ext import commands
 from utils.configuration import StaffRank
 from typing import TYPE_CHECKING
@@ -9,7 +10,11 @@ if TYPE_CHECKING:
     from kurisu import Kurisu
 
 
-class InsufficientStaffRank(commands.CheckFailure):
+class InsufficientStaffRank(commands.CheckFailure, AppCommandError):
+    message: str
+
+
+class AppInsufficientStaffRank(app_commands.CheckFailure):
     message: str
 
 
@@ -25,7 +30,7 @@ def is_staff_app(role: str):
     async def predicate(interaction: discord.Interaction) -> bool:
         if (interaction.guild and interaction.user == interaction.guild.owner) or check_staff(interaction.client, role, interaction.user.id):
             return True
-        raise InsufficientStaffRank(f"You must be at least {role} to use this command.")
+        raise AppInsufficientStaffRank(f"You must be at least {role} to use this command.")
     return app_commands.check(predicate)
 
 
