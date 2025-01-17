@@ -127,9 +127,11 @@ class WarnsDatabaseManager(BaseDatabaseManager, tables=tables):
     async def delete_all_warnings(self, user_id: int, deleter: int, reason: 'Optional[str]') -> int:
         """Delete all warnings for a user id."""
         assert isinstance(user_id, int)
-        res = await self._update('warns',
-                                 {'deletion_time': datetime.now(), 'deletion_reason': reason, 'deleter': deleter},
-                                 user_id=user_id)
+        query = "UPDATE warns SET deletion_time = $1, deletion_reason = $2, deleter = $3, state = $4 WHERE user_id = $5 AND state not in (1,2)"
+        args = (datetime.now(), reason, deleter, 1, user_id)
+        async with self.pool.acquire() as conn:
+            async with conn.transaction():
+                res = await conn.execute(query, *args)
         if res:
             self.log.debug('Removed all warnings for %d', user_id)
         return res
