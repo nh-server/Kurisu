@@ -208,7 +208,7 @@ class AssistanceHardware(commands.Cog):
         else:
             await simple_embed(ctx, "Invalid console, see https://www.ifixit.com/Device/Game_Console",
                                color=discord.Color.red())
-            
+
     @commands.dynamic_cooldown(KurisuCooldown(1, 5), commands.BucketType.channel)
     @commands.command()
     async def board(self, ctx: KurisuContext, console=''):
@@ -219,7 +219,8 @@ class AssistanceHardware(commands.Cog):
         elif console in alias.keys():
             await ctx.send(ctx, "", image_link=boards[alias[console]])
         else:
-            await ctx.send(f'{ctx.author.mention}, Board options are `' +', '.join(boards) + "`",  delete_after=10)
+            await ctx.send(f'{ctx.author.mention}, Board options are `' + ', '.join(boards) + "`",  delete_after=10)
+
 
 add_md_files_as_commands(AssistanceHardware, join(AssistanceHardware.data_dir, 'hardware'),
                          namespace=AssistanceHardware.hardware)  # type: ignore
