@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from utils.context import KurisuContext
 
 logger = logging.getLogger(__name__)
-warn_expiring_time = timedelta(days=180)
+warn_expiring_time = timedelta(weeks=72)
 
 
 class Loop(commands.Cog):
