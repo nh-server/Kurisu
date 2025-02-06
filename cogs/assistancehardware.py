@@ -214,12 +214,20 @@ class AssistanceHardware(commands.Cog):
     async def board(self, ctx: KurisuContext, console=''):
         """Board diagram for the given console."""
         console = console.lower()
+        embed = discord.Embed(color=discord.Color.blue())
+
         if console in boards.keys():
-            await ctx.send(ctx, "", image_link=boards[console])
+            embed.set_image(url=boards[console])
         elif console in alias.keys():
-            await ctx.send(ctx, "", image_link=boards[alias[console]])
+            embed.set_image(url=boards[alias[console]])
         else:
-            await ctx.send(f'{ctx.author.mention}, Board options are `' + ', '.join(boards) + "`",  delete_after=10)
+            embed.description = f'{ctx.author.mention}, Board options are `' + ', '.join(boards) + "`"
+            embed.color = discord.Color.red()
+            await ctx.send(embed=embed, delete_after=10)
+            return
+
+        embed.title = f"Board Diagram: {console.capitalize()}"
+        await ctx.send(embed=embed)
 
 
 add_md_files_as_commands(AssistanceHardware, join(AssistanceHardware.data_dir, 'hardware'),
