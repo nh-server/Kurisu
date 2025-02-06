@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 import discord
-
-from datetime import timedelta
+from contextlib import aclosing
 from discord import app_commands
 from discord.utils import format_dt
 from discord.ext import commands
@@ -10,9 +9,8 @@ from typing import TYPE_CHECKING, Optional
 
 from utils.checks import is_staff, check_bot_or_staff
 from utils import check_staff, ordinal
-from utils.utils import create_userinfo_embed
-from utils.warns import WarnType
-from utils.views import ModSenseView
+from utils.warns import WarnType, WARN_EXPIRATION
+from utils.views import WarnManagerView
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -205,7 +203,7 @@ class ModWarn(commands.GroupCog):
                 value += f"Issuer: {issuer.name if issuer else warn.issuer_id}\n"
             value += f"Reason: {warn.reason}"
             if warn.type == WarnType.Ephemeral:
-                value += f"\nExpires: {format_dt(warn.date + timedelta(days=180))}"
+                value += f"\nExpires: {format_dt(warn.date + WARN_EXPIRATION)}"
             embed.add_field(
                 name=f"{idx + 1}: {warn.date:%Y-%m-%d %H:%M:%S}",
                 value=value)
@@ -277,17 +275,22 @@ class ModWarn(commands.GroupCog):
     @commands.guild_only()
     @commands.max_concurrency(1, commands.BucketType.guild)
     @commands.hybrid_command()
-    async def modsense(self, ctx: GuildContext, user: discord.Member | discord.User):
+    async def managewarns(self, ctx: GuildContext, user: discord.Member | discord.User):
         """Shows information of user along with warn stuff. Staff and Helpers only."""
-
-        embed = await create_userinfo_embed(user, ctx.guild)
-
-        warns = [w async for w in self.warns.get_warnings(user)]
-        deleted_warns = [w async for w in self.warns.get_deleted_warnings(user)]
-
-        view = ModSenseView(ctx.bot, warns, deleted_warns, ctx.author, user, embed)
-
-        view.message = await ctx.send(view=view, embed=embed, ephemeral=True)
+        warn_list = []
+        async with aclosing(self.warns.get_warnings(user)) as warns:
+            async for w in warns:
+                warn_list.append(w)
+                break
+        async with aclosing(self.warns.get_deleted_warnings(user)) as warns:
+            async for w in warns:
+                warn_list.append(w)
+                break
+        if not warns:
+            return await ctx.send(f"{user.mention} has no warns!")
+        view = WarnManagerView(ctx.bot, ctx.author, user)
+        await view.init()
+        await ctx.send(view=view, embed=view.embed)
         await view.wait()
 
 

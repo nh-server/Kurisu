@@ -1,3 +1,4 @@
+from datetime import timedelta
 from enum import IntEnum
 from typing import TYPE_CHECKING
 
@@ -11,6 +12,9 @@ if TYPE_CHECKING:
     from . import OptionalMember
     from typing import Tuple, Optional, Literal
     from discord import User
+
+
+WARN_EXPIRATION = timedelta(weeks=72)
 
 
 # could this be made better?
@@ -105,6 +109,10 @@ class WarnsManager(BaseManager, db_manager=WarnsDatabaseManager):
         async for w in self.db.get_warnings(user_id=user.id):
             yield w
 
+    async def get_warning(self, warn_id: int):
+        """Get warnings for a user."""
+        return await self.db.get_warning(warn_id)
+
     async def get_all_ephemeral_warnings(self):
         """Gets all ephemeral warnings."""
         async for w in self.db.get_all_ephemeral_warnings():
@@ -122,3 +130,19 @@ class WarnsManager(BaseManager, db_manager=WarnsDatabaseManager):
     async def copy_warnings(self, origin: 'Member | User | OptionalMember', destination: 'Member | User | OptionalMember') -> int:
         """Copy warning from a user to another user"""
         return await self.db.copy_all_warnings(origin.id, destination.id)
+
+    async def restore_warning(self, warn_id: int):
+        """Restores a warning from deletion, making it a pinned warn"""
+        return await self.db.restore_warning(warn_id)
+
+    async def pin_warning(self, warn_id: int):
+        """Restores a warning from deletion, making it a pinned warn"""
+        return await self.db.pin_warning(warn_id)
+
+    async def unpin_warning(self, warn_id: int):
+        """Restores a warning from deletion, making it a pinned warn"""
+        return await self.db.unpin_warning(warn_id)
+
+    async def get_warning_number(self, warn_id) -> 'Optional[int]':
+        """Gets the warn number of a warn."""
+        return number if (number := await self.db.get_warning_number(warn_id)) is not None else -1

@@ -10,29 +10,39 @@ if TYPE_CHECKING:
     from typing import Tuple, AsyncGenerator, Optional
 
 
-class WarnEntry(NamedTuple):
+class ValidWarnEntry(NamedTuple):
     warn_id: int
     user_id: int
     issuer_id: int
-    date: datetime
     reason: str
-    type: int
-
-
-class FullWarnEntry(NamedTuple):
-    warn_id: int
-    user_id: int
-    issuer_id: int
-    date: datetime
-    reason: str
-    type: int
+    deletion_time: None
+    deletion_reason: None
+    deleter: None
     state: int
-    deletion_time: 'Optional[datetime]'
-    deletion_reason: 'Optional[str]'
-    deleter: 'Optional[int]'
+    type: int
+
+    @property
+    def date(self):
+        return snowflake_time(self.warn_id)
 
 
-tables = {'warns': ['id', 'user_id', 'issuer_id', 'reason', 'type', 'state', 'deletion_time', 'deletion_reason', 'deleter']}
+class DeletedWarnEntry(NamedTuple):
+    warn_id: int
+    user_id: int
+    issuer_id: int
+    reason: str
+    deletion_time: datetime
+    deletion_reason: str
+    deleter: int
+    state: int
+    type: int
+
+    @property
+    def date(self):
+        return snowflake_time(self.warn_id)
+
+
+tables = {'warns': ['id', 'user_id', 'issuer_id', 'reason', 'deletion_time', 'deletion_reason', 'deleter', 'state', 'type']}
 
 
 class WarnsDatabaseManager(BaseDatabaseManager, tables=tables):
@@ -49,64 +59,47 @@ class WarnsDatabaseManager(BaseDatabaseManager, tables=tables):
         count = await self.get_warnings_count(user_id=user_id)
         return now, count
 
-    async def get_warnings(self, user_id: int) -> 'AsyncGenerator[WarnEntry, None]':
+    async def get_warnings(self, user_id: int) -> 'AsyncGenerator[ValidWarnEntry, None]':
         """Get valid warnings for a user id."""
         assert isinstance(user_id, int)
         conn: asyncpg.Connection
 
         async with self.pool.acquire() as conn:
             async with conn.transaction():
-                query = 'SELECT id, user_id, issuer_id, reason, type FROM warns WHERE user_id = $1 AND state = 0'
-                async for warn_id, w_user_id, issuer, reason, warn_type in conn.cursor(query, user_id):
-                    yield WarnEntry(user_id=w_user_id,
-                                    warn_id=warn_id,
-                                    date=snowflake_time(warn_id),
-                                    issuer_id=issuer,
-                                    reason=reason,
-                                    type=warn_type)
+                query = 'SELECT * FROM warns WHERE user_id = $1 AND state = 0'
+                async for record in conn.cursor(query, user_id):
+                    yield ValidWarnEntry(*record)
 
-    async def get_deleted_warnings(self, user_id: int) -> 'AsyncGenerator[FullWarnEntry, None]':
+    async def get_deleted_warnings(self, user_id: int) -> 'AsyncGenerator[DeletedWarnEntry, None]':
         """Get warnings for a user id."""
         assert isinstance(user_id, int)
         async with self.pool.acquire() as conn:
             async with conn.transaction():
                 query = ('SELECT id, user_id, issuer_id, reason, type, state, deletion_time, '
                          'deletion_reason, deleter FROM warns WHERE user_id = $1 AND state IN (1,2)')
-                async for warn_id, w_user_id, issuer, reason, warn_type, state, deletion_time, deletion_reason, deleter in conn.cursor(
+                async for record in conn.cursor(
                         query, user_id):
-                    yield FullWarnEntry(user_id=w_user_id,
-                                        warn_id=warn_id,
-                                        date=snowflake_time(warn_id),
-                                        issuer_id=issuer,
-                                        type=warn_type,
-                                        state=state,
-                                        reason=reason,
-                                        deletion_reason=deletion_reason,
-                                        deletion_time=deletion_time,
-                                        deleter=deleter)
+                    yield DeletedWarnEntry(*record)
 
-    async def get_warning(self, warn_id: int) -> 'Optional[WarnEntry]':
+    async def get_warning(self, warn_id: int) -> 'Optional[ValidWarnEntry|DeletedWarnEntry]':
         """Get a specific warning based on warn id."""
-        try:
-            res = await self._select('warns', warn_id=warn_id).__anext__()
-        except StopIteration:
-            return
-        return WarnEntry(user_id=res[1],
-                         warn_id=res[0],
-                         date=snowflake_time(res[0]),
-                         issuer_id=res[2],
-                         reason=res[3],
-                         type=res[4],
-                         )
+        res = await self._select_one('warns', id=warn_id)
+        if res is None:
+            return res
+        if res['state'] != 0:
+            return DeletedWarnEntry(*res)
+        else:
+            return ValidWarnEntry(*res)
 
     async def get_warnings_count(self, user_id: int) -> int:
         """Get a specific warning based on warn id."""
         assert isinstance(user_id, int)
         async with self.pool.acquire() as conn:
             async with conn.transaction():
+                conn: asyncpg.Connection
                 query = 'SELECT COUNT(*) FROM warns WHERE user_id = $1 AND state = 0'
-                record = await conn.fetchrow(query, user_id)
-        return record[0]
+                value: int | None = await conn.fetchval(query, user_id)
+        return value if value is not None else 0
 
     async def delete_warning(self, warn_id: int, deleter: 'Optional[int]', reason: 'Optional[str]', deletion_type: int) -> int:
         """Remove a warning based on warn id."""
@@ -164,15 +157,23 @@ class WarnsDatabaseManager(BaseDatabaseManager, tables=tables):
         async with self.pool.acquire() as conn:
             async with conn.transaction():
                 query = 'SELECT * FROM warns WHERE type = 1 AND state = 0'
-                async for warn_id, w_user_id, issuer, reason, warn_type, state, deletion_time, deletion_reason, deleter in conn.cursor(
+                async for record in conn.cursor(
                         query):
-                    yield FullWarnEntry(user_id=w_user_id,
-                                        warn_id=warn_id,
-                                        date=snowflake_time(warn_id),
-                                        issuer_id=issuer,
-                                        type=warn_type,
-                                        state=state,
-                                        reason=reason,
-                                        deletion_reason=deletion_reason,
-                                        deletion_time=deletion_time,
-                                        deleter=deleter)
+                    yield ValidWarnEntry(*record)
+
+    async def restore_warning(self, warn_id: int):
+        return await self._update('warns', {"deletion_time": None, "deletion_reason": None, "deleter": None, "state": 0, "type": 0}, id=warn_id)
+
+    async def unpin_warning(self, warn_id):
+        return await self._update('warns', {"type": 1}, id=warn_id)
+
+    async def pin_warning(self, warn_id):
+        return await self._update('warns', {"type": 0}, id=warn_id)
+
+    async def get_warning_number(self, warn_id) -> 'Optional[int]':
+        async with self.pool.acquire() as conn:
+            async with conn.transaction():
+                conn: asyncpg.Connection
+                query = "SELECT warn_num FROM ( SELECT id, user_id, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY id) AS warn_num FROM warns where state=0) subquery WHERE id = $1;"
+                res = await conn.fetchval(query, warn_id)
+                return res

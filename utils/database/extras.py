@@ -6,6 +6,7 @@ from .common import BaseDatabaseManager
 
 if TYPE_CHECKING:
     from typing import AsyncGenerator, Optional
+    from asyncpg import Record
     import asyncpg
 
 
@@ -164,7 +165,7 @@ class ExtrasDatabaseManager(BaseDatabaseManager, tables=tables):
                                   author_id=author_id,
                                   options=options, start=start, staff_only=staff_only)
 
-    async def get_voteviews(self, identifier) -> 'AsyncGenerator[tuple[int, int, str, int, str, datetime, bool], None]':
+    async def get_voteviews(self, identifier) -> 'AsyncGenerator[Record, None]':
         async for vv in self._select('voteviews', identifier=identifier):
             yield vv
 

@@ -4,6 +4,8 @@ import asyncpg
 
 import logging
 
+from asyncpg import Record
+
 if TYPE_CHECKING:
     from typing import AsyncGenerator, KeysView, Optional, Iterable
     from kurisu import Kurisu
@@ -93,7 +95,7 @@ class BaseDatabaseManager:
 
         return ', '.join(f'{c}' for c in keys)
 
-    async def _select(self, table: str, **values) -> 'AsyncGenerator[tuple, None]':
+    async def _select(self, table: str, **values) -> 'AsyncGenerator[Record, None]':
         assert not self.bot.db_closed
         assert self.tables
         assert table in self.tables
@@ -109,7 +111,7 @@ class BaseDatabaseManager:
                 async for record in conn.cursor(query, *values.values()):
                     yield record
 
-    async def _select_one(self, table: str, **values) -> 'Optional[tuple]':
+    async def _select_one(self, table: str, **values) -> 'Optional[Record]':
         assert not self.bot.db_closed
         assert self.tables
         assert table in self.tables
@@ -134,10 +136,10 @@ class BaseDatabaseManager:
         async with self.pool.acquire() as conn:
             async with conn.transaction():
                 query = f'SELECT COUNT(*) FROM {table} {self._format_select_vars(values.keys())}'
-                record = await conn.fetchrow(query, *values.values())
+                record = await conn.fetchval(query, *values.values())
                 self.log.debug(f'Executed SELECT COUNT() query in table {table} with parameters %s',
                                ColumnValueFormatter(values))
-                return record[0]
+                return record if record is not None else 0
 
     async def _insert(self, table: str, **values) -> int:
         assert not self.bot.db_closed

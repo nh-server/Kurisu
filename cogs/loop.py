@@ -11,13 +11,13 @@ from discord.utils import format_dt
 from typing import TYPE_CHECKING
 from utils.utils import send_dm_message, KurisuCooldown
 from utils import Restriction, OptionalMember, WarnState
+from utils.warns import WARN_EXPIRATION
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
     from utils.context import KurisuContext
 
 logger = logging.getLogger(__name__)
-warn_expiring_time = timedelta(weeks=72)
 
 
 class Loop(commands.Cog):
@@ -184,7 +184,7 @@ class Loop(commands.Cog):
     async def warn_expiration_check(self):
         await self.bot.wait_until_all_ready()
         async for warn in self.bot.warns.get_all_ephemeral_warnings():
-            if datetime.now(timezone.utc) - warn.date >= warn_expiring_time:
+            if datetime.now(timezone.utc) - warn.date >= WARN_EXPIRATION:
                 await self.bot.warns.delete_warning(warn.warn_id, None, None, deletion_type=WarnState.Expired)
 
 

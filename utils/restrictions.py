@@ -14,6 +14,7 @@ from .utils import send_dm_message
 
 if TYPE_CHECKING:
     from . import OptionalMember
+    from asyncpg import Record
     from typing import Optional
     from kurisu import Kurisu
     from collections.abc import AsyncGenerator
@@ -138,7 +139,7 @@ class RestrictionsManager(BaseManager, db_manager=RestrictionsDatabaseManager):
             yield r
 
     async def get_restrictions_by_user(self,
-                                       user_id: int) -> 'AsyncGenerator[tuple[int, int, str, datetime, bool], None]':
+                                       user_id: int) -> 'AsyncGenerator[Record, None]':
         assert isinstance(user_id, int)
         async for r in self.db.get_restrictions_by_user(user_id):
             yield r

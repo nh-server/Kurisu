@@ -7,6 +7,7 @@ from discord.utils import time_snowflake
 from .common import BaseDatabaseManager
 
 if TYPE_CHECKING:
+    from asyncpg import Record
     from collections.abc import AsyncGenerator
 
 
@@ -40,9 +41,9 @@ class RestrictionsDatabaseManager(BaseDatabaseManager, tables=tables):
         conn: asyncpg.Connection
         async with self.pool.acquire() as conn:
             async with conn.transaction():
-                tr_id = await conn.fetchrow(query, restriction_id, user_id, restriction, end_date)
+                tr_id: int | None = await conn.fetchval(query, restriction_id, user_id, restriction, end_date)
                 self.log.debug('Added timed restriction to user id %d: %s', user_id, restriction)
-        return tr_id[0]
+        return tr_id if tr_id is not None else -1
 
     async def remove_restriction(self, user_id: int, restriction: str) -> int:
         """Remove a restriction from the user id."""
@@ -52,18 +53,18 @@ class RestrictionsDatabaseManager(BaseDatabaseManager, tables=tables):
             self.log.debug('Removed restriction from user id %d: %s', user_id, restriction)
         return res
 
-    async def get_restrictions_by_user(self, user_id: int) -> 'AsyncGenerator[tuple[int, int, str, datetime, bool], None]':
+    async def get_restrictions_by_user(self, user_id: int) -> 'AsyncGenerator[Record, None]':
         """Get restrictions for a user id."""""
         assert isinstance(user_id, int)
         async for r in self._select('restrictions', user_id=user_id):
             yield r
 
-    async def get_restrictions_by_type(self, type: str) -> 'AsyncGenerator[tuple[int, int, str, datetime, bool], None]':
+    async def get_restrictions_by_type(self, type: str) -> 'AsyncGenerator[Record, None]':
         """Get restrictions for a user id."""""
         async for r in self._select('restrictions', type=type):
             yield r
 
-    async def get_timed_restrictions(self) -> 'AsyncGenerator[tuple[int, int, str, datetime, bool], None]':
+    async def get_timed_restrictions(self) -> 'AsyncGenerator[Record, None]':
         async with self.pool.acquire() as conn:
             async with conn.transaction():
                 async for r in conn.cursor("SELECT * FROM restrictions WHERE end_date IS NOT NULL"):

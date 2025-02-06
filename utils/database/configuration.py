@@ -5,6 +5,7 @@ from .common import BaseDatabaseManager
 if TYPE_CHECKING:
     from typing import AsyncGenerator, Tuple, Optional
     import asyncpg
+    from asyncpg import Record
 
 import json
 
@@ -53,7 +54,7 @@ class ConfigurationDatabaseManager(BaseDatabaseManager, tables=tables):
             async with conn.transaction():
                 return await conn.execute(query, member_id)
 
-    async def get_members(self) -> 'AsyncGenerator[tuple[int, bool], None]':
+    async def get_members(self) -> 'AsyncGenerator[Record, None]':
         async for m in self._select('members'):
             yield m
 
@@ -71,7 +72,7 @@ class ConfigurationDatabaseManager(BaseDatabaseManager, tables=tables):
         async for k, v in self._select('flags'):
             yield k, v
 
-    async def get_flag(self, name: str) -> 'Optional[tuple[str, bool]]':
+    async def get_flag(self, name: str) -> 'Optional[Record]':
         return await self._select_one('flags', name=name)
 
     async def delete_flag(self, name: str):
@@ -116,8 +117,7 @@ class ConfigurationDatabaseManager(BaseDatabaseManager, tables=tables):
         return await self._insert('channels', id=channel_id, name=name)
 
     async def get_channel(self, channel_id: int):
-        async for c in self._select('channels', id=channel_id):
-            return c
+        return await self._select_one('channels', id=channel_id)
 
     async def get_channel_by_name(self, name: str) -> 'Optional[tuple[int, str, bool, int, bool]]':
         async with self.pool.acquire() as conn:
@@ -141,9 +141,10 @@ class ConfigurationDatabaseManager(BaseDatabaseManager, tables=tables):
         return await self._insert('roles', id=role_id, name=name)
 
     async def get_role(self, name: str) -> 'Optional[tuple[int, str]]':
-        async for role_id, name in self._select('roles', name=name):
-            return role_id, name
-        return None
+        record = await self._select_one('roles', name=name)
+        if record is None:
+            return None
+        return record[0], record[1]
 
     async def update_role(self, name: str, role_id: int):
         await self._update('roles', {'id': role_id}, name=name)
@@ -181,7 +182,7 @@ class ConfigurationDatabaseManager(BaseDatabaseManager, tables=tables):
 
     async def get_rules(self) -> 'AsyncGenerator[Rule, None]':
         async for r in self._select('rules'):
-            yield Rule(r[0], r[1], r[2])
+            yield Rule(*r)
 
     async def wipe_rules(self):
         return await self._delete('rules')
@@ -191,11 +192,12 @@ class ConfigurationDatabaseManager(BaseDatabaseManager, tables=tables):
         return await self._insert('channeloverwrites', name=name, overwrites=json_str)
 
     async def get_channel_overwrites(self, name: str) -> 'Optional[dict[int, dict[str, bool | None]]]':
-        async for _, _, overwrites in self._select('channeloverwrites', name=name):
-            return json.loads(overwrites)
-        return None
+        record = await self._select_one('channeloverwrites', name=name)
+        if record is None:
+            return None
+        return json.loads(record['overwrites'])
 
-    async def get_all_channel_overwrites(self) -> 'AsyncGenerator[tuple[int, str, str], None]':
+    async def get_all_channel_overwrites(self) -> 'AsyncGenerator[Record, None]':
         async for ow in self._select('channeloverwrites'):
             yield ow
 
