@@ -165,6 +165,16 @@ alias = {
     "jan": "new2dsxl",
 }
 
+boards = {
+    "dslite": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-dsl.png",
+    "dsixl": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-dsixl.png",
+    "o3ds": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-o3ds.jpg",
+    "o3dsxl": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-o3dsxl.png",
+    "n3ds": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-n3ds.png",
+    "n3dsxl": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-n3dsxl.png",
+    "n2dsxl": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-n2dsxl.png",
+}
+
 
 class AssistanceHardware(commands.Cog):
     """
@@ -189,6 +199,7 @@ class AssistanceHardware(commands.Cog):
     @commands.dynamic_cooldown(KurisuCooldown(1, 5), commands.BucketType.channel)
     @commands.command()
     async def fix(self, ctx: KurisuContext, console=''):
+        """Links to one of multiple ifixit guides"""
         console = console.lower()
         if console in consoles.keys():
             await simple_embed(ctx, consoles[console], color=discord.Color.blue())
@@ -197,6 +208,18 @@ class AssistanceHardware(commands.Cog):
         else:
             await simple_embed(ctx, "Invalid console, see https://www.ifixit.com/Device/Game_Console",
                                color=discord.Color.red())
+
+    @commands.dynamic_cooldown(KurisuCooldown(1, 5), commands.BucketType.channel)
+    @commands.command()
+    async def board(self, ctx: KurisuContext, console=''):
+        """Board diagram for the given console."""
+        console = console.lower()
+        if console in boards.keys():
+            await ctx.send(ctx, "", image_link=boards[console])
+        elif console in alias.keys():
+            await ctx.send(ctx, "", image_link=boards[alias[console]])
+        else:
+            await ctx.send(f'{ctx.author.mention}, Board options are `' + ', '.join(boards) + "`",  delete_after=10)
 
 
 add_md_files_as_commands(AssistanceHardware, join(AssistanceHardware.data_dir, 'hardware'),
