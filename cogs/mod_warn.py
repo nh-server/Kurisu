@@ -286,7 +286,7 @@ class ModWarn(commands.GroupCog):
             async for w in warns:
                 warn_list.append(w)
                 break
-        if not warns:
+        if not warn_list:
             return await ctx.send(f"{user.mention} has no warns!")
         view = WarnManagerView(ctx.bot, ctx.author, user)
         await view.init()

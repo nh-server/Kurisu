@@ -518,7 +518,7 @@ class WarnReason(Modal):
                        required=True, placeholder="Enter reason for warn deletion")
 
     def __init__(self, parent: WarnView):
-        super().__init__(title='Timeout Update')
+        super().__init__()
         self.parent = parent
 
     async def on_submit(self, interaction: Interaction):
