@@ -211,14 +211,14 @@ class AssistanceHardware(commands.Cog):
 
     @commands.dynamic_cooldown(KurisuCooldown(1, 5), commands.BucketType.channel)
     @commands.command()
-    async def board(self, ctx: KurisuContext, console=''):
+    async def board(self, ctx: KurisuContext, console: str = ""):
         """Board diagram for the given console."""
         console = console.lower()
         embed = discord.Embed(color=discord.Color.blue())
 
         if console in boards.keys():
             embed.set_image(url=boards[console])
-        elif console in alias.keys():
+        elif console in alias.keys() and alias[console] in boards.keys():
             embed.set_image(url=boards[alias[console]])
         else:
             embed.description = f'{ctx.author.mention}, Board options are `' + ', '.join(boards) + "`"
