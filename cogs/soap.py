@@ -104,13 +104,24 @@ class Soap(commands.Cog):
         """Deletes a :soap: help channel. helper+ only."""
         if not self.soaps_category:
             return await ctx.send("The soaps category is not set.")
+        deleted_channels = []
         for channel in channels:
-            if channel not in self.soaps_category.channels:
-                continue
-            msg = f":x: **:soap: channel deleted**: {ctx.author.mention} deleted :soap: channel {channel.name} ({channel.id})"
-            await self.bot.channels['mod-logs'].send(msg)
-            await ctx.send(f"Deleted :soap: {channel.name}.")
-            await channel.delete()
+            if channel in self.soaps_category.channels:
+                try:
+                    await channel.delete()
+                    deleted_channels.append(f"{channel.name} ({channel.id})")
+                except discord.Forbidden:
+                    await ctx.send(f"❌ I don't have permission to delete {channel.mention}.")
+                except discord.NotFound:
+                    await ctx.send(f"⚠️ Channel {channel.mention} either never existed or was already deleted.")
+        if not deleted_channels:
+            return await ctx.send("Either the given channel(s) don't exist, or something else went wrong.")
+        msg = f":x: **:soap: channels deleted**: {ctx.author.mention} deleted:\n" + "\n".join(deleted_channels)
+        try:
+            await self.bot.channels["mod-logs"].send(msg)
+        except KeyError:
+            await ctx.send("⚠️ Something's fucky. mod-logs was not found.")
+        await ctx.send(f"Deleted {len(deleted_channels)} :soap: channel(s): " + ", ".join(deleted_channels) + ".")
 
     @commands.guild_only()
     @commands.command()
