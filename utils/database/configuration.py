@@ -14,8 +14,8 @@ import json
 
 
 class ChangedRole(NamedTuple):
-    role_id: int
     channel_id: int
+    role_id: int
     original_value: 'Optional[bool]'
 
 
@@ -166,7 +166,7 @@ class ConfigurationDatabaseManager(BaseDatabaseManager, tables=tables):
 
     async def get_changed_roles(self, channel_id: int) -> 'AsyncGenerator[ChangedRole, None]':
         async for cr in self._select('changedroles', channel_id=channel_id):
-            yield ChangedRole(channel_id=cr[0], role_id=cr[1], original_value=cr[2])
+            yield ChangedRole(**cr)
 
     async def clear_changed_roles(self, channel_id: int):
         return await self._delete('changedroles', channel_id=channel_id)
