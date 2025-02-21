@@ -3,6 +3,7 @@ title: Wii U Homebrew Environment Hotkeys
 help-desc: Various important button combinations to access different menus or perform certain actions in the Wii U Homebrew environment.
 aliases: uhotkeys,uhotkey,wiiuhotkeys,wiiucombo
 ---
+
 Press the following keys in their given circumstances to access menus or perform actions.
 
 Aroma Plugin Menu: Press the <:3ds_button_l:295004499511214080> + <:3ds_dpad_down:295004561670930432> + SELECT buttons on the Wii U Menu.
