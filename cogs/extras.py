@@ -694,7 +694,7 @@ class Extras(commands.GroupCog):
             options: Options for the vote separated by | .
             staff_only: If only staff is allowed to vote.
         """
-        options_parsed = options.split('|')
+        options_parsed = [op.strip() for op in options.split('|')]
         view = SimpleVoteView(self.bot, interaction.user.id, options_parsed, interaction.id, start=discord.utils.utcnow(), staff_only=staff_only)
         embed = discord.Embed(title=name, description=description)
         await interaction.response.send_message(embed=embed, view=view)
