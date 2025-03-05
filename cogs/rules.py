@@ -78,7 +78,7 @@ class Rules(commands.GroupCog):
 We're the place to come to for hacking & homebrew on Nintendo's video game consoles, like the Nintendo 3DS, Wii U, and Nintendo Switch. Get assistance with setting up or using homebrew, find news on the latest developments, discuss about what you're making, and more.
 
 Be sure you read the following information before participating, especially rules. Not reading them is not an excuse for breaking them!
-These rules are shortened for simplicity. A more detailed version is available on [the Nintendo Homebrew website](https://nintendohomebrew.com/rules).
+These rules are shortened for simplicity. A more detailed version is available on [the Nintendo Homebrew website](<https://nintendohomebrew.com/rules>).
 The short and long versions are designed to be understood together, and neither overrides the other.
 
 **Attempting to start drama is reason enough for a ban on sight.**

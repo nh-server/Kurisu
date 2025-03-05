@@ -893,7 +893,7 @@ class Mod(commands.GroupCog):
 
     @is_staff("OP")
     @commands.guild_only()
-    @commands.command()
+    @commands.command(aliases=['banish'])
     async def nou(self, ctx: GuildContext, member: discord.Member | discord.User, *, reason: Optional[str]):
         """Banish to the void."""
         if await check_bot_or_staff(ctx, member, "no-u"):
@@ -904,7 +904,7 @@ class Mod(commands.GroupCog):
 
     @is_staff("OP")
     @commands.guild_only()
-    @commands.command()
+    @commands.command(aliases=['retrieve'])
     async def unnou(self, ctx: GuildContext, member: discord.Member | discord.User, *, reason: Optional[str]):
         """Retrieves a user from the void."""
         await self.restrictions.remove_restriction(member, Restriction.NoU)
