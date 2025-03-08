@@ -10,4 +10,4 @@ Incognito isn't an effective method for ban prevention.
 - On system versions 17.0.0 and above, Incognito will cause a crash when trying to connect to the internet.
 - Traces of Incognito remain on the system even *after* it is disabled, which works against the point of Incognito safeguarding you in the first place.
 
-90DNS / dns.mitm are both more effective methods at ban prevention since they completely prevent the Switch from connecting to Nintendo. Instructions for their use can be found here: https://switch.hacks.guide/extras/blocking_nintendo/
+90DNS / dns.mitm are both more effective methods at ban prevention since they completely prevent the Switch from connecting to Nintendo. Instructions for their use can be found here: https://switch.hacks.guide/extras/blocking_nintendo
