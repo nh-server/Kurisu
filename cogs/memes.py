@@ -490,6 +490,12 @@ class Memes(commands.Cog):
                          image_link="https://album.eiphax.tech/uploads/big/b5c031e07ddbc3e48d0853f2d7064f66.jpg")
 
     @commands.command(hidden=True)
+    async def source3(self, ctx: KurisuContext):
+        """citation needed (2)"""
+        await self._meme(ctx, "",
+                         image_link="https://nintendohomebrew.com/assets/img/nhmemes/source3.gif")
+
+    @commands.command(hidden=True)
     async def disgraceful(self, ctx: KurisuContext):
         """YOU DIDN'T SEE IT BECAUSE IT WASN'T THERE"""
         await self._meme(ctx, "",
