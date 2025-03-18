@@ -162,17 +162,31 @@ alias = {
     "ctr": "3ds",
     "spr": "3dsxl",
     "ktr": "new3ds",
+    "red": "new3dsxl",
     "jan": "new2dsxl",
 }
 
 boards = {
     "dslite": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-dsl.png",
     "dsixl": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-dsixl.png",
-    "o3ds": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-o3ds.jpg",
-    "o3dsxl": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-o3dsxl.png",
-    "n3ds": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-n3ds.png",
-    "n3dsxl": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-n3dsxl.png",
-    "n2dsxl": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-n2dsxl.png",
+    "3ds": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-o3ds.jpg",
+    "3dsxl": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-o3dsxl.png",
+    "2ds": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-o2ds.png",
+    "new3ds": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-n3ds.png",
+    "new3dsxl": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-n3dsxl.png",
+    "new2dsxl": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-n2dsxl.png",
+}
+
+# Used for board command title
+title = {
+    "dslite": "DS Lite",
+    "dsixl": "DSI XL",
+    "3ds": "3DS (2011)",
+    "3dsxl": "3DS XL (2011)",
+    "2ds": "2DS",
+    "new3ds": "\"New\" 3DS (2015)",
+    "new3dsxl": "\"New\" 3DS XL (2015)",
+    "new2dsxl": "\"New\" 2DS XL"
 }
 
 
@@ -218,15 +232,24 @@ class AssistanceHardware(commands.Cog):
 
         if console in boards.keys():
             embed.set_image(url=boards[console])
-        elif console in alias.keys() and alias[console] in boards.keys():
-            embed.set_image(url=boards[alias[console]])
+        elif console in alias.keys():
+            # Verify alias has a board (shared with all other commands)
+            if alias[console] in boards.keys():
+                embed.set_image(url=boards[alias[console]])
+            else:
+                embed.description = f'{ctx.author.mention}, Board options are `' + ', '.join(boards) + "`"
+                embed.color = discord.Color.red()
+                await ctx.send(embed=embed, delete_after=10)
         else:
             embed.description = f'{ctx.author.mention}, Board options are `' + ', '.join(boards) + "`"
             embed.color = discord.Color.red()
             await ctx.send(embed=embed, delete_after=10)
             return
 
-        embed.title = f"Board Diagram: {console.capitalize()}"
+        if console in alias.keys():
+            embed.title = f"System: {title[alias[console]]}"
+        else:
+            embed.title = f"System: {title[console]}"
         await ctx.send(embed=embed)
 
 
