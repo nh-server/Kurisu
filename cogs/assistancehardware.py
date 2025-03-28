@@ -240,6 +240,7 @@ class AssistanceHardware(commands.Cog):
                 embed.description = f'{ctx.author.mention}, Board options are `' + ', '.join(boards) + "`"
                 embed.color = discord.Color.red()
                 await ctx.send(embed=embed, delete_after=10)
+                return
         else:
             embed.description = f'{ctx.author.mention}, Board options are `' + ', '.join(boards) + "`"
             embed.color = discord.Color.red()
