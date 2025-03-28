@@ -22,7 +22,14 @@ from discord.app_commands import AppCommand, AppCommandGroup
 from discord.ext import commands
 from subprocess import check_output, CalledProcessError
 from typing import Optional
-from utils import WarnsManager, ConfigurationManager, RestrictionsManager, ExtrasManager, FiltersManager, UserLogManager
+from utils import (
+    WarnsManager,
+    ConfigurationManager,
+    RestrictionsManager,
+    ExtrasManager,
+    FiltersManager,
+    UserLogManager,
+)
 from utils.checks import InsufficientStaffRank, AppInsufficientStaffRank
 from utils.help import KuriHelp, HelpView, CategorySelect, MainHelpPaginator
 from utils.utils import create_error_embed
@@ -30,89 +37,98 @@ from utils.context import KurisuContext
 from utils.patch import patched_member_convert, patched_user_convert
 
 cogs = (
-    'cogs.assistance',
-    'cogs.assistancewii',
-    'cogs.assistancewiiu',
-    'cogs.assistance3ds',
-    'cogs.assistanceswitch',
-    'cogs.assistancehardware',
-    'cogs.automod',
-    'cogs.blah',
-    'cogs.db3ds',
-    'cogs.events',
-    'cogs.extras',
-    'cogs.filters',
-    'cogs.friendcode',
-    'cogs.kickban',
-    'cogs.load',
-    'cogs.lockdown',
-    'cogs.logs',
-    'cogs.loop',
-    'cogs.memes',
-    'cogs.helperlist',
-    'cogs.imgconvert',
-    'cogs.luma3dsdumpconvert',
-    'cogs.mod_staff',
-    'cogs.mod_warn',
-    'cogs.mod_watch',
-    'cogs.mod',
-    'cogs.results',
-    'cogs.rules',
-    'cogs.ssnc',
-    'cogs.xkcdparse',
-    'cogs.seasonal',
-    'cogs.newcomers',
-    'cogs.server_logs',
-    'cogs.soap'
+    "cogs.assistance",
+    "cogs.assistancewii",
+    "cogs.assistancewiiu",
+    "cogs.assistance3ds",
+    "cogs.assistanceswitch",
+    "cogs.assistancehardware",
+    "cogs.automod",
+    "cogs.blah",
+    "cogs.db3ds",
+    "cogs.events",
+    "cogs.extras",
+    "cogs.filters",
+    "cogs.friendcode",
+    "cogs.kickban",
+    "cogs.load",
+    "cogs.lockdown",
+    "cogs.logs",
+    "cogs.loop",
+    "cogs.memes",
+    "cogs.helperlist",
+    "cogs.imgconvert",
+    "cogs.luma3dsdumpconvert",
+    "cogs.mod_staff",
+    "cogs.mod_warn",
+    "cogs.mod_watch",
+    "cogs.mod",
+    "cogs.results",
+    "cogs.rules",
+    "cogs.ssnc",
+    "cogs.xkcdparse",
+    "cogs.seasonal",
+    "cogs.newcomers",
+    "cogs.server_logs",
+    "cogs.soap",
+    "cogs.titletxtparse",
 )
 
 DEBUG = False
-IS_DOCKER = os.environ.get('IS_DOCKER', '')
+IS_DOCKER = os.environ.get("IS_DOCKER", "")
 
 # monkey patch member and user converters
 commands.MemberConverter.convert = patched_member_convert
 commands.UserConverter.convert = patched_user_convert
 
 if IS_DOCKER:
+
     def get_env(name: str):
         contents = os.environ.get(name)
         if contents is None:
-            contents_file = os.environ.get(name + '_FILE')
+            contents_file = os.environ.get(name + "_FILE")
             if contents_file:
                 try:
-                    with open(contents_file, 'r', encoding='utf-8') as f:
+                    with open(contents_file, "r", encoding="utf-8") as f:
                         contents = f.readline().strip()
                 except FileNotFoundError:
-                    sys.exit(f"Couldn't find environment variables {name} or {name}_FILE.")
+                    sys.exit(
+                        f"Couldn't find environment variables {name} or {name}_FILE."
+                    )
                 except IsADirectoryError:
-                    sys.exit(f"Attempted to open {contents_file} (env {name}_FILE) but it is a folder.")
+                    sys.exit(
+                        f"Attempted to open {contents_file} (env {name}_FILE) but it is a folder."
+                    )
             else:
                 sys.exit(f"Missing {name}.")
 
         return contents
 
-    TOKEN = get_env('KURISU_TOKEN')
-    db_user = get_env('DB_USER')
-    db_password = get_env('DB_PASSWORD')
-    SERVER_LOGS_URL = get_env('SERVER_LOGS_URL')
+    TOKEN = get_env("KURISU_TOKEN")
+    db_user = get_env("DB_USER")
+    db_password = get_env("DB_PASSWORD")
+    SERVER_LOGS_URL = get_env("SERVER_LOGS_URL")
     DATABASE_URL = f"postgresql://{db_user}:{db_password}@kurisu_db/{db_user}"
 else:
     kurisu_config = ConfigParser()
     kurisu_config.read("data/config.ini")
-    TOKEN = kurisu_config['Main']['token']
-    DATABASE_URL = kurisu_config['Main']['database_url']
-    SERVER_LOGS_URL = kurisu_config['Main']['server_logs_url']
+    TOKEN = kurisu_config["Main"]["token"]
+    DATABASE_URL = kurisu_config["Main"]["database_url"]
+    SERVER_LOGS_URL = kurisu_config["Main"]["server_logs_url"]
 
 
 def setup_logging():
     log = logging.getLogger()
     log.setLevel(logging.INFO)
-    fmt = logging.Formatter('[{asctime}] [{levelname:^7s}] {name}.{funcName}: {message}', datefmt="%Y-%m-%d %H:%M:%S",
-                            style='{')
+    fmt = logging.Formatter(
+        "[{asctime}] [{levelname:^7s}] {name}.{funcName}: {message}",
+        datefmt="%Y-%m-%d %H:%M:%S",
+        style="{",
+    )
     sh = logging.StreamHandler()
     sh.setFormatter(fmt)
     log.addHandler(sh)
-    logging.getLogger('discord').propagate = False
+    logging.getLogger("discord").propagate = False
 
 
 logger = logging.getLogger(__name__)
@@ -123,11 +139,19 @@ class Kurisu(commands.Bot):
     user: discord.ClientUser
     pool: asyncpg.Pool
     db_closed: bool
-    tree: 'Kuritree'
+    tree: "Kuritree"
 
     def __init__(self, command_prefix, description, commit, branch, pool):
-        intents = discord.Intents(guilds=True, members=True, messages=True, reactions=True, bans=True,
-                                  message_content=True, auto_moderation_execution=True, emojis=True)
+        intents = discord.Intents(
+            guilds=True,
+            members=True,
+            messages=True,
+            reactions=True,
+            bans=True,
+            message_content=True,
+            auto_moderation_execution=True,
+            emojis=True,
+        )
         allowed_mentions = discord.AllowedMentions(everyone=False, roles=False)
         super().__init__(
             command_prefix=commands.when_mentioned_or(*command_prefix),
@@ -135,10 +159,10 @@ class Kurisu(commands.Bot):
             intents=intents,
             allowed_mentions=allowed_mentions,
             case_insensitive=True,
-            tree_cls=Kuritree
+            tree_cls=Kuritree,
         )
 
-        self.tz = pytz.timezone('US/Pacific')
+        self.tz = pytz.timezone("US/Pacific")
         self.startup = datetime.now(self.tz)
         self.IS_DOCKER = IS_DOCKER
         self.commit = commit
@@ -146,7 +170,9 @@ class Kurisu(commands.Bot):
 
         self.roles: dict[str, discord.Role] = {}
 
-        self.channels: dict[str, discord.TextChannel | discord.VoiceChannel | discord.Thread] = {}
+        self.channels: dict[
+            str, discord.TextChannel | discord.VoiceChannel | discord.Thread
+        ] = {}
 
         self.failed_cogs = []
         self.channels_not_found = []
@@ -167,7 +193,7 @@ class Kurisu(commands.Bot):
         self.actions = []
         self.pruning = False
         self.emoji = discord.PartialEmoji.from_str("⁉")
-        self.colour = discord.Colour(0xb01ec3)
+        self.colour = discord.Colour(0xB01EC3)
 
         self._is_all_ready = asyncio.Event()
 
@@ -175,7 +201,9 @@ class Kurisu(commands.Bot):
         self.session = aiohttp.ClientSession()
         await self.load_cogs()
 
-    async def get_context(self, origin: discord.Interaction | discord.Message, /, *, cls=KurisuContext) -> KurisuContext:
+    async def get_context(
+        self, origin: discord.Interaction | discord.Message, /, *, cls=KurisuContext
+    ) -> KurisuContext:
         return await super().get_context(origin, cls=cls)
 
     async def on_ready(self):
@@ -184,65 +212,85 @@ class Kurisu(commands.Bot):
 
         self.guild = self.guilds[0]
 
-        self.emoji = discord.utils.get(self.guild.emojis, name='kurisu') or discord.PartialEmoji.from_str("⁉")
+        self.emoji = discord.utils.get(
+            self.guild.emojis, name="kurisu"
+        ) or discord.PartialEmoji.from_str("⁉")
 
         # Load channels and roles
         await self.load_channels()
         await self.load_roles()
 
-        self.helper_roles: dict[str, discord.Role] = {"3DS": self.roles['On-Duty 3DS'],
-                                                      "WiiU": self.roles['On-Duty Wii U'],
-                                                      "Switch": self.roles['On-Duty Switch'],
-                                                      "Legacy": self.roles['On-Duty Legacy'],
-                                                      "Wii": self.roles['On-Duty Wii']
-                                                      }
+        self.helper_roles: dict[str, discord.Role] = {
+            "3DS": self.roles["On-Duty 3DS"],
+            "WiiU": self.roles["On-Duty Wii U"],
+            "Switch": self.roles["On-Duty Switch"],
+            "Legacy": self.roles["On-Duty Legacy"],
+            "Wii": self.roles["On-Duty Wii"],
+        }
 
-        self.assistance_channels: tuple[discord.TextChannel | discord.VoiceChannel, ...] = (
-            self.channels['3ds-assistance-1'],
-            self.channels['3ds-assistance-2'],
-            self.channels['wiiu-assistance'],
-            self.channels['switch-assistance-1'],
-            self.channels['switch-assistance-2'],
-            self.channels['hacking-general'],
-            self.channels['legacy-systems'],
-            self.channels['tech-talk'],
-            self.channels['hardware'],
+        self.assistance_channels: tuple[
+            discord.TextChannel | discord.VoiceChannel, ...
+        ] = (
+            self.channels["3ds-assistance-1"],
+            self.channels["3ds-assistance-2"],
+            self.channels["wiiu-assistance"],
+            self.channels["switch-assistance-1"],
+            self.channels["switch-assistance-2"],
+            self.channels["hacking-general"],
+            self.channels["legacy-systems"],
+            self.channels["tech-talk"],
+            self.channels["hardware"],
         )
 
-        self.staff_roles: dict[str, discord.Role] = {'Owner': self.roles['Owner'],
-                                                     'SuperOP': self.roles['SuperOP'],
-                                                     'OP': self.roles['OP'],
-                                                     'HalfOP': self.roles['HalfOP'],
-                                                     }
+        self.staff_roles: dict[str, discord.Role] = {
+            "Owner": self.roles["Owner"],
+            "SuperOP": self.roles["SuperOP"],
+            "OP": self.roles["OP"],
+            "HalfOP": self.roles["HalfOP"],
+        }
 
-        self.err_channel = self.channels['bot-err']
+        self.err_channel = self.channels["bot-err"]
         self.tree.err_channel = self.err_channel
 
-        startup_message = f'{self.user.name} has started! {self.guild} has {self.guild.member_count:,} members!'
-        embed = discord.Embed(title=f"{self.user.name} has started!",
-                              description=f"{self.guild} has {self.guild.member_count:,} members!", colour=0xb01ec3)
+        startup_message = f"{self.user.name} has started! {self.guild} has {self.guild.member_count:,} members!"
+        embed = discord.Embed(
+            title=f"{self.user.name} has started!",
+            description=f"{self.guild} has {self.guild.member_count:,} members!",
+            colour=0xB01EC3,
+        )
         if self.failed_cogs or self.roles_not_found or self.channels_not_found:
-            embed.colour = 0xe50730
+            embed.colour = 0xE50730
             if self.failed_cogs:
                 embed.add_field(
                     name="Failed to load cogs:",
-                    value='\n'.join(
-                        f"**{cog}** - {exc_type}\n" for cog, exc_type, _ in self.failed_cogs
+                    value="\n".join(
+                        f"**{cog}** - {exc_type}\n"
+                        for cog, exc_type, _ in self.failed_cogs
                     ),
                     inline=False,
                 )
                 for cog, exc_type, exc in self.failed_cogs:
-                    err_embed = discord.Embed(title=f"Failed to load cog {cog}", colour=0xe50730)
+                    err_embed = discord.Embed(
+                        title=f"Failed to load cog {cog}", colour=0xE50730
+                    )
                     trace = "".join(traceback.format_exception(exc))
                     err_embed.description = f"```py\n{trace}\n```"
                     await self.err_channel.send(embed=err_embed)
             if self.roles_not_found:
-                embed.add_field(name="Roles not Found:", value=', '.join(self.roles_not_found), inline=False)
+                embed.add_field(
+                    name="Roles not Found:",
+                    value=", ".join(self.roles_not_found),
+                    inline=False,
+                )
             if self.channels_not_found:
-                embed.add_field(name="Channels not Found:", value=', '.join(self.channels_not_found), inline=False)
+                embed.add_field(
+                    name="Channels not Found:",
+                    value=", ".join(self.channels_not_found),
+                    inline=False,
+                )
 
         logger.info(startup_message)
-        await self.channels['helpers'].send(embed=embed)
+        await self.channels["helpers"].send(embed=embed)
 
         self.tree.app_commands = await self.tree.fetch_commands()
 
@@ -265,31 +313,70 @@ class Kurisu(commands.Bot):
 
     async def load_cogs(self):
         for extension in cogs:
-            if extension == 'cogs.server_logs' and SERVER_LOGS_URL == '':
-                logger.info("Skipping loading server_logs due to blank server_logs_url.")
+            if extension == "cogs.server_logs" and SERVER_LOGS_URL == "":
+                logger.info(
+                    "Skipping loading server_logs due to blank server_logs_url."
+                )
                 continue
             try:
                 await self.load_extension(extension)
             except commands.ExtensionFailed as e:
                 logger.error("%s failed to load.", extension)
-                self.failed_cogs.append((extension, type(e.original).__name__, e.original))
+                self.failed_cogs.append(
+                    (extension, type(e.original).__name__, e.original)
+                )
 
     async def load_channels(self):
-        channels = ['announcements', 'welcome-and-rules', '3ds-assistance-1', '3ds-assistance-2', 'wiiu-assistance',
-                    'switch-assistance-1', 'switch-assistance-2', 'helpers', 'watch-logs', 'message-logs',
-                    'upload-logs', 'hacking-general', 'meta', 'appeals', 'legacy-systems', 'dev', 'off-topic',
-                    'voice-and-music', 'bot-cmds', 'bot-talk', 'mods', 'mod-mail', 'mod-logs', 'server-logs', 'bot-err',
-                    'elsewhere', 'newcomers', 'nintendo-discussion', 'tech-talk', 'hardware', 'streaming-gamer', 'wii-vwii-assistance']
+        channels = [
+            "announcements",
+            "welcome-and-rules",
+            "3ds-assistance-1",
+            "3ds-assistance-2",
+            "wiiu-assistance",
+            "switch-assistance-1",
+            "switch-assistance-2",
+            "helpers",
+            "watch-logs",
+            "message-logs",
+            "upload-logs",
+            "hacking-general",
+            "meta",
+            "appeals",
+            "legacy-systems",
+            "dev",
+            "off-topic",
+            "voice-and-music",
+            "bot-cmds",
+            "bot-talk",
+            "mods",
+            "mod-mail",
+            "mod-logs",
+            "server-logs",
+            "bot-err",
+            "elsewhere",
+            "newcomers",
+            "nintendo-discussion",
+            "tech-talk",
+            "hardware",
+            "streaming-gamer",
+            "wii-vwii-assistance",
+        ]
 
         for n in channels:
             db_channel = await self.configuration.get_channel_by_name(n)
             if db_channel:
                 channel_id = db_channel[0]
                 channel = self.guild.get_channel(channel_id)
-                if channel and isinstance(channel, (discord.TextChannel, discord.VoiceChannel)):
+                if channel and isinstance(
+                    channel, (discord.TextChannel, discord.VoiceChannel)
+                ):
                     self.channels[n] = channel
                     continue
-            channel = discord.utils.find(lambda c: c.name == n and isinstance(c, (discord.TextChannel, discord.VoiceChannel)), self.guild.channels)
+            channel = discord.utils.find(
+                lambda c: c.name == n
+                and isinstance(c, (discord.TextChannel, discord.VoiceChannel)),
+                self.guild.channels,
+            )
             if channel:
                 assert isinstance(channel, (discord.TextChannel, discord.VoiceChannel))
                 self.channels[n] = channel
@@ -299,11 +386,43 @@ class Kurisu(commands.Bot):
                 logger.warning("Failed to find channel %s", n)
 
     async def load_roles(self):
-        roles = ['Helpers', 'Staff', 'HalfOP', 'OP', 'SuperOP', 'Owner', 'On-Duty 3DS', 'On-Duty Wii U',
-                 'On-Duty Switch', 'On-Duty Legacy', 'On-Duty Wii', 'Probation', 'Retired Staff', 'Verified', 'Trusted', 'Muted',
-                 'No-Help', 'No-elsewhere', 'No-Memes', 'No-art', 'No-animals', '#art-discussion', 'No-Embed', '#elsewhere',
-                 'Small Help', 'meta-mute', 'appeal-mute', 'crc', 'No-Tech', 'help-mute', 'streamer(temp)', 'streamer', '🍰',
-                 'No-U', 'No-Wii']
+        roles = [
+            "Helpers",
+            "Staff",
+            "HalfOP",
+            "OP",
+            "SuperOP",
+            "Owner",
+            "On-Duty 3DS",
+            "On-Duty Wii U",
+            "On-Duty Switch",
+            "On-Duty Legacy",
+            "On-Duty Wii",
+            "Probation",
+            "Retired Staff",
+            "Verified",
+            "Trusted",
+            "Muted",
+            "No-Help",
+            "No-elsewhere",
+            "No-Memes",
+            "No-art",
+            "No-animals",
+            "#art-discussion",
+            "No-Embed",
+            "#elsewhere",
+            "Small Help",
+            "meta-mute",
+            "appeal-mute",
+            "crc",
+            "No-Tech",
+            "help-mute",
+            "streamer(temp)",
+            "streamer",
+            "🍰",
+            "No-U",
+            "No-Wii",
+        ]
 
         for n in roles:
             db_role = await self.configuration.get_role(n)
@@ -324,10 +443,10 @@ class Kurisu(commands.Bot):
     async def on_command_error(self, ctx: KurisuContext, exc: commands.CommandError):
         author = ctx.author
         command = ctx.command
-        exc = getattr(exc, 'original', exc)
+        exc = getattr(exc, "original", exc)
         channel = self.err_channel or ctx.channel
 
-        if hasattr(ctx.command, 'on_error'):
+        if hasattr(ctx.command, "on_error"):
             return
 
         if isinstance(exc, commands.CommandNotFound):
@@ -337,10 +456,12 @@ class Kurisu(commands.Bot):
             await ctx.send_help(ctx.command)
 
         elif isinstance(exc, commands.NoPrivateMessage):
-            await ctx.send(f'`{command}` cannot be used in direct messages.')
+            await ctx.send(f"`{command}` cannot be used in direct messages.")
 
         elif isinstance(exc, commands.MissingPermissions):
-            await ctx.send(f"{author.mention} You don't have permission to use `{command}`.")
+            await ctx.send(
+                f"{author.mention} You don't have permission to use `{command}`."
+            )
 
         elif isinstance(exc, InsufficientStaffRank):
             await ctx.send(str(exc))
@@ -348,32 +469,39 @@ class Kurisu(commands.Bot):
         elif isinstance(exc, commands.CheckFailure):
             if ctx.cog and ctx.cog.has_error_handler():
                 return
-            await ctx.send(f'{author.mention} You cannot use `{command}`.')
+            await ctx.send(f"{author.mention} You cannot use `{command}`.")
 
         elif isinstance(exc, commands.MissingRequiredArgument):
-            await ctx.send(f'{author.mention} You are missing required argument `{exc.param.name}`.\n')
+            await ctx.send(
+                f"{author.mention} You are missing required argument `{exc.param.name}`.\n"
+            )
             await ctx.send_help(ctx.command)
             command.reset_cooldown(ctx)
 
         elif isinstance(exc, commands.BadLiteralArgument):
-            await ctx.send(f'Argument {exc.param.name} must be one of the following `{"` `".join(str(literal) for literal in exc.literals)}`.')
+            await ctx.send(
+                f'Argument {exc.param.name} must be one of the following `{"` `".join(str(literal) for literal in exc.literals)}`.'
+            )
             command.reset_cooldown(ctx)
 
         elif isinstance(exc, commands.UserInputError):
-            await ctx.send(f'{author.mention} A bad argument was given: `{exc}`\n')
+            await ctx.send(f"{author.mention} A bad argument was given: `{exc}`\n")
             await ctx.send_help(ctx.command)
             command.reset_cooldown(ctx)
 
         elif isinstance(exc, commands.MaxConcurrencyReached):
-            await ctx.send('This command is already being executed.')
+            await ctx.send("This command is already being executed.")
 
         elif isinstance(exc, commands.errors.CommandOnCooldown):
             try:
                 await ctx.message.delete()
             except (discord.errors.NotFound, discord.errors.Forbidden):
                 pass
-            await ctx.send(f"{author.mention} This command was used {exc.cooldown.per - exc.retry_after:.2f}s ago and is on cooldown. "
-                           f"Try again in {exc.retry_after:.2f}s.", delete_after=10)
+            await ctx.send(
+                f"{author.mention} This command was used {exc.cooldown.per - exc.retry_after:.2f}s ago and is on cooldown. "
+                f"Try again in {exc.retry_after:.2f}s.",
+                delete_after=10,
+            )
 
         elif isinstance(exc, discord.NotFound):
             await ctx.send("ID not found.")
@@ -385,12 +513,16 @@ class Kurisu(commands.Bot):
 
         elif isinstance(exc, commands.CommandInvokeError):
             logger.error("", exc_info=exc)
-            await ctx.send(f'{author.mention} `{command}` raised an exception during usage')
+            await ctx.send(
+                f"{author.mention} `{command}` raised an exception during usage"
+            )
             embed = create_error_embed(ctx, exc)
             await channel.send(embed=embed)
         else:
             logger.error("", exc_info=exc)
-            await ctx.send(f'{author.mention} Unexpected exception occurred while using the command `{command}`')
+            await ctx.send(
+                f"{author.mention} Unexpected exception occurred while using the command `{command}`"
+            )
             embed = create_error_embed(ctx, exc)
             await channel.send(embed=embed)
 
@@ -398,7 +530,7 @@ class Kurisu(commands.Bot):
         logger.error("", exc_info=True)
         if not self.err_channel:
             return
-        embed = discord.Embed(title="Error Event", colour=0xe50730)
+        embed = discord.Embed(title="Error Event", colour=0xE50730)
         embed.add_field(name="Event Method", value=event_method)
         trace = traceback.format_exc()
         embed.description = f"```py\n{trace}\n```"
@@ -419,57 +551,77 @@ class Kuritree(app_commands.CommandTree):
         error: app_commands.AppCommandError,
     ):
 
-        error = getattr(error, 'original', error)
+        error = getattr(error, "original", error)
 
         if isinstance(error, app_commands.CommandNotFound):
             return await interaction.response.send_message(error, ephemeral=True)
 
         author = interaction.user
         ctx = await commands.Context.from_interaction(interaction)
-        command: str = interaction.command.name if interaction.command is not None else "No command"
+        command: str = (
+            interaction.command.name
+            if interaction.command is not None
+            else "No command"
+        )
         channel = self.err_channel or interaction.channel
-        assert isinstance(channel, (discord.TextChannel, discord.VoiceChannel, discord.Thread))
+        assert isinstance(
+            channel, (discord.TextChannel, discord.VoiceChannel, discord.Thread)
+        )
 
         if isinstance(error, app_commands.NoPrivateMessage):
-            await ctx.send(f'`{command}` cannot be used in direct messages.', ephemeral=True)
+            await ctx.send(
+                f"`{command}` cannot be used in direct messages.", ephemeral=True
+            )
 
         elif isinstance(error, app_commands.TransformerError):
             await interaction.response.send_message(error, ephemeral=True)
 
         elif isinstance(error, app_commands.MissingPermissions):
-            await ctx.send(f"{author.mention} You don't have permission to use `{command}`.", ephemeral=True)
+            await ctx.send(
+                f"{author.mention} You don't have permission to use `{command}`.",
+                ephemeral=True,
+            )
 
         elif isinstance(error, AppInsufficientStaffRank):
             await ctx.send(str(error), ephemeral=True)
 
         elif isinstance(error, app_commands.CheckFailure):
-            await ctx.send(f'{author.mention} You cannot use `{command}`.', ephemeral=True)
+            await ctx.send(
+                f"{author.mention} You cannot use `{command}`.", ephemeral=True
+            )
 
         elif isinstance(error, app_commands.CommandOnCooldown):
             await ctx.send(
                 f"{author.mention} This command was used {error.cooldown.per - error.retry_after:.2f}s ago and is on cooldown. "
-                f"Try again in {error.retry_after:.2f}s.", ephemeral=True)
+                f"Try again in {error.retry_after:.2f}s.",
+                ephemeral=True,
+            )
         else:
             if isinstance(error, discord.Forbidden):
                 msg = f"💢 I can't help you if you don't let me!\n`{error.text}`."
             elif isinstance(error, app_commands.CommandInvokeError):
-                msg = f'{author.mention} `{command}` raised an exception during usage'
+                msg = f"{author.mention} `{command}` raised an exception during usage"
             else:
-                msg = f'{author.mention} Unexpected exception occurred while using the command `{command}`'
+                msg = f"{author.mention} Unexpected exception occurred while using the command `{command}`"
 
             await ctx.send(msg, ephemeral=True)
             if channel:
                 embed = create_error_embed(interaction, error)
                 await channel.send(embed=embed)
             else:
-                self.logger.error("Error during application command usage.", exc_info=error)
+                self.logger.error(
+                    "Error during application command usage.", exc_info=error
+                )
 
 
 async def startup():
     setup_logging()
 
     if discord.version_info.major < 2 and discord.version_info.minor < 1:
-        logger.error("discord.py is not at least 2.1.0x. (current version: %s)", discord.__version__)
+        logger.error(
+            "discord.py is not at least 2.1.0x. (current version: %s)",
+            discord.__version__,
+        )
         return 2
 
     if sys.hexversion < 0x30A00F0:  # 3.10
@@ -479,27 +631,34 @@ async def startup():
     if not IS_DOCKER:
         # attempt to get current git information
         try:
-            commit = check_output(['git', 'rev-parse', 'HEAD']).decode('ascii')[:-1]
+            commit = check_output(["git", "rev-parse", "HEAD"]).decode("ascii")[:-1]
         except CalledProcessError as e:
             logger.error("Checking for git commit failed: %s: %s", type(e).__name__, e)
             commit = "<unknown>"
 
         try:
-            branch = check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD']).decode()[:-1]
+            branch = check_output(
+                ["git", "rev-parse", "--abbrev-ref", "HEAD"]
+            ).decode()[:-1]
         except CalledProcessError as e:
             logger.error("Checking for git branch failed: %s: %s", type(e).__name__, e)
             branch = "<unknown>"
     else:
-        commit = os.environ.get('COMMIT_SHA')
-        branch = os.environ.get('COMMIT_BRANCH')
+        commit = os.environ.get("COMMIT_SHA")
+        branch = os.environ.get("COMMIT_BRANCH")
 
     async with asyncpg.create_pool(DATABASE_URL, min_size=20, max_size=20) as pool:
         logger.info("Starting Kurisu on commit %s on branch %s", commit, branch)
-        bot = Kurisu(command_prefix=['.', '!'], description="Kurisu, the bot for Nintendo Homebrew!", commit=commit,
-                     branch=branch, pool=pool)
+        bot = Kurisu(
+            command_prefix=[".", "!"],
+            description="Kurisu, the bot for Nintendo Homebrew!",
+            commit=commit,
+            branch=branch,
+            pool=pool,
+        )
         bot.help_command = KuriHelp()
 
-        @bot.tree.command(name='help')
+        @bot.tree.command(name="help")
         async def help_app_command(interaction: discord.Interaction):
             """Help for kurisu slash commands."""
 
@@ -515,11 +674,13 @@ async def startup():
             paginator = MainHelpPaginator(mapping, ctx)
             view = HelpView(paginator, ctx)
             view.add_item(CategorySelect(mapping, ctx))
-            await interaction.response.send_message(embed=view.paginator.current(), view=view, ephemeral=True)
+            await interaction.response.send_message(
+                embed=view.paginator.current(), view=view, ephemeral=True
+            )
             view.message = await interaction.original_response()
 
         await bot.start(TOKEN)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     asyncio.run(startup())
