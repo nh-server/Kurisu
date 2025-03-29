@@ -17,12 +17,23 @@ if TYPE_CHECKING:
 # the most i've seen IRL on a non-dead card was about 5-6
 _MAX_BROKEN_TITLES = 10
 
+_DLC_TIDHIGH = "0004008c"
+_STREETPASS_TIDLOWS = [
+    "00020800",  # JPN
+    "00021800",  # USA
+    "00022800",  # EUR
+    "00026800",  # CHN
+    "00027800",  # KOR
+    "00028800",  # TWN
+]
 
 _TREE_INDENT = (
     " " * 3
 )  # Windows TREE uses three spaces for indents, instead of the usual four
 _TREE_DIRECTORY_RE = re.compile(r"[\\\+]---(\S+)")
 _TREE_FILE_RE = re.compile(r"[\| ]+(\S+)")
+
+_HEX_RE = re.compile(r"[0-9a-fA-F]")
 
 
 def parse_tree(lines: list[str]) -> tuple[dict, bool]:
@@ -124,11 +135,11 @@ class TitleTXTParser(commands.Cog):
                 # old data better than no data
                 return
 
-    def get_game_by_tidlow(self, tidlow: str) -> str | None:
+    def get_game_by_tid(self, tidlow: str, tidhigh: str = "00040000") -> str | None:
         """
         Get a title's name by it's TIDlow, as used in the 3DS folder structure
         """
-        full_tid = f"00040000{tidlow.upper()}"
+        full_tid = tidhigh.upper() + tidlow.upper()
         for title in self.titledb:
             if title["TitleID"] == full_tid:
                 return title["Name"]
@@ -148,47 +159,135 @@ class TitleTXTParser(commands.Cog):
 
         return None
 
-    def get_name_by_tidlow(self, tidlow: str) -> str | None:
+    def get_name_by_tid(self, tidlow: str, tidhigh: str = "00040000") -> str | None:
         """
         Try both the homebrew and game databases
         """
-        name = self.get_game_by_tidlow(tidlow)
+        name = self.get_game_by_tid(tidlow, tidhigh)
         if name is None:
             name = self.get_hb_by_tidlow(tidlow)
+            if name is None:
+                # exactly one system title received DLC... StreetPass Mii Plaza
+                # this is not counted as a release by 3dsdb, so it needs to be handled as a special case
+                if tidlow in _STREETPASS_TIDLOWS:
+                    name = "StreetPass Mii Plaza"
 
         return name
 
     @staticmethod
-    def bad_titles(directory: dict) -> list[str] | None:
+    def check_standard_titles(in_tree: dict) -> list[str]:
+        """
+        Parse a set of normal (non-DLC) titles
+        """
+
+        bad_titles = list()
+
+        for title_id, title in in_tree.items():
+            if not isinstance(title, dict):
+                continue
+
+            flag_ticket_ok = False
+            flag_app_ok = False
+            if "content" not in title:
+                bad_titles.append(title_id)
+                continue
+
+            if "cmd" in title:
+                if len(title["cmd"]) == 0:
+                    # suggested by tophatted
+                    # empty cmd folder may cause issues
+                    bad_titles.append(title_id)
+                    continue
+
+            for content_item_name in title["content"]:
+                if ".app" in content_item_name:
+                    flag_app_ok = True
+                elif ".tmd" in content_item_name:
+                    flag_ticket_ok = True
+
+            if not (flag_app_ok and flag_ticket_ok):
+                bad_titles.append(title_id)
+
+        return bad_titles
+
+    @staticmethod
+    def check_dlc_titles(in_tree: dict) -> list[str]:
+        """
+        Parse a set of DLC titles.
+        The structure is different compared to normal titles, so special logic is required.
+        """
+
+        bad_titles = list()
+
+        for title_id, title in in_tree.items():
+            if "content" not in title:
+                bad_titles.append(title_id)
+                continue
+
+            if "cmd" in title["content"]:
+                if len(title["content"]["cmd"]) == 0:
+                    bad_titles.append(title_id)
+                    continue
+
+            flag_app_ok = False
+            flag_tmd_ok = False
+            for content_folder_id, content_folder in title["content"].items():
+                if not isinstance(content_folder, dict):
+                    # file, maybe tmd
+                    if ".tmd" in content_folder:
+                        flag_tmd_ok = True
+                    continue
+
+                if not _HEX_RE.match(content_folder_id):
+                    # not a hexadecimal name... may be cmd
+                    continue
+
+                if len(content_folder) == 0:
+                    bad_titles.append(title_id)
+                    break
+
+                for file in content_folder:
+                    if ".app" in file:
+                        flag_app_ok = True
+
+            if title_id in bad_titles:
+                # set inside content loop check, break again here
+                break
+
+            if not (flag_app_ok and flag_tmd_ok):
+                bad_titles.append(title_id)
+
+        return bad_titles
+
+    def bad_titles(self, in_tree: dict) -> list[str] | None:
         """
         Further examine the output of parse_dir to get a list of 3DS titles
         which may be missing data.
 
-        Returns None if the 0040000 folder is missing (filename match may be a false positive)
+        Returns None if the 00040000 folder is missing (filename match may be a false positive)
         """
 
-        if "00040000" not in directory:
+        if "00040000" not in in_tree:
             return None
 
-        bad_titles = []
-        for name, item in directory["00040000"].items():
-            if not isinstance(item, dict):
-                pass
-
-            flag_ticket_ok = False
-            flag_app_ok = False
-            if "content" not in item:
-                bad_titles.append(name)
+        bad_titles = dict()
+        for folder_name, folder in in_tree.items():
+            if not isinstance(folder, dict):
                 continue
 
-            for item_name in item["content"]:
-                if ".app" in item_name:
-                    flag_app_ok = True
-                elif "tmd" in item_name:
-                    flag_ticket_ok = True
+            if not folder_name.startswith("0004"):
+                continue
 
-            if not (flag_app_ok and flag_ticket_ok):
-                bad_titles.append(name)
+            if folder_name == _DLC_TIDHIGH:
+                # dlc, special case
+                bad_titles_for_folder = self.check_dlc_titles(folder)
+                if len(bad_titles_for_folder) > 0:
+                    bad_titles[folder_name] = bad_titles_for_folder
+
+            else:
+                bad_titles_for_folder = self.check_standard_titles(folder)
+                if len(bad_titles_for_folder) > 0:
+                    bad_titles[folder_name] = bad_titles_for_folder
 
         return bad_titles
 
@@ -226,14 +325,8 @@ class TitleTXTParser(commands.Cog):
                                 ),  # skip the first three lines - header and volume info
                             )
                         )
-                        bad_titles = await self.bot.loop.run_in_executor(
-                            pool,
-                            functools.partial(self.bad_titles, parsed_tree),
-                        )
-                        bad_folders = await self.bot.loop.run_in_executor(
-                            pool,
-                            functools.partial(self.bad_folders, parsed_tree),
-                        )
+                bad_titles = self.bad_titles(parsed_tree)
+                bad_folders = self.bad_folders(parsed_tree)
 
                 if bad_titles is None:
                     # Happens if no "00040000" folder is found
@@ -246,20 +339,32 @@ class TitleTXTParser(commands.Cog):
                     out_message = f"{message.author.mention} This `title.txt` appears to be OK. Your HOME Menu issues are not likely to be caused by missing data."
                     await message.reply(out_message)
                     return
+
                 out_message = f"{message.author.mention} Missing data was found in this `title.txt` which may be causing issues.\n\n"
-                out_message += "Copy the following folders from the `00040000` folder inside the `title` folder to your computer, then delete them from your SD card:\n"
+                title_counter = 0
+                total_title_count = sum(len(folder) for folder in bad_titles)
 
-                for counter, title in enumerate(bad_titles):
-                    title_name = self.get_name_by_tidlow(title)
-                    if title_name:
-                        out_message += f"- `{title}` ({title_name})\n"
-                    else:
-                        out_message += f"- `{title}`\n"
+                for folder_name, folder in bad_titles.items():
+                    out_message += f"Copy the following folders from the `{folder_name}` folder inside the `title` folder to your computer, then delete them from your SD card:\n"
 
-                    if counter > _MAX_BROKEN_TITLES:
-                        remaining = len(bad_titles) - _MAX_BROKEN_TITLES
-                        out_message += f"...and {remaining} more "
-                        out_message += " (send another title.txt once you've removed the above folders for more info)\n"
+                    for title in folder:
+                        title_name = self.get_name_by_tid(title)
+                        if title_name:
+                            if folder_name == _DLC_TIDHIGH:
+                                out_message += f"- `{title}` (DLC for {title_name})\n"
+                            else:
+                                out_message += f"- `{title}` ({title_name})\n"
+                        else:
+                            out_message += f"- `{title}`\n"
+                        title_counter += 1
+
+                        if title_counter > _MAX_BROKEN_TITLES:
+                            remaining = total_title_count - title_counter
+                            out_message += f"...and {remaining} more "
+                            out_message += " (send another title.txt once you've removed the above folders for more info)\n"
+                            break
+
+                    if title_counter > _MAX_BROKEN_TITLES:
                         break
 
                 if len(bad_folders) > 0:
