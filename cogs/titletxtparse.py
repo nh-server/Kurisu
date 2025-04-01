@@ -7,6 +7,8 @@ import re
 from discord.ext import commands, tasks
 from typing import TYPE_CHECKING
 
+from codecs import BOM_UTF16_BE, BOM_UTF16_LE
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
@@ -26,14 +28,15 @@ _STREETPASS_TIDLOWS = [
     "00027800",  # KOR
     "00028800",  # TWN
 ]
+_THEME_TIDLOWS = ["0004008c", "00009800"]
 
 _TREE_INDENT = (
     " " * 3
 )  # Windows TREE uses three spaces for indents, instead of the usual four
-_TREE_DIRECTORY_RE = re.compile(r"[\\\+]---(\S+)")
+_TREE_DIRECTORY_RE = re.compile(r"[\\\+]---(.+)")
 _TREE_FILE_RE = re.compile(r"[\| ]+(\S+)")
 
-_HEX_RE = re.compile(r"[0-9a-fA-F]")
+_HEX_RE = re.compile(r"^[0-9a-fA-F]+$")
 
 _TITLE_TXT_RE = re.compile(r"[TtIiLlEe]{4,}.+\.[tx]{3,}")
 
@@ -88,6 +91,12 @@ def parse_tree(lines: list[str]) -> tuple[dict, bool]:
         pos = pos + 1
 
     return directory, fs_corruption_flag
+
+
+class MultipleID1Exception(Exception):
+    """
+    Exception thrown when multiple ID1s are found
+    """
 
 
 class TitleTXTParser(commands.Cog):
@@ -173,6 +182,9 @@ class TitleTXTParser(commands.Cog):
                 # this is not counted as a release by 3dsdb, so it needs to be handled as a special case
                 if tidlow in _STREETPASS_TIDLOWS:
                     name = "StreetPass Mii Plaza"
+                # ...maybe two
+                elif tidlow in _THEME_TIDLOWS:
+                    name = "themes"  # intended to make the string "DLC for themes"... kludgy but user will get the idea
 
         return name
 
@@ -245,8 +257,10 @@ class TitleTXTParser(commands.Cog):
                     continue
 
                 if len(content_folder) == 0:
-                    bad_titles.append(title_id)
-                    break
+                    # karma says empty content folder on themes doesn't break HOME menu
+                    if title_id not in _THEME_TIDLOWS:
+                        bad_titles.append(title_id)
+                        break
 
                 for file in content_folder:
                     if ".app" in file:
@@ -270,14 +284,12 @@ class TitleTXTParser(commands.Cog):
         """
 
         if "00040000" not in in_tree:
-            if "title" in in_tree and "dbs" in in_tree:
-                # oops! helpee ran tree from id1
-                # no big deal, easy to work around
-                # just dig down a layer
-                # thanks for the suggestion, Karma
-                in_tree = in_tree["title"]
-            else:
+            # this isn't the title folder... search for it
+            result = self.find_title_folder(in_tree)
+            if not result:
                 return None
+            else:
+                in_tree = result
 
         bad_titles = dict()
         for folder_name, folder in in_tree.items():
@@ -313,18 +325,72 @@ class TitleTXTParser(commands.Cog):
 
         return bad_folders
 
+    @staticmethod
+    def find_title_folder(directory: dict) -> dict:
+        """
+        Try to find the title folder if Tree wasn't run from there already
+        """
+        if "title" in directory:
+            # tree was run from id1
+            return directory["title"]
+
+        if "Nintendo 3DS" in directory:
+            # tree was run from root
+            for id0_name, id0 in directory["Nintendo 3DS"].items():
+                if isinstance(id0, dict) and _HEX_RE.match(id0_name):
+                    if len(id0) > 1:
+                        # uh oh, multiple ID1s, bail!
+                        raise MultipleID1Exception(id0.keys())
+
+                    for id1_name, id1 in id0.items():
+                        if isinstance(id1, dict) and _HEX_RE.match(id1_name):
+                            if "title" in id1:
+                                return id1["title"]
+                            else:
+                                # no title folder... strange
+                                return None
+
+        for item_name, item in directory.items():
+            if isinstance(item, dict) and _HEX_RE.match(item_name):
+                # id0 or id1
+                for subitem_name, subitem in item.items():
+                    if isinstance(subitem, dict) and subitem_name == "title":
+                        # "item" was id1
+                        return subitem
+
+                # "item" is id0
+                if len(item) > 1:
+                    raise MultipleID1Exception(item.keys())
+
+                for id1_name, id1 in item.items():
+
+                    if "title" in id1:
+                        return id1["title"]
+
+        logger.debug("helpee did some weird things to their SD")
+        return None  # failsafe... what the hell have they done to their SD?
+
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
         """
         Message handler for the TitleTXT parser cog.
         """
         for f in message.attachments:
+            if f.size > (20 * 1024 * 1024):
+                # it should NEVER get to 20mb, but 20mb in RAM won't kill Kurisu
+                # 500mb might thought
+                continue
             if _TITLE_TXT_RE.match(f.filename):
                 async with self.bot.session.get(f.url, timeout=45) as titletxt_request:
                     titletxt_content = await titletxt_request.read()
-                    titletxt_lines = titletxt_content.decode(
-                        encoding="utf-16"
-                    ).splitlines()
+                    if titletxt_content[:2] in (BOM_UTF16_LE, BOM_UTF16_BE):
+                        titletxt_lines = titletxt_content.decode(
+                            encoding="utf-16", errors="replace"
+                        ).splitlines()
+                    else:
+                        titletxt_lines = titletxt_content.decode(
+                            encoding="utf-8", errors="replace"
+                        ).splitlines()
                     with concurrent.futures.ProcessPoolExecutor() as pool:
                         parsed_tree, fs_corruption_flag = (
                             await self.bot.loop.run_in_executor(
@@ -334,8 +400,14 @@ class TitleTXTParser(commands.Cog):
                                 ),  # skip the first three lines - header and volume info
                             )
                         )
-                bad_titles = self.bad_titles(parsed_tree)
-                bad_folders = self.bad_folders(parsed_tree)
+                try:
+                    bad_titles = self.bad_titles(parsed_tree)
+                    bad_folders = self.bad_folders(parsed_tree)
+                except MultipleID1Exception:
+                    out_message = "You appear to have multiple ID1 folders! "
+                    out_message += "Please [fix this](<https://wiki.hacks.guide/wiki/3DS:MID1>) and then try again."
+                    await message.reply(out_message)
+                    return
 
                 if bad_titles is None:
                     # Happens if no "00040000" folder is found
