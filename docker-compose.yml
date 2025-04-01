@@ -12,7 +12,7 @@ services:
         aliases:
           - kurisu_db
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U kurisu" ]
+      test: ["CMD-SHELL", "pg_isready -U kurisu"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -27,8 +27,8 @@ services:
       SERVER_LOGS_URL_FILE: /run/secrets/server_logs_url
       DB_USER: kurisu
       DB_PASSWORD: dev123
-    # networks:
-    #   - bridge
+    networks:
+      - bridge
     secrets:
       - kurisu_token
       - server_logs_url
@@ -42,7 +42,6 @@ networks:
 
 volumes:
   kurisutestdb:
-
 
 secrets:
   kurisu_token:
