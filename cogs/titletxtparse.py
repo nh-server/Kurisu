@@ -404,24 +404,37 @@ class TitleTXTParser(commands.Cog):
                     bad_titles = self.bad_titles(parsed_tree)
                     bad_folders = self.bad_folders(parsed_tree)
                 except MultipleID1Exception:
-                    out_message = "You appear to have multiple ID1 folders! "
+                    if len(message.attachments) > 1:
+                        out_message = f"{message.author.mention}: `{f.filename}`: You appear to have multiple ID1 folders! "
+                    else:
+                        out_message = f"{message.author.mention} You appear to have multiple ID1 folders! "
                     out_message += "Please [fix this](<https://wiki.hacks.guide/wiki/3DS:MID1>) and then try again."
                     await message.reply(out_message)
-                    return
+                    continue
 
                 if bad_titles is None:
                     # Happens if no "00040000" folder is found
-                    out_message = f"{message.author.mention} This doesn't look correct. Are you sure you're running the `tree` command in the right folder?"
+                    if len(message.attachments) > 1:
+                        out_message = f"{message.author.mention}: `{f.filename}`: This doesn't look correct. Are you sure you're running the `tree` command in the right folder?"
+                    else:
+                        out_message = f"{message.author.mention} This doesn't look correct. Are you sure you're running the `tree` command in the right folder?"
                     await message.reply(out_message)
-                    return
+                    continue
 
                 if len(bad_titles) == 0:
                     # no issues found
-                    out_message = f"{message.author.mention} This `title.txt` appears to be OK. Your HOME Menu issues are not likely to be caused by missing data."
+                    if len(message.attachments) > 1:
+                        out_message = f"{message.author.mention}: `{f.filename}`: This `title.txt` appears to be OK. Your HOME Menu issues are not likely to be caused by missing data."
+                    else:
+                        out_message = f"{message.author.mention}: This `title.txt` appears to be OK. Your HOME Menu issues are not likely to be caused by missing data."
                     await message.reply(out_message)
-                    return
+                    continue
 
-                out_message = f"{message.author.mention} Missing data was found in this `title.txt` which may be causing issues.\n\n"
+                if len(message.attachments) > 1:
+                    out_message = f"{message.author.mention}: `{f.filename}`: Missing data was found in this `title.txt` which may be causing issues.\n\n"
+                else:
+                    out_message = f"{message.author.mention} Missing data was found in this `title.txt` which may be causing issues.\n\n"
+
                 title_counter = 0
                 total_title_count = sum(len(folder) for folder in bad_titles)
 
