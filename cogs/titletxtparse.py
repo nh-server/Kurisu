@@ -237,7 +237,6 @@ class TitleTXTParser(commands.Cog):
                 if not isinstance(content_folder, dict):
                     # file, maybe tmd
                     if ".tmd" in content_folder_id:
-                        logger.debug("tmd OK for %s", title_id)
                         flag_tmd_ok = True
                     continue
 
@@ -251,7 +250,6 @@ class TitleTXTParser(commands.Cog):
 
                 for file in content_folder:
                     if ".app" in file:
-                        logger.debug("app OK for %s", title_id)
                         flag_app_ok = True
 
             if title_id in bad_titles:
@@ -259,11 +257,7 @@ class TitleTXTParser(commands.Cog):
                 break
 
             if not (flag_app_ok and flag_tmd_ok):
-                logger.debug("%s not ok", title_id)
-                logger.debug("app %s tmd %s", flag_app_ok, flag_tmd_ok)
                 bad_titles.append(title_id)
-
-            logger.debug("---")
 
         return bad_titles
 
@@ -276,7 +270,14 @@ class TitleTXTParser(commands.Cog):
         """
 
         if "00040000" not in in_tree:
-            return None
+            if "title" in in_tree and "dbs" in in_tree:
+                # oops! helpee ran tree from id1
+                # no big deal, easy to work around
+                # just dig down a layer
+                # thanks for the suggestion, Karma
+                in_tree = in_tree["title"]
+            else:
+                return None
 
         bad_titles = dict()
         for folder_name, folder in in_tree.items():
