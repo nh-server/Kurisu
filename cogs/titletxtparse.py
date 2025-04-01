@@ -351,7 +351,11 @@ class TitleTXTParser(commands.Cog):
                                 return None
 
         for item_name, item in directory.items():
-            if isinstance(item, dict) and _HEX_RE.match(item_name):
+            if (
+                isinstance(item, dict)
+                and _HEX_RE.match(item_name)
+                and len(item_name) > 8  # catch running from 00040000
+            ):
                 # id0 or id1
                 for subitem_name, subitem in item.items():
                     if isinstance(subitem, dict) and subitem_name == "title":
