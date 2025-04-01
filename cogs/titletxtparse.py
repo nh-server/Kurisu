@@ -35,6 +35,8 @@ _TREE_FILE_RE = re.compile(r"[\| ]+(\S+)")
 
 _HEX_RE = re.compile(r"[0-9a-fA-F]")
 
+_TITLE_TXT_RE = re.compile(r"[TtIiLlEe]{4,}.+\.[tx]{3,}")
+
 
 def parse_tree(lines: list[str]) -> tuple[dict, bool]:
     """
@@ -310,7 +312,7 @@ class TitleTXTParser(commands.Cog):
         Message handler for the TitleTXT parser cog.
         """
         for f in message.attachments:
-            if f.filename.lower() == "title.txt":
+            if _TITLE_TXT_RE.match(f.filename):
                 async with self.bot.session.get(f.url, timeout=45) as titletxt_request:
                     titletxt_content = await titletxt_request.read()
                     titletxt_lines = titletxt_content.decode(
