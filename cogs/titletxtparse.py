@@ -236,7 +236,8 @@ class TitleTXTParser(commands.Cog):
             for content_folder_id, content_folder in title["content"].items():
                 if not isinstance(content_folder, dict):
                     # file, maybe tmd
-                    if ".tmd" in content_folder:
+                    if ".tmd" in content_folder_id:
+                        logger.debug("tmd OK for %s", title_id)
                         flag_tmd_ok = True
                     continue
 
@@ -250,6 +251,7 @@ class TitleTXTParser(commands.Cog):
 
                 for file in content_folder:
                     if ".app" in file:
+                        logger.debug("app OK for %s", title_id)
                         flag_app_ok = True
 
             if title_id in bad_titles:
@@ -257,7 +259,11 @@ class TitleTXTParser(commands.Cog):
                 break
 
             if not (flag_app_ok and flag_tmd_ok):
+                logger.debug("%s not ok", title_id)
+                logger.debug("app %s tmd %s", flag_app_ok, flag_tmd_ok)
                 bad_titles.append(title_id)
+
+            logger.debug("---")
 
         return bad_titles
 
