@@ -5,6 +5,7 @@ import functools
 import re
 
 from discord.ext import commands, tasks
+from discord import AllowedMentions, Member
 from typing import TYPE_CHECKING
 
 from codecs import BOM_UTF16_BE, BOM_UTF16_LE
@@ -39,6 +40,10 @@ _TREE_FILE_RE = re.compile(r"[\| ]+(\S+)")
 _HEX_RE = re.compile(r"^[0-9a-fA-F]+$")
 
 _TITLE_TXT_RE = re.compile(r"[TtIiLlEe]{4,}.+\.[tx]{3,}")
+
+_SAFE_MENTIONS = AllowedMentions(
+    everyone=False, users=False, roles=False, replied_user=True
+)
 
 
 def parse_tree(lines: list[str]) -> tuple[dict, bool]:
@@ -388,11 +393,33 @@ class TitleTXTParser(commands.Cog):
 
         return input_str.translate(output_replacements)
 
+    @staticmethod
+    def create_header(
+        message: str, author: Member, filename: str = None, count: int = 1
+    ) -> str:
+        """
+        Create a header that mentions the user and optionally
+        mentions the filename if multiple files were attached
+        """
+        filename_safe = filename.translate(
+            str.maketrans(
+                {
+                    "@": "＠",  # full-width @ sign, won't trigger pings on Discord
+                    "`": "'",  # prevent escaping a code block
+                }
+            )
+        )
+        if count > 1:
+            return f"{author.mention}: `{filename_safe}`: {message}"
+        else:
+            return f"{author.mention}: {message}"
+
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
         """
         Message handler for the TitleTXT parser cog.
         """
+        attach_count = len(message.attachments)
         for f in message.attachments:
             if f.size > (20 * 1024 * 1024):
                 # it should NEVER get to 20mb, but 20mb in RAM won't kill Kurisu
@@ -422,36 +449,44 @@ class TitleTXTParser(commands.Cog):
                     bad_titles = self.bad_titles(parsed_tree)
                     bad_folders = self.bad_folders(parsed_tree)
                 except MultipleID1Exception:
-                    if len(message.attachments) > 1:
-                        out_message = f"{message.author.mention}: `{f.filename}`: You appear to have multiple ID1 folders! "
-                    else:
-                        out_message = f"{message.author.mention} You appear to have multiple ID1 folders! "
+                    out_message = self.create_header(
+                        "You appear to have multiple ID1 folders! ",
+                        author=message.author,
+                        filename=f.filename,
+                        count=attach_count,
+                    )
                     out_message += "Please [fix this](<https://wiki.hacks.guide/wiki/3DS:MID1>) and then try again."
-                    await message.reply(out_message)
+                    await message.reply(out_message, allowed_mentions=_SAFE_MENTIONS)
                     continue
 
                 if bad_titles is None:
                     # Happens if no "00040000" folder is found
-                    if len(message.attachments) > 1:
-                        out_message = f"{message.author.mention}: `{f.filename}`: This doesn't look correct. Are you sure you're running the `tree` command in the right folder?"
-                    else:
-                        out_message = f"{message.author.mention} This doesn't look correct. Are you sure you're running the `tree` command in the right folder?"
-                    await message.reply(out_message)
+                    out_message = self.create_header(
+                        "This doesn't look correct. Are you sure you're running the `tree` command in the right folder?",
+                        author=message.author,
+                        filename=f.filename,
+                        count=attach_count,
+                    )
+                    await message.reply(out_message, allowed_mentions=_SAFE_MENTIONS)
                     continue
 
                 if len(bad_titles) == 0:
                     # no issues found
-                    if len(message.attachments) > 1:
-                        out_message = f"{message.author.mention}: `{f.filename}`: This `title.txt` appears to be OK. Your HOME Menu issues are not likely to be caused by missing data."
-                    else:
-                        out_message = f"{message.author.mention}: This `title.txt` appears to be OK. Your HOME Menu issues are not likely to be caused by missing data."
-                    await message.reply(out_message)
+                    out_message = self.create_header(
+                        "This `title.txt` appears to be OK. Your HOME Menu issues are not likely to be caused by missing data.",
+                        author=message.author,
+                        filename=f.filename,
+                        count=attach_count,
+                    )
+                    await message.reply(out_message, allowed_mentions=_SAFE_MENTIONS)
                     continue
 
-                if len(message.attachments) > 1:
-                    out_message = f"{message.author.mention}: `{f.filename}`: Missing data was found in this `title.txt` which may be causing issues.\n\n"
-                else:
-                    out_message = f"{message.author.mention} Missing data was found in this `title.txt` which may be causing issues.\n\n"
+                out_message = self.create_header(
+                    "Missing data was found in this `title.txt` which may be causing issues.\n\n",
+                    author=message.author,
+                    filename=f.filename,
+                    count=attach_count,
+                )
 
                 title_counter = 0
                 total_title_count = sum(len(folder) for folder in bad_titles)
@@ -491,7 +526,7 @@ class TitleTXTParser(commands.Cog):
                 out_message += "\nOnce you have completed these steps, re-insert the card into your console, and check to see if the HOME Menu loads correctly.\n"
                 out_message += "If not, come back for further assistance, and mention that you have already tried the missingtitles steps."
 
-                await message.reply(out_message)
+                await message.reply(out_message, allowed_mentions=_SAFE_MENTIONS)
 
 
 async def setup(bot):
