@@ -375,7 +375,7 @@ class TitleTXTParser(commands.Cog):
         return None  # failsafe... what the hell have they done to their SD?
 
     @staticmethod
-    def sanitize(input: str) -> str:
+    def sanitize(input_str: str) -> str:
         """
         Sanitize a string (remove backticks, @ symbols, etc) to prevent exploits.
         """
@@ -386,7 +386,7 @@ class TitleTXTParser(commands.Cog):
             }
         )
 
-        return input.translate(output_replacements)
+        return input_str.translate(output_replacements)
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
