@@ -374,6 +374,20 @@ class TitleTXTParser(commands.Cog):
         logger.debug("helpee did some weird things to their SD")
         return None  # failsafe... what the hell have they done to their SD?
 
+    @staticmethod
+    def sanitize(input: str) -> str:
+        """
+        Sanitize a string (remove backticks, @ symbols, etc) to prevent exploits.
+        """
+        output_replacements = str.maketrans(
+            {
+                "@": "＠",  # full-width @ sign, won't trigger pings on Discord
+                "`": "'",  # prevent escaping a code block
+            }
+        )
+
+        return input.translate(output_replacements)
+
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
         """
@@ -388,12 +402,12 @@ class TitleTXTParser(commands.Cog):
                 async with self.bot.session.get(f.url, timeout=45) as titletxt_request:
                     titletxt_content = await titletxt_request.read()
                     if titletxt_content[:2] in (BOM_UTF16_LE, BOM_UTF16_BE):
-                        titletxt_lines = titletxt_content.decode(
-                            encoding="utf-16", errors="replace"
+                        titletxt_lines = self.sanitize(
+                            titletxt_content.decode(encoding="utf-16", errors="replace")
                         ).splitlines()
                     else:
-                        titletxt_lines = titletxt_content.decode(
-                            encoding="utf-8", errors="replace"
+                        titletxt_lines = self.sanitize(
+                            titletxt_content.decode(encoding="utf-8", errors="replace")
                         ).splitlines()
                     with concurrent.futures.ProcessPoolExecutor() as pool:
                         parsed_tree, fs_corruption_flag = (
