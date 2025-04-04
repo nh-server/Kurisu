@@ -103,6 +103,12 @@ class MultipleID1Exception(Exception):
     Exception thrown when multiple ID1s are found
     """
 
+class MangledFolderStructure(Exception):
+    """
+    Exception thrown if 00040000 is not found but other title folders are found
+    Shouldn't happen unless helpee has deleted 
+    """
+
 
 class TitleTXTParser(commands.Cog):
     """
@@ -280,6 +286,24 @@ class TitleTXTParser(commands.Cog):
 
         return bad_titles
 
+    @staticmethod
+    def detect_mangled_structure(in_tree: dict) -> bool:
+        """
+        Check for mangled folder structure in title folder
+        """
+        title_folder_count = 0
+        for item_name, item in in_tree.items():
+            logger.debug("%s %s", len(item_name), item_name)
+            if len(item_name) == 8 and item_name.startswith("0004"):
+                title_folder_count += 1
+        
+        if title_folder_count > 0:
+            # helpee has mangled the Title folder, bail and request human intervention
+            return True
+        
+        return False
+
+
     def bad_titles(self, in_tree: dict) -> list[str] | None:
         """
         Further examine the output of parse_dir to get a list of 3DS titles
@@ -292,9 +316,21 @@ class TitleTXTParser(commands.Cog):
             # this isn't the title folder... search for it
             result = self.find_title_folder(in_tree)
             if not result:
-                return None
+                # check for mangled folder structure
+                if self.detect_mangled_structure(in_tree):
+                    # helpee has mangled the Title folder, bail and request human intervention
+                    raise MangledFolderStructure()
+                else:
+                    # nope, we're genuinely lost
+                    return None
             else:
                 in_tree = result
+        
+        # check again for mangled folder structure
+        if "00040000" not in in_tree:
+            if self.detect_mangled_structure(in_tree):
+                raise MangledFolderStructure()
+
 
         bad_titles = dict()
         for folder_name, folder in in_tree.items():
@@ -458,6 +494,18 @@ class TitleTXTParser(commands.Cog):
                     out_message += "Please [fix this](<https://wiki.hacks.guide/wiki/3DS:MID1>) and then try again."
                     await message.reply(out_message, allowed_mentions=_SAFE_MENTIONS)
                     continue
+                except MangledFolderStructure:
+                    out_message = self.create_header(
+                        "The `00040000` folder, which contains game data, is missing, but you have other `0004xxxx` folders present. ",
+                        author=message.author,
+                        filename=f.filename,
+                        count=attach_count,
+                    )
+                    out_message += "These folders contain non-game data, such as DLC. "
+                    out_message += "You will need to either restore a backup of your SD card, or wait for further assistance."
+                    await message.reply(out_message, allowed_mentions=_SAFE_MENTIONS)
+                    continue
+
 
                 if bad_titles is None:
                     # Happens if no "00040000" folder is found
