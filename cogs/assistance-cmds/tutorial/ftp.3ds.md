@@ -9,4 +9,4 @@ cooldown-per: 0
 cooldown-rate: 0
 ---
 
-A guide to using ftp with FTPD and WinSCP
+A guide to using ftp with FTPD
