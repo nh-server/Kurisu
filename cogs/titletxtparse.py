@@ -71,12 +71,12 @@ def parse_tree(lines: list[str]) -> tuple[dict, bool]:
                 else:
                     seek_pos = seek_pos + 1
             if seek_pos >= len(lines):
-                directory[dir_name], fsflag_temp = parse_tree(lines[pos + 1 :])
+                directory[dir_name], fsflag_temp = parse_tree(lines[pos + 1:])
                 if fs_corruption_flag is False and fsflag_temp is True:
                     # this should be burn-once and should never be set back to false once set to true
                     fs_corruption_flag = True
             else:
-                directory[dir_name], fsflag_temp = parse_tree(lines[pos + 1 : seek_pos])
+                directory[dir_name], fsflag_temp = parse_tree(lines[pos + 1:seek_pos])
                 if fs_corruption_flag is False and fsflag_temp is True:
                     # this should be burn-once and should never be set back to false once set to true
                     fs_corruption_flag = True
@@ -103,10 +103,11 @@ class MultipleID1Exception(Exception):
     Exception thrown when multiple ID1s are found
     """
 
+
 class MangledFolderStructure(Exception):
     """
     Exception thrown if 00040000 is not found but other title folders are found
-    Shouldn't happen unless helpee has deleted 
+    Shouldn't happen unless helpee has deleted
     """
 
 
@@ -292,17 +293,15 @@ class TitleTXTParser(commands.Cog):
         Check for mangled folder structure in title folder
         """
         title_folder_count = 0
-        for item_name, item in in_tree.items():
-            logger.debug("%s %s", len(item_name), item_name)
+        for item_name in in_tree.keys():
             if len(item_name) == 8 and item_name.startswith("0004"):
                 title_folder_count += 1
-        
+
         if title_folder_count > 0:
             # helpee has mangled the Title folder, bail and request human intervention
             return True
-        
-        return False
 
+        return False
 
     def bad_titles(self, in_tree: dict) -> list[str] | None:
         """
@@ -325,12 +324,11 @@ class TitleTXTParser(commands.Cog):
                     return None
             else:
                 in_tree = result
-        
+
         # check again for mangled folder structure
         if "00040000" not in in_tree:
             if self.detect_mangled_structure(in_tree):
                 raise MangledFolderStructure()
-
 
         bad_titles = dict()
         for folder_name, folder in in_tree.items():
@@ -412,7 +410,6 @@ class TitleTXTParser(commands.Cog):
                     if "title" in id1:
                         return id1["title"]
 
-        logger.debug("helpee did some weird things to their SD")
         return None  # failsafe... what the hell have they done to their SD?
 
     @staticmethod
@@ -505,7 +502,6 @@ class TitleTXTParser(commands.Cog):
                     out_message += "You will need to either restore a backup of your SD card, or wait for further assistance."
                     await message.reply(out_message, allowed_mentions=_SAFE_MENTIONS)
                     continue
-
 
                 if bad_titles is None:
                     # Happens if no "00040000" folder is found
