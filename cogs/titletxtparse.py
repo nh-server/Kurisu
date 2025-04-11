@@ -543,7 +543,7 @@ class TitleTXTParser(commands.Cog):
                     out_message += f"Copy the following folders from the `{folder_name}` folder inside the `title` folder to your computer, then delete them from your SD card:\n"
 
                     for title in folder:
-                        title_clean = title[:8] # TIDs should only be eight characters anyway
+                        title_clean = title[:8]  # TIDs should only be eight characters anyway
                         title_name = self.get_name_by_tid(title_clean)
                         if title_name:
                             if folder_name == _DLC_TIDHIGH:
