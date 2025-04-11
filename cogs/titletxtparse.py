@@ -29,7 +29,7 @@ _STREETPASS_TIDLOWS = [
     "00027800",  # KOR
     "00028800",  # TWN
 ]
-_THEME_TIDLOWS = ["0004008c", "00009800"]
+_THEME_TIDLOWS = ["0004008c", "00009800", "000002cc", "00008f00", "000002cd", "000002ce"]
 
 _TREE_INDENT = (
     " " * 3
@@ -210,6 +210,10 @@ class TitleTXTParser(commands.Cog):
 
         for title_id, title in in_tree.items():
             if not isinstance(title, dict):
+                if _HEX_RE.match(title_id) and len(title_id) == 8:
+                    # first observed 2025-04-11 12:32 3ds-assistance-2
+                    # mystery title-like "files?" should be yeeted
+                    bad_titles.append(title_id)
                 continue
 
             flag_ticket_ok = False
@@ -279,8 +283,8 @@ class TitleTXTParser(commands.Cog):
                         flag_app_ok = True
 
             if title_id in bad_titles:
-                # set inside content loop check, break again here
-                break
+                # added to list inside content folder loop, skip to next TID
+                continue
 
             if not (flag_app_ok and flag_tmd_ok):
                 bad_titles.append(title_id)
@@ -539,14 +543,15 @@ class TitleTXTParser(commands.Cog):
                     out_message += f"Copy the following folders from the `{folder_name}` folder inside the `title` folder to your computer, then delete them from your SD card:\n"
 
                     for title in folder:
-                        title_name = self.get_name_by_tid(title)
+                        title_clean = title[:8]  # TIDs should only be eight characters anyway
+                        title_name = self.get_name_by_tid(title_clean)
                         if title_name:
                             if folder_name == _DLC_TIDHIGH:
-                                out_message += f"- `{title}` (DLC for {title_name})\n"
+                                out_message += f"- `{title_clean}` (DLC for {title_name})\n"
                             else:
-                                out_message += f"- `{title}` ({title_name})\n"
+                                out_message += f"- `{title_clean}` ({title_name})\n"
                         else:
-                            out_message += f"- `{title}`\n"
+                            out_message += f"- `{title_clean}`\n"
                         title_counter += 1
 
                         if title_counter > _MAX_BROKEN_TITLES:
