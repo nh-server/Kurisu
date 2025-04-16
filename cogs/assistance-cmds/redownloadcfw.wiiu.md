@@ -5,7 +5,7 @@ aliases: redocfw, redowncfw
 
 If homebrew is behaving strangely, redownloading your files should help.
 
-**Aroma:**
+**Aroma:** (base Aroma and payloads **only**)
 https://aroma.foryour.cafe/
 
 **OR**
