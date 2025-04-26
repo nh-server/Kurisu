@@ -768,6 +768,12 @@ class Memes(commands.Cog):
         await self._meme(ctx, "",
                          image_link="https://nintendohomebrew.com/assets/img/nhmemes/dumbass.png")
 
+    @commands.command(hidden=True)
+    async def consider(self, ctx: KurisuContext):
+        """well?"""
+        await self._meme(ctx, "",
+                         image_link="https://album.eiphax.tech/uploads/original/0e/1f/fbbfb561d1ea55706341014c765c.png")
+
     @commands.command(hidden=True, aliases=["🅱"])
     async def b(self, ctx: KurisuContext):
         """haha, b emoji funny"""
