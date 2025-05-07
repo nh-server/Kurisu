@@ -8,4 +8,6 @@ The 3DS *can* use SD cards up to 2TB in size. However, using cards larger than 1
 
 Buy SD cards from reputable brands (SanDisk, Samsung, Kingston, etc.). Preferably, purchase cards from a brick and mortar store near you, but Amazon is okay if you must purchase online. __**NEVER**__ buy cards from AliExpress, Temu, eBay or other similar sites.
 
+If you plan to buy an SD to USB adapter for your PC or another device, it is equally important that you buy it from a reputable brand such as ANKER or UGREEN, __**NEVER**__ buy an adapter that is untrustworthy or unbranded as this can possibly lead to file corruption.
+
 Speed is irrelevant for the 3DS - it is limited to Class 4 (4MB/s) speeds. The only reason to buy a faster SD card is for faster data transfer to your computer.
