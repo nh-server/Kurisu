@@ -671,7 +671,7 @@ class Memes(commands.Cog):
                      "has junko had a name change today?", "got milk?", "got pilk?",
                      "it has been 0 days since eip broke me", "ETA WEN PLS",
                      "The beatings will continue until morale improves.",
-                     "Zǎoshang hǎo zhōngguó xiànzài wǒ yǒu BING CHILLING", "HELP QUIJA?", "glazy if you were cum",
+                     "Zǎoshang hǎo zhōngguó xiànzài wǒ yǒu BING CHILLING", "HELP QUIJA?",
                      str(self.joyclap), "Hell is empty, and the demons are here.", "Man alone measures time. Man alone chimes the hour.\r\nAnd, because of this, man alone suffers a paralyzing fear that no other creature endures.\r\nA fear of time running out."]
         await ctx.send(random.choice(motd_list))
 
