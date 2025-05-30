@@ -1,8 +1,8 @@
 ---
 title: Switch dump/build Guide
-url: https://dardel.pages.gay/nxdumpguide/
-author.name: Dardel
-author.url: https://dardel.pages.gay/nxdumpguide/
+url: https://marigoldzephyrnio.pages.gay/nxdumpguide/
+author.name: Nio
+author.url: https://marigoldzephyrnio.pages.gay/nxdumpguide/
 thumbnail-url: https://nintendohomebrew.com/assets/img/HB-browser-icon-full-REMASTERED.png
 help-desc: How to dump games and data for CFW consoles
 ---
