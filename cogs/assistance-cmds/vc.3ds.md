@@ -8,4 +8,4 @@ help-desc: Link to Virtual Console Injects for 3DS/Wiiu.
 ---
 
 The recommended way to play old classics on your 3DS.
-Usage guide [here](http://3ds.eiphax.tech/nsui.html).
+Usage guide [here](https://wiki.hacks.guide/wiki/3DS:Virtual_Console/Creation).
