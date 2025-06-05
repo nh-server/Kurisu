@@ -139,7 +139,7 @@ class SwitchSerialNumberCheck(Cog):
             return await ctx.send("{}: Serial {} seems to be a \"mariko\" Switch or Switch Lite.\n"
                                   "These are currently not hackable via software, "
                                   "only hardware modifications that involve soldering modchips.".format(ctx.author.mention, safe_serial), ephemeral=True)
-        
+
         if switch2:
             return await ctx.send("{}: Serial {} seems to be a Switch 2.\n"
                                   "These are currently not hackable.".format(ctx.author.mention, safe_serial), ephemeral=True)
