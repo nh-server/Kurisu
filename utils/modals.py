@@ -30,7 +30,7 @@ class RuleAddition(ui.Modal, title='Rule Addition'):
         else:
             title = self.rule_title.value
             description = self.rule_description.value
-            if not title or description:
+            if not title or not description:
                 return await interaction.response.send_message("Title and description is required for new rules", ephemeral=True)
             await bot.configuration.add_rule(number, title, description)
             await interaction.response.send_message(f"Rule {number} created successfully!", embed=Embed(title=f"Rule {number} - {title}", description=description, color=gen_color(number)))
