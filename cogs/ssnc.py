@@ -55,6 +55,7 @@ class SwitchSerialNumberCheck(Cog):
 
         serial = serial.split()[0].upper()
         mariko = False
+        switch2 = False
         if not re.match("XA[JKW][1479][0-9]{6}", serial):
 
             # This should catch serials from the new "mariko" units
@@ -64,6 +65,8 @@ class SwitchSerialNumberCheck(Cog):
             if re.match("X[KJWT][JWCE][0-9]{7}", serial):
                 # Region "C" is Tencent-Nintendo Switch. Mariko.
                 mariko = True
+            elif re.match("HA[JKWE][0-9]{7}", serial):
+                switch2 = True
             else:
                 return await ctx.send("This is not a valid serial number!\n"
                                       "If you believe this to be an error, contact staff.", ephemeral=True)
@@ -137,6 +140,10 @@ class SwitchSerialNumberCheck(Cog):
             return await ctx.send("{}: Serial {} seems to be a \"mariko\" Switch or Switch Lite.\n"
                                   "These are currently not hackable via software, "
                                   "only hardware modifications that involve soldering modchips.".format(ctx.author.mention, safe_serial), ephemeral=True)
+        elif switch2:
+            return await ctx.send("{}: Serial {} seems to be a Switch 2.\n"
+                                  "These are currently not hackable.".format(ctx.author.mention, safe_serial), ephemeral=True)
+
         elif maybe:
             return await ctx.send("{}: Serial {} _might_ be patched. The only way you can know this for sure is by "
                                   "pushing the payload manually. You can find instructions to do so here: "
