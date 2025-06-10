@@ -39,7 +39,7 @@ _TREE_FILE_RE = re.compile(r"[\| ]+(\S+)")
 
 _HEX_RE = re.compile(r"^[0-9a-fA-F]+$")
 
-_TITLE_TXT_RE = re.compile(r"[TtIiLlEe]{4,}.+\.[tx]{3,}")
+_TITLE_TXT_RE = re.compile(r"[TtIiLlEe]{4,}[^_]+\.[tx]{3,}")
 
 _SAFE_MENTIONS = AllowedMentions(
     everyone=False, users=False, roles=False, replied_user=True
