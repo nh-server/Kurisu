@@ -13,3 +13,5 @@ The recommended filesystem format is FAT32. While the Switch supports exFAT thro
 Buy SD cards from reputable brands (SanDisk, Samsung, Kingston, etc.). Preferably, purchase cards from a brick and mortar store near you, but Amazon is okay if you must purchase online. __**NEVER**__ buy cards from AliExpress, Wish, eBay or other similar sites.
 
 The Nintendo Switch can read SD cards up to 90MB/s, so we recommend using a UHS-I rated card to get the most speed out of your Nintendo Switch.
+
+If you intend to run Android or Linux on your Nintendo Switch, ensure you do **not** get one with (DDR200)[<https://en.wikipedia.org/wiki/SD_card#UHS-I>] incompatibility, as they may not work on Android or Linux at all.
