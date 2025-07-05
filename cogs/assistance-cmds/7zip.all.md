@@ -7,4 +7,4 @@ aliases: p7zip,7z
 
 To be able to extract .7z files, you will need an extractor that supports this format.
 • Windows: [7-Zip](https://www.7-zip.org)
-• Mac: [Keka](https://www.keka.io/en/)
+• Mac (Before 10.15 Catalina): [Keka](https://www.keka.io/en/)
