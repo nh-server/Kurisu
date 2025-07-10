@@ -8,8 +8,8 @@ color: FA0909
 
 # Tools available (and with Downloads)
 
-**1.** [GaryOderNichts one (Windows only)](https://github.com/GaryOderNichts/WiiUCommonKeyExtractor) We recommend this tool if you're more familiar with GUIs. <br>
-**2.** [Acer_51's one (Cross-platform)](https://github.com/acer51-doctom/commonkey_extractor) We recommend this tool if you're more familiar with Terminal User Interfaces. <br>
+**1.** [GaryOderNichts one (Windows only, x64 and x86)](https://github.com/GaryOderNichts/WiiUCommonKeyExtractor) We recommend this tool if you're more familiar with GUIs. <br>
+**2.** [Acer_51's one (Windows, macOS and Linux [ARM and x64 builds])](https://github.com/acer51-doctom/commonkey_extractor) We recommend this tool if you're more familiar with Terminal User Interfaces. <br>
 **3.** Manual way. <br>
 
 # Usage.
