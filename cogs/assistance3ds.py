@@ -27,7 +27,7 @@ class Assistance3DS(commands.Cog):
     @commands.command()
     async def luma(self, ctx: KurisuContext, lumaversion=""):
         """Download links for Luma versions"""
-        if len(lumaversion) >= 3 and lumaversion[0].isdigit() and lumaversion[1] == "." and lumaversion[2].isdigit():
+        if len(lumaversion) >= 3 and lumaversion[0].isdigit() and ((lumaversion[1] == "." and lumaversion[2].isdigit()) or lumaversion[1].isdigit() and lumaversion[2] == '.' and lumaversion[3].isdigit()):
             await simple_embed(ctx, f"Luma v{lumaversion}\nhttps://github.com/LumaTeam/Luma3DS/releases/tag/v{lumaversion}", color=discord.Color.blue())
         elif lumaversion == "latest":
             await simple_embed(ctx, "Latest Luma Version:\nhttps://github.com/LumaTeam/Luma3DS/releases/latest", color=discord.Color.blue())
