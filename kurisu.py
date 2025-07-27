@@ -195,7 +195,8 @@ class Kurisu(commands.Bot):
                                                       "WiiU": self.roles['On-Duty Wii U'],
                                                       "Switch": self.roles['On-Duty Switch'],
                                                       "Legacy": self.roles['On-Duty Legacy'],
-                                                      "Wii": self.roles['On-Duty Wii']
+                                                      "Wii": self.roles['On-Duty Wii'],
+                                                      "Hardware": self.roles['On-Duty Hardware'],
                                                       }
 
         self.assistance_channels: tuple[discord.TextChannel | discord.VoiceChannel, ...] = (
@@ -301,7 +302,7 @@ class Kurisu(commands.Bot):
 
     async def load_roles(self):
         roles = ['Helpers', 'Staff', 'HalfOP', 'OP', 'SuperOP', 'Owner', 'On-Duty 3DS', 'On-Duty Wii U',
-                 'On-Duty Switch', 'On-Duty Legacy', 'On-Duty Wii', 'Probation', 'Retired Staff', 'Verified', 'Trusted', 'Muted',
+                 'On-Duty Switch', 'On-Duty Legacy', 'On-Duty Wii', 'On-Duty Hardware', 'Probation', 'Retired Staff', 'Verified', 'Trusted', 'Muted',
                  'No-Help', 'No-elsewhere', 'No-Memes', 'No-art', 'No-animals', '#art-discussion', 'No-Embed', '#elsewhere',
                  'Small Help', 'meta-mute', 'appeal-mute', 'crc', 'No-Tech', 'help-mute', 'streamer(temp)', 'streamer', '🍰',
                  'No-U', 'No-Wii']

@@ -143,12 +143,14 @@ https://discord.gg/C29hYvh"""
         helpers_legacy = [f"<@{helper}>" for helper, console in helpers.items() if console == 'Legacy']
         helpers_switch = [f"<@{helper}>" for helper, console in helpers.items() if console == 'Switch']
         helpers_wii = [f"<@{helper}>" for helper, console in helpers.items() if console == 'Wii']
+        helpers_hardware = [f"<@{helper}>" for helper, console in helpers.items() if console == 'Hardware']
         await channel.send(self.helper_list)
         await channel.send(f"{str(self.logo_3ds)}  Nintendo 3DS\n" + '\n'.join(helpers_3ds))
         await channel.send(f"{str(self.logo_wiiu)}  Wii U\n" + '\n'.join(helpers_wiiu))
         await channel.send(f"{str(self.logo_switch)}  Nintendo Switch\n" + '\n'.join(helpers_switch))
         await channel.send("Nintendo Wii\n" + '\n'.join(helpers_wii))
         await channel.send("Legacy\n" + '\n'.join(helpers_legacy))
+        await channel.send("Hardware\n" + '\n'.join(helpers_hardware))
         await channel.send(self.nickname_policy)
         await channel.send(self.useful_commands)
         await channel.send(self.extra)
