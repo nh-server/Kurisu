@@ -17,4 +17,4 @@ help-desc: Potential fixes for when payload.elf fails to load on the Wii U
 
 - Make sure your SD card is properly inserted into the SD cart slot. You should hear a click sound when it is inserted.
 
-If none of the above works, you may have a faulty/worn SD card, MicroSD card, or MicroSD card adapter, and are advised to purchase a new SD card or adapter. Type `.sdreq` in <#261581918653513729> for SD card size recommendations. 
+If none of the above works, you may have a faulty/worn SD card, MicroSD card, or MicroSD card adapter, and are advised to purchase a new SD card or adapter. Type `.sdreq` in <#261581918653513729> for SD card size recommendations.
