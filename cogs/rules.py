@@ -193,6 +193,12 @@ https://discord.gg/C29hYvh"""
 
     @commands.command()
     @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
+    async def r4(self, ctx: KurisuContext):
+        """Cut down r4."""
+        await ctx.send("Please ask your question directly, and avoid 'asking to ask'. You'll get help quicker if you just describe your issue and what you might have already done to fix it.")
+
+    @commands.command()
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def nick(self, ctx: KurisuContext):
         """Displays the Nickname and Avatar Policy."""
         await ctx.send(self.nickname_policy)
@@ -231,6 +237,8 @@ https://discord.gg/C29hYvh"""
 
 async def setup(bot):
     for rule in bot.configuration.rules.values():
+        if rule.number == 4:
+            continue # manually defined to avoid embed and make simpler
         cmd = create_rule_cmd(rule)
         setattr(Rules, f"r{rule.number}", cmd)
         Rules.__cog_commands__.append(cmd)
