@@ -199,6 +199,12 @@ https://discord.gg/C29hYvh"""
 
     @commands.command()
     @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
+    async def r14(self, ctx: KurisuContext):
+        """Cut down r14."""
+        await ctx.send("Keep on-topic. Use <#314856589716750346> for general chatter and <#485138525885431808> for content that doesn't fit other channels. For access to elsewhere, read the rules carefully.")
+
+    @commands.command()
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def nick(self, ctx: KurisuContext):
         """Displays the Nickname and Avatar Policy."""
         await ctx.send(self.nickname_policy)
@@ -237,8 +243,8 @@ https://discord.gg/C29hYvh"""
 
 async def setup(bot):
     for rule in bot.configuration.rules.values():
-        if rule.number == 4:
-            continue  # manually defined to avoid embed and make simpler
+        if rule.number in {4, 14}:
+            continue  # 4 and 14 handled manually for simple embed
         cmd = create_rule_cmd(rule)
         setattr(Rules, f"r{rule.number}", cmd)
         Rules.__cog_commands__.append(cmd)

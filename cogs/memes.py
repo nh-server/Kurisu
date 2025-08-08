@@ -777,10 +777,19 @@ class Memes(commands.Cog):
     @commands.command(hidden=True)
     async def rotate(self, ctx: KurisuContext, u: discord.Member, degrees: int = None):
         """Rotate a user 🌪️"""
-        base_degrees = random.randint(-1080, 1080)
-        total_degrees = base_degrees + degrees if degrees is not None else base_degrees
-        total_rotations = total_degrees / 360
+        MAX_DEGREES = 10000
 
+        base_degrees = random.randint(-1080, 1080)
+
+        if degrees is not None:
+            if abs(degrees) > MAX_DEGREES:
+                await ctx.send(f"That's too much rotation. Please keep it within ±{MAX_DEGREES} degrees.")
+                return
+            total_degrees = base_degrees + degrees
+        else:
+            total_degrees = base_degrees
+
+        total_rotations = total_degrees / 360
         msg = f"{u.mention} has been rotated {base_degrees} degrees."
 
         if degrees is not None:
