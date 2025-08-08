@@ -238,7 +238,7 @@ https://discord.gg/C29hYvh"""
 async def setup(bot):
     for rule in bot.configuration.rules.values():
         if rule.number == 4:
-            continue # manually defined to avoid embed and make simpler
+            continue  # manually defined to avoid embed and make simpler
         cmd = create_rule_cmd(rule)
         setattr(Rules, f"r{rule.number}", cmd)
         Rules.__cog_commands__.append(cmd)
