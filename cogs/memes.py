@@ -774,6 +774,22 @@ class Memes(commands.Cog):
         await self._meme(ctx, "",
                          image_link="https://album.eiphax.tech/uploads/original/0e/1f/fbbfb561d1ea55706341014c765c.png")
 
+    @commands.command(hidden=True)
+    async def rotate(self, ctx: KurisuContext, u: discord.Member, degrees: int = None):
+        """Rotate a user 🌪️"""
+        base_degrees = random.randint(-1080, 1080)
+        total_degrees = base_degrees + degrees if degrees is not None else base_degrees
+        total_rotations = total_degrees / 360
+
+        msg = f"{u.mention} has been rotated {base_degrees} degrees."
+
+        if degrees is not None:
+            msg += f" This means the user is now at {total_degrees} degrees, which is {total_rotations:.2f} rotations."
+        else:
+            msg += f" That is {total_rotations:.2f} rotations."
+
+        await self._meme(ctx, msg, True)
+
     @commands.command(hidden=True, aliases=["🅱"])
     async def b(self, ctx: KurisuContext):
         """haha, b emoji funny"""
