@@ -14,4 +14,4 @@ Buy SD cards from reputable brands (SanDisk, Samsung, Kingston, etc.). Preferabl
 
 The Nintendo Switch can read SD cards up to 90MB/s, so we recommend using a UHS-I rated card to get the most speed out of your Nintendo Switch.
 
-If you intend to run Android or Linux on your Nintendo Switch, ensure you do **not** get one with (DDR200)[<https://en.wikipedia.org/wiki/SD_card#UHS-I>] incompatibility, as they may not work on Android or Linux at all.
+If you intend to run Android or Linux on your Nintendo Switch, ensure you do **not** get one with [DDR200](<https://en.wikipedia.org/wiki/SD_card#UHS-I>) incompatibility, as they may not work on Android or Linux at all.
