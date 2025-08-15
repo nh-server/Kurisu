@@ -776,6 +776,7 @@ class Memes(commands.Cog):
 
     @commands.command(hidden=True)
     async def rotate(self, ctx: KurisuContext, u: discord.Member, degrees: int = None):
+        bot: 'Kurisu' = ctx.bot
         """Rotate a user 🌪️"""
         MAX_DEGREES = 10000
 
@@ -793,7 +794,10 @@ class Memes(commands.Cog):
         msg = f"{u.mention} has been rotated {base_degrees} degrees."
 
         if degrees is not None:
-            msg += f" This means the user is now at {total_degrees} degrees, which is {total_rotations:.2f} rotations."
+            if u.id == bot.user.id: # are we Kurisu?
+                msg += f" This means I am now at {total_degrees} degrees, which is {total_rotations:.2f} rotations." # respond with useless level of detail if so
+            else:
+                msg += f" This means the user is now at {total_degrees} degrees, which is {total_rotations:.2f} rotations." # otherwise normal detail
         else:
             msg += f" That is {total_rotations:.2f} rotations."
 
