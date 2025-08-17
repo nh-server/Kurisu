@@ -204,6 +204,7 @@ bits = {
     "switcholed": "PH 00, Y00"
 }
 
+
 class AssistanceHardware(commands.Cog):
     """
     General hardware commands that will mostly be used in the hardware but also other help channels.
@@ -267,7 +268,6 @@ class AssistanceHardware(commands.Cog):
             embed.title = f"System: {title[console]}"
         await ctx.send(embed=embed)
 
-
     @commands.dynamic_cooldown(KurisuCooldown(1, 5), commands.BucketType.channel)
     @commands.command()
     async def bit(self, ctx: KurisuContext, console: str = ""):
@@ -277,17 +277,18 @@ class AssistanceHardware(commands.Cog):
         if console in bits.keys():
             if "PH" in bits[console]:
                 warning = "\n[Avoid using IFixit PH Bits](https://hardware.hacks.guide/wiki/Ifixit_Situation)"
-            await simple_embed(ctx, "The screwdriver bits you need are `" + bits[console] + "`" +  warning, color=discord.Color.gold())
+            await simple_embed(ctx, "The screwdriver bits you need are `" + bits[console] + "`" + warning, color=discord.Color.gold())
         elif console in alias.keys():
             if "PH" in bits[alias[console]]:
                 warning = "\n[Avoid using IFixit PH Bits](https://hardware.hacks.guide/wiki/Ifixit_Situation)"
             # Verify alias has a board (shared with all other commands)
             if alias[console] in bits.keys():
-                await simple_embed(ctx, "The screwdriver bits you need are `" + bits[alias[console]] +  "`" +  warning, color=discord.Color.gold())
+                await simple_embed(ctx, "The screwdriver bits you need are `" + bits[alias[console]] + "`" + warning, color=discord.Color.gold())
             else:
                 await simple_embed(ctx, "The screwdriver bits you need are `" + "`", color=discord.Color.gold())
         else:
             await simple_embed(ctx, "Invalid console, Options are `" + ', '.join(boards) + "`", color=discord.Color.red())
+
 
 add_md_files_as_commands(AssistanceHardware, join(AssistanceHardware.data_dir, 'hardware'),
                          namespace=AssistanceHardware.hardware)  # type: ignore
