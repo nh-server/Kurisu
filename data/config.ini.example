@@ -1,3 +1,9 @@
 [Main]
-token = <token for Discord bot>
-database_url = <url of the database>
+# Create a new discord bot / token at https://discord.com/developers/applications/
+token = 
+
+# postgres://<username>:<password>@<IP>:<port>/<database>
+database_url = 
+
+#
+server_logs_url=
