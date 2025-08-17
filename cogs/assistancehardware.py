@@ -200,7 +200,7 @@ class AssistanceHardware(commands.Cog):
     def __init__(self, bot: Kurisu):
         self.bot: Kurisu = bot
 
-    @commands.group(cooldown=None, invoke_without_command=True, case_insensitive=True)
+    @commands.group(cooldown=None, invoke_without_command=True, case_insensitive=True, aliases=['hw'])
     async def hardware(self, ctx: KurisuContext):
         """Links to one of multiple guides"""
         if isinstance(ctx.channel, discord.DMChannel) or ctx.channel == self.bot.channels['bot-cmds']:
