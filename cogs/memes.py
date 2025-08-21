@@ -793,10 +793,10 @@ class Memes(commands.Cog):
         msg = f"{u.mention} has been rotated {base_degrees} degrees."
 
         if degrees is not None:
-            if u.id == self.bot.user.id: # are we Kurisu?
-                msg += f" This means I am now at {total_degrees} degrees, which is {total_rotations:.2f} rotations." # respond with useless level of detail if so
+            if u.id == self.bot.user.id:  # are we Kurisu?
+                msg += f" This means I am now at {total_degrees} degrees, which is {total_rotations:.2f} rotations."  # respond with useless level of detail if so
             else:
-                msg += f" This means the user is now at {total_degrees} degrees, which is {total_rotations:.2f} rotations." # otherwise normal detail
+                msg += f" This means the user is now at {total_degrees} degrees, which is {total_rotations:.2f} rotations."  # otherwise normal detail
         else:
             msg += f" That is {total_rotations:.2f} rotations."
 
