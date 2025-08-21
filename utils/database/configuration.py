@@ -37,7 +37,7 @@ class Rule(NamedTuple):
 tables = {'flags': ['name', 'value'],
           'staff': ['user_id', 'position', 'console'],
           'members': ['id', 'watched'],
-          'channels': ['id', 'name', 'filtered', 'lock_level', 'mod_channel'],
+          'channels': ['id', 'name', 'filtered', 'lock_level', 'mod_channel', 'killbox_state'],
           'changedroles': ['role_id', 'channel_id', 'original_value'],
           'roles': ['id', 'name'],
           'rules': ['id', 'title', 'description'],
@@ -203,3 +203,6 @@ class ConfigurationDatabaseManager(BaseDatabaseManager, tables=tables):
 
     async def delete_channel_overwrites(self, name: str) -> int:
         return await self._delete('rules', name=name)
+
+    async def set_killbox_state(self, id: int, state: int):
+        return await self._update('channels', {'killbox_state': state})

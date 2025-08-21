@@ -27,12 +27,19 @@ class StaffRank(IntEnum):
     Helper = 4
 
 
+class KillBoxState(IntEnum):
+    Disabled = 0
+    Kick = 1
+    Ban = 2
+
+
 class DBChannel(NamedTuple):
     id: int
     name: str
     filtered: bool
     lock_level: int
     mod_channel: int
+    killbox_state: KillBoxState
 
 
 class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager):
@@ -185,7 +192,7 @@ class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager)
     async def get_channel(self, channel_id: int) -> 'Optional[DBChannel]':
         c = await self.db.get_channel(channel_id)
         if c:
-            return DBChannel(id=c[0], name=c[1], filtered=c[2], lock_level=c[3], mod_channel=c[4])
+            return DBChannel(id=c[0], name=c[1], filtered=c[2], lock_level=c[3], mod_channel=c[4], killbox_state=KillBoxState(c[5]))
 
     async def set_channel_lock_level(self, channel: discord.TextChannel | discord.Thread | discord.VoiceChannel, lock_level: int):
         await self.db.set_channel_lock_level(channel.id, lock_level)
@@ -273,3 +280,12 @@ class ConfigurationManager(BaseManager, db_manager=ConfigurationDatabaseManager)
 
     async def delete_channel_overwrites(self, name: str) -> int:
         return await self.db.delete_channel_overwrites(name)
+
+    async def set_channel_killbox(self, channel: discord.TextChannel, state: KillBoxState):
+        db_channel = await self.get_channel(channel.id)
+        res = None
+        if not db_channel:
+            res = await self.add_channel(channel.name, channel)
+        if db_channel or res:
+            res = await self.db.set_killbox_state(channel.id, state)
+        return res

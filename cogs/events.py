@@ -12,6 +12,7 @@ from string import printable
 from subprocess import call
 from typing import TYPE_CHECKING
 from utils.checks import check_staff
+from utils.configuration import KillBoxState
 from utils.utils import send_dm_message, gen_color
 from utils import Restriction
 from utils.database import FilterKind
@@ -433,6 +434,22 @@ class Events(commands.Cog):
         if message.author == message.guild.me or check_staff(self.bot, 'Helper', message.author.id) \
                 or message.channel.id in self.bot.configuration.nofilter_list:
             return
+        if db_chan := await self.bot.configuration.get_channel(message.channel.id):
+            match db_chan.killbox_state:
+                case KillBoxState.Kick:
+                    try:
+                        self.bot.actions.append(f'wk:{message.author.id}')
+                        await message.author.kick(reason="Automated Action")
+                    except discord.Forbidden:
+                        self.bot.actions.remove(f'wk:{message.author.id}')
+                    return
+                case KillBoxState.Ban:
+                    try:
+                        self.bot.actions.append(f"wb:{message.author.id}")
+                        await message.author.ban(reason="Automated Action")
+                    except discord.Forbidden:
+                        self.bot.actions.remove(f'wb:{message.author.id}')
+                    return
         await self.scan_message(message)
         # self.bot.loop.create_task(self.user_ping_check(message)) replaced by automod
         self.bot.loop.create_task(self.user_spam_check(message))

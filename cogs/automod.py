@@ -6,6 +6,7 @@ from discord import app_commands, AutoModRuleTriggerType, AutoModRule
 from discord.ext import commands
 
 from utils.checks import is_staff, is_staff_app
+from utils.configuration import KillBoxState
 from utils.utils import text_to_discord_file
 from utils.views import AutoModRulesView
 
@@ -171,6 +172,22 @@ class AutoMod(commands.GroupCog):
         if rule.name == "Scams":
             self.bot.actions.append(f"wk:{action.member.id}")
             await action.member.kick(reason="Suspicious behavior")
+
+    @is_staff_app('Owner')
+    @app_commands.command()
+    async def set_killbox(self, interaction: discord.Interaction, channel: discord.TextChannel, action: KillBoxState):
+        """Sets the channel killbox status. Owner only.
+
+        Args:
+            channel: Channel to change the killbox status of.
+            action: Action for the killbox. This will apply to everyone that posts in the channel with some exceptions.
+        """
+        res = await self.bot.configuration.set_channel_killbox(channel, action.value)
+        if not res:
+            await interaction.response.send_message("Failed to set killbox status.", ephemeral=True)
+            return
+        await interaction.response.send_message(f"Set {channel.mention} killbox state to `{action.name}`!", ephemeral=True)
+        await self.bot.channels['mod-logs'].send(f"❗Killbox: {interaction.user} set {channel.mention} killbox status to `{action.name}`!")
 
 
 async def setup(bot):
