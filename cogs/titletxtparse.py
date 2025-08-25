@@ -509,6 +509,13 @@ class TitleTXTParser(commands.Cog):
 
                 if bad_titles is None:
                     # Happens if no "00040000" folder is found
+                    out_message = self.create_header(
+                        "This doesn't look correct. Are you sure you're running the `tree` command in the right folder?",
+                        author=message.author,
+                        filename=f.filename,
+                        count=attach_count,
+                    )
+                    await message.reply(out_message, allowed_mentions=_SAFE_MENTIONS)
                     continue
 
                 if len(bad_titles) == 0:
