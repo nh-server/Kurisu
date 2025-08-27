@@ -439,14 +439,15 @@ class Events(commands.Cog):
                 case KillBoxState.Kick:
                     try:
                         self.bot.actions.append(f'wk:{message.author.id}')
-                        await message.author.kick(reason="Automated Action")
+                        await message.author.kick(reason="Kill box automated Action")
+                        await message.delete()
                     except discord.Forbidden:
                         self.bot.actions.remove(f'wk:{message.author.id}')
                     return
                 case KillBoxState.Ban:
                     try:
                         self.bot.actions.append(f"wb:{message.author.id}")
-                        await message.author.ban(reason="Automated Action")
+                        await message.author.ban(reason="Automated Action", delete_message_days=1)
                     except discord.Forbidden:
                         self.bot.actions.remove(f'wb:{message.author.id}')
                     return
