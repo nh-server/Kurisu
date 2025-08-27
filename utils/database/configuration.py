@@ -205,4 +205,4 @@ class ConfigurationDatabaseManager(BaseDatabaseManager, tables=tables):
         return await self._delete('rules', name=name)
 
     async def set_killbox_state(self, id: int, state: int):
-        return await self._update('channels', {'killbox_state': state})
+        return await self._update('channels', {'killbox_state': state}, id=id)
