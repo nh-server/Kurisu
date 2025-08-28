@@ -438,16 +438,24 @@ class Events(commands.Cog):
             match db_chan.killbox_state:
                 case KillBoxState.Kick:
                     try:
+                        mes = await self.bot.channels['message-logs'].send(
+                            f"✉️ **Message posted**: {message.author.mention} posted a message in killbox {message.channel.mention}"
+                            f"\n------------------\n"
+                            f"{self.bot.escape_text(message.content[:1600])}", suppress_embeds=True)
                         self.bot.actions.append(f'wk:{message.author.id}')
-                        await message.author.kick(reason="Kill box automated Action")
+                        await message.author.kick(reason=f"Kill box automated Action. See {mes.jump_url}")
                         await message.delete()
                     except discord.Forbidden:
                         self.bot.actions.remove(f'wk:{message.author.id}')
                     return
                 case KillBoxState.Ban:
                     try:
+                        mes = await self.bot.channels['message-logs'].send(
+                            f"✉️ **Message posted**: {message.author.mention} posted a message in killbox {message.channel.mention}"
+                            f"\n------------------\n"
+                            f"{self.bot.escape_text(message.content[:1600])}", suppress_embeds=True)
                         self.bot.actions.append(f"wb:{message.author.id}")
-                        await message.author.ban(reason="Automated Action", delete_message_days=1)
+                        await message.author.ban(reason=f"Automated Action. See {mes.jump_url}", delete_message_days=1)
                     except discord.Forbidden:
                         self.bot.actions.remove(f'wb:{message.author.id}')
                     return
