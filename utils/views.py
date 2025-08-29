@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 import datetime
 import discord
 
 from discord import AutoModRuleTriggerType, AutoModRuleActionType, Interaction, ButtonStyle, Embed, AutoModRule, \
-    AutoModRuleAction, TextStyle
+    AutoModRuleAction, TextStyle, ui
 from discord.ui import Select, Button, TextInput, Modal, View
 from discord.utils import format_dt
 
@@ -11,7 +13,7 @@ from typing import TYPE_CHECKING
 from utils import WarnType, WarnState
 from utils.checks import check_staff
 from utils.database import ValidWarnEntry, DeletedWarnEntry
-from utils.utils import parse_time, gen_color, text_to_discord_file, create_error_embed, create_userinfo_embed
+from utils.utils import parse_time, gen_color, text_to_discord_file, create_error_embed
 from utils.warns import WARN_EXPIRATION
 
 if TYPE_CHECKING:
@@ -58,6 +60,30 @@ class BaseView(View):
     async def on_timeout(self) -> None:
         if self.message:
             await self.message.edit(view=None)
+        self.stop()
+
+    async def interaction_check(self, interaction: Interaction) -> bool:
+        if self.author and interaction.user.id != self.author.id:
+            await interaction.response.send_message("This view is not for you.", ephemeral=True)
+            return False
+        return True
+
+    async def on_error(self, interaction: Interaction, error: Exception, item):
+        embed = create_error_embed(interaction, error)
+        await interaction.client.channels['bot-err'].send(embed=embed)
+
+
+class BaseLayoutView(ui.LayoutView):
+    """Base class for all other layout views"""
+
+    def __init__(self, author: 'Optional[discord.Member | discord.User]' = None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.message: 'Optional[discord.Message | discord.InteractionMessage]' = None
+        self.author = author
+
+    async def on_timeout(self) -> None:
+        if self.message:
+            await self.message.delete()
         self.stop()
 
     async def interaction_check(self, interaction: Interaction) -> bool:
@@ -363,153 +389,155 @@ class AutoModRuleSelect(Select['AutoModRulesView']):
         await interaction.response.edit_message(view=self.view, embed=embed)
 
 
-class WarnManagerView(BaseView):
+class WarnManagerView(BaseLayoutView):
 
     author: discord.Member
-    embed: discord.Embed
     warn: 'Optional[DeletedWarnEntry|ValidWarnEntry]'
 
     def __init__(self, bot: 'Kurisu', author: discord.Member,
                  user: discord.Member | discord.User):
         super().__init__(timeout=20, author=author)
-        self.user = user
         self.bot = bot
-        self.embed_colour = gen_color(author.id)
-        self.warn = None
+        self.user = user
+        self.container = ui.Container()
+        self.container.add_item(ui.TextDisplay(f'## {user.name} Warns\n'))
+        self.container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
+        self.add_item(self.container)
+
+        self.warns = []
+        self.deleted_warns = []
+        self.warn_section = None
+        self.warn_buttons = None
 
     async def init(self):
         await self.load_warns()
-        self.embed = await create_userinfo_embed(self.user, self.author.guild)
-        if self.warns:
-            self.add_item(WarnSelect(self.warns, placeholder="Select a Warn"))
-        if self.deleted_warns:
-            self.add_item(WarnSelect(self.deleted_warns, placeholder="Select a deleted/expired Warn"))
+        self.container.add_item(WarnSelectRow(self.warns, self.deleted_warns))
 
     async def reload(self):
-        self.clear_items()
+        self.container.children = self.container.children[:2]
+        self.warn_section = None
+        self.warn_buttons = None
         await self.init()
 
     async def load_warns(self):
         self.warns = [w async for w in self.bot.warns.get_warnings(self.user)]
         self.deleted_warns = [w async for w in self.bot.warns.get_deleted_warnings(self.user)]
 
-    async def create_warn_embed(self, warn: ValidWarnEntry | DeletedWarnEntry):
-        embed = discord.Embed(color=discord.Color.dark_red())
-        issuer = self.bot.get_user(warn.issuer_id)
-        embed.add_field(name="Type", value=WarnType(warn.type).name)
-        embed.add_field(name="State", value=WarnState(warn.state).name)
-        embed.add_field(name="User", value=self.user.mention)
-        embed.add_field(name="Issuer", value=issuer.mention if issuer else warn.issuer_id)
-        embed.add_field(name="Date", value=format_dt(warn.date))
-        embed.add_field(name="Reason", value=warn.reason)
-        value = ""
+    async def create_warn_info(self, warn: ValidWarnEntry | DeletedWarnEntry):
+        issuer_user = self.bot.get_user(warn.issuer_id)
+        issuer = issuer_user.mention if issuer_user else str(warn.issuer_id)
+        text = (f"**ID**: {warn.warn_id}\n"
+                f"**Type**: {WarnType(warn.type).name}\n"
+                f"**State**: {WarnState(warn.state).name}\n"
+                f"**User**: {self.user.mention}\n"
+                f"**Issuer**: {issuer}\n"
+                f"**Date**: {format_dt(warn.date)}\n"
+                f"**Reason**: {warn.reason}\n")
+        footer = ""
+        title = ""
         match warn.state:
             case WarnState.Valid:
                 number = await self.bot.warns.get_warning_number(warn.warn_id)
-                embed.title = f"Warn {number}"
+                title = f"## Warn {number}\n"
                 if warn.type == WarnType.Ephemeral:
-                    value += f"\nExpires on {format_dt(warn.date + WARN_EXPIRATION)}"
+                    footer += f"-# Expires on {format_dt(warn.date + WARN_EXPIRATION)}"
                 else:
-                    value += "\nThis warn doesn't expire"
+                    footer += "-# This warn doesn't expire"
             case WarnState.Expired:
-                embed.title = "Expired Warn"
-                embed.add_field(name="Expired on", value=format_dt(warn.deletion_time))
+                title = "## Expired Warn\n"
+                text += f"**Expired on**: {format_dt(warn.deletion_time)}"
             case WarnState.Deleted:
-                embed.title = "Deleted Warn"
+                title = "## Deleted Warn\n"
                 deleter = deleter.mention if (deleter := self.bot.get_user(warn.deleter)) is not None else warn.deleter
-                embed.add_field(name="Deleted on", value=format_dt(warn.deletion_time))
-                embed.add_field(name="Deletion reason", value=warn.deletion_reason)
-                embed.add_field(name="Deleter", value=deleter)
-        embed.description = value
-        return embed
+                text += f"**Deleted on**: {format_dt(warn.deletion_time)}\n"
+                text += f"**Deletion reason**: {warn.deletion_reason}\n"
+                text += f"**Deleter**: {deleter}"
+        return title + text + footer
 
-    async def set_warn(self, interaction: Interaction, warn_id: int):
+    async def delete_warning(self, reason):
+        await self.bot.warns.delete_warning(self.warn.warn_id, self.author.id, reason)
+
+    async def set_warn(self, warn_id: int):
         warn = await self.bot.warns.get_warning(warn_id)
 
         if warn is None:
             return
 
         self.warn = warn
-        self.embed = await self.create_warn_embed(warn)
-        view = WarnView(self)
-        await interaction.response.edit_message(view=view, embed=self.embed)
-        await view.wait()
 
-    @discord.ui.button(label="Stop", style=ButtonStyle.red, disabled=False, row=0)
-    async def stop_button(self, interaction: Interaction, button: Button):
-        await interaction.response.edit_message(view=None)
-        self.stop()
+        section = ui.Section(ui.TextDisplay(await self.create_warn_info(warn)), accessory=ui.Thumbnail(media=self.user.avatar.url))
+        if self.warn_section is None or self.warn_buttons is None:
+            self.warn_section = section
+            self.warn_buttons = WarnButtons(self)
+            self.container.add_item(self.warn_section)
+            self.container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
+            self.container.add_item(self.warn_buttons)
+        else:
+            self.container.children = self.container.children[:2]
+            await self.init()
+            self.container.add_item(section)
+            self.container.add_item(ui.Separator(spacing=discord.SeparatorSpacing.small))
+            self.container.add_item(self.warn_buttons)
+            self.warn_section = section
 
 
-class WarnSelect(Select['WarnManagerView']):
-    def __init__(self, warns: list[ValidWarnEntry] | list[DeletedWarnEntry], placeholder: str):
-        super().__init__(placeholder=placeholder)
-        self.populate(warns)
+class WarnSelectRow(ui.ActionRow[WarnManagerView]):
+    def __init__(self, warns: list[ValidWarnEntry], del_warns: list[DeletedWarnEntry]):
+        super().__init__()
+        self.populate(warns, del_warns)
 
-    def populate(self, warns: list[ValidWarnEntry] | list[DeletedWarnEntry]):
-        deleted = warns[0].state != 0
+    def populate(self, warns: list[ValidWarnEntry], del_warns: list[DeletedWarnEntry]):
         for idx, warn in enumerate(warns):
-            if deleted:
-                if warn.state == WarnState.Deleted:
-                    label = "Deleted Warn"
-                else:
-                    label = "Expired Warn"
+
+            label = f"Warn {idx + 1}"
+            self.select_warn.add_option(label=f"{label} {warn.date:%Y-%m-%d %H:%M:%S}", value=str(warn.warn_id),
+                                        description=warn.reason[:100])
+        for warn in del_warns:
+            if warn.state == WarnState.Deleted:
+                label = "Deleted Warn"
             else:
-                label = f"Warn {idx + 1}"
-            self.add_option(label=f"{label} {warn.date:%Y-%m-%d %H:%M:%S}", value=str(warn.warn_id), description=warn.reason[:100])
+                label = "Expired Warn"
+            self.select_warn.add_option(label=f"{label} {warn.date:%Y-%m-%d %H:%M:%S}", value=str(warn.warn_id),
+                                        description=warn.reason[:100])
 
-    async def callback(self, interaction: Interaction):
-        assert self.view is not None
-        await self.view.set_warn(interaction, int(self.values[0]))
+    @ui.select(placeholder='Select a warn')
+    async def select_warn(self, interaction: discord.Interaction[Kurisu], select: discord.ui.Select) -> None:
+        await self.view.set_warn(int(select.values[0]))
+        await interaction.response.edit_message(view=self.view)
 
 
-class WarnView(BaseView):
-    author: discord.Member
-    embed: discord.Embed
+class WarnButtons(ui.ActionRow[WarnManagerView]):
 
-    def __init__(self, parent: WarnManagerView):
-        super().__init__(timeout=20, author=parent.author)
-        self.parent = parent
-        self.update_labels()
-
-    async def update(self):
-        self.parent.warn = await self.parent.bot.warns.get_warning(self.parent.warn.warn_id)
-        self.parent.embed = await self.parent.create_warn_embed(self.parent.warn)
+    def __init__(self, view: WarnManagerView):
+        self.__view = view
+        super().__init__()
         self.update_labels()
 
     def update_labels(self):
-        self.delete_warn.label = "Delete Warn" if self.parent.warn.state == WarnState.Valid else "Restore Warn"
-        self.pin_warn.label = "Pin Warn" if self.parent.warn.type == WarnType.Ephemeral else "Unpin Warn"
-        self.pin_warn.disabled = self.parent.warn.state != WarnState.Valid
-
-    async def update_message(self, interaction: Interaction):
-        await self.update()
-        await interaction.response.edit_message(embed=self.parent.embed, view=self)
-
-    async def delete_warning(self, reason):
-        await self.parent.bot.warns.delete_warning(self.parent.warn.warn_id, self.author.id, reason)
+        self.delete_warn.label = "Delete Warn" if self.__view.warn.state == WarnState.Valid else "Restore Warn"
+        self.pin_warn.label = "Pin Warn" if self.__view.warn.type == WarnType.Ephemeral else "Unpin Warn"
+        self.pin_warn.disabled = self.__view.warn.state != WarnState.Valid
 
     @discord.ui.button(label="Delete Warn", style=ButtonStyle.secondary)
     async def delete_warn(self, interaction: Interaction, button: Button):
-        if self.parent.warn.state == WarnState.Valid:
-            await interaction.response.send_modal(WarnReason(self))
+        if self.__view.warn.state == WarnState.Valid:
+            await interaction.response.send_modal(WarnReason(self.__view))
         else:
-            await self.parent.bot.warns.restore_warning(self.parent.warn.warn_id)
-            await self.update_message(interaction)
+            await self.__view.bot.warns.restore_warning(self.__view.warn.warn_id)
+            await self.__view.reload()
+        await self.__view.set_warn(self.__view.warn.warn_id)
+        self.update_labels()
+        await interaction.response.edit_message(view=self.__view)
 
     @discord.ui.button(label="Pin Warn", style=ButtonStyle.secondary)
     async def pin_warn(self, interaction: Interaction, button: Button):
-        if self.parent.warn.type == WarnType.Pinned:
-            await self.parent.bot.warns.unpin_warning(self.parent.warn.warn_id)
+        if self.__view.warn.type == WarnType.Pinned:
+            await self.__view.bot.warns.unpin_warning(self.__view.warn.warn_id)
         else:
-            await self.parent.bot.warns.pin_warning(self.parent.warn.warn_id)
-        await self.update_message(interaction)
-
-    @discord.ui.button(label="Back", style=ButtonStyle.secondary)
-    async def back(self, interaction: Interaction, button: Button):
-        self.stop()
-        await self.parent.reload()
-        await interaction.response.edit_message(embed=self.parent.embed, view=self.parent)
+            await self.__view.bot.warns.pin_warning(self.__view.warn.warn_id)
+        await self.__view.set_warn(self.__view.warn.warn_id)
+        self.update_labels()
+        await interaction.response.edit_message(view=self.__view)
 
 
 class WarnReason(Modal):
@@ -517,7 +545,7 @@ class WarnReason(Modal):
     reason = TextInput(label='Reason', style=TextStyle.short,
                        required=True, placeholder="Enter reason for warn deletion")
 
-    def __init__(self, parent: WarnView):
+    def __init__(self, parent: WarnManagerView):
         super().__init__()
         self.parent = parent
 
@@ -526,4 +554,4 @@ class WarnReason(Modal):
         if not reason:
             return
         await self.parent.delete_warning(reason)
-        await self.parent.update_message(interaction)
+        await self.parent.reload()

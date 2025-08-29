@@ -290,7 +290,7 @@ class ModWarn(commands.GroupCog):
             return await ctx.send(f"{user.mention} has no warns!")
         view = WarnManagerView(ctx.bot, ctx.author, user)
         await view.init()
-        await ctx.send(view=view, embed=view.embed)
+        await ctx.send(view=view)
         await view.wait()
 
 

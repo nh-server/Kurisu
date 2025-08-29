@@ -66,7 +66,7 @@ class WarnsDatabaseManager(BaseDatabaseManager, tables=tables):
 
         async with self.pool.acquire() as conn:
             async with conn.transaction():
-                query = 'SELECT * FROM warns WHERE user_id = $1 AND state = 0'
+                query = 'SELECT * FROM warns WHERE user_id = $1 AND state = 0 ORDER BY id'
                 async for record in conn.cursor(query, user_id):
                     yield ValidWarnEntry(*record)
 
