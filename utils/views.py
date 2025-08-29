@@ -410,6 +410,7 @@ class WarnManagerView(BaseLayoutView):
         self.warn_buttons = None
 
     async def init(self):
+        print(self.children)
         await self.load_warns()
         self.container.add_item(WarnSelectRow(self.warns, self.deleted_warns))
 
@@ -552,6 +553,8 @@ class WarnReason(Modal):
     async def on_submit(self, interaction: Interaction):
         reason = self.reason.value
         if not reason:
+            await interaction.response.send_message("No reason set!")
             return
         await self.parent.delete_warning(reason)
-        await self.parent.reload()
+        await self.parent.set_warn(self.parent.warn.warn_id)
+        await interaction.response.edit_message(view=self.parent)
