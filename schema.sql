@@ -16,7 +16,8 @@ create table channels
 	name TEXT NOT NULL,
 	filtered BOOLEAN NOT NULL DEFAULT TRUE,
 	lock_level INTEGER NOT NULL DEFAULT 0,
-	mod_channel BOOLEAN NOT NULL DEFAULT FALSE
+	mod_channel BOOLEAN NOT NULL DEFAULT FALSE,
+	killbox_state INTEGER NOT NULL DEFAULT 0
 );
 
 
