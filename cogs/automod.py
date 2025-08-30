@@ -182,7 +182,7 @@ class AutoMod(commands.GroupCog):
             channel: Channel to change the killbox status of.
             action: Action for the killbox. This will apply to everyone that posts in the channel with some exceptions.
         """
-        res = await self.bot.configuration.set_channel_killbox(channel, action.value)
+        res = await self.bot.configuration.set_channel_killbox(channel, action)
         if not res:
             await interaction.response.send_message("Failed to set killbox status.", ephemeral=True)
             return

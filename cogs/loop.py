@@ -46,7 +46,7 @@ class Loop(commands.Cog):
         return self.bot.tz.localize(datetime.strptime(' '.join(time_str.split()), '%A, %B %d, %Y %I :%M %p')).astimezone()
 
     async def update_netinfo(self):
-        async with self.bot.session.get('https://www.nintendo.co.jp/netinfo/en_US/status.json?callback=getJSON', timeout=45) as r:
+        async with self.bot.session.get('https://www.nintendo.co.jp/netinfo/en_US/status.json?callback=getJSON') as r:
             if r.status == 200:
                 # Nintendo likes to fuck up the json content type sometimes.
                 j = await r.json(content_type=None)

@@ -307,7 +307,7 @@ class TitleTXTParser(commands.Cog):
 
         return False
 
-    def bad_titles(self, in_tree: dict) -> list[str] | None:
+    def bad_titles(self, in_tree: dict) -> dict | None:
         """
         Further examine the output of parse_dir to get a list of 3DS titles
         which may be missing data.
@@ -463,7 +463,7 @@ class TitleTXTParser(commands.Cog):
                 # 500mb might thought
                 continue
             if _TITLE_TXT_RE.match(f.filename):
-                async with self.bot.session.get(f.url, timeout=45) as titletxt_request:
+                async with self.bot.session.get(f.url) as titletxt_request:
                     titletxt_content = await titletxt_request.read()
                     if titletxt_content[:2] in (BOM_UTF16_LE, BOM_UTF16_BE):
                         titletxt_lines = self.sanitize(

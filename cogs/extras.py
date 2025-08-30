@@ -712,7 +712,7 @@ class Extras(commands.GroupCog):
             emoji_bytes = await emoji.read()
         else:
             try:
-                async with self.bot.session.get(emoji, timeout=45) as r:
+                async with self.bot.session.get(emoji) as r:
                     if r.status == 200:
                         if r.headers["Content-Type"] in ('image/jpeg', 'image/png', 'image/gif'):
                             emoji_bytes = await r.read()

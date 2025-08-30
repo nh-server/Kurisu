@@ -103,7 +103,7 @@ class Luma3DSDumpConvert(commands.Cog):
     async def on_message(self, message: discord.Message):
         for f in message.attachments:
             if f.filename.lower().startswith("crash_dump_") and f.filename.lower().endswith(".dmp") and f.size <= 1048576:  # 1MiB, probobly overkill?
-                async with self.bot.session.get(f.url, timeout=45) as dump_request:
+                async with self.bot.session.get(f.url) as dump_request:
                     dump_content = await dump_request.read()
                     with concurrent.futures.ProcessPoolExecutor() as pool:
                         dump_out = await self.bot.loop.run_in_executor(pool, functools.partial(self.dump_convert, dump_content))

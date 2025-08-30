@@ -173,7 +173,7 @@ class Kurisu(commands.Bot):
         self._is_all_ready = asyncio.Event()
 
     async def setup_hook(self) -> None:
-        self.session = aiohttp.ClientSession()
+        self.session = aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=45))
         await self.load_cogs()
 
     async def get_context(self, origin: discord.Interaction | discord.Message, /, *, cls=KurisuContext) -> KurisuContext:
