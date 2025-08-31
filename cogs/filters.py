@@ -10,7 +10,8 @@ from Levenshtein import distance
 from utils.checks import is_staff
 from utils.database import FilterKind
 from utils.utils import text_to_discord_file
-from utils.views import ConfirmationButtons, PaginatedEmbedView, EmbedListPaginator
+from utils.views.generic import ConfirmationButtons
+from utils.views.base import PaginatedEmbedView, EmbedListPaginator
 
 if TYPE_CHECKING:
     from kurisu import Kurisu

@@ -8,7 +8,7 @@ from discord.ext import commands
 from utils.checks import is_staff, is_staff_app
 from utils.configuration import KillBoxState
 from utils.utils import text_to_discord_file
-from utils.views import AutoModRulesView
+from utils.views.automod import AutoModRulesView
 
 from typing import TYPE_CHECKING
 

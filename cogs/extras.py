@@ -20,7 +20,8 @@ from typing import Optional, TYPE_CHECKING, Literal
 from utils.checks import is_staff, check_if_user_can_sr, check_staff, is_staff_app
 from utils.converters import DateOrTimeToSecondsConverter, HackMessageTransformer
 from utils.utils import gen_color, send_dm_message, KurisuCooldown
-from utils.views import BasePaginator, SimpleVoteView, PaginatedEmbedView
+from utils.views.generic import SimpleVoteView
+from utils.views.base import BasePaginator, PaginatedEmbedView
 
 if TYPE_CHECKING:
     from kurisu import Kurisu

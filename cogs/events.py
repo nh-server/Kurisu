@@ -16,6 +16,7 @@ from utils.configuration import KillBoxState
 from utils.utils import send_dm_message, gen_color
 from utils import Restriction
 from utils.database import FilterKind
+from utils.views.generic import ignored_file_extensions
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -31,17 +32,6 @@ class Events(commands.Cog):
         self.bot: Kurisu = bot
         self.configuration = bot.configuration
         self.filters = self.bot.filters
-
-    ignored_file_extensions = (
-        '.jpg',
-        '.jpeg',
-        '.gif',
-        '.png',
-        '.bmp',
-        '.tiff',
-        '.psd',
-        '.sed',
-    )
 
     # I hate naming variables sometimes
     user_ping_antispam: dict[int, Deque[tuple[discord.Message, int]]] = {}
@@ -73,23 +63,8 @@ class Events(commands.Cog):
         assert isinstance(message.channel, (discord.TextChannel, discord.VoiceChannel, discord.Thread))
         random.seed(message.id)
         embed = discord.Embed(color=gen_color(message.id))
-        embed.description = message.content
         if message.author.id in self.configuration.watch_list:
-            content = f"**Channel**:\n[#{message.channel.name}]({message.jump_url})\n"
-            msg = message.author.mention
-            if message.attachments:
-                content += "**Images**:\n"
-                for c, f in enumerate(message.attachments):
-                    if f.filename.lower().endswith(self.ignored_file_extensions):
-                        content += f"[[{c + 1}]]({f.url}) "
-                        if f == message.attachments[-1]:
-                            content += "\n"
-            if message.content:
-                content += "**Message**:\n"
-            embed.description = content + embed.description
-            if is_edit:
-                msg += " (edited)"
-            await self.bot.channels['watch-logs'].send(msg, embed=embed)
+            await self.bot.logs.post_watch_log(message, is_edit)
         msg = ''.join(char for char in message.content.lower() if char in printable)
         msg_no_separators = re.sub(r'[ *_\-~]', '', msg)
 
@@ -99,13 +74,8 @@ class Events(commands.Cog):
         contains_misinformation_url_mention = any(x in msg_no_separators for x in ('gudie.racklab', 'guide.racklab', 'gudieracklab', 'guideracklab', 'lyricly.github.io', 'lyriclygithub', 'strawpoii', 'hackinformer.com', 'console.guide', 'jacksorrell.co.uk', 'jacksorrell.tv', 'nintendobrew.com', 'reinx.guide', 'NxpeNwz', 'scenefolks.com', 'rentry.co'))
         contains_invite_link = approved_invites or non_approved_invites
 
-        for f in message.attachments:
-            if not f.filename.lower().endswith(self.ignored_file_extensions):
-                embed2 = discord.Embed(description=f"Size: {f.size}\n"
-                                                   f"Message: [{message.channel.name}]({message.jump_url})\n"
-                                                   f"Download: [{f.filename}]({f.url})")
-                await self.bot.channels['upload-logs'].send(f"📎 **Attachment**: {message.author.mention} "
-                                                            f"uploaded to {message.channel.mention}", embed=embed2)
+        if any(f for f in message.attachments if not f.filename.lower().endswith(ignored_file_extensions)):
+            await self.bot.logs.post_upload_log(message)
         if contains_invite_link:
             text = self.bot.escape_text(message.content)
             for code in non_approved_invites:
@@ -438,10 +408,9 @@ class Events(commands.Cog):
             match db_chan.killbox_state:
                 case KillBoxState.Kick:
                     try:
-                        mes = await self.bot.channels['message-logs'].send(
-                            f"✉️ **Message posted**: {message.author.mention} posted a message in killbox {message.channel.mention}"
-                            f"\n------------------\n"
-                            f"{self.bot.escape_text(message.content[:1600])}", suppress_embeds=True)
+                        mes = await self.bot.logs.post_message_log(":envelope: **Message posted**",
+                                                                   f"{message.author.mention} posted a message in killbox {message.channel.mention}",
+                                                                   message.content)
                         self.bot.actions.append(f'wk:{message.author.id}')
                         await message.author.kick(reason=f"Kill box automated Action. See {mes.jump_url}")
                         await message.delete()
@@ -450,10 +419,9 @@ class Events(commands.Cog):
                     return
                 case KillBoxState.Ban:
                     try:
-                        mes = await self.bot.channels['message-logs'].send(
-                            f"✉️ **Message posted**: {message.author.mention} posted a message in killbox {message.channel.mention}"
-                            f"\n------------------\n"
-                            f"{self.bot.escape_text(message.content[:1600])}", suppress_embeds=True)
+                        mes = await self.bot.logs.post_message_log(":envelope: **Message posted**",
+                                                                   f"{message.author.mention} posted a message in killbox {message.channel.mention}",
+                                                                   message.content)
                         self.bot.actions.append(f"wb:{message.author.id}")
                         await message.author.ban(reason=f"Automated Action. See {mes.jump_url}", delete_message_days=1)
                     except discord.Forbidden:

@@ -24,7 +24,8 @@ from subprocess import check_output, CalledProcessError
 from typing import Optional
 from utils import WarnsManager, ConfigurationManager, RestrictionsManager, ExtrasManager, FiltersManager, UserLogManager
 from utils.checks import InsufficientStaffRank, AppInsufficientStaffRank
-from utils.help import KuriHelp, HelpView, CategorySelect, MainHelpPaginator
+from utils.help import KuriHelp
+from utils.views.help import MainHelpPaginator, CategorySelect, HelpView
 from utils.utils import create_error_embed
 from utils.context import KurisuContext
 from utils.patch import patched_member_convert, patched_user_convert

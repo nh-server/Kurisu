@@ -1,10 +1,12 @@
 from datetime import datetime
 from typing import TYPE_CHECKING
 
+import discord
 from discord import Member, User
 from discord.utils import format_dt
 
 from .managerbase import BaseManager
+from .views.generic import LogLayout, WatchLogLayout, UploadLogLayout
 
 if TYPE_CHECKING:
     from typing import Optional
@@ -90,3 +92,12 @@ class UserLogManager(BaseManager):
         await self.bot.channels['mod-logs'].send(msg_final)
         if 'ban' in kind or 'kick' in kind:
             await self.bot.channels['server-logs'].send(msg_final)
+
+    async def post_message_log(self, title: str, action: str, log: str):
+        return await self.bot.channels['message-logs'].send(view=LogLayout(title, action, log), suppress_embeds=True, )
+
+    async def post_watch_log(self, message: discord.Message, is_edit: bool):
+        return await self.bot.channels['watch-logs'].send(view=WatchLogLayout(message, is_edit))
+
+    async def post_upload_log(self, message: discord.Message):
+        return await self.bot.channels['upload-logs'].send(view=UploadLogLayout(message))

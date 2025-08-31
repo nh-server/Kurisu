@@ -11,8 +11,7 @@ from utils.checks import is_staff, is_staff_app
 from utils.database.configuration import Rule
 from utils.modals import RuleAddition
 from utils.utils import KurisuCooldown, text_to_discord_file, simple_embed, gen_color
-from utils.views import BasePaginator, PaginatedEmbedView
-
+from utils.views.base import BasePaginator, PaginatedEmbedView
 
 if TYPE_CHECKING:
     from kurisu import Kurisu

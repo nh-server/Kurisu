@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING, Optional
 from utils.checks import is_staff, check_bot_or_staff
 from utils import check_staff, ordinal
 from utils.warns import WarnType, WARN_EXPIRATION
-from utils.views import WarnManagerView
+from utils.views.warnmanager import WarnManagerView
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
