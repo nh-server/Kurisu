@@ -72,6 +72,8 @@ class Rules(commands.GroupCog):
         self.logo_3ds = discord.utils.get(self.bot.guild.emojis, name="3dslogo") or "⁉"
         self.logo_wiiu = discord.utils.get(self.bot.guild.emojis, name="wiiulogo") or "⁉"
         self.logo_switch = discord.utils.get(self.bot.guild.emojis, name="switchlogo") or "⁉"
+        self.logo_wii = discord.utils.get(self.bot.guild.emojis, name="wiilogo") or "⁉"
+        self.logo_legacy = discord.utils.get(self.bot.guild.emojis, name="legacylogo") or "⁉"
 
         self.rules_intro = f"""{str(self.nh_emoji)} __**Welcome to Nintendo Homebrew!**__
 We're the place to come to for hacking & homebrew on Nintendo's video game consoles, like the Nintendo 3DS, Wii U, and Nintendo Switch. Get assistance with setting up or using homebrew, find news on the latest developments, discuss about what you're making, and more.
@@ -147,9 +149,9 @@ https://discord.gg/C29hYvh"""
         await channel.send(f"{str(self.logo_3ds)}  Nintendo 3DS\n" + '\n'.join(helpers_3ds))
         await channel.send(f"{str(self.logo_wiiu)}  Wii U\n" + '\n'.join(helpers_wiiu))
         await channel.send(f"{str(self.logo_switch)}  Nintendo Switch\n" + '\n'.join(helpers_switch))
-        await channel.send("Nintendo Wii\n" + '\n'.join(helpers_wii))
-        await channel.send("Legacy\n" + '\n'.join(helpers_legacy))
-        await channel.send("Hardware\n" + '\n'.join(helpers_hardware))
+        await channel.send(f"{str(self.logo_wii)}  Nintendo Wii\n" + '\n'.join(helpers_wii))
+        await channel.send(f"{str(self.logo_legacy)}  Legacy\n" + '\n'.join(helpers_legacy))
+        await channel.send(f"{str(self.logo_legacy)}  Hardware\n" + '\n'.join(helpers_hardware))  # Hardware currently has the same logo as legacy
         await channel.send(self.nickname_policy)
         await channel.send(self.useful_commands)
         await channel.send(self.extra)
