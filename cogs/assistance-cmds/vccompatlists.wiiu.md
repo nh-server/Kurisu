@@ -6,19 +6,19 @@ aliases: compatlists
 
 You can see what games are compatibile with the Wii Us Virtual Console from these links.
 
-[Wii](https://uwuvci-prime.github.io/UWUVCI-Resources/wii/wiicompat.html)
+[Wii](https://uwuvci.net/wiicompat)
 
 [Gamecube](https://wiki.gbatemp.net/wiki/Nintendont_Compatibility_List)
 
-[N64](https://uwuvci-prime.github.io/UWUVCI-Resources/n64/n64compat.html)
+[N64](https://uwuvci.net/n64compat)
 
-[DS](https://uwuvci-prime.github.io/UWUVCI-Resources/nds/ndscompat.html)
+[DS](https://uwuvci.net/ndscompat)
 
-[GBA](https://uwuvci-prime.github.io/UWUVCI-Resources/gba/gbacompat.html)
+[GBA](https://uwuvci.net/gbacompat)
 
-[NES](https://uwuvci-prime.github.io/UWUVCI-Resources/nes/nescompat.html)
+[NES](https://uwuvci.net/nescompat)
 
-[SNES](https://uwuvci-prime.github.io/UWUVCI-Resources/snes/snescompat.html)
+[SNES](https://uwuvci.net/snescompat)
 
 [MSX](https://wiki.gbatemp.net/wiki/WiiU_VC_MSX_Injection)
 
