@@ -802,14 +802,16 @@ class Memes(commands.Cog):
 
         await self._meme(ctx, msg, True)
 
-    @commands.command(hidden=True)
+    @commands.command(hidden=True, aliases=["degay", "ungay"])
     async def removegay(self, ctx: KurisuContext, u: discord.Member):
         """Degays a user"""
         removegay_list = [f"{u.mention} has been degayed.",
                           f"{u.mention} is now straight.",
                           f"{u.mention} has lost their gay privileges.",
                           f"{u.mention} has been kicked out of the Alphabet Mafia.",
-                          f"{u.mention} is now gayn't."]
+                          f"{u.mention} is now gayn't.",
+                          f"{u.mention}'s gay card has been revoked. Sozzles.",
+                          f"{u.mention} has been downgraded from 'yass queen' to 'yeah'."]
         await self._meme(ctx, random.choice(removegay_list), True)
 
     @commands.command(hidden=True, aliases=["🅱"])
