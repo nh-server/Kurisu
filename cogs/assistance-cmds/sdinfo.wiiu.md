@@ -1,7 +1,7 @@
 ---
 title: SD Cards for the Wii U
 help-desc: Description of which SD Cards should be used in a Wii U console
-aliases: sdreco,wiiusd
+aliases: sdreco,sdreq,wiiusd
 ---
 
 The minimum SD card requirements for Wii U homebrew is 2GB, and **must** be FAT32 with an MBR partition table.
