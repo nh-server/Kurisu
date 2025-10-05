@@ -792,16 +792,10 @@ class Memes(commands.Cog):
 
         total_rotations = total_degrees / 360
 
-        if is_kurisu:
-            msg = f"I have been rotated {base_degrees} degrees."
-        else:
-            msg = f"{u.mention} has been rotated {base_degrees} degrees."
+        msg = f"{u.mention if not is_kurisu else 'I'} have been rotated {base_degrees} degrees. "
 
         if degrees is not None:
-            if is_kurisu:
-                msg += f" This means I am now at {total_degrees} degrees, which is"
-            else:
-                msg += f" This means the user is now at {total_degrees} degrees, which is"
+            msg += f"This means {'the user' if not is_kurisu else 'I'} am now at {total_degrees} degrees, which is"
         else:
             msg += " That is"  # lol
 
