@@ -93,11 +93,23 @@ class ExtrasDatabaseManager(BaseDatabaseManager, tables=tables):
 
     async def add_3ds_friend_code(self, user_id: int, fc: int):
         await self.bot.configuration.add_member(user_id)
-        return await self._insert('friendcodes', user_id=user_id, fc_3ds=fc)
+        # do we have a table entry for this user?
+        fcs = await self.get_friend_code(user_id)
+        # if not, insert new row
+        if not fcs:
+            return await self._insert('friendcodes', user_id=user_id, fc_3ds=fc)
+        # otherwise, update existing row
+        return await self._update('friendcodes', {'fc_3ds': fc}, user_id=user_id)
 
     async def add_switch_friend_code(self, user_id: int, fc: int):
         await self.bot.configuration.add_member(user_id)
-        return await self._insert('friendcodes', user_id=user_id, fc_switch=fc)
+        # do we have a table entry for this user?
+        fcs = await self.get_friend_code(user_id)
+        # if not, insert new row
+        if not fcs:
+            return await self._insert('friendcodes', user_id=user_id, fc_switch=fc)
+        # otherwise, update existing row
+        return await self._update('friendcodes', {'fc_switch': fc}, user_id=user_id)
 
     async def delete_friend_code(self, user_id: int):
         return await self._delete('friendcodes', user_id=user_id)
