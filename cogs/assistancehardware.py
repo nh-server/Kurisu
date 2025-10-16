@@ -164,6 +164,13 @@ alias = {
     "ktr": "new3ds",
     "red": "new3dsxl",
     "jan": "new2dsxl",
+    "hac": "switch",
+    "hdh": "switchlite",
+    "heg": "switcholed",
+    "procon": "procontroller",
+    "joycon": "joycons",
+    "wup": "wiiu",
+    "rvl": "wii",
 }
 
 boards = {
@@ -201,7 +208,9 @@ bits = {
     "new2dsxl": "PH 00, Y00",
     "switch": "PH 00, Y00",
     "switchlite": "PH 00, Y00",
-    "switcholed": "PH 00, Y00"
+    "switcholed": "PH 00, Y00",
+    "joycons": "PH 00, Y00",
+    "procontroller": "PH 00, Y00",
 }
 
 
@@ -281,13 +290,60 @@ class AssistanceHardware(commands.Cog):
         elif console in alias.keys():
             if "PH" in bits[alias[console]]:
                 warning = "\n[Avoid using IFixit PH Bits](https://hardware.hacks.guide/wiki/Ifixit_Situation)"
-            # Verify alias has a board (shared with all other commands)
             if alias[console] in bits.keys():
                 await simple_embed(ctx, "The screwdriver bits you need are `" + bits[alias[console]] + "`" + warning, color=discord.Color.gold())
             else:
                 await simple_embed(ctx, "The screwdriver bits you need are `" + "`", color=discord.Color.gold())
         else:
-            await simple_embed(ctx, "Invalid console, Options are `" + ', '.join(boards) + "`", color=discord.Color.red())
+            await simple_embed(ctx, "Invalid console, Options are `" + ', '.join(bits) + "`", color=discord.Color.red())
+
+    @commands.dynamic_cooldown(KurisuCooldown(1, 5), commands.BucketType.channel)
+    @commands.command()
+    async def pop(self, ctx: KurisuContext, console: str = ""):
+        """Fix the popping issue for the given console: """
+        console = console.lower()
+        embed = discord.Embed(color=discord.Color.blue())	
+
+        if console in boards.keys():
+            embed.set_image(url=boards[console])
+
+
+        elif console in alias.keys():
+            if alias[console] in boards.keys():
+                embed.set_image(url=boards[alias[console]])
+
+            else:
+                embed.description = f'{ctx.author.mention}, Valid options are `' + ', '.join(boards) + "`"
+                embed.color = discord.Color.red()
+                await ctx.send(embed=embed, delete_after=10)
+                return
+
+
+        else:
+                embed.description = f'{ctx.author.mention}, Valid options are `' + ', '.join(boards) + "`"
+                embed.color = discord.Color.red()
+                await ctx.send(embed=embed, delete_after=10)
+                return
+
+        if console in alias.keys():
+            if "PH" in bits[alias[console]]:
+                warning = "[Avoid using IFixit PH Bits](https://hardware.hacks.guide/wiki/Ifixit_Situation)"
+                embed.description =f"To open the console you need: {bits[alias[console]]}\n{warning}\n1. Inspect the motherboard visually for anything weird like crooked ribbons/broken connectors, corrosion, etc.\n2. Unplug the camera and attempt boot, if it still pops:\n3. Unplug the top lcd ribbon, if it still pops:\n4. Unplug the bottom lcd ribbon, if it still pops:\n5. Unplug everything but required, if it still pops:\n6. Reseat every required ribbon if it still pops:\n7. Likely misc ribbon or something else very bad.\n> Notes: o2DS has 2 lcd ribbons but both are required for the lcd to function, and N2DSXL requires the top lcd ribbon to boot.\n\nIf you need a guide, use this as *reference*, the screwdriver they tell you to use are wrong and the steps are questionable at best:\n{consoles[alias[console]]}"
+
+            else:
+                embed.title = f"System: {title[alias[console]]}"
+                embed.description =f"To open the console you need: {bits[alias[console]]}\n1. Inspect the motherboard visually for anything weird like crooked ribbons/broken connectors, corrosion, etc.\n2. Unplug the camera and attempt boot, if it still pops:\n3. Unplug the top lcd ribbon, if it still pops:\n4. Unplug the bottom lcd ribbon, if it still pops:\n5. Unplug everything but required, if it still pops:\n6. Reseat every required ribbon if it still pops:\n7. Likely misc ribbon or something else very bad.\n> Notes: o2DS has 2 lcd ribbons but both are required for the lcd to function, and N2DSXL requires the top lcd ribbon to boot.\n\nIf you need a guide, use this as *reference*, the screwdriver they tell you to use are wrong and the steps are questionable at best:\n{consoles[alias[console]]}"
+        
+        else:
+            if "PH" in bits[console]:
+                warning = "[Avoid using IFixit PH Bits](https://hardware.hacks.guide/wiki/Ifixit_Situation)"
+                embed.description =f"To open the console you need: {bits[console]}\n{warning}\n1. Inspect the motherboard visually for anything weird like crooked ribbons/broken connectors, corrosion, etc.\n2. Unplug the camera and attempt boot, if it still pops:\n3. Unplug the top lcd ribbon, if it still pops:\n4. Unplug the bottom lcd ribbon, if it still pops:\n5. Unplug everything but required, if it still pops:\n6. Reseat every required ribbon if it still pops:\n7. Likely misc ribbon or something else very bad.\n> Notes: o2DS has 2 lcd ribbons but both are required for the lcd to function, and N2DSXL requires the top lcd ribbon to boot.\n\nIf you need a guide, use this as *reference*, the screwdriver they tell you to use are wrong and the steps are questionable at best:\n{consoles[console]}"
+
+            else:
+                embed.title = f"System: {title[console]}"
+                embed.description =f"To open the console you need: {bits[console]}\n1. Inspect the motherboard visually for anything weird like crooked ribbons/broken connectors, corrosion, etc.\n2. Unplug the camera and attempt boot, if it still pops:\n3. Unplug the top lcd ribbon, if it still pops:\n4. Unplug the bottom lcd ribbon, if it still pops:\n5. Unplug everything but required, if it still pops:\n6. Reseat every required ribbon if it still pops:\n7. Likely misc ribbon or something else very bad.\n> Notes: o2DS has 2 lcd ribbons but both are required for the lcd to function, and N2DSXL requires the top lcd ribbon to boot.\n\nIf you need a guide, use this as *reference*, the screwdriver they tell you to use are wrong and the steps are questionable at best:\n{consoles[console]}"
+
+        await ctx.send(embed=embed)
 
 
 add_md_files_as_commands(AssistanceHardware, join(AssistanceHardware.data_dir, 'hardware'),
