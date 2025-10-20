@@ -780,6 +780,7 @@ class Memes(commands.Cog):
         MAX_DEGREES = 10000
 
         base_degrees = random.randint(-1080, 1080)
+        is_kurisu = (u.id == self.bot.user.id)  # are we Kurisu?
 
         if degrees is not None:
             if abs(degrees) > MAX_DEGREES:
@@ -790,15 +791,18 @@ class Memes(commands.Cog):
             total_degrees = base_degrees
 
         total_rotations = total_degrees / 360
-        msg = f"{u.mention} has been rotated {base_degrees} degrees."
+
+        msg = f"{u.mention if not is_kurisu else 'I'} have been rotated {base_degrees} degrees. "
 
         if degrees is not None:
-            if u.id == self.bot.user.id:  # are we Kurisu?
-                msg += f" This means I am now at {total_degrees} degrees, which is {total_rotations:.2f} rotations."  # respond with useless level of detail if so
-            else:
-                msg += f" This means the user is now at {total_degrees} degrees, which is {total_rotations:.2f} rotations."  # otherwise normal detail
+            msg += f"This means {'the user is' if not is_kurisu else 'I am'} now at {total_degrees} degrees, which is"
         else:
-            msg += f" That is {total_rotations:.2f} rotations."
+            msg += " That is"  # lol
+
+        if total_degrees < 0:  # directions update
+            msg += f" {abs(total_rotations):.2f} leftward rotations."
+        else:
+            msg += f" {total_rotations:.2f} rightward rotations."
 
         await self._meme(ctx, msg, True)
 
