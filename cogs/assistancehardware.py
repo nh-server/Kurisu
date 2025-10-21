@@ -300,7 +300,7 @@ class AssistanceHardware(commands.Cog):
     @commands.dynamic_cooldown(KurisuCooldown(1, 5), commands.BucketType.channel)
     @commands.command()
     async def pop(self, ctx: KurisuContext, console: str = ""):
-        """Fix the popping issue for the given console: """
+        """Fix the popping issue for the given console. """
         console = console.lower()
         embed = discord.Embed(color=discord.Color.blue())	
 
