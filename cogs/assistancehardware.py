@@ -300,7 +300,7 @@ class AssistanceHardware(commands.Cog):
     @commands.dynamic_cooldown(KurisuCooldown(1, 5), commands.BucketType.channel)
     @commands.command()
     async def pop(self, ctx: KurisuContext, console: str = ""):
-        """Fix the popping issue for the given console. """
+        """Fix popping issue for the given console. """
         console = console.lower()
         embed = discord.Embed(color=discord.Color.blue())	
 
@@ -332,17 +332,15 @@ class AssistanceHardware(commands.Cog):
                 embed.description =f"To open the console you need: {bits[alias[console]]}\n{warning}\n1. Inspect the motherboard visually for anything weird like crooked ribbons/broken connectors, corrosion, etc.\n2. Unplug the camera and attempt boot, if it still pops:\n3. Unplug the top lcd ribbon, if it still pops:\n4. Unplug the bottom lcd ribbon, if it still pops:\n5. Unplug everything but required, if it still pops:\n6. Reseat every required ribbon if it still pops:\n7. Likely misc ribbon or something else very bad.\n> Notes: o2DS has 2 lcd ribbons but both are required for the lcd to function, and N2DSXL requires the top lcd ribbon to boot.\n\nIf you need a guide, use this as *reference*, the screwdriver they tell you to use are wrong and the steps are questionable at best:\n{consoles[alias[console]]}"
 
             else:
-                embed.title = f"System: {title[alias[console]]}"
                 embed.description =f"To open the console you need: {bits[alias[console]]}\n1. Inspect the motherboard visually for anything weird like crooked ribbons/broken connectors, corrosion, etc.\n2. Unplug the camera and attempt boot, if it still pops:\n3. Unplug the top lcd ribbon, if it still pops:\n4. Unplug the bottom lcd ribbon, if it still pops:\n5. Unplug everything but required, if it still pops:\n6. Reseat every required ribbon if it still pops:\n7. Likely misc ribbon or something else very bad.\n> Notes: o2DS has 2 lcd ribbons but both are required for the lcd to function, and N2DSXL requires the top lcd ribbon to boot.\n\nIf you need a guide, use this as *reference*, the screwdriver they tell you to use are wrong and the steps are questionable at best:\n{consoles[alias[console]]}"
         
         else:
+            embed.title = f"System: {title[console]}"
             if "PH" in bits[console]:
-                embed.title = f"System: {title[console]}"
                 warning = "[Avoid using IFixit PH Bits](https://hardware.hacks.guide/wiki/Ifixit_Situation)"
                 embed.description =f"To open the console you need: {bits[console]}\n{warning}\n1. Inspect the motherboard visually for anything weird like crooked ribbons/broken connectors, corrosion, etc.\n2. Unplug the camera and attempt boot, if it still pops:\n3. Unplug the top lcd ribbon, if it still pops:\n4. Unplug the bottom lcd ribbon, if it still pops:\n5. Unplug everything but required, if it still pops:\n6. Reseat every required ribbon if it still pops:\n7. Likely misc ribbon or something else very bad.\n> Notes: o2DS has 2 lcd ribbons but both are required for the lcd to function, and N2DSXL requires the top lcd ribbon to boot.\n\nIf you need a guide, use this as *reference*, the screwdriver they tell you to use are wrong and the steps are questionable at best:\n{consoles[console]}"
 
             else:
-                embed.title = f"System: {title[console]}"
                 embed.description =f"To open the console you need: {bits[console]}\n1. Inspect the motherboard visually for anything weird like crooked ribbons/broken connectors, corrosion, etc.\n2. Unplug the camera and attempt boot, if it still pops:\n3. Unplug the top lcd ribbon, if it still pops:\n4. Unplug the bottom lcd ribbon, if it still pops:\n5. Unplug everything but required, if it still pops:\n6. Reseat every required ribbon if it still pops:\n7. Likely misc ribbon or something else very bad.\n> Notes: o2DS has 2 lcd ribbons but both are required for the lcd to function, and N2DSXL requires the top lcd ribbon to boot.\n\nIf you need a guide, use this as *reference*, the screwdriver they tell you to use are wrong and the steps are questionable at best:\n{consoles[console]}"
 
         await ctx.send(embed=embed)
