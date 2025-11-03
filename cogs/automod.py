@@ -75,14 +75,18 @@ class AutoMod(commands.GroupCog):
             for keyword in rule.trigger.keyword_filter:
                 if word in keyword:
                     count += 1
-                    matches[rule.name].append(f"{keyword} contains {word}")
-        text = ""
+                    matches[rule.name].append(keyword)
+            for keyword in rule.trigger.regex_patterns:
+                if word in keyword:
+                    count += 1
+                    matches[rule.name].append(f"{keyword} (Regex)")
+        text = f"Matches for {word}\n"
         if not count:
             return await interaction.response.send_message("No match found.")
         for rule_name in matches:
             if not matches[rule_name]:
                 continue
-            text = f'Rule {rule_name}:\n  ' + '  \n'.join(matches[rule_name])
+            text = f'  Rule {rule_name}:\n' + '    \n'.join(matches[rule_name])
         file = text_to_discord_file(text, name='matches.txt')
         await interaction.response.send_message(f"{count} matches found.", file=file)
 
