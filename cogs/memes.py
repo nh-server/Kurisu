@@ -4,6 +4,7 @@ import datetime
 import discord
 import math
 import random
+import asyncio
 
 from discord.ext import commands
 from typing import TYPE_CHECKING
@@ -817,6 +818,24 @@ class Memes(commands.Cog):
                           f"{u.mention}'s gay card has been revoked. Sozzles.",
                           f"{u.mention} has been downgraded from 'yass queen' to 'yeah'."]
         await self._meme(ctx, random.choice(removegay_list), True)
+
+        if u.nick is not None:
+            if "🌈" in u.nick:
+                gay_nick = u.nick
+            else:
+                gay_nick = False
+        elif "🌈" in u.global_name:
+            gay_nick = u.global_name
+        else:
+            gay_nick = False
+
+        if gay_nick:
+            await u.edit(nick=gay_nick.replace("🌈", ""))
+            await asyncio.sleep(15)
+            if gay_nick == u.global_name:  # race condition but who cares lol
+                await u.edit(nick=None)  # Reset server nick
+            else:
+                await u.edit(nick=gay_nick)
 
     @commands.command(hidden=True, aliases=["🅱"])
     async def b(self, ctx: KurisuContext):
