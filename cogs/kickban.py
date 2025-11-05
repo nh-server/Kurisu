@@ -66,6 +66,26 @@ class KickBan(commands.GroupCog):
         await ctx.send(f"{member} is now gone. 👌")
         await self.bot.logs.post_action_log(ctx.author, member, 'kick', reason=reason)
 
+    @is_staff("HalfOP")
+    @commands.bot_has_permissions(kick_members=True)
+    @commands.command(name="scamkick")
+    async def scamkick(self, ctx: GuildContext, member: discord.Member):
+        """Kicks a user, logs automatically, informs of reason for kick."""
+        if await check_bot_or_staff(ctx, member, "kick"):
+            return
+        reason = "Sending or linking scams or spam content, and/or compromised account."
+        msg = f"You were kicked from {ctx.guild.name}."
+        msg += "\n\nYou were kicked because your account has been compromised and has sent spam or scams in the server."
+        msg += "\n\nYou are able to rejoin the server, but please secure your account and consider adding two-factor authentication."
+        await send_dm_message(member, msg, ctx)
+        try:
+            await member.kick(reason=reason)
+        except discord.errors.Forbidden:
+            await ctx.send("💢 I don't have permission to do this.")
+            return
+        await ctx.send(f"{member} is now gone. 👌")
+        await self.bot.logs.post_action_log(ctx.author, member, 'kick', reason=reason)
+
     @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
     @commands.command(name="ban", aliases=["yeet"])
@@ -130,7 +150,7 @@ class KickBan(commands.GroupCog):
         msg = f"You were banned from {interaction.guild.name}."
         if reason:
             msg += " The given reason is: " + reason
-        msg += "If you think this is a mistake, contact frozenchen on discord or send a email to staff@nintendohomebrew.com"
+        msg += "If you think this is a mistake, contact frozenchen on discord or send an email to staff@nintendohomebrew.com"
 
         if duration is not None:
             timestamp = datetime.datetime.now(self.bot.tz)
