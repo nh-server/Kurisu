@@ -822,12 +822,12 @@ class Memes(commands.Cog):
     async def gay(self, ctx: KurisuContext, u: discord.Member):
         """Gays a user"""
         gay_list = [f"{u.mention} has been gayed.",
-                          f"{u.mention} is now gay.",
-                          f"{u.mention} has received some gay privileges.",
-                          f"{u.mention} has been inducted into the Alphabet Mafia.",
-                          f"{u.mention} is now homo.",
-                          f"{u.mention}'s gay card has been renewed!",
-                          f"{u.mention} has been upgraded from 'yeah' to 'yasss queen'!"]
+                    f"{u.mention} is now gay.",
+                    f"{u.mention} has received some gay privileges.",
+                    f"{u.mention} has been inducted into the Alphabet Mafia.",
+                    f"{u.mention} is now homo.",
+                    f"{u.mention}'s gay card has been renewed!",
+                    f"{u.mention} has been upgraded from 'yeah' to 'yasss queen'!"]
         await self._meme(ctx, random.choice(gay_list), True)
 
     @commands.command(hidden=True, aliases=["🅱"])
