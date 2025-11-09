@@ -11,7 +11,7 @@ If you're having TegraRCMGui errors, driver issues or your Switch is just straig
 5. Load Zadig
 6. Connect Switch to pc
 7. In Zadig, find "APX" in device list
-8. For driver type, select libusbK (3.0.7.0)
+8. For driver type, select libusbK (3.1.0.0)
 9. Install that driver
 10. Close zadig
 11. Open TegraRCMGui and inject the payload
