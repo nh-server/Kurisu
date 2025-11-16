@@ -769,6 +769,12 @@ class Memes(commands.Cog):
                          image_link="https://nintendohomebrew.com/assets/img/nhmemes/dumbass.png")
 
     @commands.command(hidden=True)
+    async def goku(self, ctx: KurisuContext):
+        """goku has had enough"""
+        await self._meme(ctx, "",
+                         image_link="https://nintendohomebrew.com/assets/img/nhmemes/goku.png")
+
+    @commands.command(hidden=True)
     async def consider(self, ctx: KurisuContext):
         """well?"""
         await self._meme(ctx, "",
@@ -809,6 +815,11 @@ class Memes(commands.Cog):
     @commands.command(hidden=True, aliases=["degay", "ungay", "minusgay"])
     async def removegay(self, ctx: KurisuContext, u: discord.Member):
         """Degays a user"""
+
+        if u.id == 250051871962562562:
+            await ctx.send("Can't. Too gay. Try someone else.")
+            return
+
         removegay_list = [f"{u.mention} has been degayed.",
                           f"{u.mention} is now straight.",
                           f"{u.mention} has lost their gay privileges.",
