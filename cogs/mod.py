@@ -521,7 +521,7 @@ class Mod(commands.GroupCog):
 
     @is_staff("Helper")
     @commands.guild_only()
-    @commands.command(aliases=["yeshelp"])
+    @commands.command(aliases=["yeshelp", "nonthelp"])
     async def givehelp(self, ctx: GuildContext, member: discord.Member | discord.User, *, reason: Optional[str]):
         """Restore access to the assistance channels. Staff and Helpers only."""
         await self.restrictions.remove_restriction(member, Restriction.TakeHelp)
@@ -530,7 +530,7 @@ class Mod(commands.GroupCog):
 
     @is_staff("Helper")
     @commands.guild_only()
-    @commands.command(aliases=["timenohelp"])
+    @commands.command(aliases=["timenohelp", "timeyesnthelp"])
     async def timetakehelp(self, ctx: GuildContext, member: discord.Member, length: int = commands.parameter(converter=DateOrTimeToSecondsConverter), *, reason: Optional[str]):
         """Restricts a user from Assistance Channels for a limited period of time. Staff and Helpers only.\n\nLength format: #d#h#m#s"""
         if await check_bot_or_staff(ctx, member, "takehelp"):
@@ -542,9 +542,10 @@ class Mod(commands.GroupCog):
         timestamp = datetime.now(self.bot.tz)
 
         takehelp_expiration = timestamp + delta
+        yeshelp_time_string = format_dt(takehelp_expiration)
 
         await self.restrictions.add_restriction(member, Restriction.TakeHelp, reason, end_date=takehelp_expiration)
-        await ctx.send(f"{member.mention} can no longer speak in Assistance Channels.")
+        await ctx.send(f"{member.mention} can no longer access the help channels until {yeshelp_time_string}.")
         await self.logs.post_action_log(issuer, member, 'take-help', reason=reason, until=takehelp_expiration)
 
     @is_staff("Helper")
