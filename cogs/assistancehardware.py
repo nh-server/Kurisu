@@ -195,6 +195,7 @@ title = {
     "new3ds": "\"New\" 3DS (2015)",
     "new3dsxl": "\"New\" 3DS XL (2015)",
     "new2dsxl": "\"New\" 2DS XL",
+    "ds": "DS (Fat/NTR)",
 }
 
 bits = {
