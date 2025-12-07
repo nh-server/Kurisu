@@ -820,7 +820,7 @@ class Memes(commands.Cog):
             await ctx.send("Can't. Too gay. Try someone else.")
             return
 
-        if u.id == 328277052992258049:  # nio 
+        if u.id == 328277052992258049:  # nio
             await ctx.send("Not applicable.")
             return
 
