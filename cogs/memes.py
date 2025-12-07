@@ -819,7 +819,7 @@ class Memes(commands.Cog):
         if u.id == 250051871962562562:
             await ctx.send("Can't. Too gay. Try someone else.")
             return
-
+        
         if u.id == 328277052992258049: # nio 
             await ctx.send("Not applicable.")
             return
@@ -840,7 +840,7 @@ class Memes(commands.Cog):
         if u.id == 328277052992258049: # nio
             await ctx.send("Not applicable.")
             return
-            
+        
         gay_list = [f"{u.mention} has been gayed.",
                     f"{u.mention} is now gay.",
                     f"{u.mention} has received some gay privileges.",
