@@ -12,4 +12,5 @@ There is no complete list about what is possible and what not, but to give you a
 -Dump game cartridges (to look at the contents, for example)
 -Mod games,
 -Run Android or Linux on your Switch,
+-Stream your console's screen over USB/Network (even on Lite consoles),
 -Still have access to normal stock features (e.g. eShop, online services etc.)
