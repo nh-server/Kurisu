@@ -402,7 +402,7 @@ class Memes(commands.Cog):
         celsius = random.randint(-300, -4)
         fahrenheit = self.c_to_f(celsius)
         kelvin = self.c_to_k(celsius)
-        await self._meme(ctx, f"{u.mention} frozen. User is now {celsius}°C ({fahrenheit}°F, {kelvin}K). Wait how is that possible?", True)
+        await self._meme(ctx, f"{u.mention} frozen. User is now {celsius}°C ({fahrenheit}°F, {kelvin}K). {'Wait, how is that possible?' if (kelvin < 0) else ''}", True)
 
     # End code from https://github.com/reswitched/robocop-ng
 
