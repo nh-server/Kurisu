@@ -70,20 +70,49 @@ class KickBan(commands.GroupCog):
     @commands.bot_has_permissions(kick_members=True)
     @commands.command(name="scamkick")
     async def scamkick(self, ctx: GuildContext, member: discord.Member):
-        """Kicks a user, logs automatically, informs of reason for kick."""
+        """Kicks a user, logs automatically, informs of reason for kick, and deletes their last 24h of messages."""
         if await check_bot_or_staff(ctx, member, "kick"):
             return
+
         reason = "Sending or linking scams or spam content, and/or compromised account."
         msg = f"You were kicked from {ctx.guild.name}."
         msg += "\n\nYou were kicked because your account has been compromised and has sent spam or scams in the server."
         msg += "\n\nYou are able to rejoin the server, but please secure your account and consider adding two-factor authentication."
         await send_dm_message(member, msg, ctx)
+
+        after = discord.utils.utcnow() - datetime.timedelta(days=1)
+        deleted_count = 0
+        failures: list[str] = []
+
+        for channel in ctx.guild.text_channels:
+            try:
+                deleted = await channel.purge(
+                    limit=50,
+                    after=after,
+                    oldest_first=False,
+                    check=lambda m: m.author.id == member.id,
+                    reason=f"scamkick: {reason}",
+                    bulk=True,
+                )
+                deleted_count += len(deleted)
+
+            except (discord.Forbidden, discord.HTTPException) as e:
+                status = getattr(e, "status", None)
+                code = getattr(e, "code", None)
+                failures.append(f"#{channel.name}: {type(e).__name__} (status={status}, code={code})")
+
         try:
             await member.kick(reason=reason)
         except discord.errors.Forbidden:
             await ctx.send("💢 I don't have permission to do this.")
             return
-        await ctx.send(f"{member} is now gone. 👌")
+
+        if failures:
+            text = "⚠️ purge issues:\n" + "\n".join(failures)
+            for i in range(0, len(text), 1800):
+                await ctx.send("```" + text[i:i+1800] + "```")
+
+        await ctx.send(f"{member} is now gone, and I removed ~{deleted_count} messages from last 24h. 👌")
         await self.bot.logs.post_action_log(ctx.author, member, 'kick', reason=reason)
 
     @is_staff("OP")
@@ -102,6 +131,10 @@ class KickBan(commands.GroupCog):
                         f"{member} has encountered an error, and needs to close. 👍",
                         f"{member} is not responding, and has been terminated. 👍",
                         f"{member} ran into a problem and needs to restart. Please refer to my dick and balls for more information. 👍",
+                        f"{member} has been defenestrated. 👍",
+                        f"{member} was ejected, and was An Impostor. 👍",
+                        f"{member} has been sent to Brazil. 👍",
+                        f"{member} > /dev/null 2>&1 👍",
                         f"{member} has been 360 noscoped on Rust. 👍"]
         if await check_bot_or_staff(ctx, member, "ban"):
             return
