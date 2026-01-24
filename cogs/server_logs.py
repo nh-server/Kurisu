@@ -81,7 +81,7 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
             conditions.append(f"gm.created_at::date = ${n_args}")
             bindings.append(during)
         sql_query += " AND ".join(conditions)
-        sql_query += f" ORDER BY 2,1 {order} LIMIT {limit}"
+        sql_query += f" ORDER BY gc.channel_id,gm.created_at {order} LIMIT {limit}"
         return sql_query, bindings
 
     @is_staff_app("OP")
