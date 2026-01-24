@@ -663,6 +663,51 @@ class Mod(commands.GroupCog):
 
     @is_staff("Helper")
     @commands.guild_only()
+    @commands.command(name="scamprobate")
+    async def scamprobate(self, ctx: GuildContext, member: discord.Member | discord.User):
+        """Probates a user, DMs them, logs automatically, and deletes their last 24h of messages."""
+        if await check_bot_or_staff(ctx, member, "probate"):
+            return
+        reason = "Sending or linking scams or spam content, and/or compromised account."
+        await self.restrictions.add_restriction(member, Restriction.Probation, reason)
+
+        msg = f"You were put on probation in {ctx.guild.name}."
+        msg += "\n\nThis happened because your account appears to be compromised and has sent spam or scam content in the server."
+        msg += "\n\nPlease secure your account (change password, enable 2FA) and contact staff if you think this was a mistake."
+        await send_dm_message(member, msg, ctx)
+
+        after = discord.utils.utcnow() - datetime.timedelta(days=1)
+        deleted_count = 0
+        failures: list[str] = []
+        target_id = member.id
+
+        for channel in ctx.guild.text_channels:
+            try:
+                deleted = await channel.purge(
+                    limit=50,
+                    after=after,
+                    oldest_first=False,
+                    check=lambda m, tid=target_id: m.author.id == tid,
+                    reason=f"scamprobate: {reason}",
+                    bulk=True,
+                )
+                deleted_count += len(deleted)
+
+            except (discord.Forbidden, discord.HTTPException) as e:
+                status = getattr(e, "status", None)
+                code = getattr(e, "code", None)
+                failures.append(f"#{channel.name}: {type(e).__name__} (status={status}, code={code})")
+
+        if failures:
+            text = "⚠️ purge issues:\n" + "\n".join(failures)
+            for i in range(0, len(text), 1800):
+                await ctx.send("```" + text[i:i+1800] + "```")
+
+        await ctx.send(f"{member.mention} is now in probation, and I removed ~{deleted_count} messages from last 24h. 👌")
+        await self.bot.logs.post_action_log(ctx.author, member, "probate", reason=reason)
+
+    @is_staff("Helper")
+    @commands.guild_only()
     @commands.command()
     async def unprobate(self, ctx: GuildContext, member: discord.Member | discord.User, *, reason: Optional[str]):
         """Unprobate a user. Staff and Helpers only."""
