@@ -13,6 +13,7 @@ from utils.checks import is_staff, is_staff_app, check_bot_or_staff
 from utils.utils import send_dm_message
 from utils import Restriction
 from utils.database import FilterKind
+from utils.utils import scam_purge
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -80,26 +81,12 @@ class KickBan(commands.GroupCog):
         msg += "\n\nYou are able to rejoin the server, but please secure your account and consider adding two-factor authentication."
         await send_dm_message(member, msg, ctx)
 
-        after = discord.utils.utcnow() - datetime.timedelta(days=1)
-        deleted_count = 0
-        failures: list[str] = []
-
-        for channel in ctx.guild.text_channels:
-            try:
-                deleted = await channel.purge(
-                    limit=30,
-                    after=after,
-                    oldest_first=False,
-                    check=lambda m: m.author.id == member.id,
-                    reason=f"scamkick: {reason}",
-                    bulk=True,
-                )
-                deleted_count += len(deleted)
-
-            except (discord.Forbidden, discord.HTTPException) as e:
-                status = getattr(e, "status", None)
-                code = getattr(e, "code", None)
-                failures.append(f"#{channel.name}: {type(e).__name__} (status={status}, code={code})")
+        deleted_count, failures = await scam_purge(
+            guild=ctx.guild,
+            target_id=member.id,
+            reason=f"scamkick: {reason}",
+            limit=30,
+        )
 
         try:
             await member.kick(reason=reason)

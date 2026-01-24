@@ -14,7 +14,7 @@ from utils import Restriction
 from utils.converters import DateOrTimeToSecondsConverter, TimeTransformer
 from utils.checks import is_staff, check_staff, check_bot_or_staff, is_staff_app
 from utils.utils import paginate_message, send_dm_message, parse_time, text_to_discord_file, gen_color, \
-    create_error_embed, create_userinfo_embed
+    create_error_embed, create_userinfo_embed, scam_purge
 
 if TYPE_CHECKING:
     from kurisu import Kurisu
@@ -676,27 +676,12 @@ class Mod(commands.GroupCog):
         msg += "\n\nPlease secure your account (change password, enable 2FA) and contact staff if you think this was a mistake."
         await send_dm_message(member, msg, ctx)
 
-        after = discord.utils.utcnow() - timedelta(days=1)
-        deleted_count = 0
-        failures: list[str] = []
-        target_id = member.id
-
-        for channel in ctx.guild.text_channels:
-            try:
-                deleted = await channel.purge(
-                    limit=30,
-                    after=after,
-                    oldest_first=False,
-                    check=lambda m, tid=target_id: m.author.id == tid,
-                    reason=f"scamprobate: {reason}",
-                    bulk=True,
-                )
-                deleted_count += len(deleted)
-
-            except (discord.Forbidden, discord.HTTPException) as e:
-                status = getattr(e, "status", None)
-                code = getattr(e, "code", None)
-                failures.append(f"#{channel.name}: {type(e).__name__} (status={status}, code={code})")
+        deleted_count, failures = await scam_purge(
+            guild=ctx.guild,
+            target_id=member.id,
+            reason=f"scamprobate: {reason}",
+            limit=30,
+        )
 
         if failures:
             text = "⚠️ purge issues:\n" + "\n".join(failures)

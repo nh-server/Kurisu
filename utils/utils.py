@@ -35,6 +35,30 @@ class ConsoleColor(discord.Color):
         return cls(0x707070)
 
 
+PUBLIC_CHAN_IDS = [
+    196635695958196224,  # 3ds 1
+    247557068490276864,  # 3ds 2
+    279783073497874442,  # wiiu
+    439933093118476289,  # switch 1
+    655681905907466250,  # switch 2
+    1159223824676565114,  # wii-vwii
+    196635745551646720,  # modding gen
+    770582653132734464,  # tt
+    314582689829355521,  # legacy
+    196635781798952960,  # dev
+    233002779717795850,  # hardware
+    270890866820775946,  # appeals
+    872309776233684992,  # meta
+    918315061003579482,  # kurisu-dev
+    1159936589997281390,  # guide meta
+    1022667983081967636,  # wiki discussion
+    1364102432790941776,  # hw wiki discussion
+    314856589716750346,  # off topic
+    300388576451887104,  # nintendo discussion
+    485138525885431808,  # elsewhere (just in case)
+]
+
+
 async def send_dm_message(member: discord.Member, message: str, ctx: Optional[commands.Context] = None, **kwargs) -> bool:
     """A helper method for sending a message to a member's DMs.
 
@@ -195,3 +219,46 @@ async def simple_embed(ctx: commands.Context, text: str, *, title: str = "", col
     embed = discord.Embed(title=title, color=color)
     embed.description = cleandoc(text)
     await ctx.send(embed=embed, reference=ctx.message.reference, mention_author=mention_author)
+
+
+async def scam_purge(
+    guild: discord.Guild,
+    target_id: int,
+    *,
+    reason: str,
+    limit: int = 50,
+) -> tuple[int, list[str]]:
+    """
+    Purge messages by a user from PUBLIC_CHAN_IDS in the last 24 hours.
+    """
+    after = discord.utils.utcnow() - datetime.timedelta(days=1)
+
+    deleted_count = 0
+    failures: list[str] = []
+
+    for channel_id in PUBLIC_CHAN_IDS:
+        channel = guild.get_channel(channel_id)
+
+        if channel is None or not isinstance(channel, discord.TextChannel):
+            failures.append(f"{channel_id}: not found or not text")
+            continue
+
+        try:
+            deleted = await channel.purge(
+                limit=limit,
+                after=after,
+                oldest_first=False,
+                check=lambda m, tid=target_id: m.author.id == tid,
+                reason=reason,
+                bulk=True,
+            )
+            deleted_count += len(deleted)
+
+        except (discord.Forbidden, discord.HTTPException) as e:
+            status = getattr(e, "status", None)
+            code = getattr(e, "code", None)
+            failures.append(
+                f"#{channel.name}: {type(e).__name__} (status={status}, code={code})"
+            )
+
+    return deleted_count, failures
