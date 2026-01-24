@@ -671,12 +671,12 @@ class Mod(commands.GroupCog):
         reason = "Sending or linking scams or spam content, and/or compromised account."
         await self.restrictions.add_restriction(member, Restriction.Probation, reason)
 
-        msg = f"You were put on probation in {ctx.guild.name}."
+        msg = f"You were probated in {ctx.guild.name}."
         msg += "\n\nThis happened because your account appears to be compromised and has sent spam or scam content in the server."
         msg += "\n\nPlease secure your account (change password, enable 2FA) and contact staff if you think this was a mistake."
         await send_dm_message(member, msg, ctx)
 
-        after = discord.utils.utcnow() - datetime.timedelta(days=1)
+        after = discord.utils.utcnow() - timedelta(days=1)
         deleted_count = 0
         failures: list[str] = []
         target_id = member.id
