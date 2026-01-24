@@ -87,7 +87,7 @@ class KickBan(commands.GroupCog):
         for channel in ctx.guild.text_channels:
             try:
                 deleted = await channel.purge(
-                    limit=50,
+                    limit=30,
                     after=after,
                     oldest_first=False,
                     check=lambda m: m.author.id == member.id,

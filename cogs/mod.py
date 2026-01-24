@@ -684,7 +684,7 @@ class Mod(commands.GroupCog):
         for channel in ctx.guild.text_channels:
             try:
                 deleted = await channel.purge(
-                    limit=50,
+                    limit=30,
                     after=after,
                     oldest_first=False,
                     check=lambda m, tid=target_id: m.author.id == tid,
