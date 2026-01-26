@@ -56,6 +56,7 @@ PUBLIC_CHAN_IDS = [
     314856589716750346,  # off topic
     300388576451887104,  # nintendo discussion
     485138525885431808,  # elsewhere (just in case)
+    1130632654857973861,  # animal zone
 ]
 
 
