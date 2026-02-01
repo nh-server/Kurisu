@@ -621,19 +621,21 @@ class Memes(commands.Cog):
 
     @is_staff("Helper")
     @commands.command()
-    async def xiwarn(self, ctx: KurisuContext, citizen: discord.Member):
+    async def xiwarn(self, ctx: KurisuContext, citizen: discord.Member, amount: int = 100):
         """Sometimes citizens need a reminder how to act"""
-        await self.extras.add_social_credit(citizen.id, -100)
+        amount = min(abs(amount), 2000)
+        await self.extras.add_social_credit(citizen.id, -amount)
         await ctx.send(
-            f"{ctx.author.mention} has assessed {citizen.mention}'s actions and removed 100 social credit from them!")
+            f"{ctx.author.mention} has assessed {citizen.mention}'s actions and removed {amount} social credit from them!")
 
     @is_staff("Helper")
     @commands.command()
-    async def xipraise(self, ctx: KurisuContext, citizen: discord.Member):
+    async def xipraise(self, ctx: KurisuContext, citizen: discord.Member, amount: int = 100):
         """Model citizens will be praised"""
-        await self.extras.add_social_credit(citizen.id, 100)
+        amount = min(abs(amount), 2000)
+        await self.extras.add_social_credit(citizen.id, amount)
         await ctx.send(
-            f"{ctx.author.mention} has assessed {citizen.mention}'s actions and added 100 social credit to them!")
+            f"{ctx.author.mention} has assessed {citizen.mention}'s actions and added {amount} social credit to them!")
 
     @is_staff("Helper")
     @commands.command(aliases=["sc"])
