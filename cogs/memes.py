@@ -4,6 +4,7 @@ import datetime
 import discord
 import math
 import random
+import aiohttp
 
 from discord.ext import commands
 from typing import TYPE_CHECKING
@@ -870,6 +871,18 @@ class Memes(commands.Cog):
         shooting_list = ["https://nintendohomebrew.com/assets/img/nhmemes/shooting1.png",
                          "https://nintendohomebrew.com/assets/img/nhmemes/shooting2.jpg"]
         await self._meme(ctx, "", image_link=random.choice(shooting_list))
+
+    @commands.command(hidden=True, aliases=["naas", "nah", "nope"])
+    @commands.cooldown(1, 10, commands.BucketType.user)
+    async def no(self, ctx: KurisuContext):
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get("https://no.nintendohomebrew.com/no") as resp:
+                    data = await resp.json()
+        except Exception:
+            return await ctx.send("no")
+
+        await ctx.send(data["reason"])
 
 
 async def setup(bot):
