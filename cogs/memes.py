@@ -882,7 +882,7 @@ class Memes(commands.Cog):
         except Exception:
             return await ctx.send("no")
 
-        await ctx.send(data["reason"])
+        await ctx.send(data["reason"], reference=ctx.message.reference, mention_author=True)
 
 
 async def setup(bot):
