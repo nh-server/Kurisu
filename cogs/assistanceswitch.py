@@ -35,48 +35,6 @@ class AssistanceSwitch(commands.Cog):
 
     data_dir = join(dirname(__file__), 'assistance-cmds')
 
-    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
-    @commands.command()
-    async def nxcfw(self, ctx: KurisuContext, cfw=""):
-        """Information on why we don't support or recommend various other Switch CFWs"""
-
-        if cfw == "sx":  # Alias for sxos
-            cfw = "sxos"
-
-        cfwinfo = {
-            'kosmos': {
-                'info':
-                    ('* Kosmos bundles several extras, including system modules which can cause issues'
-                     ' with booting if they are not compatible with the currently running firmware. '
-                     'As a result, troubleshooting is often required to figure out which one is causing the issue.'),
-                'title': "Kosmos"
-            },
-            'reinx': {
-                'info':
-                    ('* Older versions have caused bans due to the incorrectly implemented user agent string.'
-                     '* The author has expressed no interest in adding emuMMC/emuNAND.'
-                     '* The author has expressed that they feel it doesn\'t matter if consoles get banned.'
-                     '* It often takes weeks to several months for it to get support for the latest firmware.'),
-                'title': "ReiNX"
-            },
-            'sxos': {
-                'info':
-                    (
-                        '* SX OS is illegal to purchase and own. It bundles various keys and copyrighted data that cannot be legally shared.'
-                        '* It has known compatibility issues with homebrew, due to its non-standard and proprietary nature.'
-                        '* It does not support loading custom system modules.'
-                        '* Several versions of the CFW have caused users to be banned without their knowledge.'),
-                'title': "SX OS"
-            }
-        }
-
-        if not (info := cfwinfo.get(cfw)):
-            await ctx.send(f"Please specify a cfw. Valid options are: {', '.join(x for x in cfwinfo)}.")
-
-            ctx.command.reset_cooldown(ctx)
-            return
-        await simple_embed(ctx, info['info'], title=f"Why {info['title']} isn't recommended")
-
 
 add_md_files_as_commands(AssistanceSwitch, console_cmd="switch")
 
