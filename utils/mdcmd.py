@@ -30,11 +30,13 @@ for k, v in aliases.items():
 # compatibility
 systems = systems_no_aliases + tuple(aliases) + ('legacy',)
 
+# Version table for various Switch software
+# TODO look into merging this with the table in assistanceswitch.py
 format_map = {
-    'nx_firmware': '19.0.1',
-    'ams_ver': '1.8.0',
-    'hekate_ver': '6.2.2',
-    'last_revision': '7th March, 2025',
+    'nx_firmware': '21.2.0',
+    'ams_ver': '1.10.2',
+    'hekate_ver': '6.5.1',
+    'last_revision': 'February 24th, 2026',
 }
 
 
