@@ -9,6 +9,7 @@ Downgrading your firmware on the Switch is not recommended. This will generally 
 # Possible side effects from downgrading:
 * Unable to boot if performed incorrectly.
 * Unable to boot due to a mismatched efuse count.
-* Inability to use your gamecards.
+* Inability to use gamecards due to mismatched lotus firmware
+* Significant ban risk when connecting to Nintendo servers after connecting on a higher version
 * Save data compatibility issues.
 * Games not launching.
