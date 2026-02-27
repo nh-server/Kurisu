@@ -65,7 +65,8 @@ cogs = (
     'cogs.newcomers',
     'cogs.server_logs',
     'cogs.soap',
-    'cogs.titletxtparse'
+    'cogs.titletxtparse',
+    'cogs.slursearch'
 )
 
 DEBUG = False
