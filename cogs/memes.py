@@ -815,12 +815,16 @@ class Memes(commands.Cog):
 
         await self._meme(ctx, msg, True)
 
-    @commands.command(hidden=True, aliases=["degay", "ungay", "minusgay"])
+    @commands.command(hidden=True, aliases=["degay", "ungay", "minusgay", "degender"])
     async def removegay(self, ctx: KurisuContext, u: discord.Member):
         """Degays a user"""
 
         if u.id == 250051871962562562:
             await ctx.send("Can't. Too gay. Try someone else.")
+            return
+
+        if u.id == 328277052992258049:  # nio
+            await ctx.send("Not applicable.")
             return
 
         removegay_list = [f"{u.mention} has been degayed.",
@@ -832,9 +836,14 @@ class Memes(commands.Cog):
                           f"{u.mention} has been downgraded from 'yass queen' to 'yeah'."]
         await self._meme(ctx, random.choice(removegay_list), True)
 
-    @commands.command(hidden=True, aliases=["regay", "plusgay"])
+    @commands.command(hidden=True, aliases=["regay", "plusgay", "gender", "regender"])
     async def gay(self, ctx: KurisuContext, u: discord.Member):
         """Gays a user"""
+
+        if u.id == 328277052992258049:  # nio
+            await ctx.send("Not applicable.")
+            return
+
         gay_list = [f"{u.mention} has been gayed.",
                     f"{u.mention} is now gay.",
                     f"{u.mention} has received some gay privileges.",
