@@ -2,15 +2,10 @@ from __future__ import annotations
 
 import logging
 from os.path import dirname, join
-from typing import TYPE_CHECKING
 
 from discord.ext import commands
 
 from utils.mdcmd import add_md_files_as_commands
-from utils.utils import KurisuCooldown, simple_embed
-
-if TYPE_CHECKING:
-    from utils.context import KurisuContext
 
 logger = logging.getLogger(__name__)
 
