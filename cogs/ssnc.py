@@ -103,7 +103,10 @@ class SwitchSerialNumberCheck(Cog):
                     maybe = True
                 elif checking_value >= 7005000:
                     patched = True
-
+            
+            elif assembly_line == 9:
+                maybe = True
+        
         elif region == 'W':
             if assembly_line == 1:
                 if checking_value < 1007400:
