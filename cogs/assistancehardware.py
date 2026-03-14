@@ -188,7 +188,8 @@ boards = {
     "new3dsxl": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-n3dsxl.png",
     "new2dsxl": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-n2dsxl.png",
     "ds": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-ntr-compressed.png",
-    "dsi": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-dsi-compressed.png"
+    "dsi": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-dsi-compressed.png",
+    "switch": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-switch-compressed.png"
 }
 
 # Used for board command title
