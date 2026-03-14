@@ -224,6 +224,18 @@ bits = {
 }
 
 
+valid_3ds = ['3ds', '3dsxl', 'new3ds', 'new3dsxl', '2ds', 'new2dsxl']
+
+
+def is_3ds(dname):
+    try:
+        if dname in valid_3ds or alias[dname] in valid_3ds:
+            return True
+        return False
+    except:
+        return False
+
+
 class AssistanceHardware(commands.Cog):
     """
     General hardware commands that will mostly be used in the hardware but also other help channels.
@@ -313,6 +325,13 @@ class AssistanceHardware(commands.Cog):
         """Fix popping issue for the given console. """
         console = console.lower()
         embed = discord.Embed(color=discord.Color.blue())
+
+        if not is_3ds(console):
+            embed.description = f'{ctx.author.mention}, Valid options are `' + ', '.join(valid_3ds) + "`"
+            embed.color = discord.Color.red()
+            await ctx.send(embed=embed, delete_after=10)
+            return
+        
         if console in boards.keys():
             embed.set_image(url=boards[console])
 
@@ -321,13 +340,13 @@ class AssistanceHardware(commands.Cog):
                 embed.set_image(url=boards[alias[console]])
 
             else:
-                embed.description = f'{ctx.author.mention}, Valid options are `' + ', '.join(boards) + "`"
+                embed.description = f'{ctx.author.mention}, Valid options are `' + ', '.join(valid_3ds) + "`"
                 embed.color = discord.Color.red()
                 await ctx.send(embed=embed, delete_after=10)
                 return
 
         else:
-            embed.description = f'{ctx.author.mention}, Valid options are `' + ', '.join(boards) + "`"
+            embed.description = f'{ctx.author.mention}, Valid options are `' + ', '.join(valid_3ds) + "`"
             embed.color = discord.Color.red()
             await ctx.send(embed=embed, delete_after=10)
             return
