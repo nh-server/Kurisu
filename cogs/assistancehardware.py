@@ -60,10 +60,12 @@ consoles = {
     'switch': 'https://www.ifixit.com/Device/Nintendo_Switch',
     'switcholed': 'https://www.ifixit.com/Device/Nintendo_Switch_OLED_Model',
     'switchlite': 'https://www.ifixit.com/Device/Nintendo_Switch_Lite',
-    'joycons': 'https://www.ifixit.com/Device/Joy-Con',
+    'joycon': 'https://www.ifixit.com/Device/Joy-Con',
     'procontroller': 'https://www.ifixit.com/Device/Switch_Pro_Controller',
     'gamewatch': 'https://www.ifixit.com/Device/Game_Watch_Nintendo',
     'gameboylight': 'https://www.ifixit.com/Device/Game_Boy_Light',
+    "joycon2": "https://www.ifixit.com/Device/Nintendo_Switch_2_Joy-Con",
+    "switch2": "https://www.ifixit.com/Device/Nintendo_Switch_2",
     # Sega
     'segacd': 'https://www.ifixit.com/Device/Sega_CD',
     'dreamcast': 'https://www.ifixit.com/Device/Sega_Dreamcast',
@@ -168,9 +170,12 @@ alias = {
     "hdh": "switchlite",
     "heg": "switcholed",
     "procon": "procontroller",
-    "joycon": "joycons",
+    "joycons": "joycon",
     "wup": "wiiu",
     "rvl": "wii",
+    "bee": "switch2",
+    "s2": "switch2",
+    "joycons2": "joycon2"
 }
 
 boards = {
@@ -183,6 +188,9 @@ boards = {
     "new3dsxl": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-n3dsxl.png",
     "new2dsxl": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-n2dsxl.png",
     "ds": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-ntr-compressed.png",
+    "dsi": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-dsi-compressed.png",
+    "switch": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-switch-compressed.png",
+    "switcholed": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/OLED_board_diagram_compressed.png"
 }
 
 # Used for board command title
@@ -196,6 +204,9 @@ title = {
     "new3dsxl": "\"New\" 3DS XL (2015)",
     "new2dsxl": "\"New\" 2DS XL",
     "ds": "DS (Fat/NTR)",
+    "dsi": "DSI (TWL)",
+    "switch": "Switch (v1/v2)",
+    "switcholed": "Switch OLED"
 }
 
 bits = {
@@ -211,9 +222,22 @@ bits = {
     "switch": "PH 00, Y00",
     "switchlite": "PH 00, Y00",
     "switcholed": "PH 00, Y00",
-    "joycons": "PH 00, Y00",
+    "joycon": "PH 00, Y00",
     "procontroller": "PH 00, Y00",
+    "joycon2": "PH 0, PH00, Y00"
 }
+
+
+valid_3ds = ['3ds', '3dsxl', 'new3ds', 'new3dsxl', '2ds', 'new2dsxl']
+
+
+def is_3ds(dname):
+    try:
+        if dname in valid_3ds or alias[dname] in valid_3ds:
+            return True
+        return False
+    except:
+        return False
 
 
 class AssistanceHardware(commands.Cog):
@@ -305,6 +329,13 @@ class AssistanceHardware(commands.Cog):
         """Fix popping issue for the given console. """
         console = console.lower()
         embed = discord.Embed(color=discord.Color.blue())
+
+        if not is_3ds(console):
+            embed.description = f'{ctx.author.mention}, Valid options are `' + ', '.join(valid_3ds) + "`"
+            embed.color = discord.Color.red()
+            await ctx.send(embed=embed, delete_after=10)
+            return
+
         if console in boards.keys():
             embed.set_image(url=boards[console])
 
@@ -313,13 +344,13 @@ class AssistanceHardware(commands.Cog):
                 embed.set_image(url=boards[alias[console]])
 
             else:
-                embed.description = f'{ctx.author.mention}, Valid options are `' + ', '.join(boards) + "`"
+                embed.description = f'{ctx.author.mention}, Valid options are `' + ', '.join(valid_3ds) + "`"
                 embed.color = discord.Color.red()
                 await ctx.send(embed=embed, delete_after=10)
                 return
 
         else:
-            embed.description = f'{ctx.author.mention}, Valid options are `' + ', '.join(boards) + "`"
+            embed.description = f'{ctx.author.mention}, Valid options are `' + ', '.join(valid_3ds) + "`"
             embed.color = discord.Color.red()
             await ctx.send(embed=embed, delete_after=10)
             return
