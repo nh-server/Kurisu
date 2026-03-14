@@ -205,6 +205,8 @@ title = {
     "new2dsxl": "\"New\" 2DS XL",
     "ds": "DS (Fat/NTR)",
     "dsi": "DSI (TWL)",
+    "switch": "Switch (v1/v2)",
+    "switcholed": "Switch OLED"
 }
 
 bits = {
