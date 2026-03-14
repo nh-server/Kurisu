@@ -183,6 +183,7 @@ boards = {
     "new3dsxl": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-n3dsxl.png",
     "new2dsxl": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-n2dsxl.png",
     "ds": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-ntr-compressed.png",
+    "dsi": "https://hacksguidewiki.sfo3.digitaloceanspaces.com/hardwarewiki/Board-dsi-compressed.png"
 }
 
 # Used for board command title
@@ -196,6 +197,7 @@ title = {
     "new3dsxl": "\"New\" 3DS XL (2015)",
     "new2dsxl": "\"New\" 2DS XL",
     "ds": "DS (Fat/NTR)",
+    "dsi": "DSI (TWL)",
 }
 
 bits = {
