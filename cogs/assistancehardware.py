@@ -335,7 +335,7 @@ class AssistanceHardware(commands.Cog):
             embed.color = discord.Color.red()
             await ctx.send(embed=embed, delete_after=10)
             return
-        
+
         if console in boards.keys():
             embed.set_image(url=boards[console])
 
