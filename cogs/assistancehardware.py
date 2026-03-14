@@ -60,10 +60,12 @@ consoles = {
     'switch': 'https://www.ifixit.com/Device/Nintendo_Switch',
     'switcholed': 'https://www.ifixit.com/Device/Nintendo_Switch_OLED_Model',
     'switchlite': 'https://www.ifixit.com/Device/Nintendo_Switch_Lite',
-    'joycons': 'https://www.ifixit.com/Device/Joy-Con',
+    'joycon': 'https://www.ifixit.com/Device/Joy-Con',
     'procontroller': 'https://www.ifixit.com/Device/Switch_Pro_Controller',
     'gamewatch': 'https://www.ifixit.com/Device/Game_Watch_Nintendo',
     'gameboylight': 'https://www.ifixit.com/Device/Game_Boy_Light',
+    "joycon2": "https://www.ifixit.com/Device/Nintendo_Switch_2_Joy-Con",
+    "switch2": "https://www.ifixit.com/Device/Nintendo_Switch_2",
     # Sega
     'segacd': 'https://www.ifixit.com/Device/Sega_CD',
     'dreamcast': 'https://www.ifixit.com/Device/Sega_Dreamcast',
@@ -168,9 +170,12 @@ alias = {
     "hdh": "switchlite",
     "heg": "switcholed",
     "procon": "procontroller",
-    "joycon": "joycons",
+    "joycons": "joycon",
     "wup": "wiiu",
     "rvl": "wii",
+    "bee": "switch2",
+    "s2": "switch2",
+    "joycons2": "joycon2"
 }
 
 boards = {
@@ -213,8 +218,9 @@ bits = {
     "switch": "PH 00, Y00",
     "switchlite": "PH 00, Y00",
     "switcholed": "PH 00, Y00",
-    "joycons": "PH 00, Y00",
+    "joycon": "PH 00, Y00",
     "procontroller": "PH 00, Y00",
+    "joycon2": "PH 0, PH00, Y00"
 }
 
 
