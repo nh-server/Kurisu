@@ -53,8 +53,8 @@ class Events(commands.Cog):
         await asyncio.sleep(40)
         self.invite_antispam[message.author.id].remove(message)
         try:
-            if len(self.userbot_yeeter[message.author.id]) == 0:
-                self.userbot_yeeter.pop(message.author.id)
+            if len(self.invite_antispam[message.author.id]) == 0:
+                self.invite_antispam.pop(message.author.id)
         except KeyError:
             pass
 
@@ -212,25 +212,6 @@ class Events(commands.Cog):
                 await message.delete()
             except discord.errors.NotFound:
                 pass
-
-            if message.author.id not in self.userbot_yeeter:
-                self.userbot_yeeter[message.author.id] = []
-            if message.channel not in self.userbot_yeeter[message.author.id]:
-                self.userbot_yeeter[message.author.id].append(message.channel)
-                if len(self.userbot_yeeter[message.author.id]) == 2:
-                    if isinstance(message.author, discord.Member):
-                        msg = ("You have been banned from Nintendo Homebrew for linking scamming sites in multiple channels. "
-                               "If you think this is a mistake contact <@159824269411352576> (frozenchen) on discord or send a email to staff@nintendohomebrew.com")
-                        await send_dm_message(message.author, msg)
-                        self.bot.actions.append(f'wk:{message.author.id}')
-                        await message.author.kick(reason="Linking scamming links in multiple channels.")
-                    try:
-                        await message.delete()
-                    except discord.errors.NotFound:
-                        pass
-                    return
-                else:
-                    self.bot.loop.create_task(self.userbot_yeeter_pop(message))
             await self.bot.restrictions.add_restriction(message.author, Restriction.Probation, reason="Linking scamming site")
             if isinstance(message.author, discord.Member):
                 try:
@@ -251,6 +232,28 @@ class Events(commands.Cog):
                 f"🏷__User ID__: {message.author.id}\n"
                 f"See {self.bot.channels['message-logs'].mention} for the deleted message. @here",
                 allowed_mentions=discord.AllowedMentions(everyone=True))
+
+        # Kick members that post messages with multiple images in multiple channels
+        if len(message.attachments) > 3:
+            if message.author.id not in self.userbot_yeeter:
+                self.userbot_yeeter[message.author.id] = []
+            if message.channel not in self.userbot_yeeter[message.author.id]:
+                self.userbot_yeeter[message.author.id].append(message.channel)
+                if len(self.userbot_yeeter[message.author.id]) == 3:
+                    if isinstance(message.author, discord.Member):
+                        msg = (
+                            "You have been banned from Nintendo Homebrew for suspicious behavior in multiple channels. "
+                            "If you think this is a mistake contact <@159824269411352576> (frozenchen) on discord or send a email to staff@nintendohomebrew.com")
+                        await send_dm_message(message.author, msg)
+                        self.bot.actions.append(f'wk:{message.author.id}')
+                        await message.author.kick(reason="Suspiscious behavior in multiple channels.")
+                    try:
+                        await message.delete()
+                    except discord.errors.NotFound:
+                        pass
+                    return
+                else:
+                    self.bot.loop.create_task(self.userbot_yeeter_pop(message))
 
         # Disabled due to automod taking over this task
         # # check for mention spam
