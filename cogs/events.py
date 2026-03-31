@@ -13,7 +13,7 @@ from subprocess import call
 from typing import TYPE_CHECKING
 from utils.checks import check_staff
 from utils.configuration import KillBoxState
-from utils.utils import send_dm_message, gen_color
+from utils.utils import send_dm_message, gen_color, scam_purge
 from utils import Restriction
 from utils.database import FilterKind
 from utils.views.generic import ignored_file_extensions
@@ -241,16 +241,18 @@ class Events(commands.Cog):
                 self.userbot_yeeter[message.author.id].append(message.channel)
                 if len(self.userbot_yeeter[message.author.id]) == 3:
                     if isinstance(message.author, discord.Member):
+                        await scam_purge(
+                            guild=message.guild,
+                            target_id=message.author.id,
+                            reason=f"userbot_yeeter: {message.author.mention} Suspicious behavior in multiple channels.",
+                            limit=10,
+                        )
                         msg = (
                             "You have been banned from Nintendo Homebrew for suspicious behavior in multiple channels. "
                             "If you think this is a mistake contact <@159824269411352576> (frozenchen) on discord or send a email to staff@nintendohomebrew.com")
                         await send_dm_message(message.author, msg)
                         self.bot.actions.append(f'wk:{message.author.id}')
-                        await message.author.kick(reason="Suspiscious behavior in multiple channels.")
-                    try:
-                        await message.delete()
-                    except discord.errors.NotFound:
-                        pass
+                        await message.author.kick(reason="Suspicious behavior in multiple channels.")
                     return
                 else:
                     self.bot.loop.create_task(self.userbot_yeeter_pop(message))
