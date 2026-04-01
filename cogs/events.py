@@ -41,7 +41,7 @@ class Events(commands.Cog):
     invite_antispam: dict[int, list[discord.Message]] = {}
 
     async def userbot_yeeter_pop(self, message: discord.Message):
-        await asyncio.sleep(40)
+        await asyncio.sleep(10)
         self.userbot_yeeter[message.author.id].remove(message.channel)
         try:
             if len(self.userbot_yeeter[message.author.id]) == 0:
@@ -234,7 +234,7 @@ class Events(commands.Cog):
                 allowed_mentions=discord.AllowedMentions(everyone=True))
 
         # Kick members that post messages with multiple images in multiple channels
-        if len(message.attachments) > 3:
+        if len(message.attachments) > 1:
             if message.author.id not in self.userbot_yeeter:
                 self.userbot_yeeter[message.author.id] = []
             if message.channel not in self.userbot_yeeter[message.author.id]:
