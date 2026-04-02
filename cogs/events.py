@@ -245,11 +245,11 @@ class Events(commands.Cog):
                             guild=message.guild,
                             target_id=message.author.id,
                             reason=f"userbot_yeeter: {message.author.mention} Suspicious behavior in multiple channels.",
-                            limit=10,
+                            limit=20,
                         )
                         msg = (
-                            "You have been banned from Nintendo Homebrew for suspicious behavior in multiple channels. "
-                            "If you think this is a mistake contact <@159824269411352576> (frozenchen) on discord or send a email to staff@nintendohomebrew.com")
+                            "You have been kicked from Nintendo Homebrew for suspicious behavior in multiple channels. "
+                            "You are free to rejoin the server when you get back your account or if it was a mistake.")
                         await send_dm_message(message.author, msg)
                         self.bot.actions.append(f'wk:{message.author.id}')
                         await message.author.kick(reason="Suspicious behavior in multiple channels.")
