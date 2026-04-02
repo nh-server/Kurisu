@@ -410,12 +410,15 @@ class Events(commands.Cog):
                 or message.channel.id in self.bot.configuration.nofilter_list:
             return
         if db_chan := await self.bot.configuration.get_channel(message.channel.id):
+            content = message.content if message.content else "No content"
+            if message.attachments:
+                content += f"\n ({len(message.attachments)} attachments)"
             match db_chan.killbox_state:
                 case KillBoxState.Kick:
                     try:
                         mes = await self.bot.logs.post_message_log(":envelope: **Message posted**",
                                                                    f"{message.author.mention} posted a message in killbox {message.channel.mention}",
-                                                                   message.content)
+                                                                   content)
                         self.bot.actions.append(f'wk:{message.author.id}')
                         await message.author.kick(reason=f"Kill box automated Action. See {mes.jump_url}")
                         await message.delete()
@@ -426,7 +429,7 @@ class Events(commands.Cog):
                     try:
                         mes = await self.bot.logs.post_message_log(":envelope: **Message posted**",
                                                                    f"{message.author.mention} posted a message in killbox {message.channel.mention}",
-                                                                   message.content)
+                                                                   content)
                         self.bot.actions.append(f"wb:{message.author.id}")
                         await message.author.ban(reason=f"Automated Action. See {mes.jump_url}", delete_message_days=1)
                     except discord.Forbidden:
