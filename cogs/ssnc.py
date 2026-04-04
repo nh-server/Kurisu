@@ -89,9 +89,9 @@ class SwitchSerialNumberCheck(Cog):
                     patched = True
 
             elif assembly_line == 4:
-                if checking_value < 4004600:
+                if checking_value < 4004400:
                     pass
-                elif 4004600 <= checking_value < 4006000:
+                elif 4004400 <= checking_value < 4006000:
                     maybe = True
                 elif checking_value >= 4006000:
                     patched = True
@@ -106,9 +106,9 @@ class SwitchSerialNumberCheck(Cog):
 
         elif region == 'W':
             if assembly_line == 1:
-                if checking_value < 1007400:
+                if checking_value < 1006500:
                     pass
-                elif 1007400 <= checking_value < 1012000:  # GBATemp thread is oddly disjointed here, proper value could
+                elif 1006500 <= checking_value < 1012000:  # GBATemp thread is oddly disjointed here, proper value could
                     # be 1007500, not sure.
                     maybe = True
                 elif checking_value >= 1012000:
