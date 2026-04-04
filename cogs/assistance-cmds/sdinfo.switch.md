@@ -6,7 +6,7 @@ aliases: sdreco,nxsd,switchsd
 
 The Nintendo Switch can use SD cards up to 2TB in size when formatted to FAT32.
 
-The recommended size is 128GB, however you may want more (256, 512..) if you want to use an emuMMC, run Android or run Linux.
+The minimum recommended size is 128GB, however you may want more (256GB, 512GB..) if you want to use an emuMMC, run Android or run Linux.
 
 The recommended filesystem format is FAT32. While the Switch supports exFAT through an additional update from Nintendo, the filesystem driver used by Nintendo is prone to corruption and as a result is not advisable.
 
