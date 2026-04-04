@@ -241,17 +241,17 @@ class Events(commands.Cog):
                 self.userbot_yeeter[message.author.id].append(message.channel)
                 if len(self.userbot_yeeter[message.author.id]) == 3:
                     if isinstance(message.author, discord.Member):
-                        await self.bot.server_logs.purge_user_messages(
-                            user_id=message.author.id,
-                            limit=20,
-                            after=discord.utils.utcnow() - datetime.timedelta(days=1)
-                        )
                         msg = (
                             "You have been kicked from Nintendo Homebrew for suspicious behavior in multiple channels. "
                             "You are free to rejoin the server when you get back your account or if it was a mistake.")
                         await send_dm_message(message.author, msg)
                         self.bot.actions.append(f'wk:{message.author.id}')
                         await message.author.kick(reason="Suspicious behavior in multiple channels.")
+                        await self.bot.server_logs.purge_user_messages(
+                            user_id=message.author.id,
+                            limit=20,
+                            after=discord.utils.utcnow() - datetime.timedelta(days=1)
+                        )
                     return
                 else:
                     self.bot.loop.create_task(self.userbot_yeeter_pop(message))
