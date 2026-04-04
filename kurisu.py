@@ -25,6 +25,7 @@ from typing import Optional
 from utils import WarnsManager, ConfigurationManager, RestrictionsManager, ExtrasManager, FiltersManager, UserLogManager
 from utils.checks import InsufficientStaffRank, AppInsufficientStaffRank
 from utils.help import KuriHelp
+from utils.serverlogs import ServerLogsManager
 from utils.views.help import MainHelpPaginator, CategorySelect, HelpView
 from utils.utils import create_error_embed
 from utils.context import KurisuContext
@@ -166,6 +167,8 @@ class Kurisu(commands.Bot):
         self.extras = ExtrasManager(self)
         self.filters = FiltersManager(self)
 
+        self.server_logs = ServerLogsManager(self)
+
         self.err_channel: Optional[discord.TextChannel | discord.VoiceChannel] = None
         self.actions = []
         self.pruning = False
@@ -176,6 +179,7 @@ class Kurisu(commands.Bot):
 
     async def setup_hook(self) -> None:
         self.session = aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=45))
+        await self.server_logs.init(SERVER_LOGS_URL)
         await self.load_cogs()
 
     async def get_context(self, origin: discord.Interaction | discord.Message, /, *, cls=KurisuContext) -> KurisuContext:

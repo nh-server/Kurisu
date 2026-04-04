@@ -13,7 +13,7 @@ from subprocess import call
 from typing import TYPE_CHECKING
 from utils.checks import check_staff
 from utils.configuration import KillBoxState
-from utils.utils import send_dm_message, gen_color, scam_purge
+from utils.utils import send_dm_message, gen_color
 from utils import Restriction
 from utils.database import FilterKind
 from utils.views.generic import ignored_file_extensions
@@ -241,11 +241,10 @@ class Events(commands.Cog):
                 self.userbot_yeeter[message.author.id].append(message.channel)
                 if len(self.userbot_yeeter[message.author.id]) == 3:
                     if isinstance(message.author, discord.Member):
-                        await scam_purge(
-                            guild=message.guild,
-                            target_id=message.author.id,
-                            reason=f"userbot_yeeter: {message.author.mention} Suspicious behavior in multiple channels.",
+                        await self.bot.server_logs.purge_user_messages(
+                            user_id=message.author.id,
                             limit=20,
+                            after=discord.utils.utcnow() - datetime.timedelta(days=1)
                         )
                         msg = (
                             "You have been kicked from Nintendo Homebrew for suspicious behavior in multiple channels. "

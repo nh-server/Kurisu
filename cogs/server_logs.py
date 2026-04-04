@@ -1,4 +1,3 @@
-import asyncpg
 import discord
 import io
 
@@ -7,7 +6,6 @@ from discord import app_commands
 from discord.app_commands import Choice
 from discord.ext import commands
 from discord.utils import format_dt
-from kurisu import SERVER_LOGS_URL
 from typing import Optional
 from utils.checks import is_staff_app
 from utils.converters import HackIDTransformer, DateTransformer
@@ -18,71 +16,9 @@ from utils.converters import HackIDTransformer, DateTransformer
 class ServerLogs(commands.GroupCog, name="serverlogs"):
     """Command group for accesing the server logs"""
 
-    conn: asyncpg.Connection
-
     def __init__(self, bot):
         self.bot = bot
         self.emoji = discord.PartialEmoji.from_str('⚙')
-
-    async def cog_load(self) -> None:
-        self.conn = await asyncpg.connect(SERVER_LOGS_URL)
-
-    channel_blacklist = ['minecraft-console', 'dev-trusted']
-
-    def build_query(
-        self,
-        message_content: Optional[str] = None,
-        member: Optional[int] = None,
-        channel: Optional[int] = None,
-        before: Optional[datetime] = None,
-        after: Optional[datetime] = None,
-        during: Optional[datetime] = None,
-        order: str = 'DESC',
-        show_mod: bool = False,
-        limit: int = 100,
-    ) -> tuple[str, list[str | int | datetime]]:
-        sql_query = (
-            "SELECT gm.created_at, gc.name, concat(u.name, '#',u.discriminator), gm.content FROM guild_messages gm "
-            "INNER JOIN guild_channels gc ON gc.channel_id = gm.channel_id "
-            "INNER JOIN users u ON u.user_id = gm.user_id  WHERE "
-        )
-        conditions = []
-        bindings = []
-        n_args = 1
-
-        conditions.extend(f"gc.name NOT LIKE '%{c}%'" for c in self.channel_blacklist)
-
-        if not show_mod:
-            conditions.append("gc.name NOT LIKE 'mod%' and gc.name NOT LIKE 'server%'")
-
-        if message_content:
-            conditions.append(f"gm.content ~* ${n_args}")
-            bindings.append(f"\\m{message_content}\\M")
-            n_args = n_args + 1
-        else:
-            conditions.append("gm.content != ''")
-        if member:
-            conditions.append(f"u.user_id = ${n_args}")
-            bindings.append(member)
-            n_args = n_args + 1
-        if channel:
-            conditions.append(f"gc.channel_id = ${n_args}")
-            bindings.append(channel)
-            n_args = n_args + 1
-        if before:
-            conditions.append(f"gm.created_at < ${n_args}")
-            bindings.append(before)
-            n_args = n_args + 1
-        if after:
-            conditions.append(f"gm.created_at > ${n_args}")
-            bindings.append(after)
-            n_args = n_args + 1
-        if during:
-            conditions.append(f"gm.created_at::date = ${n_args}")
-            bindings.append(during)
-        sql_query += " AND ".join(conditions)
-        sql_query += f" ORDER BY gc.channel_id,gm.created_at {order} LIMIT {limit}"
-        return sql_query, bindings
 
     @is_staff_app("OP")
     @app_commands.choices(
@@ -132,16 +68,16 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
         await interaction.response.defer(ephemeral=bool(view_state))
 
         if (after or before) and during:
-            return await interaction.edit_original_response(content="You can't use after or before with during.")
+            return await interaction.edit_original_response(content="You can'tf use after or before with during.")
 
-        stmt, bindings = self.build_query(
+        stmt, bindings = self.bot.server_logs.build_query(
             message_content, member_id, channel_id, before, after, during, order_by, show_mod_channels, limit
         )
 
         txt = ""
 
-        async with self.conn.transaction():
-            async for created_at, channel_name, username, content in self.conn.cursor(stmt, *bindings):
+        async with self.bot.server_logs.conn.transaction():
+            async for created_at, _, channel_name, username, content in self.bot.server_logs.conn.cursor(stmt, *bindings):
                 txt += f"[{channel_name}] [{created_at:%Y/%m/%d %H:%M:%S}] <{username} {content}>\n"
 
         if not txt:
@@ -189,8 +125,8 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
 
         txt = ""
 
-        async with self.conn.transaction():
-            async for channel_id, name, last_updated in self.conn.cursor(query, *args):
+        async with self.bot.server_logs.conn.transaction():
+            async for channel_id, name, last_updated in self.bot.server_logs.conn.cursor(query, *args):
                 txt += f"{channel_id:18} | {name:50} | {last_updated:%Y/%m/%d %H:%M:%S}\n"
 
         if not txt:
@@ -215,15 +151,15 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
 
         await interaction.response.defer(ephemeral=True)
 
-        stmt, bindings = self.build_query(
+        stmt, bindings = self.bot.server_logs.build_query(
             channel=interaction.channel.id, limit=20
         )
 
         stmt = f"SELECT * FROM ({stmt}) st ORDER BY 1 ASC"
         content = ""
 
-        async with self.conn.transaction():
-            async for created_at, _, username, message_content in self.conn.cursor(stmt, *bindings):
+        async with self.bot.server_logs.conn.transaction():
+            async for created_at, _, _, username, message_content in self.bot.server_logs.conn.cursor(stmt, *bindings):
                 line = f"[{format_dt(created_at)}] <{username} {message_content}>\n"
                 if len(line) > 204:
                     line = f"{line[:201]}...\n"
