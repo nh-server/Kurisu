@@ -38,6 +38,21 @@ class Assistance3DS(commands.Cog):
                                     "[Luma v7.1](https://github.com/LumaTeam/Luma3DS/releases/tag/v7.1)",
                                     color=discord.Color.blue())
 
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
+    @commands.command(name='006-1608')
+    async def error_006_1608(self, ctx: KurisuContext):
+        """Provides a fix for error 006-1608"""
+        await simple_embed(ctx,
+                           "This error is caused by corrupted or missing tickets for a title, for example Pokémon Bank.\n\n"
+                           "To fix this, you will need to delete the tickets and reinstall the app.\n"
+                           "1. Open FBI and navigate to `Tickets`\n"
+                           "2. Find the ticket for the problematic app (e.g. Pokémon Bank), select it, and choose to delete it.\n"
+                           "3. Go back to the main menu and select `Titles`.\n"
+                           "4. Find the problematic app, select it, and choose `Delete Title and Ticket`.\n"
+                           "5. Reinstall the app from the eShop or using a CIA file.",
+                           title="Error 006-1608",
+                           color=discord.Color.red())
+
 
 add_md_files_as_commands(Assistance3DS, console_cmd="3ds")
 
