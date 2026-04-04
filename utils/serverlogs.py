@@ -34,7 +34,7 @@ class ServerLogsManager:
         sort_by_channel: bool = True,
     ) -> tuple[str, list[str | int | datetime]]:
         sql_query = (
-            "SELECT gm.created_at, gc.id, gc.name, concat(u.name, '#',u.discriminator), gm.content FROM guild_messages gm "
+            "SELECT gm.created_at, gc.channel_id, gc.name, concat(u.name, '#',u.discriminator), gm.content FROM guild_messages gm "
             "INNER JOIN guild_channels gc ON gc.channel_id = gm.channel_id "
             "INNER JOIN users u ON u.user_id = gm.user_id  WHERE "
         )
