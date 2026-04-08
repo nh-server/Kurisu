@@ -77,7 +77,7 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
         txt = ""
 
         async with self.bot.server_logs.conn.transaction():
-            async for created_at, _, channel_name, username, content in self.bot.server_logs.conn.cursor(stmt, *bindings):
+            async for _, created_at, _, channel_name, username, content in self.bot.server_logs.conn.cursor(stmt, *bindings):
                 txt += f"[{channel_name}] [{created_at:%Y/%m/%d %H:%M:%S}] <{username} {content}>\n"
 
         if not txt:
@@ -159,7 +159,7 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
         content = ""
 
         async with self.bot.server_logs.conn.transaction():
-            async for created_at, _, _, username, message_content in self.bot.server_logs.conn.cursor(stmt, *bindings):
+            async for _, created_at, _, _, username, message_content in self.bot.server_logs.conn.cursor(stmt, *bindings):
                 line = f"[{format_dt(created_at)}] <{username} {message_content}>\n"
                 if len(line) > 204:
                     line = f"{line[:201]}...\n"

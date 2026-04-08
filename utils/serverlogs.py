@@ -34,7 +34,7 @@ class ServerLogsManager:
         sort_by_channel: bool = True,
     ) -> tuple[str, list[str | int | datetime]]:
         sql_query = (
-            "SELECT gm.created_at, gc.channel_id, gc.name, concat(u.name, '#',u.discriminator), gm.content FROM guild_messages gm "
+            "SELECT gm.message_id, gm.created_at, gc.channel_id, gc.name, concat(u.name, '#',u.discriminator), gm.content FROM guild_messages gm "
             "INNER JOIN guild_channels gc ON gc.channel_id = gm.channel_id "
             "INNER JOIN users u ON u.user_id = gm.user_id  WHERE "
         )
@@ -89,12 +89,12 @@ class ServerLogsManager:
         stmt, bindings = self.build_query(member=user_id, after=after, limit=limit, sort_by_channel=False)
 
         async with self.conn.transaction():
-            async for created_at, channel_id, channel_name, _, _ in self.conn.cursor(stmt, *bindings):
+            async for message_id, created_at, channel_id, channel_name, _, _ in self.conn.cursor(stmt, *bindings):
                 channel = self.bot.guild.get_channel(channel_id)
                 if channel is None:
                     continue
                 try:
-                    await channel.get_partial_message(created_at).delete()
+                    await channel.get_partial_message(message_id).delete()
                     deleted += 1
                 except discord.NotFound:
                     pass
