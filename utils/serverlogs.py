@@ -86,7 +86,7 @@ class ServerLogsManager:
         if self.conn is None:
             return deleted, failures
 
-        stmt, bindings = self.build_query(member=user_id, after=after, limit=limit, channel=channel_id, before=before, during=during, sort_by_channel=False)
+        stmt, bindings = self.build_query(member=user_id, after=after, limit=50, channel=channel_id, before=before, during=during, sort_by_channel=False)
 
         async with self.conn.transaction():
             async for message_id, created_at, channel_id, channel_name, _, _ in self.conn.cursor(stmt, *bindings):
@@ -96,6 +96,8 @@ class ServerLogsManager:
                 try:
                     await channel.get_partial_message(message_id).delete()
                     deleted += 1
+                    if deleted == limit:
+                        break
                 except discord.NotFound:
                     pass
                 except (discord.Forbidden, discord.HTTPException) as e:

@@ -180,7 +180,7 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
                          before: app_commands.Transform[Optional[datetime], DateTransformer] = None,
                          after: app_commands.Transform[Optional[datetime], DateTransformer] = None,
                          during: app_commands.Transform[Optional[datetime], DateTransformer] = None,
-                         limit: app_commands.Range[int, 1, 100] = 10,
+                         limit: app_commands.Range[int, 1, 50] = 10,
                          ):
         """Delete messages from user according to messages stored in the server logs, deletes last limit messages by default.
 
