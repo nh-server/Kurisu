@@ -32,6 +32,7 @@ class ServerLogsManager:
         show_mod: bool = False,
         limit: int = 100,
         sort_by_channel: bool = True,
+        allow_empty: bool = False
     ) -> tuple[str, list[str | int | datetime]]:
         sql_query = (
             "SELECT gm.message_id, gm.created_at, gc.channel_id, gc.name, concat(u.name, '#',u.discriminator), gm.content FROM guild_messages gm "
@@ -51,7 +52,7 @@ class ServerLogsManager:
             conditions.append(f"gm.content ~* ${n_args}")
             bindings.append(f"\\m{message_content}\\M")
             n_args = n_args + 1
-        else:
+        elif not allow_empty:
             conditions.append("gm.content != ''")
         if member:
             conditions.append(f"u.user_id = ${n_args}")
@@ -86,7 +87,7 @@ class ServerLogsManager:
         if self.conn is None:
             return deleted, failures
 
-        stmt, bindings = self.build_query(member=user_id, after=after, limit=50, channel=channel_id, before=before, during=during, sort_by_channel=False)
+        stmt, bindings = self.build_query(member=user_id, after=after, limit=50, channel=channel_id, before=before, during=during, sort_by_channel=False, allow_empty=True)
 
         async with self.conn.transaction():
             async for message_id, created_at, channel_id, channel_name, _, _ in self.conn.cursor(stmt, *bindings):
