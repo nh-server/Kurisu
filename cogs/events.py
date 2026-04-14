@@ -247,6 +247,7 @@ class Events(commands.Cog):
                         await send_dm_message(message.author, msg)
                         self.bot.actions.append(f'wk:{message.author.id}')
                         await message.author.kick(reason="Suspicious behavior in multiple channels.")
+                        await asyncio.sleep(2)
                         await self.bot.server_logs.purge_user_messages(
                             user_id=message.author.id,
                             limit=20,
@@ -421,6 +422,7 @@ class Events(commands.Cog):
                         self.bot.actions.append(f'wk:{message.author.id}')
                         await message.author.kick(reason=f"Kill box automated Action. See {mes.jump_url}")
                         await message.delete()
+                        await asyncio.sleep(2)
                         await self.bot.server_logs.purge_user_messages(message.author.id, 10, after=discord.utils.utcnow() - datetime.timedelta(days=1))
                     except discord.Forbidden:
                         self.bot.actions.remove(f'wk:{message.author.id}')
