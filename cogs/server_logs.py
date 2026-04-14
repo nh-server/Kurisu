@@ -201,7 +201,7 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
         if (after or before) and during:
             return await interaction.edit_original_response(content="You can't use after or before with during.")
 
-        deleted, failures = await self.bot.server_logs.purge_user_messages(user_id, channel_id, before, after, during, limit)
+        deleted, failures = await self.bot.server_logs.purge_user_messages(user_id, limit, channel_id, before, after, during)
 
         if not deleted:
             return await interaction.edit_original_response(content="No messages found for deletion!")
