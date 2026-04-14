@@ -9,6 +9,7 @@ from discord.utils import format_dt
 from typing import Optional
 from utils.checks import is_staff_app
 from utils.converters import HackIDTransformer, DateTransformer
+from utils.utils import text_to_discord_file
 
 
 @app_commands.guild_only
@@ -68,7 +69,7 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
         await interaction.response.defer(ephemeral=bool(view_state))
 
         if (after or before) and during:
-            return await interaction.edit_original_response(content="You can'tf use after or before with during.")
+            return await interaction.edit_original_response(content="You can't use after or before with during.")
 
         stmt, bindings = self.bot.server_logs.build_query(
             message_content, member_id, channel_id, before, after, during, order_by, show_mod_channels, limit
@@ -170,6 +171,47 @@ class ServerLogs(commands.GroupCog, name="serverlogs"):
 
         embed = discord.Embed(title=f"{interaction.channel}'s last 20 messages", description=content)
         await interaction.edit_original_response(embed=embed)
+
+    @is_staff_app("OP")
+    @app_commands.command()
+    async def logsdelete(self, interaction: discord.Interaction,
+                         user_id: app_commands.Transform[int, HackIDTransformer],
+                         channel_id: app_commands.Transform[Optional[int], HackIDTransformer] = None,
+                         before: app_commands.Transform[Optional[datetime], DateTransformer] = None,
+                         after: app_commands.Transform[Optional[datetime], DateTransformer] = None,
+                         during: app_commands.Transform[Optional[datetime], DateTransformer] = None,
+                         limit: app_commands.Transform[int, DateTransformer] = 10,
+                         ):
+        """Delete messages from user according to messages stored in the server logs, deletes last limit messages by default.
+
+            Args:
+                user_id: ID or mention of User to delete messages from.
+                channel_id: ID or mention of channel to delete message in.
+                before: Date in yyyy-mm-dd format.
+                after: Date in yyyy-mm-dd format.
+                during: Date in yyyy-mm-dd format. Can't be used with before or after.
+                limit: Maximum number of messages to delete.
+        """
+
+        assert interaction.guild is not None
+        assert interaction.channel is not None
+
+        await interaction.response.defer(ephemeral=True)
+
+        if (after or before) and during:
+            return await interaction.edit_original_response(content="You can't use after or before with during.")
+
+        deleted, failures = await self.bot.server_logs.purge_user_messages(user_id, channel_id, before, after, during, limit)
+
+        if not deleted:
+            return await interaction.edit_original_response(content="No messages found for deletion!")
+
+        files = []
+        if failures:
+            text = "⚠️ purge issues:\n" + "\n".join(failures)
+            files.append(text_to_discord_file(text, name="Deletion failures"))
+
+        await interaction.edit_original_response(content=f"Deleted {deleted} messages!", attachments=files)
 
 
 async def setup(bot):

@@ -79,14 +79,14 @@ class ServerLogsManager:
             sql_query += f" ORDER BY gm.created_at {order} LIMIT {limit}"
         return sql_query, bindings
 
-    async def purge_user_messages(self, user_id: int, limit: int, after: datetime = None) -> tuple[int, list[str]]:
+    async def purge_user_messages(self, user_id: int, limit: int, channel_id: int = None, before: datetime = None, after: datetime = None, during: datetime = None) -> tuple[int, list[str]]:
         deleted = 0
         failures: list[str] = []
 
         if self.conn is None:
             return deleted, failures
 
-        stmt, bindings = self.build_query(member=user_id, after=after, limit=limit, sort_by_channel=False)
+        stmt, bindings = self.build_query(member=user_id, after=after, limit=limit, channel=channel_id, before=before, during=during, sort_by_channel=False)
 
         async with self.conn.transaction():
             async for message_id, created_at, channel_id, channel_name, _, _ in self.conn.cursor(stmt, *bindings):
