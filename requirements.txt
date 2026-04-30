@@ -1,4 +1,4 @@
-discord.py==2.6.4
+discord.py==2.7.1
 Pillow==12.2.0
 xkcd==2.4.2
 pytz==2026.1.post1
