@@ -41,7 +41,7 @@ class Events(commands.Cog):
     invite_antispam: dict[int, list[discord.Message]] = {}
 
     async def userbot_yeeter_pop(self, message: discord.Message):
-        await asyncio.sleep(10)
+        await asyncio.sleep(60)
         self.userbot_yeeter[message.author.id].remove(message.channel)
         try:
             if len(self.userbot_yeeter[message.author.id]) == 0:
