@@ -166,6 +166,8 @@ alias = {
     "ktr": "new3ds",
     "red": "new3dsxl",
     "jan": "new2dsxl",
+    "nx": "switch",
+    "ns": "switch",
     "hac": "switch",
     "hdh": "switchlite",
     "heg": "switcholed",
