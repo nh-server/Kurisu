@@ -727,7 +727,7 @@ class Extras(commands.GroupCog):
             guild_emoji = await ctx.guild.create_custom_emoji(name=name, image=emoji_bytes, roles=roles, reason="Probably nothing good.")
         except discord.HTTPException as e:
             return await ctx.send(e.text)
-        await ctx.send(f"Added emoji {guild_emoji if guild_emoji.is_usable() else name} successfully!")
+        await ctx.send(f"Stole emoji {guild_emoji if guild_emoji.is_usable() else name} successfully!")
 
     @commands.guild_only()
     @commands.hybrid_command()
