@@ -205,7 +205,6 @@ https://discord.gg/C29hYvh"""
         """Cut down r11."""
         await ctx.send("Assistance about piracy, trying to obtain help with piracy or piracy talk in general in the assistance channels is strongly prohibited. If your message was blocked, it's probably because of this rule.")
 
-
     @commands.command()
     @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def r14(self, ctx: KurisuContext):
