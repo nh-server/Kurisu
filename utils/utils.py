@@ -126,6 +126,7 @@ def parse_date(date_string: str) -> Optional[datetime.datetime]:
         return None
     try:
         datetime_obj = datetime.datetime.strptime(' '.join(date_lst), "%Y-%m-%d %H:%M")
+        datetime_obj = datetime_obj.replace(tzinfo=datetime.timezone.utc)
     except ValueError:
         return None
     return datetime_obj
