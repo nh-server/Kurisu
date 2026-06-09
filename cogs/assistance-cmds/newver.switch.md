@@ -11,5 +11,5 @@ As of January 26th, 2026, the primary maintainer of Atmosphère, SciresM, has an
 
 Users should be cautious updating past firmware versions 21.2.0, as Atmosphère may not work on newer firmware versions if Nintendo has implemented any major changes.
 
-Because of this, there is a large likelihood of (potentially dangerous) Atmosphère forks coming into existence because of this. Users are advised not to use these forks, and should wait for proper Atmosphère updates from developers who know what they're doing.
+Because of this, there is a large likelihood of (potentially dangerous) Atmosphère forks coming into existence. Users are advised not to use these forks, and should wait for proper Atmosphère updates from developers who know what they're doing.
 *Last edited: {last_revision}*
