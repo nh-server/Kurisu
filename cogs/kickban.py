@@ -170,7 +170,7 @@ class KickBan(commands.GroupCog):
         msg = f"You were banned from {interaction.guild.name}."
         if reason:
             msg += " The given reason is: " + reason
-        msg += "If you think this is a mistake, contact frozenchen on discord or send an email to staff@nintendohomebrew.com"
+        msg += "If you think this is a mistake, contact frozenchen on discord or fill out the appeal form at <https://nintendohomebrew.com/appeal>"
 
         if duration is not None:
             timestamp = datetime.datetime.now(self.bot.tz)
@@ -302,7 +302,7 @@ class KickBan(commands.GroupCog):
             if reason:
                 msg += " The given reason is: " + reason
             msg += f"\n\nThis ban lasts until {unban_time_string}."
-            msg += "If you think this is a mistake, contact frozenchen on discord or send an email to staff@nintendohomebrew.com"
+            msg += "If you think this is a mistake, contact frozenchen on discord or fill out the appeal form at <https://nintendohomebrew.com/appeal>"
             msg += "Please note: age-based timebans are not appealable, as minimum age is a Discord ToS/legal requirement."
             await send_dm_message(member, msg, ctx)
         try:
@@ -363,7 +363,7 @@ class KickBan(commands.GroupCog):
             await self.filters.add_filtered_word(site, FilterKind.ScammingSite)
             await self.bot.channels['mod-logs'].send(f"🆕 **Added**: {ctx.author.mention} added `{site}` to the word filter!")
         ban_msg = ("You have been banned from Nintendo Homebrew for linking scamming sites in the server."
-                   "If/when you have secured your account, contact frozenchen on discord or send an email to staff@nintendohomebrew.com")
+                   "If/when you have secured your account, contact frozenchen on discord or fill out the appeal form at <https://nintendohomebrew.com/appeal>")
         await send_dm_message(member, ban_msg)
         reason = "Linking scamming site"
         await member.ban(reason=reason, delete_message_days=1)
