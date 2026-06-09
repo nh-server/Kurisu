@@ -844,26 +844,6 @@ class Memes(commands.Cog):
                     f"{u.mention} has been upgraded from 'yeah' to 'yasss queen'!"]
         await self._meme(ctx, random.choice(gay_list), True)
 
-    @commands.command(hidden=True, aliases=["🅱"])
-    async def b(self, ctx: KurisuContext):
-        """haha, b emoji funny"""
-        b_list = ["https://nintendohomebrew.com/assets/img/nhmemes/b1.png",
-                  "https://nintendohomebrew.com/assets/img/nhmemes/b2.png",
-                  "https://nintendohomebrew.com/assets/img/nhmemes/b3.png",
-                  "https://nintendohomebrew.com/assets/img/nhmemes/b4.png",
-                  "https://nintendohomebrew.com/assets/img/nhmemes/b5.png",
-                  "https://nintendohomebrew.com/assets/img/nhmemes/b6.png",
-                  "https://nintendohomebrew.com/assets/img/nhmemes/b7.png",
-                  "https://nintendohomebrew.com/assets/img/nhmemes/b8.png",
-                  "https://nintendohomebrew.com/assets/img/nhmemes/b9.png",
-                  "https://nintendohomebrew.com/assets/img/nhmemes/b10.png",
-                  "https://nintendohomebrew.com/assets/img/nhmemes/b11.png",
-                  "https://nintendohomebrew.com/assets/img/nhmemes/b12.png",
-                  "https://nintendohomebrew.com/assets/img/nhmemes/b13.png",
-                  "https://nintendohomebrew.com/assets/img/nhmemes/b14.png",
-                  "https://nintendohomebrew.com/assets/img/nhmemes/b15.png"]
-        await self._meme(ctx, "", image_link=random.choice(b_list))
-
     @commands.command(hidden=True, aliases=['america'])
     @commands.cooldown(rate=1, per=300.0, type=commands.BucketType.channel)
     async def shootings(self, ctx: KurisuContext):

@@ -33,10 +33,10 @@ systems = systems_no_aliases + tuple(aliases) + ('legacy',)
 # Version table for various Switch software
 # TODO look into merging this with the table in assistanceswitch.py
 format_map = {
-    'nx_firmware': '21.2.0',
-    'ams_ver': '1.10.2',
-    'hekate_ver': '6.5.1',
-    'last_revision': 'February 24th, 2026',
+    'nx_firmware': '22.1.0',
+    'ams_ver': '1.11.1',
+    'hekate_ver': '6.5.2',
+    'last_revision': '8th of April, 2026',
 }
 
 

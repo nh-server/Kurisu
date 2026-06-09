@@ -1,6 +1,6 @@
 ---
-title: What can Wii U CFW be used for?
-help-desc: Uses for CFW on Wii U, Switch, and 3DS
+title: What can I do with a hacked Wii U?
+help-desc: Uses for CFW on 3DS, Switch, Wii and Wii U
 ---
 
 # Among other things, it allows you to do the following:
@@ -14,4 +14,3 @@ help-desc: Uses for CFW on Wii U, Switch, and 3DS
 - And many more.
 
 **See [here](https://wiki.hacks.guide/wiki/Wii_U:Things_to_do) for a better list.**
-

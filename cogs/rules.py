@@ -201,6 +201,12 @@ https://discord.gg/C29hYvh"""
 
     @commands.command()
     @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
+    async def r11(self, ctx: KurisuContext):
+        """Cut down r11."""
+        await ctx.send("Assistance about piracy, trying to obtain help with piracy or piracy talk in general in the assistance channels is strongly prohibited. If your message was blocked, it's probably because of this rule.")
+
+    @commands.command()
+    @commands.dynamic_cooldown(KurisuCooldown(1, 30.0), commands.BucketType.channel)
     async def r14(self, ctx: KurisuContext):
         """Cut down r14."""
         await ctx.send("Keep on-topic. Use <#314856589716750346> for general chatter and <#485138525885431808> for content that doesn't fit other channels. For access to elsewhere, read the rules carefully.")
@@ -245,8 +251,8 @@ https://discord.gg/C29hYvh"""
 
 async def setup(bot):
     for rule in bot.configuration.rules.values():
-        if rule.number in {4, 14}:
-            continue  # 4 and 14 handled manually for simple embed
+        if rule.number in {4, 11, 14}:
+            continue  # 4, 11 and 14 handled manually for simple embed
         cmd = create_rule_cmd(rule)
         setattr(Rules, f"r{rule.number}", cmd)
         Rules.__cog_commands__.append(cmd)

@@ -41,7 +41,7 @@ class Events(commands.Cog):
     invite_antispam: dict[int, list[discord.Message]] = {}
 
     async def userbot_yeeter_pop(self, message: discord.Message):
-        await asyncio.sleep(40)
+        await asyncio.sleep(60)
         self.userbot_yeeter[message.author.id].remove(message.channel)
         try:
             if len(self.userbot_yeeter[message.author.id]) == 0:
@@ -53,8 +53,8 @@ class Events(commands.Cog):
         await asyncio.sleep(40)
         self.invite_antispam[message.author.id].remove(message)
         try:
-            if len(self.userbot_yeeter[message.author.id]) == 0:
-                self.userbot_yeeter.pop(message.author.id)
+            if len(self.invite_antispam[message.author.id]) == 0:
+                self.invite_antispam.pop(message.author.id)
         except KeyError:
             pass
 
@@ -212,25 +212,6 @@ class Events(commands.Cog):
                 await message.delete()
             except discord.errors.NotFound:
                 pass
-
-            if message.author.id not in self.userbot_yeeter:
-                self.userbot_yeeter[message.author.id] = []
-            if message.channel not in self.userbot_yeeter[message.author.id]:
-                self.userbot_yeeter[message.author.id].append(message.channel)
-                if len(self.userbot_yeeter[message.author.id]) == 2:
-                    if isinstance(message.author, discord.Member):
-                        msg = ("You have been banned from Nintendo Homebrew for linking scamming sites in multiple channels. "
-                               "If you think this is a mistake contact <@159824269411352576> (frozenchen) on discord or send a email to staff@nintendohomebrew.com")
-                        await send_dm_message(message.author, msg)
-                        self.bot.actions.append(f'wk:{message.author.id}')
-                        await message.author.kick(reason="Linking scamming links in multiple channels.")
-                    try:
-                        await message.delete()
-                    except discord.errors.NotFound:
-                        pass
-                    return
-                else:
-                    self.bot.loop.create_task(self.userbot_yeeter_pop(message))
             await self.bot.restrictions.add_restriction(message.author, Restriction.Probation, reason="Linking scamming site")
             if isinstance(message.author, discord.Member):
                 try:
@@ -251,6 +232,30 @@ class Events(commands.Cog):
                 f"🏷__User ID__: {message.author.id}\n"
                 f"See {self.bot.channels['message-logs'].mention} for the deleted message. @here",
                 allowed_mentions=discord.AllowedMentions(everyone=True))
+
+        # Kick members that post messages with multiple images in multiple channels
+        if len(message.attachments) > 1:
+            if message.author.id not in self.userbot_yeeter:
+                self.userbot_yeeter[message.author.id] = []
+            if message.channel not in self.userbot_yeeter[message.author.id]:
+                self.userbot_yeeter[message.author.id].append(message.channel)
+                if len(self.userbot_yeeter[message.author.id]) == 3:
+                    if isinstance(message.author, discord.Member):
+                        msg = (
+                            "You have been kicked from Nintendo Homebrew for suspicious behavior in multiple channels. "
+                            "You are free to rejoin the server when you get back your account or if it was a mistake.")
+                        await send_dm_message(message.author, msg)
+                        self.bot.actions.append(f'wk:{message.author.id}')
+                        await message.author.kick(reason="Suspicious behavior in multiple channels.")
+                        await asyncio.sleep(2)
+                        await self.bot.server_logs.purge_user_messages(
+                            user_id=message.author.id,
+                            limit=20,
+                            after=discord.utils.utcnow() - datetime.timedelta(days=1)
+                        )
+                    return
+                else:
+                    self.bot.loop.create_task(self.userbot_yeeter_pop(message))
 
         # Disabled due to automod taking over this task
         # # check for mention spam
@@ -405,15 +410,20 @@ class Events(commands.Cog):
                 or message.channel.id in self.bot.configuration.nofilter_list:
             return
         if db_chan := await self.bot.configuration.get_channel(message.channel.id):
+            content = message.content if message.content else "No content"
+            if message.attachments:
+                content += f"\n ({len(message.attachments)} attachments)"
             match db_chan.killbox_state:
                 case KillBoxState.Kick:
                     try:
                         mes = await self.bot.logs.post_message_log(":envelope: **Message posted**",
                                                                    f"{message.author.mention} posted a message in killbox {message.channel.mention}",
-                                                                   message.content)
+                                                                   content)
                         self.bot.actions.append(f'wk:{message.author.id}')
                         await message.author.kick(reason=f"Kill box automated Action. See {mes.jump_url}")
                         await message.delete()
+                        await asyncio.sleep(2)
+                        await self.bot.server_logs.purge_user_messages(message.author.id, 10, after=discord.utils.utcnow() - datetime.timedelta(days=1))
                     except discord.Forbidden:
                         self.bot.actions.remove(f'wk:{message.author.id}')
                     return
@@ -421,7 +431,7 @@ class Events(commands.Cog):
                     try:
                         mes = await self.bot.logs.post_message_log(":envelope: **Message posted**",
                                                                    f"{message.author.mention} posted a message in killbox {message.channel.mention}",
-                                                                   message.content)
+                                                                   content)
                         self.bot.actions.append(f"wb:{message.author.id}")
                         await message.author.ban(reason=f"Automated Action. See {mes.jump_url}", delete_message_days=1)
                     except discord.Forbidden:

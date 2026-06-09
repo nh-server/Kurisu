@@ -498,15 +498,19 @@ class Extras(commands.GroupCog):
     @commands.dynamic_cooldown(KurisuCooldown(1, 300.0), commands.BucketType.member)
     @commands.hybrid_command()
     async def remindme(self, ctx: KurisuContext, remind_in: int = commands.parameter(converter=DateOrTimeToSecondsConverter), *, reminder: str):
-        """Sends a reminder after a set time, just for you. Max reminder size is 800 characters.
+        """Sends a reminder after a set time, just for you.
+        Date format is only supported for slash command and date is treated as UTC.
+        Max reminder size is 800 characters.
 
         Args:
-            remind_in: Time to remind you in can be in a #d#h#m#s format or a YYYY-MM-DD HH:MM:SS format.
+            remind_in: Time to remind you in, can be in a #d#h#m#s format or a YYYY-MM-DD HH:MM format.
             reminder: Contents of the reminders. Max 800 characters.
         """
         if remind_in < 30 or remind_in > 3.154e+7:
+            ctx.command.reset_cooldown(ctx)
             return await ctx.send("You can't set a reminder for less than 30 seconds or for more than a year.")
         if len(reminder) > 800:
+            ctx.command.reset_cooldown(ctx)
             return await ctx.send("The reminder is too big! (Longer than 800 characters)")
         timestamp = datetime.now(self.bot.tz)
         delta = timedelta(seconds=remind_in)
@@ -727,7 +731,7 @@ class Extras(commands.GroupCog):
             guild_emoji = await ctx.guild.create_custom_emoji(name=name, image=emoji_bytes, roles=roles, reason="Probably nothing good.")
         except discord.HTTPException as e:
             return await ctx.send(e.text)
-        await ctx.send(f"Added emoji {guild_emoji if guild_emoji.is_usable() else name} successfully!")
+        await ctx.send(f"Stole emoji {guild_emoji if guild_emoji.is_usable() else name} successfully!")
 
     @commands.guild_only()
     @commands.hybrid_command()

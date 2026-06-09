@@ -1,6 +1,7 @@
 ---
 title: Manually removing MSET9
 help-desc: How to manually remove MSET9 if you forgot or the script failed to do so due to a crash
+aliases: removemset9,mset9delete,deletemset9
 ---
 
 If you forgot to remove MSET9 or the script crashed with an error, you may need to remove MSET9 by hand. Follow these steps:

@@ -1,6 +1,6 @@
 import discord
 
-from datetime import datetime
+from datetime import datetime, timezone
 from discord import app_commands, Member
 from discord.ext.commands import BadArgument, MemberConverter, ObjectConverter, MessageConverter, Context, Converter, ObjectNotFound, ChannelNotFound
 from utils.utils import parse_date, parse_time
@@ -43,7 +43,7 @@ class MemberOrID(Converter):
 class DateOrTimeToSecondsConverter(Converter):
     async def convert(self, ctx: Context, arg: str):
         if (datetime_obj := parse_date(arg)) is not None:
-            return int((datetime_obj - datetime.utcnow()).total_seconds())
+            return int((datetime_obj - datetime.now(timezone.utc)).total_seconds())
         elif (seconds := parse_time(arg)) != -1:
             return seconds
         raise BadArgument("Invalid date/time format")
