@@ -85,7 +85,7 @@ The short and long versions are designed to be understood together, and neither 
 
 **Attempting to start drama is reason enough for a ban on sight.**
 
-**By participating in this server, you acknowledge that user data (including messages, user IDs, user tags) will be collected and logged for moderation purposes. If you disagree with this collection, please leave the server immediately.**\n📑 __*Rules*__\n"""
+**By participating in this server, you acknowledge that user data (including messages, user IDs, user tags) will be collected and logged for moderation purposes. If you disagree with this collection, please leave the server immediately (See our [privacy policy](https://nintendohomebrew.com/privacy)).**\n📑 __*Rules*__\n"""
 
         self.staff_action = """🔨 __*Staff Action*__
 Breaking these rules will result in appropriate measures taken by the staff, at the discretion of the individual staff member.
