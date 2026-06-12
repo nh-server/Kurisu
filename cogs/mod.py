@@ -828,6 +828,7 @@ class Mod(commands.GroupCog):
     async def approve(self, ctx: GuildContext, alias: str, invite: discord.Invite, times: commands.Range[int, 1] = 1):
         """Approves a server invite for a number of times. Staff and Helpers only."""
 
+        alias = alias.lower()
         code = invite.code
 
         if self.filters.get_invite_named(alias):

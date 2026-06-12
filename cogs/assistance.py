@@ -153,7 +153,7 @@ class Assistance(commands.GroupCog):
                 return await ctx.send(f"Valid server names are: {', '.join(ai.alias for ai in self.filters.approved_invites.values())}")
             else:
                 return await ctx.send("There are no approved servers!")
-
+        name = name.lower()
         invite = self.filters.get_invite_named(name)
 
         if invite:
