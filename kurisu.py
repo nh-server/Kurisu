@@ -67,7 +67,8 @@ cogs = (
     'cogs.server_logs',
     'cogs.soap',
     'cogs.titletxtparse',
-    'cogs.slursearch'
+    'cogs.slursearch',
+    'cogs.zeroban'
 )
 
 DEBUG = False
