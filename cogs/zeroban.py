@@ -56,12 +56,18 @@ class ZeroBan(commands.Cog):
         reason: Optional[str],
     ):
         target = message.author
+        content = self._trim(message.content or "*No text content.*", 4000)
 
         embed = discord.Embed(
             title="Zeroban source message",
-            description=self._trim(message.content or "*No text content.*", 4000),
             colour=discord.Colour.red(),
             timestamp=message.created_at,
+        )
+
+        embed.add_field(
+            name="Message content",
+            value=content,
+            inline=False,
         )
 
         embed.add_field(
@@ -73,18 +79,6 @@ class ZeroBan(commands.Cog):
         embed.add_field(
             name="Channel",
             value=getattr(message.channel, "mention", str(message.channel)),
-            inline=True,
-        )
-
-        embed.add_field(
-            name="Message ID",
-            value=f"`{message.id}`",
-            inline=True,
-        )
-
-        embed.add_field(
-            name="Jump URL",
-            value=f"[source]({message.jump_url})",
             inline=False,
         )
 
@@ -124,8 +118,8 @@ class ZeroBan(commands.Cog):
         await ctx.message.delete()
 
         audit_reason = reason or (
-            f"Zeroban by {ctx.author} from message {target_message.id} "
-            f"in #{getattr(target_message.channel, 'name', target_message.channel)}"
+            f"Zeroban by {ctx.author}: "
+            f"{self._trim(target_message.content or 'No text content.', 300)}"
         )
 
         await self._log_source_message(ctx, target_message, reason)
