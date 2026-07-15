@@ -1,6 +1,6 @@
 ---
 title: NX Bans
-url: https://nx.eiphax.tech/ban.html
+url: https://nx.eiphax.tech/ban
 thumbnail-url: https://nintendohomebrew.com/assets/img/gunther.png
 help-desc: Links to ban information pages
 ---

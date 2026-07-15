@@ -1,6 +1,6 @@
 ---
 title: what?
-url: https://nx.eiphax.tech/nutshell.html
+url: https://nx.eiphax.tech/nutshell
 thumbnail-url: https://nintendohomebrew.com/assets/img/eip2.png
 help-desc: Links to 'what' style pages
 ---
