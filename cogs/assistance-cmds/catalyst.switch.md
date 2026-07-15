@@ -4,4 +4,4 @@ help-desc: Link to problem solvers
 ---
 
 Please visit the following page and read the information provided.
-https://nx.eiphax.tech/catalyst.html
+https://nx.eiphax.tech/catalyst
