@@ -50,6 +50,7 @@ class AutoMod(commands.GroupCog):
     def __init__(self, bot: Kurisu):
         self.emoji = discord.PartialEmoji.from_str('🤖')
         self.bot = bot
+        self.automod_rules: dict[int, AutoModRule] = {}
 
     @is_staff("SuperOP")
     @commands.command()
@@ -170,12 +171,17 @@ class AutoMod(commands.GroupCog):
 
     @commands.Cog.listener()
     async def on_automod_action(self, action: discord.AutoModAction):
-        rule = await action.fetch_rule()
-        if not rule or not action.member:
+        rule = self.automod_rules.get(action.rule_id)
+        if rule is None:
+            try:
+                rule = await action.fetch_rule()
+            except discord.HTTPException:
+                return
+            self.automod_rules[action.rule_id] = rule
+        if action.member is None or rule.name != "Scams":
             return
-        if rule.name == "Scams":
-            self.bot.actions.append(f"wk:{action.member.id}")
-            await action.member.kick(reason="Suspicious behavior")
+        self.bot.actions.append(f"wk:{action.member.id}")
+        await action.member.kick(reason="Suspicious behavior")
 
     @is_staff_app('Owner')
     @app_commands.command()
