@@ -1080,8 +1080,8 @@ ssl = Module('ssl', {
 
 account = Module('account', {
     59: ResultInfo('IsAnyInternetRequestAccepted with the output from GetClientId returned false.'),
-    0212: ResultInfo('ResultNetworkServiceAccountBanned', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/27893/'),
-    0242: ResultInfo('ResultNintendoAccountStateBanned', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/27893/'),
+    212: ResultInfo('ResultNetworkServiceAccountBanned', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/27893/'),
+    242: ResultInfo('ResultNintendoAccountStateBanned', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/27893/'),
     3000: ResultInfo('System update is required.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/27166/'),
     4007: ResultInfo('Console is permanently banned.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/28046/', is_ban=True),
     4025: ResultInfo('Game Card is banned. If you have a legitimate cartridge and this happened to you, contact Nintendo.', is_ban=True),
@@ -1091,7 +1091,7 @@ account = Module('account', {
     4609: ResultInfo('The online service is no longer available.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/46482/'),
     4621: ResultInfo('Tencent-Nintendo (Chinese) consoles cannot use online features in foreign games.' 'https://nintendoswitch.com.cn/support/'),
     5111: ResultInfo('Complete account ban.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/42741', is_ban=True),
-    5114: ResultInfo('Console (or Nintendo Account) are permanently banned from a game.', is_ban=True)
+    5114: ResultInfo('Console (or Nintendo Account) are permanently banned from a game.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/46836', is_ban=True)
 })
 
 mii = Module('mii', {
