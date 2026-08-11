@@ -1231,6 +1231,7 @@ audio = Module('audio', {
     4: ResultInfo('Buffer size too small.'),
     8: ResultInfo('Too many buffers are still unreleased.'),
     10: ResultInfo('Invalid channel count.'),
+    321: ResultInfo('Speaker Over Current.', 'One or more speakers are likely shorting out inside the system.'),
     513: ResultInfo('Invalid/unsupported operation.'),
     1536: ResultInfo('Invalid handle.'),
     1540: ResultInfo('Audio output was already started.')
