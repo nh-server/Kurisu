@@ -249,6 +249,7 @@ class KickBan(commands.GroupCog):
         await ctx.send(f"{member} has been hit by a train. 👍 https://nintendohomebrew.com/assets/img/trains.gif")
         await self.bot.logs.post_action_log(ctx.author, member, 'ban', reason=reason)
 
+    @is_staff("OP")
     @commands.bot_has_permissions(ban_members=True)
     @commands.command(name="unban", aliases=["unyeet"])
     async def unban_member(self, ctx: GuildContext, user: discord.Member | discord.User, *, reason: Optional[str] = None):
