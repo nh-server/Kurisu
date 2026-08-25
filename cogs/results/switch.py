@@ -748,6 +748,7 @@ ns = Module('ns', {
     280: ResultInfo('Card update not prepared.'),
     290: ResultInfo('Card update already set up.'),
     340: ResultInfo('IsAnyInternetRequestAccepted with the output from GetClientId returned false.'),
+    403: ResultInfo('You cannot collect My Nintendo points for this software as the expiry date has passed.'),
     460: ResultInfo('PrepareCardUpdate already requested.'),
     801: ResultInfo('SystemDeliveryInfo system_delivery_protocol_version is less than the system setting.'),
     802: ResultInfo('SystemDeliveryInfo system_delivery_protocol_version is greater than the system setting.'),
