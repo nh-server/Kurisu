@@ -43,6 +43,7 @@ cogs = (
     'cogs.db3ds',
     'cogs.events',
     'cogs.extras',
+    'cogs.facts',
     'cogs.filters',
     'cogs.friendcode',
     'cogs.kickban',
