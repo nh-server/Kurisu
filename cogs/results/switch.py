@@ -748,6 +748,7 @@ ns = Module('ns', {
     280: ResultInfo('Card update not prepared.'),
     290: ResultInfo('Card update already set up.'),
     340: ResultInfo('IsAnyInternetRequestAccepted with the output from GetClientId returned false.'),
+    403: ResultInfo('You cannot collect My Nintendo points for this software as the expiry date has passed.'),
     460: ResultInfo('PrepareCardUpdate already requested.'),
     801: ResultInfo('SystemDeliveryInfo system_delivery_protocol_version is less than the system setting.'),
     802: ResultInfo('SystemDeliveryInfo system_delivery_protocol_version is greater than the system setting.'),
@@ -1080,6 +1081,8 @@ ssl = Module('ssl', {
 
 account = Module('account', {
     59: ResultInfo('IsAnyInternetRequestAccepted with the output from GetClientId returned false.'),
+    212: ResultInfo('ResultNetworkServiceAccountBanned', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/27893/'),
+    242: ResultInfo('ResultNintendoAccountStateBanned', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/27893/'),
     3000: ResultInfo('System update is required.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/27166/'),
     4007: ResultInfo('Console is permanently banned.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/28046/', is_ban=True),
     4025: ResultInfo('Game Card is banned. If you have a legitimate cartridge and this happened to you, contact Nintendo.', is_ban=True),
@@ -1088,7 +1091,8 @@ account = Module('account', {
     4517: ResultInfo('Console is permanently banned.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/43652/', is_ban=True),
     4609: ResultInfo('The online service is no longer available.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/46482/'),
     4621: ResultInfo('Tencent-Nintendo (Chinese) consoles cannot use online features in foreign games.' 'https://nintendoswitch.com.cn/support/'),
-    5111: ResultInfo('Complete account ban.', is_ban=True)
+    5111: ResultInfo('Complete account ban.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/42741', is_ban=True),
+    5114: ResultInfo('Console (or Nintendo Account) are permanently banned from a game.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/46836', is_ban=True)
 })
 
 mii = Module('mii', {
@@ -1228,6 +1232,7 @@ audio = Module('audio', {
     4: ResultInfo('Buffer size too small.'),
     8: ResultInfo('Too many buffers are still unreleased.'),
     10: ResultInfo('Invalid channel count.'),
+    321: ResultInfo('Speaker Over Current.', 'One or more speakers are likely shorting out inside the system.'),
     513: ResultInfo('Invalid/unsupported operation.'),
     1536: ResultInfo('Invalid handle.'),
     1540: ResultInfo('Audio output was already started.')
@@ -1293,7 +1298,8 @@ jit = Module('jit', {
 })
 
 dauth = Module('dauth', {
-    4008: ResultInfo('Console is permanently banned by Nintendo.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/42061/kw/2181-4008', is_ban=True)
+    4008: ResultInfo('Console is permanently banned by Nintendo.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/42061/kw/2181-4008', is_ban=True),
+    4017: ResultInfo('Console is permanently banned by Nintendo.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/42061/kw/2181-4017', is_ban=True)
 })
 
 dbg = Module('dbg', {
