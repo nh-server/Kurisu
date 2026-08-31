@@ -1,6 +1,6 @@
 ---
 title: Switch Title Downgrade Tutorial
-url: https://wiki.hacks.guide/wiki/Switch:GameDowngrade
+url: https://wiki.hacks.guide/wiki/Switch:Game_Downgrading
 help-desc: Links to tutorial for removing software update
 ---
 
