@@ -15,4 +15,4 @@ Be sure you are choosing the [proper console model](https://3ds.hacks.guide/imag
 
 If you are at Section II Step 10 with MSET9 Play Store:
 
-Be sure you are choosing the [proper console model](https://3ds.hacks.guide/images/3dsmodels.png) and system firmware version. If you are sure it is correct, you'll need extra SD card that's 32GB or smaller and follow [here](https://wiki.hacks.guide/wiki/3DS:MSET9_fresh).
+Be sure files from MSET9 zip are properly extracted onto SD card like guide image and you are choosing the [proper console model](https://3ds.hacks.guide/images/3dsmodels.png) and system firmware version. If you are sure it is correct, you'll need extra SD card that's 32GB or smaller and follow [here](https://wiki.hacks.guide/wiki/3DS:MSET9_fresh).
