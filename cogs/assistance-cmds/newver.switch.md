@@ -5,7 +5,7 @@ help-desc: Quick advice for new versions
 
 Currently, the latest Switch system firmware is `{nx_firmware}`.
 
-Atmosphere and Hekate DO currently support {nx_firmware}. Please read the message below for information regarding new updates.
+Atmosphere and Hekate DO NOT currently support {nx_firmware}. Do not update in this moment if you wish to continue using custom firmware on your console. Currently, the latest version that Atmosphere and Hekate support is 22.5.0. Please read the message below for information regarding new updates.
 
 As of January 26th, 2026, the primary maintainer of Atmosphère, SciresM, has announced that they are retiring from the public hacking scene. Since they have retired, Atmosphère updates will likely take longer to release with future firmware updates. What this means is that, currently, firmware version 21.2.0 is the latest (officially) supported firmware, without any potential uncertainty.
 

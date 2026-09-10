@@ -16,10 +16,10 @@ class AssistanceSwitch(commands.Cog):
     """
 
     format_map = {
-        'nx_firmware': '21.2.0',
-        'ams_ver': '1.10.2',
-        'hekate_ver': '6.5.1',
-        'last_revision': 'February 24th, 2026',
+        'nx_firmware': '23.0.0',
+        'ams_ver': '1.11.2',
+        'hekate_ver': '6.5.3',
+        'last_revision': 'September 10th, 2026',
     }
 
     # compatibility until the use of these variables is removed
