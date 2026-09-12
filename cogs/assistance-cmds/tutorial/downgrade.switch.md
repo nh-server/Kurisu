@@ -1,6 +1,6 @@
 ---
 title: Switch Title Downgrade Tutorial
-url: https://nx.eiphax.tech/downgrade
+url: https://wiki.hacks.guide/wiki/Switch:Game_Downgrading
 help-desc: Links to tutorial for removing software update
 ---
 
