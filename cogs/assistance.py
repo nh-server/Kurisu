@@ -66,6 +66,7 @@ class Assistance(commands.GroupCog):
     def __init__(self, bot: Kurisu):
         self.bot: Kurisu = bot
         self.small_help_category: Optional[discord.CategoryChannel] = None
+        self.nx_unbrick_category_id = 1556600613817810954
         self.bot.loop.create_task(self.setup_assistance())
         self.filters = bot.filters
 
@@ -77,6 +78,9 @@ class Assistance(commands.GroupCog):
             channel = self.bot.guild.get_channel(db_channel[0])
             if channel and channel.type == discord.ChannelType.category:
                 self.small_help_category = channel
+        db_channel = await self.bot.configuration.get_channel_by_name('nx-unbrick')
+        if db_channel:
+            self.nx_unbrick_category_id = db_channel[0]
 
     async def unisearch(self, query: str) -> list[dict]:
         query = query.lower()
@@ -124,6 +128,25 @@ class Assistance(commands.GroupCog):
         await self.bot.channels['mod-logs'].send(msg)
         await ctx.send(f"Created small help {channel.mention}.")
 
+    @is_staff('Helper')
+    @commands.guild_only()
+    @commands.command(aliases=['fucksthetix'])
+    async def createnxunbrick(self, ctx: GuildContext, helpee: discord.Member):
+        """Creates an NX unbrick help channel for a user. Helper+ only."""
+        category = ctx.guild.get_channel(self.nx_unbrick_category_id)
+        if not isinstance(category, discord.CategoryChannel):
+            return await ctx.send("The NX unbrick help category is not set or could not be found.")
+        # Channel names can't be longer than 100 characters
+        channel_name = f"nx-{helpee.name}-nand-unfuck"[:100]
+        channel = await category.create_text_channel(name=channel_name)
+        await asyncio.sleep(1)  # Fix for discord race condition(?)
+        await channel.set_permissions(helpee, read_messages=True)
+        await channel.send(f"{helpee.mention}, come here for help.")
+        await self.bot.channels['mod-logs'].send(f"⭕️ **NX unbrick help access granted**: {ctx.author.mention} granted access to NX unbrick help channel to {helpee.mention}")
+        msg = f"🆕 **NX unbrick help channel created**: {ctx.author.mention} created NX unbrick help channel {channel.mention} | {channel.name} ({channel.id})"
+        await self.bot.channels['mod-logs'].send(msg)
+        await ctx.send(f"Created NX unbrick help {channel.mention}.")
+
     @is_staff('OP')
     @commands.guild_only()
     @commands.command()
@@ -132,6 +155,16 @@ class Assistance(commands.GroupCog):
         await self.bot.configuration.add_channel('small-help', category)
         self.small_help_category = category
         await ctx.send("Small help category set.")
+
+    @is_staff('OP')
+    @commands.guild_only()
+    @commands.command()
+    async def setnxunbrick(self, ctx: GuildContext, category: discord.CategoryChannel):
+        """Sets and saves the NX unbrick help category. OP+ only."""
+        if not await self.bot.configuration.add_channel('nx-unbrick', category):
+            return await ctx.send("Failed to save the NX unbrick help category.")
+        self.nx_unbrick_category_id = category.id
+        await ctx.send("NX unbrick help category set.")
 
     @commands.group(cooldown=None, invoke_without_command=True, case_insensitive=True)
     async def tutorial(self, ctx: KurisuContext):

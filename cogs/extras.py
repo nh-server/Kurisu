@@ -189,6 +189,21 @@ class Extras(commands.GroupCog):
         await ctx.send("Changed permissions successfully!")
 
     @commands.guild_only()
+    @is_staff("SuperOP")
+    @commands.command(hidden=True)
+    async def copycategoryperms(self, ctx: GuildContext, src_category: discord.CategoryChannel, des_category: discord.CategoryChannel):
+        """Copy all role and member permission overwrites between category IDs. SuperOP+ only.
+
+        Usage: `.copycategoryperms <source_category_id> <destination_category_id>`
+        Replaces the destination category's existing overwrites. Channels with custom overwrites keep them.
+        """
+        if src_category.id == des_category.id:
+            return await ctx.send("Source and destination categories must be different.")
+        reason = f"Category permissions copied from {src_category.id} by {ctx.author} ({ctx.author.id})"
+        await des_category.edit(overwrites=src_category.overwrites, reason=reason)
+        await ctx.send(f"Copied permissions from {src_category.name} ({src_category.id}) to {des_category.name} ({des_category.id}).")
+
+    @commands.guild_only()
     @is_staff("Owner")
     @commands.command(hidden=True)
     async def clearperms(self, ctx: GuildContext, everyone_view: bool = False):
