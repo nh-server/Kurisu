@@ -46,7 +46,7 @@ class ModWarn(commands.GroupCog):
         message = None
 
         if not member and not reference:
-            return await ctx.send("Specifiy a member to warn or reply to the offending message with this command.")
+            return await ctx.send("Specify a member to warn or reply to the offending message with this command.")
         elif reference and not member:
             if not reference.resolved:
                 return await ctx.send("Failed to resolve message.")
