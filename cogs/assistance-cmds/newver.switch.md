@@ -3,9 +3,11 @@ title: Is the new Switch update safe?
 help-desc: Quick advice for new versions
 ---
 
-Currently, the latest Switch system firmware is `{nx_firmware}`.
+Currently, the latest Switch system firmware is {nx_firmware}.
 
-Atmosphere and Hekate DO currently support {nx_firmware}. Please read the message below for information regarding new updates.
+Atmosphere {ams_ver} and Hekate {hekate_ver} currently support {nx_firmware}.
+
+As of September 28th, 2026, Nintendo have added a dns.mitm bypass that allows the console to connect to game content and management servers. While this is likely not a problem, it is strongly recommended to enable 90DNS (see `.90dns`) which appears to fix the bypass. [Source](https://discord.com/channels/196618637950451712/314856589716750346/1553958263135928463)
 
 As of January 26th, 2026, the primary maintainer of Atmosphère, SciresM, has announced that they are retiring from the public hacking scene. Since they have retired, Atmosphère updates will likely take longer to release with future firmware updates. What this means is that, currently, firmware version 21.2.0 is the latest (officially) supported firmware, without any potential uncertainty.
 
