@@ -132,7 +132,10 @@ class Assistance(commands.GroupCog):
     @commands.guild_only()
     @commands.command(aliases=['fucksthetix'])
     async def createnxunbrick(self, ctx: GuildContext, helpee: discord.Member):
-        """Creates an NX unbrick help channel for a user. Helper+ only."""
+        """
+        Creates an NX unbrick help channel for a user. Helper+ only.
+        Go forth auggie. Let the misery commence once more.
+        """
         category = ctx.guild.get_channel(self.nx_unbrick_category_id)
         if not isinstance(category, discord.CategoryChannel):
             return await ctx.send("The NX unbrick help category is not set or could not be found.")
