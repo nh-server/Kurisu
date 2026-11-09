@@ -117,6 +117,8 @@ class Assistance(commands.GroupCog):
         """Creates a small help channel for a user. Helper+ only."""
         if not self.small_help_category:
             return await ctx.send("The small help category is not set.")
+        if self.small_help_category.channels == 50:
+            return await ctx.send("The small help category is full!")
         # Channel names can't be longer than 100 characters
         channel_name = f"{console}-{helpee.name}-{desc}"[:100]
         channel = await self.small_help_category.create_text_channel(name=channel_name)
@@ -136,6 +138,8 @@ class Assistance(commands.GroupCog):
         category = ctx.guild.get_channel(self.nx_unbrick_category_id)
         if not isinstance(category, discord.CategoryChannel):
             return await ctx.send("The NX unbrick help category is not set or could not be found.")
+        if len(category.channels) == 50:
+            return await ctx.send("The nx unbrick category is full!")
         # Channel names can't be longer than 100 characters
         channel_name = f"nx-{helpee.name}-nand-unfuck"[:100]
         channel = await category.create_text_channel(name=channel_name)
