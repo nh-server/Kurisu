@@ -1083,7 +1083,8 @@ account = Module('account', {
     59: ResultInfo('IsAnyInternetRequestAccepted with the output from GetClientId returned false.'),
     212: ResultInfo('ResultNetworkServiceAccountBanned', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/27893/'),
     242: ResultInfo('ResultNintendoAccountStateBanned', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/27893/'),
-    3000: ResultInfo('System update is required.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/27166/'),
+    3000: ResultInfo('A System update is required.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/27166/'),
+    3001: ResultInfo('A Software update is required.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/28969'),
     4007: ResultInfo('Console is permanently banned.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/28046/', is_ban=True),
     4025: ResultInfo('Game Card is banned. If you have a legitimate cartridge and this happened to you, contact Nintendo.', is_ban=True),
     4027: ResultInfo('Console (and Nintendo Account) are temporarily banned from a game.', is_ban=True),
@@ -1198,7 +1199,7 @@ pctl = Module('pctl', {
 })
 
 applet = Module('applet', {
-    1: ResultInfo('Exited abnormally.'),
+    1: ResultInfo('Exited abnormally.', 'Can be caused by a missing `hbmenu.nro` on the root of your sd card. Or a missing `hbl.nsp` from your atmosphere folder.'),
     3: ResultInfo('Cancelled.'),
     4: ResultInfo('Rejected.'),
     5: ResultInfo('Exited unexpectedly.')
