@@ -1084,6 +1084,7 @@ account = Module('account', {
     212: ResultInfo('ResultNetworkServiceAccountBanned', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/27893/'),
     242: ResultInfo('ResultNintendoAccountStateBanned', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/27893/'),
     3000: ResultInfo('System update is required.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/27166/'),
+    3001: ResultInfo('Software update is required.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/28969'),
     4007: ResultInfo('Console is permanently banned.', 'https://en-americas-support.nintendo.com/app/answers/detail/a_id/28046/', is_ban=True),
     4025: ResultInfo('Game Card is banned. If you have a legitimate cartridge and this happened to you, contact Nintendo.', is_ban=True),
     4027: ResultInfo('Console (and Nintendo Account) are temporarily banned from a game.', is_ban=True),
