@@ -1199,7 +1199,7 @@ pctl = Module('pctl', {
 })
 
 applet = Module('applet', {
-    1: ResultInfo('Exited abnormally.', 'Can be caused by either missing `hbmenu.nro` on the root of the sd card, or missing `hbl.nsp` in atmosphere folder.'),
+    1: ResultInfo('Exited abnormally.', 'Likely caused by missing `hbmenu.nro` on the root of the sd card, or missing `hbl.nsp` in atmosphere folder.'),
     3: ResultInfo('Cancelled.'),
     4: ResultInfo('Rejected.'),
     5: ResultInfo('Exited unexpectedly.')
