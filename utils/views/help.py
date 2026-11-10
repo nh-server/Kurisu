@@ -197,8 +197,12 @@ class CommandSelect(Select['HelpView']):
             emoji=self.ctx.bot.emoji
         )
 
-        for command in self.commands:
-            self.add_option(label=command.name, value=command.qualified_name, description=command.description)
+        # Temp fix everyone knows is more permanent than lead poisoning
+        try:
+            for command in self.commands:
+                self.add_option(label=command.name, value=command.qualified_name, description=command.description)
+        except ValueError:
+            pass
 
     async def callback(self, interaction: Interaction):
         assert self.view is not None
