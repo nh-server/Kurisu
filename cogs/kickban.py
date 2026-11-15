@@ -130,7 +130,7 @@ class KickBan(commands.GroupCog):
             msg = f"You were banned from {ctx.guild.name}."
             if reason:
                 msg += " The given reason is: " + reason
-            msg += "\n\nThis ban does not expire."
+            msg += "If you think this is a mistake, contact frozenchen on discord or fill out the appeal form at <https://nintendohomebrew.com/appeal>"
             await send_dm_message(member, msg, ctx)
 
         try:
