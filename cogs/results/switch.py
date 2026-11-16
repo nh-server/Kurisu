@@ -743,6 +743,7 @@ ns = Module('ns', {
     90: ResultInfo('Canceled.'),
     110: ResultInfo('Out of max running tasks.'),
     120: ResultInfo('System update is not required.'),
+    247: ResultInfo('Unable to access microSD card.', 'An archbitfix may resolve this error, refer to the `.archbitfix` command for more information.'),
     251: ResultInfo('Unexpected storage ID.'),
     270: ResultInfo('Card update not set up.'),
     280: ResultInfo('Card update not prepared.'),
