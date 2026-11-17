@@ -65,7 +65,7 @@ class SwitchSerialNumberCheck(Cog):
             if re.match("X[KJWT][JWCE][0-9]{7}", serial):
                 # Region "C" is Tencent-Nintendo Switch. Mariko.
                 mariko = True
-            elif re.match("H[AL][JKWE][0-9]{7}", serial): # E.g. "HAE" Normal, "HLE" Euro with replacable batt.
+            elif re.match("H[AL][JKWE][0-9]{7}", serial):  # E.g. "HAE" Normal, "HLE" Euro with replacable batt.
                 switch2 = True
             else:
                 return await ctx.send("This is not a valid serial number!\n"
