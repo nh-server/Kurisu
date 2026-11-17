@@ -56,6 +56,7 @@ class SwitchSerialNumberCheck(Cog):
         serial = serial.split()[0].upper()
         mariko = False
         switch2 = False
+        switch2_euro = False
         if not re.match("XA[JKW][1479][0-9]{6}", serial):
 
             # This should catch serials from the new "mariko" units
@@ -67,6 +68,8 @@ class SwitchSerialNumberCheck(Cog):
                 mariko = True
             elif re.match("HA[JKWE][0-9]{7}", serial):
                 switch2 = True
+            elif re.match("HL[JKWE][0-9]{7}", serial): # Probably wont ever get other regions but worth keeping anyway?
+                switch2_euro = True
             else:
                 return await ctx.send("This is not a valid serial number!\n"
                                       "If you believe this to be an error, contact staff.", ephemeral=True)
