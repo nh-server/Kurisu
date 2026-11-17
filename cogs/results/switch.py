@@ -751,6 +751,7 @@ ns = Module('ns', {
     340: ResultInfo('IsAnyInternetRequestAccepted with the output from GetClientId returned false.'),
     403: ResultInfo('You cannot collect My Nintendo points for this software as the expiry date has passed.'),
     460: ResultInfo('PrepareCardUpdate already requested.'),
+    641: ResultInfo('Unable to access microSD card.', 'An archbitfix may resolve this error, refer to the `.archbitfix` command for more information.')
     801: ResultInfo('SystemDeliveryInfo system_delivery_protocol_version is less than the system setting.'),
     802: ResultInfo('SystemDeliveryInfo system_delivery_protocol_version is greater than the system setting.'),
     892: ResultInfo('Unknown state: reference count is zero.'),
