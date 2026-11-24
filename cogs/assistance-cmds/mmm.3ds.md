@@ -1,5 +1,5 @@
 ---
-title: Manual Movable Migration
+title: Movable Migration
 url: https://wiki.hacks.guide/wiki/3DS:Movable_Moveover
 author.name: Wiki Contributors
 thumbnail-url: https://nintendohomebrew.com/assets/img/nhmemes/bigh.png
