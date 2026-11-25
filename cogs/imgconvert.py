@@ -27,7 +27,6 @@ class ImageConvert(commands.Cog):
     @staticmethod
     def img_convert(in_img: bytes):
         img_obj = Image.open(BytesIO(in_img))
-        img_obj.thumbnail(MAX_SIZE)
         img_out = BytesIO()
         img_obj.save(img_out, 'webp', lossless=False, quality=20)
         img_out.seek(0)
